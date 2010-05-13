@@ -1,0 +1,164 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.logging</groupId>
+  <artifactId>log4j2</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache Log4j 2</name>
+  <version>1.99.0-SNAPSHOT</version>
+  <description>Apache Log4j 2</description>
+  <url>http://logging.apache.org/log4j/2.0/</url>
+  <issueManagement>
+    <system>Jira</system>
+    <url>http://issues.apache.org/jira/browse/LOG4J2</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Gump</system>
+    <url>http://vmgump.apache.org/gump/public/logging-log4j-20/logging-log4j-20/index.html</url>
+  </ciManagement>
+  <inceptionYear>1999</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>log4j-user</name>
+      <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4j-user@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>log4j-dev</name>
+      <subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4j-dev@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=log4j-dev</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL
+    </developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</url>
+  </scm>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org</url>
+  </organization>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <!-- version 2.1 was flawed and reports 100% coverage  -->
+        <version>2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/home/carnold/public_html/log4j/companions/pattern-layout</url>
+    </site>
+  </distributionManagement>
+  <modules>
+    <module>log4j2-api</module>
+    <module>log4j12-api</module>
+    <module>log4j2-core</module>
+    <module>log4j2-doc</module>
+  </modules>
+</project>

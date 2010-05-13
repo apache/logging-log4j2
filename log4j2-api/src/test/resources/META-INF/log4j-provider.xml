@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="LoggerContextClass">org.apache.logging.log4j.SimpleLoggerContext</entry>
+    <entry key="Log4jAPIVersion">1.99.0</entry>
+</properties>

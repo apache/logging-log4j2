@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" debug="true" name="XMLConfigTest">
+  <filters>
+    <Threshold level="debug"/>
+  </filters>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout>
+        <pattern>%m%n</pattern>
+      </PatternLayout>
+    </Console>
+    <File name="File" fileName="target/test.log">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </appenders>
+
+  <loggers>
+    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <filters>
+        <MDC key="test" value="123"/>
+      </filters>
+      <appender-ref ref="STDOUT"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <appender-ref ref="File"/>
+    </logger>>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>
