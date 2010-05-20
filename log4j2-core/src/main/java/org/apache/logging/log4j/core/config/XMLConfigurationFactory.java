@@ -28,7 +28,7 @@ import java.net.URL;
  *
  */
 @Plugin(name="XMLConfigurationFactory", type="ConfigurationFactory")
-@Order(1)
+@Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
 
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";

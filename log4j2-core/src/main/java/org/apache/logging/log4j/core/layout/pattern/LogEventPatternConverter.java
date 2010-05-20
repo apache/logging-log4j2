@@ -34,8 +34,7 @@ public abstract class LogEventPatternConverter extends PatternConverter {
      * @param name  name of converter.
      * @param style CSS style for output.
      */
-    protected LogEventPatternConverter(
-        final String name, final String style) {
+    protected LogEventPatternConverter(final String name, final String style) {
         super(name, style);
     }
 

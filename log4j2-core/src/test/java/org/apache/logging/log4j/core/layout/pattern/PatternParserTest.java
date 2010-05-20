@@ -16,15 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout.pattern;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.MDC;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.util.Compare;
 
 import org.junit.Before;
 import org.junit.Test;

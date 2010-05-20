@@ -36,19 +36,29 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private static StatusLogger logger = StatusLogger.getLogger();
 
+    private static final LoggerFactory FACTORY = new Factory();
+
     public LoggerContext() {
         reconfigure();
     }
 
     public Logger getLogger(String name) {
+        return getLogger(FACTORY, name);
+    }
+
+    public Logger getLogger(LoggerFactory factory, String name) {
         Logger logger = loggers.get(name);
         if (logger != null) {
             return logger;
         }
 
-        logger = new Logger(this, name);
+        logger = factory.newInstance(this, name);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
+    }
+
+    public boolean hasLogger(String name) {
+        return loggers.containsKey(name);
     }
 
     public Configuration getConfiguration() {
@@ -74,14 +84,23 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         Configuration config = ConfigurationFactory.getInstance().getConfiguration();
         config.start();
         Configuration old = setConfiguration(config);
-        for (Logger logger : loggers.values()) {
-            logger.updateConfiguration(config);
-        }
+        updateLoggers();
         if (old != null) {
             old.stop();
         }
         logger.debug("Reconfiguration completed");
     }
 
+    public void updateLoggers() {
+        for (Logger logger : loggers.values()) {
+            logger.updateConfiguration(config);
+        }
+    }
 
+    private static class Factory implements LoggerFactory {
+
+        public Logger newInstance(LoggerContext ctx, String name) {
+            return new Logger(ctx, name);
+        }
+    }
 }

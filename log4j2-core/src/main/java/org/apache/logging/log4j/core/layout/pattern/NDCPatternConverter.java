@@ -45,8 +45,7 @@ public final class NDCPatternConverter extends LogEventPatternConverter {
    * @param options options, may be null.
    * @return instance of NDCPatternConverter.
    */
-  public static NDCPatternConverter newInstance(
-    final String[] options) {
+  public static NDCPatternConverter newInstance(final String[] options) {
     return INSTANCE;
   }
 

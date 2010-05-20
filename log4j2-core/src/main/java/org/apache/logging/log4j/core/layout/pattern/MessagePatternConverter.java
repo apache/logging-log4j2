@@ -19,6 +19,10 @@ package org.apache.logging.log4j.core.layout.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageHint;
+
+import java.util.Map;
 
 
 /**
@@ -27,17 +31,16 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name="MessagePatternConverter", type="Converter")
 @ConverterKeys({"m", "message"})
 public final class MessagePatternConverter extends LogEventPatternConverter {
-    /**
-     * Singleton.
-     */
-    private static final MessagePatternConverter INSTANCE =
-        new MessagePatternConverter();
+
+    private final String format;
 
     /**
      * Private constructor.
+     * @param options options, may be null.
      */
-    private MessagePatternConverter() {
+    private MessagePatternConverter(final String[] options) {
         super("Message", "message");
+        format = (options != null && options.length > 0) ? options[0] : null;
     }
 
     /**
@@ -46,15 +49,19 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static MessagePatternConverter newInstance(
-        final String[] options) {
-        return INSTANCE;
+    public static MessagePatternConverter newInstance(final String[] options) {
+        return new MessagePatternConverter(options);
     }
 
     /**
      * {@inheritDoc}
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(event.getMessage().getFormattedMessage());
+        Message msg = event.getMessage();
+        Map<MessageHint, String> hints = msg.getHints();
+        if (hints != null && hints.containsKey(MessageHint.FORMAT)) {
+            hints.put(MessageHint.FORMAT, format);
+        }
+        toAppendTo.append(msg.getFormattedMessage());
     }
 }

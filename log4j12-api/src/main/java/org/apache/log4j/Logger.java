@@ -14,21 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.log4j;
 
-import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  *
  */
-public class SimpleLoggerContext implements LoggerContext {
-    private Logger logger = new SimpleLogger();
+public class Logger extends Category {
 
-    public Logger getLogger(String name) {
-        return logger;
+    Logger(String name) {
+        super(name);
     }
 
-    public boolean hasLogger(String name) {
-        return false;
+    public static Logger getLogger(String name) {
+        return (Logger) Category.getInstance(name);
+    }
+
+    public static Logger getLogger(Class clazz) {
+        return (Logger) Category.getInstance(clazz);
+    }
+
+    public static Logger getRootLogger() {
+        return (Logger) Category.getRoot();
+    }
+
+    public static Logger getLogger(String name, LoggerFactory factory) {
+        return (Logger) Category.getInstance(name, factory);
     }
 }

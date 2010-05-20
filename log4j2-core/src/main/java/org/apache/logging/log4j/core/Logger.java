@@ -31,7 +31,7 @@ import java.util.Map;
  *
  */
 public class Logger extends AbstractLogger {
-    private static String FQCN = Logger.class.getName();
+    //private static String FQCN = Logger.class.getName();
     private final String name;
 
     private final LoggerContext context;
@@ -39,7 +39,7 @@ public class Logger extends AbstractLogger {
     /**
      * config should be consistent across threads.
      */
-    private volatile PrivateConfig config;
+    protected volatile PrivateConfig config;
 
     protected Logger(LoggerContext context, String name) {
         this.context = context;
@@ -49,6 +49,21 @@ public class Logger extends AbstractLogger {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * Return the parent of this Logger. If it doesn't already exist return a temporary Logger.
+     * @return The parent Logger.
+     */
+    public Logger getParent() {
+        LoggerConfig lc = config.loggerConfig.getParent();
+        if (lc == null) {
+            return null;
+        }
+        if (context.hasLogger(lc.getName())) {
+            return context.getLogger(name);
+        }
+        return new Logger(context, name);
     }
 
     /* @Override
@@ -116,7 +131,7 @@ public class Logger extends AbstractLogger {
     }
 
     public void addAppender(Appender appender) {
-        config.config.addLoggerAppender(name, appender);
+        config.config.addLoggerAppender(this, appender);
     }
 
     public void removeAppender(Appender appender) {
@@ -131,6 +146,18 @@ public class Logger extends AbstractLogger {
         return config.loggerConfig.getFilters();
     }
 
+    public void addFilter(Filter filter) {
+        config.config.addLoggerFilter(this, filter);
+    }
+
+    public boolean isAdditive() {
+        return config.loggerConfig.isAdditive();
+    }
+
+    public void setAdditive(boolean additive) {
+        config.config.setLoggerAdditive(this, additive);
+    }
+
     /**
      * This method isn't synchronized to serialized updates to config. Rather, by doing this
      * it is guaranteed that all threads will see the update without having to declare the variable
@@ -142,12 +169,12 @@ public class Logger extends AbstractLogger {
         this.config = new PrivateConfig(config, this);
     }
 
-    private class PrivateConfig {
-        private final LoggerConfig loggerConfig;
-        private final Configuration config;
-        private Level level;
-        private int intLevel;
-        private final Logger logger;
+    protected class PrivateConfig {
+        public final LoggerConfig loggerConfig;
+        public final Configuration config;
+        public Level level;
+        public int intLevel;
+        public final Logger logger;
 
         public PrivateConfig(Configuration config, Logger logger) {
             this.config = config;

@@ -45,8 +45,11 @@ public abstract class AppenderBase implements Appender {
 
     protected ErrorHandler handler;
 
-    public AppenderBase(String name) {
+    public static final String NAME = "name";    
+
+    public AppenderBase(String name, Layout layout) {
         this.name = name;
+        this.layout = layout;
     }
 
     public ErrorHandler getHandler() {
@@ -82,6 +85,9 @@ public abstract class AppenderBase implements Appender {
     }
 
     public void setLayout(Layout layout) {
+        if (layout == null) {
+            handler.error("The layout for appender " + getName() + " cannot be set to null");
+        }
         this.layout = layout;
     }
 

@@ -17,26 +17,40 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * An interface for various Message implementations that can be logged.
  */
 public interface Message extends Serializable {
-  /**
-   * Returns the Message formatted as a String.
-   * @return The message String.
-   */
-  String getFormattedMessage();
+    /**
+     * Returns the Message formatted as a String.
+     *
+     * @return The message String.
+     */
+    String getFormattedMessage();
 
-  /**
-   * Returns the format portion of the Message
-   * @return
-   */
-  String getMessageFormat();
+    /**
+     * Returns the format portion of the Message
+     *
+     * @return
+     */
+    String getMessageFormat();
 
-  /**
-   * Returns parameter values, if any.
-   * @return An array of parameter values or null.
-   */
-  Object[] getParameters();
+    /**
+     * Returns parameter values, if any.
+     *
+     * @return An array of parameter values or null.
+     */
+    Object[] getParameters();
+
+
+    /**
+     * Returns a Map of data that the Message would like to aid in formatting. The
+     * Message will construct the map with the keys it is requesting the implementation to
+     * provide values for. The Message must be able to return a formatted message even if
+     * no hints are provided.
+     * @return The Message hints.
+     */
+    Map<MessageHint, String> getHints();
 }

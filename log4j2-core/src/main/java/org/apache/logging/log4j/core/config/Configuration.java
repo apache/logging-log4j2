@@ -2,6 +2,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
 
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,11 @@ public interface Configuration {
 
     Map<String, LoggerConfig> getLoggers();
 
-    void addLoggerAppender(String name, Appender appender);    
+    void addLoggerAppender(Logger logger, Appender appender);
+
+    void addLoggerFilter(Logger logger, Filter filter);
+
+    void setLoggerAdditive(Logger logger, boolean additive);
 
     void start();
 

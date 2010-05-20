@@ -17,49 +17,58 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
 public class SimpleMessage implements Message, Serializable {
-  private static final long serialVersionUID = -8398002534962715992L;
+    private static final long serialVersionUID = -8398002534962715992L;
 
-  private final String message;
+    private final String message;
 
-  public SimpleMessage() {
-    this(null);
-  }
+    public SimpleMessage() {
+        this(null);
+    }
 
-  public SimpleMessage(String message) {
-    this.message = message;
-  }
+    public SimpleMessage(String message) {
+        this.message = message;
+    }
 
-  public String getFormattedMessage() {
-    return message;
-  }
+    public Map<MessageHint, String> getHints() {
+        return null;
+    }
 
-  public String getMessageFormat() {
-    return message;
-  }
+    public String getFormattedMessage() {
+        return message;
+    }
 
-  public Object[] getParameters() {
-    return null;
-  }
+    public String getMessageFormat() {
+        return message;
+    }
 
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    public Object[] getParameters() {
+        return null;
+    }
 
-    SimpleMessage that = (SimpleMessage) o;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-    return !(message != null ? !message.equals(that.message) : that.message != null);
-  }
+        SimpleMessage that = (SimpleMessage) o;
 
-  public int hashCode() {
-    return message != null ? message.hashCode() : 0;
-  }
+        return !(message != null ? !message.equals(that.message) : that.message != null);
+    }
 
-  public String toString() {
-    return "SimpleMessage[message=" + message + "]";
-  }
+    public int hashCode() {
+        return message != null ? message.hashCode() : 0;
+    }
+
+    public String toString() {
+        return "SimpleMessage[message=" + message + "]";
+    }
 }

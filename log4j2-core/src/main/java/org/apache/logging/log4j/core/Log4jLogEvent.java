@@ -21,6 +21,7 @@ import org.apache.logging.log4j.MDC;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.NDC;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageHint;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -67,7 +68,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         this.timestamp = timestamp;
         this.threadName = threadName;
         this.location = location;
-
+        Map<MessageHint, String> hints = message.getHints();
+        if (hints != null && hints.containsKey(MessageHint.LOGGER_NAME)) {
+            hints.put(MessageHint.LOGGER_NAME, name);
+        }
     }
 
     public Level getLevel() {

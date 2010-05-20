@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.internal.StatusLogger;
 
 import java.lang.reflect.Method;
@@ -92,7 +93,7 @@ public class BaseConfiguration implements Configuration {
         }
     }
 
-    protected void setup() {        
+    protected void setup() {
     }
 
     protected void doConfigure() {
@@ -151,7 +152,8 @@ public class BaseConfiguration implements Configuration {
         appenders.put(appender.getName(), appender);
     }
 
-    public void addLoggerAppender(String name, Appender appender) {
+    public void addLoggerAppender(org.apache.logging.log4j.core.Logger logger, Appender appender) {
+        String name = logger.getName();
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
             lc.addAppender(appender);
@@ -161,6 +163,36 @@ public class BaseConfiguration implements Configuration {
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
             setParents();
+            logger.getContext().updateLoggers();
+        }
+    }
+
+    public void addLoggerFilter(org.apache.logging.log4j.core.Logger logger, Filter filter) {
+        String name = logger.getName();
+        LoggerConfig lc = getLoggerConfig(name);
+        if (lc.getName().equals(name)) {
+            lc.addFilter(filter);
+        } else {
+            LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            nlc.addFilter(filter);
+            nlc.setParent(lc);
+            loggers.putIfAbsent(name, nlc);
+            setParents();
+            logger.getContext().updateLoggers();
+        }
+    }
+
+    public void setLoggerAdditive(org.apache.logging.log4j.core.Logger logger, boolean additive) {
+        String name = logger.getName();
+        LoggerConfig lc = getLoggerConfig(name);
+        if (lc.getName().equals(name)) {
+            lc.setAdditive(additive);
+        } else {
+            LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
+            nlc.setParent(lc);
+            loggers.putIfAbsent(name, nlc);
+            setParents();
+            logger.getContext().updateLoggers();
         }
     }
 
@@ -181,8 +213,7 @@ public class BaseConfiguration implements Configuration {
         }
         int i = 0;
         String substr = name;
-        while ((i = substr.lastIndexOf(".")) > 0) {
-            substr = name.substring(0, i);
+        while ((substr = NameUtil.getSubName(substr)) != null) {
             if (loggers.containsKey(substr)) {
                 return loggers.get(substr);
             }

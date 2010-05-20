@@ -14,21 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.log4j;
 
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  *
  */
-public class SimpleLoggerContext implements LoggerContext {
-    private Logger logger = new SimpleLogger();
+public class LogManager {
 
-    public Logger getLogger(String name) {
-        return logger;
+    public static Logger getRootLogger() {
+        return (Logger) org.apache.logging.log4j.LogManager.getLogger("");
     }
 
-    public boolean hasLogger(String name) {
-        return false;
+    public static Logger getLogger(final String name) {
+        return (Logger) org.apache.logging.log4j.LogManager.getLogger(name);
+    }
+
+    public static Logger getLogger(final Class clazz) {
+        return (Logger) org.apache.logging.log4j.LogManager.getLogger(clazz.getName());
+    }
+
+    public static Logger exists(String name) {
+        LoggerContext ctx = org.apache.logging.log4j.LogManager.getContext();
+        if (!ctx.hasLogger(name)) {
+            return null;
+        }
+        return Logger.getLogger(name);
     }
 }

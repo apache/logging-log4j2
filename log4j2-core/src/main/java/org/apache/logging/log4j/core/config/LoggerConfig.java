@@ -76,7 +76,7 @@ public class LoggerConfig implements LogEventFactory {
 
     protected LoggerConfig(String name, List<String> appenders, Filter[] filters, Level level,
                            boolean additive) {
-        this.logEventFactory = this;        
+        this.logEventFactory = this;
         this.name = name;
         this.appenderRefs = appenders;
         if (filters != null && filters.length > 0) {
@@ -93,6 +93,10 @@ public class LoggerConfig implements LogEventFactory {
 
     public void setParent(LoggerConfig parent) {
         this.parent = parent;
+    }
+
+    public LoggerConfig getParent() {
+        return this.parent;
     }
 
     public void addAppender(Appender appender) {
@@ -151,6 +155,10 @@ public class LoggerConfig implements LogEventFactory {
 
     public boolean isAdditive() {
         return additive;
+    }
+
+    public void setAdditive(boolean additive) {
+        this.additive = additive;
     }
 
     public void log(String loggerName, Marker marker, String fqcn, Level level, Message data, Throwable t) {

@@ -57,8 +57,7 @@ public final class MDCPatternConverter extends LogEventPatternConverter {
      * @param options options, may be null or first element contains name of property to format.
      * @return instance of PropertiesPatternConverter.
      */
-    public static MDCPatternConverter newInstance(
-        final String[] options) {
+    public static MDCPatternConverter newInstance(final String[] options) {
         return new MDCPatternConverter(options);
     }
 

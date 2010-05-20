@@ -14,21 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
-
-import org.apache.logging.log4j.spi.LoggerContext;
+package org.apache.log4j;
 
 /**
  *
  */
-public class SimpleLoggerContext implements LoggerContext {
-    private Logger logger = new SimpleLogger();
+public class MDC {
 
-    public Logger getLogger(String name) {
-        return logger;
+    public static void put(String key, Object value) {
+        org.apache.logging.log4j.MDC.put(key, value);
     }
 
-    public boolean hasLogger(String name) {
-        return false;
+    public static void get(String key) {
+        org.apache.logging.log4j.MDC.get(key);
+    }
+
+    public static void remove(String key) {
+        org.apache.logging.log4j.MDC.remove(key);
+    }
+
+    public static void clear() {
+        org.apache.logging.log4j.MDC.clear();
+    }
+
+    public static void getContext() {
+        org.apache.logging.log4j.MDC.getContext();
     }
 }

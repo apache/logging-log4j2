@@ -28,13 +28,22 @@
   <packaging>jar</packaging>
   <name>Log4J Compatibility API</name>
   <description>The Log4J Compatibility API</description>
-</build>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.3.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging</groupId>
+      <artifactId>log4j2-api</artifactId>
+      <version>1.99.0-SNAPSHOT</version>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.logging</groupId>
+      <artifactId>log4j2-core</artifactId>
+      <version>1.99.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
  <distributionManagement>

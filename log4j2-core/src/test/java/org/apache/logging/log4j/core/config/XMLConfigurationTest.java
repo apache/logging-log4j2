@@ -71,7 +71,7 @@ public class XMLConfigurationTest {
         Logger logger = LogManager.getLogger("org.apache.logging.log4j.test1.Test");
         assertTrue(logger instanceof org.apache.logging.log4j.core.Logger);
         org.apache.logging.log4j.core.Logger l = (org.apache.logging.log4j.core.Logger) logger;
-        assertTrue(l.getLevel().equals(Level.DEBUG));
+        assertEquals(Level.DEBUG, l.getLevel());
         List<Filter> filters = l.getFilters();
         assertTrue("number of filters - " + filters.size(), filters.size() == 1);
         Filter filter = filters.get(0);

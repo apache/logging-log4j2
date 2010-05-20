@@ -63,8 +63,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param os The OutputStream.
      */
     public OutputStreamAppender(String name, Layout layout, OutputStream os) {
-        super(name);
-        this.layout = layout;
+        super(name, layout);
         this.setOutputStream(os);
     }
 
@@ -91,14 +90,6 @@ public abstract class OutputStreamAppender extends AppenderBase {
      */
     public boolean getImmediateFlush() {
         return immediateFlush;
-    }
-
-    @Override
-    public void setLayout(Layout layout) {
-        if (layout == null) {
-            handler.error("The layout for appender " + getName() + " cannot be set to null");
-        }
-        super.setLayout(layout);
     }
 
     @Override

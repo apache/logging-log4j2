@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Handles messages that contain an Object.
@@ -44,6 +45,9 @@ public class ObjectMessage implements Message, Serializable {
         return new Object[]{obj};
     }
 
+    public Map<MessageHint, String> getHints() {
+        return null;
+    }
 
     public boolean equals(Object o) {
         if (this == o) {

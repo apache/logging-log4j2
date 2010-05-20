@@ -34,7 +34,6 @@ public class FileAppender extends OutputStreamAppender {
 
     public static final String FILE_NAME = "fileName";
     public static final String APPEND = "append";
-    public static final String NAME = "name";
     public final String fileName;
 
     public FileAppender(String name, Layout layout, OutputStream os, String filename) {
