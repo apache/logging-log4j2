@@ -21,6 +21,7 @@ import java.util.Map;
 
 /**
  * An interface for various Message implementations that can be logged.
+ * @doubt Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
  */
 public interface Message extends Serializable {
     /**
@@ -34,6 +35,7 @@ public interface Message extends Serializable {
      * Returns the format portion of the Message
      *
      * @return The message format.
+     * @doubt Do all messages have a format?  What syntax?  Using a Formatter object could be cleaner.
      */
     String getMessageFormat();
 
@@ -51,6 +53,7 @@ public interface Message extends Serializable {
      * provide values for. The Message must be able to return a formatted message even if
      * no hints are provided.
      * @return The Message hints.
+     * @doubt would seem to go better into a formatter or format object.
      */
     Map<MessageHint, String> getHints();
 }

@@ -29,6 +29,8 @@ package org.apache.logging.log4j;
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
  * A special level, ALL, is guaranteed to capture all levels when used in logging configurations.
+ * @doubt There is not intermediate values available between WARN and INFO for example.  Any reason why the existing log4j values were not retained?
+ * @doubt separating the converter from the type would allow alternative converters for different locales or different logging API's (for example, the same level could be FINER with one converter and TRACE with another.
  */
 public enum Level {
     OFF(0), FATAL(1), ERROR(2), WARN(3), INFO(4), DEBUG(5), TRACE(6), ALL(Integer.MAX_VALUE);

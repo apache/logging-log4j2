@@ -19,8 +19,11 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * This is the central class in the log4j package. Most logging
- * operations, except configuration, are done through this class.
+ * This is the central interface in the log4j package. Most logging
+ * operations, except configuration, are done through this interface.
+ * @doubt interface so complicated indepenent implementation unlikely.  Should be refactored.  LogMF/LogSF is a start as it moves message formatting out of logger.
+ * @doubt I'd prefer an abstract user context object over Marker.  You could still use a Marker as your user context object,
+ *  but you could also use an HttpServletRequest or any other context object. 
  */
 public interface Logger {
 
@@ -35,6 +38,8 @@ public interface Logger {
   /**
    * Log entry to a method.
    * @param params The parameters to the method.
+   * @doubt Use of varargs results in array creation which can be a substantial portion of no-op case.  
+   * LogMF/LogSF provides several overrides to avoid vararg except in edge cases.
    */
   void entry(Object... params);
 
@@ -295,6 +300,7 @@ public interface Logger {
    * Log a message with parameters at the <code>INFO</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
    */
   void info(String message, Object... params);
 
@@ -383,6 +389,7 @@ public interface Logger {
    * Log a message with parameters at the <code>WARN</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
    */
   void warn(String message, Object... params);
 
@@ -471,6 +478,7 @@ public interface Logger {
    * Log a message with parameters at the <code>ERROR</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
    */
   void error(String message, Object... params);
 
@@ -558,6 +566,7 @@ public interface Logger {
    * Log a message with parameters at the <code>FATAL</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
    */
   void fatal(String message, Object... params);
 

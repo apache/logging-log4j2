@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 import java.util.List;
 
 /**
- * @bug LOG4J2-36: Appender interface should be refactored
+ * @issue LOG4J2-36: Appender interface should be refactored
  */
 public interface Appender {
     /**
@@ -78,7 +78,7 @@ public interface Appender {
      * Returns this appenders layout.
      *
      * @return the Layout for the Appender or null if none is configured.
-     * @bug LOG4J2-36 Refactor into Channel
+     * @issue LOG4J2-36 Refactor into Channel
      */
     Layout getLayout();
 
@@ -97,7 +97,7 @@ public interface Appender {
      * the appender should return <code>true</code>.
      *
      * @return True if a Layout is required, false otherwise.
-     * @bug LOG4J2-36 Refactor into Channel
+     * @issue LOG4J2-36 Refactor into Channel
      */
     boolean requiresLayout();
 

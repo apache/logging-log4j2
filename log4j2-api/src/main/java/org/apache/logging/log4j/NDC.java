@@ -83,6 +83,7 @@ import java.util.concurrent.ConcurrentMap;
  * method. A thread may obtain a copy of its NDC with the {@link
  * #cloneStack cloneStack} method and pass the reference to any other
  * thread, in particular to a child.
+ *  @doubt I'd combine MDC and NDC into a single ThreadContext object.
  */
 public class NDC {
 

@@ -29,6 +29,35 @@
   <name>Enhanced Pattern Layout Experiments</name>
   <description>Experiments on Pattern Layout.</description>
   <url>http://logging.apache.org/log4j/experimental</url>
+  <reporting>
+     <plugins>
+	<plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-javadoc-plugin</artifactId>
+           <version>2.7</version>
+           <configuration>
+               <tags>
+                   <tag>
+                      <name>issue</name>
+                      <placement>a</placement>
+                      <head>JIRA issue:</head>
+                   </tag>
+                   <tag>
+                      <name>doubt</name>
+                      <placement>a</placement>
+                      <head>Troublesome:</head>
+                   </tag>
+                   <tag>
+                      <name>compare</name>
+                      <placement>a</placement>
+                      <head>Compare with:</head>
+                   </tag>
+               </tags>
+           </configuration>
+	</plugin>
+     </plugins>
+  </reporting>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

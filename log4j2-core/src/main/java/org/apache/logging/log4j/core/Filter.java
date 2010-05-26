@@ -13,10 +13,19 @@ public interface Filter {
         ACCEPT, NEUTRAL, DENY
     }
 
+    /**
+     * @doubt lifecycle management should be orthogonal.
+    */
     void start();
 
+    /**
+     * @doubt lifecycle management should be orthogonal.
+    */
     void stop();
 
+    /**
+     * @doubt lifecycle management should be orthogonal.
+    */
     boolean isStarted();
 
     Result getOnMismatch();
