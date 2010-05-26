@@ -92,8 +92,6 @@ public class LocalizedMessage extends ParameterizedMessage {
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
-     * @return a LocalizedMessage containing the messagePattern, converted arguments and,
-     * optionally, a Throwable.
      */
     public LocalizedMessage(String messagePattern, Object[] arguments) {
         super(messagePattern, arguments);

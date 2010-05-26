@@ -33,7 +33,7 @@ public interface Message extends Serializable {
     /**
      * Returns the format portion of the Message
      *
-     * @return
+     * @return The message format.
      */
     String getMessageFormat();
 

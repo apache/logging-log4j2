@@ -63,7 +63,6 @@ public class ParameterizedMessage implements Message, Serializable {
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
-     * @return a ParameterizedMessage containing the messagePattern, converted arguments and, optionally, a Throwable.
      */
     public ParameterizedMessage(String messagePattern, Object[] arguments) {
         this.messagePattern = messagePattern;
