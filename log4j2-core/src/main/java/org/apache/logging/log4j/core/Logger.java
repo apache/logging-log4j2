@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having isEnabled 
+ *  be able to examine the message pattern and parameters.
  */
 public class Logger extends AbstractLogger {
     //private static String FQCN = Logger.class.getName();
@@ -164,12 +165,17 @@ public class Logger extends AbstractLogger {
      * volatile.
      *
      * @param config The new Configuration.
+     * @doubt lost me on the comment, this.config is declared volatile.
      */
     void updateConfiguration(Configuration config) {
         this.config = new PrivateConfig(config, this);
     }
 
+    /**
+      * @doubt class is not immutable, so it should not be shared between threads.
+      */
     protected class PrivateConfig {
+	/** @doubt public member variables?  **/
         public final LoggerConfig loggerConfig;
         public final Configuration config;
         public Level level;

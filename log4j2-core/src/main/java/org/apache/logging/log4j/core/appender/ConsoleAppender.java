@@ -27,6 +27,8 @@ import java.util.Map;
  * ConsoleAppender appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The
  * default target is <code>System.out</code>.
+ * @doubt accessing System.out or .err as a byte stream instead of a writer
+ *    bypasses the JVM's knowledge of the proper encoding.
  */
 @Plugin(name="Console",type="Core")
 public class ConsoleAppender extends OutputStreamAppender {

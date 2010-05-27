@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- *
+ * @doubt Appender should be refactored as mentioned elsewhere
  */
 public abstract class AppenderBase implements Appender {
 
+    /**
+     * @doubt protected members?
+     */
     protected boolean started = false;
 
     protected Layout layout = null;
@@ -56,10 +59,17 @@ public abstract class AppenderBase implements Appender {
         return handler;
     }
 
+    /**
+     * @doubt no synchronization
+     */
     public void setHandler(ErrorHandler handler) {
         this.handler = handler;
     }
 
+
+    /**
+     * @doubt would be better to atomically replace a single Filter (which could be composite)
+     */
     public void addFilter(Filter filter) {
         filters.add(filter);
     }
@@ -84,6 +94,9 @@ public abstract class AppenderBase implements Appender {
         return name;
     }
 
+    /**
+     * @doubt not synchronized.
+     */
     public void setLayout(Layout layout) {
         if (layout == null) {
             handler.error("The layout for appender " + getName() + " cannot be set to null");
@@ -99,6 +112,10 @@ public abstract class AppenderBase implements Appender {
         return false;
     }
 
+    /**
+     * @doubt I think it might be clearer just wrap an appender when you want to swallow
+     *   exceptions, however you'd want the appender interface to be much smaller to do that.
+     */ 
     public boolean suppressException() {
         return true;
     }
@@ -121,6 +138,9 @@ public abstract class AppenderBase implements Appender {
         return started;
     }
 
+    /**
+     * @doubt looks like some config code slipping into the core
+     */
     public static Layout createLayout(Node node) {
         Layout layout = null;
         for (Node child : node.getChildren()) {

@@ -46,6 +46,8 @@ public class ListAppender extends AppenderBase {
         events.clear();
     }
 
+    /** @doubt think this caller would still see changes with no way 
+          to synchronize so they could get an consistent snapshot.   */            
     public synchronized List<LogEvent> getEvents() {
         return Collections.unmodifiableList(events);
     }

@@ -24,6 +24,12 @@ import java.io.OutputStream;
 
 /**
  *
+ * 
+ * @doubt This seems to be a cross between a character and byte-oriented appender.
+ *    appenders would likely be either one or the other.
+ *    Would prefer to base on java.nio.  Using an explicit
+ *    encoding might be expensive since it has to make an encoding
+ *    name to an encoder on every call. 
  */
 public abstract class OutputStreamAppender extends AppenderBase {
 

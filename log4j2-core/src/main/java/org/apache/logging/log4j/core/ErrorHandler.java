@@ -20,6 +20,8 @@ import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Appenders may delegate their error handling to <code>ErrorHandlers</code>.
+ * @doubt if the appender interface is simplified, then error handling could just be done by wrapping
+ *  a nested appender.
  */
 public interface ErrorHandler {
 

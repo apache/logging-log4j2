@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 /**
  *
  *
- *
+ * @doubt Unchecked?
  *
  */
 public class LoggingException extends RuntimeException {

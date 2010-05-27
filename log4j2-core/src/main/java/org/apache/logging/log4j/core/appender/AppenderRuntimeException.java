@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 /**
- *
+ * @doubt unchecked exception again
  */
 public class AppenderRuntimeException extends RuntimeException {
 

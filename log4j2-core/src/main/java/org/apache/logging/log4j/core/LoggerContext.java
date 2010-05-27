@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext {
 
-    private ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
     private volatile Configuration config;
 
@@ -73,6 +73,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         config.removeFilter(filter);
     }
 
+    /**
+      * @doubt no check for null, could cause NPE if reconfigure is called.
+      */
     public synchronized Configuration setConfiguration(Configuration config) {
         Configuration prev = this.config;
         this.config = config;

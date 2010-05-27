@@ -101,14 +101,26 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return throwable;
     }
 
+    /**
+     * @doubt Allows direct access to the map passed into the constructor, would allow appender
+     * or layout to manipulate event as seen by other appenders.
+     */
     public Map<String, Object> getContextMap() {
         return mdc;
     }
 
+    /**
+     * @doubt Allows direct access to the map passed into the constructor, would allow appender
+     * or layout to manipulate event as seen by other appenders.
+     */
     public Stack<Object> getContextStack() {
         return ndc;
     }
 
+    /**
+     * @doubt Not quite sure what is going on with the loop, but looks like it might
+     *     drop only the deepest call from the fully qualified class, not all of them.
+     */
     public StackTraceElement getSource() {
         if (fqcnOfLogger == null) {
             return null;
