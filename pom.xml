@@ -19,7 +19,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging</groupId>
-  <artifactId>log4j2</artifactId>
+  <artifactId>log4j2-rgoers</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
   <version>1.99.0-SNAPSHOT</version>
@@ -159,6 +159,5 @@
     <module>log4j2-api</module>
     <module>log4j12-api</module>
     <module>log4j2-core</module>
-    <module>log4j2-doc</module>
   </modules>
 </project>
