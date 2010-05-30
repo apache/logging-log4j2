@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having isEnabled
- *  be able to examine the message pattern and parameters.
+ * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
+ * isEnabled be able to examine the message pattern and parameters. (RG) Will look into whether adding an
+ * interface for the isEnabled methods provides any value. The isEnabled methods are required so that Filters
+ * (besides the standard log level check) can participate in the decision.
  */
 public class Logger extends AbstractLogger {
     //private static String FQCN = Logger.class.getName();
@@ -172,8 +174,10 @@ public class Logger extends AbstractLogger {
     }
 
     /**
-      * @doubt class is not immutable, so it should not be shared between threads.
-      */
+     * @doubt class is not immutable, so it should not be shared between threads. (RG) The class MUST be
+     * shared between threads. The level could be made final and a new PrivateConfig constructed when
+     * setLevel is called.
+     */
     protected class PrivateConfig {
 	/** @doubt public member variables?  (RG) Should be changed. Did this while making the Log4j 1.2 API **/
         public final LoggerConfig loggerConfig;
