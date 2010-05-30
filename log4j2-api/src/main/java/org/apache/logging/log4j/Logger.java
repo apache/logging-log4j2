@@ -307,7 +307,10 @@ public interface Logger {
    * Log a message with parameters at the <code>INFO</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
-   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) It isn't
+   * possible to be misinterpreted as the previous method is for that signature. Methods
+   * should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void info(String message, Object... params);
 
@@ -396,7 +399,10 @@ public interface Logger {
    * Log a message with parameters at the <code>WARN</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
-   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
+   * meant warn, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature.Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void warn(String message, Object... params);
 
@@ -485,7 +491,10 @@ public interface Logger {
    * Log a message with parameters at the <code>ERROR</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
-   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
+   * meant error, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void error(String message, Object... params);
 
@@ -573,7 +582,10 @@ public interface Logger {
    * Log a message with parameters at the <code>FATAL</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
-   * @doubt Likely to misinterpret existing log4j client code that intended to call info(Object,Throwable). Incurs array creation expense on every call.
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call.(RG) I assume you
+   * meant fatal, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void fatal(String message, Object... params);
 
