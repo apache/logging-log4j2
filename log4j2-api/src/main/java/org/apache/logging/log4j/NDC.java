@@ -83,7 +83,10 @@ import java.util.concurrent.ConcurrentMap;
  * method. A thread may obtain a copy of its NDC with the {@link
  * #cloneStack cloneStack} method and pass the reference to any other
  * thread, in particular to a child.
- *  @doubt I'd combine MDC and NDC into a single ThreadContext object.
+ *  @doubt I'd combine MDC and NDC into a single ThreadContext object. (RG) To be
+ * honest, I've always doubted the practicality of this class. An errant
+ * app that forgets to pop an element will screw it up. I only added it
+ * because Log4J 1.x supports it and it wasn't particularly hard to carry over.
  */
 public class NDC {
 
