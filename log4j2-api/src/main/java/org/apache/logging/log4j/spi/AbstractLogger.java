@@ -25,8 +25,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
- * @doubt See comments on Logger, interface is so complex that unlikely to be independently implemented.
- *  LogMF/LogSF separates those concerns out of Logger.
+ * @doubt See Jira LOG4J2-39.
  */
 public abstract class AbstractLogger implements Logger {
 
