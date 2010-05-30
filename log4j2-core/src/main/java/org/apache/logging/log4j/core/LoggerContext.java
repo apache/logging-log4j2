@@ -74,8 +74,10 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-      * @doubt no check for null, could cause NPE if reconfigure is called.
-      */
+     * @doubt no check for null, could cause NPE if reconfigure is called. (RG) I started to fix
+     * this and realized the proper fix was to check for null and if null throw a LoggingException. Is
+     * that really better than an NPE?
+     */
     public synchronized Configuration setConfiguration(Configuration config) {
         Configuration prev = this.config;
         this.config = config;

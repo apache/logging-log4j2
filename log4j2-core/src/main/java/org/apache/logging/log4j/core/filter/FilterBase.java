@@ -30,7 +30,8 @@ import org.apache.logging.log4j.message.Message;
  * an appender. A filter may choose to support being called only from the context or only from an appender in
  * which case it will only implement the required method(s). The rest will default to return NEUTRAL.
  *
- * @doubt why extend FilterBase instead of implementing Filter.
+ * @doubt why extend FilterBase instead of implementing Filter. (RG) Because all filters have a match or
+ * mismatch and some filters may choose to not implement all the filter methods.
  */
 public abstract class FilterBase implements Filter {
 
