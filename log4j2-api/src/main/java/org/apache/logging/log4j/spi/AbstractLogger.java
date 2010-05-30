@@ -32,6 +32,17 @@ public abstract class AbstractLogger implements Logger {
     protected String getFQCN() {
         return AbstractLogger.class.getName();
     }
+    
+
+    /**
+     * Log entry to a method.
+     */
+    public void entry() {
+        if (isEnabled(Level.TRACE, Logger.ENTRY_MARKER, (Object)null, null)) {
+            log(Logger.ENTRY_MARKER, getFQCN(), Level.TRACE, new SimpleMessage(" entry"), null);
+        }
+    }
+
 
     /**
      * Log entry to a method.

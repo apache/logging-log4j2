@@ -36,9 +36,17 @@ public interface Logger {
 
   /**
    * Log entry to a method.
+   */
+  void entry();
+
+  /**
+   * Log entry to a method.
    * @param params The parameters to the method.
    * @doubt Use of varargs results in array creation which can be a substantial portion of no-op case.
-   * LogMF/LogSF provides several overrides to avoid vararg except in edge cases.
+   * LogMF/LogSF provides several overrides to avoid vararg except in edge cases. (RG) LogMF
+   * and LogSF implement these in LogXF which calls logger.callAppenders. callAppenders is
+   * part of the implementation and cannot be used by the API. Adding more methods here
+   * and in AbstractLogger is sufficient.
    */
   void entry(Object... params);
 
