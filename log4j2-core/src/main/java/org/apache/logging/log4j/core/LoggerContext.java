@@ -76,7 +76,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * @doubt no check for null, could cause NPE if reconfigure is called. (RG) I started to fix
      * this and realized the proper fix was to check for null and if null throw a LoggingException. Is
-     * that really better than an NPE?
+     * that really better than an NPE?  (CA) Throwing an NPE on the attempt to setConfiguration(null)
+     * is much better than allowing the set to succeed and then throwing an NPE on a later call
+     *  to addFilter or removeFilter (would not happen on reconfigure, misread it originally)
      */
     public synchronized Configuration setConfiguration(Configuration config) {
         Configuration prev = this.config;
@@ -84,6 +86,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         return prev;
     }
 
+    /** @doubt method scoped config member hides LoggerContext.config.  */
     public synchronized void reconfigure() {
         logger.debug("Reconfiguration started");
         Configuration config = ConfigurationFactory.getInstance().getConfiguration();

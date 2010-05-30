@@ -123,6 +123,18 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * (RG) The loop finds the FQCN and on the next iteration returns the StackTraceElement of
      * the caller of FQCN. Don't know what you mean by "not all of them" as it only returns
      * a single element.
+     *
+     *   Say that FQCN is "MySpecializedLogger" and the stack trace returned from getStackTrace is:
+     *
+     *   Log4jLogEvent.getSource
+     *   MySpecializedLogger.log
+     *   MySpecializedLogger.info
+     *   ClientClass.doSomething
+     *   ClientClass.main
+     *
+     *    When walking the stack, next will be set to true  at MySpecializedLogger.log
+     *    and MySpecializerLogger.info will be returned (at least from code inspection).
+     *
      */
     public StackTraceElement getSource() {
         if (fqcnOfLogger == null) {
