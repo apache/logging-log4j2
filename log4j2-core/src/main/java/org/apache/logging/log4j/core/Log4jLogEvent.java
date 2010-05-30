@@ -120,6 +120,9 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     /**
      * @doubt Not quite sure what is going on with the loop, but looks like it might
      *     drop only the deepest call from the fully qualified class, not all of them.
+     * (RG) The loop finds the FQCN and on the next iteration returns the StackTraceElement of
+     * the caller of FQCN. Don't know what you mean by "not all of them" as it only returns
+     * a single element.
      */
     public StackTraceElement getSource() {
         if (fqcnOfLogger == null) {
