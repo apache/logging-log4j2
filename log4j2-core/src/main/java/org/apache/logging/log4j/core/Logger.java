@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having isEnabled 
+ * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having isEnabled
  *  be able to examine the message pattern and parameters.
  */
 public class Logger extends AbstractLogger {
@@ -165,7 +165,7 @@ public class Logger extends AbstractLogger {
      * volatile.
      *
      * @param config The new Configuration.
-     * @doubt lost me on the comment, this.config is declared volatile.
+     * @doubt lost me on the comment, this.config is declared volatile. (RG) Me too.
      */
     void updateConfiguration(Configuration config) {
         this.config = new PrivateConfig(config, this);
@@ -175,7 +175,7 @@ public class Logger extends AbstractLogger {
       * @doubt class is not immutable, so it should not be shared between threads.
       */
     protected class PrivateConfig {
-	/** @doubt public member variables?  **/
+	/** @doubt public member variables?  (RG) Should be changed. Did this while making the Log4j 1.2 API **/
         public final LoggerConfig loggerConfig;
         public final Configuration config;
         public Level level;
