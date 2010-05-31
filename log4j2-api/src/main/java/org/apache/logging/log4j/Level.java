@@ -40,6 +40,10 @@ package org.apache.logging.log4j;
  * or different logging API's (for example, the same level could be FINER with one converter and TRACE
  * with another. (RG) It's an Enum. All enums must provide the valueOf method. toLevel(String) is carried
  * over from 1.x.
+ *
+ * @doubt Curt makes valid points. I like this being an enum but I dislike that it doesn't support ALERT, SEVERE,
+ * NOTICE, SERIOUS, EMERGENCY, etc. Do we just add them? That multiples the number of methods in the Logger
+ * interface. I've heard suggestions that the log methods should be added to the Level. That would make sense.
  */
 public enum Level {
     OFF(0), FATAL(1), ERROR(2), WARN(3), INFO(4), DEBUG(5), TRACE(6), ALL(Integer.MAX_VALUE);
@@ -75,6 +79,10 @@ public enum Level {
     }
 
     /**
+     * @doubt I really dislike the "greaterOrEqual" and "lessOrEqual" methods. I can never remember whether
+     * the test compares this level to the passed in level or the other way around. As it stands, this
+     * method is not intuitive as the name is greaterOrEqual but the test it does is <=.
+     *
      * Compares the specified Level against this one.
      * @param level The level to check.
      * @return True if the passed Level is more general or the same as this Level.
