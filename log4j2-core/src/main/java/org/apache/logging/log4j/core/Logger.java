@@ -69,18 +69,14 @@ public class Logger extends AbstractLogger {
         return new Logger(context, name);
     }
 
-    /* @Override
-    protected String getFQCN() {
-        return FQCN;
-    } */
-
     public LoggerContext getContext() {
         return context;
     }
 
     public synchronized void setLevel(Level level) {
-        config.level = level;
-        config.intLevel = level.intLevel();
+        if (level != null) {
+            config = new PrivateConfig(config, level);
+        }
     }
 
     public Level getLevel() {
@@ -162,29 +158,27 @@ public class Logger extends AbstractLogger {
     }
 
     /**
-     * This method isn't synchronized to serialized updates to config. Rather, by doing this
-     * it is guaranteed that all threads will see the update without having to declare the variable
-     * volatile.
+     * There are two ways that could be used to guarantee all threads are aware of changes to
+     * config. 1. synchronize this method. Accessors don't need to be synchronized as Java wil
+     * treat all variables within a synchronized block as volatile. 2. Declare the variable
+     * volatile. Option 2 is used here as the performance cost is very low and it does a better
+     * job at documenting how it is used.
      *
      * @param config The new Configuration.
-     * @doubt lost me on the comment, this.config is declared volatile. (RG) Me too.
      */
     void updateConfiguration(Configuration config) {
         this.config = new PrivateConfig(config, this);
     }
 
     /**
-     * @doubt class is not immutable, so it should not be shared between threads. (RG) The class MUST be
-     * shared between threads. The level could be made final and a new PrivateConfig constructed when
-     * setLevel is called.
+     * The binding between a Logger and its configuration.
      */
     protected class PrivateConfig {
-	/** @doubt public member variables?  (RG) Should be changed. Did this while making the Log4j 1.2 API **/
-        public final LoggerConfig loggerConfig;
-        public final Configuration config;
-        public Level level;
-        public int intLevel;
-        public final Logger logger;
+        private final LoggerConfig loggerConfig;
+        private final Configuration config;
+        private final Level level;
+        private final int intLevel;
+        private final Logger logger;
 
         public PrivateConfig(Configuration config, Logger logger) {
             this.config = config;
@@ -192,6 +186,14 @@ public class Logger extends AbstractLogger {
             this.level = this.loggerConfig.getLevel();
             this.intLevel = this.level.intLevel();
             this.logger = logger;
+        }
+
+        public PrivateConfig(PrivateConfig pc, Level level) {
+            this.config = pc.config;
+            this.loggerConfig = pc.loggerConfig;
+            this.level = level;
+            this.intLevel = this.level.intLevel();
+            this.logger = pc.logger;
         }
 
         public PrivateConfig(PrivateConfig pc, LoggerConfig lc) {

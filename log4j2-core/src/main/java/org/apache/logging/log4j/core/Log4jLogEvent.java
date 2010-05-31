@@ -118,23 +118,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * @doubt Not quite sure what is going on with the loop, but looks like it might
-     *     drop only the deepest call from the fully qualified class, not all of them.
-     * (RG) The loop finds the FQCN and on the next iteration returns the StackTraceElement of
-     * the caller of FQCN. Don't know what you mean by "not all of them" as it only returns
-     * a single element.
-     *
-     *   Say that FQCN is "MySpecializedLogger" and the stack trace returned from getStackTrace is:
-     *
-     *   Log4jLogEvent.getSource
-     *   MySpecializedLogger.log
-     *   MySpecializedLogger.info
-     *   ClientClass.doSomething
-     *   ClientClass.main
-     *
-     *    When walking the stack, next will be set to true  at MySpecializedLogger.log
-     *    and MySpecializerLogger.info will be returned (at least from code inspection).
-     *
+     * Return the StackTraceElement for the caller. This will be the entry that occurs right
+     * before the first occurrence of FQCN as a class name.
      */
     public StackTraceElement getSource() {
         if (fqcnOfLogger == null) {
@@ -144,11 +129,15 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             boolean next = false;
             for (StackTraceElement element : stackTrace) {
+                String className = element.getClassName();
                 if (next) {
+                    if (fqcnOfLogger.equals(className)) {
+                        continue;
+                    }
                     location = element;
                     break;
                 }
-                String className = element.getClassName();
+
                 if (fqcnOfLogger.equals(className)) {
                     next = true;
                 } else if (NOT_AVAIL.equals(className)) {
