@@ -10,4 +10,6 @@ public interface LoggerContext {
     Logger getLogger(String name);
 
     boolean hasLogger(String name);
+
+    Object getExternalContext();
 }

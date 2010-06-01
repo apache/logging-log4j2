@@ -38,8 +38,18 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private static final LoggerFactory FACTORY = new Factory();
 
+    private Object externalContext = null;
+
     public LoggerContext() {
         reconfigure();
+    }
+
+    public void setExternalContext(Object context) {
+        this.externalContext = context;
+    }
+
+    public Object getExternalContext() {
+        return this.externalContext;
     }
 
     public Logger getLogger(String name) {
