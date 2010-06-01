@@ -31,4 +31,8 @@ public class SimpleLoggerContext implements LoggerContext {
     public boolean hasLogger(String name) {
         return false;
     }
+
+    public Object getExternalContext() {
+        return null;
+    }
 }
