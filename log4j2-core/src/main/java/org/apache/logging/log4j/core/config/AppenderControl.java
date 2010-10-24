@@ -24,9 +24,11 @@ import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.DefaultErrorHandler;
 
 /**
- *
+ * Wraps appenders with details the appender implementation shouldn't need to know about.
  */
 public class AppenderControl {
+
+    private ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
 
     private final Appender appender;
 
@@ -39,33 +41,43 @@ public class AppenderControl {
     }
 
     public void callAppender(LogEvent event) {
-        if (!appender.isStarted()) {
-            appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
-
-            if (!appender.suppressException()) {
-                throw new AppenderRuntimeException("Attempted to append to non-started appender " + appender.getName());
-            }
-        }
-
-        Filter.Result result = Filter.Result.NEUTRAL;
-
-        for (Filter filter : appender.getFilters()) {
-            result = filter.filter(event);
-            if (result != Filter.Result.NEUTRAL) {
-                break;
-            }
-        }
-        if (result == Filter.Result.DENY) {
+        if (recursive.get() != null) {
+            appender.getHandler().error("Recursive call to appender " + appender.getName());
             return;
         }
-
         try {
-            appender.append(event);
-        } catch (Exception ex) {
-            appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-            if (!appender.suppressException()) {
-                throw new AppenderRuntimeException(ex);
+            recursive.set(this);
+
+            if (!appender.isStarted()) {
+                appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
+
+                if (!appender.suppressException()) {
+                    throw new AppenderRuntimeException("Attempted to append to non-started appender " + appender.getName());
+                }
             }
+
+            Filter.Result result = Filter.Result.NEUTRAL;
+
+            for (Filter filter : appender.getFilters()) {
+                result = filter.filter(event);
+                if (result != Filter.Result.NEUTRAL) {
+                    break;
+                }
+            }
+            if (result == Filter.Result.DENY) {
+                return;
+            }
+
+            try {
+                appender.append(event);
+            } catch (Exception ex) {
+                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
+                if (!appender.suppressException()) {
+                    throw new AppenderRuntimeException(ex);
+                }
+            }
+        } finally {
+            recursive.set(null);
         }
     }
 
