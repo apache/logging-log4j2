@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import java.io.FileNotFoundException;
@@ -29,48 +32,40 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name="File",type="Core")
+@Plugin(name="File",type="Core",elementType="appender")
 public class FileAppender extends OutputStreamAppender {
 
     public static final String FILE_NAME = "fileName";
     public static final String APPEND = "append";
     public final String fileName;
 
-    public FileAppender(String name, Layout layout, OutputStream os, String filename) {
-        super(name, layout, os);
+    public FileAppender(String name, Layout layout, Filter[] filters, OutputStream os, String filename) {
+        super(name, layout, filters, os);
         this.fileName = filename;
     }
 
     @PluginFactory
-    public static FileAppender createAppender(Node node) {
-        Layout layout = createLayout(node);
-        String fileName = null;
-        String name = null;
-        boolean isAppend = true;
-        for (Map.Entry<String, String> attr : node.getAttributes().entrySet()) {
-            if (attr.getKey().equalsIgnoreCase(FILE_NAME)) {
-                fileName = attr.getValue();
-            } else if (attr.getKey().equalsIgnoreCase(APPEND)) {
-                isAppend = Boolean.parseBoolean(attr.getValue());
-            } else if (attr.getKey().equalsIgnoreCase(NAME)) {
-                name = attr.getValue();
-            }
-        }
+    public static FileAppender createAppender(@PluginAttr("fileName") String fileName,
+                                              @PluginAttr("append") String append,
+                                              @PluginAttr("name") String name,
+                                              @PluginElement("layout") Layout layout,
+                                              @PluginElement("filters") Filter[] filters) {
+
+        boolean isAppend = append == null ? true : Boolean.valueOf(append);
 
         if (name == null) {
-            logger.error("No name provided for Appender of type " + node.getName());
+            logger.error("No name provided for FileAppender");
             return null;
         }
 
         if (fileName == null) {
-            logger.error("No filename provided for Appender of type " + node.getName() +
-                " with name " + name);
+            logger.error("No filename provided for FileAppender with name "  + name);
             return null;
         }
 
         try {
             OutputStream os = new FileOutputStream(fileName, isAppend);
-            return new FileAppender(name, layout, os, fileName);
+            return new FileAppender(name, layout, filters, os, fileName);
         } catch (FileNotFoundException ex) {
             logger.error("Unable to open file " + fileName, ex);
             return null;

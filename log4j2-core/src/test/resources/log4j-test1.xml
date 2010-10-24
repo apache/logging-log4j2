@@ -15,6 +15,11 @@
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
+    <List name="List">
+      <filters>
+        <Threshold level="error"/>
+      </filters>
+    </List>
   </appenders>
 
   <loggers>

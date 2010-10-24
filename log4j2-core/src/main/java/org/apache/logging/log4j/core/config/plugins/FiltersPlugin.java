@@ -14,32 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Filter;
 
 /**
  *
  */
-public class MDC {
+@Plugin(name="filters", type="Core")
+public class FiltersPlugin {
 
-    public static void put(String key, Object value) {
-        ThreadContext.put(key, value);
-    }
-
-    public static void get(String key) {
-        ThreadContext.get(key);
-    }
-
-    public static void remove(String key) {
-        ThreadContext.remove(key);
-    }
-
-    public static void clear() {
-        ThreadContext.clear();
-    }
-
-    public static void getContext() {
-        ThreadContext.getContext();
+    @PluginFactory
+    public static Filter[] createFilters(@PluginElement("filters") Filter[] filters) {
+        return filters;
     }
 }

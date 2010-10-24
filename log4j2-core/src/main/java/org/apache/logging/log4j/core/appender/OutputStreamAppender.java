@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.ErrorHandler;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 
@@ -24,12 +26,12 @@ import java.io.OutputStream;
 
 /**
  *
- * 
+ *
  * @doubt This seems to be a cross between a character and byte-oriented appender.
  *    appenders would likely be either one or the other.
  *    Would prefer to base on java.nio.  Using an explicit
  *    encoding might be expensive since it has to make an encoding
- *    name to an encoder on every call. 
+ *    name to an encoder on every call.
  */
 public abstract class OutputStreamAppender extends AppenderBase {
 
@@ -68,8 +70,8 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param layout The layout to format the message.
      * @param os The OutputStream.
      */
-    public OutputStreamAppender(String name, Layout layout, OutputStream os) {
-        super(name, layout);
+    public OutputStreamAppender(String name, Layout layout, Filter[] filters, OutputStream os) {
+        super(name, filters, layout);
         this.setOutputStream(os);
     }
 
@@ -100,7 +102,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
 
     @Override
     public void start() {
-        if (this.layout == null) {
+        if (getLayout() == null) {
             logger.error("No layout set for the appender named [" + getName() + "].");
         }
         if (this.os == null) {
@@ -177,7 +179,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param event The LogEvent.
      */
     protected void subAppend(LogEvent event) {
-        this.os.write(this.layout.format(event));
+        this.os.write(getLayout().format(event));
 
         if (this.immediateFlush) {
             this.os.flush();
@@ -213,6 +215,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * org.apache.logging.log4j.core.Layout#getFooter} method.
      */
     protected void writeFooter(OutputStream os) {
+        Layout layout = getLayout();
         if (layout != null) {
             byte[] b = layout.getFooter();
             if (b != null && os != null) {
@@ -220,8 +223,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
                     os.write(b);
                     os.flush();
                 } catch (IOException ioe) {
-                    this.started = false;
-                    handler.error("Failed to write footer for appender " + getName(), ioe);
+                    logger.error("Failed to write footer for appender " + getName(), ioe);
                 }
             }
         }
@@ -232,14 +234,14 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * org.apache.logging.log4j.core.Layout#getHeader} method.
      */
     protected void writeHeader(OutputStream os) {
+        Layout layout = getLayout();
         if (layout != null) {
             byte[] b = layout.getHeader();
             if (b != null && os != null) {
                 try {
                     os.write(b);
                 } catch (IOException ioe) {
-                    this.started = false;
-                    handler.error("Failed to write footer for appender " + getName(), ioe);
+                    logger.error("Failed to write footer for appender " + getName(), ioe);
                 }
             }
         }
@@ -262,7 +264,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
                     os.close();
                 }
             } catch (IOException ioe) {
-                handler.error("Error closing writer for " + getName(), ioe);
+                logger.error("Error closing writer for " + getName(), ioe);
             }
 
         }
@@ -272,7 +274,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
             try {
                 os.flush();
             } catch (IOException ioe) {
-                handler.error("Error flushing appender " + getName(), ioe);
+                getHandler().error("Error flushing appender " + getName(), ioe);
             }
         }
 
@@ -285,7 +287,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
                 }
 
             } catch (IOException ioe) {
-                handler.error("Error writing to appender " + getName(), ioe);
+                getHandler().error("Error writing to appender " + getName(), ioe);
             }
         }
 
@@ -294,7 +296,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
             try {
                 os.write(bytes, i, i1);
             } catch (IOException ioe) {
-                handler.error("Error writing to appender " + getName(), ioe);
+                getHandler().error("Error writing to appender " + getName(), ioe);
             }
         }
 
@@ -308,7 +310,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
             try {
                 os.write(i);
             }  catch (IOException ioe) {
-                handler.error("Error writing to appender " + getName(), ioe);
+                getHandler().error("Error writing to appender " + getName(), ioe);
             }
         }
     }

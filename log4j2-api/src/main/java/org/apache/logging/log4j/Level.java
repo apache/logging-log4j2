@@ -29,21 +29,7 @@ package org.apache.logging.log4j;
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
  * A special level, ALL, is guaranteed to capture all levels when used in logging configurations.
- * @doubt There is not intermediate values available between WARN and INFO for example.
- * Any reason why the existing log4j values were not retained? (RG) Yes - It is of type Enum. There is no way
- * to add a new level without modifying the class.  (CA) log4j 1.2 allows the introduction of arbitrary
- * user--defined levels and questions about how to do it come up from time to time on the mailing list.
- * Generally it results from trying to overload level to indicate something about the intended audience
- * which would be better served by appropriate design of the logger hierarchy.  However, it is asked
- * frequently enough that somebody  is using it appropriately.
- * @doubt separating the converter from the type would allow alternative converters for different locales
- * or different logging API's (for example, the same level could be FINER with one converter and TRACE
- * with another. (RG) It's an Enum. All enums must provide the valueOf method. toLevel(String) is carried
- * over from 1.x.
- *
- * @doubt Curt makes valid points. I like this being an enum but I dislike that it doesn't support ALERT, SEVERE,
- * NOTICE, SERIOUS, EMERGENCY, etc. Do we just add them? That multiples the number of methods in the Logger
- * interface. I've heard suggestions that the log methods should be added to the Level. That would make sense.
+ * @doubt see LOG4J-41
  */
 public enum Level {
     OFF(0), FATAL(1), ERROR(2), WARN(3), INFO(4), DEBUG(5), TRACE(6), ALL(Integer.MAX_VALUE);

@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
@@ -39,6 +41,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -169,45 +172,6 @@ public class XMLConfiguration extends BaseConfiguration {
         }
     }
 
-    @Plugin(name = "root", type = "Core")
-    public static class RootLogger extends LoggerConfig {
-
-        @PluginFactory
-        public static LoggerConfig createLogger(Node node) {
-            Map<String, String> map = node.getAttributes();
-            List<String> appenderRefs = new ArrayList<String>();
-            Filter[] filters = null;
-            boolean additive = false;
-            Level level = Level.ERROR;
-            String name = "";
-
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                String key = entry.getKey();
-                if (key.equalsIgnoreCase("level")) {
-                    Level l = Level.valueOf(entry.getValue().toUpperCase());
-                    if (l != null) {
-                        level = l;
-                    }
-                } else {
-                    logger.warn("Unsupported key " + key + " ignored on root logger");
-                }
-
-            }
-
-            for (Node child : node.getChildren()) {
-                Object obj = child.getObject();
-                if (obj != null) {
-                    if (obj instanceof String) {
-                        appenderRefs.add((String) obj);
-                    } else if (obj instanceof Filter[]) {
-                        filters = (Filter[]) obj;
-                    }
-                }
-            }
-
-            return new LoggerConfig(name, appenderRefs, filters, level, additive);
-        }
-    }
 
 
 }

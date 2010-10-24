@@ -36,7 +36,6 @@ public class Node {
     private Map<String, String> attributes = new HashMap<String, String>();
     private List<Node> children = new ArrayList<Node>();
     private Object object;
-    private Configuration config;
 
 
     /**
@@ -51,11 +50,9 @@ public class Node {
         this.parent = parent;
         this.name = name;
         this.type = type;
-        this.config = parent.config;
     }
 
-    public Node(Configuration config) {
-        this.config = config;
+    public Node() {
     }
 
     public Map<String, String> getAttributes() {
@@ -96,5 +93,14 @@ public class Node {
 
     public Object getObject() {
         return object;
+    }
+
+    public PluginType getType() {
+        return type;
+    }
+
+    public String toString() {
+        return type.isObjectPrintable() ? object.toString() :
+            type.getPluginClass().getName() + " with name " + name; 
     }
 }

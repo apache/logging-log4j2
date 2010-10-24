@@ -14,32 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *
  */
-public class MDC {
+@Plugin(name = "appenders", type = "Core")
+public class AppendersPlugin {
 
-    public static void put(String key, Object value) {
-        ThreadContext.put(key, value);
-    }
+    @PluginFactory
+    public static ConcurrentMap<String, Appender> createAppenders(@PluginElement("appenders") Appender[] appenders) {
+        ConcurrentMap<String, Appender> map = new ConcurrentHashMap<String, Appender>();
 
-    public static void get(String key) {
-        ThreadContext.get(key);
-    }
+        for (Appender appender : appenders) {
+                map.put(appender.getName(), appender);
+        }
 
-    public static void remove(String key) {
-        ThreadContext.remove(key);
-    }
-
-    public static void clear() {
-        ThreadContext.clear();
-    }
-
-    public static void getContext() {
-        ThreadContext.getContext();
+        return map;
     }
 }

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -35,7 +36,7 @@ import java.util.Map;
  *
  * The default Level is ERROR.
  */
-@Plugin(name="Threshold", type="Core")
+@Plugin(name="Threshold", type="Core", elementType="filter")
 public class ThresholdFilter extends FilterBase {
 
     private static final String LEVEL = "level";
@@ -69,20 +70,13 @@ public class ThresholdFilter extends FilterBase {
     }
 
     @PluginFactory
-    public static ThresholdFilter createFilter(Node node) {
-        Level level = null;
-        Result onMatch = null;
-        Result onMismatch = null;
-        for (Map.Entry<String, String> entry : node.getAttributes().entrySet()) {
-            String name = entry.getKey().toLowerCase();
-            if (name.equals(LEVEL)) {
-                level = Level.toLevel(entry.getValue().toUpperCase(), Level.ERROR);
-            } else if (name.equals(ON_MATCH)) {
-                onMatch = Result.valueOf(entry.getValue());
-            } else if (name.equals(ON_MISMATCH)) {
-                onMismatch = Result.valueOf(entry.getValue());
-            }
-        }
+    public static ThresholdFilter createFilter(@PluginAttr("level") String loggerLevel,
+                                               @PluginAttr("onMatch") String match,
+                                               @PluginAttr("onMismatch") String mismatch) {
+        Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match);
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+
         return new ThresholdFilter(level, onMatch, onMismatch);
     }
 

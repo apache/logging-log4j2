@@ -30,15 +30,8 @@ public class AppenderControl {
 
     private final Appender appender;
 
-    private ErrorHandler handler;
-
     AppenderControl(Appender appender) {
         this.appender = appender;
-        handler = appender.getHandler();
-        if (handler == null) {
-            handler = new DefaultErrorHandler(appender);
-            appender.setHandler(handler);
-        }
     }
 
     public Appender getAppender() {
@@ -47,7 +40,7 @@ public class AppenderControl {
 
     public void callAppender(LogEvent event) {
         if (!appender.isStarted()) {
-            handler.error("Attempted to append to non-started appender " + appender.getName());
+            appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
             if (!appender.suppressException()) {
                 throw new AppenderRuntimeException("Attempted to append to non-started appender " + appender.getName());
@@ -69,7 +62,7 @@ public class AppenderControl {
         try {
             appender.append(event);
         } catch (Exception ex) {
-            handler.error("An exception occurred processing Appender " + appender.getName(), ex);
+            appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
             if (!appender.suppressException()) {
                 throw new AppenderRuntimeException(ex);
             }

@@ -84,6 +84,14 @@ public class XMLConfigurationTest {
         assertEquals(a.getName(), "STDOUT");
     }
 
+    public void testConfiguredAppenders() {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        Configuration c = ctx.getConfiguration();
+        Map<String, Appender> apps = c.getAppenders();
+        assertNotNull(apps);
+        assertEquals(apps.size(), 3);
+    }
+
     @Test
     public void logToFile() {
         Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");

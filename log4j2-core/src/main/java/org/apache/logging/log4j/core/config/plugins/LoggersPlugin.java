@@ -16,32 +16,32 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Loggers;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *
  */
-public class PluginType {
+@Plugin(name = "loggers", type = "Core")
+public class LoggersPlugin {
 
-    private Class pluginClass;
-    private String elementName;
-    private boolean printObject = false;
+    @PluginFactory
+    public static Loggers createLoggers(@PluginElement("loggers") LoggerConfig[] loggers) {
+        ConcurrentMap<String, LoggerConfig> loggerMap = new ConcurrentHashMap<String, LoggerConfig>();
+        LoggerConfig root = null;
 
-    public PluginType(Class clazz, String name, boolean printObj) {
-        this.pluginClass = clazz;
-        this.elementName = name;
-        this.printObject = printObj;
+        for (LoggerConfig logger : loggers) {
+            if (logger != null) {
+                if (logger.getName().equals("root")) {
+                    root = logger;
+                }
+                loggerMap.put(logger.getName(), logger);
+            }
+        }
+
+        return new Loggers(loggerMap, root);
     }
-
-    public Class getPluginClass() {
-        return this.pluginClass;
-    }
-
-    public String getElementName() {
-        return this.elementName;
-    }
-
-    public boolean isObjectPrintable() {
-        return this.printObject;
-    }
-
 }

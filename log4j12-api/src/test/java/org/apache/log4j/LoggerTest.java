@@ -442,7 +442,7 @@ public class LoggerTest {
         int counter;
 
         CountingAppender() {
-            super("Counter", null);
+            super("Counter", null, null);
             counter = 0;
         }
 

@@ -14,32 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.ThreadContext;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *
  */
-public class MDC {
+public class Loggers {
+    private final ConcurrentMap<String, LoggerConfig> map;
+    private final LoggerConfig root;
 
-    public static void put(String key, Object value) {
-        ThreadContext.put(key, value);
+    public Loggers(ConcurrentMap map, LoggerConfig root) {
+        this.map = map;
+        this.root = root;
     }
 
-    public static void get(String key) {
-        ThreadContext.get(key);
+    public ConcurrentMap<String, LoggerConfig> getMap() {
+        return map;
     }
 
-    public static void remove(String key) {
-        ThreadContext.remove(key);
-    }
-
-    public static void clear() {
-        ThreadContext.clear();
-    }
-
-    public static void getContext() {
-        ThreadContext.getContext();
+    public LoggerConfig getRoot() {
+        return root;
     }
 }

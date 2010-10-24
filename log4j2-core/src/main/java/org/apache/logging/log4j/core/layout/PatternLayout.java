@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
 import org.apache.logging.log4j.core.layout.pattern.PatternConverter;
@@ -240,7 +241,7 @@ import java.util.Map;
  * is specified, then the entire contents of the MDC key value pair set
  * is output using a format {{key1,val1},{key2,val2}}</p>
  * <p/>
- * <p>See {@link MDC} class for more details.
+ * <p>See {@link ThreadContext} class for more details.
  * </p>
  * <p/>
  * </td>
@@ -386,7 +387,7 @@ import java.util.Map;
  * Philip E. Margolis' highly recommended book "C -- a Software
  * Engineering Approach", ISBN 0-387-97389-3.
  */
-@Plugin(name="PatternLayout",type="Core")
+@Plugin(name="PatternLayout",type="Core",elementType="layout")
 public class PatternLayout extends LayoutBase {
     /**
      * Default pattern string for log output. Currently set to the
@@ -478,14 +479,7 @@ public class PatternLayout extends LayoutBase {
     }
 
     @PluginFactory
-    public static PatternLayout createLayout(Node node) {
-        String pattern = null;
-        for (Map.Entry<String, String> entry : node.getAttributes().entrySet()) {
-            String name = entry.getKey().toLowerCase();
-            if (name.equals("pattern")) {
-                pattern = entry.getValue();
-            }
-        }
+    public static PatternLayout createLayout(@PluginAttr("pattern") String pattern) {
         if (pattern != null) {
             return new PatternLayout(pattern);
         }

@@ -26,7 +26,7 @@
   <groupId>org.apache.logging</groupId>
   <artifactId>log4j2-core</artifactId>
   <packaging>jar</packaging>
-  <name>Enhanced Pattern Layout Experiments</name>
+  <name>Log4J2 Core</name>
   <description>Experiments on Pattern Layout.</description>
   <url>http://logging.apache.org/log4j/experimental</url>
   <dependencies>

@@ -31,7 +31,7 @@ public class NDC {
      * method with a zero <code>maxDepth</code> argument.
      */
     public static void clear() {
-        org.apache.logging.log4j.NDC.clear();
+        org.apache.logging.log4j.ThreadContext.clearStack();
     }
 
 
@@ -48,8 +48,8 @@ public class NDC {
      *
      * @return Stack A clone of the current thread's  diagnostic context.
      */
-    public static Stack<Object> cloneStack() {
-        return org.apache.logging.log4j.NDC.cloneStack();
+    public static Stack cloneStack() {
+        return org.apache.logging.log4j.ThreadContext.cloneStack();
     }
 
 
@@ -72,8 +72,8 @@ public class NDC {
      *
      * @param stack The diagnostic context of the parent thread.
      */
-    public static void inherit(Stack<Object> stack) {
-        org.apache.logging.log4j.NDC.inherit(stack);
+    public static void inherit(Stack stack) {
+        org.apache.logging.log4j.ThreadContext.setStack(stack);
     }
 
 
@@ -81,7 +81,7 @@ public class NDC {
      * <font color="#FF4040"><b>Never use this method directly.
      */
     public static String get() {
-        return org.apache.logging.log4j.NDC.get();
+        return org.apache.logging.log4j.ThreadContext.peek();
     }
 
     /**
@@ -90,7 +90,7 @@ public class NDC {
      * @see #setMaxDepth
      */
     public static int getDepth() {
-        return org.apache.logging.log4j.NDC.getDepth();
+        return org.apache.logging.log4j.ThreadContext.getDepth();
     }
 
     /**
@@ -103,7 +103,7 @@ public class NDC {
      * @return String The innermost diagnostic context.
      */
     public static String pop() {
-        return org.apache.logging.log4j.NDC.pop();
+        return org.apache.logging.log4j.ThreadContext.pop();
     }
 
     /**
@@ -116,7 +116,7 @@ public class NDC {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-        return org.apache.logging.log4j.NDC.peek();
+        return org.apache.logging.log4j.ThreadContext.peek();
     }
 
     /**
@@ -128,7 +128,7 @@ public class NDC {
      * @param message The new diagnostic context information.
      */
     public static void push(String message) {
-        org.apache.logging.log4j.NDC.push(message);
+        org.apache.logging.log4j.ThreadContext.push(message);
     }
 
     /**
@@ -150,7 +150,7 @@ public class NDC {
      * memory.
      */
     public static void remove() {
-        org.apache.logging.log4j.NDC.remove();
+        org.apache.logging.log4j.ThreadContext.removeStack();
     }
 
     /**
@@ -182,6 +182,6 @@ public class NDC {
      * @param maxDepth The maximum depth of the stack.
      */
     public static void setMaxDepth(int maxDepth) {
-        org.apache.logging.log4j.NDC.setMaxDepth(maxDepth);
+        org.apache.logging.log4j.ThreadContext.setMaxDepth(maxDepth);
     }
 }

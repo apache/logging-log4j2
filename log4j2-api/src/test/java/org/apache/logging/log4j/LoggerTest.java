@@ -66,22 +66,22 @@ public class LoggerTest {
     @Test
     public void mdc() {
 
-        MDC.put("TestYear", new Integer(2010));
+        ThreadContext.put("TestYear", new Integer(2010));
         logger.debug("Debug message");
-        MDC.clear();
+        ThreadContext.clear();
         logger.debug("Debug message");
     }
 
     @Test
     public void structuredData() {
-        MDC.put("loginId", "JohnDoe");
-        MDC.put("ipAddress", "192.168.0.120");
-        MDC.put("locale", Locale.US.getDisplayName());
+        ThreadContext.put("loginId", "JohnDoe");
+        ThreadContext.put("ipAddress", "192.168.0.120");
+        ThreadContext.put("locale", Locale.US.getDisplayName());
         StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         logger.info(Marker.getMarker("EVENT"), msg);
-        MDC.clear();
+        ThreadContext.clear();
     }
 }

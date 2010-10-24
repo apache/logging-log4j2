@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.MDC;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.NDC;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageHint;
 
@@ -44,18 +43,18 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final long timestamp;
     private final Throwable throwable;
     private final Map<String, Object> mdc;
-    private final Stack<Object> ndc;
+    private final Stack<String> ndc;
     private String threadName = null;
     private StackTraceElement location;
 
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t) {
-        this(loggerName, marker, fqcn, level, message, t, MDC.getContext(), NDC.cloneStack(), null, null,
-             System.currentTimeMillis());
+        this(loggerName, marker, fqcn, level, message, t, ThreadContext.getContext(), ThreadContext.cloneStack(), null,
+             null, System.currentTimeMillis());
     }
 
 
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
-                         Map<String, Object> mdc, Stack<Object>ndc, String threadName, StackTraceElement location,
+                         Map<String, Object> mdc, Stack<String>ndc, String threadName, StackTraceElement location,
                          long timestamp) {
         name = loggerName;
         this.marker = marker;
@@ -113,7 +112,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.
      */
-    public Stack<Object> getContextStack() {
+    public Stack<String> getContextStack() {
         return ndc;
     }
 
@@ -169,7 +168,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         private final long timestamp;
         private final Throwable throwable;
         private final HashMap<String, Object> mdc;
-        private final Stack<Object> ndc;
+        private final Stack<String> ndc;
         private String threadName;
         private StackTraceElement location;
 

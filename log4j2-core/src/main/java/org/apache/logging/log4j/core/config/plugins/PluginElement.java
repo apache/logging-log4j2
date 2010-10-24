@@ -9,13 +9,8 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Plugin {
+@Target(ElementType.PARAMETER)
+public @interface PluginElement {
 
-    public String name();
-    public String type();
-    public String elementType() default NULL;
-    public boolean printObject() default false;
-
-    public static final String NULL = "";
+    public String value();
 }

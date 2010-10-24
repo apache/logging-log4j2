@@ -26,12 +26,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
+ * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
+ * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext {
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
+    /**
+     * The Configuration is volatile to guarantee that initialization of the Configuration has completed before
+     * the reference is updated.
+     */
     private volatile Configuration config;
 
     private static StatusLogger logger = StatusLogger.getLogger();
@@ -84,24 +90,25 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * @doubt no check for null, could cause NPE if reconfigure is called. (RG) I started to fix
-     * this and realized the proper fix was to check for null and if null throw a LoggingException. Is
-     * that really better than an NPE?  (CA) Throwing an NPE on the attempt to setConfiguration(null)
-     * is much better than allowing the set to succeed and then throwing an NPE on a later call
-     *  to addFilter or removeFilter (would not happen on reconfigure, misread it originally)
+     * Set the Configuration to be used.
      */
     public synchronized Configuration setConfiguration(Configuration config) {
+        if (config == null) {
+            throw new NullPointerException("No Configuration was provided");
+        }
         Configuration prev = this.config;
         this.config = config;
         return prev;
     }
 
-    /** @doubt method scoped config member hides LoggerContext.config.  */
+    /**
+     *  Reconfigure the context.
+     */
     public synchronized void reconfigure() {
         logger.debug("Reconfiguration started");
-        Configuration config = ConfigurationFactory.getInstance().getConfiguration();
-        config.start();
-        Configuration old = setConfiguration(config);
+        Configuration instance = ConfigurationFactory.getInstance().getConfiguration();
+        instance.start();
+        Configuration old = setConfiguration(instance);
         updateLoggers();
         if (old != null) {
             old.stop();

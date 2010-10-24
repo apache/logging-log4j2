@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import java.util.ArrayList;
@@ -27,15 +30,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * This appender is primarily used for testing. Use in a real environment is discouraged as the
+ * List could eventually grow to cause an OutOfMemoryError.
  */
- @Plugin(name="List",type="Core")
+ @Plugin(name="List",type="Core",elementType="appender")
 public class ListAppender extends AppenderBase {
 
     private List<LogEvent> events = new ArrayList<LogEvent>();
 
     public ListAppender(String name) {
-        super(name, null);
+        super(name, null, null);
+    }
+
+    public ListAppender(String name, Filter[] filters) {
+        super(name, filters, null);
     }
 
     public synchronized void append(LogEvent event) {
@@ -46,26 +54,19 @@ public class ListAppender extends AppenderBase {
         events.clear();
     }
 
-    /** @doubt think this caller would still see changes with no way 
-          to synchronize so they could get an consistent snapshot.   */            
     public synchronized List<LogEvent> getEvents() {
         return Collections.unmodifiableList(events);
     }
 
     @PluginFactory
-    public static ListAppender createAppender(Node node) {
-        String name = null;
-        for (Map.Entry<String, String> attr : node.getAttributes().entrySet()) {
-            if (attr.getKey().equalsIgnoreCase(NAME)) {
-                name = attr.getValue();
-            }
-        }
+    public static ListAppender createAppender(@PluginAttr("name") String name,
+                                              @PluginElement("filters") Filter[] filters) {
 
         if (name == null) {
-            logger.error("No name provided for Appender of type " + node.getName());
+            logger.error("No name provided for ListAppender");
             return null;
         }
 
-        return new ListAppender(name);
+        return new ListAppender(name, filters);
     }
 }

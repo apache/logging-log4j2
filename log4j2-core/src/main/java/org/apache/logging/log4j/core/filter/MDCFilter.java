@@ -17,12 +17,13 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.MDC;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -31,7 +32,7 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name="MDC", type="Core")
+@Plugin(name="MDC", type="Core", elementType="filter")
 public class MDCFilter extends FilterBase {
     private final String key;
     private final String value;
@@ -59,15 +60,15 @@ public class MDCFilter extends FilterBase {
         return this.value;
     }
      public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
-        return filter(MDC.get(key));
+        return filter(ThreadContext.get(key));
     }
 
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
-        return filter(MDC.get(key));
+        return filter(ThreadContext.get(key));
     }
 
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        return filter(MDC.get(key));
+        return filter(ThreadContext.get(key));
     }
 
     @Override
@@ -80,23 +81,12 @@ public class MDCFilter extends FilterBase {
     }
 
     @PluginFactory
-    public static MDCFilter createFilter(Node node) {
-        String key = null;
-        String value = null;
-        Result onMatch = null;
-        Result onMismatch = null;
-        for (Map.Entry<String, String> entry : node.getAttributes().entrySet()) {
-            String name = entry.getKey().toLowerCase();
-            if (name.equals(KEY)) {
-                key = entry.getValue();
-            } else if (name.equals(VALUE)) {
-                value = entry.getValue();
-            } else if (name.equals(ON_MATCH)) {
-                onMatch = Result.valueOf(entry.getValue());
-            } else if (name.equals(ON_MISMATCH)) {
-                onMismatch = Result.valueOf(entry.getValue());
-            }
-        }
+    public static MDCFilter createFilter(@PluginAttr("key") String key,
+                                         @PluginAttr("value") String value,
+                                         @PluginAttr("onmatch") String match,
+                                         @PluginAttr("onmismatch") String mismatch) {
+        Result onMatch = match == null ? null : Result.valueOf(match);
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
         return new MDCFilter(key, value, onMatch, onMismatch);
     }
 }

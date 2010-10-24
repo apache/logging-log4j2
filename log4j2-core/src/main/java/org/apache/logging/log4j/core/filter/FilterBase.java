@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
@@ -30,10 +31,8 @@ import org.apache.logging.log4j.message.Message;
  * an appender. A filter may choose to support being called only from the context or only from an appender in
  * which case it will only implement the required method(s). The rest will default to return NEUTRAL.
  *
- * @doubt why extend FilterBase instead of implementing Filter. (RG) Because all filters have a match or
- * mismatch and some filters may choose to not implement all the filter methods.
  */
-public abstract class FilterBase implements Filter {
+public abstract class FilterBase implements Filter, Lifecycle {
 
     protected boolean started;
 
@@ -73,6 +72,10 @@ public abstract class FilterBase implements Filter {
 
     public final Result getOnMatch() {
         return onMatch;
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
     /**

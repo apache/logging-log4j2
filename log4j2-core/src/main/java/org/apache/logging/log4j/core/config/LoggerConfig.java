@@ -25,11 +25,14 @@ import org.apache.logging.log4j.core.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventFactory;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -194,79 +197,38 @@ public class LoggerConfig implements LogEventFactory {
     }
 
     @PluginFactory
-    public static LoggerConfig createLogger(Node node) {
-        Map<String, String> map = node.getAttributes();
-        List<String> appenderRefs = new ArrayList<String>();
-        Filter[] filters = null;
-        boolean additive = true;
-        Level level = Level.ERROR;
-        String name = null;
-
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key = entry.getKey();
-            if (key.equalsIgnoreCase("additivity"))  {
-                additive = Boolean.parseBoolean(entry.getValue());
-            }
-            if (key.equalsIgnoreCase("level")) {
-                Level l = Level.valueOf(entry.getValue().toUpperCase());
-                if (l != null) {
-                    level = l;
-                }
-            }
-            if (key.equalsIgnoreCase("name")) {
-                name = entry.getValue();
-            }
-        }
-
-        if (node.getName().equals("root")) {
-            name = "";
-        }
-
-        if (name == null) {
+    public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
+                                            @PluginAttr("level") String loggerLevel,
+                                            @PluginAttr("name") String loggerName,
+                                            @PluginElement("appender-ref") String[] refs,
+                                            @PluginElement("filters") Filter[] filters) {
+        if (loggerName == null) {
             logger.error("Loggers cannot be configured without a name");
             return null;
         }
 
-        for (Node child : node.getChildren()) {
-            Object obj = child.getObject();
-            if (obj != null) {
-                if (obj instanceof String) {
-                    appenderRefs.add((String) obj);
-                } else if (obj instanceof Filter[]) {
-                    filters = (Filter[]) obj;
-                }
-            }
-        }
+        List<String> appenderRefs = Arrays.asList(refs);
+        Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+        String name = loggerName.equals("root") ? "" : loggerName;
+        boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
         return new LoggerConfig(name, appenderRefs, filters, level, additive);
     }
-    /*
-    @Plugin("appender-refs")
-    public static class AppenderRefs {
+
+    @Plugin(name = "root", type = "Core")
+    public static class RootLogger extends LoggerConfig {
 
         @PluginFactory
-        public static String[] createAppenderRefs(Node node) {
-            String[] refs = new String[node.getChildren().size()];
-            int i = 0;
-            for (Node child : node.getChildren()) {
-                refs[i++] = (String) child.getObject();
-            }
-            return refs;
-        }
-    } */
+        public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
+                                            @PluginAttr("level") String loggerLevel,
+                                            @PluginElement("appender-ref") String[] refs,
+                                            @PluginElement("filters") Filter[] filters) {
+            List<String> appenderRefs = Arrays.asList(refs);
+            Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+            boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-    @Plugin(name="appender-ref",type="Core")
-    public static class AppenderRef {
-
-        @PluginFactory
-        public static String createAppenderRef(Node node) {
-            Map<String, String> attrs = node.getAttributes();
-            for (Map.Entry<String, String> attr : attrs.entrySet()) {
-                if (attr.getKey().equalsIgnoreCase("ref")) {
-                    return attr.getValue();
-                }
-            }
-            return null;
+            return new LoggerConfig("", appenderRefs, filters, level, additive);
         }
     }
+
 }

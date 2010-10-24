@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import java.util.Map;
@@ -30,7 +33,7 @@ import java.util.Map;
  * @doubt accessing System.out or .err as a byte stream instead of a writer
  *    bypasses the JVM's knowledge of the proper encoding.
  */
-@Plugin(name="Console",type="Core")
+@Plugin(name="Console",type="Core",elementType="appender")
 public class ConsoleAppender extends OutputStreamAppender {
 
     public static final String LAYOUT = "layout";
@@ -42,32 +45,25 @@ public class ConsoleAppender extends OutputStreamAppender {
     }
 
     public ConsoleAppender(String name, Layout layout) {
-        this(name, layout, Target.SYSTEM_OUT);
+        this(name, layout, null, Target.SYSTEM_OUT);
 
     }
 
-    public ConsoleAppender(String name, Layout layout, Target target) {
-        super(name, layout, target == Target.SYSTEM_OUT ? System.out : System.err);
+    public ConsoleAppender(String name, Layout layout, Filter[] filters, Target target) {
+        super(name, layout, filters, target == Target.SYSTEM_OUT ? System.out : System.err);
     }
 
     @PluginFactory
-    public static ConsoleAppender createAppender(Node node) {
-        Layout layout = createLayout(node);
-        String t = null;
-        String name = null;
-        for (Map.Entry<String, String> attr : node.getAttributes().entrySet()) {
-            if (attr.getKey().equalsIgnoreCase(TARGET)) {
-                t = attr.getValue().toUpperCase();
-            } else if (attr.getKey().equalsIgnoreCase(NAME)) {
-                name = attr.getValue();
-            }
-        }
+    public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
+                                                 @PluginElement("filters") Filter[] filters,
+                                                 @PluginAttr("target") String t,
+                                                 @PluginAttr("name") String name) {
         if (name == null) {
-            logger.error("No name provided for Appender of type " + node.getName());
+            logger.error("No name provided for ConsoleAppender");
             return null;
         }
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, target);
+        return new ConsoleAppender(name, layout, filters, target);
     }
 
 }

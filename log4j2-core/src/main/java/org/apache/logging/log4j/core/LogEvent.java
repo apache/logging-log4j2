@@ -72,6 +72,6 @@ public interface LogEvent {
      * @return A copy of the Nested Diagnostic Context of null;
      * @doubt as mentioned elsewhere, think MDC and NDC should be combined into a thread context object.
      */
-    Stack<Object> getContextStack();
+    Stack<String> getContextStack();
 
 }

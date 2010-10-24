@@ -19,18 +19,20 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.internal.StatusLogger;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,7 @@ public class BaseConfiguration implements Configuration {
 
     protected BaseConfiguration() {
         pluginManager = new PluginManager("Core");
-        rootNode = new Node(this);
+        rootNode = new Node();
     }
 
     public void start() {
@@ -108,8 +110,8 @@ public class BaseConfiguration implements Configuration {
                 filters = new CopyOnWriteArrayList((Filter[]) child.getObject());
             } else if (child.getName().equals("loggers")) {
                 Loggers l = (Loggers) child.getObject();
-                loggers = l.map;
-                root = l.root;
+                loggers = l.getMap();
+                root = l.getRoot();
             }
         }
 
@@ -287,22 +289,31 @@ public class BaseConfiguration implements Configuration {
         for (Node child : node.getChildren()) {
             createConfiguration(child);
         }
-        PluginType type = pluginManager.getPluginType(node.getName());
+        PluginType type = node.getType();
         if (type == null) {
             if (node.getParent() != null) {
                 logger.error("Unable to locate plugin for " + node.getName());
             }
         } else {
-            node.setObject(createPlugin(type, node));
+            node.setObject(createPluginObject(type, node));
         }
     }
    /*
-    * Retrieve a static public 'method taking a Node parameter on a class specified by its name.
+    * Retrieve a static public 'method to create the desired object. Every parameter
+    * will be annotated to identify the appropriate attribute or element to use to
+    * set the value of the paraemter.
+    * Parameters annotated with PluginAttr will always be set as Strings.
+    * Parameters annotated with PluginElement may be Objects or arrays. Collections
+    * and Maps are currently not supported, although the factory method that is called
+    * can create these from an array.
+    *
+    * Although the happy path works, more work still needs to be done to log incorrect
+    * parameters. These will generally result in unhelpful InvocationTargetExceptions.
     * @param classClass the class.
     * @return the instantiate method or null if there is none by that
     * description.
     */
-    public static Object createPlugin(PluginType type, Node node)
+    public static Object createPluginObject(PluginType type, Node node)
     {
         Class clazz = type.getPluginClass();
 
@@ -335,10 +346,136 @@ public class BaseConfiguration implements Configuration {
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class)) {
                 factoryMethod = method;
+                break;
             }
         }
         if (factoryMethod == null) {
             return null;
+        }
+
+        Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
+        Class[] parmClasses = factoryMethod.getParameterTypes();
+        if (parmArray.length != parmClasses.length) {
+            logger.error("");
+        }
+        Object[] parms = new Object[parmClasses.length];
+
+        int index = 0;
+        Map<String, String> attrs = node.getAttributes();
+        List<Node> children = node.getChildren();
+        StringBuilder sb = new StringBuilder();
+        List<Node> used = new ArrayList<Node>();
+
+        /*
+         * For each parameter:
+         * If the parameter is an attribute store the value of the attribute in the parameter array.
+         * If the parameter is an element:
+         *   Determine if the required parameter is an array.
+         *     If so, if a child contains the array, use it,
+         *      otherwise create the array from all child nodes of the correct type.
+         *     Store the array into the parameter array.
+         *   If not an array, store the object in the child node into the parameter array.
+         */
+        for (Annotation[] parmTypes : parmArray) {
+            for (Annotation a : parmTypes) {
+                if (sb.length() == 0) {
+                    sb.append(" with params(");
+                } else {
+                    sb.append(", ");
+                }
+                if (a instanceof PluginAttr) {
+                    String name = ((PluginAttr)a).value();
+                    String value = getAttrValue(name, attrs);
+                    sb.append(name +"=" + "\"" + value + "\"");
+                    parms[index] = value;
+                } else if (a instanceof PluginElement) {
+                    PluginElement elem = (PluginElement)a;
+                    String name = elem.value();
+                    Class parmClass = parmClasses[index].getComponentType();
+                    if (parmClasses[index].isArray()) {
+                        List<Object> list = new ArrayList<Object>();
+                        sb.append("{");
+                        boolean first = true;
+                        for (Node child : children) {
+                            PluginType childType = child.getType();
+                            if (elem.value().equals(childType.getElementName()) ||
+                                parmClass.isAssignableFrom(childType.getPluginClass())) {
+                                used.add(child);
+                                if (!first) {
+                                    sb.append(", ");
+                                }
+                                first = false;
+                                Object obj = child.getObject();
+                                if (obj.getClass().isArray()) {
+                                    printArray(sb, (Object[])obj);
+                                    parms[index] = obj;
+                                    break;
+                                }
+                                sb.append(child.toString());
+                                list.add(obj);
+                            }
+                        }
+                        sb.append("}");
+                        if (parms[index] != null) {
+                            break;
+                        }
+                        Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
+                        int i=0;
+                        for (Object obj : list) {
+                            array[i] = obj;
+                            ++i;
+                        }
+                        parms[index] = array;
+                    } else {
+                        for (Node child : children) {
+                            sb.append(child.toString());
+                            PluginType childType = child.getType();
+                            if (elem.value().equals(childType.getElementName()) ||
+                                parmClass.isAssignableFrom(childType.getPluginClass())) {
+                                used.add(child);
+                                parms[index] = child.getObject();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            ++index;
+        }
+        if (sb.length() > 0) {
+            sb.append(")");
+        }
+
+        if (attrs.size() > 0) {
+            StringBuilder eb = new StringBuilder();
+            for (String key : attrs.keySet()) {
+                if (eb.length() == 0) {
+                    eb.append(node.getName());
+                    eb.append(" contains ");
+                    if (attrs.size() == 1) {
+                        eb.append("an invalid element or attribute ");
+                    } else {
+                        eb.append("invalid attributes ");
+                    }
+                } else {
+                    eb.append(", ");
+                }
+                eb.append("\"");
+                eb.append(key);
+                eb.append("\"");
+
+            }
+            logger.error(eb.toString());
+        }
+
+        if (used.size() != children.size()) {
+            for (Node child : children) {
+                if (used.contains(child)) {
+                    continue;
+                }
+
+                logger.error("node.getName()" + " contains invalid element " + child.getName());
+            }
         }
 
         try
@@ -351,13 +488,38 @@ public class BaseConfiguration implements Configuration {
                 return null;
             }
             logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
-                node.getName());
+                node.getName() + sb.toString());
+            StringBuilder b = new StringBuilder();
+            if (parms.length > 0) {
+                return factoryMethod.invoke(null, parms);
+            }
             return factoryMethod.invoke(null, node);
         }
         catch (Exception e)
         {
             logger.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
                 clazz.getName() + " for element " + node.getName(), e);
+        }
+        return null;
+    }
+
+    private static void printArray(StringBuilder sb, Object[] array) {
+        boolean first = true;
+        for (Object obj : array) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(obj.toString());
+        }
+    }
+
+    private static String getAttrValue(String name, Map<String, String>attrs) {
+        for (String key : attrs.keySet()) {
+            if (key.equalsIgnoreCase(name)) {
+                String attr = attrs.get(key);
+                attrs.remove(key);
+                return attr;
+            }
         }
         return null;
     }
@@ -378,72 +540,5 @@ public class BaseConfiguration implements Configuration {
                 }
             }
         }
-    }
-
-    @Plugin(name="appenders", type="Core")
-    public static class AppendersPlugin {
-
-        @PluginFactory
-        public static ConcurrentMap<String, Appender> createAppenders(Node node) {
-            ConcurrentMap<String, Appender> map = new ConcurrentHashMap<String, Appender>();
-
-            for (Node child : node.getChildren()) {
-                Object obj = child.getObject();
-                if (obj != null && obj instanceof Appender) {
-                    Appender appender = (Appender) obj;
-                    map.put(appender.getName(), appender);
-                }
-            }
-
-            return map;
-        }
-    }
-
-
-    @Plugin(name="filters", type="Core")
-    public static class FiltersPlugin {
-
-        @PluginFactory
-        public static Filter[] createFilters(Node node) {
-            List<Filter> filters = new ArrayList<Filter>();
-
-            for (Node child : node.getChildren()) {
-                Object obj = child.getObject();
-                if (obj != null && obj instanceof Filter) {
-                    filters.add((Filter) obj);
-                }
-            }
-
-            return filters.toArray(new Filter[filters.size()]);
-        }
-    }
-
-    @Plugin(name="loggers", type="Core")
-    public static class LoggersPlugin {
-
-        @PluginFactory
-        public static Loggers createLoggers(Node node) {
-            Loggers loggers = new Loggers();
-
-            for (Node child : node.getChildren()) {
-                Object obj = child.getObject();
-                if (obj != null && obj instanceof LoggerConfig) {
-                    LoggerConfig logger = (LoggerConfig) obj;
-                    if (logger != null) {
-                        if (child.getName().equals("root")) {
-                            loggers.root = logger;
-                        }
-                        loggers.map.put(logger.getName(), logger);
-                    }
-                }
-            }
-
-            return loggers;
-        }
-    }
-
-    private static class Loggers {
-        ConcurrentMap<String, LoggerConfig> map = new ConcurrentHashMap<String, LoggerConfig>();
-        LoggerConfig root = null;
     }
 }
