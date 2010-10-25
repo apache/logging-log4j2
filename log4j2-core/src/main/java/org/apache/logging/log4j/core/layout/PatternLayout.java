@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -27,7 +26,6 @@ import org.apache.logging.log4j.core.layout.pattern.PatternConverter;
 import org.apache.logging.log4j.core.layout.pattern.PatternParser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>A flexible layout configurable with pattern string. The goal of this class

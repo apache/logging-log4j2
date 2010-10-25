@@ -14,25 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- *
+ * Looks up keys from system properties
  */
-@Plugin(name = "appender-ref", type = "Core", printObject = true)
-public class AppenderRefPlugin {
+@Plugin(name="ctx",type="Lookup")
+public class ContextMapLookup implements StrLookup {
 
-    protected final static Logger logger = StatusLogger.getLogger();
-
-    @PluginFactory
-    public static String createAppenderRef(@PluginAttr("ref") String ref) {
-
-        if (ref == null) {
-            logger.error("Appender references must contain a reference");
-        }
-        return ref;
+    public String lookup(String key) {
+        return ThreadContext.get(key).toString();
     }
 }

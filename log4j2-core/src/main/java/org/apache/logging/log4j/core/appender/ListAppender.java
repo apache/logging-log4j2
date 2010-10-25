@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -27,7 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the

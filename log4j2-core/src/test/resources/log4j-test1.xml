@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="" debug="true" name="XMLConfigTest">
+  <properties>
+    <property name="filename">target/test.log</property>
+  </properties>
   <filters>
     <Threshold level="debug"/>
   </filters>
@@ -10,7 +13,7 @@
         <pattern>%m%n</pattern>
       </PatternLayout>
     </Console>
-    <File name="File" fileName="target/test.log">
+    <File name="File" fileName="${filename}">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>

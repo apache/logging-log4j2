@@ -24,7 +24,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.internal.StatusLogger;
 
 import java.lang.annotation.Annotation;
@@ -50,6 +54,8 @@ public class BaseConfiguration implements Configuration {
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
+
+    private StrSubstitutor subst = new StrSubstitutor();
 
     private LoggerConfig root = new LoggerConfig();
 
@@ -99,12 +105,14 @@ public class BaseConfiguration implements Configuration {
     }
 
     protected void doConfigure() {
-        createConfiguration(rootNode);
         for (Node child : rootNode.getChildren()) {
+            createConfiguration(child);
             if (child.getObject() == null) {
                 continue;
             }
-            if (child.getName().equals("appenders")) {
+            if (child.getName().equalsIgnoreCase("properties")) {
+                subst = (StrSubstitutor) child.getObject();
+            } else if (child.getName().equals("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
             } else if (child.getName().equals("filters")) {
                 filters = new CopyOnWriteArrayList((Filter[]) child.getObject());
@@ -313,7 +321,7 @@ public class BaseConfiguration implements Configuration {
     * @return the instantiate method or null if there is none by that
     * description.
     */
-    public static Object createPluginObject(PluginType type, Node node)
+    public Object createPluginObject(PluginType type, Node node)
     {
         Class clazz = type.getPluginClass();
 
@@ -383,9 +391,15 @@ public class BaseConfiguration implements Configuration {
                 } else {
                     sb.append(", ");
                 }
+                if (a instanceof PluginValue) {
+                    String name = ((PluginValue)a).value();
+                    String value = subst.replace(node.getValue());
+                    sb.append(name +"=" + "\"" + value + "\"");
+                    parms[index] = value;
+                }
                 if (a instanceof PluginAttr) {
                     String name = ((PluginAttr)a).value();
-                    String value = getAttrValue(name, attrs);
+                    String value = subst.replace(getAttrValue(name, attrs));
                     sb.append(name +"=" + "\"" + value + "\"");
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
@@ -503,7 +517,7 @@ public class BaseConfiguration implements Configuration {
         return null;
     }
 
-    private static void printArray(StringBuilder sb, Object[] array) {
+    private void printArray(StringBuilder sb, Object[] array) {
         boolean first = true;
         for (Object obj : array) {
             if (!first) {
@@ -513,7 +527,7 @@ public class BaseConfiguration implements Configuration {
         }
     }
 
-    private static String getAttrValue(String name, Map<String, String>attrs) {
+    private String getAttrValue(String name, Map<String, String>attrs) {
         for (String key : attrs.keySet()) {
             if (key.equalsIgnoreCase(name)) {
                 String attr = attrs.get(key);

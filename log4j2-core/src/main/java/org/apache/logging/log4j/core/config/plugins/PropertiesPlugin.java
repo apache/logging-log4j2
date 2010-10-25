@@ -16,23 +16,29 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  */
-@Plugin(name = "appender-ref", type = "Core", printObject = true)
-public class AppenderRefPlugin {
-
-    protected final static Logger logger = StatusLogger.getLogger();
+@Plugin(name="properties", type="Core", printObject=true)
+public class PropertiesPlugin {
 
     @PluginFactory
-    public static String createAppenderRef(@PluginAttr("ref") String ref) {
-
-        if (ref == null) {
-            logger.error("Appender references must contain a reference");
+    public static StrSubstitutor configureSubstitutor(@PluginElement("properties") Property[] properties) {
+        Map<String, String> map = new HashMap<String, String>();
+        
+        for (Property prop : properties) {
+            map.put(prop.getName(), prop.getValue());
         }
-        return ref;
+
+        Interpolator inter = new Interpolator(properties == null ? null : new MapLookup(map));
+        return new StrSubstitutor(inter);
     }
 }
