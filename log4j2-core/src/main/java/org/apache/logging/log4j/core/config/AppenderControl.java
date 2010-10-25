@@ -70,6 +70,11 @@ public class AppenderControl {
 
             try {
                 appender.append(event);
+            } catch (RuntimeException ex) {
+                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
+                if (!appender.suppressException()) {
+                    throw ex;
+                }
             } catch (Exception ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
                 if (!appender.suppressException()) {

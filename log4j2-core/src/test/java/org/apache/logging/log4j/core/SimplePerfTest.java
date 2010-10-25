@@ -18,10 +18,14 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Assert;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -31,6 +35,28 @@ public class SimplePerfTest {
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimplePerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 100000000;
+    private static final int WARMUP = 1000;
+    private static long maxTime;
+
+    @BeforeClass
+    public static void setupClass() {
+        for (int i=0; i < WARMUP; ++i) {
+            if (overhead(i, LOOP_CNT)) {
+                System.out.println("help!");
+            }
+        }
+
+        Timer timer = new Timer("Setup", LOOP_CNT);
+        timer.start();
+        for (int i=0; i < LOOP_CNT; ++i) {
+            if (overhead(i, LOOP_CNT)) {
+                System.out.println("help!");
+            }
+        }
+        timer.stop();
+        maxTime = timer.getElapsedNanoTime();
+        System.out.println(timer.toString());
+    }
 
     @Test
     public void debugDisabled() {
@@ -41,6 +67,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
+        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
     }
 
     @Test
@@ -52,6 +79,7 @@ public class SimplePerfTest {
         }
         timer.stop();
         System.out.println(timer.toString());
+        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
     }
     /*
     @Test
@@ -64,4 +92,23 @@ public class SimplePerfTest {
         timer.stop();
         System.out.println(timer.toString());
     }  */
+
+    /*
+     * Try to generate some overhead that can't be optimized well. Not sure how accurate this is,
+     * but the point is simply to insure that changes made don't suddenly cause performance issues.
+     */
+    private static boolean overhead(int i, int j) {
+        for (int k=j; k < j+10; ++k) {
+            if (i > k) {
+                return true;
+            }
+            if (i == k) {
+                return true;
+            }
+            if (i < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

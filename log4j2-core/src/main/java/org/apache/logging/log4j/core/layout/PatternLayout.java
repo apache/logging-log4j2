@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.helpers.OptionConverter;
 import org.apache.logging.log4j.core.layout.pattern.PatternConverter;
 import org.apache.logging.log4j.core.layout.pattern.PatternParser;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -419,12 +420,26 @@ public class PatternLayout extends LayoutBase {
     private boolean handlesExceptions;
 
     /**
+     * The charset of the formatted message.
+     */
+    private Charset charset;
+
+    /**
      * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
      * <p/>
      * The default pattern just produces the application supplied message.
      */
     public PatternLayout() {
-        this(DEFAULT_CONVERSION_PATTERN);
+        this(DEFAULT_CONVERSION_PATTERN, Charset.defaultCharset());
+    }
+
+    /**
+     * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
+     * <p/>
+     * The default pattern just produces the application supplied message.
+     */
+    public PatternLayout(final String pattern) {
+        this(pattern, Charset.defaultCharset());
     }
 
     /**
@@ -432,9 +447,10 @@ public class PatternLayout extends LayoutBase {
      *
      * @param pattern conversion pattern.
      */
-    public PatternLayout(final String pattern) {
+    public PatternLayout(final String pattern, final Charset charset) {
 
         this.conversionPattern = pattern;
+        this.charset = charset;
         PatternParser parser = createPatternParser();
         converters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
@@ -468,7 +484,7 @@ public class PatternLayout extends LayoutBase {
         for (PatternConverter c : converters) {
             c.format(event, buf);
         }
-        return buf.toString().getBytes();
+        return buf.toString().getBytes(charset);
     }
 
     private PatternParser createPatternParser() {
@@ -477,9 +493,18 @@ public class PatternLayout extends LayoutBase {
     }
 
     @PluginFactory
-    public static PatternLayout createLayout(@PluginAttr("pattern") String pattern) {
+    public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
+                                             @PluginAttr("charset") String charset) {
+        Charset c = Charset.defaultCharset();
+        if (charset != null) {
+            if (Charset.isSupported(charset)) {
+                c = Charset.forName(charset);
+            } else {
+                logger.error("Charset " + charset + " is not supported for layout, using default.");
+            }
+        }
         if (pattern != null) {
-            return new PatternLayout(pattern);
+            return new PatternLayout(pattern, c);
         }
         logger.error("No pattern specified for PatternLayout");
         return null;

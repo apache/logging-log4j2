@@ -17,7 +17,9 @@
 package org.apache.logging.log4j.core.appender;
 
 /**
- * @doubt unchecked exception again
+ * @doubt unchecked exception again (RG) Why is that a problem? A runtime exception
+ * is appropriate in the case where the Appender encounters a checked exception and
+ * needs to percolate the exception to the application.
  */
 public class AppenderRuntimeException extends RuntimeException {
 

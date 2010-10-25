@@ -40,6 +40,7 @@ public interface LogEvent {
      * Get thread name.
      * @return thread name, may be null.
      * @doubt guess this could go into a thread context object too.
+     * (RG) Why?
      */
     String getThreadName();
 
@@ -63,6 +64,7 @@ public interface LogEvent {
      *
      * @return A copy of the Mapped Diagnostic Context or null.
      * @doubt as mentioned elsewhere, think MDC and NDC should be combined into a thread context object.
+     * (RG) Still to do.
      */
     Map<String, Object> getContextMap();
 
@@ -71,6 +73,7 @@ public interface LogEvent {
      *
      * @return A copy of the Nested Diagnostic Context of null;
      * @doubt as mentioned elsewhere, think MDC and NDC should be combined into a thread context object.
+     * (RG) Still to do.
      */
     Stack<String> getContextStack();
 

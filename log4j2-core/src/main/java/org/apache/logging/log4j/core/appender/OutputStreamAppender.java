@@ -25,13 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- *
- *
- * @doubt This seems to be a cross between a character and byte-oriented appender.
- *    appenders would likely be either one or the other.
- *    Would prefer to base on java.nio.  Using an explicit
- *    encoding might be expensive since it has to make an encoding
- *    name to an encoder on every call.
+ * Writes the byte output stream. The stream will already have been encoded.
  */
 public abstract class OutputStreamAppender extends AppenderBase {
 
@@ -48,14 +42,6 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * <code>true</code> by default.
      */
     protected boolean immediateFlush = true;
-
-    /**
-     * The encoding to use when writing.  <p>The
-     * <code>encoding</code> variable is set to <code>null</null> by
-     * default which results in the utilization of the system's default
-     * encoding.
-     */
-    protected String encoding;
 
     /**
      * This is the OutputStream where we will write to.
@@ -275,19 +261,6 @@ public abstract class OutputStreamAppender extends AppenderBase {
                 os.flush();
             } catch (IOException ioe) {
                 getHandler().error("Error flushing appender " + getName(), ioe);
-            }
-        }
-
-        public void write(String msg) {
-            try {
-                if (encoding != null) {
-                    os.write(msg.getBytes(encoding));
-                } else {
-                    os.write(msg.getBytes());
-                }
-
-            } catch (IOException ioe) {
-                getHandler().error("Error writing to appender " + getName(), ioe);
             }
         }
 

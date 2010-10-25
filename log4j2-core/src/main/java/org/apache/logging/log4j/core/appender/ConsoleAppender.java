@@ -28,7 +28,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * <code>System.err</code> using a layout specified by the user. The
  * default target is <code>System.out</code>.
  * @doubt accessing System.out or .err as a byte stream instead of a writer
- *    bypasses the JVM's knowledge of the proper encoding.
+ *    bypasses the JVM's knowledge of the proper encoding. (RG) Encoding
+ * is handled within the Layout. Typically, a Layout will generate a String
+ * and then call getBytes which may use a configured encoding or the system
+ * default. OTOH, a Writer cannot print byte streams.
  */
 @Plugin(name="Console",type="Core",elementType="appender")
 public class ConsoleAppender extends OutputStreamAppender {
