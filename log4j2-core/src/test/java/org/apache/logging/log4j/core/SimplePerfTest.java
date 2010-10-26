@@ -98,7 +98,7 @@ public class SimplePerfTest {
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
     private static boolean overhead(int i, int j) {
-        for (int k=j; k < j+10; ++k) {
+        for (int k=j; k < j+12; ++k) {
             if (i > k) {
                 return true;
             }
