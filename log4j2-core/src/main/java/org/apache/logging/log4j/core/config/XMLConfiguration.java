@@ -56,12 +56,12 @@ public class XMLConfiguration extends BaseConfiguration {
             Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
             Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            boolean debug = false;
+            Level status = Level.OFF;
             boolean verbose = false;
 
             for (Map.Entry<String, String> entry : attrs.entrySet()) {
-                if ("debug".equalsIgnoreCase(entry.getKey())) {
-                    debug = Boolean.parseBoolean(entry.getValue());
+                if ("status".equalsIgnoreCase(entry.getKey())) {
+                    status = Level.toLevel(entry.getValue().toUpperCase(), Level.OFF);
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(entry.getValue());
                 } else if ("packages".equalsIgnoreCase(entry.getKey())) {
@@ -73,8 +73,8 @@ public class XMLConfiguration extends BaseConfiguration {
                     setName(entry.getValue());
                 }
             }
-            if (debug) {
-                StatusConsoleListener listener = new StatusConsoleListener(Level.DEBUG);
+            if (status != Level.OFF) {
+                StatusConsoleListener listener = new StatusConsoleListener(status);
                 if (!verbose) {
                     listener.setFilters(verboseClasses);
                 }
