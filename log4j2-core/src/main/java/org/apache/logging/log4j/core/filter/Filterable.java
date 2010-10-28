@@ -27,21 +27,17 @@ import java.util.Iterator;
  */
 public class Filterable {
     private volatile Filters filters = new Filters(null);
-    private boolean hasFilters;
 
     public synchronized void addFilter(Filter filter) {
         filters = Filters.addFilter(filters, filter);
-        hasFilters = filters.hasFilters();
     }
 
     public synchronized void removeFilter(Filter filter) {
         filters = Filters.removeFilter(filters, filter);
-         hasFilters = filters.hasFilters();
     }
 
     public synchronized void clearFilters() {
         filters = new Filters(null);
-        hasFilters = false;
     }
 
     public Iterator<Filter> getFilters() {
@@ -49,7 +45,7 @@ public class Filterable {
     }
 
     public boolean hasFilters() {
-        return hasFilters;
+        return filters.hasFilters();
     }
 
     public int filterCount() {
@@ -57,29 +53,35 @@ public class Filterable {
     }
 
     protected void startFilters() {
-        for (Filter filter : filters) {
-            if ((filter instanceof Lifecycle)) {
-                ((Lifecycle)filter).start();
+        Filters f = filters;
+        if (f.hasFilters()) {
+            for (Filter filter : f) {
+                if ((filter instanceof Lifecycle)) {
+                    ((Lifecycle)filter).start();
+                }
             }
         }
     }
 
     protected void stopFilters() {
-        for (Filter filter : filters) {
-            if ((filter instanceof Lifecycle)) {
-                ((Lifecycle)filter).stop();
+        Filters f = filters;
+        if (f.hasFilters()) {
+            for (Filter filter : f) {
+                if ((filter instanceof Lifecycle)) {
+                    ((Lifecycle)filter).stop();
+                }
             }
         }
     }
 
     protected synchronized void setFilters(Filters newFilters) {
         filters = newFilters == null ? new Filters(null) : newFilters;
-        hasFilters = filters.hasFilters();
     }
 
     protected boolean isFiltered(LogEvent event) {
-        if (hasFilters) {
-            for (Filter filter : filters) {
+        Filters f = filters;
+        if (f.hasFilters()) {
+            for (Filter filter : f) {
                 if (filter.filter(event) == Filter.Result.DENY) {
                     return true;
                 }
