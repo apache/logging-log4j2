@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.filter.Filters;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -56,7 +57,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param layout The layout to format the message.
      * @param os The OutputStream.
      */
-    public OutputStreamAppender(String name, Layout layout, Filter[] filters, OutputStream os) {
+    public OutputStreamAppender(String name, Layout layout, Filters filters, OutputStream os) {
         super(name, filters, layout);
         this.setOutputStream(os);
     }

@@ -29,12 +29,12 @@ import java.util.Map;
 
 /**
  * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
- * isEnabled be able to examine the message pattern and parameters. (RG) Will look into whether adding an
- * interface for the isEnabled methods provides any value. The isEnabled methods are required so that Filters
- * (besides the standard log level check) can participate in the decision.
+ * isEnabled be able to examine the message pattern and parameters. (RG) Moving the isEnabled methods out of
+ * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
+ * used in global filters.
  */
 public class Logger extends AbstractLogger {
-    //private static String FQCN = Logger.class.getName();
+    
     private final String name;
 
     private final LoggerContext context;
@@ -141,8 +141,12 @@ public class Logger extends AbstractLogger {
          return config.loggerConfig.getAppenders();
     }
 
-    public List<Filter> getFilters() {
+    public Iterator<Filter> getFilters() {
         return config.loggerConfig.getFilters();
+    }
+
+    public int filterCount() {
+        return config.loggerConfig.filterCount();
     }
 
     public void addFilter(Filter filter) {

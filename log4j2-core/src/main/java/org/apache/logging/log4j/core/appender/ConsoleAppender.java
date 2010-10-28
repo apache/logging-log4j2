@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.filter.Filters;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -49,13 +50,13 @@ public class ConsoleAppender extends OutputStreamAppender {
 
     }
 
-    public ConsoleAppender(String name, Layout layout, Filter[] filters, Target target) {
+    public ConsoleAppender(String name, Layout layout, Filters filters, Target target) {
         super(name, layout, filters, target == Target.SYSTEM_OUT ? System.out : System.err);
     }
 
     @PluginFactory
     public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
-                                                 @PluginElement("filters") Filter[] filters,
+                                                 @PluginElement("filters") Filters filters,
                                                  @PluginAttr("target") String t,
                                                  @PluginAttr("name") String name) {
         if (name == null) {

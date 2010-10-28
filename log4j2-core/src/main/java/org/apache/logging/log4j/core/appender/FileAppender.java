@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.filter.Filters;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,7 +38,7 @@ public class FileAppender extends OutputStreamAppender {
     public static final String APPEND = "append";
     public final String fileName;
 
-    public FileAppender(String name, Layout layout, Filter[] filters, OutputStream os, String filename) {
+    public FileAppender(String name, Layout layout, Filters filters, OutputStream os, String filename) {
         super(name, layout, filters, os);
         this.fileName = filename;
     }
@@ -47,7 +48,7 @@ public class FileAppender extends OutputStreamAppender {
                                               @PluginAttr("append") String append,
                                               @PluginAttr("name") String name,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filter[] filters) {
+                                              @PluginElement("filters") Filters filters) {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
 

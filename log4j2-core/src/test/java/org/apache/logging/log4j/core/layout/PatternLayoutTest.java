@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
@@ -74,7 +75,7 @@ public class PatternLayoutTest {
         // set up appender
         PatternLayout layout = new PatternLayout(msgPattern);
         FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
-        Appender appender = new FileAppender("File", layout, null, fos, OUTPUT_FILE + "_mdc");
+        FileAppender appender = new FileAppender("File", layout, null, fos, OUTPUT_FILE + "_mdc");
         appender.start();
 
         // set appender on root and set level to debug

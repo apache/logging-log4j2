@@ -19,12 +19,15 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
@@ -43,11 +46,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  */
-public class BaseConfiguration implements Configuration {
+public class BaseConfiguration extends Filterable implements Configuration {
 
     private String name;
 
@@ -58,10 +62,6 @@ public class BaseConfiguration implements Configuration {
     private StrSubstitutor subst = new StrSubstitutor();
 
     private LoggerConfig root = new LoggerConfig();
-
-    private List<Filter> filters = new CopyOnWriteArrayList<Filter>();
-
-    private boolean hasFilters = false;
 
     private boolean started = false;
 
@@ -81,12 +81,11 @@ public class BaseConfiguration implements Configuration {
         setup();
         doConfigure();
         for (Appender appender : appenders.values()) {
-            appender.start();
+            if (appender instanceof Lifecycle)
+            ((Lifecycle)appender).start();
         }
 
-        for (Filter filter : filters) {
-            filter.start();
-        }
+        startFilters();
     }
 
     public void stop() {
@@ -94,11 +93,11 @@ public class BaseConfiguration implements Configuration {
             logger.clearAppenders();
         }
         for (Appender appender : appenders.values()) {
-            appender.stop();
+            if (appender instanceof Lifecycle) {
+                ((Lifecycle)appender).stop();
+            }
         }
-        for (Filter filter : filters) {
-            filter.stop();
-        }
+        stopFilters();
     }
 
     protected void setup() {
@@ -115,7 +114,7 @@ public class BaseConfiguration implements Configuration {
             } else if (child.getName().equals("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
             } else if (child.getName().equals("filters")) {
-                filters = new CopyOnWriteArrayList((Filter[]) child.getObject());
+                setFilters((Filters) child.getObject());
             } else if (child.getName().equals("loggers")) {
                 Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
@@ -212,8 +211,8 @@ public class BaseConfiguration implements Configuration {
         }
         Appender app = appenders.remove(name);
 
-        if (app != null) {
-            app.stop();
+        if (app != null && app instanceof Lifecycle) {
+            ((Lifecycle)app).stop();
         }
     }
 
@@ -273,24 +272,6 @@ public class BaseConfiguration implements Configuration {
             throw new IllegalStateException(msg);
         }
         loggers.remove(name);
-    }
-
-    public Iterator<Filter> getFilters() {
-        return filters.iterator();
-    }
-
-    public void addFilter(Filter filter) {
-        filters.add(filter);
-        hasFilters = filters.size() > 0;
-    }
-
-    public void removeFilter(Filter filter) {
-        filters.remove(filter);
-        hasFilters = filters.size() > 0;
-    }
-
-    public boolean hasFilters() {
-        return hasFilters;
     }
 
     private void createConfiguration(Node node) {
@@ -405,8 +386,8 @@ public class BaseConfiguration implements Configuration {
                 } else if (a instanceof PluginElement) {
                     PluginElement elem = (PluginElement)a;
                     String name = elem.value();
-                    Class parmClass = parmClasses[index].getComponentType();
                     if (parmClasses[index].isArray()) {
+                        Class parmClass = parmClasses[index].getComponentType();
                         List<Object> list = new ArrayList<Object>();
                         sb.append("{");
                         boolean first = true;
@@ -441,6 +422,7 @@ public class BaseConfiguration implements Configuration {
                         }
                         parms[index] = array;
                     } else {
+                        Class parmClass = parmClasses[index];                       
                         for (Node child : children) {
                             sb.append(child.toString());
                             PluginType childType = child.getType();

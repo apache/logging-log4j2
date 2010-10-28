@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.apache.logging.log4j.message.Message;
 
@@ -39,18 +41,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  */
 @Plugin(name="logger",type="Core")
-public class LoggerConfig implements LogEventFactory {
+public class LoggerConfig extends Filterable implements LogEventFactory {
 
     private List<String> appenderRefs = new ArrayList<String>();
     private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
-
-    private List<Filter> filters = new CopyOnWriteArrayList<Filter>();
-    private boolean hasFilters = false;
 
     private final String name;
 
@@ -77,15 +77,12 @@ public class LoggerConfig implements LogEventFactory {
         this.additive = additive;
     }
 
-    protected LoggerConfig(String name, List<String> appenders, Filter[] filters, Level level,
+    protected LoggerConfig(String name, List<String> appenders, Filters filters, Level level,
                            boolean additive) {
         this.logEventFactory = this;
         this.name = name;
         this.appenderRefs = appenders;
-        if (filters != null && filters.length > 0) {
-            this.filters = new CopyOnWriteArrayList<Filter>(filters);
-            hasFilters = true;
-        }
+        setFilters(filters);
         this.level = level;
         this.additive = additive;
     }
@@ -142,20 +139,6 @@ public class LoggerConfig implements LogEventFactory {
         this.logEventFactory = logEventFactory;
     }
 
-    public void addFilter(Filter filter) {
-        filters.add(filter);
-        hasFilters = filters.size() > 0;
-    }
-
-    public void removeFilter(Filter filter) {
-        filters.remove(filter);
-        hasFilters = filters.size() > 0;
-    }
-
-    public List<Filter> getFilters() {
-        return Collections.unmodifiableList(filters);
-    }
-
     public boolean isAdditive() {
         return additive;
     }
@@ -170,12 +153,8 @@ public class LoggerConfig implements LogEventFactory {
     }
 
     private void log(LogEvent event) {
-        if (hasFilters) {
-            for (Filter filter : filters) {
-                if (filter.filter(event) == Filter.Result.DENY) {
-                    return;
-                }
-            }
+        if (isFiltered(event)) {
+            return;
         }
 
         callAppenders(event);
@@ -201,7 +180,7 @@ public class LoggerConfig implements LogEventFactory {
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginAttr("name") String loggerName,
                                             @PluginElement("appender-ref") String[] refs,
-                                            @PluginElement("filters") Filter[] filters) {
+                                            @PluginElement("filters") Filters filters) {
         if (loggerName == null) {
             logger.error("Loggers cannot be configured without a name");
             return null;
@@ -222,7 +201,7 @@ public class LoggerConfig implements LogEventFactory {
         public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginElement("appender-ref") String[] refs,
-                                            @PluginElement("filters") Filter[] filters) {
+                                            @PluginElement("filters") Filters filters) {
             List<String> appenderRefs = Arrays.asList(refs);
             Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.filter.Filters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +41,7 @@ public class ListAppender extends AppenderBase {
         super(name, null, null);
     }
 
-    public ListAppender(String name, Filter[] filters) {
+    public ListAppender(String name, Filters filters) {
         super(name, filters, null);
     }
 
@@ -58,7 +59,7 @@ public class ListAppender extends AppenderBase {
 
     @PluginFactory
     public static ListAppender createAppender(@PluginAttr("name") String name,
-                                              @PluginElement("filters") Filter[] filters) {
+                                              @PluginElement("filters") Filters filters) {
 
         if (name == null) {
             logger.error("No name provided for ListAppender");

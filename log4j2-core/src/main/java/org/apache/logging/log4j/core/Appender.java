@@ -23,33 +23,6 @@ import java.util.List;
  */
 public interface Appender {
     /**
-     * Add a filter to the end of the filter list.
-     *
-     * @param filter The Filter to add.
-     */
-    void addFilter(Filter filter);
-
-    /**
-     * Returns the head Filter. The Filters are organized in a linked list
-     * and so all Filters on this Appender are available through the result.
-     *
-     * @return the head Filter or null, if no Filters are present
-     */
-    Filter getFilter();
-
-    /**
-     * Clear the list of filters by removing all the filters in it.
-     */
-    void clearFilters();
-
-    /**
-     * Return the list of Filters associated with this appender.
-     *
-     * @return
-     */
-    List<Filter> getFilters();
-
-    /**
      * Release any resources allocated within the appender such as file
      * handles, network connections, etc.
      * <p/>
@@ -106,22 +79,6 @@ public interface Appender {
      * @return true if Exceptions should be suppressed, false otherwise.
      */
     boolean suppressException();
-
-    /**
-     * Called when the Appender is initialized.
-     */
-    void start();
-
-    /**
-     * Called when the Appender is being shut down.
-     */
-    void stop();
-
-    /**
-     * Returns true if the appender is ready to process requests.
-     * @return true if the appender is ready to process requests, false otherwise.
-     */
-    boolean isStarted();
 
     ErrorHandler getHandler();
 

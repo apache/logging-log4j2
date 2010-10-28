@@ -23,6 +23,8 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * @doubt Appender should be refactored as mentioned elsewhere
  */
-public abstract class AppenderBase implements Appender, Lifecycle {
+public abstract class AppenderBase extends Filterable implements Appender, Lifecycle {
 
     /**
      * Appenders set this by calling super.start().
@@ -40,8 +42,6 @@ public abstract class AppenderBase implements Appender, Lifecycle {
     private boolean started = false;
 
     private Layout layout = null;
-
-    private List<Filter> filters = new CopyOnWriteArrayList<Filter>();
 
     private final String name;
 
@@ -56,12 +56,10 @@ public abstract class AppenderBase implements Appender, Lifecycle {
 
     public static final String NAME = "name";
 
-    public AppenderBase(String name, Filter[] filters, Layout layout) {
+    public AppenderBase(String name, Filters filters, Layout layout) {
         this.name = name;
         this.layout = layout;
-        if (filters != null) {
-            this.filters = new CopyOnWriteArrayList<Filter>(filters);
-        }
+        setFilters(filters);
     }
 
     public ErrorHandler getHandler() {
@@ -80,26 +78,6 @@ public abstract class AppenderBase implements Appender, Lifecycle {
             return;
         }
         this.handler = handler;
-    }
-
-
-    /**
-     * @doubt would be better to atomically replace a single Filter (which could be composite)
-     */
-    public void addFilter(Filter filter) {
-        filters.add(filter);
-    }
-
-    public Filter getFilter() {
-        return filters.size() > 0 ? filters.get(0) : null;
-    }
-
-    public void clearFilters() {
-        filters.clear();
-    }
-
-    public List<Filter> getFilters() {
-        return filters;
     }
 
     public void close() {
@@ -150,17 +128,13 @@ public abstract class AppenderBase implements Appender, Lifecycle {
             logger.error("A layout is required and none was provided");
             return;
         }
-        for (Filter filter : filters) {
-            filter.start();
-        }
+        startFilters();
         this.started = true;
     }
 
     public void stop() {
         this.started = false;
-        for (Filter filter : filters) {
-            filter.stop();
-        }
+        stopFilters();
     }
 
     public boolean isStarted() {

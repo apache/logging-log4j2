@@ -29,6 +29,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -72,9 +73,10 @@ public class XMLConfigurationTest {
         assertTrue(logger instanceof org.apache.logging.log4j.core.Logger);
         org.apache.logging.log4j.core.Logger l = (org.apache.logging.log4j.core.Logger) logger;
         assertEquals(Level.DEBUG, l.getLevel());
-        List<Filter> filters = l.getFilters();
-        assertTrue("number of filters - " + filters.size(), filters.size() == 1);
-        Filter filter = filters.get(0);
+        int filterCount = l.filterCount();
+        assertTrue("number of filters - " + filterCount, filterCount == 1);
+        Iterator<Filter> iter = l.getFilters();
+        Filter filter = iter.next();
         assertTrue(filter instanceof MDCFilter);
         Map<String, Appender> appenders = l.getAppenders();
         assertNotNull(appenders);
