@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -27,63 +26,57 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
 /**
+ * This filter returns the onMatch result if the marker in the LogEvent is the same as or has the
+ * configured marker as a parent.
  *
  */
-@Plugin(name="MDC", type="Core", elementType="filter")
-public class MDCFilter extends FilterBase {
-    private final String key;
-    private final String value;
+@Plugin(name="Marker", type="Core", elementType="filter")
+public class MarkerFilter extends FilterBase {
 
-    private static final String KEY = "key";
-    private static final String VALUE = "value";
+    private static final String LEVEL = "level";
 
-    public MDCFilter(String key, String value, Result onMatch, Result onMismatch) {
+    private final Marker marker;
+
+    private MarkerFilter(Marker marker, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
-        if (key == null) {
-            throw new NullPointerException("key cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.key = key;
-        this.value = value;
+        this.marker = marker;
     }
 
-    public String getKey() {
-        return this.key;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
-     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
-        return filter(ThreadContext.get(key));
+    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
+        return filter(marker);
     }
 
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
-        return filter(ThreadContext.get(key));
+        return filter(marker);
     }
 
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        return filter(ThreadContext.get(key));
+        return filter(marker);
     }
 
     @Override
     public Result filter(LogEvent event) {
-        return filter(event.getContextMap().get(key));
+        return filter(event.getMarker());
     }
 
-    private Result filter(Object val) {
-        return this.value.equals(val) ? onMatch : onMismatch;
+    private Result filter(Marker marker) {
+        return marker != null && marker.isInstanceOf(this.marker) ? onMatch : onMismatch;
     }
 
     @PluginFactory
-    public static MDCFilter createFilter(@PluginAttr("key") String key,
-                                         @PluginAttr("value") String value,
-                                         @PluginAttr("onmatch") String match,
-                                         @PluginAttr("onmismatch") String mismatch) {
+    public static MarkerFilter createFilter(@PluginAttr("marker") String marker,
+                                            @PluginAttr("onMatch") String match,
+                                            @PluginAttr("onMismatch") String mismatch) {
+
+        if (marker == null) {
+            logger.error("A marker must be provided for MarkerFilter");
+            return null;
+        }
+        Marker m = Marker.getMarker(marker);
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
-        return new MDCFilter(key, value, onMatch, onMismatch);
+
+        return new MarkerFilter(m, onMatch, onMismatch);
     }
+
 }

@@ -40,7 +40,7 @@ public abstract class FilterBase implements Filter, Lifecycle {
 
     protected final Result onMismatch;
 
-    protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    protected static final org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
 
     protected static final String ON_MATCH = "onmatch";
     protected static final String ON_MISMATCH = "onmismatch";
@@ -50,8 +50,8 @@ public abstract class FilterBase implements Filter, Lifecycle {
     }
 
     protected FilterBase(Result onMatch, Result onMismatch) {
-        this.onMatch = onMatch == null ? Result.ACCEPT : onMatch;
-        this.onMismatch = onMismatch == null ? Result.NEUTRAL : onMismatch;
+        this.onMatch = onMatch == null ? Result.NEUTRAL : onMatch;
+        this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
 
     public void start() {

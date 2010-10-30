@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.filter.Filters;
  * and then call getBytes which may use a configured encoding or the system
  * default. OTOH, a Writer cannot print byte streams.
  */
-@Plugin(name="Console",type="Core",elementType="appender")
+@Plugin(name="Console",type="Core",elementType="appender",printObject=true)
 public class ConsoleAppender extends OutputStreamAppender {
 
     public static final String LAYOUT = "layout";

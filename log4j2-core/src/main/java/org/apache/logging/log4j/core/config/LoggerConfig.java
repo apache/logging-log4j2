@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  *
  */
-@Plugin(name="logger",type="Core")
+@Plugin(name="logger",type="Core", printObject=true)
 public class LoggerConfig extends Filterable implements LogEventFactory {
 
     private List<String> appenderRefs = new ArrayList<String>();
@@ -175,6 +175,10 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return new Log4jLogEvent(loggerName, marker, fqcn, level, data, t);
     }
 
+    public String toString() {
+        return name == null || name.length() == 0 ? "root" : name;
+    }
+
     @PluginFactory
     public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
@@ -194,7 +198,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return new LoggerConfig(name, appenderRefs, filters, level, additive);
     }
 
-    @Plugin(name = "root", type = "Core")
+    @Plugin(name = "root", type = "Core", printObject=true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

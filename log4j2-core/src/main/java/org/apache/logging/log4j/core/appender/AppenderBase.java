@@ -141,4 +141,8 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
         return started;
     }
 
+    public String toString() {
+        return name;
+    }
+
 }

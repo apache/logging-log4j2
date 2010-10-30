@@ -9,9 +9,7 @@
 
   <appenders>
     <Console name="STDOUT">
-      <PatternLayout>
-        <pattern>%m%n</pattern>
-      </PatternLayout>
+      <PatternLayout pattern="%m%n"/>
     </Console>
     <File name="File" fileName="${filename}">
       <PatternLayout>
@@ -28,7 +26,9 @@
   <loggers>
     <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <filters>
-        <MDC key="test" value="123"/>
+        <ThreadContextMap>
+          <KeyValuePair key="test" value="123"/>
+        </ThreadContextMap>
       </filters>
       <appender-ref ref="STDOUT"/>
     </logger>>

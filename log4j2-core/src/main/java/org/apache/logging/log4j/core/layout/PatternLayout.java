@@ -386,7 +386,7 @@ import java.util.List;
  * Philip E. Margolis' highly recommended book "C -- a Software
  * Engineering Approach", ISBN 0-387-97389-3.
  */
-@Plugin(name="PatternLayout",type="Core",elementType="layout")
+@Plugin(name="PatternLayout",type="Core",elementType="layout",printObject=true)
 public class PatternLayout extends LayoutBase {
     /**
      * Default pattern string for log output. Currently set to the
@@ -490,6 +490,10 @@ public class PatternLayout extends LayoutBase {
     private PatternParser createPatternParser() {
 
         return new PatternParser(KEY);
+    }
+
+    public String toString() {
+        return "PatternLayout(" + conversionPattern + ")";
     }
 
     @PluginFactory

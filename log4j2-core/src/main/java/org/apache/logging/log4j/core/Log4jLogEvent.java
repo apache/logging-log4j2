@@ -100,6 +100,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return throwable;
     }
 
+    public Marker getMarker() {
+        return marker;
+    }
+
     /**
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.

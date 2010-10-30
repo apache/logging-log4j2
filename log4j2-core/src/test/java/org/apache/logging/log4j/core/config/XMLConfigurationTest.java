@@ -22,15 +22,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.filter.MDCFilter;
-import org.apache.logging.log4j.internal.StatusData;
+import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
@@ -77,7 +75,7 @@ public class XMLConfigurationTest {
         assertTrue("number of filters - " + filterCount, filterCount == 1);
         Iterator<Filter> iter = l.getFilters();
         Filter filter = iter.next();
-        assertTrue(filter instanceof MDCFilter);
+        assertTrue(filter instanceof ThreadContextMapFilter);
         Map<String, Appender> appenders = l.getAppenders();
         assertNotNull(appenders);
         assertTrue("number of appenders = " + appenders.size(), appenders.size() == 1);

@@ -422,16 +422,21 @@ public class BaseConfiguration extends Filterable implements Configuration {
                         }
                         parms[index] = array;
                     } else {
-                        Class parmClass = parmClasses[index];                       
+                        Class parmClass = parmClasses[index];
+                        boolean present = false;
                         for (Node child : children) {
-                            sb.append(child.toString());
                             PluginType childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
+                                sb.append(child.toString());
+                                present = true;
                                 used.add(child);
                                 parms[index] = child.getObject();
                                 break;
                             }
+                        }
+                        if (!present) {
+                            sb.append("null");
                         }
                     }
                 }

@@ -45,7 +45,7 @@ public class StatusConsoleListener implements StatusListener {
     }
 
     public void log(StatusData data) {
-        if (data.getLevel().greaterOrEqual(level) && !filtered(data)) {
+        if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
             System.out.println(data.getFormattedStatus());
         }
     }

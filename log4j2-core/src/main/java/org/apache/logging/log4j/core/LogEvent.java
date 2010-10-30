@@ -1,6 +1,7 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.Map;
@@ -35,6 +36,12 @@ public interface LogEvent {
      * @return message.
      */
     Message getMessage();
+
+    /**
+     * Get the Marker associated with the event.
+     * @return Marker
+     */
+    Marker getMarker();
 
     /**
      * Get thread name.

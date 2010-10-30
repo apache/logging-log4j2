@@ -31,7 +31,7 @@ import java.io.OutputStream;
 /**
  *
  */
-@Plugin(name="File",type="Core",elementType="appender")
+@Plugin(name="File",type="Core",elementType="appender",printObject=true)
 public class FileAppender extends OutputStreamAppender {
 
     public static final String FILE_NAME = "fileName";

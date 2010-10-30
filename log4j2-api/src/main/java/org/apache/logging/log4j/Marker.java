@@ -24,42 +24,80 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Marker implements Serializable {
 
-  private static ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
+    private static ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
-  public static Marker getMarker(String name) {
-    return markerMap.putIfAbsent(name, new Marker(name));
-  }
-
-  public static Marker getMarker(String name, String parent) {
-    Marker parentMarker = markerMap.get(parent);
-    if (parentMarker == null) {
-      throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
+    public static Marker getMarker(String name) {
+        markerMap.putIfAbsent(name, new Marker(name));
+        return markerMap.get(name);
     }
-    return getMarker(name, parentMarker);
-  }
 
-  public static Marker getMarker(String name, Marker parent) {
-    return markerMap.putIfAbsent(name, new Marker(name, parent));
-  }
+    public static Marker getMarker(String name, String parent) {
+        Marker parentMarker = markerMap.get(parent);
+        if (parentMarker == null) {
+            throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
+        }
+        return getMarker(name, parentMarker);
+    }
 
-  private String name;
-  private Marker parent;
+    public static Marker getMarker(String name, Marker parent) {
+        markerMap.putIfAbsent(name, new Marker(name, parent));
+        return markerMap.get(name);
+    }
 
-  private Marker(String name) {
-    this.name = name;
-  }
+    private String name;
+    private Marker parent;
 
-  private Marker(String name, Marker parent) {
-    this.name = name;
-    this.parent = parent;
-  }
+    private Marker(String name) {
+        this.name = name;
+    }
 
-  public String getName() {
-    return this.name;
-  }
+    private Marker(String name, Marker parent) {
+        this.name = name;
+        this.parent = parent;
+    }
 
-  public Marker getParent() {
-    return this.parent;
-  }
+    public String getName() {
+        return this.name;
+    }
 
+    public Marker getParent() {
+        return this.parent;
+    }
+
+    public boolean isInstanceOf(Marker m) {
+        if (m == null) {
+            throw new IllegalArgumentException("A marker parameter is required");
+        }
+        Marker test = this;
+        do {
+            if (test == m) {
+                return true;
+            }
+            test = test.getParent();
+        } while (test != null);
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Marker marker = (Marker) o;
+
+        if (name != null ? !name.equals(marker.name) : marker.name != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
 }

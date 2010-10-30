@@ -36,12 +36,7 @@ public class Filters implements Iterable<Filter> {
     private final List<Filter> filters;
     private final boolean hasFilters;
 
-    public Filters(Filter[] filters) {
-        this.filters = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);
-        hasFilters = filters != null && filters.length > 0;
-    }
-
-    private Filters(List<Filter> filters) {
+    public Filters(List<Filter> filters) {
         if (filters == null) {
             this.filters = new ArrayList<Filter>();
             this.hasFilters = false;
@@ -97,7 +92,8 @@ public class Filters implements Iterable<Filter> {
 
     @PluginFactory
     public static Filters createFilters(@PluginElement("filters") Filter[] filters) {
-        return new Filters(filters);
+        List<Filter> f = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);
+        return new Filters(f);
     }
 
 }

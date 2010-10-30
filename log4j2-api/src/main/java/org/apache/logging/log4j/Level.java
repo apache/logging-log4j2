@@ -18,13 +18,14 @@ package org.apache.logging.log4j;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:<br>
- * OFF<br>
+ * OFF<br>    (most specific)
  * FATAL<br>
  * ERROR<br>
  * WARN<br>
  * INFO<br>
  * DEBUG<br>
  * TRACE<br>
+ * ALL<br>     (least specific)
  *
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
@@ -65,24 +66,24 @@ public enum Level {
     }
 
     /**
-     * @doubt I really dislike the "greaterOrEqual" and "lessOrEqual" methods. I can never remember whether
-     * the test compares this level to the passed in level or the other way around. As it stands, this
-     * method is not intuitive as the name is greaterOrEqual but the test it does is <=.
+     * Compares this level against the level passed as an argument and returns true if this
+     * level is the same or more specific.
      *
-     * Compares the specified Level against this one.
      * @param level The level to check.
-     * @return True if the passed Level is more general or the same as this Level.
+     * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean greaterOrEqual(Level level) {
+    public boolean isAtLeastAsSpecificAs(Level level) {
         return (intLevel <= level.intLevel);
     }
 
     /**
-     * Compares the specified Level against this one.
+     * Compares this level against the level passed as an argument and returns true if this
+     * level is the same or more specific.
+     *
      * @param level The level to check.
-     * @return True if the passed Level is more general or the same as this Level.
+     * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean greaterOrEqual(int level) {
+    public boolean isAtLeastAsSpecificAs(int level) {
         return (intLevel <= level);
     }
 

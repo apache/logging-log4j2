@@ -40,7 +40,7 @@ public class ThresholdFilter extends FilterBase {
 
     private final Level level;
 
-    public ThresholdFilter(Level level, Result onMatch, Result onMismatch) {
+    private ThresholdFilter(Level level, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
     }
@@ -63,7 +63,7 @@ public class ThresholdFilter extends FilterBase {
     }
 
     private Result filter(Level level) {
-        return this.level.greaterOrEqual(level) ? onMatch : onMismatch;
+        return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
     }
 
     @PluginFactory
@@ -71,8 +71,8 @@ public class ThresholdFilter extends FilterBase {
                                                @PluginAttr("onMatch") String match,
                                                @PluginAttr("onMismatch") String mismatch) {
         Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase());
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match);
+        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch);
 
         return new ThresholdFilter(level, onMatch, onMismatch);
     }
