@@ -86,7 +86,13 @@ public class RegexFilter extends FilterBase {
             return null;
         }
         boolean raw = useRawMsg == null ? false : Boolean.parseBoolean(useRawMsg);
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern;
+        try {
+            pattern = Pattern.compile(regex);
+        } catch (Exception ex) {
+            logger.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
+            return null;
+        }
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
 
