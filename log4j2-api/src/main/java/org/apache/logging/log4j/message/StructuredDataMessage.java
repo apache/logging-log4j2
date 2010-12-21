@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
-public class StructuredDataMessage implements Message, Serializable {
+public class StructuredDataMessage implements FormattedMessage, Serializable {
     private static final long serialVersionUID = 1703221292892071920L;
 
     public static final String FULL = "full";
@@ -38,28 +38,30 @@ public class StructuredDataMessage implements Message, Serializable {
 
     private String type;
 
-    private Map<MessageHint, String> hints = new HashMap<MessageHint, String>();
+    private String format = null;
 
     public StructuredDataMessage(final String id, final String msg, final String type) {
         this.id = new StructuredDataId(id, null, null);
         this.message = msg;
         this.type = type;
-        hints.put(MessageHint.FORMAT, "");
     }
 
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type) {
         this.id = id;
         this.message = msg;
         this.type = type;
-        hints.put(MessageHint.FORMAT, "");
     }
 
     protected StructuredDataMessage() {
 
     }
 
-    public Map<MessageHint, String> getHints() {
-        return hints;   
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getFormat() {
+        return this.format;
     }
 
     public StructuredDataId getId() {

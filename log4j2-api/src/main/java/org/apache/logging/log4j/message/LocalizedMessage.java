@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.internal.StatusLogger;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
  *
  */
-public class LocalizedMessage extends ParameterizedMessage {
+public class LocalizedMessage extends ParameterizedMessage implements LoggerNameAwareMessage
+{
 
     private String bundleId;
 
@@ -35,9 +35,9 @@ public class LocalizedMessage extends ParameterizedMessage {
 
     private Locale locale;
 
-    private Map<MessageHint, String> hints = new HashMap<MessageHint, String>();
-
     private StatusLogger logger = StatusLogger.getLogger();
+
+    private String loggerName = null;
 
     public LocalizedMessage() {
         super();
@@ -184,16 +184,20 @@ public class LocalizedMessage extends ParameterizedMessage {
         setup(null, null, locale);
     }
 
+    public void setLoggerName(String name)
+    {
+        this.loggerName = name;
+    }
+
+    public String getLoggerName()
+    {
+        return this.loggerName;
+    }
+
     private void setup(String bundleId, ResourceBundle bundle, Locale locale) {
         this.bundleId = bundleId;
         this.bundle = bundle;
         this.locale = locale;
-        hints.put(MessageHint.LOGGER_NAME, "");
-    }
-
-    @Override
-    public Map<MessageHint, String> getHints() {
-        return hints;
     }
 
     @Override
@@ -203,8 +207,7 @@ public class LocalizedMessage extends ParameterizedMessage {
             if (bundleId != null) {
                 bundle = getBundle(bundleId, locale, false);
             } else {
-                String key = hints.get(MessageHint.LOGGER_NAME);
-                bundle = getBundle(key, locale, true);
+                bundle = getBundle(loggerName, locale, true);
             }
         }
         String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?

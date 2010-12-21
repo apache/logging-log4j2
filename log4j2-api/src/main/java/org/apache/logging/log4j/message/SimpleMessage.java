@@ -35,10 +35,6 @@ public class SimpleMessage implements Message, Serializable {
         this.message = message;
     }
 
-    public Map<MessageHint, String> getHints() {
-        return null;
-    }
-
     public String getFormattedMessage() {
         return message;
     }

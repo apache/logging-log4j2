@@ -45,10 +45,6 @@ public class ObjectMessage implements Message, Serializable {
         return new Object[]{obj};
     }
 
-    public Map<MessageHint, String> getHints() {
-        return null;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

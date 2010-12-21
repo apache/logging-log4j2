@@ -55,18 +55,4 @@ public interface Message extends Serializable {
      * @return An array of parameter values or null.
      */
     Object[] getParameters();
-
-
-    /**
-     * Returns a Map of data that the Message would like to aid in formatting. The
-     * Message will construct the map with the keys it is requesting the implementation to
-     * provide values for. The Message must be able to return a formatted message even if
-     * no hints are provided.
-     * @return The Message hints.
-     * @doubt would seem to go better into a formatter or format object. (RG) A Formatter would have
-     * to understand every type of object that could be passed to it or you would have to
-     * configure an endless number of formatters on loggers and somehow pick the correct one. A Message
-     * implementation formats based only on what can be placed into the Message and what hints are provided.
-     */
-    Map<MessageHint, String> getHints();
 }

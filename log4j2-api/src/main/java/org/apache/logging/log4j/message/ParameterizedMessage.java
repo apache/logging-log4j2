@@ -80,10 +80,6 @@ public class ParameterizedMessage implements Message, Serializable {
         this(messagePattern, new Object[]{arg1, arg2});
     }
 
-    public Map<MessageHint, String> getHints() {
-        return null;
-    }
-
     private void parseArguments(Object[] arguments) {
         int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;

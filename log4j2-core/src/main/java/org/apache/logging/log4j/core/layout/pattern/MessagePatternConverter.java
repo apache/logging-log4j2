@@ -19,10 +19,8 @@ package org.apache.logging.log4j.core.layout.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageHint;
-
-import java.util.Map;
 
 
 /**
@@ -58,9 +56,8 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Message msg = event.getMessage();
-        Map<MessageHint, String> hints = msg.getHints();
-        if (hints != null && hints.containsKey(MessageHint.FORMAT)) {
-            hints.put(MessageHint.FORMAT, format);
+        if (msg != null && msg instanceof FormattedMessage) {
+            ((FormattedMessage) msg).setFormat(format);
         }
         toAppendTo.append(msg.getFormattedMessage());
     }
