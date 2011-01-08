@@ -22,6 +22,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Assert;
 
+import java.util.Random;
+import java.util.UUID;
+import java.util.logging.LogRecord;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
@@ -37,11 +41,22 @@ public class SimplePerfTest {
     private static final int LOOP_CNT = 100000000;
     private static final int WARMUP = 1000;
     private static long maxTime;
+    private static int DEPTH = 2;
+    private static NotRandom rand = new NotRandom();
+    private static int RAND_SIZE = 10000;
+    private static int[] values = new int[RAND_SIZE];
 
     @BeforeClass
     public static void setupClass() {
+
+        Random r = new Random(WARMUP);
+
+        for (int i=0; i < RAND_SIZE; ++i) {
+            values[i] = r.nextInt(Integer.MAX_VALUE);
+        }
+
         for (int i=0; i < WARMUP; ++i) {
-            if (overhead(i, LOOP_CNT)) {
+            if (overhead(DEPTH)) {
                 System.out.println("help!");
             }
         }
@@ -49,7 +64,7 @@ public class SimplePerfTest {
         Timer timer = new Timer("Setup", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
-            if (overhead(i, LOOP_CNT)) {
+            if (overhead(DEPTH)) {
                 System.out.println("help!");
             }
         }
@@ -97,18 +112,26 @@ public class SimplePerfTest {
      * Try to generate some overhead that can't be optimized well. Not sure how accurate this is,
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
-    private static boolean overhead(int i, int j) {
-        for (int k=j; k < j+12; ++k) {
-            if (i > k) {
+    private static boolean overhead(int i) {
+        while (i > 0) {
+            if (rand.nextInt() <= 0) {
                 return true;
             }
-            if (i == k) {
-                return true;
-            }
-            if (i < 0) {
-                return true;
-            }
+            --i;
         }
         return false;
+    }
+
+    private static class NotRandom extends Random
+    {
+        private int index = 0;
+
+        @Override
+        public int nextInt() {
+            if (index >= values.length) {
+                index = 0;
+            }
+            return values[index++];
+        }
     }
 }
