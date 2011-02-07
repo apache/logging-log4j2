@@ -14,17 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.slf4j.impl;
 
-import java.io.Serializable;
+import org.slf4j.helpers.Log4JMDCAdapter;
+import org.slf4j.spi.MDCAdapter;
 
 /**
+ *
  */
-public interface Marker extends Serializable {
+public class StaticMDCBinder {
 
-    public String getName();
+    /**
+     * The unique instance of this class.
+     */
+    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
 
-    public Marker getParent();
+    private StaticMDCBinder() {
+    }
 
-    public boolean isInstanceOf(Marker m);
+    /**
+     * Currently this method always returns an instance of {@link StaticMDCBinder}.
+     */
+    public MDCAdapter getMDCA() {
+        return new Log4JMDCAdapter();
+    }
+
+    public String getMDCAdapterClassStr() {
+        return Log4JMDCAdapter.class.getName();
+    }
 }

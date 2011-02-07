@@ -14,9 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.internal.StatusLogger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
@@ -27,11 +35,35 @@ import java.util.Locale;
  */
 public class LoggerTest {
 
-    Logger logger = LogManager.getLogger("LoggerTest");
+    private static final String CONFIG = "log4j-test2.xml";
+
+    @BeforeClass
+    public static void setupClass() {
+        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        Configuration config = ctx.getConfiguration();
+    }
+
+    @AfterClass
+    public static void cleanupClass() {
+        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        ctx.reconfigure();
+        StatusLogger.getLogger().reset();
+    }
+
+    org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+
     @Test
     public void basicFlow() {
         logger.entry();
         logger.exit();
+    }
+
+    @Test
+    public void simpleFlow() {
+        logger.entry(CONFIG);
+        logger.exit(0);
     }
 
     @Test
@@ -85,3 +117,4 @@ public class LoggerTest {
         ThreadContext.clear();
     }
 }
+

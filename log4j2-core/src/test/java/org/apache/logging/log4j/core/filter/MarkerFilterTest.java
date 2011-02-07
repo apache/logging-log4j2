@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,11 +34,11 @@ public class MarkerFilterTest {
 
     @Test
     public void testMarkers() {
-        Marker parent = Marker.getMarker("Parent");
-        Marker child = Marker.getMarker("Child", parent);
-        Marker grandChild = Marker.getMarker("GrandChild", child);
-        Marker sibling = Marker.getMarker("Sibling", parent);
-        Marker stranger = Marker.getMarker("Stranger");
+        Marker parent = MarkerManager.getMarker("Parent");
+        Marker child = MarkerManager.getMarker("Child", parent);
+        Marker grandChild = MarkerManager.getMarker("GrandChild", child);
+        Marker sibling = MarkerManager.getMarker("Sibling", parent);
+        Marker stranger = MarkerManager.getMarker("Stranger");
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
         assertTrue(filter.isStarted());

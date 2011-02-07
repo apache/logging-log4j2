@@ -14,17 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.slf4j.impl;
 
-import java.io.Serializable;
+import org.slf4j.IMarkerFactory;
+import org.slf4j.helpers.Log4JMarkerFactory;
+import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
+ *
  */
-public interface Marker extends Serializable {
+public class StaticMarkerBinder implements MarkerFactoryBinder
+{
 
-    public String getName();
+    /**
+     * The unique instance of this class.
+     */
+    public static final StaticMarkerBinder SINGLETON = new StaticMarkerBinder();
 
-    public Marker getParent();
+    final IMarkerFactory markerFactory = new Log4JMarkerFactory();
 
-    public boolean isInstanceOf(Marker m);
+    public IMarkerFactory getMarkerFactory()
+    {
+        return markerFactory;
+    }
+
+    public String getMarkerFactoryClassStr()
+    {
+        return Log4JMarkerFactory.class.getName();
+    }
 }

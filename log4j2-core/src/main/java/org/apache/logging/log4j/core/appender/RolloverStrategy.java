@@ -14,17 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
-
-import java.io.Serializable;
+package org.apache.logging.log4j.core.appender;
 
 /**
+ *
  */
-public interface Marker extends Serializable {
-
-    public String getName();
-
-    public Marker getParent();
-
-    public boolean isInstanceOf(Marker m);
+public interface RolloverStrategy
+{
 }

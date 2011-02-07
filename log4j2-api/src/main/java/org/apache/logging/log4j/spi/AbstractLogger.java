@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -29,17 +30,25 @@ import org.apache.logging.log4j.message.SimpleMessage;
  */
 public abstract class AbstractLogger implements Logger {
 
+    static Marker FLOW_MARKER = MarkerManager.getMarker("FLOW");
+    static Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY", FLOW_MARKER);
+    static Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
+
+    static Marker EXCEPTION_MARKER = MarkerManager.getMarker("EXCEPTION");
+    static Marker THROWING_MARKER = MarkerManager.getMarker("THROWING", EXCEPTION_MARKER);
+    static Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
+
     protected String getFQCN() {
         return AbstractLogger.class.getName();
     }
-    
+
 
     /**
      * Log entry to a method.
      */
     public void entry() {
-        if (isEnabled(Level.TRACE, Logger.ENTRY_MARKER, (Object)null, null)) {
-            log(Logger.ENTRY_MARKER, getFQCN(), Level.TRACE, new SimpleMessage(" entry"), null);
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object)null, null)) {
+            log(ENTRY_MARKER, getFQCN(), Level.TRACE, new SimpleMessage(" entry"), null);
         }
     }
 
@@ -50,8 +59,8 @@ public abstract class AbstractLogger implements Logger {
      * @param params The parameters to the method.
      */
     public void entry(Object... params) {
-        if (isEnabled(Level.TRACE, Logger.ENTRY_MARKER, (Object)null, null)) {
-            log(Logger.ENTRY_MARKER, getFQCN(), Level.TRACE, entryMsg(params.length, params), null);
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object)null, null)) {
+            log(ENTRY_MARKER, getFQCN(), Level.TRACE, entryMsg(params.length, params), null);
         }
     }
 
@@ -59,8 +68,8 @@ public abstract class AbstractLogger implements Logger {
      * Log exit from a method.
      */
     public void exit() {
-        if (isEnabled(Level.TRACE, Logger.EXIT_MARKER, (Object)null, null)) {
-            log(Logger.EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(null), null);
+        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object)null, null)) {
+            log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(null), null);
         }
     }
 
@@ -70,8 +79,8 @@ public abstract class AbstractLogger implements Logger {
      * @param result The result being returned from the method call.
      */
     public void exit(Object result) {
-        if (isEnabled(Level.TRACE, Logger.EXIT_MARKER, (Object)null, null)) {
-            log(Logger.EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(result), null);
+        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object)null, null)) {
+            log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(result), null);
         }
     }
 
@@ -81,8 +90,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void throwing(Throwable t) {
-        if (isEnabled(Level.ERROR, Logger.THROWING_MARKER, (Object)null, null)) {
-            log(Logger.THROWING_MARKER, getFQCN(), Level.ERROR, new SimpleMessage("throwing"), t);
+        if (isEnabled(Level.ERROR, THROWING_MARKER, (Object)null, null)) {
+            log(THROWING_MARKER, getFQCN(), Level.ERROR, new SimpleMessage("throwing"), t);
         }
     }
 
@@ -94,8 +103,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void throwing(Level level, Throwable t) {
-        if (isEnabled(level, Logger.THROWING_MARKER, (Object)null, null)) {
-            log(Logger.THROWING_MARKER, getFQCN(), level, new SimpleMessage("throwing"), t);
+        if (isEnabled(level, THROWING_MARKER, (Object)null, null)) {
+            log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("throwing"), t);
         }
     }
 
@@ -105,8 +114,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void catching(Throwable t) {
-        if (isEnabled(Level.DEBUG, Logger.THROWING_MARKER, (Object)null, null)) {
-            log(Logger.THROWING_MARKER, getFQCN(), Level.DEBUG, new SimpleMessage("catching"), t);
+        if (isEnabled(Level.DEBUG, THROWING_MARKER, (Object)null, null)) {
+            log(THROWING_MARKER, getFQCN(), Level.DEBUG, new SimpleMessage("catching"), t);
         }
     }
 
@@ -117,8 +126,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void catching(Level level, Throwable t) {
-        if (isEnabled(level, Logger.THROWING_MARKER, (Object)null, null)) {
-            log(Logger.THROWING_MARKER, getFQCN(), level, new SimpleMessage("catching"), t);
+        if (isEnabled(level, THROWING_MARKER, (Object)null, null)) {
+            log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("catching"), t);
         }
     }
 
@@ -130,6 +139,18 @@ public abstract class AbstractLogger implements Logger {
     public void trace(String message) {
         if (isEnabled(Level.TRACE, null, message)) {
             log(null, getFQCN(), Level.TRACE, new SimpleMessage(message), null);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void trace(Marker marker, String message) {
+        if (isEnabled(Level.TRACE, marker, message)) {
+            log(marker, getFQCN(), Level.TRACE, new SimpleMessage(message), null);
         }
     }
 
@@ -150,6 +171,25 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
+
+    /**
+     * Log a message at the <code>TRACE</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     * <p/>
+     * <p>
+     * See {@link #debug(String)} form for more detailed information.
+     * </p>
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void trace(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.TRACE, marker, message, t)) {
+            log(marker, getFQCN(), Level.TRACE, new SimpleMessage(message), t);
+        }
+    }
+
     /**
      * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
      *
@@ -158,6 +198,18 @@ public abstract class AbstractLogger implements Logger {
     public void trace(Object message) {
         if (isEnabled(Level.TRACE, null, message, null)) {
             log(null, getFQCN(), Level.TRACE, new ObjectMessage(message), null);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void trace(Marker marker, Object message) {
+        if (isEnabled(Level.TRACE, marker, message, null)) {
+            log(marker, getFQCN(), Level.TRACE, new ObjectMessage(message), null);
         }
     }
 
@@ -179,6 +231,24 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>TRACE</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     * <p/>
+     * <p>
+     * See {@link #debug(String)} form for more detailed information.
+     * </p>
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void trace(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.TRACE, marker, message, t)) {
+            log(marker, getFQCN(), Level.TRACE, new ObjectMessage(message), t);
+        }
+    }
+
+    /**
      * Log a message with parameters at the <code>TRACE</code> level.
      *
      * @param message the message to log.
@@ -187,6 +257,19 @@ public abstract class AbstractLogger implements Logger {
     public void trace(String message, Object... params) {
         if (isEnabled(Level.TRACE, null, message, params)) {
             log(null, getFQCN(), Level.TRACE, new ParameterizedMessage(message, params), null);
+        }
+    }
+
+    /**
+     * Log a message with parameters at the <code>TRACE</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void trace(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.TRACE, marker, message, params)) {
+            log(marker, getFQCN(), Level.TRACE, new ParameterizedMessage(message, params), null);
         }
     }
 
@@ -236,7 +319,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log a message with the specific Marker at the TRACE level.
      *
-     * @param marker the marker data specific to this log statement
+     * @param marker the marker data specific to this log statement.
      * @param msg    the message string to be logged
      */
     public void trace(Marker marker, Message msg) {
@@ -248,7 +331,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log a message with the specific Marker at the TRACE level.
      *
-     * @param marker the marker data specific to this log statement
+     * @param marker the marker data specific to this log statement.
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
@@ -270,6 +353,18 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void debug(Marker marker, String message) {
+        if (isEnabled(Level.DEBUG, marker, message)) {
+            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), null);
+        }
+    }
+
+    /**
      * Log a message at the <code>DEBUG</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
      *
@@ -283,6 +378,19 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>DEBUG</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void debug(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.DEBUG, marker, message, t)) {
+            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+        }
+    }
+    /**
      * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
      *
      * @param message the message object to log.
@@ -290,6 +398,18 @@ public abstract class AbstractLogger implements Logger {
     public void debug(Object message) {
         if (isEnabled(Level.DEBUG, null, message, null)) {
             log(null, getFQCN(), Level.DEBUG, new ObjectMessage(message), null);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void debug(Marker marker, Object message) {
+        if (isEnabled(Level.DEBUG, marker, message, null)) {
+            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), null);
         }
     }
 
@@ -305,6 +425,21 @@ public abstract class AbstractLogger implements Logger {
             log(null, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
         }
     }
+
+    /**
+     * Log a message at the <code>DEBUG</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void debug(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.DEBUG, marker, message, t)) {
+            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+        }
+    }
+
     /**
      * Log a message with parameters at the <code>DEBUG</code> level.
      *
@@ -314,6 +449,19 @@ public abstract class AbstractLogger implements Logger {
     public void debug(String message, Object... params) {
         if (isEnabled(Level.DEBUG, null, message, params)) {
             log(null, getFQCN(), Level.DEBUG, new ParameterizedMessage(message, params), null);
+        }
+    }
+
+    /**
+     * Log a message with parameters at the <code>DEBUG</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void debug(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.DEBUG, marker, message, params)) {
+            log(marker, getFQCN(), Level.DEBUG, new ParameterizedMessage(message, params), null);
         }
     }
 
@@ -375,7 +523,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log a message with the specific Marker at the DEBUG level.
      *
-     * @param marker the marker data specific to this log statement
+     * @param marker the marker data specific to this log statement.
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
@@ -397,6 +545,18 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void info(Marker marker, String message) {
+        if (isEnabled(Level.INFO, marker, message)) {
+            log(marker, getFQCN(), Level.INFO, new SimpleMessage(message), null);
+        }
+    }
+
+    /**
      * Log a message at the <code>INFO</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
      *
@@ -410,6 +570,20 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>INFO</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void info(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.INFO, marker, message, t)) {
+            log(marker, getFQCN(), Level.INFO, new SimpleMessage(message), t);
+        }
+    }
+
+    /**
      * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
      *
      * @param message the message object to log.
@@ -417,6 +591,18 @@ public abstract class AbstractLogger implements Logger {
     public void info(Object message) {
         if (isEnabled(Level.INFO, null, message, null)) {
             log(null, getFQCN(), Level.INFO, new ObjectMessage(message), null);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void info(Marker marker, Object message) {
+        if (isEnabled(Level.INFO, marker, message, null)) {
+            log(marker, getFQCN(), Level.INFO, new ObjectMessage(message), null);
         }
     }
 
@@ -433,6 +619,21 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
+
+    /**
+     * Log a message at the <code>INFO</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void info(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.INFO, marker, message, t)) {
+            log(marker, getFQCN(), Level.INFO, new ObjectMessage(message), t);
+        }
+    }
+
     /**
      * Log a message with parameters at the <code>INFO</code> level.
      *
@@ -442,6 +643,19 @@ public abstract class AbstractLogger implements Logger {
     public void info(String message, Object... params) {
         if (isEnabled(Level.INFO, null, message, params)) {
             log(null, getFQCN(), Level.INFO, new ParameterizedMessage(message, params), null);
+        }
+    }
+
+    /**
+     * Log a message with parameters at the <code>INFO</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void info(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.INFO, marker, message, params)) {
+            log(marker, getFQCN(), Level.INFO, new ParameterizedMessage(message, params), null);
         }
     }
 
@@ -525,6 +739,18 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void warn(Marker marker, String message) {
+        if (isEnabled(Level.WARN, marker, message)) {
+            log(marker, getFQCN(), Level.WARN, new SimpleMessage(message), null);
+        }
+    }
+
+    /**
      * Log a message at the <code>WARN</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
      *
@@ -534,6 +760,32 @@ public abstract class AbstractLogger implements Logger {
     public void warn(String message, Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
             log(null, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+        }
+    }
+
+    /**
+     * Log a message at the <code>WARN</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void warn(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.WARN, marker, message, t)) {
+            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void warn(Marker marker, Object message) {
+        if (isEnabled(Level.WARN, marker, message, null)) {
+            log(marker, getFQCN(), Level.WARN, new ObjectMessage(message), null);
         }
     }
 
@@ -562,6 +814,20 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>WARN</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void warn(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.WARN, marker, message, t)) {
+            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+        }
+    }
+
+    /**
      * Log a message with parameters at the <code>WARN</code> level.
      *
      * @param message the message to log.
@@ -570,6 +836,19 @@ public abstract class AbstractLogger implements Logger {
     public void warn(String message, Object... params) {
         if (isEnabled(Level.WARN, null, message, params)) {
             log(null, getFQCN(), Level.WARN, new ParameterizedMessage(message, params), null);
+        }
+    }
+
+    /**
+     * Log a message with parameters at the <code>WARN</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void warn(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.WARN, marker, message, params)) {
+            log(marker, getFQCN(), Level.WARN, new ParameterizedMessage(message, params), null);
         }
     }
 
@@ -653,6 +932,18 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void error(Marker marker, String message) {
+        if (isEnabled(Level.ERROR, marker, message)) {
+            log(marker, getFQCN(), Level.ERROR, new SimpleMessage(message), null);
+        }
+    }
+
+    /**
      * Log a message at the <code>ERROR</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
      *
@@ -666,6 +957,20 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>ERROR</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void error(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.ERROR, marker, message, t)) {
+            log(marker, getFQCN(), Level.ERROR, new SimpleMessage(message), t);
+        }
+    }
+
+    /**
      * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
      *
      * @param message the message object to log.
@@ -673,6 +978,18 @@ public abstract class AbstractLogger implements Logger {
     public void error(Object message) {
         if (isEnabled(Level.ERROR, null, message, null)) {
             log(null, getFQCN(), Level.ERROR, new ObjectMessage(message), null);
+        }
+    }
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void error(Marker marker, Object message) {
+        if (isEnabled(Level.ERROR, marker, message, null)) {
+            log(marker, getFQCN(), Level.ERROR, new ObjectMessage(message), null);
         }
     }
 
@@ -690,6 +1007,20 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message at the <code>ERROR</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void error(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.ERROR, marker, message, t)) {
+            log(marker, getFQCN(), Level.ERROR, new ObjectMessage(message), t);
+        }
+    }
+
+    /**
      * Log a message with parameters at the <code>ERROR</code> level.
      *
      * @param message the message to log.
@@ -700,6 +1031,20 @@ public abstract class AbstractLogger implements Logger {
             log(null, getFQCN(), Level.ERROR, new ParameterizedMessage(message, params), null);
         }
     }
+
+    /**
+     * Log a message with parameters at the <code>ERROR</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void error(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.ERROR, marker, message, params)) {
+            log(marker, getFQCN(), Level.ERROR, new ParameterizedMessage(message, params), null);
+        }
+    }
+
 
     /**
      * Check whether this Logger is enabled for the ERROR Level.
@@ -780,6 +1125,19 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
+
+    /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void fatal(Marker marker, String message) {
+        if (isEnabled(Level.FATAL, marker, message)) {
+            log(marker, getFQCN(), Level.FATAL, new SimpleMessage(message), null);
+        }
+    }
+
     /**
      * Log a message at the <code>FATAL</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
@@ -790,6 +1148,20 @@ public abstract class AbstractLogger implements Logger {
     public void fatal(String message, Throwable t) {
         if (isEnabled(Level.FATAL, null, message, t)) {
             log(null, getFQCN(), Level.FATAL, new SimpleMessage(message), t);
+        }
+    }
+
+    /**
+     * Log a message at the <code>FATAL</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void fatal(Marker marker, String message, Throwable t) {
+        if (isEnabled(Level.FATAL, marker, message, t)) {
+            log(marker, getFQCN(), Level.FATAL, new SimpleMessage(message), t);
         }
     }
 
@@ -805,6 +1177,18 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
+     * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void fatal(Marker marker, Object message) {
+        if (isEnabled(Level.FATAL, marker, message, null)) {
+            log(marker, getFQCN(), Level.FATAL, new ObjectMessage(message), null);
+        }
+    }
+
+    /**
      * Log a message at the <code>FATAL</code> level including the
      * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
      *
@@ -816,6 +1200,21 @@ public abstract class AbstractLogger implements Logger {
             log(null, getFQCN(), Level.FATAL, new ObjectMessage(message), t);
         }
     }
+
+    /**
+     * Log a message at the <code>FATAL</code> level including the
+     * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t       the exception to log, including its stack trace.
+     */
+    public void fatal(Marker marker, Object message, Throwable t) {
+        if (isEnabled(Level.FATAL, marker, message, t)) {
+            log(marker, getFQCN(), Level.FATAL, new ObjectMessage(message), t);
+        }
+    }
+
     /**
      * Log a message with parameters at the <code>FATAL</code> level.
      *
@@ -825,6 +1224,19 @@ public abstract class AbstractLogger implements Logger {
     public void fatal(String message, Object... params) {
         if (isEnabled(Level.FATAL, null, message, params)) {
             log(null, getFQCN(), Level.FATAL, new ParameterizedMessage(message, params), null);
+        }
+    }
+
+    /**
+     * Log a message with parameters at the <code>FATAL</code> level.
+     *
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params  parameters to the message.
+     */
+    public void fatal(Marker marker, String message, Object... params) {
+        if (isEnabled(Level.FATAL, marker, message, params)) {
+            log(marker, getFQCN(), Level.FATAL, new ParameterizedMessage(message, params), null);
         }
     }
 

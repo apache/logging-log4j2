@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -72,7 +73,7 @@ public class MarkerFilter extends FilterBase {
             logger.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        Marker m = Marker.getMarker(marker);
+        Marker m = MarkerManager.getMarker(marker);
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
 

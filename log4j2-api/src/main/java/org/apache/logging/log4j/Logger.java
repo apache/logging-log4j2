@@ -26,14 +26,6 @@ import org.apache.logging.log4j.message.Message;
  */
 public interface Logger {
 
-  static Marker FLOW_MARKER = Marker.getMarker("FLOW");
-  static Marker ENTRY_MARKER = Marker.getMarker("ENTRY", FLOW_MARKER);
-  static Marker EXIT_MARKER = Marker.getMarker("EXIT", FLOW_MARKER);
-
-  static Marker EXCEPTION_MARKER = Marker.getMarker("EXCEPTION");
-  static Marker THROWING_MARKER = Marker.getMarker("THROWING", EXCEPTION_MARKER);
-  static Marker CATCHING_MARKER = Marker.getMarker("CATCHING", EXCEPTION_MARKER);
-
   /**
    * Log entry to a method.
    */
@@ -95,6 +87,14 @@ public interface Logger {
   void trace(String message);
 
   /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void trace(Marker marker, String message);
+
+  /**
    * Log a message at the <code>TRACE</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    * <p/>
@@ -108,11 +108,33 @@ public interface Logger {
   void trace(String message, Throwable t);
 
   /**
+   * Log a message at the <code>TRACE</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   * <p/>
+   * <p>
+   * See {@link #debug(String)} form for more detailed information.
+   * </p>
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void trace(Marker marker, String message, Throwable t);
+
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
    *
    * @param message the message object to log.
    */
   void trace(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void trace(Marker marker, Object message);
 
   /**
    * Log a message at the <code>TRACE</code> level including the
@@ -127,12 +149,35 @@ public interface Logger {
    */
   void trace(Object message, Throwable t);
 
+   /**
+   * Log a message at the <code>TRACE</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   * <p/>
+   * <p>
+   * See {@link #debug(String)} form for more detailed information.
+   * </p>
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void trace(Marker marker, Object message, Throwable t);
+
   /**
    * Log a message with parameters at the <code>TRACE</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
    */
   void trace(String message, Object... params);
+
+  /**
+   * Log a message with parameters at the <code>TRACE</code> level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param params parameters to the message.
+   */
+  void trace(Marker marker, String message, Object... params);
 
   /**
    * Check whether this Logger is enabled for the TRACE  Level.
@@ -191,6 +236,14 @@ public interface Logger {
   void debug(String message);
 
   /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void debug(Marker marker, String message);
+
+  /**
    * Log a message at the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
@@ -200,11 +253,29 @@ public interface Logger {
   void debug(String message, Throwable t);
 
   /**
+   * Log a message at the <code>DEBUG</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void debug(Marker marker, String message, Throwable t);
+
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
    *
    * @param message the message object to log.
    */
   void debug(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void debug(Marker marker, Object message);
 
   /**
    * Log a message at the <code>DEBUG</code> level including the
@@ -216,11 +287,30 @@ public interface Logger {
   void debug(Object message, Throwable t);
 
   /**
+   * Log a message at the <code>DEBUG</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void debug(Marker marker, Object message, Throwable t);
+
+  /**
    * Log a message with parameters at the <code>DEBUG</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
    */
   void debug(String message, Object... params);
+
+  /**
+   * Log a message with parameters at the <code>DEBUG</code> level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param params parameters to the message.
+   */
+  void debug(Marker marker, String message, Object... params);
 
   /**
    * Check whether this Logger is enabled for the DEBUG Level.
@@ -279,6 +369,14 @@ public interface Logger {
   void info(String message);
 
   /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void info(Marker marker, String message);
+
+  /**
    * Log a message at the <code>INFO</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
@@ -288,11 +386,29 @@ public interface Logger {
   void info(String message, Throwable t);
 
   /**
+   * Log a message at the <code>INFO</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void info(Marker marker, String message, Throwable t);
+
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void info(Marker marker, Object message);
 
   /**
    * Log a message at the <code>INFO</code> level including the
@@ -304,9 +420,21 @@ public interface Logger {
   void info(Object message, Throwable t);
 
   /**
+   * Log a message at the <code>INFO</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void info(Marker marker, Object message, Throwable t);
+
+  /**
    * Log a message with parameters at the <code>INFO</code> level.
+   *
    * @param message the message to log.
    * @param params parameters to the message.
+   *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) It isn't
    * possible to be misinterpreted as the previous method is for that signature. Methods
@@ -314,6 +442,19 @@ public interface Logger {
    */
   void info(String message, Object... params);
 
+  /**
+   * Log a message with parameters at the <code>INFO</code> level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param params parameters to the message.
+   *
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) It isn't
+   * possible to be misinterpreted as the previous method is for that signature. Methods
+   * should be added to avoid varargs for 1, 2 or 3 parameters.
+   */
+  void info(Marker marker, String message, Object... params);
   /**
    * Check whether this Logger is enabled for the INFO Level.
    *
@@ -363,12 +504,20 @@ public interface Logger {
    */
   void info(Marker marker, Message msg, Throwable t);
 
- /**
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(String message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void warn(Marker marker, String message);
 
   /**
    * Log a message at the <code>WARN</code> level including the
@@ -379,12 +528,30 @@ public interface Logger {
    */
   void warn(String message, Throwable t);
 
+  /**
+   * Log a message at the <code>WARN</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void warn(Marker marker, String message, Throwable t);
+
  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void warn(Marker marker, Object message);
 
   /**
    * Log a message at the <code>WARN</code> level including the
@@ -396,6 +563,16 @@ public interface Logger {
   void warn(Object message, Throwable t);
 
   /**
+   * Log a message at the <code>WARN</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void warn(Marker marker, Object message, Throwable t);
+
+  /**
    * Log a message with parameters at the <code>WARN</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
@@ -405,6 +582,20 @@ public interface Logger {
    * is for that signature.Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void warn(String message, Object... params);
+
+  /**
+   * Log a message with parameters at the <code>WARN</code> level.
+   *
+   * @param marker the marker data specific to this log statement.
+   * @param message the message to log.
+   * @param params parameters to the message.
+   *
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
+   * meant warn, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature.Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+   */
+  void warn(Marker marker, String message, Object... params);
 
   /**
    * Check whether this Logger is enabled for the WARN Level.
@@ -463,6 +654,14 @@ public interface Logger {
   void error(String message);
 
   /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   *
+   * @param marker the marker data specific to this log statement.
+   * @param message the message object to log.
+   */
+  void error(Marker marker, String message);
+
+  /**
    * Log a message at the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
@@ -472,11 +671,29 @@ public interface Logger {
   void error(String message, Throwable t);
 
   /**
+   * Log a message at the <code>ERROR</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement.
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void error(Marker marker, String message, Throwable t);
+
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
    *
    * @param message the message object to log.
    */
   void error(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   *
+   * @param marker the marker data specific to this log statement.
+   * @param message the message object to log.
+   */
+  void error(Marker marker, Object message);
 
   /**
    * Log a message at the <code>ERROR</code> level including the
@@ -488,15 +705,40 @@ public interface Logger {
   void error(Object message, Throwable t);
 
   /**
+   * Log a message at the <code>ERROR</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker the marker data specific to this log statement.
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void error(Marker marker, Object message, Throwable t);
+
+  /**
    * Log a message with parameters at the <code>ERROR</code> level.
+   *
    * @param message the message to log.
    * @param params parameters to the message.
+   *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
    * meant error, not info. It isn't possible to be misinterpreted as the previous method
    * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void error(String message, Object... params);
+
+  /**
+   * Log a message with parameters at the <code>ERROR</code> level.
+   * @param marker the marker data specific to this log statement.
+   * @param message the message to log.
+   * @param params parameters to the message.
+   *
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
+   * meant error, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+   */
+  void error(Marker marker, String message, Object... params);
 
   /**
    * Check whether this Logger is enabled for the ERROR Level.
@@ -555,6 +797,14 @@ public interface Logger {
   void fatal(String message);
 
   /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   *
+   * @param marker The marker data specific to this log statement.
+   * @param message the message object to log.
+   */
+  void fatal(Marker marker, String message);
+
+  /**
    * Log a message at the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
@@ -563,12 +813,31 @@ public interface Logger {
    */
   void fatal(String message, Throwable t);
 
-    /**
+
+  /**
+   * Log a message at the <code>FATAL</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker The marker data specific to this log statement.
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void fatal(Marker marker, String message, Throwable t);
+
+  /**
    * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
    *
    * @param message the message object to log.
    */
   void fatal(Object message);
+
+  /**
+   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   *
+   * @param marker The marker data specific to this log statement.
+   * @param message the message object to log.
+   */
+  void fatal(Marker marker, Object message);
 
   /**
    * Log a message at the <code>FATAL</code> level including the
@@ -578,16 +847,44 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void fatal(Object message, Throwable t);
+
+  /**
+   * Log a message at the <code>FATAL</code> level including the
+   * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
+   *
+   * @param marker The marker data specific to this log statement.
+   * @param message the message object to log.
+   * @param t       the exception to log, including its stack trace.
+   */
+  void fatal(Marker marker, Object message, Throwable t);
+
   /**
    * Log a message with parameters at the <code>FATAL</code> level.
+   *
+   *
    * @param message the message to log.
    * @param params parameters to the message.
+   *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call.(RG) I assume you
    * meant fatal, not info. It isn't possible to be misinterpreted as the previous method
    * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
    */
   void fatal(String message, Object... params);
+
+  /**
+   * Log a message with parameters at the <code>FATAL</code> level.
+   *
+   * @param marker The marker data specific to this log statement.
+   * @param message the message to log.
+   * @param params parameters to the message.
+   *
+   * @doubt Likely to misinterpret existing log4j client code that intended to call
+   * info(Object,Throwable). Incurs array creation expense on every call.(RG) I assume you
+   * meant fatal, not info. It isn't possible to be misinterpreted as the previous method
+   * is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+   */
+  void fatal(Marker marker, String message, Object... params);
 
   /**
    * Check whether this Logger is enabled for the FATAL Level.
