@@ -28,6 +28,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -41,6 +45,7 @@ import static org.junit.Assert.assertEquals;
 public class XMLConfigurationTest {
 
     private static final String CONFIG = "log4j-test1.xml";
+    private static final String LOGFILE = "target/test.log";
 
     @BeforeClass
     public static void setupClass() {
@@ -93,9 +98,21 @@ public class XMLConfigurationTest {
     }
 
     @Test
-    public void logToFile() {
+    public void logToFile() throws Exception {
+        FileOutputStream fos = new FileOutputStream(LOGFILE, false);
+        fos.flush();
+        fos.close();
         Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
         logger.debug("This is a test");
+        DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(LOGFILE)));
+        int count = 0;
+        String str = "";
+        while (is.available() != 0) {
+            str = is.readLine();
+            ++count;
+        }
+        assertTrue("Incorrect count " + count, count == 1);
+        assertTrue("Bad data", str.endsWith("This is a test"));
     }
 
 }

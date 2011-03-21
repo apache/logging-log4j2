@@ -35,27 +35,33 @@ public class Filters implements Iterable<Filter> {
 
     private final List<Filter> filters;
     private final boolean hasFilters;
+    public static final Filters EMPTY_FILTERS = new Filters();
 
-    public Filters(List<Filter> filters) {
+    private Filters() {
+        this.filters = new ArrayList<Filter>();
+        this.hasFilters = false;
+    }
+
+    private Filters(List<Filter> filters) {
         if (filters == null) {
-            this.filters = new ArrayList<Filter>();
+            this.filters = Collections.unmodifiableList(new ArrayList<Filter>());
             this.hasFilters = false;
             return;
         }
-        this.filters = new ArrayList<Filter>(filters);
+        this.filters = Collections.unmodifiableList(filters);
         this.hasFilters = this.filters.size() > 0;
     }
 
-    public static Filters addFilter(Filters f, Filter filter) {
-        Filters newFilters = new Filters(f.filters);
-        newFilters.filters.add(filter);
-        return  newFilters;
+    public Filters addFilter(Filter filter) {
+        List<Filter> filters = new ArrayList<Filter>(this.filters);
+        filters.add(filter);
+        return new Filters(Collections.unmodifiableList(filters));
     }
 
-    public static Filters removeFilter(Filters f, Filter filter) {
-        Filters newFilters = new Filters(f.filters);
-        newFilters.filters.remove(filter);
-        return  newFilters;
+    public Filters removeFilter(Filter filter) {
+        List<Filter> filters = new ArrayList<Filter>(this.filters);
+        filters.remove(filter);
+        return new Filters(Collections.unmodifiableList(filters));
     }
 
     public Iterator<Filter> iterator() {
@@ -63,7 +69,7 @@ public class Filters implements Iterable<Filter> {
     }
 
     public List<Filter> getFilters() {
-        return Collections.unmodifiableList(filters);
+        return filters;
     }
 
     public boolean hasFilters() {

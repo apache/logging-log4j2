@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
-import org.apache.logging.log4j.core.layout.pattern.PatternConverter;
-import org.apache.logging.log4j.core.layout.pattern.PatternParser;
+import org.apache.logging.log4j.core.pattern.PatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternParser;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -403,6 +403,13 @@ public class PatternLayout extends LayoutBase {
         "%r [%t] %p %c %x - %m%n";
 
     /**
+     * A simple pattern.
+     * Current value is <b>%d [%t] %p %c - %m%n</b>.
+     */
+    public static final String SIMPLE_CONVERSION_PATTERN =
+        "%d [%t] %p %c - %m%n";
+
+    /**
      * Initial converter for pattern.
      */
     private List<PatternConverter> converters;
@@ -499,12 +506,12 @@ public class PatternLayout extends LayoutBase {
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
                                              @PluginAttr("charset") String charset) {
-        Charset c = Charset.defaultCharset();
+        Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using default.");
+                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         if (pattern != null) {

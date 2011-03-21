@@ -21,14 +21,7 @@ import java.util.List;
 /**
  * @issue LOG4J2-36: Appender interface should be refactored
  */
-public interface Appender {
-    /**
-     * Release any resources allocated within the appender such as file
-     * handles, network connections, etc.
-     * <p/>
-     * <p>It is a programming error to append to a closed appender.
-     */
-    void close();
+public interface Appender extends Lifecycle {
 
     /**
      * Log in <code>Appender</code> specific way. When appropriate,
@@ -78,7 +71,7 @@ public interface Appender {
      * If set to true any exceptions thrown by the Appender will be logged but not thrown.
      * @return true if Exceptions should be suppressed, false otherwise.
      */
-    boolean suppressException();
+    boolean isExceptionSuppressed();
 
     ErrorHandler getHandler();
 

@@ -88,6 +88,9 @@ public class XMLConfiguration extends BaseConfiguration {
         } catch (ParserConfigurationException pex) {
             logger.error("Error parsing " + source.getSystemId(), pex);
         }
+        if (getName() == null) {
+            setName(source.getSystemId());
+        }
     }
 
     public void setup() {

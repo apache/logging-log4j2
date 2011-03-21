@@ -11,7 +11,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <File name="File" fileName="${filename}">
+    <File name="File" fileName="${filename}" bufferedIO="false">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>

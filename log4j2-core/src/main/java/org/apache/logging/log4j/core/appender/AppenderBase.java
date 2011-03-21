@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -45,7 +46,7 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
 
     private final String name;
 
-    private final boolean errors = false;
+    private final boolean handleException;
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -57,8 +58,13 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
     public static final String NAME = "name";
 
     public AppenderBase(String name, Filters filters, Layout layout) {
+        this(name, filters, layout, true);
+    }
+
+    public AppenderBase(String name, Filters filters, Layout layout, boolean handleException) {
         this.name = name;
         this.layout = layout;
+        this.handleException = handleException;
         setFilters(filters);
     }
 
@@ -119,8 +125,8 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
      * Some appenders need to propogate exceptions back to the application. When suppressException is false the
      * AppenderControl will allow the exception to percolate.
      */
-    public boolean suppressException() {
-        return true;
+    public boolean isExceptionSuppressed() {
+        return handleException;
     }
 
     public void start() {
@@ -143,6 +149,33 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
 
     public String toString() {
         return name;
+    }
+
+    /**
+     * Handle an error with a message.
+     * @param msg The message.
+     */
+    public void error(String msg) {
+        handler.error(msg);
+    }
+
+    /**
+     * Handle an error with a message and an exception.
+     * @param msg The message.
+     * @param t The Throwable.
+     */
+    public void error(String msg, Throwable t) {
+        handler.error(msg, t);
+    }
+
+    /**
+     * Handle an error with a message, and exception and a logging event.
+     * @param msg The message.
+     * @param event The LogEvent.
+     * @param t The Throwable.
+     */
+    public void error(String msg, LogEvent event, Throwable t) {
+        handler.error(msg, event, t);
     }
 
 }

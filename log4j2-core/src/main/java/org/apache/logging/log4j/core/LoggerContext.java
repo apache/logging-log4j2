@@ -97,7 +97,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             throw new NullPointerException("No Configuration was provided");
         }
         Configuration prev = this.config;
+        config.start();
         this.config = config;
+        updateLoggers();
+        if (prev != null) {
+            prev.stop();
+        }
         return prev;
     }
 
@@ -107,12 +112,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public synchronized void reconfigure() {
         logger.debug("Reconfiguration started");
         Configuration instance = ConfigurationFactory.getInstance().getConfiguration();
-        instance.start();
+        setConfiguration(instance);
+        /*instance.start();
         Configuration old = setConfiguration(instance);
         updateLoggers();
         if (old != null) {
             old.stop();
-        }
+        } */
         logger.debug("Reconfiguration completed");
     }
 

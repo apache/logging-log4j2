@@ -26,18 +26,18 @@ import java.util.Iterator;
  *
  */
 public class Filterable {
-    private volatile Filters filters = new Filters(null);
+    private volatile Filters filters = Filters.EMPTY_FILTERS;
 
     public synchronized void addFilter(Filter filter) {
-        filters = Filters.addFilter(filters, filter);
+        filters = filters.addFilter(filter);
     }
 
     public synchronized void removeFilter(Filter filter) {
-        filters = Filters.removeFilter(filters, filter);
+        filters = filters.removeFilter(filter);
     }
 
     public synchronized void clearFilters() {
-        filters = new Filters(null);
+        filters = Filters.EMPTY_FILTERS;
     }
 
     public Iterator<Filter> getFilters() {
@@ -75,7 +75,7 @@ public class Filterable {
     }
 
     protected synchronized void setFilters(Filters newFilters) {
-        filters = newFilters == null ? new Filters(null) : newFilters;
+        filters = newFilters == null ? Filters.EMPTY_FILTERS : newFilters;
     }
 
     protected boolean isFiltered(LogEvent event) {

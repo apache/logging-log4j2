@@ -32,7 +32,7 @@ import java.util.List;
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
  */
- @Plugin(name="List",type="Core",elementType="appender",printObject=true)
+@Plugin(name="List",type="Core",elementType="appender",printObject=true)
 public class ListAppender extends AppenderBase {
 
     private List<LogEvent> events = new ArrayList<LogEvent>();

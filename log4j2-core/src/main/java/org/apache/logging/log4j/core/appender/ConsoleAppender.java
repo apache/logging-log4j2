@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.Filters;
+
+import java.io.OutputStream;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -41,17 +42,19 @@ public class ConsoleAppender extends OutputStreamAppender {
     public static final String TARGET = "target";
     public static final String NAME = "name";
 
+    private static ManagerFactory factory = new ConsoleManagerFactory();
+
     public enum Target {
         SYSTEM_OUT, SYSTEM_ERR
     }
 
     public ConsoleAppender(String name, Layout layout) {
-        this(name, layout, null, Target.SYSTEM_OUT);
+        this(name, layout, null, getManager(Target.SYSTEM_OUT));
 
     }
 
-    public ConsoleAppender(String name, Layout layout, Filters filters, Target target) {
-        super(name, layout, filters, target == Target.SYSTEM_OUT ? System.out : System.err);
+    public ConsoleAppender(String name, Layout layout, Filters filters, OutputStreamManager manager) {
+        super(name, layout, filters, true, true, manager);
     }
 
     @PluginFactory
@@ -64,7 +67,32 @@ public class ConsoleAppender extends OutputStreamAppender {
             return null;
         }
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, filters, target);
+        return new ConsoleAppender(name, layout, filters, getManager(target));
+    }
+
+    private static OutputStreamManager getManager(Target target) {
+        String type = target.name();
+        OutputStream os = target == Target.SYSTEM_OUT ? System.out : System.err;
+        OutputStreamManager manager = OutputStreamManager.getManager(target.name(), factory,
+            new FactoryData(os, type));
+        return manager;
+    }
+
+    private static class FactoryData {
+        OutputStream os;
+        String type;
+
+        public FactoryData(OutputStream os, String type) {
+            this.os = os;
+            this.type = type;
+        }
+    }
+
+    private static class ConsoleManagerFactory implements ManagerFactory<OutputStreamManager, FactoryData> {
+
+        public OutputStreamManager createManager(FactoryData data) {
+            return new OutputStreamManager(data.os, data.type);
+        }
     }
 
 }

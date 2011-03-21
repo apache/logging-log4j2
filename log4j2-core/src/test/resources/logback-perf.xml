@@ -1,0 +1,12 @@
+<configuration>
+ <appender name="TestLogfile" class="ch.qos.logback.core.FileAppender">
+   <file>target/testlogback.log</file>
+   <encoder>
+     <Pattern>%d{ISO8601} %5p [%t] %c{0} %X{transactionId} - %m%n</Pattern>
+   </encoder>
+ </appender>
+
+ <root level="debug">
+   <appender-ref ref="TestLogfile" />
+ </root>
+</configuration>

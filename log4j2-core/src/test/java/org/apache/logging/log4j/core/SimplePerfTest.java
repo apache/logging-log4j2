@@ -18,13 +18,13 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Assert;
 
 import java.util.Random;
-import java.util.UUID;
-import java.util.logging.LogRecord;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,6 +48,12 @@ public class SimplePerfTest {
 
     @BeforeClass
     public static void setupClass() {
+
+        Configuration config = ((LoggerContext)LogManager.getContext()).getConfiguration();
+        if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
+            System.out.println("Configuration was " + config.getName());
+            ((LoggerContext)LogManager.getContext()).setConfiguration(new DefaultConfiguration());
+        }
 
         Random r = new Random(WARMUP);
 
@@ -87,10 +93,12 @@ public class SimplePerfTest {
 
     @Test
     public void debugLogger() {
+        System.gc();
         Timer timer = new Timer("DebugLogger", LOOP_CNT);
+        String msg = "This is a test";
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
-            logger.debug("This is a test");
+            logger.debug(msg);
         }
         timer.stop();
         System.out.println(timer.toString());

@@ -34,23 +34,40 @@ import java.io.OutputStream;
 @Plugin(name="File",type="Core",elementType="appender",printObject=true)
 public class FileAppender extends OutputStreamAppender {
 
-    public static final String FILE_NAME = "fileName";
-    public static final String APPEND = "append";
     public final String fileName;
 
-    public FileAppender(String name, Layout layout, Filters filters, OutputStream os, String filename) {
-        super(name, layout, filters, os);
+    public FileAppender(String name, Layout layout, Filters filters, FileManager manager, String filename,
+                        boolean handleException, boolean immediateFlush) {
+        super(name, layout, filters, handleException, immediateFlush, manager);
         this.fileName = filename;
     }
 
     @PluginFactory
     public static FileAppender createAppender(@PluginAttr("fileName") String fileName,
                                               @PluginAttr("append") String append,
+                                              @PluginAttr("locking") String locking,
                                               @PluginAttr("name") String name,
+                                              @PluginAttr("immediateFlush") String immediateFlush,
+                                              @PluginAttr("suppressExceptions") String suppress,
+                                              @PluginAttr("bufferedIO") String bufferedIO,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filters filters) {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
+        boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
+        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
+        if (isLocking) {
+            logger.warn("Locking and buffering are mutually exclusive. No buffereing will occur for " + fileName);
+            isBuffered = false;
+        }
+        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
+        if (isBuffered) {
+            logger.warn("Immediate flush and buffering are mutually exclusive. Imeddiate flush will not occur for " +
+                fileName);
+            isFlush = false;
+        }
+
+        boolean handleExceptions = locking == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
             logger.error("No name provided for FileAppender");
@@ -62,12 +79,10 @@ public class FileAppender extends OutputStreamAppender {
             return null;
         }
 
-        try {
-            OutputStream os = new FileOutputStream(fileName, isAppend);
-            return new FileAppender(name, layout, filters, os, fileName);
-        } catch (FileNotFoundException ex) {
-            logger.error("Unable to open file " + fileName, ex);
+        FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered);
+        if (manager == null) {
             return null;
         }
+        return new FileAppender(name, layout, filters, manager, fileName, handleExceptions, isFlush);
     }
 }

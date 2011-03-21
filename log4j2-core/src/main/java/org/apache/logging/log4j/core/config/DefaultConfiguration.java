@@ -30,9 +30,11 @@ public class DefaultConfiguration extends BaseConfiguration {
     private static final String CONSOLE = "CONSOLE";;
     private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
     private static final String EMPTY_STRING = "";
+    public static final String DEFAULT_NAME = "Default";
 
     public DefaultConfiguration() {
 
+        setName(DEFAULT_NAME);
         Appender appender = new ConsoleAppender("Console", new BasicLayout());
         addAppender(appender);
         LoggerConfig root = getRootLogger();

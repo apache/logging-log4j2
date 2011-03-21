@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Compare;
 import org.junit.AfterClass;
@@ -39,7 +40,7 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public class PatternLayoutTest {
-    static String OUTPUT_FILE   = "output/PatternParser";
+    static String OUTPUT_FILE   = "target/output/PatternParser";
     static String WITNESS_FILE  = "witness/PatternParser";
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
     Logger root = ctx.getLogger("");
@@ -74,8 +75,9 @@ public class PatternLayoutTest {
 
         // set up appender
         PatternLayout layout = new PatternLayout(msgPattern);
-        FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
-        FileAppender appender = new FileAppender("File", layout, null, fos, OUTPUT_FILE + "_mdc");
+        //FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
+        FileManager manager = FileManager.getFileManager(OUTPUT_FILE + "_mdc", false, false, false);
+        FileAppender appender = new FileAppender("File", layout, null, manager, OUTPUT_FILE + "_mdc", true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -125,5 +127,7 @@ public class PatternLayoutTest {
         root.debug("finished mdc pattern test");
 
         assertTrue(Compare.compare(this.getClass(), OUTPUT_FILE + "_mdc", WITNESS_FILE + "_mdc"));
+
+        appender.stop();
     }
 }

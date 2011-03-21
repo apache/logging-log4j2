@@ -16,9 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 /**
  *
  */
-public interface RolloverStrategy
-{
+public interface RolloverStrategy {
+
+    /**
+     * Check the RolloverStrategy to determine if a rollover should occur.
+     * @param event The LogEvent.
+     * @return true if a rollover should occur.
+     */
+    boolean checkStrategy(LogEvent event);
 }

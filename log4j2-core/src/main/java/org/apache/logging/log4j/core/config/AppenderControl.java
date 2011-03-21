@@ -53,10 +53,10 @@ public class AppenderControl {
             recursive.set(this);
 
             if (appender instanceof Lifecycle) {
-                if (!((Lifecycle)appender).isStarted()) {
+                if (!appender.isStarted()) {
                     appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
-                    if (!appender.suppressException()) {
+                    if (!appender.isExceptionSuppressed()) {
                         throw new AppenderRuntimeException("Attempted to append to non-started appender " + appender.getName());
                     }
                 }
@@ -80,12 +80,12 @@ public class AppenderControl {
                 appender.append(event);
             } catch (RuntimeException ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.suppressException()) {
+                if (!appender.isExceptionSuppressed()) {
                     throw ex;
                 }
             } catch (Exception ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.suppressException()) {
+                if (!appender.isExceptionSuppressed()) {
                     throw new AppenderRuntimeException(ex);
                 }
             }

@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public interface Configuration {
 
+    String getName();
+
     LoggerConfig getLoggerConfig(String name);
 
     Map<String, Appender> getAppenders();

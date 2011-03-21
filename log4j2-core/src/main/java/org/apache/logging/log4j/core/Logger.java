@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.util.Iterator;
@@ -34,7 +35,7 @@ import java.util.Map;
  * used in global filters.
  */
 public class Logger extends AbstractLogger {
-    
+
     private final String name;
 
     private final LoggerContext context;
@@ -220,7 +221,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, String msg, Throwable t) {
@@ -235,7 +236,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1) {
@@ -250,7 +251,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2) {
@@ -265,7 +266,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
@@ -280,7 +281,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
@@ -296,7 +297,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, Object msg, Throwable t) {
@@ -311,7 +312,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
 
         boolean filter(Level level, Marker marker, Message msg, Throwable t) {
@@ -326,7 +327,7 @@ public class Logger extends AbstractLogger {
                 }
             }
 
-            return level.lessOrEqual(intLevel);
+            return intLevel >= level.intLevel();
         }
     }
 }
