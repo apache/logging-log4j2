@@ -101,11 +101,7 @@ public class RollingFileAppender extends OutputStreamAppender {
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
-        if (isBuffered) {
-            logger.warn("Immediate flush and buffering are mutually exclusive. Immediate flush will not occur for appender " +
-                 name);
-            isFlush = false;
-        }
+
         CompressionType type = CompressionType.NONE;
 
         if (name == null) {
