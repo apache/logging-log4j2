@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
+import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 
@@ -496,7 +497,7 @@ public class PatternLayout extends LayoutBase {
 
     private PatternParser createPatternParser() {
 
-        return new PatternParser(KEY);
+        return new PatternParser(KEY, LogEventPatternConverter.class);
     }
 
     public String toString() {

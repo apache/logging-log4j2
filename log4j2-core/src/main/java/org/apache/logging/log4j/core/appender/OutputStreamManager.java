@@ -123,6 +123,10 @@ public class OutputStreamManager {
         return os;
     }
 
+    protected void setOutputStream(OutputStream os) {
+        this.os = os;
+    }
+
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.

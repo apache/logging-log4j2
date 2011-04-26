@@ -33,6 +33,7 @@ public class PluginManager {
     private static CopyOnWriteArrayList<String> packages = new CopyOnWriteArrayList<String>();
 
     private final String type;
+    private final Class clazz;
 
     static {
         packages.add("org.apache.logging.log4j");
@@ -40,6 +41,13 @@ public class PluginManager {
 
     public PluginManager(String type) {
         this.type = type;
+        this.clazz = null;
+    }
+
+
+    public PluginManager(String type, Class clazz) {
+        this.type = type;
+        this.clazz = clazz;
     }
 
     public static void addPackage(String p) {
@@ -57,7 +65,7 @@ public class PluginManager {
 
     public void collectPlugins() {
         ResolverUtil<?> r = new ResolverUtil();
-        ResolverUtil.Test test = new PluginTest(type);
+        ResolverUtil.Test test = new PluginTest(type, clazz);
         for (String pkg : packages) {
             r.findInPackage(test, pkg);
         }
@@ -75,21 +83,36 @@ public class PluginManager {
      * is, then the test returns true, otherwise false.
      */
     public static class PluginTest extends ResolverUtil.ClassTest {
-        private String type;
+        private final String type;
+        private final Class isA;
 
         /** Constructs an AnnotatedWith test for the specified annotation type. */
         public PluginTest(String type) {
             this.type = type;
+            this.isA = null;
+        }
+
+
+        /** Constructs an AnnotatedWith test for the specified annotation type. */
+        public PluginTest(String type, Class isA) {
+            this.type = type;
+            this.isA = isA;
         }
 
         /** Returns true if the type is annotated with the class provided to the constructor. */
         public boolean matches(Class type) {
             return type != null && type.isAnnotationPresent(Plugin.class) &&
-                this.type.equals(((Plugin)type.getAnnotation(Plugin.class)).type());
+                this.type.equals(((Plugin)type.getAnnotation(Plugin.class)).type()) &&
+                (isA == null || isA.isAssignableFrom(type));
         }
 
         @Override public String toString() {
-            return "annotated with @" + Plugin.class.getSimpleName();
+            StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
+            if (isA != null) {
+                msg.append(" is assignable to " + isA.getSimpleName());
+            }
+            return msg.toString();
         }
     }
+
 }

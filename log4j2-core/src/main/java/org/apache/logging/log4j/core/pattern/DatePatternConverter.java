@@ -18,9 +18,12 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.rolling.RolloverFrequency;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -160,4 +163,9 @@ public final class DatePatternConverter extends LogEventPatternConverter {
             toAppendTo.append(simpleFormat.format(date.getTime()));
         }
     }
+
+    public String getPattern() {
+        return simpleFormat.toPattern();
+    }
+
 }

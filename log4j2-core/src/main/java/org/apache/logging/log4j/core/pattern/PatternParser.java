@@ -76,12 +76,16 @@ public final class PatternParser {
     protected final static Logger logger = StatusLogger.getLogger();
 
 
+    public PatternParser(String converterKey) {
+        this(converterKey, null);
+    }
+
     /**
      * Constructor
      * @param converterKey The key to lookup the converters.
      */
-    public PatternParser(String converterKey) {
-        PluginManager manager = new PluginManager(converterKey);
+    public PatternParser(String converterKey, Class expected) {
+        PluginManager manager = new PluginManager(converterKey, expected);
         manager.collectPlugins();
         Map<String, PluginType> plugins = manager.getPlugins();
         Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
@@ -107,7 +111,7 @@ public final class PatternParser {
         List<PatternConverter> converters = new ArrayList<PatternConverter>();
         List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
 
-        parse(pattern, converters, fields, converterRules);
+        parse(pattern, converters, fields);
 
         LogEventPatternConverter[] patternConverters = new LogEventPatternConverter[converters.size()];
         FormattingInfo[] patternFields = new FormattingInfo[converters.size()];
@@ -209,11 +213,9 @@ public final class PatternParser {
      * @param pattern           pattern to parse.
      * @param patternConverters list to receive pattern converters.
      * @param formattingInfos   list to receive field specifiers corresponding to pattern converters.
-     * @param rules             map of stock pattern converters keyed by format specifier.
      */
     public void parse(final String pattern, final List<PatternConverter> patternConverters,
-            final List<FormattingInfo> formattingInfos,
-            final Map<String, Class<PatternConverter>> rules) {
+            final List<FormattingInfo> formattingInfos) {
         if (pattern == null) {
             throw new NullPointerException("pattern");
         }
@@ -290,7 +292,7 @@ public final class PatternParser {
                                 state = MIN_STATE;
                             } else {
                                 i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
-                                        rules, patternConverters, formattingInfos);
+                                        converterRules, patternConverters, formattingInfos);
 
                                 // Next pattern is assumed to be a literal.
                                 state = LITERAL_STATE;
@@ -312,7 +314,7 @@ public final class PatternParser {
                         state = DOT_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
-                                rules, patternConverters, formattingInfos);
+                                converterRules, patternConverters, formattingInfos);
                         state = LITERAL_STATE;
                         formattingInfo = FormattingInfo.getDefault();
                         currentLiteral.setLength(0);
@@ -345,7 +347,7 @@ public final class PatternParser {
                                 (formattingInfo.getMaxLength() * 10) + (c - '0'));
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
-                                rules, patternConverters, formattingInfos);
+                                converterRules, patternConverters, formattingInfos);
                         state = LITERAL_STATE;
                         formattingInfo = FormattingInfo.getDefault();
                         currentLiteral.setLength(0);

@@ -18,6 +18,9 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
+import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -33,20 +36,23 @@ import java.util.concurrent.locks.ReentrantLock;
 @Plugin(name="RollingFile",type="Core",elementType="appender",printObject=true)
 public class RollingFileAppender extends OutputStreamAppender {
 
+    public final String fileName;
     public final String filePattern;
-    private final RolloverStrategy[] strategies;
+    private final TriggeringPolicy policy;
+    private final RolloverStrategy strategy;
     private final Lock lock = new ReentrantLock();
     private final boolean bufferedIO;
 
-    public RollingFileAppender(String name, Layout layout, RolloverStrategy[] strategies,
-                               Filters filters, FileManager manager, String filePattern,
-                               CompressionType type, boolean handleException, boolean immediateFlush,
-                               boolean isBuffered) {
+    public RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
+                               Filters filters, RollingFileManager manager, String fileName, String filePattern,
+                               boolean handleException, boolean immediateFlush, boolean isBuffered) {
         super(name, layout, filters, handleException, immediateFlush, manager);
+        this.fileName = fileName;
         this.filePattern = filePattern;
-        this.strategies = strategies;
-        manager.setCompressionType(type);
+        this.policy = policy;
+        this.strategy = strategy;
         this.bufferedIO = isBuffered;
+        policy.initialize(manager);
     }
 
     /**
@@ -56,43 +62,20 @@ public class RollingFileAppender extends OutputStreamAppender {
      */
     @Override
     public void append(LogEvent event) {
-
-        boolean rollover;
-        lock.lock();
-        try {
-            for (RolloverStrategy strategy : strategies) {
-                rollover = strategy.checkStrategy(event);
-                if (rollover) {
-                    performRollover();
-                    break;
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
+        ((RollingFileManager) getManager()).checkRollover(event, policy, strategy);
         super.append(event);
     }
 
-    private void performRollover() {
-       // List<String> fileNames = getFileNames();
-       // renameFiles(fileNames);
-        String fileName = "";
-        FileManager mgr = (FileManager) getManager();
-        FileManager manager = FileManager.getFileManager(fileName, mgr.isAppend(), mgr.isLocking(), bufferedIO);
-        manager.setCompressionType(mgr.getCompressionType());
-        replaceManager(manager);
-    }
-
-
-
     @PluginFactory
-    public static RollingFileAppender createAppender(@PluginAttr("filePattern") String filePattern,
+    public static RollingFileAppender createAppender(@PluginAttr("fileName") String fileName,
+                                              @PluginAttr("filePattern") String filePattern,
                                               @PluginAttr("append") String append,
                                               @PluginAttr("name") String name,
                                               @PluginAttr("compress") String compress,
                                               @PluginAttr("bufferedIO") String bufferedIO,
                                               @PluginAttr("immediateFlush") String immediateFlush,
-                                              @PluginElement("strategies") RolloverStrategy[] strategies,
+                                              @PluginElement("policy") TriggeringPolicy policy,
+                                              @PluginElement("strategy") RolloverStrategy strategy,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filters filters,
                                               @PluginAttr("suppressExceptions") String suppress) {
@@ -109,13 +92,23 @@ public class RollingFileAppender extends OutputStreamAppender {
             return null;
         }
 
+        if (fileName == null) {
+            logger.error("No filename was provided for FileAppender with name "  + name);
+            return null;
+        }
+
         if (filePattern == null) {
             logger.error("No filename pattern provided for FileAppender with name "  + name);
             return null;
         }
 
-        if (strategies == null) {
-            logger.error("At least one RolloverStrategy must be provided");
+        if (policy == null) {
+            logger.error("A TriggeringPolicy must be provided");
+            return null;
+        }
+
+        if (strategy == null) {
+            logger.error("A RolloverStrategy must be provided");
             return null;
         }
 
@@ -126,13 +119,13 @@ public class RollingFileAppender extends OutputStreamAppender {
             }
         }
 
-        String fileName = "";
-        FileManager manager = FileManager.getFileManager(fileName, isAppend, false, isBuffered);
+        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered,
+            type);
         if (manager == null) {
             return null;
         }
 
-        return new RollingFileAppender(name, layout, strategies, filters, manager, filePattern, type, handleExceptions,
-            isFlush, isBuffered);
+        return new RollingFileAppender(name, layout, policy, strategy, filters, manager, fileName, filePattern,
+            handleExceptions, isFlush, isBuffered);
     }
 }

@@ -24,24 +24,30 @@ import org.apache.logging.log4j.core.LogEvent;
  * Formats a string literal.
  */
 public final class LiteralPatternConverter extends LogEventPatternConverter {
-  /**
-   * String literal.
-   */
-  private final String literal;
+    /**
+     * String literal.
+     */
+    private final String literal;
 
-  /**
-   * Create a new instance.
-   * @param literal string literal.
-   */
-  public LiteralPatternConverter(final String literal) {
-    super("Literal", "literal");
-    this.literal = literal;
-  }
+    /**
+     * Create a new instance.
+     *
+     * @param literal string literal.
+     */
+    public LiteralPatternConverter(final String literal) {
+        super("Literal", "literal");
+        this.literal = literal;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void format(final LogEvent event, final StringBuilder toAppendTo) {
-    toAppendTo.append(literal);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void format(final LogEvent event, final StringBuilder toAppendTo) {
+        toAppendTo.append(literal);
+    }
+
+    @Override
+    public void format(final Object obj, final StringBuilder output) {
+        output.append(literal);
+    }
 }

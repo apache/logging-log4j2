@@ -41,8 +41,6 @@ public class FileManager extends OutputStreamManager {
 
     private boolean isAppend;
     private boolean isLocking;
-    private CompressionType type = null;
-
 
     private static ManagerFactory factory = new FileManagerFactory();
 
@@ -58,14 +56,6 @@ public class FileManager extends OutputStreamManager {
         super(os, fileName);
         this.isAppend = append;
         this.isLocking = locking;
-    }
-
-    @Override
-    public void release() {
-        super.release();
-        if (!isOpen() && type != null) {
-            doCompress();
-        }
     }
 
     protected synchronized void write(byte[] bytes, int offset, int length)  {
@@ -95,7 +85,6 @@ public class FileManager extends OutputStreamManager {
         }
     }
 
-
     public String getFileName() {
         return getName();
     }
@@ -106,18 +95,6 @@ public class FileManager extends OutputStreamManager {
 
     public boolean isLocking() {
         return isLocking;
-    }
-
-    public void setCompressionType(CompressionType type) {
-        this.type = type;
-    }
-
-    public CompressionType getCompressionType() {
-        return this.type;
-    }
-
-    private void doCompress() {
-
     }
 
     private static class FactoryData {

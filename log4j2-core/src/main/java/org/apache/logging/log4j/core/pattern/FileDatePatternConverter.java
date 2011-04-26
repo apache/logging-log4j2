@@ -39,8 +39,7 @@ public final class FileDatePatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static PatternConverter newInstance(
-        final String[] options) {
+    public static PatternConverter newInstance(final String[] options) {
         if ((options == null) || (options.length == 0)) {
             return DatePatternConverter.newInstance(
                 new String[]{

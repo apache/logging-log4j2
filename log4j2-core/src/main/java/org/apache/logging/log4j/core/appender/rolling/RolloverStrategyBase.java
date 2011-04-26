@@ -14,19 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.internal.StatusLogger;
 
 /**
  *
  */
-public interface RolloverStrategy {
+public abstract class RolloverStrategyBase implements RolloverStrategy {
 
     /**
-     * Check the RolloverStrategy to determine if a rollover should occur.
-     * @param event The LogEvent.
-     * @return true if a rollover should occur.
+     * Allow subclasses access to the status logger without creating another instance.
      */
-    boolean checkStrategy(LogEvent event);
+    protected static final Logger logger = StatusLogger.getLogger();
 }
