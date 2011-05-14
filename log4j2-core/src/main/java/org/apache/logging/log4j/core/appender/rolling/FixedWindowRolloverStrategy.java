@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.CompressionType;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
 import org.apache.logging.log4j.core.appender.rolling.helper.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.helper.GZCompressAction;
@@ -107,17 +106,12 @@ public class FixedWindowRolloverStrategy implements RolloverStrategy {
             String compressedName = renameTo;
             Action compressAction = null;
 
-            switch (manager.getCompressionType()) {
-                case GZIP: {
-                    renameTo = renameTo.substring(0, renameTo.length() - 3);
-                    compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
-                    break;
-                }
-                case ZIP: {
-                    renameTo = renameTo.substring(0, renameTo.length() - 4);
-                    compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true);
-                    break;
-                }
+            if (renameTo.endsWith(".gz")) {
+                renameTo = renameTo.substring(0, renameTo.length() - 3);
+                compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
+            } else if (renameTo.endsWith(".zip")) {
+                renameTo = renameTo.substring(0, renameTo.length() - 4);
+                compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true);
             }
 
             FileRenameAction renameAction =

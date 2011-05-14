@@ -105,8 +105,10 @@ public final class GZCompressAction extends ActionBase {
             os.close();
             fis.close();
 
-            if (deleteSource && !source.delete()) {
-                logger.warn("Unable to delete " + source.toString() + ".");
+            if (deleteSource) {
+                if (!source.delete()) {
+                    logger.warn("Unable to delete " + source.toString() + ".");
+                }
             }
 
             return true;

@@ -40,7 +40,6 @@ public class RollingFileAppender extends OutputStreamAppender {
     public final String filePattern;
     private final TriggeringPolicy policy;
     private final RolloverStrategy strategy;
-    private final Lock lock = new ReentrantLock();
     private final boolean bufferedIO;
 
     public RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
@@ -71,7 +70,6 @@ public class RollingFileAppender extends OutputStreamAppender {
                                               @PluginAttr("filePattern") String filePattern,
                                               @PluginAttr("append") String append,
                                               @PluginAttr("name") String name,
-                                              @PluginAttr("compress") String compress,
                                               @PluginAttr("bufferedIO") String bufferedIO,
                                               @PluginAttr("immediateFlush") String immediateFlush,
                                               @PluginElement("policy") TriggeringPolicy policy,
@@ -84,8 +82,6 @@ public class RollingFileAppender extends OutputStreamAppender {
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
-
-        CompressionType type = CompressionType.NONE;
 
         if (name == null) {
             logger.error("No name provided for FileAppender");
@@ -112,15 +108,7 @@ public class RollingFileAppender extends OutputStreamAppender {
             return null;
         }
 
-        if (compress != null) {
-            CompressionType t = CompressionType.valueOf(compress.toUpperCase());
-            if (t != null) {
-                type = t;
-            }
-        }
-
-        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered,
-            type);
+        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered);
         if (manager == null) {
             return null;
         }

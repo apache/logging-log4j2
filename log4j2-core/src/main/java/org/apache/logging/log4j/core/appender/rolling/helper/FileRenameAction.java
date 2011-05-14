@@ -76,12 +76,16 @@ public final class FileRenameAction extends ActionBase {
     public static boolean execute(final File source, final File destination, boolean renameEmptyFiles) {
         if (renameEmptyFiles || (source.length() > 0)) {
             try {
-                return source.renameTo(destination);
+
+                boolean result = source.renameTo(destination);
+                //System.out.println("Rename of " + source.getName() + " to " + destination.getName() + ": " + result);
+                return result;
             } catch (Exception ex) {
                 try {
                     copyFile(source, destination);
                     return source.delete();
                 } catch (IOException iex) {
+                    iex.printStackTrace();
                 }
             }
         }
@@ -96,17 +100,27 @@ public final class FileRenameAction extends ActionBase {
 
         FileChannel srcChannel = null;
         FileChannel destChannel = null;
+        FileInputStream srcStream = null;
+        FileOutputStream destStream = null;
         try {
-            srcChannel = new FileInputStream(source).getChannel();
-            destChannel = new FileOutputStream(destination).getChannel();
+            srcStream = new FileInputStream(source);
+            destStream = new FileOutputStream(destination);
+            srcChannel = srcStream.getChannel();
+            destChannel = destStream.getChannel();
             destChannel.transferFrom(srcChannel, 0, srcChannel.size());
         }
         finally {
             if(srcChannel != null) {
                 srcChannel.close();
             }
+            if (srcStream != null) {
+                srcStream.close();
+            }
             if (destChannel != null) {
                 destChannel.close();
+            }
+            if (destStream != null) {
+                destStream.close();
             }
         }
     }

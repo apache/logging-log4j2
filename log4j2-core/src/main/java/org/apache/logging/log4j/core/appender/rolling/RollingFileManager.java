@@ -18,16 +18,22 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.CompressionType;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.rolling.helper.Action;
+import org.apache.logging.log4j.core.appender.rolling.helper.ActionBase;
 import org.apache.logging.log4j.internal.StatusLogger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -39,49 +45,35 @@ public class RollingFileManager extends FileManager {
      */
     protected static final Logger logger = StatusLogger.getLogger();
 
-    private CompressionType type = null;
     private long size;
     private long initialTime;
     private PatternProcessor processor;
+    private ArrayBlockingQueue<RollingFileManager> queue = new ArrayBlockingQueue<RollingFileManager>(1);
+    private static int count = 0;
 
     private static ManagerFactory factory = new RollingFileManagerFactory();
 
-    public static RollingFileManager getFileManager(String fileName, String pattern, boolean append, boolean bufferedIO,
-                                                    CompressionType type) {
+    public static RollingFileManager getFileManager(String fileName, String pattern, boolean append,
+                                                    boolean bufferedIO) {
 
-        return (RollingFileManager) getManager(fileName, factory, new FactoryData(fileName, pattern, append, bufferedIO,
-                                               type));
+        return (RollingFileManager) getManager(fileName, factory, new FactoryData(fileName, pattern, append,
+            bufferedIO));
     }
 
-    public RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size,
-                              CompressionType type, long time) {
+    public RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size, long time) {
         super(fileName, os, append, false);
         this.size = size;
-        this.type = type;
         this.initialTime = time;
         processor = new PatternProcessor(pattern);
+        queue.add(this);
     }
 
-    @Override
-    public void release() {
-        super.release();
-        if (!isOpen() && type != null) {
-            doCompress();
-        }
-    }
 
-    protected synchronized void write(byte[] bytes, int offset, int length)  {
+    protected synchronized void write(byte[] bytes, int offset, int length) {
         size += length;
         super.write(bytes, offset, length);
     }
 
-    public CompressionType getCompressionType() {
-        return this.type;
-    }
-
-    private void doCompress() {
-
-    }
     public long getFileSize() {
         return size;
     }
@@ -92,15 +84,15 @@ public class RollingFileManager extends FileManager {
 
     public synchronized void checkRollover(LogEvent event, TriggeringPolicy policy, RolloverStrategy strategy) {
         if (policy.isTriggeringEvent(event)) {
-            close();
-            strategy.rollover(this);
-            try {
-                size = 0;
-                initialTime = System.currentTimeMillis();
-                OutputStream os = new FileOutputStream(getFileName(), isAppend());
-                setOutputStream(os);
-            } catch (FileNotFoundException ex) {
-                logger.error("FileManager (" + getFileName() + ") " + ex);
+            if (rollover(strategy)) {
+                try {
+                    size = 0;
+                    initialTime = System.currentTimeMillis();
+                    OutputStream os = new FileOutputStream(getFileName(), isAppend());
+                    setOutputStream(os);
+                } catch (FileNotFoundException ex) {
+                    logger.error("FileManager (" + getFileName() + ") " + ex);
+                }
             }
         }
     }
@@ -109,19 +101,110 @@ public class RollingFileManager extends FileManager {
         return processor;
     }
 
+    private boolean rollover(RolloverStrategy strategy) {
+
+        boolean success = false;
+
+        try {
+            /* Block until the asynchronous operation is completed. If it takes too long then
+               don't roll over.
+             */
+            if (queue.poll(50, TimeUnit.MILLISECONDS) == null) {
+                logger.error("Unable to acquire lock for rollover");
+                return success;
+            }
+        } catch (InterruptedException ie) {
+            logger.error("Thread interrupted while attempting to check rollover", ie);
+            return success;
+        }
+
+        RolloverDescription descriptor = strategy.rollover(this);
+
+        if (descriptor != null) {
+
+            close();
+
+            try {
+
+                if (descriptor.getSynchronous() != null) {
+
+                    try {
+                        success = descriptor.getSynchronous().execute();
+                    } catch (Exception ex) {
+                        logger.error("Error in synchronous task", ex);
+                    }
+                }
+
+                if (success) {
+                    Action async = new AsyncAction(descriptor.getAsynchronous(), this);
+                    if (async != null) {
+                        new Thread(async).start();
+                    }
+                }
+            } finally {
+                if (!success && queue.size() == 0) {
+                    queue.add(this);
+                }
+            }
+            return success;
+        }
+        return false;
+    }
+
+    private static class AsyncAction extends ActionBase {
+
+        private final Action action;
+        private final RollingFileManager manager;
+
+        public AsyncAction(Action act, RollingFileManager manager) {
+            this.action = act;
+            this.manager = manager;
+        }
+
+        /**
+         * Perform an action.
+         *
+         * @return true if action was successful.  A return value of false will cause
+         *         the rollover to be aborted if possible.
+         * @throws java.io.IOException if IO error, a thrown exception will cause the rollover
+         *                             to be aborted if possible.
+         */
+        public boolean execute() throws IOException {
+            try {
+                return action.execute();
+            } finally {
+                this.manager.queue.add(manager);
+            }
+        }
+
+        /**
+         * Cancels the action if not already initialized or waits till completion.
+         */
+        public void close() {
+            action.close();
+        }
+
+        /**
+         * Determines if action has been completed.
+         *
+         * @return true if action is complete.
+         */
+        public boolean isComplete() {
+            return action.isComplete();
+        }
+    }
+
     private static class FactoryData {
         String fileName;
         String pattern;
         boolean append;
         boolean bufferedIO;
-        CompressionType type;
 
-        public FactoryData(String fileName, String pattern, boolean append, boolean bufferedIO, CompressionType type) {
+        public FactoryData(String fileName, String pattern, boolean append, boolean bufferedIO) {
             this.fileName = fileName;
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
-            this.type = type;
         }
     }
 
@@ -142,7 +225,7 @@ public class RollingFileManager extends FileManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new RollingFileManager(data.fileName, data.pattern, os, data.append, size, data.type, time);
+                return new RollingFileManager(data.fileName, data.pattern, os, data.append, size, time);
             } catch (FileNotFoundException ex) {
                 logger.error("FileManager (" + data.fileName + ") " + ex);
             }
