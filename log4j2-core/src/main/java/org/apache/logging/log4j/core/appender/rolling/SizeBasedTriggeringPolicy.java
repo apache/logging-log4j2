@@ -81,6 +81,10 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
         return manager.getFileSize() > maxFileSize;
     }
 
+    public String toString() {
+        return "SizeBasedTriggeringPolicy(size=" + maxFileSize +")";
+    }
+
     @PluginFactory
     public static SizeBasedTriggeringPolicy createPolicy(@PluginAttr("size") String size) {
 

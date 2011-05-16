@@ -59,8 +59,8 @@ import java.util.List;
  * current implementation will automatically reduce the window size to 12 when
  * larger values are specified by the user.
  */
-@Plugin(name = "FixedWindowRolloverStrategy", type = "Core", printObject = true)
-public class FixedWindowRolloverStrategy implements RolloverStrategy {
+@Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
+public class DefaultRolloverStrategy implements RolloverStrategy {
     /**
      * It's almost always a bad idea to have a large window size, say over 12.
      */
@@ -85,7 +85,7 @@ public class FixedWindowRolloverStrategy implements RolloverStrategy {
      * @param min The minimum index.
      * @param max The maximum index.
      */
-    public FixedWindowRolloverStrategy(int min, int max) {
+    public DefaultRolloverStrategy(int min, int max) {
         minIndex = min;
         maxIndex = max;
     }
@@ -216,8 +216,12 @@ public class FixedWindowRolloverStrategy implements RolloverStrategy {
         return true;
     }
 
+    public String toString() {
+        return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ")";
+    }
+
     @PluginFactory
-    public static FixedWindowRolloverStrategy createStrategy(@PluginAttr("max") String max,
+    public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
                                                              @PluginAttr("min") String min) {
         int maxIndex;
         if (max != null) {
@@ -240,7 +244,7 @@ public class FixedWindowRolloverStrategy implements RolloverStrategy {
             minIndex = MIN_WINDOW_SIZE;
         }
 
-        return new FixedWindowRolloverStrategy(minIndex, maxIndex);
+        return new DefaultRolloverStrategy(minIndex, maxIndex);
     }
 
 }

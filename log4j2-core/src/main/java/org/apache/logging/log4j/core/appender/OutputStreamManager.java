@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import com.sun.tools.hat.internal.model.StackTrace;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.internal.StatusLogger;

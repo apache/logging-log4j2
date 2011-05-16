@@ -51,6 +51,20 @@ public class CompositeTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder("CompositeTriggeringPolicy{");
+        boolean first = true;
+        for (TriggeringPolicy policy : policies) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(policy.toString());
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
     @PluginFactory
     public static CompositeTriggeringPolicy createPolicy(@PluginElement("policies") TriggeringPolicy[] policies) {
         return new CompositeTriggeringPolicy(policies);

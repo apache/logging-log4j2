@@ -491,10 +491,10 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
                 node.getName() + sb.toString());
             StringBuilder b = new StringBuilder();
-            if (parms.length > 0) {
+            //if (parms.length > 0) {
                 return factoryMethod.invoke(null, parms);
-            }
-            return factoryMethod.invoke(null, node);
+            //}
+            //return factoryMethod.invoke(null, node);
         }
         catch (Exception e)
         {

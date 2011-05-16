@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Formats a string literal.
  */
-public final class LiteralPatternConverter extends LogEventPatternConverter {
+public final class LiteralPatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
     /**
      * String literal.
      */
@@ -46,8 +46,11 @@ public final class LiteralPatternConverter extends LogEventPatternConverter {
         toAppendTo.append(literal);
     }
 
-    @Override
     public void format(final Object obj, final StringBuilder output) {
+        output.append(literal);
+    }
+
+    public void format(Object[] objects, final StringBuilder output) {
         output.append(literal);
     }
 }

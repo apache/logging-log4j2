@@ -38,12 +38,19 @@ public class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     }
 
     public boolean isTriggeringEvent(LogEvent event) {
+        if (manager.getFileSize() == 0) {
+            return false;
+        }
         long now = System.currentTimeMillis();
         if (now > nextRollover) {
             nextRollover = manager.getProcessor().getNextTime(now);
             return true;
         }
         return false;
+    }
+
+    public String toString() {
+        return "TimeBasedTriggeringPolicy";
     }
 
     @PluginFactory

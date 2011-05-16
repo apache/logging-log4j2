@@ -27,7 +27,7 @@ import java.util.Date;
  */
 @Plugin(name="IntegerPatternConverter", type="FileConverter")
 @ConverterKeys({"i", "index"})
-public final class IntegerPatternConverter extends PatternConverter {
+public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
     /**
      * Singleton.
      */
@@ -50,6 +50,15 @@ public final class IntegerPatternConverter extends PatternConverter {
     public static IntegerPatternConverter newInstance(
         final String[] options) {
         return INSTANCE;
+    }
+
+    public void format(Object[] objects, final StringBuilder toAppendTo) {
+        for (Object obj : objects) {
+            if (obj instanceof Integer) {
+                format(obj, toAppendTo);
+                break;
+            }
+        }
     }
 
     /**

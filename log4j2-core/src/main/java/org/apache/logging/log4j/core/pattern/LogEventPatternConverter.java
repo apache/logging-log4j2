@@ -25,7 +25,7 @@ import org.apache.logging.log4j.internal.StatusLogger;
  * LoggingEventPatternConverter is a base class for pattern converters
  * that can format information from instances of LoggingEvent.
  */
-public abstract class LogEventPatternConverter extends PatternConverter {
+public abstract class LogEventPatternConverter extends AbstractPatternConverter {
 
     protected static final Logger logger = StatusLogger.getLogger();
     /**

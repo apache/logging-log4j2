@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="" status="debug" name="XMLConfigTest">
   <properties>
-    <property name="filename">target/rolling1/rollingtest.log</property>
+    <property name="filename">target/rolling3/rollingtest.log</property>
   </properties>
   <filters>
     <Threshold level="debug"/>
@@ -11,11 +11,14 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling1/test1-%i.log.gz">
+    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
-      <SizeBasedTriggeringPolicy size="500" />
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="500" />
+      </Policies>
     </RollingFile>
     <List name="List">
       <filters>
@@ -25,15 +28,6 @@
   </appenders>
 
   <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <filters>
-        <ThreadContextMap>
-          <KeyValuePair key="test" value="123"/>
-        </ThreadContextMap>
-      </filters>
-      <appender-ref ref="STDOUT"/>
-    </logger>>
-
     <logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <appender-ref ref="RollingFile"/>
     </logger>>

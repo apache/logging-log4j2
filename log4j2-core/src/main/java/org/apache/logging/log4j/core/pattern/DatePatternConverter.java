@@ -18,12 +18,9 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.rolling.RolloverFrequency;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -33,7 +30,7 @@ import java.util.TimeZone;
  */
 @Plugin(name="DatePatternConverter", type="Converter")
 @ConverterKeys({"d", "date"})
-public final class DatePatternConverter extends LogEventPatternConverter {
+public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
     /**
      * ABSOLUTE string literal.
      */
@@ -139,6 +136,15 @@ public final class DatePatternConverter extends LogEventPatternConverter {
             }
         }
         output.append(cachedDate);
+    }
+
+    public void format(Object[] objects, final StringBuilder toAppendTo) {
+        for (Object obj : objects) {
+            if (obj instanceof Date) {
+                format(obj, toAppendTo);
+                break;
+            }
+        }
     }
 
     /**

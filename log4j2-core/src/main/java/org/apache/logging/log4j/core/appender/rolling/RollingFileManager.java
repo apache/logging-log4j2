@@ -30,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -103,19 +105,17 @@ public class RollingFileManager extends FileManager {
 
     private boolean rollover(RolloverStrategy strategy) {
 
-        boolean success = false;
-
         try {
             /* Block until the asynchronous operation is completed. If it takes too long then
                don't roll over.
              */
-            if (queue.poll(50, TimeUnit.MILLISECONDS) == null) {
+            if (queue.poll(100, TimeUnit.MILLISECONDS) == null) {
                 logger.error("Unable to acquire lock for rollover");
-                return success;
+                return false;
             }
         } catch (InterruptedException ie) {
             logger.error("Thread interrupted while attempting to check rollover", ie);
-            return success;
+            return false;
         }
 
         RolloverDescription descriptor = strategy.rollover(this);
@@ -124,6 +124,7 @@ public class RollingFileManager extends FileManager {
 
             close();
 
+            boolean success = false;
             try {
 
                 if (descriptor.getSynchronous() != null) {
@@ -146,7 +147,7 @@ public class RollingFileManager extends FileManager {
                     queue.add(this);
                 }
             }
-            return success;
+            return true;
         }
         return false;
     }
@@ -212,12 +213,18 @@ public class RollingFileManager extends FileManager {
 
         public RollingFileManager createManager(FactoryData data) {
             File file = new File(data.fileName);
-            long size = data.append ? file.length() : 0;
-            long time = file.lastModified();
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
             }
+            try {
+                file.createNewFile();
+            } catch (IOException ioe) {
+                logger.error("Unable to create file " + data.fileName, ioe);
+                return null;
+            }
+            long size = data.append ? file.length() : 0;
+            long time = file.lastModified();
 
             OutputStream os;
             try {

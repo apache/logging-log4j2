@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
@@ -104,8 +105,7 @@ public class RollingFileAppender extends OutputStreamAppender {
         }
 
         if (strategy == null) {
-            logger.error("A RolloverStrategy must be provided");
-            return null;
+            strategy = DefaultRolloverStrategy.createStrategy(null, null);
         }
 
         RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered);

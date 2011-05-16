@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
@@ -33,7 +34,7 @@ import java.util.List;
 public class PatternProcessor {
 
     private final String pattern;
-    private final PatternConverter[] patternConverters;
+    private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
 
     private DatePatternConverter dateConverter = null;
@@ -60,10 +61,10 @@ public class PatternProcessor {
         parser.parse(pattern, converters, fields);
         FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
         patternFields = fields.toArray(infoArray);
-        PatternConverter[] converterArray = new PatternConverter[converters.size()];
+        ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
 
-        for (PatternConverter converter : patternConverters) {
+        for (ArrayPatternConverter converter : patternConverters) {
             if (converter instanceof DatePatternConverter) {
                 dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
@@ -82,7 +83,7 @@ public class PatternProcessor {
             throw new IllegalStateException("Pattern does not contain a date");
         }
         Calendar currentCal = Calendar.getInstance();
-        currentCal.setTime(new Date(current));
+        currentCal.setTimeInMillis(current);
         Calendar cal = Calendar.getInstance();
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -129,9 +130,20 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      */
     protected final void formatFileName(final Object obj, final StringBuilder buf) {
+        Object[] objects = new Object[] { new Date(System.currentTimeMillis()), obj};
+        formatFileName(objects, buf);
+    }
+
+    /**
+     * Format file name.
+     *
+     * @param objects objects to be evaluated in formatting, may not be null.
+     * @param buf string buffer to which formatted file name is appended, may not be null.
+     */
+    protected final void formatFileName(final Object[] objects, final StringBuilder buf) {
         for (int i = 0; i < patternConverters.length; i++) {
             int fieldStart = buf.length();
-            patternConverters[i].format(obj, buf);
+            patternConverters[i].format(objects, buf);
 
             if (patternFields[i] != null) {
                 patternFields[i].format(fieldStart, buf);
