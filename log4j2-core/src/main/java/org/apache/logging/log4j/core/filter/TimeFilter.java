@@ -47,7 +47,7 @@ public class TimeFilter extends FilterBase {
     /**
      * Timezone.
      */
-    private final Calendar calendar;
+    private final TimeZone timezone;
 
 
     /**
@@ -69,11 +69,12 @@ public class TimeFilter extends FilterBase {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;
-        calendar = Calendar.getInstance(tz);
+        timezone = tz;
     }
 
     @Override
     public Result filter(LogEvent event) {
+        Calendar calendar = Calendar.getInstance(timezone);
         calendar.setTimeInMillis(event.getMillis());
         //
         //   get apparent number of milliseconds since midnight
@@ -102,7 +103,7 @@ public class TimeFilter extends FilterBase {
                 logger.warn("Error parsing start value " + start, ex);
             }
         }
-        long e = 0;
+        long e = Long.MAX_VALUE;
         if (end != null) {
             stf.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
