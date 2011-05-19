@@ -102,10 +102,9 @@ public class RollingFileManager extends FileManager {
     private boolean rollover(RolloverStrategy strategy) {
 
         try {
-            /* Block until the asynchronous operation is completed. If it takes too long then
-               don't roll over.
+            /* Block until the asynchronous operation is completed.
              */
-            if (queue.poll(100, TimeUnit.MILLISECONDS) == null) {
+            if (queue.take() == null) {
                 logger.error("Unable to acquire lock for rollover");
                 return false;
             }
