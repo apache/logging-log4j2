@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,7 +47,7 @@ public class RollingFileManager extends FileManager {
     private long size;
     private long initialTime;
     private PatternProcessor processor;
-    private ArrayBlockingQueue<RollingFileManager> queue = new ArrayBlockingQueue<RollingFileManager>(1);
+    private final Semaphore semaphore = new Semaphore(1);
     private static int count = 0;
 
     private static ManagerFactory factory = new RollingFileManagerFactory();
@@ -63,7 +64,6 @@ public class RollingFileManager extends FileManager {
         this.size = size;
         this.initialTime = time;
         processor = new PatternProcessor(pattern);
-        queue.add(this);
     }
 
 
@@ -102,12 +102,8 @@ public class RollingFileManager extends FileManager {
     private boolean rollover(RolloverStrategy strategy) {
 
         try {
-            /* Block until the asynchronous operation is completed.
-             */
-            if (queue.take() == null) {
-                logger.error("Unable to acquire lock for rollover");
-                return false;
-            }
+            // Block until the asynchronous operation is completed.
+            semaphore.acquire();
         } catch (InterruptedException ie) {
             logger.error("Thread interrupted while attempting to check rollover", ie);
             return false;
@@ -138,8 +134,8 @@ public class RollingFileManager extends FileManager {
                     }
                 }
             } finally {
-                if (!success && queue.size() == 0) {
-                    queue.add(this);
+                if (!success && semaphore.availablePermits() == 0) {
+                    semaphore.release();
                 }
             }
             return true;
@@ -169,7 +165,7 @@ public class RollingFileManager extends FileManager {
             try {
                 return action.execute();
             } finally {
-                this.manager.queue.add(manager);
+                manager.semaphore.release();
             }
         }
 
