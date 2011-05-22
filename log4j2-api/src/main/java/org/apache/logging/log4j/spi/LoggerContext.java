@@ -9,6 +9,8 @@ public interface LoggerContext {
 
     Logger getLogger(String name);
 
+    Logger getLogger(LoggerFactory factory, String name);
+
     boolean hasLogger(String name);
 
     Object getExternalContext();

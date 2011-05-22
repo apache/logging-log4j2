@@ -16,7 +16,10 @@
  */
 package org.apache.logging.slf4j;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.internal.StatusLogger;
@@ -32,8 +35,14 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.helpers.Log4JLoggerFactory;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -45,14 +54,14 @@ public class LoggerTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = Log4JLoggerFactory.getContext();
+        LoggerContext ctx = (LoggerContext) Log4JLoggerFactory.getContext();
         Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = Log4JLoggerFactory.getContext();
+        LoggerContext ctx = (LoggerContext) Log4JLoggerFactory.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -63,18 +72,23 @@ public class LoggerTest {
     @Test
     public void basicFlow() {
         xlogger.entry();
+        verify("List", "o.a.l.s.LoggerTest entry MDC{}\n");
         xlogger.exit();
+        verify("List", "o.a.l.s.LoggerTest exit MDC{}\n");
     }
 
     @Test
     public void simpleFlow() {
         xlogger.entry(CONFIG);
+        verify("List", "o.a.l.s.LoggerTest entry with (log4j-test1.xml) MDC{}\n");
         xlogger.exit(0);
+        verify("List", "o.a.l.s.LoggerTest exit with (0) MDC{}\n");
     }
 
     @Test
     public void throwing() {
         xlogger.throwing(new IllegalArgumentException("Test Exception"));
+        verify("List", "o.a.l.s.LoggerTest throwing MDC{}\n");
     }
 
     @Test
@@ -83,18 +97,21 @@ public class LoggerTest {
             throw new NullPointerException();
         } catch (Exception e) {
             xlogger.catching(e);
+            verify("List", "o.a.l.s.LoggerTest catching MDC{}\n");
         }
     }
 
     @Test
     public void debug() {
         logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
     }
 
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
+        verify("List", "o.a.l.s.LoggerTest Hello, World MDC{}\n");
     }
 
     @Test
@@ -102,8 +119,10 @@ public class LoggerTest {
 
         MDC.put("TestYear", "2010");
         logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}\n");
         MDC.clear();
         logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
     }
 
     @Test
@@ -120,5 +139,19 @@ public class LoggerTest {
         data.put("Amount", "200.00");
         EventLogger.logEvent(data);
         MDC.clear();
+        verify("EventLogger", "o.a.l.s.LoggerTest Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete\n");
+    }
+
+    private void verify(String name, String expected) {
+        LoggerContext ctx = (LoggerContext) Log4JLoggerFactory.getContext();
+        Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        Appender listApp = list.get(name);
+        assertNotNull("Missing Appender", listApp);
+        assertTrue("Not a ListAppender", listApp instanceof ListAppender);
+        List<String> events = ((ListAppender) listApp).getMessages();
+        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
+        String actual = events.get(0);
+        assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
+        ((ListAppender) listApp).clear();
     }
 }

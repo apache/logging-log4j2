@@ -18,9 +18,8 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.XMLConfiguration;
 import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.spi.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -42,7 +41,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private static StatusLogger logger = StatusLogger.getLogger();
 
-    private static final LoggerFactory FACTORY = new Factory();
+    private static final LoggerFactory<LoggerContext> FACTORY = new Factory();
 
     private Object externalContext = null;
 
@@ -68,7 +67,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             return logger;
         }
 
-        logger = factory.newInstance(this, name);
+        logger = (Logger) factory.newInstance(this, name);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
@@ -128,7 +127,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
     }
 
-    private static class Factory implements LoggerFactory {
+    private static class Factory implements LoggerFactory<LoggerContext> {
 
         public Logger newInstance(LoggerContext ctx, String name) {
             return new Logger(ctx, name);

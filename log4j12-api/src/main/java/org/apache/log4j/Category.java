@@ -19,8 +19,6 @@ package org.apache.log4j;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.LoggerFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
@@ -267,7 +265,7 @@ public class Category {
         }
     }
 
-    protected LoggerFactory getFactory() {
+    protected org.apache.logging.log4j.spi.LoggerFactory getFactory() {
         return FACTORY;
     }
 
@@ -278,7 +276,7 @@ public class Category {
         }
     }
 
-    private static class CategoryFactory implements LoggerFactory {
+    private static class CategoryFactory implements org.apache.logging.log4j.spi.LoggerFactory<LoggerContext> {
 
         public org.apache.logging.log4j.core.Logger newInstance(LoggerContext ctx, String name) {
             return new CategoryLogger(ctx, name);

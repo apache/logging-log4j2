@@ -209,5 +209,6 @@
     <module>log4j12-api</module>
     <module>log4j2-core</module>
     <module>slf4j-impl</module>
+    <module>log4j2-jcl</module>
   </modules>
 </project>

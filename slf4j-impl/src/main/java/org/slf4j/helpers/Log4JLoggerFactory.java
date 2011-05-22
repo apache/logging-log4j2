@@ -16,42 +16,39 @@
  */
 package org.slf4j.helpers;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.slf4j.SLF4JLoggingException;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.impl.Log4JLogger;
+import org.slf4j.impl.SLF4JLogger;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *
  */
 public class Log4JLoggerFactory implements ILoggerFactory {
 
-    private static LoggerContext ctx = new Log4JContext();
+    private static LoggerContext context = LogManager.getContext();
 
-    public Logger getLogger(String s) {
-        return (Logger) ctx.getLogger(s);
-    }
+    private ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
     public static LoggerContext getContext() {
-        return ctx;    
+        return context;
     }
 
-    private static class Log4JContext extends LoggerContext {
-
-        private static LoggerFactory loggerFactory = new Factory();
-
-        @Override
-        public org.apache.logging.log4j.core.Logger getLogger(String name) {
-            return getLogger(loggerFactory, name);
+    public Logger getLogger(String name) {
+        if (loggers.containsKey(name)) {
+            return loggers.get(name);
         }
-
-    }
-
-    private static class Factory implements LoggerFactory {
-
-        public org.apache.logging.log4j.core.Logger newInstance(LoggerContext ctx, String name) {
-            return new Log4JLogger(ctx, name);
+        org.apache.logging.log4j.Logger logger = context.getLogger(name);
+        if (logger instanceof AbstractLogger) {
+            loggers.putIfAbsent(name, new SLF4JLogger((AbstractLogger) logger, name));
+            return loggers.get(name);
         }
+        throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
     }
 }

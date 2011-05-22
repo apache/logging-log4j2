@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -37,28 +38,41 @@ public class ListAppender extends AppenderBase {
 
     private List<LogEvent> events = new ArrayList<LogEvent>();
 
+    private List<String> messages = new ArrayList<String>();
+
     public ListAppender(String name) {
         super(name, null, null);
     }
 
-    public ListAppender(String name, Filters filters) {
-        super(name, filters, null);
+    public ListAppender(String name, Filters filters, Layout layout) {
+        super(name, filters, layout);
     }
 
     public synchronized void append(LogEvent event) {
-        events.add(event);
+        Layout layout = getLayout();
+        if (layout == null) {
+            events.add(event);
+        } else {
+            messages.add(new String(layout.format(event)));
+        }
     }
 
     public synchronized void clear() {
         events.clear();
+        messages.clear();
     }
 
     public synchronized List<LogEvent> getEvents() {
         return Collections.unmodifiableList(events);
     }
 
+    public synchronized List<String> getMessages() {
+        return Collections.unmodifiableList(messages);
+    }
+
     @PluginFactory
     public static ListAppender createAppender(@PluginAttr("name") String name,
+                                              @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filters filters) {
 
         if (name == null) {
@@ -66,6 +80,6 @@ public class ListAppender extends AppenderBase {
             return null;
         }
 
-        return new ListAppender(name, filters);
+        return new ListAppender(name, filters, layout);
     }
 }

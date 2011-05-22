@@ -14,30 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.jcl;
 
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 
 /**
  *
  */
-public class SimpleLoggerContext implements LoggerContext {
-    private Logger logger = new SimpleLogger();
+public class Log4JLog extends AbstractLoggerWrapper implements Log {
 
-    public Logger getLogger(String name) {
-        return logger;
-    }
-
-    public boolean hasLogger(String name) {
-        return false;
-    }
-
-    public Object getExternalContext() {
-        return null;
-    }
-
-    public Logger getLogger(LoggerFactory factory, String name) {
-        return factory.newInstance(this, name);
+    public Log4JLog(AbstractLogger logger, String name) {
+        super(logger, name);
     }
 }
