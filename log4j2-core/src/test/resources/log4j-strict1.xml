@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="debug" strict="true" name="XMLConfigTest">
+  <properties>
+    <property name="filename">target/test.log</property>
+  </properties>
+  <filters>
+    <filter type="Threshold" level="trace"/>
+  </filters>
+
+  <appenders>
+    <appender type="Console" name="STDOUT">
+      <layout type="PatternLayout" pattern="%m MDC%X%n"/>
+      <filters>
+        <filter type="Marker" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <filter type="Marker" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+      </filters>
+    </appender>
+    <appender type="Console" name="FLOW">
+      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
+      <filters>
+        <filter type="Marker" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <filter type="Marker" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </filters>
+    </appender>
+    <appender type="File" name="File" fileName="${filename}">
+      <layout type="PatternLayout">
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </layout>
+    </appender>
+    <appender type="List" name="List">
+      <filters>
+        <filter type="Threshold" level="error"/>
+      </filters>
+    </appender>
+  </appenders>
+
+  <loggers>
+    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <filters>
+        <filter type="ThreadContextMap">
+          <KeyValuePair key="test" value="123"/>
+        </filter>
+      </filters>
+      <appender-ref ref="STDOUT"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <appender-ref ref="File"/>
+    </logger>>
+
+    <root level="trace">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="FLOW"/>
+    </root>
+  </loggers>
+
+</configuration>

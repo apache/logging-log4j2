@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="configuration" type="configurationType"/>
+  <xs:complexType name="configurationType">
+    <xs:sequence>
+      <xs:element type="propertiesType" name="properties"/>
+      <xs:element type="filtersType" name="filters"/>
+      <xs:element type="appendersType" name="appenders"/>
+      <xs:element type="loggersType" name="loggers"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="packages"/>
+    <xs:attribute type="xs:string" name="status"/>
+    <xs:attribute type="xs:string" name="strict"/>
+    <xs:attribute type="xs:string" name="name"/>
+  </xs:complexType>
+  <xs:complexType name="propertiesType">
+    <xs:sequence>
+      <xs:element type="propertyType" name="property"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="appenderType">
+    <xs:sequence>
+      <xs:element type="layoutType" name="layout" minOccurs="0"/>
+      <xs:element type="filtersType" name="filters" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="type" use="required"/>
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="xs:string" name="fileName" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="rootType">
+    <xs:sequence>
+      <xs:element type="appender-refType" name="appender-ref" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="level"/>
+  </xs:complexType>
+  <xs:complexType name="propertyType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="KeyValuePairType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="key"/>
+        <xs:attribute type="xs:string" name="value"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="appendersType">
+    <xs:sequence>
+      <xs:element type="appenderType" name="appender" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="appender-refType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="ref" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="loggerType">
+    <xs:sequence>
+      <xs:element type="filtersType" name="filters" minOccurs="0"/>
+      <xs:element type="appender-refType" name="appender-ref"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="xs:string" name="level" use="optional"/>
+    <xs:attribute type="xs:string" name="additivity" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="filterType" mixed="true">
+    <xs:sequence>
+      <xs:element type="KeyValuePairType" name="KeyValuePair" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="type" use="required"/>
+    <xs:attribute type="xs:string" name="level" use="optional"/>
+    <xs:attribute type="xs:string" name="marker" use="optional"/>
+    <xs:attribute type="xs:string" name="onMatch" use="optional"/>
+    <xs:attribute type="xs:string" name="onMismatch" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="filtersType">
+    <xs:sequence>
+      <xs:element type="filterType" name="filter" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="loggersType" mixed="true">
+    <xs:sequence>
+      <xs:element type="loggerType" name="logger" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="rootType" name="root" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="layoutType" mixed="true">
+    <xs:sequence>
+      <xs:element type="xs:string" name="pattern" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="type" use="required"/>
+    <xs:attribute type="xs:string" name="pattern" use="optional"/>
+  </xs:complexType>
+</xs:schema>

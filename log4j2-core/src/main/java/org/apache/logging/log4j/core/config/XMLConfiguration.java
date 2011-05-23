@@ -31,10 +31,19 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,10 +57,20 @@ public class XMLConfiguration extends BaseConfiguration {
 
     private Element rootElement = null;
 
+    private boolean strict = false;
+
     private static final String[] verboseClasses = new String[] { ResolverUtil.class.getName() };
 
+    private Validator validator;
+
+    private static final String LOG4J_XSD = "Log4J-V2.0.xsd";
+
     public XMLConfiguration(InputSource source) {
+        byte[] buffer = null;
+
         try {
+            buffer = toByteArray(source.getByteStream());
+            source = new InputSource(new ByteArrayInputStream(buffer));
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
@@ -71,6 +90,8 @@ public class XMLConfiguration extends BaseConfiguration {
                     }
                 } else if ("name".equalsIgnoreCase(entry.getKey())) {
                     setName(entry.getValue());
+                } else if ("strict".equalsIgnoreCase(entry.getKey())) {
+                    strict = Boolean.parseBoolean(entry.getValue());
                 }
             }
             if (status != Level.OFF) {
@@ -88,6 +109,28 @@ public class XMLConfiguration extends BaseConfiguration {
         } catch (ParserConfigurationException pex) {
             logger.error("Error parsing " + source.getSystemId(), pex);
         }
+        if (strict && buffer != null) {
+            InputStream is = getClass().getClassLoader().getResourceAsStream(LOG4J_XSD);
+            Source src = new StreamSource(is, LOG4J_XSD);
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = null;
+            try {
+                schema = factory.newSchema(src);
+            } catch (SAXException ex) {
+                logger.error("Error parsing Log4j schema", ex);
+            }
+            if (schema != null) {
+                validator = schema.newValidator();
+                try {
+                    validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
+                } catch (IOException ioe) {
+                    logger.error("Error reading configuration for validation", ioe);
+                } catch (SAXException ex) {
+                    logger.error("Error validating configuration", ex);
+                }
+            }
+        }
+
         if (getName() == null) {
             setName(source.getSystemId());
         }
@@ -113,7 +156,7 @@ public class XMLConfiguration extends BaseConfiguration {
             org.w3c.dom.Node w3cNode = list.item(i);
             if (w3cNode instanceof Element) {
                 Element child = (Element) w3cNode;
-                String name = child.getTagName();
+                String name = getType(child);
                 PluginType type = getPluginManager().getPluginType(name);
                 Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
@@ -137,6 +180,37 @@ public class XMLConfiguration extends BaseConfiguration {
         if (text.length() > 0 || (!node.hasChildren() && !node.isRoot())) {
             node.setValue(text);
         }
+    }
+
+    private String getType(Element element) {
+        if (strict) {
+            NamedNodeMap attrs = element.getAttributes();
+            for (int i= 0; i < attrs.getLength(); ++i) {
+                org.w3c.dom.Node w3cNode = attrs.item(i);
+                if (w3cNode instanceof Attr) {
+                    Attr attr = (Attr) w3cNode;
+                    if (attr.getName().equalsIgnoreCase("type")) {
+                        String type = attr.getValue();
+                        attrs.removeNamedItem(attr.getName());
+                        return type;
+                    }
+                }
+            }
+        }
+        return element.getTagName();
+    }
+
+    private byte[] toByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        return buffer.toByteArray();
     }
 
     private Map<String, String> processAttributes(Node node, Element element) {
@@ -168,7 +242,5 @@ public class XMLConfiguration extends BaseConfiguration {
             this.errorType = errorType;
         }
     }
-
-
 
 }
