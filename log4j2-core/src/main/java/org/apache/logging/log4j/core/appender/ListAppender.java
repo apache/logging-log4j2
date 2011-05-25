@@ -33,19 +33,29 @@ import java.util.List;
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
  * List could eventually grow to cause an OutOfMemoryError.
  */
-@Plugin(name="List",type="Core",elementType="appender",printObject=true)
+@Plugin(name = "List", type = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AppenderBase {
 
     private List<LogEvent> events = new ArrayList<LogEvent>();
 
     private List<String> messages = new ArrayList<String>();
 
+    private final boolean newLine;
+
     public ListAppender(String name) {
         super(name, null, null);
+        newLine = false;
     }
 
-    public ListAppender(String name, Filters filters, Layout layout) {
+    public ListAppender(String name, Filters filters, Layout layout, boolean newline) {
         super(name, filters, layout);
+        this.newLine = newline;
+        if (layout != null) {
+            byte[] bytes = layout.getHeader();
+            if (bytes != null) {
+                write(bytes);
+            }
+        }
     }
 
     public synchronized void append(LogEvent event) {
@@ -53,7 +63,41 @@ public class ListAppender extends AppenderBase {
         if (layout == null) {
             events.add(event);
         } else {
-            messages.add(new String(layout.format(event)));
+            write(layout.format(event));
+        }
+    }
+
+    private void write(byte[] bytes) {
+        String str = new String(bytes);
+        if (newLine) {
+            int index = 0;
+            while (index < str.length()) {
+                int end = str.indexOf("\n", index);
+                if (index == end) {
+                    if (!messages.get(messages.size() - 1).equals("")) {
+                        messages.add("");
+                    }
+                } else if (end >= 0) {
+                    messages.add(str.substring(index, end));
+                } else {
+                    messages.add(str.substring(index));
+                    break;
+                }
+                index = end + 1;
+            }
+        } else {
+            messages.add(str);
+        }
+    }
+
+    public void stop() {
+        super.stop();
+        Layout layout = getLayout();
+        if (layout != null) {
+            byte[] bytes = layout.getFooter();
+            if (bytes != null) {
+                write(bytes);
+            }
         }
     }
 
@@ -72,6 +116,7 @@ public class ListAppender extends AppenderBase {
 
     @PluginFactory
     public static ListAppender createAppender(@PluginAttr("name") String name,
+                                              @PluginAttr("entryPerNewLine") String newLine,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filters filters) {
 
@@ -80,6 +125,8 @@ public class ListAppender extends AppenderBase {
             return null;
         }
 
-        return new ListAppender(name, filters, layout);
+        boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
+
+        return new ListAppender(name, filters, layout, nl);
     }
 }

@@ -48,8 +48,6 @@ public class OutputStreamManager {
 
     private int count;
 
-    private byte[] header = null;
-
     private byte[] footer = null;
 
     public StringBuilder buffer = new StringBuilder();
@@ -86,13 +84,17 @@ public class OutputStreamManager {
     }
 
     public synchronized void setHeader(byte[] header) {
-        if (header == null) {
-            this.header = header;
+        if (header != null) {
+            try {
+                this.os.write(header, 0, header.length);
+            } catch (IOException ioe) {
+                logger.error("Unable to write header", ioe);
+            }
         }
     }
 
     public synchronized void setFooter(byte[] footer) {
-        if (footer == null) {
+        if (footer != null) {
             this.footer = footer;
         }
     }

@@ -45,8 +45,14 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private Object externalContext = null;
 
+    private static final long JVM_START_TIME = System.currentTimeMillis();
+
     public LoggerContext() {
         reconfigure();
+    }
+
+    public static long getStartTime() {
+        return JVM_START_TIME;
     }
 
     public void setExternalContext(Object context) {
