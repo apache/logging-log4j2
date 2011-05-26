@@ -23,16 +23,12 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Compare;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.FileOutputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -40,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class HTMLLayoutTest {
+public class XMLLayoutTest {
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
     Logger root = ctx.getLogger("");
 
@@ -59,7 +55,7 @@ public class HTMLLayoutTest {
     }
 
     private static final String body =
-        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">java.lang.NullPointerException: test";
+        "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
 
 
     /**
@@ -69,7 +65,7 @@ public class HTMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null);
+        XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null);
         ListAppender appender = new ListAppender("List", null, layout, true);
         appender.start();
 
@@ -96,9 +92,9 @@ public class HTMLLayoutTest {
 
         List<String> list = appender.getMessages();
 
-        assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
-        assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        assertTrue("Incorrect body", list.get(61).equals(body));
+        assertTrue("Incorrect number of lines. Require at least 50 " + list.size(), list.size() > 50);
+        assertTrue("Incorrect header", list.get(0).equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r"));
+        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</log4j:eventSet>\r"));
+        assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(8), list.get(8).equals(body));
     }
 }
