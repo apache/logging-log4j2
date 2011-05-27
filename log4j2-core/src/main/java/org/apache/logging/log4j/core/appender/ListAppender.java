@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.Filters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,16 +42,22 @@ public class ListAppender extends AppenderBase {
 
     private List<String> messages = new ArrayList<String>();
 
+    private List<byte[]> data = new ArrayList<byte[]>();
+
     private final boolean newLine;
+
+    private final boolean raw;
 
     public ListAppender(String name) {
         super(name, null, null);
         newLine = false;
+        raw = false;
     }
 
-    public ListAppender(String name, Filters filters, Layout layout, boolean newline) {
+    public ListAppender(String name, Filters filters, Layout layout, boolean newline, boolean raw) {
         super(name, filters, layout);
         this.newLine = newline;
+        this.raw = raw;
         if (layout != null) {
             byte[] bytes = layout.getHeader();
             if (bytes != null) {
@@ -68,6 +76,10 @@ public class ListAppender extends AppenderBase {
     }
 
     private void write(byte[] bytes) {
+        if (raw) {
+            data.add(bytes);
+            return;
+        }
         String str = new String(bytes);
         if (newLine) {
             int index = 0;
@@ -114,9 +126,14 @@ public class ListAppender extends AppenderBase {
         return Collections.unmodifiableList(messages);
     }
 
+    public synchronized List<byte[]> getData() {
+        return Collections.unmodifiableList(data);
+    }
+
     @PluginFactory
     public static ListAppender createAppender(@PluginAttr("name") String name,
                                               @PluginAttr("entryPerNewLine") String newLine,
+                                              @PluginAttr("raw") String raw,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filters filters) {
 
@@ -126,7 +143,8 @@ public class ListAppender extends AppenderBase {
         }
 
         boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
+        boolean r = (raw == null) ? false : Boolean.parseBoolean(raw);
 
-        return new ListAppender(name, filters, layout, nl);
+        return new ListAppender(name, filters, layout, nl, r);
     }
 }

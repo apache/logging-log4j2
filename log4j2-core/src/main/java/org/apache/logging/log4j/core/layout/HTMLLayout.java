@@ -42,13 +42,9 @@ import java.util.ArrayList;
 @Plugin(name="HTMLLayout",type="Core",elementType="layout",printObject=true)
 public class HTMLLayout extends LayoutBase {
 
-    protected final int BUF_SIZE = 256;
-    protected final int MAX_CAPACITY = 1024;
+    protected static final int BUF_SIZE = 256;
 
-    static String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
-
-    // output buffer appended to when format() is invoked
-    private StringBuilder sbuf = new StringBuilder(BUF_SIZE);
+    private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 
     // Print no location info by default
     protected final boolean locationInfo;
@@ -71,12 +67,7 @@ public class HTMLLayout extends LayoutBase {
     }
 
     public byte[] format(LogEvent event) {
-
-        if (sbuf.capacity() > MAX_CAPACITY) {
-            sbuf = new StringBuilder(BUF_SIZE);
-        } else {
-            sbuf.setLength(0);
-        }
+        StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
         sbuf.append(LINE_SEP).append("<tr>").append(LINE_SEP);
 
@@ -85,7 +76,7 @@ public class HTMLLayout extends LayoutBase {
         sbuf.append("</td>").append(LINE_SEP);
 
         String escapedThread = Transform.escapeTags(event.getThreadName());
-        sbuf.append("<td title=\"" + escapedThread + " thread\">");
+        sbuf.append("<td title=\"").append(escapedThread).append(" thread\">");
         sbuf.append(escapedThread);
         sbuf.append("</td>").append(LINE_SEP);
 
@@ -128,7 +119,7 @@ public class HTMLLayout extends LayoutBase {
         if (event.getContextStack().size() > 0) {
             sbuf.append(
                 "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
-            sbuf.append("NDC: " + Transform.escapeTags(event.getContextStack().toString()));
+            sbuf.append("NDC: ").append(Transform.escapeTags(event.getContextStack().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 
@@ -136,7 +127,7 @@ public class HTMLLayout extends LayoutBase {
         if (event.getContextMap().size() > 0) {
             sbuf.append(
                 "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Mapped Diagnostic Context\">");
-            sbuf.append("MDC: " + Transform.escapeTags(event.getContextMap().toString()));
+            sbuf.append("MDC: ").append(Transform.escapeTags(event.getContextMap().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 

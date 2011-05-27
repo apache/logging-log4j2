@@ -160,6 +160,15 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         throw new InvalidObjectException("Proxy required");
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        String n = name.length() == 0 ? "root" : name;
+        sb.append("Logger=").append(n);
+        sb.append(" Level=").append(level.name());
+        sb.append(" Message").append(message.getFormattedMessage());
+        return sb.toString();
+    }
+
     private static class LogEventProxy implements Serializable {
 
 

@@ -20,19 +20,19 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Compare;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class HTMLLayoutTest {
+public class SerializedLayoutTest {
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
     Logger root = ctx.getLogger("");
 
@@ -59,7 +59,14 @@ public class HTMLLayoutTest {
     }
 
     private static final String body =
-        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">java.lang.NullPointerException: test";
+        "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
+
+    private static final String[] expected = {
+        "Logger=root Level=DEBUG Messagestarting mdc pattern test",
+        "Logger=root Level=DEBUG Messageempty mdc",
+        "Logger=root Level=DEBUG Messagefilled mdc",
+        "Logger=root Level=ERROR Messagefinished mdc pattern test"
+    };
 
 
     /**
@@ -69,8 +76,8 @@ public class HTMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null);
-        ListAppender appender = new ListAppender("List", null, layout, true, false);
+        SerializedLayout layout = SerializedLayout.createLayout();
+        ListAppender appender = new ListAppender("List", null, layout, false, true);
         appender.start();
 
         // set appender on root and set level to debug
@@ -94,11 +101,16 @@ public class HTMLLayoutTest {
 
         appender.stop();
 
-        List<String> list = appender.getMessages();
+        List<byte[]> data = appender.getData();
+        assertTrue(data.size() > 0);
+        int i = 0;
+        for (byte[] item : data) {
+            ByteArrayInputStream bais = new ByteArrayInputStream(item);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            LogEvent event = (LogEvent) ois.readObject();
+            assertTrue("Incorrect event", event.toString().equals(expected[i]));
+            ++i;
+        }
 
-        assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
-        assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        assertTrue("Incorrect body", list.get(61).equals(body));
     }
 }

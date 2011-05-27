@@ -71,13 +71,11 @@ import org.apache.logging.log4j.core.LogEvent;
 @Plugin(name="XMLLayout",type="Core",elementType="layout",printObject=true)
 public class XMLLayout extends LayoutBase {
 
-    private static final int DEFAULT_SIZE = 256;
-    private static final int UPPER_LIMIT = 2048;
-
-    private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
     private final boolean locationInfo;
     private final boolean properties;
     private final boolean complete;
+
+    protected static final int DEFAULT_SIZE = 256;
 
     protected final Charset charset;
 
@@ -92,14 +90,7 @@ public class XMLLayout extends LayoutBase {
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
      */
     public byte[] format(final LogEvent event) {
-
-        // Reset working buffer. If the buffer is too large, then we need a new
-        // one in order to avoid the penalty of creating a large array.
-        if (buf.capacity() > UPPER_LIMIT) {
-            buf = new StringBuilder(DEFAULT_SIZE);
-        } else {
-            buf.setLength(0);
-        }
+        StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.
 
