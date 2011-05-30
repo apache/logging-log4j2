@@ -28,8 +28,6 @@ import java.util.Stack;
  * <p><b><em>The MDC is managed on a per thread basis</em></b>. A
  * child thread automatically inherits a <em>copy</em> of the mapped
  * diagnostic context of its parent.
- *
- * @doubt I'd throw the concept into a ThreadContext object. (RG) I agree - will revise this.
  */
 public final class ThreadContext {
 
