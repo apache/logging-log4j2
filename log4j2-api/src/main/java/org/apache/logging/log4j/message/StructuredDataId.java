@@ -74,6 +74,9 @@ public class StructuredDataId implements Serializable {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
+        if (name.contains("@")) {
+            throw new IllegalArgumentException("Structured id name cannot contain an '@");
+        }
         if (enterpriseNumber <= 0) {
             throw new IllegalArgumentException("No enterprise number was supplied");
         }

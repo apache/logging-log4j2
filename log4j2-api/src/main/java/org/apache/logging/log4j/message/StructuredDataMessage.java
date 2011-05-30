@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
@@ -30,7 +33,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
 
     public static final String FULL = "full";
 
-    private Map data = new HashMap();
+    private Map<String, String> data = new HashMap<String, String>();
 
     private StructuredDataId id;
 
@@ -99,7 +102,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
         this.message = msg;
     }
 
-    public Map getData() {
+    public Map<String, String> getData() {
         return Collections.unmodifiableMap(data);
     }
 
@@ -123,11 +126,11 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
     }
 
     public String get(String key) {
-        return (String) data.get(key);
+        return data.get(key);
     }
 
     public String remove(String key) {
-        return (String) data.remove(key);
+        return data.remove(key);
     }
 
     /**
@@ -195,9 +198,8 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
     }
 
     private void appendMap(Map map, StringBuffer sb) {
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
+        SortedMap<String, Object> sorted = new TreeMap<String, Object>(map);
+        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
             sb.append(" ");
             sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
         }
