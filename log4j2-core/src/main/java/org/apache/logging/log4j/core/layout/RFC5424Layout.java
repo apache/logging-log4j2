@@ -32,11 +32,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -62,6 +60,7 @@ public class RFC5424Layout extends LayoutBase {
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
     private final ListChecker checker;
+    private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
 
     private long lastTimestamp = -1;
@@ -115,7 +114,7 @@ public class RFC5424Layout extends LayoutBase {
         } else {
             mdcIncludes = null;
         }
-        this.checker = c != null ? c : new NoopChecker();
+        this.checker = c != null ? c : noopChecker;
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
         String name = ctx.getConfiguration().getName();
         configName = (name != null && name.length() > 0) ? name : null;
@@ -159,12 +158,12 @@ public class RFC5424Layout extends LayoutBase {
             StructuredDataMessage data = (StructuredDataMessage) msg;
             Map map = data.getData();
             StructuredDataId id = data.getId();
-            formatStructuredElement(id, map, buf);
+            formatStructuredElement(id, map, buf, noopChecker);
             if (includeMDC)
             {
                 int ein = id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
                 StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
-                formatStructuredElement(mdcSDID, event.getContextMap(), buf);
+                formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
             }
             String text = data.getMessageFormat();
             if (text != null && text.length() > 0) {
@@ -266,7 +265,8 @@ public class RFC5424Layout extends LayoutBase {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(StructuredDataId id, Map<String, Object> data, StringBuilder sb)
+    private void formatStructuredElement(StructuredDataId id, Map<String, Object> data, StringBuilder sb,
+                                         ListChecker checker)
     {
         if (id == null && defaultId == null)
         {
@@ -274,7 +274,7 @@ public class RFC5424Layout extends LayoutBase {
         }
         sb.append("[");
         sb.append(getId(id));
-        appendMap(data, sb);
+        appendMap(data, sb, checker);
         sb.append("]");
     }
 
@@ -295,7 +295,7 @@ public class RFC5424Layout extends LayoutBase {
         return sb.toString();
     }
 
-    private void appendMap(Map<String, Object> map, StringBuilder sb)
+    private void appendMap(Map<String, Object> map, StringBuilder sb, ListChecker checker)
     {
         SortedMap<String, Object> sorted = new TreeMap<String, Object>(map);
         for (Map.Entry<String, Object> entry : sorted.entrySet())

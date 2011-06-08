@@ -49,7 +49,7 @@ public class FileManager extends OutputStreamManager {
         if (locking && bufferedIO) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, factory, new FactoryData(fileName, append, locking, bufferedIO));
+        return (FileManager) getManager(fileName, factory, new FactoryData(append, locking, bufferedIO));
     }
 
     public FileManager(String fileName, OutputStream os, boolean append, boolean locking) {
@@ -98,13 +98,11 @@ public class FileManager extends OutputStreamManager {
     }
 
     private static class FactoryData {
-        String fileName;
         boolean append;
         boolean locking;
         boolean bufferedIO;
 
-        public FactoryData(String fileName, boolean append, boolean locking, boolean bufferedIO) {
-            this.fileName = fileName;
+        public FactoryData(boolean append, boolean locking, boolean bufferedIO) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
@@ -113,8 +111,8 @@ public class FileManager extends OutputStreamManager {
 
     private static class FileManagerFactory implements ManagerFactory<FileManager, FactoryData> {
 
-        public FileManager createManager(FactoryData data) {
-            File file = new File(data.fileName);
+        public FileManager createManager(String name, FactoryData data) {
+            File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
@@ -122,13 +120,13 @@ public class FileManager extends OutputStreamManager {
 
             OutputStream os;
             try {
-                os = new FileOutputStream(data.fileName, data.append);
+                os = new FileOutputStream(name, data.append);
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new FileManager(data.fileName, os, data.append, data.locking);
+                return new FileManager(name, os, data.append, data.locking);
             } catch (FileNotFoundException ex) {
-                logger.error("FileManager (" + data.fileName + ") " + ex);
+                logger.error("FileManager (" + name + ") " + ex);
             }
             return null;
         }

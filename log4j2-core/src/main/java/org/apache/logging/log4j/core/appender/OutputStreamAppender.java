@@ -89,31 +89,6 @@ public abstract class OutputStreamAppender extends AppenderBase {
 
     }
 
-    /**
-     * If the <b>ImmediateFlush</b> option is set to
-     * <code>true</code>, the appender will flush at the end of each
-     * write. This is the default behavior. If the option is set to
-     * <code>false</code>, then the underlying stream can defer writing
-     * to physical medium to a later time.
-     * <p/>
-     * <p>Avoiding the flush operation at the end of each append results in
-     * a performance gain of 10 to 20 percent. However, there is safety
-     * tradeoff involved in skipping flushing. Indeed, when flushing is
-     * skipped, then it is likely that the last few log events will not
-     * be recorded on disk when the application exits. This is a high
-     * price to pay even for a 20% performance gain.
-     */
-    public void setImmediateFlush(boolean value) {
-        immediateFlush = value;
-    }
-
-    /**
-     * Returns value of the <b>ImmediateFlush</b> option.
-     */
-    public boolean getImmediateFlush() {
-        return immediateFlush;
-    }
-
     @Override
     public void start() {
         if (getLayout() == null) {

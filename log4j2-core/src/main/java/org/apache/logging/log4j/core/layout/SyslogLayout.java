@@ -53,7 +53,6 @@ public class SyslogLayout extends LayoutBase {
 
     public SyslogLayout(Facility facility, boolean includeNL, Charset c) {
         this.facility = facility;
-        this.header = header;
         this.includeNewLine = includeNL;
         this.charset = c;
     }

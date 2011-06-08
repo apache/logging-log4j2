@@ -94,21 +94,6 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
         return name;
     }
 
-    /**
-     * Set the layout. Synchronization is not required since this can only occur before the appender is started.
-     */
-    public void setLayout(Layout layout) {
-        if (isStarted()) {
-            logger.error("The layout cannot be changed once the appender is started");
-            return;
-        }
-        if (layout == null) {
-            logger.error("The layout for appender " + getName() + " cannot be set to null");
-            return;
-        }
-        this.layout = layout;
-    }
-
     public Layout getLayout() {
         return layout;
     }

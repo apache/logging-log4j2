@@ -30,9 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -55,7 +53,7 @@ public class RollingFileManager extends FileManager {
     public static RollingFileManager getFileManager(String fileName, String pattern, boolean append,
                                                     boolean bufferedIO) {
 
-        return (RollingFileManager) getManager(fileName, factory, new FactoryData(fileName, pattern, append,
+        return (RollingFileManager) getManager(fileName, factory, new FactoryData(pattern, append,
             bufferedIO));
     }
 
@@ -187,13 +185,11 @@ public class RollingFileManager extends FileManager {
     }
 
     private static class FactoryData {
-        String fileName;
         String pattern;
         boolean append;
         boolean bufferedIO;
 
-        public FactoryData(String fileName, String pattern, boolean append, boolean bufferedIO) {
-            this.fileName = fileName;
+        public FactoryData(String pattern, boolean append, boolean bufferedIO) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
@@ -202,8 +198,8 @@ public class RollingFileManager extends FileManager {
 
     private static class RollingFileManagerFactory implements ManagerFactory<RollingFileManager, FactoryData> {
 
-        public RollingFileManager createManager(FactoryData data) {
-            File file = new File(data.fileName);
+        public RollingFileManager createManager(String name, FactoryData data) {
+            File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
@@ -211,7 +207,7 @@ public class RollingFileManager extends FileManager {
             try {
                 file.createNewFile();
             } catch (IOException ioe) {
-                logger.error("Unable to create file " + data.fileName, ioe);
+                logger.error("Unable to create file " + name, ioe);
                 return null;
             }
             long size = data.append ? file.length() : 0;
@@ -219,13 +215,13 @@ public class RollingFileManager extends FileManager {
 
             OutputStream os;
             try {
-                os = new FileOutputStream(data.fileName, data.append);
+                os = new FileOutputStream(name, data.append);
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new RollingFileManager(data.fileName, data.pattern, os, data.append, size, time);
+                return new RollingFileManager(name, data.pattern, os, data.append, size, time);
             } catch (FileNotFoundException ex) {
-                logger.error("FileManager (" + data.fileName + ") " + ex);
+                logger.error("FileManager (" + name + ") " + ex);
             }
             return null;
         }

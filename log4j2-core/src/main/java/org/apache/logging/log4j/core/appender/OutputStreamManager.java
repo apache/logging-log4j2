@@ -58,7 +58,7 @@ public class OutputStreamManager {
         try {
             OutputStreamManager manager = map.get(name);
             if (manager == null) {
-                manager = factory.createManager(data);
+                manager = factory.createManager(name, data);
                 map.put(name, manager);
             }
             manager.count++;

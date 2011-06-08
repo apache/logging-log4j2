@@ -63,7 +63,7 @@ public class FileAppender extends OutputStreamAppender {
             isBuffered = false;
         }
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
-        boolean handleExceptions = locking == null ? true : Boolean.valueOf(suppress);
+        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
             logger.error("No name provided for FileAppender");

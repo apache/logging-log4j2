@@ -90,7 +90,7 @@ public class ConsoleAppender extends OutputStreamAppender {
 
     private static class ConsoleManagerFactory implements ManagerFactory<OutputStreamManager, FactoryData> {
 
-        public OutputStreamManager createManager(FactoryData data) {
+        public OutputStreamManager createManager(String name, FactoryData data) {
             return new OutputStreamManager(data.os, data.type);
         }
     }
