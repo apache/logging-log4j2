@@ -49,8 +49,7 @@ public class RFC5424LayoutTest {
     private static final String line3 = "ATM - - - filled mdc";
     private static final String line4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-        "[RequestContext@18060 ipAddress=\"192.168.0.120\" locale=\"English (United States)\" " +
-        "loginId=\"JohnDoe\"] Transfer Complete";
+        "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -77,7 +76,7 @@ public class RFC5424LayoutTest {
 
         // set up appender
         RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext", "true",
-            "ATM", null, "key1, key2", null, null);
+            "ATM", null, "key1, key2, locale", null, null);
         ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
