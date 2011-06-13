@@ -152,7 +152,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         log(event);
     }
 
-    private void log(LogEvent event) {
+    public void log(LogEvent event) {
         if (isFiltered(event)) {
             return;
         }

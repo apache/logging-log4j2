@@ -24,9 +24,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.Filters;
+import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +60,7 @@ public class ListAppender extends AppenderBase {
         super(name, filters, layout);
         this.newLine = newline;
         this.raw = raw;
-        if (layout != null) {
+        if (layout != null && !(layout instanceof SerializedLayout)) {
             byte[] bytes = layout.getHeader();
             if (bytes != null) {
                 write(bytes);
@@ -70,6 +72,13 @@ public class ListAppender extends AppenderBase {
         Layout layout = getLayout();
         if (layout == null) {
             events.add(event);
+        } else if (layout instanceof SerializedLayout) {
+            byte[] header = layout.getHeader();
+            byte[] content = layout.format(event);
+            byte[] record = new byte[header.length + content.length];
+            System.arraycopy(header, 0, record, 0, header.length);
+            System.arraycopy(content, 0, record, header.length, content.length);
+            data.add(record);
         } else {
             write(layout.format(event));
         }

@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
@@ -99,6 +100,7 @@ public class SocketAppenderTest {
 
         // set appender on root and set level to debug
         root.addAppender(appender);
+        root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
         LogEvent event = list.poll(3, TimeUnit.SECONDS);
@@ -117,6 +119,7 @@ public class SocketAppenderTest {
 
         // set appender on root and set level to debug
         root.addAppender(appender);
+        root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
         LogEvent event = list.poll(3, TimeUnit.SECONDS);
@@ -162,7 +165,6 @@ public class SocketAppenderTest {
 
         private final ServerSocket sock;
         private boolean shutdown = false;
-        private Thread thread;
 
         public TCPSocketServer() throws IOException {
             this.sock = new ServerSocket(PORTNUM);
@@ -170,20 +172,21 @@ public class SocketAppenderTest {
 
         public void shutdown() {
             this.shutdown = true;
-            thread.interrupt();
+            interrupt();
         }
 
         public void run() {
-            this.thread = Thread.currentThread();
             try {
-                while (!shutdown) {
-                    Socket socket = sock.accept();
-                    if (socket != null) {
-                        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                        ++tcpCount;
+                Socket socket = sock.accept();
+                if (socket != null) {
+                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    while (!shutdown) {
                         list.add((LogEvent) ois.readObject());
+                        ++tcpCount;
                     }
                 }
+            } catch (EOFException eof) {
+                // Socket is closed.
             } catch (Exception ex) {
                 if (!shutdown) {
                     throw new RuntimeException(ex);

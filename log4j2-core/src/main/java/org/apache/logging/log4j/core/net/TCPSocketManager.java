@@ -66,7 +66,8 @@ public class TCPSocketManager extends AbstractSocketManager {
     }
 
 
-    public TCPSocketManager(String name, OutputStream os, Socket sock, InetAddress addr, String host, int port, int delay) {
+    public TCPSocketManager(String name, OutputStream os, Socket sock, InetAddress addr, String host, int port,
+                            int delay) {
         super(name, os, addr, host, port);
         this.reconnectionDelay = delay;
         this.socket = sock;

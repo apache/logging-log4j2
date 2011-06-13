@@ -23,10 +23,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Transform;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -41,6 +43,20 @@ import java.util.Map;
  */
 @Plugin(name="SerializedLayout",type="Core",elementType="layout",printObject=true)
 public class SerializedLayout extends LayoutBase {
+    private static int count = 0;
+
+    private static byte[] header;
+
+    static {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.close();
+            header = baos.toByteArray();
+        } catch (Exception ex) {
+            logger.error("Unable to generate Object stream header", ex);
+        }
+    }
 
     public SerializedLayout() {
     }
@@ -51,7 +67,7 @@ public class SerializedLayout extends LayoutBase {
     public byte[] format(final LogEvent event) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
             oos.writeObject(event);
         } catch (IOException ioe) {
             logger.error("Serialization of Logging Event failed.", ioe);
@@ -63,5 +79,26 @@ public class SerializedLayout extends LayoutBase {
     public static SerializedLayout createLayout() {
 
         return new SerializedLayout();
+    }
+
+    public byte[] getHeader() {
+        return header;
+    }
+
+    /**
+     * The stream header will be written in the Manager so skip it here.
+     */
+    private class PrivateObjectOutputStream extends ObjectOutputStream {
+
+        public PrivateObjectOutputStream() throws IOException {
+        }
+
+        public PrivateObjectOutputStream(OutputStream os) throws IOException {
+            super(os);
+        }
+
+        @Override
+        protected void writeStreamHeader() {
+        }
     }
 }

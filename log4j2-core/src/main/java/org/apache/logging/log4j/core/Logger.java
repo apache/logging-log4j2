@@ -209,6 +209,10 @@ public class Logger extends AbstractLogger {
             this.logger = pc.logger;
         }
 
+        protected void logEvent(LogEvent event) {
+            loggerConfig.log(event);
+        }
+
         boolean filter(Level level, Marker marker, String msg) {
             if (config.hasFilters()) {
                 Iterator<Filter> iter = config.getFilters();

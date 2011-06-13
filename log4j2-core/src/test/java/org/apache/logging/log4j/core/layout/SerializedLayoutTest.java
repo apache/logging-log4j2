@@ -107,7 +107,13 @@ public class SerializedLayoutTest {
         for (byte[] item : data) {
             ByteArrayInputStream bais = new ByteArrayInputStream(item);
             ObjectInputStream ois = new ObjectInputStream(bais);
-            LogEvent event = (LogEvent) ois.readObject();
+            LogEvent event;
+            try {
+                event = (LogEvent) ois.readObject();
+            } catch (IOException ioe) {
+                System.err.println("Exception processing item " + i);
+                throw ioe;
+            }
             assertTrue("Incorrect event", event.toString().equals(expected[i]));
             ++i;
         }
