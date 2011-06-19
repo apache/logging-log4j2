@@ -388,7 +388,7 @@ import java.util.List;
  * Engineering Approach", ISBN 0-387-97389-3.
  */
 @Plugin(name="PatternLayout",type="Core",elementType="layout",printObject=true)
-public class PatternLayout extends LayoutBase {
+public class PatternLayout extends AbstractStringLayout {
     /**
      * Default pattern string for log output. Currently set to the
      * string <b>"%m%n"</b> which just prints the application supplied
@@ -428,11 +428,6 @@ public class PatternLayout extends LayoutBase {
     private boolean handlesExceptions;
 
     /**
-     * The charset of the formatted message.
-     */
-    private Charset charset;
-
-    /**
      * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
      * <p/>
      * The default pattern just produces the application supplied message.
@@ -456,9 +451,8 @@ public class PatternLayout extends LayoutBase {
      * @param pattern conversion pattern.
      */
     public PatternLayout(final String pattern, final Charset charset) {
-
+        super(charset);
         this.conversionPattern = pattern;
-        this.charset = charset;
         PatternParser parser = createPatternParser();
         converters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
@@ -487,12 +481,12 @@ public class PatternLayout extends LayoutBase {
      *
      * @param event logging event to be formatted.
      */
-    public byte[] format(final LogEvent event) {
+    public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
         for (PatternConverter c : converters) {
             c.format(event, buf);
         }
-        return buf.toString().getBytes(charset);
+        return buf.toString();
     }
 
     private PatternParser createPatternParser() {

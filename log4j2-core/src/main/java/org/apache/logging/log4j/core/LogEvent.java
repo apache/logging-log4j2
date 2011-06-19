@@ -4,13 +4,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Stack;
 
 /**
  *
  */
-public interface LogEvent {
+public interface LogEvent extends Serializable {
 
      /**
      * Get level.

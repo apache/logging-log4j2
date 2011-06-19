@@ -42,7 +42,7 @@ import java.util.Map;
  *
  */
 @Plugin(name="SerializedLayout",type="Core",elementType="layout",printObject=true)
-public class SerializedLayout extends LayoutBase {
+public class SerializedLayout extends LayoutBase<LogEvent> {
     private static int count = 0;
 
     private static byte[] header;
@@ -73,6 +73,10 @@ public class SerializedLayout extends LayoutBase {
             logger.error("Serialization of Logging Event failed.", ioe);
         }
         return baos.toByteArray();
+    }
+
+    public LogEvent formatAs(final LogEvent event) {
+        return event;
     }
 
     @PluginFactory

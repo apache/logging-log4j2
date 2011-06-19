@@ -69,7 +69,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * log files.
  */
 @Plugin(name="XMLLayout",type="Core",elementType="layout",printObject=true)
-public class XMLLayout extends LayoutBase {
+public class XMLLayout extends AbstractStringLayout {
 
     private final boolean locationInfo;
     private final boolean properties;
@@ -77,11 +77,9 @@ public class XMLLayout extends LayoutBase {
 
     protected static final int DEFAULT_SIZE = 256;
 
-    protected final Charset charset;
-
     public XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
+        super(charset);
         this.locationInfo = locationInfo;
-        this.charset = charset;
         this.properties = properties;
         this.complete = complete;
     }
@@ -89,7 +87,7 @@ public class XMLLayout extends LayoutBase {
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
      */
-    public byte[] format(final LogEvent event) {
+    public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.
@@ -158,7 +156,7 @@ public class XMLLayout extends LayoutBase {
 
         buf.append("</log4j:event>\r\n\r\n");
 
-        return buf.toString().getBytes(charset);
+        return buf.toString();
     }
 
     /**
@@ -172,7 +170,7 @@ public class XMLLayout extends LayoutBase {
         StringBuilder sbuf = new StringBuilder();
         sbuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
         sbuf.append("<log4j:eventSet xmlns:log4j=\"http://jakarta.apache.org/log4j/\">\r\n");
-        return sbuf.toString().getBytes(charset);
+        return sbuf.toString().getBytes(getCharset());
     }
 
 
@@ -186,7 +184,7 @@ public class XMLLayout extends LayoutBase {
         }
         StringBuilder sbuf = new StringBuilder();
         sbuf.append("</log4j:eventSet>\r\n");
-        return sbuf.toString().getBytes(charset);
+        return sbuf.toString().getBytes(getCharset());
     }
 
     List<String> getThrowableString(Throwable throwable) {

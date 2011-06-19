@@ -44,10 +44,13 @@ public class DefaultConfiguration extends BaseConfiguration {
         root.setLevel(level);
     }
 
-    public class BasicLayout implements Layout {
+    public class BasicLayout implements Layout<String> {
         public byte[] format(LogEvent event) {
-            String result = event.getMessage().getFormattedMessage() + "\n";
-            return result.getBytes();
+            return formatAs(event).getBytes();
+        }
+
+        public String formatAs(LogEvent event) {
+            return event.getMessage().getFormattedMessage() + "\n";
         }
 
         public byte[] getHeader() {

@@ -31,12 +31,6 @@
   <url>http://logging.apache.org/log4j/experimental</url>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.3.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.logging</groupId>
       <artifactId>log4j2-api</artifactId>
       <version>1.99.0-SNAPSHOT</version>
@@ -64,6 +58,18 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
+     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.3.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockejb</groupId>
+      <artifactId>mockejb</artifactId>
+      <version>0.6-beta2</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -74,7 +80,12 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

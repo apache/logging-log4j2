@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * non ASCII characters could result in corrupted log files.
  */
 @Plugin(name="HTMLLayout",type="Core",elementType="layout",printObject=true)
-public class HTMLLayout extends LayoutBase {
+public class HTMLLayout extends AbstractStringLayout {
 
     protected static final int BUF_SIZE = 256;
 
@@ -57,16 +57,14 @@ public class HTMLLayout extends LayoutBase {
 
     protected final String contentType;
 
-    protected final Charset charset;
-
     public HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
+        super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
         this.contentType = contentType;
-        this.charset = charset;
     }
 
-    public byte[] format(LogEvent event) {
+    public String formatAs(LogEvent event) {
         StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
         sbuf.append(LINE_SEP).append("<tr>").append(LINE_SEP);
@@ -138,7 +136,7 @@ public class HTMLLayout extends LayoutBase {
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 
-        return sbuf.toString().getBytes(charset);
+        return sbuf.toString();
     }
 
     void appendThrowableAsHTML(Throwable throwable, StringBuilder sbuf) {
@@ -211,7 +209,7 @@ public class HTMLLayout extends LayoutBase {
         }
         sbuf.append("<th>Message</th>").append(LINE_SEP);
         sbuf.append("</tr>").append(LINE_SEP);
-        return sbuf.toString().getBytes(charset);
+        return sbuf.toString().getBytes(getCharset());
     }
 
     /**
@@ -223,7 +221,7 @@ public class HTMLLayout extends LayoutBase {
         sbuf.append("</table>").append(LINE_SEP);
         sbuf.append("<br>").append(LINE_SEP);
         sbuf.append("</body></html>");
-        return sbuf.toString().getBytes(charset);
+        return sbuf.toString().getBytes(getCharset());
     }
 
     @PluginFactory

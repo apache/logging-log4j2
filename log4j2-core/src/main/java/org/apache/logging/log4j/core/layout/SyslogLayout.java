@@ -35,9 +35,8 @@ import java.util.Locale;
  *
  */
 @Plugin(name="SyslogLayout",type="Core",elementType="layout",printObject=true)
-public class SyslogLayout extends LayoutBase {
+public class SyslogLayout extends AbstractStringLayout {
 
-    private final Charset charset;
     private final Facility facility;
     private final boolean includeNewLine;
 
@@ -52,15 +51,15 @@ public class SyslogLayout extends LayoutBase {
 
 
     public SyslogLayout(Facility facility, boolean includeNL, Charset c) {
+        super(c);
         this.facility = facility;
         this.includeNewLine = includeNL;
-        this.charset = c;
     }
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
      */
-    public byte[] format(final LogEvent event) {
+    public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
 
         buf.append("<");
@@ -74,7 +73,7 @@ public class SyslogLayout extends LayoutBase {
         if (includeNewLine) {
             buf.append("\n");
         }
-        return buf.toString().getBytes(charset);
+        return buf.toString();
     }
 
     /**

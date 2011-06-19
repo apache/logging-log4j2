@@ -1,12 +1,14 @@
 package org.apache.logging.log4j.core;
 
+import java.io.Serializable;
+
 /**
  * @doubt There is still a need for a character-based layout for character based event sinks (databases, etc).
  *  Would introduce an EventEncoder, EventRenderer or something similar for the logging event to byte encoding.
  * (RG) A layout can be configured with a Charset and then Strings can be converted to byte arrays. OTOH, it isn't
  * possible to write byte arrays as character streams.
  */
-public interface Layout {
+public interface Layout<T extends Serializable> {
     // Note that the line.separator property can be looked up even by
     // applets.
     /**
@@ -24,6 +26,13 @@ public interface Layout {
      * data and then write it all to the OutputStream in one call.
      */
     byte[] format(LogEvent event);
+
+    /**
+     * Formats the event as an Object that can be serialized.
+     * @param event The Logging Event.
+     * @return The formatted event.
+     */
+    T formatAs(LogEvent event);
 
     /**
      * Returns the header for the layout format.

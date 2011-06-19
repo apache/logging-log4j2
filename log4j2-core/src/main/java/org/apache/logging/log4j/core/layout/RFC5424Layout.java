@@ -45,14 +45,13 @@ import java.util.TreeMap;
  *
  */
 @Plugin(name="RFC5424Layout",type="Core",elementType="layout",printObject=true)
-public class RFC5424Layout extends LayoutBase {
+public class RFC5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
     private final Integer enterpriseNumber;
     private final boolean includeMDC;
     private final String mdcId;
-    private final Charset charset;
     private final String localHostName;
     private final String appName;
     private final String messageId;
@@ -75,6 +74,7 @@ public class RFC5424Layout extends LayoutBase {
 
     public RFC5424Layout(Facility facility, String id, int ein, boolean includeMDC, boolean includeNL, String mdcId,
                          String appName, String messageId, String excludes, String includes, Charset charset) {
+        super(charset);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
         this.enterpriseNumber = ein;
@@ -83,7 +83,6 @@ public class RFC5424Layout extends LayoutBase {
         this.mdcId = mdcId;
         this.appName = appName;
         this.messageId = messageId;
-        this.charset = charset;
         this.localHostName = getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
@@ -123,7 +122,7 @@ public class RFC5424Layout extends LayoutBase {
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the RFC 5424 Syslog specification.
      */
-    public byte[] format(final LogEvent event) {
+    public String formatAs(final LogEvent event) {
         Message msg = event.getMessage();
         boolean isStructured = msg instanceof StructuredDataMessage;
         StringBuilder buf = new StringBuilder();
@@ -176,7 +175,7 @@ public class RFC5424Layout extends LayoutBase {
         if (includeNewLine) {
             buf.append("\n");
         }
-        return buf.toString().getBytes(charset);
+        return buf.toString();
     }
 
     protected String getProcId() {

@@ -16,35 +16,29 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.core.LogEvent;
 
-import java.io.Serializable;
+import java.nio.charset.Charset;
 
 /**
  *
  */
-public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
+public abstract class AbstractStringLayout extends LayoutBase<String> {
 
-    protected byte[] header;
-    protected byte[] footer;
+    /**
+     * The charset of the formatted message.
+     */
+    private Charset charset;
 
-    protected static Logger logger = StatusLogger.getLogger();
-
-    public byte[] getHeader() {
-        return header;
+    protected AbstractStringLayout(Charset charset) {
+        this.charset = charset;
     }
 
-    public void setHeader(byte[] header) {
-        this.header = header;
+    public byte[] format(LogEvent event) {
+        return formatAs(event).getBytes(charset);
     }
 
-    public byte[] getFooter() {
-        return footer;
-    }
-
-    public void setFooter(byte[] footer) {
-        this.footer = footer;
+    protected Charset getCharset() {
+        return charset;
     }
 }
