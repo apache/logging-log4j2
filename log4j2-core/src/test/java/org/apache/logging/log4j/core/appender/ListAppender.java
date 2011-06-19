@@ -125,6 +125,7 @@ public class ListAppender extends AppenderBase {
     public synchronized void clear() {
         events.clear();
         messages.clear();
+        data.clear();
     }
 
     public synchronized List<LogEvent> getEvents() {

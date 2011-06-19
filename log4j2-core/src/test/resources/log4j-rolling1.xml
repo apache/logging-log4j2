@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration packages="" status="debug" name="XMLConfigTest">
+<configuration packages="" status="warn" name="XMLConfigTest">
   <properties>
     <property name="filename">target/rolling1/rollingtest.log</property>
   </properties>

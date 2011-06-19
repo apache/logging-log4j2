@@ -28,9 +28,6 @@
       </layout>
     </appender>
     <appender type="List" name="List">
-      <filters>
-        <filter type="Threshold" level="error"/>
-      </filters>
     </appender>
   </appenders>
 
@@ -49,8 +46,7 @@
     </logger>>
 
     <root level="trace">
-      <appender-ref ref="STDOUT"/>
-      <appender-ref ref="FLOW"/>
+      <appender-ref ref="List"/>
     </root>
   </loggers>
 
