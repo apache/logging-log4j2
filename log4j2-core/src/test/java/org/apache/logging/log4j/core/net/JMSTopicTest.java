@@ -31,12 +31,15 @@ import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.internal.StatusConsoleListener;
 import org.apache.logging.log4j.internal.StatusLogger;
-import org.mockejb.jndi.*;
-import org.mockejb.jms.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.mockejb.jms.MockTopic;
+import org.mockejb.jms.TopicConnectionFactoryImpl;
+import org.mockejb.jndi.MockContextFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
