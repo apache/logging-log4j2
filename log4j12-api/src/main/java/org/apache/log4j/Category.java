@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Category {
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
-        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>());
+        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
     private final org.apache.logging.log4j.core.Logger logger;
 

@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Log4JLoggerFactory implements ILoggerFactory {
     private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
-        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>());
+        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
     private static final String FQCN = Log4JLoggerFactory.class.getName();
     private static final String PACKAGE = "org.slf4j";

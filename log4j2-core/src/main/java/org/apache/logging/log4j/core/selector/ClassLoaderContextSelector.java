@@ -99,7 +99,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             }
 
             if (securityManager != null) {
-                Class clazz = securityManager.getCaller();
+                Class clazz = securityManager.getCaller(fqcn);
                 return locateContext(clazz.getClassLoader(), null);
             }
 
@@ -210,11 +210,11 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     private static class PrivateSecurityManager extends SecurityManager {
 
-        public Class getCaller() {
+        public Class getCaller(String fqcn) {
             Class[] classes = getClassContext();
             boolean next = false;
             for (Class clazz : classes) {
-                if (clazz.getName().equals(LogManager.class.getName())) {
+                if (clazz.getName().equals(fqcn)) {
                     next = true;
                     continue;
                 }

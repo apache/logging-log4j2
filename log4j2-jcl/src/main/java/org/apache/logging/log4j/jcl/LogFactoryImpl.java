@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 public class LogFactoryImpl extends LogFactory {
 
     private final Map<LoggerContext, ConcurrentMap<String, Log>> contextMap =
-        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Log>>());
+        new WeakHashMap<LoggerContext, ConcurrentMap<String, Log>>();
 
     private ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
