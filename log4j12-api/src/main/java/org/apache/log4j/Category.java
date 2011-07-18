@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.NameUtil;
@@ -24,7 +23,10 @@ import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,14 +35,8 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 public class Category {
-
-    private static LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
-
-    static {
-        ctx.getConfiguration().getLoggerConfig("").setLevel(org.apache.logging.log4j.Level.DEBUG);
-    }
-
-    private static ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
+        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>());
 
     private final org.apache.logging.log4j.core.Logger logger;
 
@@ -52,8 +48,12 @@ public class Category {
 
     private static org.apache.log4j.LoggerFactory loggerFactory = new PrivateFactory();
 
+    protected Category(LoggerContext context, String name) {
+        this.logger = context.getLogger(getFactory(), name);
+    }
+
     protected Category(String name) {
-        this.logger = ctx.getLogger(getFactory(), name);
+        this((LoggerContext)PrivateManager.getContext(), name);
     }
 
     private Category(org.apache.logging.log4j.core.Logger logger) {
@@ -61,21 +61,31 @@ public class Category {
     }
 
     public static Category getInstance(String name) {
-        return getInstance(name, loggerFactory);
+        return getInstance((LoggerContext)PrivateManager.getContext(), name, loggerFactory);
     }
 
-    static Category getInstance(String name, org.apache.log4j.LoggerFactory factory) {
+    static Category getInstance(LoggerContext context, String name) {
+        return getInstance(context, name, loggerFactory);
+    }
+
+    static Category getInstance(LoggerContext context, String name, org.apache.log4j.LoggerFactory factory) {
+        ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         Logger logger = loggers.get(name);
         if (logger != null) {
             return logger;
         }
-        logger = factory.makeNewLoggerInstance(name);
+        logger = factory.makeNewLoggerInstance(context, name);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
 
     public static Category getInstance(Class clazz) {
         return getInstance(clazz.getName());
+    }
+
+
+    static Category getInstance(LoggerContext context, Class clazz) {
+        return getInstance(context, clazz.getName());
     }
 
     public final String getName() {
@@ -91,12 +101,29 @@ public class Category {
         if (parent == null) {
             return null;
         }
+        ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
         Logger l = loggers.get(parent.getName());
         return l == null ? new Category(parent) : l;
     }
 
-    public final static Category getRoot() {
+    public static Category getRoot() {
         return getInstance("");
+    }
+
+
+    static Category getRoot(LoggerContext context) {
+        return getInstance(context, "");
+    }
+
+    private static ConcurrentMap<String, Logger> getLoggersMap(LoggerContext context) {
+        synchronized (contextMap) {
+            ConcurrentMap<String, Logger> map = contextMap.get(context);
+            if (map == null) {
+                map = new ConcurrentHashMap<String, Logger>();
+                contextMap.put(context, map);
+            }
+            return map;
+        }
     }
 
     public final Level getEffectiveLevel() {
@@ -219,7 +246,7 @@ public class Category {
     }
 
     public boolean exists(String name) {
-        return ctx.hasLogger(name);
+        return PrivateManager.getContext().hasLogger(name);
     }
 
     public boolean getAdditivity() {
@@ -240,6 +267,7 @@ public class Category {
         }
         int i = 0;
         String name = logger.getName();
+        ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
         while ((name = NameUtil.getSubName(name)) != null) {
             if (loggers.containsKey(name)) {
                 ResourceBundle rb = loggers.get(name).bundle;
@@ -271,8 +299,20 @@ public class Category {
 
     private static class PrivateFactory implements org.apache.log4j.LoggerFactory {
 
-        public Logger makeNewLoggerInstance(String name) {
-            return new Logger(name);
+        public Logger makeNewLoggerInstance(LoggerContext context, String name) {
+            return new Logger(context, name);
+        }
+    }
+
+    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
+        private static final String FQCN = Category.class.getName();
+
+        public static org.apache.logging.log4j.spi.LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
+
+        public static org.apache.logging.log4j.Logger getLogger(String name) {
+            return getLogger(FQCN, name);
         }
     }
 

@@ -23,7 +23,10 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -35,6 +38,10 @@ public class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
+    public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
+
+    private static final int maxEntries = Integer.getInteger(MAX_STATUS_ENTRIES, 200);
+
     // private static final String FQCN = AbstractLogger.class.getName();
 
     private static StatusLogger statusLogger = new StatusLogger();
@@ -44,7 +51,7 @@ public class StatusLogger extends AbstractLogger {
     private CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
     private ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
-    private List<StatusData> messages = new ArrayList<StatusData>();
+    private Queue<StatusData> messages = new BoundedQueue<StatusData>(maxEntries);
     private ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
@@ -70,6 +77,10 @@ public class StatusLogger extends AbstractLogger {
         } finally {
             listenersLock.writeLock().unlock();
         }
+    }
+
+    public Iterator<StatusListener> getListeners() {
+        return listeners.iterator();
     }
 
     public void reset() {
@@ -198,5 +209,21 @@ public class StatusLogger extends AbstractLogger {
                 return logger.isErrorEnabled(marker);
         }
         return false;
+    }
+
+    private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
+
+        private final int size;
+
+        public BoundedQueue(int size) {
+            this.size = size;
+        }
+
+        public boolean add(E object) {
+            while (messages.size() > maxEntries) {
+                messages.poll();
+            }
+            return super.add(object);
+        }
     }
 }

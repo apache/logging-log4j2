@@ -22,8 +22,12 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.slf4j.SLF4JLoggingException;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.impl.SLF4JLogger;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -31,16 +35,15 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 public class Log4JLoggerFactory implements ILoggerFactory {
+    private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
+        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>());
 
-    private static LoggerContext context = LogManager.getContext();
-
-    private ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
-
-    public static LoggerContext getContext() {
-        return context;
-    }
+    private static final String FQCN = Log4JLoggerFactory.class.getName();
+    private static final String PACKAGE = "org.slf4j";
 
     public Logger getLogger(String name) {
+        LoggerContext context = getContext();
+        ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
@@ -51,4 +54,53 @@ public class Log4JLoggerFactory implements ILoggerFactory {
         }
         throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
     }
+
+    private ConcurrentMap<String, Logger> getLoggersMap(LoggerContext context) {
+        synchronized (contextMap) {
+            ConcurrentMap<String, Logger> map = contextMap.get(context);
+            if (map == null) {
+                map = new ConcurrentHashMap<String, Logger>();
+                contextMap.put(context, map);
+            }
+            return map;
+        }
+    }
+    private LoggerContext getContext() {
+        Throwable t = new Throwable();
+        boolean next = false;
+        boolean pkg = false;
+        String fqcn = LoggerFactory.class.getName();
+        for (StackTraceElement element : t.getStackTrace()) {
+            if (FQCN.equals(element.getClassName())) {
+                next = true;
+                continue;
+            }
+            if (next && element.getClassName().startsWith(PACKAGE)) {
+                fqcn = element.getClassName();
+                pkg = true;
+                continue;
+            }
+            if (pkg) {
+                break;
+            }
+        }
+        return PrivateManager.getContext(fqcn);
+    }
+
+    private static class PrivateManager extends LogManager {
+        private static final String FQCN = LoggerFactory.class.getName();
+
+        public static LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
+
+        public static LoggerContext getContext(String fqcn) {
+            return getContext(fqcn, false);
+        }
+
+        public static org.apache.logging.log4j.Logger getLogger(String name) {
+            return getLogger(FQCN, name);
+        }
+    }
+
 }

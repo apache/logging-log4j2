@@ -18,9 +18,13 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationListener;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerFactory;
 
+import java.io.File;
+import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -29,7 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext {
+public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
@@ -47,7 +51,41 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private static final long JVM_START_TIME = System.currentTimeMillis();
 
-    public LoggerContext() {
+    private final String contextName;
+
+    private final URI configLocation;
+
+
+    public LoggerContext(String name) {
+        this(name, null, (URI) null);
+    }
+
+
+    public LoggerContext(String name, Object externalContext) {
+        this(name, externalContext, (URI) null);
+    }
+
+    public LoggerContext(String name, Object externalContext, URI configLocn) {
+        contextName = name;
+        this.externalContext = externalContext;
+        this.configLocation = configLocn;
+        reconfigure();
+    }
+
+    public LoggerContext(String name, Object externalContext, String configLocn) {
+        contextName = name;
+        this.externalContext = externalContext;
+        if (configLocn != null) {
+            URI uri;
+            try {
+                uri = new File(configLocn).toURI();
+            } catch (Exception ex) {
+                uri = null;
+            }
+            configLocation = uri;
+        } else {
+            configLocation = null;
+        }
         reconfigure();
     }
 
@@ -68,6 +106,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     public Logger getLogger(LoggerFactory factory, String name) {
+
         Logger logger = loggers.get(name);
         if (logger != null) {
             return logger;
@@ -94,6 +133,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         config.removeFilter(filter);
     }
 
+    public synchronized void shutdown() {
+        updateLoggers(new NullConfiguration());
+        config.stop();
+        externalContext = null;
+    }
+
     /**
      * Set the Configuration to be used.
      */
@@ -102,10 +147,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             throw new NullPointerException("No Configuration was provided");
         }
         Configuration prev = this.config;
+        config.addListener(this);
         config.start();
         this.config = config;
         updateLoggers();
         if (prev != null) {
+            prev.removeListener(this);
             prev.stop();
         }
         return prev;
@@ -115,8 +162,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      *  Reconfigure the context.
      */
     public synchronized void reconfigure() {
-        logger.debug("Reconfiguration started");
-        Configuration instance = ConfigurationFactory.getInstance().getConfiguration();
+        logger.debug("Reconfiguration started for context " + contextName);
+        Configuration instance = ConfigurationFactory.getInstance().getConfiguration(contextName, configLocation);
         setConfiguration(instance);
         /*instance.start();
         Configuration old = setConfiguration(instance);
@@ -128,9 +175,17 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     public void updateLoggers() {
+        updateLoggers(this.config);
+    }
+
+    public void updateLoggers(Configuration config) {
         for (Logger logger : loggers.values()) {
             logger.updateConfiguration(config);
         }
+    }
+
+    public void onChange() {
+        reconfigure();
     }
 
     private static class Factory implements LoggerFactory<LoggerContext> {

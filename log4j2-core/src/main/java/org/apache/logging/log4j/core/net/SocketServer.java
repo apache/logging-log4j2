@@ -28,6 +28,7 @@ import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.io.OptionalDataException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -190,11 +192,13 @@ public class SocketServer extends AbstractServer implements Runnable {
         }
 
         @Override
-        public Configuration getConfiguration() {
+        public Configuration getConfiguration(String name, URI configLocation) {
             if (path != null && path.length() > 0) {
+                File file = null;
                 InputSource source = null;
                 try {
-                    FileInputStream is = new FileInputStream(path);
+                    file = new File(path);
+                    FileInputStream is = new FileInputStream(file);
                     source = new InputSource(is);
                     source.setSystemId(path);
                 } catch (FileNotFoundException ex) {
@@ -214,14 +218,14 @@ public class SocketServer extends AbstractServer implements Runnable {
 
                 try {
                     if (source != null) {
-                        return new XMLConfiguration(source);
+                        return new XMLConfiguration(source, file);
                     }
                 } catch (Exception ex) {
                     // Ignore this error.
                 }
                 System.err.println("Unable to process configuration at " + path + ", using default.");
             }
-            return super.getConfiguration();
+            return super.getConfiguration(name, configLocation);
         }
     }
 }

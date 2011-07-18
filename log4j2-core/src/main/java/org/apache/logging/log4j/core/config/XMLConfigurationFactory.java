@@ -16,12 +16,20 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.internal.StatusLogger;
 import org.xml.sax.InputSource;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -37,19 +45,68 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
 
     public static final String TEST_CONFIG_FILE = "log4j2-test.xml";
 
-    public Configuration getConfiguration() {
-        ClassLoader loader = this.getClass().getClassLoader();
-        InputSource source = getInputFromSystemProperty(loader);
+    public static final String TEST_PREFIX = "log4j2-test";
+
+    public static final String DEFAULT_PREFIX = "log4j2";
+
+    public static final String SUFFIX = ".xml";
+
+    private static Logger logger = StatusLogger.getLogger();
+
+    private File configFile = null;
+
+    public Configuration getConfiguration(String name, URI configLocation) {
+        InputSource source = null;
+        if (configLocation != null) {
+            source = getInputFromURI(configLocation);
+        }
         if (source == null) {
-            source = getInputFromResource(TEST_CONFIG_FILE, loader);
-            if (source == null) {
-                source = getInputFromResource(DEFAULT_CONFIG_FILE, loader);
+            String testName;
+            String defaultName;
+            boolean named = (name != null && name.length() > 0);
+            if (named) {
+                testName = TEST_PREFIX + name + SUFFIX;
+                defaultName = DEFAULT_PREFIX + name + SUFFIX;
+            } else {
+                testName = TEST_CONFIG_FILE;
+                defaultName = DEFAULT_CONFIG_FILE;
             }
+            ClassLoader loader = this.getClass().getClassLoader();
+            source = getInputFromSystemProperty(loader);
             if (source == null) {
-                return null;
+                source = getInputFromResource(testName, loader);
+                if (source == null) {
+                    source = getInputFromResource(defaultName, loader);
+                }
+                if (source == null) {
+                    return named ? getConfiguration(null, null) : null;
+                }
             }
         }
-        return new XMLConfiguration(source);
+        return new XMLConfiguration(source, configFile);
+    }
+
+    private InputSource getInputFromURI(URI configLocation) {
+        configFile = FileUtils.fileFromURI(configLocation);
+        if (configFile != null && configFile.exists() && configFile.canRead()) {
+            try {
+                InputSource source = new InputSource(new FileInputStream(configFile));
+                source.setSystemId(configLocation.getPath());
+                return source;
+            } catch (FileNotFoundException ex) {
+                logger.error("Cannot locate file " + configLocation.getPath(), ex);
+            }
+        }
+        try {
+            InputSource source = new InputSource(configLocation.toURL().openStream());
+            source.setSystemId(configLocation.getPath());
+            return source;
+        } catch (MalformedURLException ex) {
+            logger.error("Invalid URL " + configLocation.toString(), ex);
+        } catch (IOException ex) {
+            logger.error("Unabled to access " + configLocation.toString(), ex);
+        }
+        return null;
     }
 
     private InputSource getInputFromSystemProperty(ClassLoader loader) {
@@ -79,7 +136,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     }
 
     private InputSource getInputFromResource(String resource, ClassLoader loader) {
-        InputStream is = loader.getResourceAsStream(resource);
+        InputStream is = Loader.getResourceAsStream(resource, loader);
         if (is == null) {
             return null;
         }

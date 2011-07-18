@@ -24,25 +24,27 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
+import java.net.URI;
+
 /**
  *
  */
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
-    public Configuration getConfiguration() {
+    public Configuration getConfiguration(String name, URI configLocation) {
         return new BasicConfiguration();
     }
 
     public class BasicConfiguration extends BaseConfiguration {
 
-    private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
+        private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
-    public BasicConfiguration() {
+        public BasicConfiguration() {
 
-        LoggerConfig root = getRootLogger();
-        String l = System.getProperty(DEFAULT_LEVEL);
-        Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.DEBUG;
-        root.setLevel(level);
+            LoggerConfig root = getRootLogger();
+            String l = System.getProperty(DEFAULT_LEVEL);
+            Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.DEBUG;
+            root.setLevel(level);
+        }
     }
-}
 }

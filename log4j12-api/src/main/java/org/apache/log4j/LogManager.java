@@ -24,22 +24,34 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class LogManager {
 
     public static Logger getRootLogger() {
-        return (Logger) org.apache.logging.log4j.LogManager.getLogger("");
+        return (Logger) PrivateManager.getLogger("");
     }
 
     public static Logger getLogger(final String name) {
-        return (Logger) org.apache.logging.log4j.LogManager.getLogger(name);
+        return (Logger) PrivateManager.getLogger(name);
     }
 
     public static Logger getLogger(final Class clazz) {
-        return (Logger) org.apache.logging.log4j.LogManager.getLogger(clazz.getName());
+        return (Logger) PrivateManager.getLogger(clazz.getName());
     }
 
     public static Logger exists(String name) {
-        LoggerContext ctx = org.apache.logging.log4j.LogManager.getContext();
+        LoggerContext ctx = PrivateManager.getContext();
         if (!ctx.hasLogger(name)) {
             return null;
         }
         return Logger.getLogger(name);
+    }
+
+    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
+        private static final String FQCN = LogManager.class.getName();
+
+        public static LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
+
+        public static org.apache.logging.log4j.Logger getLogger(String name) {
+            return getLogger(FQCN, name);
+        }
     }
 }

@@ -24,6 +24,6 @@ package org.apache.log4j;
  */
 public interface LoggerFactory {
 
-  Logger makeNewLoggerInstance(String name);
+  Logger makeNewLoggerInstance(org.apache.logging.log4j.core.LoggerContext context, String name);
 
 }

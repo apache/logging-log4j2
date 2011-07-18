@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.helpers.Loader;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +67,10 @@ public class PluginManager {
 
     public void collectPlugins() {
         ResolverUtil<?> r = new ResolverUtil();
+        ClassLoader loader = Loader.getClassLoader();
+        if (loader != null) {
+            r.setClassLoader(loader);
+        }
         ResolverUtil.Test test = new PluginTest(type, clazz);
         for (String pkg : packages) {
             r.findInPackage(test, pkg);

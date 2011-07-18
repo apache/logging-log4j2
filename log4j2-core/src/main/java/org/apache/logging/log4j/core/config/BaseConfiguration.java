@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.internal.StatusLogger;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -70,6 +71,11 @@ public class BaseConfiguration extends Filterable implements Configuration {
     protected PluginManager pluginManager;
 
     protected final static Logger logger = StatusLogger.getLogger();
+
+    protected final List<ConfigurationListener> listeners =
+         new CopyOnWriteArrayList<ConfigurationListener>();
+
+    protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
 
     protected BaseConfiguration() {
         pluginManager = new PluginManager("Core");
@@ -118,12 +124,17 @@ public class BaseConfiguration extends Filterable implements Configuration {
             } else if (child.getName().equals("loggers")) {
                 Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
-                root = l.getRoot();
+                if (l.getRoot() != null) {
+                    root = l.getRoot();
+                }
             }
         }
 
+        root.setConfigurationMonitor(monitor);
+
         for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
             LoggerConfig l = entry.getValue();
+            l.setConfigurationMonitor(monitor);
             for (String ref : l.getAppenderRefs()) {
                 Appender app = appenders.get(ref);
                 if (app != null) {
@@ -149,6 +160,14 @@ public class BaseConfiguration extends Filterable implements Configuration {
         return name;
     }
 
+    public void addListener(ConfigurationListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(ConfigurationListener listener) {
+        listeners.remove(listener);
+    }
+
     public Appender getAppender(String name) {
         return appenders.get(name);
     }
@@ -168,6 +187,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.addAppender(appender);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            nlc.setConfigurationMonitor(monitor);
             nlc.addAppender(appender);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -183,6 +203,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.addFilter(filter);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            nlc.setConfigurationMonitor(monitor);
             nlc.addFilter(filter);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -198,6 +219,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.setAdditive(additive);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
+            nlc.setConfigurationMonitor(monitor);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
             setParents();
@@ -272,6 +294,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             throw new IllegalStateException(msg);
         }
         loggers.remove(name);
+        setParents();
     }
 
     private void createConfiguration(Node node) {

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
 import org.apache.logging.log4j.internal.StatusConsoleListener;
+import org.apache.logging.log4j.internal.StatusListener;
 import org.apache.logging.log4j.internal.StatusLogger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -42,9 +43,11 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +68,7 @@ public class XMLConfiguration extends BaseConfiguration {
 
     private static final String LOG4J_XSD = "Log4J-V2.0.xsd";
 
-    public XMLConfiguration(InputSource source) {
+    public XMLConfiguration(InputSource source, File configFile) {
         byte[] buffer = null;
 
         try {
@@ -92,9 +95,26 @@ public class XMLConfiguration extends BaseConfiguration {
                     setName(entry.getValue());
                 } else if ("strict".equalsIgnoreCase(entry.getKey())) {
                     strict = Boolean.parseBoolean(entry.getValue());
+                } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
+                    int interval = Integer.parseInt(entry.getValue());
+                    if (interval > 0 && configFile != null) {
+                        monitor = new FileConfigurationMonitor(configFile, listeners);
+                    }
                 }
             }
-            if (status != Level.OFF) {
+            Iterator<StatusListener> iter = ((StatusLogger)logger).getListeners();
+            boolean found = false;
+            while (iter.hasNext()) {
+                StatusListener listener = iter.next();
+                if (listener instanceof StatusConsoleListener) {
+                    found = true;
+                    ((StatusConsoleListener) listener).setLevel(status);
+                    if (!verbose) {
+                        ((StatusConsoleListener)listener).setFilters(verboseClasses);
+                    }
+                }
+            }
+            if (!found && status != Level.OFF) {
                 StatusConsoleListener listener = new StatusConsoleListener(status);
                 if (!verbose) {
                     listener.setFilters(verboseClasses);

@@ -23,6 +23,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -31,26 +34,35 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LogFactoryImpl extends LogFactory {
 
-    private static LoggerContext context = LogManager.getContext();
-
-    private ConcurrentMap<String, Log> loggers = new ConcurrentHashMap<String, Log>();
+    private final Map<LoggerContext, ConcurrentMap<String, Log>> contextMap =
+        Collections.synchronizedMap(new WeakHashMap<LoggerContext, ConcurrentMap<String, Log>>());
 
     private ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    public static LoggerContext getContext() {
-        return context;
-    }
-
     public Log getInstance(String name) throws LogConfigurationException {
+        LoggerContext context = PrivateManager.getContext();
+        ConcurrentMap<String, Log> loggers = getLoggersMap();
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        org.apache.logging.log4j.Logger logger = context.getLogger(name);
+        org.apache.logging.log4j.Logger logger = PrivateManager.getLogger(name);
         if (logger instanceof AbstractLogger) {
             loggers.putIfAbsent(name, new Log4JLog((AbstractLogger) logger, name));
             return loggers.get(name);
         }
         throw new LogConfigurationException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
+    }
+
+    private ConcurrentMap<String, Log> getLoggersMap() {
+        LoggerContext context = PrivateManager.getContext();
+        synchronized (contextMap) {
+            ConcurrentMap<String, Log> map = contextMap.get(context);
+            if (map == null) {
+                map = new ConcurrentHashMap<String, Log>();
+                contextMap.put(context, map);
+            }
+            return map;
+        }
     }
 
     @Override
@@ -74,7 +86,7 @@ public class LogFactoryImpl extends LogFactory {
      */
     @Override
     public void release() {
-        loggers.clear();
+        getLoggersMap().clear();
     }
 
     @Override
@@ -87,6 +99,16 @@ public class LogFactoryImpl extends LogFactory {
         attributes.put(name, value);
     }
 
+    private static class PrivateManager extends LogManager {
+        private static final String FQCN = LogFactory.class.getName();
 
+        public static LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
+
+        public static org.apache.logging.log4j.Logger getLogger(String name) {
+            return getLogger(FQCN, name);
+        }
+    }
 
 }

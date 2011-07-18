@@ -43,11 +43,12 @@ public class LoggerTest {
     private static final String CONFIG = "log4j-test2.xml";
     private static Configuration config;
     private static ListAppender app;
+    private static LoggerContext ctx;
 
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
@@ -60,7 +61,6 @@ public class LoggerTest {
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }

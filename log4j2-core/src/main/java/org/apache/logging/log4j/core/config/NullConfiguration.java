@@ -14,35 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.BaseConfiguration;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-
-import java.net.URI;
 
 /**
  *
  */
-public class BasicConfigurationFactory extends ConfigurationFactory {
+public class NullConfiguration extends BaseConfiguration {
 
-    public Configuration getConfiguration(String name, URI configLocation) {
-        return new BasicConfiguration();
-    }
+    public static final String NULL_NAME = "Null";
 
-    public class BasicConfiguration extends BaseConfiguration {
+    public NullConfiguration() {
 
-    private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
-
-    public BasicConfiguration() {
-
+        setName(NULL_NAME);
         LoggerConfig root = getRootLogger();
-        String l = System.getProperty(DEFAULT_LEVEL);
-        Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
-        root.setLevel(level);
+        root.setLevel(Level.OFF);
     }
-}
 }

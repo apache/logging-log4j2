@@ -5,6 +5,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.internal.StatusLogger;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public abstract class ConfigurationFactory {
         factories.remove(factory);
     }
 
-    public abstract Configuration getConfiguration();
+    public abstract Configuration getConfiguration(String name, URI configLocation);
 
     private static class WeightedFactory implements Comparable<WeightedFactory> {
         private int weight;
@@ -113,10 +114,10 @@ public abstract class ConfigurationFactory {
 
     private static class Factory extends ConfigurationFactory {
 
-        public Configuration getConfiguration() {
+        public Configuration getConfiguration(String name, URI configLocation) {
 
             for (ConfigurationFactory factory : factories) {
-                Configuration c = factory.getConfiguration();
+                Configuration c = factory.getConfiguration(name, configLocation);
                 if (c != null) {
                     return c;
                 }

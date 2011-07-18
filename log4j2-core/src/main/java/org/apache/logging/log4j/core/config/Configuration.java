@@ -39,4 +39,8 @@ public interface Configuration {
 
     void stop();
 
+    void addListener(ConfigurationListener listener);
+
+    void removeListener(ConfigurationListener listener);
+
 }

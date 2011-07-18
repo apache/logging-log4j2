@@ -64,6 +64,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
 
     private static Logger logger = StatusLogger.getLogger();
 
+    private ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
+
     public LoggerConfig() {
         this.logEventFactory = this;
         this.level = Level.ERROR;
@@ -85,6 +87,10 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         setFilters(filters);
         this.level = level;
         this.additive = additive;
+    }
+
+    public void setConfigurationMonitor(ConfigurationMonitor monitor) {
+        this.monitor = monitor;
     }
 
     public String getName() {
@@ -153,6 +159,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     public void log(LogEvent event) {
+        monitor.checkConfiguration();
         if (isFiltered(event)) {
             return;
         }

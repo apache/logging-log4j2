@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jcl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ListAppender;
@@ -45,14 +46,14 @@ public class LoggerTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogFactoryImpl.getContext();
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogFactoryImpl.getContext();
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -70,7 +71,7 @@ public class LoggerTest {
     }
 
     private void verify(String name, String expected) {
-        LoggerContext ctx = (LoggerContext) LogFactoryImpl.getContext();
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Map<String, Appender> list = ctx.getConfiguration().getAppenders();
         Appender listApp = list.get(name);
         assertNotNull("Missing Appender", listApp);
