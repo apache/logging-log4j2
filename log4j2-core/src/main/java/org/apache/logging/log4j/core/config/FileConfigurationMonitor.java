@@ -24,16 +24,45 @@ import java.util.List;
  */
 public class FileConfigurationMonitor implements ConfigurationMonitor {
 
-    private File file;
+    private final File file;
 
-    private List<ConfigurationListener> listeners;
+    private long lastModified;
 
-    public FileConfigurationMonitor(File file, List<ConfigurationListener> listeners) {
+    private final List<ConfigurationListener> listeners;
+
+    private final int interval;
+
+    private long nextCheck;
+
+    private final static int MIN_INTERVAL = 30;
+
+    private volatile int counter = 0;
+    private static final int MASK = 0x0f;
+    private long start;
+
+    public FileConfigurationMonitor(File file, List<ConfigurationListener> listeners, int interval) {
         this.file = file;
+        this.lastModified = file.lastModified();
         this.listeners = listeners;
+        this.interval = (interval < MIN_INTERVAL ? MIN_INTERVAL : interval) * 1000;
+        this.nextCheck = System.currentTimeMillis() + interval;
+        this.start = System.nanoTime();
     }
 
     public void checkConfiguration() {
-
+        if ((++counter & MASK) == 0) {
+            long current = System.currentTimeMillis();
+            synchronized(this) {
+                if (current >= nextCheck) {
+                    nextCheck = current + interval;
+                    if (lastModified >= file.lastModified()) {
+                        lastModified = file.lastModified();
+                        for (ConfigurationListener listener : listeners) {
+                            listener.onChange();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

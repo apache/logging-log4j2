@@ -98,7 +98,7 @@ public class XMLConfiguration extends BaseConfiguration {
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
                     int interval = Integer.parseInt(entry.getValue());
                     if (interval > 0 && configFile != null) {
-                        monitor = new FileConfigurationMonitor(configFile, listeners);
+                        monitor = new FileConfigurationMonitor(configFile, listeners, interval);
                     }
                 }
             }

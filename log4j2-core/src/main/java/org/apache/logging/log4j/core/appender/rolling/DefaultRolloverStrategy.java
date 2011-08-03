@@ -61,10 +61,6 @@ import java.util.List;
  */
 @Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
-    /**
-     * It's almost always a bad idea to have a large window size, say over 12.
-     */
-    private static final int MAX_WINDOW_SIZE = 12;
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
@@ -222,17 +218,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
     @PluginFactory
     public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
-                                                             @PluginAttr("min") String min) {
-        int maxIndex;
-        if (max != null) {
-            maxIndex = Integer.parseInt(max);
-            if (maxIndex > MAX_WINDOW_SIZE) {
-                logger.error("Maximum window size too large. Limited to " + MAX_WINDOW_SIZE);
-                maxIndex = MAX_WINDOW_SIZE;
-            }
-        } else {
-            maxIndex = DEFAULT_WINDOW_SIZE;
-        }
+                                                         @PluginAttr("min") String min) {
+
         int minIndex;
         if (min != null) {
             minIndex = Integer.parseInt(min);
@@ -243,7 +230,16 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         } else {
             minIndex = MIN_WINDOW_SIZE;
         }
-
+        int maxIndex;
+        if (max != null) {
+            maxIndex = Integer.parseInt(max);
+            if (maxIndex < minIndex) {
+                maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
+                logger.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+            }
+        } else {
+            maxIndex = DEFAULT_WINDOW_SIZE;
+        }
         return new DefaultRolloverStrategy(minIndex, maxIndex);
     }
 
