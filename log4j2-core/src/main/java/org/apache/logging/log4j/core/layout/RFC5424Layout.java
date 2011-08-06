@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.layout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.LoggingException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -58,9 +59,12 @@ public class RFC5424Layout extends AbstractStringLayout {
     private final String configName;
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
+    private final List<String> mdcRequired;
     private final ListChecker checker;
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
+
+    private static final String DEFAULT_MDCID = "mdc";
 
     private long lastTimestamp = -1;
     private String timestamppStr = null;
@@ -73,7 +77,8 @@ public class RFC5424Layout extends AbstractStringLayout {
     public static final String DEFAULT_ID = "Audit";
 
     public RFC5424Layout(Facility facility, String id, int ein, boolean includeMDC, boolean includeNL, String mdcId,
-                         String appName, String messageId, String excludes, String includes, Charset charset) {
+                         String appName, String messageId, String excludes, String includes, String required,
+                         Charset charset) {
         super(charset);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
@@ -112,6 +117,20 @@ public class RFC5424Layout extends AbstractStringLayout {
             }
         } else {
             mdcIncludes = null;
+        }
+        if (required != null) {
+            String[] array = required.split(",");
+            if (array.length > 0) {
+                mdcRequired = new ArrayList<String>(array.length);
+                for (String str : array) {
+                    mdcRequired.add(str.trim());
+                }
+            } else {
+                mdcRequired = null;
+            }
+
+        } else {
+            mdcRequired = null;
         }
         this.checker = c != null ? c : noopChecker;
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -153,24 +172,33 @@ public class RFC5424Layout extends AbstractStringLayout {
             buf.append("-");
         }
         buf.append(" ");
-        if (isStructured) {
-            StructuredDataMessage data = (StructuredDataMessage) msg;
-            Map map = data.getData();
-            StructuredDataId id = data.getId();
-            formatStructuredElement(id, map, buf, noopChecker);
+        if (isStructured || includeMDC) {
+            StructuredDataId id = null;
+            String text = "";
+            if (isStructured) {
+                StructuredDataMessage data = (StructuredDataMessage) msg;
+                Map map = data.getData();
+                id = data.getId();
+                formatStructuredElement(id, map, buf, noopChecker);
+                text = data.getMessageFormat();
+            } else {
+                text = msg.getFormattedMessage();
+            }
             if (includeMDC)
             {
-                int ein = id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
+                if (mdcRequired != null) {
+                    checkRequired(event.getContextMap());
+                }
+                int ein = id == null || id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
                 StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
                 formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
             }
-            String text = data.getMessageFormat();
             if (text != null && text.length() > 0) {
                 buf.append(" ").append(text);
             }
         } else {
             buf.append("- ");
-            buf.append(event.getMessage().getFormattedMessage());
+            buf.append(msg.getFormattedMessage());
         }
         if (includeNewLine) {
             buf.append("\n");
@@ -197,6 +225,14 @@ public class RFC5424Layout extends AbstractStringLayout {
             logger.error("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
         }
+    }
+
+    public List<String> getMdcExcludes() {
+        return mdcExcludes;
+    }
+
+    public List<String> getMdcIncludes() {
+        return mdcIncludes;
     }
 
     private String computeTimeStampString(long now) {
@@ -294,6 +330,15 @@ public class RFC5424Layout extends AbstractStringLayout {
         return sb.toString();
     }
 
+    private void checkRequired(Map<String, Object> map) {
+        for (String key : mdcRequired) {
+            Object value = map.get(key);
+            if (value == null) {
+                throw new LoggingException("Required key " + key + " is missing from the " + mdcId);
+            }
+        }
+    }
+
     private void appendMap(Map<String, Object> map, StringBuilder sb, ListChecker checker)
     {
         SortedMap<String, Object> sorted = new TreeMap<String, Object>(map);
@@ -338,7 +383,8 @@ public class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("appName") String appName,
                                              @PluginAttr("messageId") String msgId,
                                              @PluginAttr("mdcExcludes") String excludes,
-                                             @PluginAttr("mdcINcludes") String includes,
+                                             @PluginAttr("mdcIncludes") String includes,
+                                             @PluginAttr("mdcRequired") String required,
                                              @PluginAttr("charset") String charset) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
@@ -356,8 +402,11 @@ public class RFC5424Layout extends AbstractStringLayout {
         int enterpriseNumber = ein == null ? DEFAULT_ENTERPRISE_NUMBER : Integer.parseInt(ein);
         boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
+        if (mdcId == null) {
+            mdcId = DEFAULT_MDCID;
+        }
 
         return new RFC5424Layout(f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId, excludes,
-                                 includes, c);
+                                 includes, required, c);
     }
 }

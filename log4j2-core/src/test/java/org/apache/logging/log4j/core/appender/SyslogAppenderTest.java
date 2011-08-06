@@ -191,7 +191,7 @@ public class SyslogAppenderTest {
 
     private SyslogAppender createAppender(String protocol, String format) {
         return SyslogAppender.createAppender("localhost", PORT, protocol, "-1", "Test", "true", "false", "LOCAL0", "Audit",
-            "18060", "true", "RequestContext", "true", "TestApp", "Test", null, "ipAddress,loginId", format, null, null);
+            "18060", "true", "RequestContext", "true", "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null);
     }
 
     public static class UDPSocketServer extends Thread {

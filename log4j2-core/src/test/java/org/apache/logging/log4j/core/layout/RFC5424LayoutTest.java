@@ -44,9 +44,9 @@ public class RFC5424LayoutTest {
     Logger root = ctx.getLogger("");
 
 
-    private static final String line1 = "ATM - - - starting mdc pattern test";
-    private static final String line2 = "ATM - - - empty mdc";
-    private static final String line3 = "ATM - - - filled mdc";
+    private static final String line1 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] starting mdc pattern test";
+    private static final String line2 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] empty mdc";
+    private static final String line3 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] filled mdc";
     private static final String line4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
@@ -76,13 +76,15 @@ public class RFC5424LayoutTest {
 
         // set up appender
         RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext", "true",
-            "ATM", null, "key1, key2, locale", null, null);
+            "ATM", null, "key1, key2, locale", null, "loginId", null);
         ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
         root.addAppender(appender);
         root.setLevel(Level.DEBUG);
+
+        ThreadContext.put("loginId", "JohnDoe");
 
         // output starting message
         root.debug("starting mdc pattern test");
@@ -94,24 +96,37 @@ public class RFC5424LayoutTest {
 
         root.debug("filled mdc");
 
-        ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
-        msg.put("ToAccount", "123456");
-        msg.put("FromAccount", "123457");
-        msg.put("Amount", "200.00");
-        root.info(MarkerManager.getMarker("EVENT"), msg);
+        try {
+            StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+            msg.put("ToAccount", "123456");
+            msg.put("FromAccount", "123457");
+            msg.put("Amount", "200.00");
+            root.info(MarkerManager.getMarker("EVENT"), msg);
 
-        ThreadContext.clear();
+            List<String> list = appender.getMessages();
 
-        appender.stop();
+            assertTrue("Expected line 1 to end with: " + line1 + " Actual " + list.get(0), list.get(0).endsWith(line1));
+            assertTrue("Expected line 2 to end with: " + line2 + " Actual " + list.get(1), list.get(1).endsWith(line2));
+            assertTrue("Expected line 3 to end with: " + line3 + " Actual " + list.get(2), list.get(2).endsWith(line3));
+            assertTrue("Expected line 4 to end with: " + line4 + " Actual " + list.get(3), list.get(3).endsWith(line4));
 
-        List<String> list = appender.getMessages();
+            appender.clear();
 
-        assertTrue("Expected line 1 to end with: " + line1 + " Actual " + list.get(0), list.get(0).endsWith(line1));
-        assertTrue("Expected line 2 to end with: " + line2 + " Actual " + list.get(1), list.get(1).endsWith(line2));
-        assertTrue("Expected line 3 to end with: " + line3 + " Actual " + list.get(2), list.get(2).endsWith(line3));
-        assertTrue("Expected line 4 to end with: " + line4 + " Actual " + list.get(3), list.get(3).endsWith(line4));
+            ThreadContext.remove("loginId");
+
+            root.debug("This is a test");
+
+            list = appender.getMessages();
+            assertTrue("No messages expected, found " + list.size(), list.size() == 0);
+        } finally {
+
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+
     }
+
 }

@@ -62,7 +62,8 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("appName") String appName,
                                                 @PluginAttr("messageId") String msgId,
                                                 @PluginAttr("mdcExcludes") String excludes,
-                                                @PluginAttr("mdcINcludes") String includes,
+                                                @PluginAttr("mdcIncludes") String includes,
+                                                @PluginAttr("mdcRequired") String required,
                                                 @PluginAttr("format") String format,
                                                 @PluginElement("filters") Filters filters,
                                                 @PluginAttr("charset") String charset) {
@@ -81,7 +82,7 @@ public class SyslogAppender extends SocketAppender {
         }
         Layout layout = (format.equalsIgnoreCase(RFC5424)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, appName,  msgId,
-                excludes, includes, charset) :
+                excludes, includes, required, charset) :
             SyslogLayout.createLayout(facility, includeNL, charset);
 
         if (name == null) {
