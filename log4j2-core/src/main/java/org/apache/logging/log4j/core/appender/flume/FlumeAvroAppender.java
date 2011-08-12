@@ -48,9 +48,13 @@ public class FlumeAvroAppender extends AppenderBase {
 
     private final String hostname;
 
+    private final int reconnectDelay;
+
+    private final int retries;
+
     private FlumeAvroAppender(String name, Filters filters, Layout layout, boolean handleException,
                               String hostname, String includes, String excludes, String required, String mdcPrefix,
-                              String eventPrefix, boolean compress, FlumeAvroManager manager) {
+                              String eventPrefix, boolean compress, int delay, int retries, FlumeAvroManager manager) {
         super(name, filters, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -60,6 +64,8 @@ public class FlumeAvroAppender extends AppenderBase {
         this.mdcPrefix = mdcPrefix;
         this.compressBody = compress;
         this.hostname = hostname;
+        this.reconnectDelay = delay;
+        this.retries = retries;
     }
 
     public void append(LogEvent event) {
@@ -67,7 +73,7 @@ public class FlumeAvroAppender extends AppenderBase {
         FlumeEvent flumeEvent = new FlumeEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().format(flumeEvent));
-        manager.send(flumeEvent);
+        manager.send(flumeEvent, reconnectDelay, retries);
     }
 
     @Override
@@ -119,11 +125,11 @@ public class FlumeAvroAppender extends AppenderBase {
             return null;
         }
 
-        FlumeAvroManager manager = FlumeAvroManager.getManager(agents, reconnectDelay, retries);
+        FlumeAvroManager manager = FlumeAvroManager.getManager(agents);
         if (manager == null) {
             return null;
         }
         return new FlumeAvroAppender(name, filters, layout,  handleExceptions, hostname, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, manager);
+            excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, manager);
     }
 }

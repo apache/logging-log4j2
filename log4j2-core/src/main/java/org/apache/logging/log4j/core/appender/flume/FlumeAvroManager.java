@@ -37,13 +37,9 @@ import java.net.URL;
  */
 public class FlumeAvroManager extends AbstractManager {
 
-    private final int reconnectionDelay;
-
     private FlumeEventAvroServer client;
 
     private final Agent[] agents;
-
-    private final int retries;
 
     private static final int DEFAULT_RECONNECTS = 3;
 
@@ -58,16 +54,11 @@ public class FlumeAvroManager extends AbstractManager {
 
     private static Logger logger = StatusLogger.getLogger();
 
-    public static FlumeAvroManager getManager(Agent[] agents, int delay, int retries) {
+    public static FlumeAvroManager getManager(Agent[] agents) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
-        if (delay == 0) {
-            delay = DEFAULT_RECONNECTION_DELAY;
-        }
-        if (retries == 0) {
-            retries = DEFAULT_RECONNECTS;
-        }
+
         StringBuilder sb = new StringBuilder("FlumeAvro[");
         boolean first = true;
         for (Agent agent : agents) {
@@ -78,19 +69,23 @@ public class FlumeAvroManager extends AbstractManager {
             first = false;
         }
         sb.append("]");
-        return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(agents, delay, retries));
+        return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(agents));
     }
 
 
-    public FlumeAvroManager(String name, Agent[] agents, int delay, int retries) {
+    public FlumeAvroManager(String name, Agent[] agents) {
         super(name);
         this.agents = agents;
         this.client = connect(agents);
-        this.reconnectionDelay = delay;
-        this.retries = retries;
     }
 
-    protected synchronized void send(FlumeEvent event)  {
+    protected synchronized void send(FlumeEvent event, int delay, int retries)  {
+        if (delay == 0) {
+            delay = DEFAULT_RECONNECTION_DELAY;
+        }
+        if (retries == 0) {
+            retries = DEFAULT_RECONNECTS;
+        }
         AvroFlumeEvent avroEvent = AvroEventConvertUtil.toAvroEvent(event);
         int i = 0;
 
@@ -106,7 +101,7 @@ public class FlumeAvroManager extends AbstractManager {
                     logger.warn(msg, ex);
                     break;
                 }
-                sleep();
+                sleep(delay);
             }
         } while (++i < retries);
 
@@ -131,7 +126,7 @@ public class FlumeAvroManager extends AbstractManager {
                         logger.warn(warnMsg, ex);
                         break;
                     }
-                    sleep();
+                    sleep(delay);
                 }
             } while (++i < retries);
         }
@@ -140,9 +135,9 @@ public class FlumeAvroManager extends AbstractManager {
 
     }
 
-    private void sleep() {
+    private void sleep(int delay) {
         try {
-            Thread.sleep(reconnectionDelay);
+            Thread.sleep(delay);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
@@ -189,13 +184,9 @@ public class FlumeAvroManager extends AbstractManager {
 
     private static class FactoryData {
         Agent[] agents;
-        int delay;
-        int retries;
 
-        public FactoryData(Agent[] agents, int delay, int retries) {
+        public FactoryData(Agent[] agents) {
             this.agents = agents;
-            this.delay = delay;
-            this.retries = retries;
         }
     }
 
@@ -204,7 +195,7 @@ public class FlumeAvroManager extends AbstractManager {
         public FlumeAvroManager createManager(String name, FactoryData data) {
             try {
 
-                return new FlumeAvroManager(name, data.agents, data.delay, data.retries);
+                return new FlumeAvroManager(name, data.agents);
             } catch (Exception ex) {
                 logger.error("Could not create FlumeAvroManager", ex);
             }
