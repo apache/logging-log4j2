@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" name="XMLPerfTest" status="error">
+  <appenders>
+    <File name="TestLogfile" fileName="target/testlog4j2.log" immediateFlush="false">
+      <PatternLayout>
+        <pattern>%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="TestLogfile"/>
+    </root>
+  </loggers>
+</configuration>

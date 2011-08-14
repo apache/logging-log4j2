@@ -38,12 +38,11 @@ public class SimplePerfTest {
 
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimplePerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
-    private static final int LOOP_CNT = 100000000;
+    private static final int LOOP_CNT = 10000000;
     private static final int WARMUP = 1000;
     private static long maxTime;
-    private static int DEPTH = 2;
-    private static NotRandom rand = new NotRandom();
-    private static int RAND_SIZE = 10000;
+    private static Random rand = new SimpleRandom();
+    private static int RAND_SIZE = 200;
     private static int[] values = new int[RAND_SIZE];
 
     @BeforeClass
@@ -55,32 +54,24 @@ public class SimplePerfTest {
             ((LoggerContext)LogManager.getContext()).setConfiguration(new DefaultConfiguration());
         }
 
-        Random r = new Random(WARMUP);
-
-        for (int i=0; i < RAND_SIZE; ++i) {
-            values[i] = r.nextInt(Integer.MAX_VALUE);
-        }
-
         for (int i=0; i < WARMUP; ++i) {
-            if (overhead(DEPTH)) {
-                System.out.println("help!");
-            }
+            overhead();
         }
-
+        System.gc();
         Timer timer = new Timer("Setup", LOOP_CNT);
         timer.start();
-        for (int i=0; i < LOOP_CNT; ++i) {
-            if (overhead(DEPTH)) {
-                System.out.println("help!");
-            }
+        for (int i=0; i < (LOOP_CNT / 150); ++i) {
+            overhead();
         }
         timer.stop();
         maxTime = timer.getElapsedNanoTime();
+        System.gc();
         System.out.println(timer.toString());
     }
 
     @Test
     public void debugDisabled() {
+        System.gc();
         Timer timer = new Timer("DebugDisabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
@@ -120,26 +111,41 @@ public class SimplePerfTest {
      * Try to generate some overhead that can't be optimized well. Not sure how accurate this is,
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
-    private static boolean overhead(int i) {
-        while (i > 0) {
-            if (rand.nextInt() <= 0) {
-                return true;
-            }
-            --i;
+    private static void overhead() {
+        int values[] = new int[RAND_SIZE];
+        Random rand = new SimpleRandom();
+
+        for (int i = 0; i < RAND_SIZE; ++i) {
+            values[i] = rand.nextInt();
         }
-        return false;
+        bubbleSort(values);
     }
 
-    private static class NotRandom extends Random
-    {
-        private int index = 0;
+    private static class SimpleRandom extends Random {
+        private int low = 5;
+        private int high = 55;
 
-        @Override
         public int nextInt() {
-            if (index >= values.length) {
-                index = 0;
+            high = 36969 * (high & 65535) + (high >> 16);
+            low = 18000 * (low & 65535) + (low >> 16);
+            return (high << 16) + low;
+        }
+    }
+
+    /**
+     * Standard BubbleSort algorithm.
+     * @param array The array to sort.
+     */
+    private static void bubbleSort(int array[]) {
+        int length = array.length;
+        for (int i = 0; i < length; i++) {
+            for (int j = 1; j > length - i; j++) {
+                if (array[j-1] > array[j]) {
+                    int temp = array[j-1];
+                    array[j-1] = array[j];
+                    array[j] = temp;
+                }
             }
-            return values[index++];
         }
     }
 }
