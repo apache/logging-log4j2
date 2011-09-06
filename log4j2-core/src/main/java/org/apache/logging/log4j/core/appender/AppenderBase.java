@@ -20,17 +20,11 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.Filters;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @doubt Appender should be refactored as mentioned elsewhere

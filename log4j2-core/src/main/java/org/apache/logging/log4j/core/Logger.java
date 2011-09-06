@@ -21,11 +21,9 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +41,7 @@ public class Logger extends AbstractLogger {
     /**
      * config should be consistent across threads.
      */
-    protected volatile PrivateConfig config;
+    volatile protected PrivateConfig config;
 
     protected Logger(LoggerContext context, String name) {
         this.context = context;

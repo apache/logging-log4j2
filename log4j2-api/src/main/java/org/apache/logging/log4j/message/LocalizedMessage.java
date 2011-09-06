@@ -16,18 +16,24 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
+ * This class is not the recommended way to Localize messages. It is provided to provide some level
+ * of compatibility with Log4j 1.x.
  *
+ * The recommended way to localize messages is to simply log a message id. Log events should
+ * then be recorded without formatting into some kind of data store. The application that is
+ * used to read the events and display them to the user should also localize and format the
+ * messages for the end user.
  */
 public class LocalizedMessage extends ParameterizedMessage implements LoggerNameAwareMessage
 {
+    private static final long serialVersionUID = 3893703791567290742L;
 
     private String bundleId;
 
@@ -39,6 +45,9 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
     private String loggerName = null;
 
+    /**
+     * The basic constructor.
+     */
     public LocalizedMessage() {
         super();
         setup(null, null, null);
@@ -184,13 +193,19 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
         setup(null, null, locale);
     }
 
-    public void setLoggerName(String name)
-    {
+    /**
+     * Set the name of the Logger.
+     * @param name The name of the Logger.
+     */
+    public void setLoggerName(String name) {
         this.loggerName = name;
     }
 
-    public String getLoggerName()
-    {
+    /**
+     * Return the name of the Logger.
+     * @return the name of the Logger.
+     */
+    public String getLoggerName() {
         return this.loggerName;
     }
 
@@ -200,6 +215,12 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
         this.locale = locale;
     }
 
+    /**
+     * Return the formatted message after looking up the format in the resource bundle.
+     * @param messagePattern The key for the resource bundle or the pattern if the bundle doesn't contain the key.
+     * @param args The parameters.
+     * @return The formatted message String.
+     */
     @Override
     public String formatMessage(String messagePattern, String[] args) {
         ResourceBundle bundle = this.bundle;
@@ -218,6 +239,9 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
     /**
      * Override this to use a ResourceBundle.Control in Java 6
      * @param key The key to the bundle.
+     * @param locale The locale to use when formatting the message.
+     * @param loop If true the key will be treated as a package or class name and a resource bundle will
+     * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
     protected ResourceBundle getBundle(String key, Locale locale, boolean loop) {

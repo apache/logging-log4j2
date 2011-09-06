@@ -14,12 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.Level;
 
 /**
- *
+ * StatusListener that writes to the Console
  */
 public class StatusConsoleListener implements StatusListener {
 
@@ -29,6 +29,11 @@ public class StatusConsoleListener implements StatusListener {
 
     private String[] filters = null;
 
+    /**
+     * Creates the StatusConsoleListener using either the level configured by the
+     * "org.apache.logging.log4j.StatusLevel" system property if it is set or to a
+     * default value of FATAL.
+     */
     public StatusConsoleListener() {
         String str = System.getProperty(STATUS_LEVEL);
         if (str != null) {
@@ -36,20 +41,36 @@ public class StatusConsoleListener implements StatusListener {
         }
     }
 
+    /**
+     * Creates the StatusConsoleListener using the supplied Level.
+     * @param level The Level of status messages that should appear on the console.
+     */
     public StatusConsoleListener(Level level) {
         this.level = level;
     }
 
+    /**
+     * Sets the level to a new value.
+     * @param level The new Level.
+     */
     public void setLevel(Level level) {
         this.level = level;
     }
 
+    /**
+     * Writes status messages to the console.
+     * @param data The StatusData.
+     */
     public void log(StatusData data) {
         if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
             System.out.println(data.getFormattedStatus());
         }
     }
 
+    /**
+     * Adds package name filters to exclude.
+     * @param filters An array of package names to exclude.
+     */
     public void setFilters(String[] filters) {
         this.filters = filters;
     }

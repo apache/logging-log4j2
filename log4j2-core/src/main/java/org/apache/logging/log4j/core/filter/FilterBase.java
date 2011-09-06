@@ -22,8 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.message.Message;
 
 /**

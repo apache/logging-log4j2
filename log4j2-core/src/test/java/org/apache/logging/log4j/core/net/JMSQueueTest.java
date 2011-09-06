@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.filter.FilterBase;
 import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.internal.StatusConsoleListener;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import org.junit.After;
 import org.junit.AfterClass;

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.IOException;
 import java.io.OutputStream;

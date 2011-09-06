@@ -15,8 +15,9 @@
   <packaging>jar</packaging>
   <name>Log4J2 Commons Logging</name>
   <description>Log4j2 Commons Logging Adapter</description>
-  <url>http://logging.apache.org/log4j/experimental</url>
-
+  <properties>
+    <log4j.parent.dir>${basedir}/..</log4j.parent.dir>
+  </properties>
   <dependencies>
      <dependency>
       <groupId>junit</groupId>
@@ -40,6 +41,120 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <version>2.6</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>changes-report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+            <configuration>
+              <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+              <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
+              <configLocation>${log4j.parent.dir}/checkstyle.xml</configLocation>
+              <suppressionsLocation>${log4j.parent.dir}/checkstyle-suppressions.xml</suppressionsLocation>
+              <enableRulesSummary>false</enableRulesSummary>
+              <propertyExpansion>basedir=${basedir}</propertyExpansion>
+              <propertyExpansion>licensedir=${log4j.parent.dir}/checkstyle-header.txt</propertyExpansion>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.8</version>
+            <configuration>
+              <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
+                   project -->
+              <detectOfflineLinks>false</detectOfflineLinks>
+              <linksource>true</linksource>
+              <tags>
+                <tag>
+                  <name>issue</name>
+                  <placement>a</placement>
+                  <head>JIRA issue:</head>
+                </tag>
+                <tag>
+                  <name>doubt</name>
+                  <placement>a</placement>
+                  <head>Troublesome:</head>
+                </tag>
+                <tag>
+                  <name>compare</name>
+                  <placement>a</placement>
+                  <head>Compare with:</head>
+                </tag>
+              </tags>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <id>non-aggregate</id>
+                <reports>
+                  <report>javadoc</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+              <threshold>Normal</threshold>
+              <effort>Default</effort>
+              <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>2.3</version>
+            <reportSets>
+              <reportSet>
+                <id>non-aggregate</id>
+                <reports>
+                  <report>jxr</report>
+                </reports>
+              </reportSet>
+              <reportSet>
+                <id>aggregate</id>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <configuration>
+              <targetJdk>1.5</targetJdk>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>2.2</version>
+            <reportSets>
+              <reportSet>
+                <!-- Disabled at it kills the site generation via a NoClassDefFoundError -->
+                <reports/>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
 
 </project>

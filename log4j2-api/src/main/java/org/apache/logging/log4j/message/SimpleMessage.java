@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
@@ -27,22 +26,41 @@ public class SimpleMessage implements Message, Serializable {
 
     private final String message;
 
+    /**
+     * Basic constructor.
+     */
     public SimpleMessage() {
         this(null);
     }
 
+    /**
+     * Constructor that includes the message.
+     * @param message The String message.
+     */
     public SimpleMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Return the message.
+     * @return the message.
+     */
     public String getFormattedMessage() {
         return message;
     }
 
+    /**
+     * Return the message.
+     * @return the message.
+     */
     public String getMessageFormat() {
         return message;
     }
 
+    /**
+     * Returns null since there are no parameters.
+     * @return null.
+     */
     public Object[] getParameters() {
         return null;
     }

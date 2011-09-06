@@ -23,5 +23,5 @@ import org.apache.logging.log4j.core.LoggerContext;
  */
 public class ContextAnchor {
 
-    public static ThreadLocal<LoggerContext> threadContext = new ThreadLocal<LoggerContext>();
+    public static final ThreadLocal<LoggerContext> threadContext = new ThreadLocal<LoggerContext>();
 }

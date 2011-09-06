@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.appender.rolling.helper.ZipCompressAction;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
 import java.util.ArrayList;

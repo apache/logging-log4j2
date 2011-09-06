@@ -19,33 +19,42 @@ package org.apache.logging.log4j.message;
 import java.io.Serializable;
 
 /**
- *
- */
-
-/**
- * The StructuredData identifier
+ * The StructuredData identifier.
  */
 public class StructuredDataId implements Serializable {
     private static final long serialVersionUID = 9031746276396249990L;
 
-    public static StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null,
+    /**
+     * RFC 5424 Time Quality.
+     */
+    public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null,
         new String[]{"tzKnown", "isSynced", "syncAccuracy"});
-    public static StructuredDataId ORIGIN = new StructuredDataId("origin", null,
+    /**
+     * RFC 5424 Origin.
+     */
+    public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null,
         new String[]{"ip", "enterpriseId", "software", "swVersion"});
-    public static StructuredDataId META = new StructuredDataId("meta", null,
+    /**
+     * RFC 5424 Meta.
+     */
+    public static final StructuredDataId META = new StructuredDataId("meta", null,
         new String[]{"sequenceId", "sysUpTime", "language"});
 
+    /**
+     * Reserved enterprise number.
+     */
     public static final int RESERVED = -1;
 
     private final String name;
     private final int enterpriseNumber;
     private final String[] required;
     private final String[] optional;
+    private static final int MAX_LENGTH = 32;
 
     protected StructuredDataId(String name, String[] required, String[] optional) {
         int index = -1;
         if (name != null) {
-            if (name.length() > 32) {
+            if (name.length() > MAX_LENGTH) {
                 throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + name);
             }
             index = name.indexOf("@");
@@ -83,13 +92,18 @@ public class StructuredDataId implements Serializable {
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
         String id = enterpriseNumber < 0 ? name : name + "@" + enterpriseNumber;
-        if (id.length() > 32) {
+        if (id.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + id);
         }
         this.required = required;
         this.optional = optional;
     }
 
+    /**
+     * Creates an id using another id to supply default values.
+     * @param id The original StructuredDataId.
+     * @return the new StructuredDataId.
+     */
     public StructuredDataId makeId(StructuredDataId id) {
         if (id == null) {
             return this;
@@ -97,6 +111,12 @@ public class StructuredDataId implements Serializable {
         return makeId(id.getName(), id.getEnterpriseNumber());
     }
 
+    /**
+     * Creates an id based on the current id.
+     * @param defaultId The default id to use if this StructuredDataId doesn't have a name.
+     * @param enterpriseNumber The enterprise number.
+     * @return a StructuredDataId.
+     */
     public StructuredDataId makeId(String defaultId, int enterpriseNumber) {
         String id;
         String[] req;
@@ -117,22 +137,42 @@ public class StructuredDataId implements Serializable {
         return new StructuredDataId(id, enterpriseNumber, req, opt);
     }
 
+    /**
+     * Returns a list of required keys.
+     * @return a List of required keys or null if none have been provided.
+     */
     public String[] getRequired() {
         return required;
     }
 
+    /**
+     * Returns a list of optional keys.
+     * @return a List of optional keys or null if none have been provided.
+     */
     public String[] getOptional() {
         return optional;
     }
 
+    /**
+     * Return the StructuredDataId name.
+     * @return the StructuredDataId name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Return the enterprise number.
+     * @return the enterprise number.
+     */
     public int getEnterpriseNumber() {
         return enterpriseNumber;
     }
 
+    /**
+     * Indicates if the id is reserved.
+     * @return true if the id uses the reserved enterprise number, false otherwise.
+     */
     public boolean isReserved() {
         return enterpriseNumber <= 0;
     }

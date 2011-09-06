@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
 /**

@@ -21,17 +21,33 @@ import java.util.concurrent.ConcurrentMap;
 
 
 /**
- *
+ * Applications create Markers by using the Marker Manager. All Markers created by this Manager are
+ * immutable.
  */
-public class MarkerManager {
+public final class MarkerManager {
 
     private static ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
+    private MarkerManager() {
+    }
+
+    /**
+     * Retrieve a Marker or create a Marker that has no parent.
+     * @param name The name of the Marker.
+     * @return The Marker with the specified name.
+     */
     public static Marker getMarker(String name) {
         markerMap.putIfAbsent(name, new Log4JMarker(name));
         return markerMap.get(name);
     }
 
+    /**
+     * Retrieves or creates a Marker with the specified parent. The parent must have been previously created.
+     * @param name The name of the Marker.
+     * @param parent The name of the parent Marker.
+     * @return The Marker with the specified name.
+     * @throws IllegalArgumentException if the parent Marker does not exist.
+     */
     public static Marker getMarker(String name, String parent) {
         Marker parentMarker = markerMap.get(parent);
         if (parentMarker == null) {
@@ -40,6 +56,12 @@ public class MarkerManager {
         return getMarker(name, parentMarker);
     }
 
+    /**
+     * Retrieves or creates a Marker with the specified parent.
+     * @param name The name of the Marker.
+     * @param parent The parent Marker.
+     * @return The Marker with the specified name.
+     */
     public static Marker getMarker(String name, Marker parent) {
         markerMap.putIfAbsent(name, new Log4JMarker(name, parent));
         return markerMap.get(name);

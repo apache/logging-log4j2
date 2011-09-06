@@ -3,7 +3,7 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.net.URI;
 import java.util.ArrayList;

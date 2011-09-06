@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * An interface for various Message implementations that can be logged. Messages can act as wrappers

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

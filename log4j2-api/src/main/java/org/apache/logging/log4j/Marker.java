@@ -19,12 +19,30 @@ package org.apache.logging.log4j;
 import java.io.Serializable;
 
 /**
+ *  Markers are objects that are used to add easily filterable information to log messages.
+ *
+ *  Markers can be hierarchical - each Marker may have a parent. This allows for broad categories
+ *  being subdivided into more specific categories. An example might be a Marker named "Error" with
+ *  children named "SystemError" and "ApplicationError".
  */
 public interface Marker extends Serializable {
 
-    public String getName();
+    /**
+     * Returns the name of this Marker.
+     * @return The name of the Marker.
+     */
+    String getName();
 
-    public Marker getParent();
+    /**
+     * Returns the parent of this Marker.
+     * @return The parent Marker or null if this Marker has no parent.
+     */
+    Marker getParent();
 
-    public boolean isInstanceOf(Marker m);
+    /**
+     * Checks whether this Marker is an instance of the specified Marker.
+     * @param m The Marker to check.
+     * @return true of this Marker or one of its ancestors is the specified Marker, false otherwise.
+     */
+    boolean isInstanceOf(Marker m);
 }

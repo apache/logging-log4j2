@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.Level;
@@ -32,12 +32,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- *
+ * Mechanism to record events that occur in the logging system.
  */
 public class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
+    /**
+     * System property that can be configured with the number of entries in the queue. Once the limit
+     * is reached older entries will be removed as new entries are added.
+     */
     public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
 
     private static final int maxEntries = Integer.getInteger(MAX_STATUS_ENTRIES, 200);
@@ -57,10 +61,18 @@ public class StatusLogger extends AbstractLogger {
     private StatusLogger() {
     }
 
+    /**
+     * Retrieve the StatusLogger.
+     * @return The StatusLogger.
+     */
     public static StatusLogger getLogger() {
         return statusLogger;
     }
 
+    /**
+     * Register a new listener.
+     * @param listener The StatusListener to register.
+     */
     public void registerListener(StatusListener listener) {
         listenersLock.writeLock().lock();
         try {
@@ -70,6 +82,10 @@ public class StatusLogger extends AbstractLogger {
         }
     }
 
+    /**
+     * Remove a StatusListener.
+     * @param listener The StatusListener to remove.
+     */
     public void removeListener(StatusListener listener) {
         listenersLock.writeLock().lock();
         try {
@@ -79,15 +95,26 @@ public class StatusLogger extends AbstractLogger {
         }
     }
 
+    /**
+     * Returns a thread safe Iterator for the StatusListener.
+     * @return An Iterator for the list of StatusListeners.
+     */
     public Iterator<StatusListener> getListeners() {
         return listeners.iterator();
     }
 
+    /**
+     * Clears the list of status events and listeners.
+     */
     public void reset() {
         listeners.clear();
         clear();
     }
 
+    /**
+     * Returns a List of all events as StatusData objects.
+     * @return The list of StatusData objects.
+     */
     public List<StatusData> getStatusData() {
         msgLock.lock();
         try {
@@ -97,6 +124,9 @@ public class StatusLogger extends AbstractLogger {
         }
     }
 
+    /**
+     * Clears the list of status events.
+     */
     public void clear() {
         msgLock.lock();
         try {
@@ -106,12 +136,15 @@ public class StatusLogger extends AbstractLogger {
         }
     }
 
-    /*
-    @Override
-    protected String getFQCN() {
-        return FQCN;
-    } */
 
+    /**
+     * Add an event.
+     * @param marker The Marker
+     * @param fqcn   The fully qualified class name of the <b>caller</b>
+     * @param level  The logging level
+     * @param msg    The message associated with the event.
+     * @param t      A Throwable or null.
+     */
     @Override
     public void log(Marker marker, String fqcn, Level level, Message msg, Throwable t) {
         StackTraceElement element = null;

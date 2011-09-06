@@ -54,7 +54,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
 
 
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
-                         Map<String, Object> mdc, Stack<String>ndc, String threadName, StackTraceElement location,
+                         Map<String, Object> mdc, Stack<String> ndc, String threadName, StackTraceElement location,
                          long timestamp) {
         name = loggerName;
         this.marker = marker;

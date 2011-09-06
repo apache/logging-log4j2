@@ -15,12 +15,13 @@
 package org.apache.logging.log4j.core.config.plugins;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
@@ -79,14 +80,14 @@ public class ResolverUtil<T> {
          */
         boolean matches(Class type);
 
-        boolean matches(URL resource);
+        boolean matches(URI resource);
 
         boolean doesMatchClass();
         boolean doesMatchResource();
     }
 
     public static abstract class ClassTest implements Test {
-        public boolean matches(URL resource) {
+        public boolean matches(URI resource) {
             throw new UnsupportedOperationException();
         }
 
@@ -157,7 +158,7 @@ public class ResolverUtil<T> {
     public static class AnnotatedWith extends ClassTest {
         private Class<? extends Annotation> annotation;
 
-        /** Construts an AnnotatedWith test for the specified annotation type. */
+        /** Constructs an AnnotatedWith test for the specified annotation type. */
         public AnnotatedWith(Class<? extends Annotation> annotation) { this.annotation = annotation; }
 
         /** Returns true if the type is annotated with the class provided to the constructor. */
@@ -175,7 +176,7 @@ public class ResolverUtil<T> {
 
         public NameIs(String name) { this.name = "/" + name; }
 
-        public boolean matches(URL resource) {
+        public boolean matches(URI resource) {
             return (resource.getPath().endsWith(name));
         }
 
@@ -188,7 +189,7 @@ public class ResolverUtil<T> {
     private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
 
     /** The set of matches being accumulated. */
-    private Set<URL> resourceMatches = new HashSet<URL>();
+    private Set<URI> resourceMatches = new HashSet<URI>();
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
@@ -206,7 +207,7 @@ public class ResolverUtil<T> {
         return classMatches;
     }
 
-    public Set<URL> getResources() {
+    public Set<URI> getResources() {
         return resourceMatches;
     }
 
@@ -371,7 +372,7 @@ public class ResolverUtil<T> {
      */
     private void loadImplementationsInDirectory(Test test, String parent, File location) {
         File[] files = location.listFiles();
-        StringBuilder builder = null;
+        StringBuilder builder;
 
         for (File file : files) {
             builder = new StringBuilder(100);
@@ -445,8 +446,8 @@ public class ResolverUtil<T> {
                 if (url == null) {
                     url = loader.getResource(fqn.substring(1));
                 }
-                if (url != null && test.matches(url)) {
-                    resourceMatches.add(url);
+                if (url != null && test.matches(url.toURI())) {
+                    resourceMatches.add(url.toURI());
                 }
             }
         }

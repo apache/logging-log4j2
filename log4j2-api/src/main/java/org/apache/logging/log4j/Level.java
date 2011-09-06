@@ -33,7 +33,38 @@ package org.apache.logging.log4j;
  * @doubt see LOG4J-41
  */
 public enum Level {
-    OFF(0), FATAL(1), ERROR(2), WARN(3), INFO(4), DEBUG(5), TRACE(6), ALL(Integer.MAX_VALUE);
+    /**
+     * No events will be logged.
+     */
+    OFF(0),
+    /**
+     * A severe error that will prevent the application from continuing.
+     */
+    FATAL(1),
+    /**
+     * An error in the application, possibly recoverable.
+     */
+    ERROR(2),
+    /**
+     * An event that might possible lead to an error.
+     */
+    WARN(3),
+    /**
+     * An event for informational purposes.
+     */
+    INFO(4),
+    /**
+     * A general debugging event.
+     */
+    DEBUG(5),
+    /**
+     * A fine-grained debug message, typically capturing the flow through the application.
+     */
+    TRACE(6),
+    /**
+     * All events should be logged.
+     */
+    ALL(Integer.MAX_VALUE);
 
     private final int intLevel;
 
@@ -45,7 +76,8 @@ public enum Level {
      * Convert the string passed as argument to a level. If the
      * conversion fails, then this method returns {@link #DEBUG}.
      *
-     * @return the Level associate with the String.
+     * @param sArg The name of the desired Level.
+     * @return The Level associated with the String.
      */
     public static Level toLevel(String sArg) {
         return toLevel(sArg, DEBUG);
@@ -55,6 +87,10 @@ public enum Level {
      * Convert the string passed as argument to a level. If the
      * conversion fails, then this method returns the value of
      * <code>defaultLevel</code>.
+     *
+     * @param sArg The name of the desired Level.
+     * @param defaultLevel The Level to use if the String is invalid.
+     * @return The LEvel associated with the String.
      */
     public static Level toLevel(String sArg, Level defaultLevel) {
         if (sArg == null) {

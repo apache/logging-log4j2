@@ -20,27 +20,43 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Map;
-
 /**
  * Handles messages that contain an Object.
  */
 public class ObjectMessage implements Message, Serializable {
 
+    private static final long serialVersionUID = -5903272448334166185L;
+
     private transient Object obj;
 
+    /**
+     * Create the ObjectMessage.
+     * @param obj The Object to format.
+     */
     public ObjectMessage(Object obj) {
         this.obj = obj;
     }
 
+    /**
+     * Return the formatted object message.
+     * @return the formatted object message.
+     */
     public String getFormattedMessage() {
         return obj.toString();
     }
 
+    /**
+     * Returns the object formatted using its toString method.
+     * @return the String representation of the object.
+     */
     public String getMessageFormat() {
         return obj.toString();
     }
 
+    /**
+     * Returns the object as if it were a parameter.
+     * @return The object.
+     */
     public Object[] getParameters() {
         return new Object[]{obj};
     }

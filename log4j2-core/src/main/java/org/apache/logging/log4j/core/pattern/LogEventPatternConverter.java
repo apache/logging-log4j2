@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * LoggingEventPatternConverter is a base class for pattern converters

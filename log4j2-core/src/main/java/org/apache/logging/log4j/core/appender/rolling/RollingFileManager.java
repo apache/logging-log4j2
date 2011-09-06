@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
 import org.apache.logging.log4j.core.appender.rolling.helper.ActionBase;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

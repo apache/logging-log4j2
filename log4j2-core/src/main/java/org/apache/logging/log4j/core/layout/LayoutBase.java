@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.Serializable;
 
@@ -30,7 +30,7 @@ public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
     protected byte[] header;
     protected byte[] footer;
 
-    protected static Logger logger = StatusLogger.getLogger();
+    protected static final Logger logger = StatusLogger.getLogger();
 
     public byte[] getHeader() {
         return header;

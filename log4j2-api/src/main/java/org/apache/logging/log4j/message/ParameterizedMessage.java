@@ -43,10 +43,20 @@ public class ParameterizedMessage implements Message, Serializable {
     private transient String formattedMessage;
     private transient Throwable throwable;
 
+    /**
+     * Create the ParameterizedMessage.
+     */
     public ParameterizedMessage() {
         this(null, null, null);
     }
 
+    /**
+     * Create the parameterizedMessage.
+     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
+     * where parameters should be substituted.
+     * @param stringArgs The arguments for substitution.
+     * @param throwable A Throwable.
+     */
     public ParameterizedMessage(String messagePattern, String[] stringArgs, Throwable throwable) {
         this.messagePattern = messagePattern;
         this.stringArgs = stringArgs;
@@ -72,10 +82,21 @@ public class ParameterizedMessage implements Message, Serializable {
         parseArguments(arguments);
     }
 
+    /**
+     * Constructor with a pattern and a single parameter.
+     * @param messagePattern The message pattern.
+     * @param arg The parameter.
+     */
     public ParameterizedMessage(String messagePattern, Object arg) {
         this(messagePattern, new Object[]{arg});
     }
 
+    /**
+     * Constructor with a pattern and two parameters.
+     * @param messagePattern The message pattern.
+     * @param arg1 The first parameter.
+     * @param arg2 The second parameter.
+     */
     public ParameterizedMessage(String messagePattern, Object arg1, Object arg2) {
         this(messagePattern, new Object[]{arg1, arg2});
     }
@@ -106,6 +127,10 @@ public class ParameterizedMessage implements Message, Serializable {
         }
     }
 
+    /**
+     * Return the formatted message.
+     * @return the formatted message.
+     */
     public String getFormattedMessage() {
         if (formattedMessage == null) {
             formattedMessage = formatMessage(messagePattern, stringArgs);
@@ -113,15 +138,27 @@ public class ParameterizedMessage implements Message, Serializable {
         return formattedMessage;
     }
 
+    /**
+     * Returns the message pattern.
+     * @return the message pattern.
+     */
     public String getMessageFormat() {
         return messagePattern;
     }
 
+    /**
+     * Set the message pattern.
+     * @param messagePattern The message pattern.
+     */
     public void setMessageFormat(String messagePattern) {
         this.messagePattern = messagePattern;
         this.formattedMessage = null;
     }
 
+    /**
+     * Returns the message parameters.
+     * @return the message parameters.
+     */
     public Object[] getParameters() {
         if (argArray != null) {
             return argArray;
@@ -129,16 +166,28 @@ public class ParameterizedMessage implements Message, Serializable {
         return stringArgs;
     }
 
+    /**
+     * Sets the parameters for the message.
+     * @param parameters The parameters.
+     */
     public void setParameters(String[] parameters) {
         this.stringArgs = parameters;
         this.formattedMessage = null;
     }
 
+    /**
+     * Sets the parameters for the message.
+     * @param parameters The parameters.
+     */
     public void setParameters(Object[] parameters) {
         parseArguments(parameters);
         this.formattedMessage = null;
     }
 
+    /**
+     * Set the Throwable for the message.
+     * @param throwable The Throwable.
+     */
     public void setThrowable(Throwable throwable) {
         this.throwable = throwable;
     }
@@ -299,6 +348,22 @@ public class ParameterizedMessage implements Message, Serializable {
         return result;
     }
 
+    /**
+     * This method performs a deep toString of the given Object.
+     * Primitive arrays are converted using their respective Arrays.toString methods while
+     * special handling is implemented for "container types", i.e. Object[], Map and Collection because those could
+     * contain themselves.
+     * <p/>
+     * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
+     * behavior. They only check if the container is directly contained in itself, but not if a contained container
+     * contains the original one. Because of that, Arrays.toString(Object[]) isn't safe either.
+     * Confusing? Just read the last paragraph again and check the respective toString() implementation.
+     * <p/>
+     * This means, in effect, that logging would produce a usable output even if an ordinary System.out.println(o)
+     * would produce a relatively hard-to-debug StackOverflowError.
+     * @param o The object.
+     * @return The String representation.
+     */
     public static String deepToString(Object o) {
         if (o == null) {
             return null;

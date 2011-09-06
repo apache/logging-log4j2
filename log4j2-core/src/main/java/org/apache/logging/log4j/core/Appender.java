@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
 /**
  * @issue LOG4J2-36: Appender interface should be refactored
  */

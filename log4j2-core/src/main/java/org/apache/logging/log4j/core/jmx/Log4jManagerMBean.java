@@ -1,7 +1,7 @@
 package org.apache.logging.log4j.core.jmx;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.internal.StatusData;
+import org.apache.logging.log4j.status.StatusData;
 
 import java.util.List;
 

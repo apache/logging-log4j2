@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Log4J 2.0 Guide</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+        <section name="Log4j 2.0 Guide">
+
+            <p>
+              Log4Jj 2.0 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j
+              1.x, and provides many of the improvements available in Logback while fixing some inherent problems in
+              Logback's architecture.
+            </p>
+
+            <p>Some of the features and improvements in Log4j 2.0 are:</p>
+
+            <h3>API Separation</h3>
+            <p>
+              The API for Log4j is separate from the implementation. It is now clear to application developers
+              what classes and methods they can use with compatibility being assured while allowing
+              improvements to be made to the implementation.
+            </p>
+            <h3>Faster Implementation</h3>
+            <p>
+              Faster implementation than Log4j 1.x in critical areas and similar performance to Logback in
+              most circumstances.
+            </p>
+            <h3>Support for multiple APIs</h3>
+            <p>
+              While the Log4j 2.0 API will provide the best performance, support for the SL4J and Commons Logging
+              APIs are provided.
+            </p>
+            <h3>Automatic Reloading of Configurations</h3>
+            <p>
+              Like Logback, Log4j 2.0 can automatically reload its configuration upon modification. Unlike Logback,
+              it will do so without losing log events while reconfiguration is taking place.
+            </p>
+            <h3>Advanced Filtering</h3>
+            <p>
+              Like Logback, Log4j 2.0 supports filtering based on context data, markers, regular expressions and
+              other components in the Log event and can be specified to apply to all events before being passed
+              to Loggers or as they pass through appenders. In addition, filters can also be associated with
+              Loggers. Unlike Logback, a common Filter class can be used in any of these circumstances.
+            </p>
+            <h3>Plugin Architecture</h3>
+            <p>
+              All components that can be configured are defined as Log4j plugins. As such, no Log4j code must
+              be changed to create a new Appender, Layout, Pattern Converter, etc. Log4j will automatically
+              recognize properly defined plugins and use them when they are referenced in the configuration.
+            </p>
+
+        </section>
+
+        <section name="Requirements">
+           <p>
+             Log4j 2.0 requires Java 5. Some features may require optional dependencies. These dependencies are
+             specified in the documentation for those features.
+          </p>
+        </section>
+
+        <section name="News">
+          <p>
+            Log4j 2.0 is now available. The API for Log4j 2.0 is not compatible with Log4j 1.x, however an adapter
+            is
+
+          </p>
+        </section>
+
+    </body>
+</document>
+

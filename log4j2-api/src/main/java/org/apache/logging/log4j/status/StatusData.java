@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.internal;
+package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
+ * The Status data.
  */
 public class StatusData {
 
@@ -39,7 +39,13 @@ public class StatusData {
 
     private final Throwable throwable;
 
-
+    /**
+     * Creates the StatusData object.
+     * @param caller The method that created the event.
+     * @param level The logging level.
+     * @param msg The message String.
+     * @param t The Error or Exception that occurred.
+     */
     public StatusData(StackTraceElement caller, Level level, Message msg, Throwable t) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;
@@ -48,31 +54,54 @@ public class StatusData {
         this.throwable = t;
     }
 
-
+    /**
+     * Return the event's timestamp.
+     * @return The event's timestamp.
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Returns the StackTraceElement for the method that created the event.
+     * @return The StackTraceElement.
+     */
     public StackTraceElement getStackTraceElement() {
         return caller;
     }
 
+    /**
+     * Returns the logging level for the event.
+     * @return The logging level.
+     */
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * Returns the message associated with the event.
+     * @return The message associated with the event.
+     */
     public Message getMessage() {
         return msg;
     }
 
+    /**
+     * Returns the Throwable associated with the event.
+     * @return The Throwable associated with the event.
+     */
     public Throwable getThrowable() {
         return throwable;
     }
 
+    /**
+     * Formats the StatusData for viewing.
+     * @return The formatted status data as a String.
+     */
     public String getFormattedStatus() {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-        sb.append(format.format(new Date(timestamp)));       
+        sb.append(format.format(new Date(timestamp)));
         sb.append(" ");
         sb.append(level.toString());
         sb.append(" ");

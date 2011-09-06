@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.javaee.ContextAnchor;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;

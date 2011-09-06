@@ -28,7 +28,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
     private static ManagerFactory factory = new DatagramSocketManagerFactory();
 
     public static DatagramSocketManager getSocketManager(String host, int port) {
-        if (host == null && host.length() == 0) {
+        if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {

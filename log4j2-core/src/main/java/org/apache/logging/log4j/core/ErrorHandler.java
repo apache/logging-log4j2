@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 /**
  * Appenders may delegate their error handling to <code>ErrorHandlers</code>.
  * @doubt if the appender interface is simplified, then error handling could just be done by wrapping
@@ -45,5 +43,5 @@ public interface ErrorHandler {
      * @param event The LogEvent.
      * @param t The Throwable.
      */
-    public void error(String msg, LogEvent event, Throwable t);
+    void error(String msg, LogEvent event, Throwable t);
 }

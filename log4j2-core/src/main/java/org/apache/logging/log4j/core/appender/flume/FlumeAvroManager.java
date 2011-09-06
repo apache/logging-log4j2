@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 import com.cloudera.flume.handlers.avro.FlumeEventAvroServer;
 import com.cloudera.flume.handlers.avro.AvroEventConvertUtil;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

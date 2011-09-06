@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.javaee.ContextAnchor;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;

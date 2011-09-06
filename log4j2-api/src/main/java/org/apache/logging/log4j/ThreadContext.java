@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 
 package org.apache.logging.log4j;
@@ -31,7 +31,7 @@ import java.util.Stack;
  */
 public final class ThreadContext {
 
-    private static ThreadLocal<Map<String, Object>> LOCAL_MAP =
+    private static ThreadLocal<Map<String, Object>> localMap =
         new InheritableThreadLocal<Map<String, Object>>() {
             protected Map<String, Object> initialValue() {
                 return new HashMap<String, Object>();
@@ -42,7 +42,7 @@ public final class ThreadContext {
             }
         };
 
-    private static ThreadLocal<Stack<String>> LOCAL_STACK =
+    private static ThreadLocal<Stack<String>> localStack =
         new InheritableThreadLocal<Stack<String>>() {
             protected Stack<String> initialValue() {
                 return new Stack<String>();
@@ -70,7 +70,7 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void put(String key, Object value) {
-        LOCAL_MAP.get().put(key, value);
+        localMap.get().put(key, value);
     }
 
     /**
@@ -81,7 +81,7 @@ public final class ThreadContext {
      * @return The value of the object or null.
      */
     public static Object get(String key) {
-        return LOCAL_MAP.get().get(key);
+        return localMap.get().get(key);
     }
 
     /**
@@ -90,14 +90,14 @@ public final class ThreadContext {
      * @param key The key to remove.
      */
     public static void remove(String key) {
-        LOCAL_MAP.get().remove(key);
+        localMap.get().remove(key);
     }
 
     /**
      * Clear the context.
      */
     public static void clear() {
-        LOCAL_MAP.get().clear();
+        localMap.get().clear();
     }
 
     /**
@@ -106,7 +106,7 @@ public final class ThreadContext {
      * @return True if the key is in the context, false otherwise.
      */
     public static boolean containsKey(String key) {
-        return LOCAL_MAP.get().containsKey(key);
+        return localMap.get().containsKey(key);
     }
 
     /**
@@ -115,14 +115,14 @@ public final class ThreadContext {
      * @return a copy of the context.
      */
     public static Map<String, Object> getContext() {
-        return new HashMap<String, Object>(LOCAL_MAP.get());
+        return new HashMap<String, Object>(localMap.get());
     }
 
     /**
      * Clear the stack for this thread.
      */
     public static void clearStack() {
-        LOCAL_STACK.get().clear();
+        localStack.get().clear();
     }
 
     /**
@@ -130,7 +130,7 @@ public final class ThreadContext {
      * @return A copy of this thread's stack.
      */
     public static Stack<String> cloneStack() {
-        return (Stack<String>) LOCAL_STACK.get().clone();
+        return (Stack<String>) localStack.get().clone();
     }
 
     /**
@@ -138,16 +138,17 @@ public final class ThreadContext {
      * @param stack The stack to use.
      */
     public static void setStack(Stack<String> stack) {
-        LOCAL_STACK.set(stack);
+        localStack.set(stack);
     }
 
     /**
      * Get the current nesting depth of this thread's stack.
+     * @return the number of items in the stack.
      *
      * @see #setMaxDepth
      */
     public static int getDepth() {
-        return LOCAL_STACK.get().size();
+        return localStack.get().size();
     }
 
     /**
@@ -159,7 +160,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String pop() {
-        Stack<String> s = LOCAL_STACK.get();
+        Stack<String> s = localStack.get();
         if (s.isEmpty()) {
             return "";
         }
@@ -176,7 +177,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-         Stack<String> s = LOCAL_STACK.get();
+         Stack<String> s = localStack.get();
         if (s.isEmpty()) {
             return "";
         }
@@ -192,7 +193,7 @@ public final class ThreadContext {
      * @param message The new diagnostic context information.
      */
     public static void push(String message) {
-        LOCAL_STACK.get().push(message);
+        localStack.get().push(message);
     }
 
     /**
@@ -214,7 +215,7 @@ public final class ThreadContext {
      * memory.
      */
     public static void removeStack() {
-        LOCAL_STACK.remove();
+        localStack.remove();
     }
 
     /**

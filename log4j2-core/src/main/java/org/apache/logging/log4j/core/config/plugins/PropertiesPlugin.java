@@ -32,13 +32,15 @@ public class PropertiesPlugin {
 
     @PluginFactory
     public static StrSubstitutor configureSubstitutor(@PluginElement("properties") Property[] properties) {
+        if (properties == null) {
+            return new StrSubstitutor(new Interpolator(null));
+        }
         Map<String, String> map = new HashMap<String, String>();
-        
+
         for (Property prop : properties) {
             map.put(prop.getName(), prop.getValue());
         }
 
-        Interpolator inter = new Interpolator(properties == null ? null : new MapLookup(map));
-        return new StrSubstitutor(inter);
+        return new StrSubstitutor(new Interpolator(new MapLookup(map)));
     }
 }

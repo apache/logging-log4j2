@@ -53,7 +53,7 @@ public class TCPSocketManager extends AbstractSocketManager {
     private static ManagerFactory factory = new TCPSocketManagerFactory();
 
     public static TCPSocketManager getSocketManager(String host, int port, int delay) {
-        if (host == null && host.length() == 0) {
+        if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {

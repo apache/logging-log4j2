@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.core.LogEvent;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
@@ -30,15 +31,56 @@ public abstract class AbstractStringLayout extends LayoutBase<String> {
      */
     private Charset charset;
 
+    private final StringEncoder encoder;
+
     protected AbstractStringLayout(Charset charset) {
         this.charset = charset;
+        boolean useClass = false;
+        try {
+            Class[] types = new Class[] {Charset.class};
+            if (String.class.getMethod("getBytes", types) != null) {
+                useClass = true;
+            }
+
+        } catch (NoSuchMethodException ex) {
+            // Not JDK 6 or greater.
+        }
+        encoder = useClass ? new ClassEncoder() : new NameEncoder();
     }
 
     public byte[] format(LogEvent event) {
-        return formatAs(event).getBytes(charset);
+        return encoder.getBytes(formatAs(event));
     }
 
     protected Charset getCharset() {
         return charset;
+    }
+
+    private interface StringEncoder {
+
+        byte[] getBytes(String str);
+    }
+
+    /**
+     * JDK 6 or greater.
+     */
+    private class ClassEncoder implements StringEncoder {
+        public byte[] getBytes(String str) {
+            return str.getBytes(charset);
+        }
+    }
+
+    /**
+     * JDK 5.
+     */
+    private class NameEncoder implements StringEncoder {
+        public byte[] getBytes(String str) {
+            try {
+                return str.getBytes(charset.name());
+            } catch (UnsupportedEncodingException ex) {
+                // This shouldn't ever happen since an invalid Charset would never have been created.
+                return str.getBytes();
+            }
+        }
     }
 }

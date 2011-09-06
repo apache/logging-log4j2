@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.HashMap;
 import java.util.Map;

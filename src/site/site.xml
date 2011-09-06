@@ -1,0 +1,51 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache license, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the license at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the license.
+
+-->
+<project name="Component">
+  <bannerLeft>
+    <name>Logging Services</name>
+    <src>images/ls-logo.jpg</src>
+    <href>http://logging.apache.org/</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/logo.jpg</src>
+  </bannerRight>
+  <body>
+    <menu name="Log4j">
+      <item name="Overview"                href="/index.html"/>
+      <item name="Download and Build"      href="/download.html"/>
+      <item name="Using the API"           href="/api.html"/>
+      <item name="API JavaDocs"            href="/apidocs/index.html"/>
+      <item name="Manual"                  href="/manual.html"/>
+      <item name="Wiki"                    href="http://wiki.apache.org/logging"/>
+    </menu>
+    <menu name="Components">
+      <item name="API" href="log4j2-api/index.html"/>
+      <item name="Impl" href="log4j2-core/index.html"/>
+      <item name="Log4J 1.2 API" href="log4j12-api/index.html"/>
+      <item name="Commons Logging Bridge" href="log4j2-jcl/index.html"/>
+      <item name="SLF4J Binding" href="slf4j-impl/index.html"/>
+    </menu>
+    <links>
+      <item name="Apache" href="http://www.apache.org/" />
+      <item name="Logging Services" href="http://logging.apache.org/"/>
+      <item name="Log4j" href="http://logging.apache.org/log4j/"/>
+      <item name="Log4j Companions" href="http://logging.apache.org/log4j/companions"/>
+    </links>
+    <menu ref="reports"/>
+  </body>
+</project>

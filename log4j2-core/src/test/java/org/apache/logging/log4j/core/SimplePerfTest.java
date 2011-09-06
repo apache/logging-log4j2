@@ -42,7 +42,7 @@ public class SimplePerfTest {
     private static final int WARMUP = 1000;
     private static long maxTime;
     private static Random rand = new SimpleRandom();
-    private static int RAND_SIZE = 200;
+    private static int RAND_SIZE = 250;
     private static int[] values = new int[RAND_SIZE];
 
     @BeforeClass

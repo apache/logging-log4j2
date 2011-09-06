@@ -28,52 +28,134 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     protected final AbstractLogger logger;
     protected final String name;
 
+    /**
+     * Constructor that wraps and existing Logger.
+     * @param logger The Logger to wrap.
+     * @param name The name of the Logger.
+     */
     public AbstractLoggerWrapper(AbstractLogger logger, String name) {
         this.logger = logger;
         this.name = name;
     }
 
+    /**
+     * Log an event.
+     * @param marker The Marker
+     * @param fqcn   The fully qualified class name of the <b>caller</b>
+     * @param level  The logging level
+     * @param data   The Message.
+     * @param t      A Throwable or null.
+     */
     @Override
     public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
         logger.log(marker, fqcn, level, data, t);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @return true if the event would be logged for the Level, Marker and data, false otherwise.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data) {
         return logger.isEnabled(level, marker, data);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, data and Throwable, false otherwise.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data, Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param p1 The first parameter.
+     * @return true if the event would be logged for the Level, Marker, data and parameter.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data, Object p1) {
         return logger.isEnabled(level, marker, data, p1);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param p1 The first parameter.
+     * @param p2 The second parameter.
+     * @return true if the event would be logged for the Level, Marker, data and parameters.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2) {
         return logger.isEnabled(level, marker, data, p1, p2);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param p1 The first parameter.
+     * @param p2 The second parameter.
+     * @param p3 The third parameter.
+     * @return true if the event would be logged for the Level, Marker, data and parameters.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3) {
         return logger.isEnabled(level, marker, data, p1, p2, p3);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param p1 The first parameter.
+     * @param p2 The second parameter.
+     * @param p3 The third parameter.
+     * @param params More message parameters.
+     * @return true if the event would be logged for the Level, Marker, data and parameters.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3,
                                 Object... params) {
         return logger.isEnabled(level, marker, data, p2, p2, p3, params);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, Object data, Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The Message.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, Message and Throwable, false otherwise.
+     */
     @Override
     public boolean isEnabled(Level level, Marker marker, Message data, Throwable t) {
         return logger.isEnabled(level, marker, data, t);

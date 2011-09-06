@@ -16,36 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.Log4jLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.internal.StatusLogger;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.After;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

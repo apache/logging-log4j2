@@ -26,7 +26,7 @@ public final class Constants {
     /**
      * JNDI context name string literal.
      */
-    public static String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
+    public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
      * Prevent class instantiation.

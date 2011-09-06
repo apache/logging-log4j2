@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.internal.StatusLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +33,6 @@ import org.slf4j.ext.EventData;
 import org.slf4j.ext.EventLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
-import org.slf4j.helpers.Log4JLoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
