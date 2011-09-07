@@ -22,7 +22,6 @@ import java.io.Serializable;
  * The StructuredData identifier.
  */
 public class StructuredDataId implements Serializable {
-    private static final long serialVersionUID = 9031746276396249990L;
 
     /**
      * RFC 5424 Time Quality.
@@ -45,11 +44,14 @@ public class StructuredDataId implements Serializable {
      */
     public static final int RESERVED = -1;
 
+    private static final long serialVersionUID = 9031746276396249990L;
+    private static final int MAX_LENGTH = 32;
+
     private final String name;
     private final int enterpriseNumber;
     private final String[] required;
     private final String[] optional;
-    private static final int MAX_LENGTH = 32;
+
 
     protected StructuredDataId(String name, String[] required, String[] optional) {
         int index = -1;

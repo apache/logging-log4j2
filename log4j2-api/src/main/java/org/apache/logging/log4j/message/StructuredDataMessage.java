@@ -27,12 +27,14 @@ import java.util.TreeMap;
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
 public class StructuredDataMessage implements FormattedMessage, Serializable {
-    private static final long serialVersionUID = 1703221292892071920L;
-
     /**
      * Full message format includes the type and message.
      */
     public static final String FULL = "full";
+
+    private static final long serialVersionUID = 1703221292892071920L;
+    private static final int MAX_LENGTH = 32;
+    private static final int HASHVAL = 31;
 
     private Map<String, String> data = new HashMap<String, String>();
 
@@ -43,9 +45,6 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
     private String type;
 
     private String format = null;
-
-    private static final int MAX_LENGTH = 32;
-    private static final int HASHVAL = 31;
 
     /**
      * Constructor based on a String id.

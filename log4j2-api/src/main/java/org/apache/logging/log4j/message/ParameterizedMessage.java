@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +34,40 @@ import java.util.Set;
  * providing that this attribution remain.
  */
 public class ParameterizedMessage implements Message, Serializable {
+
+    /**
+     * Prefix for recursion.
+     */
+    public static final String RECURSION_PREFIX = "[...";
+    /**
+     * Suffix for recursion.
+     */
+    public static final String RECURSION_SUFFIX = "...]";
+
+    /**
+     * Prefix for errors.
+     */
+    public static final String ERROR_PREFIX = "[!!!";
+    /**
+     * Separator for errors.
+     */
+    public static final String ERROR_SEPARATOR = "=>";
+    /**
+     * Separator for error messages.
+     */
+    public static final String ERROR_MSG_SEPARATOR = ":";
+    /**
+     * Suffix for errors.
+     */
+    public static final String ERROR_SUFFIX = "!!!]";
+
     private static final long serialVersionUID = -665975803997290697L;
+
+    private static final int HASHVAL = 31;
+
+    private static final char DELIM_START = '{';
+    private static final char DELIM_STOP = '}';
+    private static final char ESCAPE_CHAR = '\\';
 
     private String messagePattern;
     private String[] stringArgs;
@@ -69,7 +101,8 @@ public class ParameterizedMessage implements Message, Serializable {
      * <p/>
      * <p>If the last argument is a Throwable and is NOT used up by a placeholder in the message pattern it is returned
      * in ParameterizedMessage.getThrowable() and won't be contained in the created String[].<br/>
-     * If it is used up ParameterizedMessage.getThrowable() will return null even if the last argument was a Throwable!</p>
+     * If it is used up ParameterizedMessage.getThrowable() will return null even if the last argument was a
+     * Throwable!</p>
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
@@ -229,21 +262,9 @@ public class ParameterizedMessage implements Message, Serializable {
 
     public int hashCode() {
         int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = 31 * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
+        result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
         return result;
     }
-
-    private static final char DELIM_START = '{';
-    private static final char DELIM_STOP = '}';
-    private static final char ESCAPE_CHAR = '\\';
-
-    public static final String RECURSION_PREFIX = "[...";
-    public static final String RECURSION_SUFFIX = "...]";
-
-    public static final String ERROR_PREFIX = "[!!!";
-    public static final String ERROR_SEPARATOR = "=>";
-    public static final String ERROR_MSG_SEPARATOR = ":";
-    public static final String ERROR_SUFFIX = "!!!]";
 
     /**
      * Replace placeholders in the given messagePattern with arguments.
@@ -372,7 +393,7 @@ public class ParameterizedMessage implements Message, Serializable {
             return (String) o;
         }
         StringBuilder str = new StringBuilder();
-        Set dejaVu = new HashSet(); // that's actually a neat name ;)
+        Set<String> dejaVu = new HashSet<String>(); // that's actually a neat name ;)
         recursiveDeepToString(o, str, dejaVu);
         return str.toString();
     }
@@ -385,7 +406,8 @@ public class ParameterizedMessage implements Message, Serializable {
      * <p/>
      * dejaVu is used in case of those container types to prevent an endless recursion.
      * <p/>
-     * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a behavior.
+     * It should be noted that neither AbstractMap.toString() nor AbstractCollection.toString() implement such a
+     * behavior.
      * They only check if the container is directly contained in itself, but not if a contained container contains the
      * original one. Because of that, Arrays.toString(Object[]) isn't safe either.
      * Confusing? Just read the last paragraph again and check the respective toString() implementation.
@@ -397,7 +419,7 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param str    the StringBuilder that o will be appended to
      * @param dejaVu a list of container identities that were already used.
      */
-    private static void recursiveDeepToString(Object o, StringBuilder str, Set dejaVu) {
+    private static void recursiveDeepToString(Object o, StringBuilder str, Set<String> dejaVu) {
         if (o == null) {
             str.append("null");
             return;
@@ -435,14 +457,13 @@ public class ParameterizedMessage implements Message, Serializable {
                     Object[] oArray = (Object[]) o;
                     str.append("[");
                     boolean first = true;
-                    for (int i = 0; i < oArray.length; ++i) {
-                        Object current = oArray[i];
+                    for (Object current : oArray) {
                         if (first) {
                             first = false;
                         } else {
                             str.append(", ");
                         }
-                        recursiveDeepToString(current, str, new HashSet(dejaVu));
+                        recursiveDeepToString(current, str, new HashSet<String>(dejaVu));
                     }
                     str.append("]");
                 }
@@ -458,9 +479,8 @@ public class ParameterizedMessage implements Message, Serializable {
                 Map oMap = (Map) o;
                 str.append("{");
                 boolean isFirst = true;
-                Iterator iter = oMap.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry current = (Map.Entry) iter.next();
+                for (Object o1 : oMap.entrySet()) {
+                    Map.Entry current = (Map.Entry) o1;
                     if (isFirst) {
                         isFirst = false;
                     } else {
@@ -468,9 +488,9 @@ public class ParameterizedMessage implements Message, Serializable {
                     }
                     Object key = current.getKey();
                     Object value = current.getValue();
-                    recursiveDeepToString(key, str, new HashSet(dejaVu));
+                    recursiveDeepToString(key, str, new HashSet<String>(dejaVu));
                     str.append("=");
-                    recursiveDeepToString(value, str, new HashSet(dejaVu));
+                    recursiveDeepToString(value, str, new HashSet<String>(dejaVu));
                 }
                 str.append("}");
             }
@@ -484,15 +504,13 @@ public class ParameterizedMessage implements Message, Serializable {
                 Collection oCol = (Collection) o;
                 str.append("[");
                 boolean isFirst = true;
-                Iterator iter = oCol.iterator();
-                while (iter.hasNext()) {
-                    Object current = iter.next();
+                for (Object anOCol : oCol) {
                     if (isFirst) {
                         isFirst = false;
                     } else {
                         str.append(", ");
                     }
-                    recursiveDeepToString(current, str, new HashSet(dejaVu));
+                    recursiveDeepToString(anOCol, str, new HashSet<String>(dejaVu));
                 }
                 str.append("]");
             }
@@ -505,8 +523,7 @@ public class ParameterizedMessage implements Message, Serializable {
             // it's just some other Object, we can only use toString().
             try {
                 str.append(o.toString());
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 str.append(ERROR_PREFIX);
                 str.append(identityToString(o));
                 str.append(ERROR_SEPARATOR);
@@ -534,7 +551,8 @@ public class ParameterizedMessage implements Message, Serializable {
      * objects. (This is typically implemented by converting the internal
      * address of the object into an integer, but this implementation
      * technique is not required by the
-     * Java<font size="-2"><sup>TM</sup></font> programming language.)
+     * Java<font size="-2"><sup>TM</sup></font>
+     * programming language.)
      *
      * @param obj the Object that is to be converted into an identity string.
      * @return the identity string as also defined in Object.toString()

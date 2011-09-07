@@ -25,7 +25,13 @@ import org.apache.logging.log4j.message.Message;
  */
 public class AbstractLoggerWrapper extends AbstractLogger {
 
+    /**
+     * The wrapped Logger.
+     */
     protected final AbstractLogger logger;
+    /**
+     * The name of the Logger.
+     */
     protected final String name;
 
     /**

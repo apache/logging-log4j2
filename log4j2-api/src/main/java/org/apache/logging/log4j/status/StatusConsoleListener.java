@@ -19,7 +19,7 @@ package org.apache.logging.log4j.status;
 import org.apache.logging.log4j.Level;
 
 /**
- * StatusListener that writes to the Console
+ * StatusListener that writes to the Console.
  */
 public class StatusConsoleListener implements StatusListener {
 

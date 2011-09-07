@@ -33,13 +33,30 @@ import org.apache.logging.log4j.message.SimpleMessage;
  */
 public abstract class AbstractLogger implements Logger {
 
-    static Marker FLOW_MARKER = MarkerManager.getMarker("FLOW");
-    static Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY", FLOW_MARKER);
-    static Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
-
-    static Marker EXCEPTION_MARKER = MarkerManager.getMarker("EXCEPTION");
-    static Marker THROWING_MARKER = MarkerManager.getMarker("THROWING", EXCEPTION_MARKER);
-    static Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
+    /**
+     * Marker for flow tracing.
+     */
+    public static final Marker FLOW_MARKER = MarkerManager.getMarker("FLOW");
+    /**
+     * Marker for method entry tracing.
+     */
+    public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY", FLOW_MARKER);
+    /**
+     * Marker for method exit tracing.
+     */
+    public static final Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
+    /**
+     * Marker for exception tracing.
+     */
+    public static final Marker EXCEPTION_MARKER = MarkerManager.getMarker("EXCEPTION");
+    /**
+     * Marker for throwing exceptions.
+     */
+    public static final Marker THROWING_MARKER = MarkerManager.getMarker("THROWING", EXCEPTION_MARKER);
+    /**
+     * Marker for catching exceptions.
+     */
+    public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
 
     protected String getFQCN() {
         return AbstractLogger.class.getName();
@@ -50,7 +67,7 @@ public abstract class AbstractLogger implements Logger {
      * Log entry to a method.
      */
     public void entry() {
-        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             log(ENTRY_MARKER, getFQCN(), Level.TRACE, new SimpleMessage(" entry"), null);
         }
     }
@@ -62,7 +79,7 @@ public abstract class AbstractLogger implements Logger {
      * @param params The parameters to the method.
      */
     public void entry(Object... params) {
-        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             log(ENTRY_MARKER, getFQCN(), Level.TRACE, entryMsg(params.length, params), null);
         }
     }
@@ -71,7 +88,7 @@ public abstract class AbstractLogger implements Logger {
      * Log exit from a method.
      */
     public void exit() {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
             log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(null), null);
         }
     }
@@ -82,7 +99,7 @@ public abstract class AbstractLogger implements Logger {
      * @param result The result being returned from the method call.
      */
     public void exit(Object result) {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
             log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(result), null);
         }
     }
@@ -93,7 +110,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void throwing(Throwable t) {
-        if (isEnabled(Level.ERROR, THROWING_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.ERROR, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, getFQCN(), Level.ERROR, new SimpleMessage("throwing"), t);
         }
     }
@@ -106,7 +123,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void throwing(Level level, Throwable t) {
-        if (isEnabled(level, THROWING_MARKER, (Object)null, null)) {
+        if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("throwing"), t);
         }
     }
@@ -117,7 +134,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void catching(Throwable t) {
-        if (isEnabled(Level.DEBUG, THROWING_MARKER, (Object)null, null)) {
+        if (isEnabled(Level.DEBUG, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, getFQCN(), Level.DEBUG, new SimpleMessage("catching"), t);
         }
     }
@@ -129,7 +146,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void catching(Level level, Throwable t) {
-        if (isEnabled(level, THROWING_MARKER, (Object)null, null)) {
+        if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("catching"), t);
         }
     }
@@ -283,17 +300,18 @@ public abstract class AbstractLogger implements Logger {
      *         TRACE, <code>false</code> otherwise.
      */
     public boolean isTraceEnabled() {
-        return isEnabled(Level.TRACE, null, (Object)null, null);
+        return isEnabled(Level.TRACE, null, (Object) null, null);
     }
 
     /**
      * Check whether this Logger is enabled for the TRACE  Level.
      *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         TRACE, <code>false</code> otherwise.
      */
     public boolean isTraceEnabled(Marker marker) {
-        return isEnabled(Level.TRACE, marker, (Object)null, null);
+        return isEnabled(Level.TRACE, marker, (Object) null, null);
     }
 
     /**
@@ -481,11 +499,12 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Check whether this Logger is enabled for the DEBUG Level.
      *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         DEBUG, <code>false</code> otherwise.
      */
     public boolean isDebugEnabled(Marker marker) {
-        return isEnabled(Level.DEBUG, marker, (Object)null, null);
+        return isEnabled(Level.DEBUG, marker, (Object) null, null);
     }
 
     /**
@@ -669,12 +688,12 @@ public abstract class AbstractLogger implements Logger {
      *         INFO, <code>false</code> otherwise.
      */
     public boolean isInfoEnabled() {
-        return isEnabled(Level.INFO, null, (Object)null, null);
+        return isEnabled(Level.INFO, null, (Object) null, null);
     }
 
     /**
      * Check whether this Logger is enabled for the INFO Level.
-     *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         INFO, <code>false</code> otherwise.
      */
@@ -862,17 +881,18 @@ public abstract class AbstractLogger implements Logger {
      *         WARN, <code>false</code> otherwise.
      */
     public boolean isWarnEnabled() {
-        return isEnabled(Level.WARN, null, (Object)null, null);
+        return isEnabled(Level.WARN, null, (Object) null, null);
     }
 
     /**
      * Check whether this Logger is enabled for the WARN Level.
      *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         WARN, <code>false</code> otherwise.
      */
     public boolean isWarnEnabled(Marker marker) {
-        return isEnabled(Level.WARN, marker, (Object)null, null);
+        return isEnabled(Level.WARN, marker, (Object) null, null);
     }
 
     /**
@@ -1056,17 +1076,18 @@ public abstract class AbstractLogger implements Logger {
      *         ERROR, <code>false</code> otherwise.
      */
     public boolean isErrorEnabled() {
-        return isEnabled(Level.ERROR, null, (Object)null, null);
+        return isEnabled(Level.ERROR, null, (Object) null, null);
     }
 
     /**
      * Check whether this Logger is enabled for the ERROR Level.
      *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         ERROR, <code>false</code> otherwise.
      */
     public boolean isErrorEnabled(Marker marker) {
-        return isEnabled(Level.ERROR, marker, (Object)null, null);
+        return isEnabled(Level.ERROR, marker, (Object) null, null);
     }
 
     /**
@@ -1250,17 +1271,18 @@ public abstract class AbstractLogger implements Logger {
      *         FATAL, <code>false</code> otherwise.
      */
     public boolean isFatalEnabled() {
-        return isEnabled(Level.ERROR, null, (Object)null, null);
+        return isEnabled(Level.ERROR, null, (Object) null, null);
     }
 
     /**
      * Check whether this Logger is enabled for the FATAL Level.
      *
+     * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
      *         FATAL, <code>false</code> otherwise.
      */
     public boolean isFatalEnabled(Marker marker) {
-        return isEnabled(Level.FATAL, marker, (Object)null, null);
+        return isEnabled(Level.FATAL, marker, (Object) null, null);
     }
 
     /**

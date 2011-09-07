@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Interface implemented by factories that create Logger objects.
+ * @param <C> The LoogerContext class.
  */
 public interface LoggerFactory<C extends LoggerContext> {
 

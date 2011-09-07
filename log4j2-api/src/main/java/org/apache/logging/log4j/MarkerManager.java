@@ -67,6 +67,9 @@ public final class MarkerManager {
         return markerMap.get(name);
     }
 
+    /**
+     * The actual Marker implementation.
+     */
     private static class Log4JMarker implements Marker {
 
         private static final long serialVersionUID = 100L;

@@ -34,9 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Mechanism to record events that occur in the logging system.
  */
-public class StatusLogger extends AbstractLogger {
-
-    private static final String NOT_AVAIL = "?";
+public final class StatusLogger extends AbstractLogger {
 
     /**
      * System property that can be configured with the number of entries in the queue. Once the limit
@@ -44,7 +42,9 @@ public class StatusLogger extends AbstractLogger {
      */
     public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
 
-    private static final int maxEntries = Integer.getInteger(MAX_STATUS_ENTRIES, 200);
+    private static final String NOT_AVAIL = "?";
+
+    private static final int MAX_ENTRIES = Integer.getInteger(MAX_STATUS_ENTRIES, 200);
 
     // private static final String FQCN = AbstractLogger.class.getName();
 
@@ -55,7 +55,7 @@ public class StatusLogger extends AbstractLogger {
     private CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
     private ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
-    private Queue<StatusData> messages = new BoundedQueue<StatusData>(maxEntries);
+    private Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
     private ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
@@ -244,6 +244,10 @@ public class StatusLogger extends AbstractLogger {
         return false;
     }
 
+    /**
+     * Queue for status events.
+     * @param <E> Object type to be stored in the queue.
+     */
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
 
         private final int size;
@@ -253,7 +257,7 @@ public class StatusLogger extends AbstractLogger {
         }
 
         public boolean add(E object) {
-            while (messages.size() > maxEntries) {
+            while (messages.size() > size) {
                 messages.poll();
             }
             return super.add(object);
