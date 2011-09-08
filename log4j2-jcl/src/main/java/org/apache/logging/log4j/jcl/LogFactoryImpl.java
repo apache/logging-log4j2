@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +49,8 @@ public class LogFactoryImpl extends LogFactory {
             loggers.putIfAbsent(name, new Log4JLog((AbstractLogger) logger, name));
             return loggers.get(name);
         }
-        throw new LogConfigurationException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
+        throw new LogConfigurationException(
+            "SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
     }
 
     private ConcurrentMap<String, Log> getLoggersMap() {
@@ -99,6 +99,9 @@ public class LogFactoryImpl extends LogFactory {
         attributes.put(name, value);
     }
 
+    /**
+     * The real bridge between commons logging and Log4j.
+     */
     private static class PrivateManager extends LogManager {
         private static final String FQCN = LogFactory.class.getName();
 

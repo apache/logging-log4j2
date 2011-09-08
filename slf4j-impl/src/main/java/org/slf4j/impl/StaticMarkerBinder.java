@@ -23,23 +23,20 @@ import org.slf4j.spi.MarkerFactoryBinder;
 /**
  *
  */
-public class StaticMarkerBinder implements MarkerFactoryBinder
-{
+public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     /**
      * The unique instance of this class.
      */
     public static final StaticMarkerBinder SINGLETON = new StaticMarkerBinder();
 
-    final IMarkerFactory markerFactory = new Log4JMarkerFactory();
+    private final IMarkerFactory markerFactory = new Log4JMarkerFactory();
 
-    public IMarkerFactory getMarkerFactory()
-    {
+    public IMarkerFactory getMarkerFactory() {
         return markerFactory;
     }
 
-    public String getMarkerFactoryClassStr()
-    {
+    public String getMarkerFactoryClassStr() {
         return Log4JMarkerFactory.class.getName();
     }
 }

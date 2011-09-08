@@ -47,7 +47,7 @@ public class Log4JMDCAdapter implements MDCAdapter {
         Map<String, Object> ctx = ThreadContext.getContext();
         Map<String, String> map = new HashMap<String, String>();
 
-        for (Map.Entry<String, Object>entry : ctx.entrySet()) {
+        for (Map.Entry<String, Object> entry : ctx.entrySet()) {
             map.put(entry.getKey(), entry.getValue().toString());
         }
         return map;

@@ -33,7 +33,7 @@ public class MarkerWrapper extends BasicMarker implements Marker {
     @Override
     public void add(org.slf4j.Marker reference) {
         super.add(reference);
-        ((MarkerWrapper)reference).setParent(this);
+        ((MarkerWrapper) reference).setParent(this);
     }
 
     private void setParent(MarkerWrapper marker) {

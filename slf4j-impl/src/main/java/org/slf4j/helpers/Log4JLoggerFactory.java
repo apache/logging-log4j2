@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.SLF4JLogger;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,11 +34,12 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 public class Log4JLoggerFactory implements ILoggerFactory {
-    private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
-        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
     private static final String FQCN = Log4JLoggerFactory.class.getName();
     private static final String PACKAGE = "org.slf4j";
+
+    private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
+        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
     public Logger getLogger(String name) {
         LoggerContext context = getContext();
@@ -87,6 +87,9 @@ public class Log4JLoggerFactory implements ILoggerFactory {
         return PrivateManager.getContext(fqcn);
     }
 
+    /**
+     * The real bridge between SLF4J and Log4j.
+     */
     private static class PrivateManager extends LogManager {
         private static final String FQCN = LoggerFactory.class.getName();
 

@@ -23,21 +23,7 @@ import org.slf4j.spi.LoggerFactoryBinder;
 /**
  *
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder {
-
-    /**
-     * The unique instance of this class.
-     */
-    private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
-
-    /**
-     * Return the singleton of this class.
-     *
-     * @return the StaticLoggerBinder singleton
-     */
-    public static final StaticLoggerBinder getSingleton() {
-        return SINGLETON;
-    }
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
     /**
      * Declare the version of the SLF4J API this implementation is compiled
@@ -46,22 +32,48 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "1.6"; // !final
 
-    private static final String loggerFactoryClassStr = Log4JLoggerFactory.class.getName();
+    private static final String LOGGER_FACTORY_CLASS_STR = Log4JLoggerFactory.class.getName();
+
+    /**
+     * The unique instance of this class.
+     */
+    private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
      */
     private final ILoggerFactory loggerFactory;
 
+    /**
+     * Private constructor to prevent instantiation
+     */
     private StaticLoggerBinder() {
         loggerFactory = new Log4JLoggerFactory();
     }
 
+    /**
+     * Return the singleton of this class.
+     *
+     * @return the StaticLoggerBinder singleton
+     */
+    public static StaticLoggerBinder getSingleton() {
+        return SINGLETON;
+    }
+
+    /**
+     * Return the factory.
+     * @return the factor.
+     */
     public ILoggerFactory getLoggerFactory() {
         return loggerFactory;
     }
 
+    /**
+     * Return the class name.
+     * @return the class name;
+     */
     public String getLoggerFactoryClassStr() {
-        return loggerFactoryClassStr;
+        return LOGGER_FACTORY_CLASS_STR;
     }
 }

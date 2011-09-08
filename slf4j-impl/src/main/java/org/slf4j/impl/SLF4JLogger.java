@@ -36,7 +36,7 @@ import java.util.Map;
 public class SLF4JLogger extends AbstractLoggerWrapper implements LocationAwareLogger {
 
     private static final String FQCN = SLF4JLogger.class.getName();
-    private static Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
+    private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
     private final boolean eventLogger;
 
     public SLF4JLogger(AbstractLogger logger, String name) {
