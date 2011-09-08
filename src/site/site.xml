@@ -28,8 +28,8 @@
     <menu name="Log4j">
       <item name="Overview"                href="/index.html"/>
       <item name="Download and Build"      href="/download.html"/>
-      <item name="Using the API"           href="/api.html"/>
-      <item name="API JavaDocs"            href="/apidocs/index.html"/>
+      <item name="Using the API"           href="log4j2-api/api.html"/>
+      <item name="API JavaDocs"            href="log4j2-api/apidocs/index.html"/>
       <item name="Manual"                  href="/manual.html"/>
       <item name="Wiki"                    href="http://wiki.apache.org/logging"/>
     </menu>

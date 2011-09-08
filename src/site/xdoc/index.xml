@@ -72,7 +72,8 @@
 
         <section name="Requirements">
            <p>
-             Log4j 2.0 requires Java 5. Some features may require optional dependencies. These dependencies are
+             Log4j 2.0 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
+             Some features may require optional dependencies. These dependencies are
              specified in the documentation for those features.
           </p>
         </section>
@@ -80,8 +81,8 @@
         <section name="News">
           <p>
             Log4j 2.0 is now available. The API for Log4j 2.0 is not compatible with Log4j 1.x, however an adapter
-            is
-
+            is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
+            Commons Logging and SLF4J.
           </p>
         </section>
 

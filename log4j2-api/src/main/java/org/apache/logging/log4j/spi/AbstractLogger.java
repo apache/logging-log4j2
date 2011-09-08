@@ -26,8 +26,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 
 /**
- * Base implementation of a Logger. While this class is large and contains many methods, it makes implementing an
- * actually Logger relatively easy.
+ * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  *
  * @doubt See Jira LOG4J2-39.
  */

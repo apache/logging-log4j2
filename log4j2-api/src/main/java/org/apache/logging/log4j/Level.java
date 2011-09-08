@@ -18,14 +18,14 @@ package org.apache.logging.log4j;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:<br>
- * OFF<br>    (most specific)
+ * OFF   (most specific)<br>
  * FATAL<br>
  * ERROR<br>
  * WARN<br>
  * INFO<br>
  * DEBUG<br>
  * TRACE<br>
- * ALL<br>     (least specific)
+ * AL    (least specific)<br>
  *
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
@@ -141,6 +141,10 @@ public enum Level {
         return (intLevel <= level);
     }
 
+    /**
+     * Returns the integer value of the Level.
+     * @return the integer value of the Level.
+     */
     public int intLevel() {
         return intLevel;
     }
