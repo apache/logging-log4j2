@@ -85,6 +85,8 @@
         </module>
         <module name="JavadocStyle">
             <property name="scope" value="public"/>
+            <!-- the checkHtml check is disabled as it generates incorrect errors -->
+            <property name="checkHtml" value="false"/>
         </module>
 
 
@@ -172,7 +174,7 @@
         <module name="IllegalInstantiation"/>
         <!-- <module name="InnerAssignment"/> -->
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1,0,1,2,3"/>
+            <property name="ignoreNumbers" value="-1,0,1,2,3,4,5,6,7"/>
         </module>
         <module name="RedundantThrows">
             <property name="allowUnchecked" value="true"/>

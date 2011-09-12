@@ -21,7 +21,10 @@ import org.apache.logging.log4j.spi.LoggerContext;
 /**
  *
  */
-public class LogManager {
+public final class LogManager {
+
+    private LogManager() {
+    }
 
     public static Logger getRootLogger() {
         return (Logger) PrivateManager.getLogger("");
@@ -43,6 +46,9 @@ public class LogManager {
         return Logger.getLogger(name);
     }
 
+    /**
+     * Internal LogManager.
+     */
     private static class PrivateManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = LogManager.class.getName();
 

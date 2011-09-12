@@ -18,6 +18,8 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -41,7 +43,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
     private Locale locale;
 
-    private StatusLogger logger = StatusLogger.getLogger();
+    private transient StatusLogger logger = StatusLogger.getLogger();
 
     private String loggerName = null;
 
@@ -278,5 +280,11 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
             }
         }
         return rb;
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        bundle = null;
+        logger = StatusLogger.getLogger();
     }
 }

@@ -216,14 +216,6 @@ public class LevelTest {
     }
 
     /**
-     * Tests Level.serialVersionUID.
-     */
-    @Test
-    public void testSerialVersionUID() {
-        assertEquals(3491141966387921974L, Level.serialVersionUID);
-    }
-
-    /**
      * Tests Level.toLevel(Level.All_INT).
      */
     @Test

@@ -21,7 +21,11 @@ import java.util.Stack;
 /**
  *
  */
-public class NDC {
+public final class NDC {
+
+    private NDC() {
+    }
+
     /**
      * Clear any nested diagnostic information if any. This method is
      * useful in cases where the same thread can be potentially used
@@ -78,7 +82,8 @@ public class NDC {
 
 
     /**
-     * <font color="#FF4040"><b>Never use this method directly.
+     * <font color="#FF4040"><b>Never use this method directly.</b>
+     * @return The string value of the specified key.
      */
     public static String get() {
         return org.apache.logging.log4j.ThreadContext.peek();
@@ -86,7 +91,7 @@ public class NDC {
 
     /**
      * Get the current nesting depth of this diagnostic context.
-     *
+     * @return int The number of elements in the call stack.
      * @see #setMaxDepth
      */
     public static int getDepth() {

@@ -21,7 +21,10 @@ import org.apache.logging.log4j.ThreadContext;
 /**
  *
  */
-public class MDC {
+public final class MDC {
+
+    private MDC() {
+    }
 
     public static void put(String key, Object value) {
         ThreadContext.put(key, value);

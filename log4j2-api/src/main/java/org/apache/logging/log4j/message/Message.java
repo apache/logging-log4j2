@@ -23,6 +23,12 @@ import java.io.Serializable;
  * around Objects so that user can have control over converting Objects to Strings when necessary without
  * requiring complicated formatters and as a way to manipulate the message based on information available
  * at runtime such as the locale of the system.
+ *
+ * Note: Message objects should not be considered to be thread safe nor should they be assumed to be
+ * safely reusable even on the same thread. The logging system may provide information to the Message
+ * objects and the Messages might be queued for asynchronous delivery. Thus, any modifications to a
+ * Message object by an application should by avoided after the Message has been passed as a parameter on
+ * a Logger method.
  * @doubt Interfaces should rarely extend Serializable according to Effective Java 2nd Ed pg 291.
  * (RG) That section also says "If a class or interface exists primarily to participate in a framework that
  * requires all participants to implement Serializable, then it makes perfect sense for the class or

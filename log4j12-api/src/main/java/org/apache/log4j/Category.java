@@ -23,7 +23,6 @@ import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
@@ -32,28 +31,41 @@ import java.util.concurrent.ConcurrentMap;
 
 
 /**
- *
+ * Implementation of the Category class for compatibility, despite it having been deprecated a long, long time ago.
  */
 public class Category {
-    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
-        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
-    private final org.apache.logging.log4j.core.Logger logger;
+    private static org.apache.log4j.LoggerFactory loggerFactory = new PrivateFactory();
+
+    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
+        new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
     private static final CategoryFactory FACTORY = new CategoryFactory();
 
     private static final String FQCN = Category.class.getName();
 
+    /**
+     * Resource bundle for localized messages.
+     */
     protected ResourceBundle bundle = null;
 
-    private static org.apache.log4j.LoggerFactory loggerFactory = new PrivateFactory();
+    private final org.apache.logging.log4j.core.Logger logger;
 
+    /**
+     * Constructor used by Logger to specify a LoggerContext.
+     * @param context The LoggerContext.
+     * @param name The name of the Logger.
+     */
     protected Category(LoggerContext context, String name) {
         this.logger = context.getLogger(getFactory(), name);
     }
 
+    /**
+     * Constructor exposed by Log4j 1.2.
+     * @param name The name of the Logger.
+     */
     protected Category(String name) {
-        this((LoggerContext)PrivateManager.getContext(), name);
+        this((LoggerContext) PrivateManager.getContext(), name);
     }
 
     private Category(org.apache.logging.log4j.core.Logger logger) {
@@ -61,7 +73,7 @@ public class Category {
     }
 
     public static Category getInstance(String name) {
-        return getInstance((LoggerContext)PrivateManager.getContext(), name, loggerFactory);
+        return getInstance((LoggerContext) PrivateManager.getContext(), name, loggerFactory);
     }
 
     static Category getInstance(LoggerContext context, String name) {
@@ -116,11 +128,11 @@ public class Category {
     }
 
     private static ConcurrentMap<String, Logger> getLoggersMap(LoggerContext context) {
-        synchronized (contextMap) {
-            ConcurrentMap<String, Logger> map = contextMap.get(context);
+        synchronized (CONTEXT_MAP) {
+            ConcurrentMap<String, Logger> map = CONTEXT_MAP.get(context);
             if (map == null) {
                 map = new ConcurrentHashMap<String, Logger>();
-                contextMap.put(context, map);
+                CONTEXT_MAP.put(context, map);
             }
             return map;
         }
@@ -297,6 +309,9 @@ public class Category {
         return FACTORY;
     }
 
+    /**
+     * Private logger factory.
+     */
     private static class PrivateFactory implements org.apache.log4j.LoggerFactory {
 
         public Logger makeNewLoggerInstance(LoggerContext context, String name) {
@@ -304,6 +319,9 @@ public class Category {
         }
     }
 
+    /**
+     * Private LogManager.
+     */
     private static class PrivateManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = Category.class.getName();
 
@@ -316,12 +334,18 @@ public class Category {
         }
     }
 
+    /**
+     * Private Category factory.
+     */
     private static class CategoryFactory implements org.apache.logging.log4j.spi.LoggerFactory<LoggerContext> {
 
         public org.apache.logging.log4j.core.Logger newInstance(LoggerContext ctx, String name) {
             return new CategoryLogger(ctx, name);
         }
 
+        /**
+         * Category Logger.
+         */
         public class CategoryLogger extends org.apache.logging.log4j.core.Logger {
 
             public CategoryLogger(LoggerContext ctx, String name) {
