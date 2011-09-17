@@ -45,9 +45,20 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- *
+ * The Base Configuration. Many configuration implementations will extend this class.
  */
 public class BaseConfiguration extends Filterable implements Configuration {
+
+    protected Node rootNode;
+
+    protected PluginManager pluginManager;
+
+    protected final static Logger logger = StatusLogger.getLogger();
+
+    protected final List<ConfigurationListener> listeners =
+        new CopyOnWriteArrayList<ConfigurationListener>();
+
+    protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
 
     private String name;
 
@@ -61,22 +72,17 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
     private boolean started = false;
 
-    protected Node rootNode;
-
-    protected PluginManager pluginManager;
-
-    protected final static Logger logger = StatusLogger.getLogger();
-
-    protected final List<ConfigurationListener> listeners =
-         new CopyOnWriteArrayList<ConfigurationListener>();
-
-    protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
-
+    /**
+     * Constructor.
+     */
     protected BaseConfiguration() {
         pluginManager = new PluginManager("Core");
         rootNode = new Node();
     }
 
+    /**
+     * Initialize the configuration.
+     */
     public void start() {
         pluginManager.collectPlugins();
         setup();
@@ -89,6 +95,9 @@ public class BaseConfiguration extends Filterable implements Configuration {
         startFilters();
     }
 
+    /**
+     * Tear down the configuration.
+     */
     public void stop() {
         for (LoggerConfig logger : loggers.values()) {
             logger.clearAppenders();
@@ -147,36 +156,75 @@ public class BaseConfiguration extends Filterable implements Configuration {
         return pluginManager;
     }
 
+    /**
+     * Set the name of the configuration.
+     * @param name The name.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Return the name of the configuration.
+     * @return the name of the configuration.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Add a listener for changes on the configuration.
+     * @param listener The ConfigurationListener to add.
+     */
     public void addListener(ConfigurationListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Remove a ConfigurationListener.
+     * @param listener The ConfigurationListener to remove.
+     */
     public void removeListener(ConfigurationListener listener) {
         listeners.remove(listener);
     }
 
+    /**
+     * Return the Appender with the specified name.
+     * @param name The name of the Appender.
+     * @return the Appender with the specified name or null if the Appender cannot be located.
+     */
     public Appender getAppender(String name) {
         return appenders.get(name);
     }
 
+    /**
+     * Return a Map containing all the Appenders and their name.
+     * @return A Map containing each Appender's naem and the Appender object.
+     */
     public Map<String, Appender> getAppenders() {
         return appenders;
     }
 
+    /**
+     * Adds an Appender to the configuration.
+     * @param appender The Appender to add.
+     */
     public void addAppender(Appender appender) {
         appenders.put(appender.getName(), appender);
     }
 
-    public void addLoggerAppender(org.apache.logging.log4j.core.Logger logger, Appender appender) {
+    /**
+     * Associates an Appender with a LoggerConfig. This method is synchronized in case a Logger with the
+     * same name is being updated at the same time.
+     *
+     * Note: This method is not used when configuring via configuration. It is primarily used by
+     * unit tests.
+     * @param logger The Logger the Appender will be associated with.
+     * @param appender The Appender.
+     */
+    public synchronized void addLoggerAppender(org.apache.logging.log4j.core.Logger logger, Appender appender) {
         String name = logger.getName();
+        appenders.putIfAbsent(name, appender);
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
             lc.addAppender(appender);
@@ -190,8 +238,16 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.getContext().updateLoggers();
         }
     }
-
-    public void addLoggerFilter(org.apache.logging.log4j.core.Logger logger, Filter filter) {
+    /**
+     * Associates a Filter with a LoggerConfig. This method is synchronized in case a Logger with the
+     * same name is being updated at the same time.
+     *
+     * Note: This method is not used when configuring via configuration. It is primarily used by
+     * unit tests.
+     * @param logger The Logger the Fo;ter will be associated with.
+     * @param filter The Filter.
+     */
+    public synchronized void addLoggerFilter(org.apache.logging.log4j.core.Logger logger, Filter filter) {
         String name = logger.getName();
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
@@ -206,8 +262,16 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.getContext().updateLoggers();
         }
     }
-
-    public void setLoggerAdditive(org.apache.logging.log4j.core.Logger logger, boolean additive) {
+    /**
+     * Marks a LoggerConfig as additive. This method is synchronized in case a Logger with the
+     * same name is being updated at the same time.
+     *
+     * Note: This method is not used when configuring via configuration. It is primarily used by
+     * unit tests.
+     * @param logger The Logger the Appender will be associated with.
+     * @param additive True if the LoggerConfig should be additive, false otherwise.
+     */
+    public synchronized void setLoggerAdditive(org.apache.logging.log4j.core.Logger logger, boolean additive) {
         String name = logger.getName();
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
@@ -222,17 +286,28 @@ public class BaseConfiguration extends Filterable implements Configuration {
         }
     }
 
-    public void removeAppender(String name) {
+    /**
+     * Remove an Appender. First removes any associations between LoggerContigs and the Appender, removes
+     * the Appender from this appender list and then stops the appender. This method is synchronized in
+     * case an Appender with the same name is being added during the removal.
+     */
+    public synchronized void removeAppender(String name) {
         for (LoggerConfig logger : loggers.values()) {
             logger.removeAppender(name);
         }
         Appender app = appenders.remove(name);
 
-        if (app != null && app instanceof Lifecycle) {
-            ((Lifecycle)app).stop();
+        if (app != null) {
+            app.stop();
         }
     }
 
+    /**
+     * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the
+     * package name as necessary or return the root LoggerConfig if no other matches were found.
+     * @param name The Logger name.
+     * @return The located LoggerConfig.
+     */
     public LoggerConfig getLoggerConfig(String name) {
         if (loggers.containsKey(name)) {
             return loggers.get(name);
@@ -247,14 +322,27 @@ public class BaseConfiguration extends Filterable implements Configuration {
         return root;
     }
 
+    /**
+     * Returns the root Logger.
+     * @return the root Logger.
+     */
     public LoggerConfig getRootLogger() {
         return root;
     }
 
+    /**
+     * Return a Map of all the LoggerConfigs.
+     * @return a Map with each entry containing the name of the Logger and the LoggerConfig.
+     */
     public Map<String, LoggerConfig> getLoggers() {
         return Collections.unmodifiableMap(loggers);
     }
 
+    /**
+     * Returns the LoggerConfig with the specified name.
+     * @param name The Logger name.
+     * @return The LoggerConfig or null if no match was found.
+     */
     public LoggerConfig getLogger(String name) {
         return loggers.get(name);
     }

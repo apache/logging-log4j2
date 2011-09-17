@@ -49,6 +49,8 @@ public class HTMLLayout extends AbstractStringLayout {
     // Print no location info by default
     protected final boolean locationInfo;
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
+
     private static final String DEFAULT_TITLE = "Log4J Log Messages";
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";

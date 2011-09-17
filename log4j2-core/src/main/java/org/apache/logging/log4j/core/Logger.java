@@ -34,21 +34,30 @@ import java.util.Map;
  */
 public class Logger extends AbstractLogger {
 
+    /**
+     * config should be consistent across threads.
+     */
+    protected volatile PrivateConfig config;
+
     private final String name;
 
     private final LoggerContext context;
 
     /**
-     * config should be consistent across threads.
+     * The constructor.
+     * @param context The LoggerContext this Logger is associated with.
+     * @param name The name of the Logger.
      */
-    volatile protected PrivateConfig config;
-
     protected Logger(LoggerContext context, String name) {
         this.context = context;
         this.name = name;
         config = new PrivateConfig(context.getConfiguration(), this);
     }
 
+    /**
+     * Returns the name of the Logger.
+     * @return the name of the Logger.
+     */
     public String getName() {
         return name;
     }
@@ -68,16 +77,28 @@ public class Logger extends AbstractLogger {
         return new Logger(context, name);
     }
 
+    /**
+     * Return the LoggerContext this Logger is associated with.
+     * @return the LoggerContext.
+     */
     public LoggerContext getContext() {
         return context;
     }
 
+    /**
+     * This method is not exposed through the public API and is provided primarily for unit testing.
+     * @param level The Level to use on this Logger.
+     */
     public synchronized void setLevel(Level level) {
         if (level != null) {
             config = new PrivateConfig(config, level);
         }
     }
 
+    /**
+     * Return the Level associated with the Logger.
+     * @return the Level associate with the Logger.
+     */
     public Level getLevel() {
         return config.level;
     }
@@ -128,41 +149,78 @@ public class Logger extends AbstractLogger {
         return config.filter(level, marker, msg, t);
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @param appender The Appender to add to the Logger.
+     */
     public void addAppender(Appender appender) {
         config.config.addLoggerAppender(this, appender);
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @param appender The Appender to remove from the Logger.
+     */
     public void removeAppender(Appender appender) {
         config.loggerConfig.removeAppender(appender.getName());
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @return A Map containing the Appender's name as the key and the Appender as the value.
+     */
     public Map<String, Appender> getAppenders() {
          return config.loggerConfig.getAppenders();
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @return An Iterator over all the Filters associated with the Logger.
+     */
     public Iterator<Filter> getFilters() {
         return config.loggerConfig.getFilters();
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @return The number of Filters associated with the Logger.
+     */
     public int filterCount() {
         return config.loggerConfig.filterCount();
     }
 
+    /**
+     * This method is not exposed through the public API and is used primarily for unit testing.
+     * @param filter The Filter to add.
+     */
     public void addFilter(Filter filter) {
         config.config.addLoggerFilter(this, filter);
     }
 
+    /**
+     * This method is not exposed through the public API and is present only to support the Log4j 1.2
+     * compatibility bridge.
+     * @return true if the associated LoggerConfig is additive, false otherwise.
+     */
     public boolean isAdditive() {
         return config.loggerConfig.isAdditive();
     }
 
+    /**
+     * This method is not exposed through the public API and is present only to support the Log4j 1.2
+     * compatibility bridge.
+     * @param additive Boolean value to indicate whether the Logger is additive or not.
+     */
     public void setAdditive(boolean additive) {
         config.config.setLoggerAdditive(this, additive);
     }
 
     /**
+     * Associates the Logger with a new Configuration. This method is not exposed through the
+     * public API.
+     *
      * There are two ways that could be used to guarantee all threads are aware of changes to
-     * config. 1. synchronize this method. Accessors don't need to be synchronized as Java wil
+     * config. 1. synchronize this method. Accessors don't need to be synchronized as Java will
      * treat all variables within a synchronized block as volatile. 2. Declare the variable
      * volatile. Option 2 is used here as the performance cost is very low and it does a better
      * job at documenting how it is used.

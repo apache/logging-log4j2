@@ -23,16 +23,9 @@ import java.io.Serializable;
  *  Would introduce an EventEncoder, EventRenderer or something similar for the logging event to byte encoding.
  * (RG) A layout can be configured with a Charset and then Strings can be converted to byte arrays. OTOH, it isn't
  * possible to write byte arrays as character streams.
+ * @param T The Object type that will be returned on the formatAs call.
  */
 public interface Layout<T extends Serializable> {
-    // Note that the line.separator property can be looked up even by
-    // applets.
-    /**
-     * @doubt It is very conceivable that distinct layouts might use distinct line separators.  Should not be on the interface.
-     */
-    public static final String LINE_SEP = System.getProperty("line.separator");
-    public static final int LINE_SEP_LEN = LINE_SEP.length();
-
     /**
      * Formats the event suitable for display.
      * @param event The Logging Event.

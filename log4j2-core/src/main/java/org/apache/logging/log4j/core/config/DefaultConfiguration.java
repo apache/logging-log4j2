@@ -23,15 +23,27 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 
 /**
- *
+ * The default configuration. It writes all output to the Console using the default logging level
+ * that is configured by setting the "org.apache.logging.log4j.level" system property or the ERROR
+ * Level if the system property is not specified. Log Events will be printed using the basic
+ * formatting provided by each Message.
  */
 public class DefaultConfiguration extends BaseConfiguration {
 
-    private static final String CONSOLE = "CONSOLE";;
-    private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
-    private static final String EMPTY_STRING = "";
+    /**
+     * The name of the default configuration.
+     */
     public static final String DEFAULT_NAME = "Default";
+    /**
+     * The System Proerty used to specify the logging level.
+     */
+    public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
+    private static final String EMPTY_STRING = "";
+
+    /**
+     * Constructor to create the default configuration.
+     */
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
@@ -44,6 +56,9 @@ public class DefaultConfiguration extends BaseConfiguration {
         root.setLevel(level);
     }
 
+    /**
+     * Formats the event using the Message's built-in format.
+     */
     public class BasicLayout implements Layout<String> {
         public byte[] format(LogEvent event) {
             return formatAs(event).getBytes();

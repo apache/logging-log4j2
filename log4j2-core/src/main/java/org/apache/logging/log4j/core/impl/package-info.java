@@ -14,15 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
-
 /**
- * Interface that must be implemented to provide notification of configuration changes.
+ * Log4j 2.0 private implementation classes.
  */
-public interface ConfigurationMonitor {
-
-    /**
-     * Called to determine if the configuration has changed.
-     */
-    void checkConfiguration();
-}
+package org.apache.logging.log4j.core.impl;

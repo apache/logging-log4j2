@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <entry key="LoggerContextFactory">org.apache.logging.log4j.core.Log4jContextFactory</entry>
+    <entry key="LoggerContextFactory">org.apache.logging.log4j.core.impl.Log4jContextFactory</entry>
     <entry key="Log4jAPIVersion">1.99.0</entry>
 </properties>

@@ -20,9 +20,14 @@ import java.io.File;
 import java.util.List;
 
 /**
- *
+ * Configuration monitor that periodically checks the timestamp of the configuration file and calls the
+ * ConfigurationListeners when an update occurs.
  */
 public class FileConfigurationMonitor implements ConfigurationMonitor {
+
+    private static final int MASK = 0x0f;
+
+    private final static int MIN_INTERVAL = 30;
 
     private final File file;
 
@@ -34,21 +39,25 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private long nextCheck;
 
-    private final static int MIN_INTERVAL = 30;
-
     private volatile int counter = 0;
-    private static final int MASK = 0x0f;
-    private long start;
 
+    /**
+     * Constructor.
+     * @param file The File to monitor.
+     * @param listeners The List of ConfigurationListeners to notify upon a change.
+     * @param interval The monitor interval in seconds. The minimum interval is 30 seconds.
+     */
     public FileConfigurationMonitor(File file, List<ConfigurationListener> listeners, int interval) {
         this.file = file;
         this.lastModified = file.lastModified();
         this.listeners = listeners;
         this.interval = (interval < MIN_INTERVAL ? MIN_INTERVAL : interval) * 1000;
         this.nextCheck = System.currentTimeMillis() + interval;
-        this.start = System.nanoTime();
     }
 
+    /**
+     * Called to determine if the configuration has changed.
+     */
     public void checkConfiguration() {
         if ((++counter & MASK) == 0) {
             long current = System.currentTimeMillis();

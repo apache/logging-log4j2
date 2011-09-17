@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LogEventFactory;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -40,34 +40,37 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
+ * Logger object that is created via configuration.
  */
 @Plugin(name="logger",type="Core", printObject=true)
 public class LoggerConfig extends Filterable implements LogEventFactory {
 
-    private List<String> appenderRefs = new ArrayList<String>();
-    private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
-
-    private final String name;
-
-    private LogEventFactory logEventFactory;
-
-    private Level level;
-
-    private boolean additive = true;
-
-    private LoggerConfig parent;
-
     private static Logger logger = StatusLogger.getLogger();
 
+    private List<String> appenderRefs = new ArrayList<String>();
+    private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final String name;
+    private LogEventFactory logEventFactory;
+    private Level level;
+    private boolean additive = true;
+    private LoggerConfig parent;
     private ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
 
+    /**
+     * Default constructor.
+     */
     public LoggerConfig() {
         this.logEventFactory = this;
         this.level = Level.ERROR;
         this.name = "";
     }
 
+    /**
+     * Constructor that sets the name, level and additive values.
+     * @param name The Logger name.
+     * @param level The Level.
+     * @param additive true if the Logger is additive, false otherwise.
+     */
     public LoggerConfig(String name, Level level, boolean additive) {
         this.logEventFactory = this;
         this.name = name;
@@ -85,30 +88,58 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.additive = additive;
     }
 
+    /**
+     * Set the ConfigurationMonitor that will detect configuration changes.
+     * @param monitor The ConfigurationMonitor.
+     */
     public void setConfigurationMonitor(ConfigurationMonitor monitor) {
         this.monitor = monitor;
     }
 
+    /**
+     * Return the name of the LoggerConfig.
+     * @return the name of the LoggerConfig.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the parent of this LoggerConfig.
+     * @param parent the parent LoggerConfig.
+     */
     public void setParent(LoggerConfig parent) {
         this.parent = parent;
     }
 
+    /**
+     * Return the parent of this LoggerConfig.
+     * @return the LoggerConfig that is the parent of this one.
+     */
     public LoggerConfig getParent() {
         return this.parent;
     }
 
+    /**
+     * Add an Appender to the LoggerConfig.
+     * @param appender The Appender to add.
+     */
     public void addAppender(Appender appender) {
         appenders.put(appender.getName(), new AppenderControl(appender));
     }
 
+    /**
+     * Remove the Appender with the specific name.
+     * @param name The name of the Appender.
+     */
     public void removeAppender(String name) {
         appenders.remove(name);
     }
 
+    /**
+     * Return all Appenders as a Map.
+     * @return a Map with the Appender name as the key and the Appender as the value.
+     */
     public Map<String, Appender> getAppenders() {
         Map<String, Appender> map = new HashMap<String, Appender>();
         for (Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
@@ -117,43 +148,87 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return map;
     }
 
+    /**
+     * Remove all Appenders.
+     */
     protected void clearAppenders() {
         appenders.clear();
     }
 
+    /**
+     * Return the Appender references.
+     * @return a List of all the Appender names attached to this LoggerConfig.
+     */
     public List<String> getAppenderRefs() {
         return appenderRefs;
     }
 
+    /**
+     * Set the logging Level.
+     * @param level The logging Level.
+     */
     public void setLevel(Level level) {
         this.level = level;
     }
 
+    /**
+     * Return the logging Level.
+     * @return the logging Level.
+     */
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * Return the LogEventFactory.
+     * @return the LogEventFactory.
+     */
     public LogEventFactory getLogEventFactory() {
         return logEventFactory;
     }
 
+    /**
+     * Set the LogEventFactory. Usually the LogEventFactory will be this LoggerConfig.
+     * @param logEventFactory the LogEventFactory.
+     */
     public void setLogEventFactory(LogEventFactory logEventFactory) {
         this.logEventFactory = logEventFactory;
     }
 
+    /**
+     * Return the valid of the additive flag.
+     * @return true if the LoggerConfig is additive, false otherwise.
+     */
     public boolean isAdditive() {
         return additive;
     }
 
+    /**
+     * Set the additive setting.
+     * @param additive true if thee LoggerConfig should be additive, false otherwise.
+     */
     public void setAdditive(boolean additive) {
         this.additive = additive;
     }
 
+    /**
+     * Log an event.
+     * @param loggerName The name of the Logger.
+     * @param marker A Marker or null if none is present.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The event Level.
+     * @param data The Message.
+     * @param t A Throwable or null.
+     */
     public void log(String loggerName, Marker marker, String fqcn, Level level, Message data, Throwable t) {
         LogEvent event = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, t);
         log(event);
     }
 
+    /**
+     * Logs an event/
+     * @param event Yhe log event.
+     */
     public void log(LogEvent event) {
         monitor.checkConfiguration();
         if (isFiltered(event)) {
@@ -173,6 +248,16 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         }
     }
 
+    /**
+     * Create a log event.
+     * @param loggerName The name of the Logger.
+     * @param marker An optional Marker.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The event Level.
+     * @param data The Message.
+     * @param t An optional Throwable.
+     * @return The LogEvent.
+     */
     public LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
                                 Throwable t) {
         return new Log4jLogEvent(loggerName, marker, fqcn, level, data, t);
@@ -182,6 +267,15 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return name == null || name.length() == 0 ? "root" : name;
     }
 
+    /**
+     * Factory method to create a LoggerConfig.
+     * @param additivity True if additive, false otherwise.
+     * @param loggerLevel The Level to be associated with the Logger.
+     * @param loggerName The name of the Logger.
+     * @param refs An array of Appender names.
+     * @param filters A container for Filters.
+     * @return A new LoggerConfig.
+     */
     @PluginFactory
     public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
@@ -201,6 +295,9 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return new LoggerConfig(name, appenderRefs, filters, level, additive);
     }
 
+    /**
+     * The root Logger.
+     */
     @Plugin(name = "root", type = "Core", printObject=true)
     public static class RootLogger extends LoggerConfig {
 

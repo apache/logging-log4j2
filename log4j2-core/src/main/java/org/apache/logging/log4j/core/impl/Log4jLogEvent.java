@@ -14,11 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 
@@ -30,10 +31,11 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- *
+ * Implementation of a LogEvent.
  */
 public class Log4jLogEvent implements LogEvent, Serializable {
 
+    private static final long serialVersionUID = -1351367343806656055L;
     private static final String NOT_AVAIL = "?";
     private final String fqcnOfLogger;
     private final Marker marker;
@@ -41,18 +43,40 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final String name;
     private final Message message;
     private final long timestamp;
-    private final Throwable throwable;
+    private final ThrowableProxy throwable;
     private final Map<String, Object> mdc;
     private final Stack<String> ndc;
     private String threadName = null;
     private StackTraceElement location;
 
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A Throwable or null.
+     */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t) {
         this(loggerName, marker, fqcn, level, message, t, ThreadContext.getContext(), ThreadContext.cloneStack(), null,
              null, System.currentTimeMillis());
     }
 
-
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A Throwable or null.
+     * @param mdc The mapped diagnostic context.
+     * @param ndc the nested diagnostic context.
+     * @param threadName The name of the thread.
+     * @param location The locations of the caller.
+     * @param timestamp The timestamp of the event.
+     */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
                          Map<String, Object> mdc, Stack<String> ndc, String threadName, StackTraceElement location,
                          long timestamp) {
@@ -61,7 +85,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         this.fqcnOfLogger = fqcn;
         this.level = level;
         this.message = message;
-        this.throwable = t;
+        this.throwable = t == null ? null : new ThrowableProxy(t);
         this.mdc = mdc;
         this.ndc = ndc;
         this.timestamp = timestamp;
@@ -151,6 +175,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return location;
     }
 
+    /**
+     * Creates a LogEventProxy that can be serialized.
+     * @return a LogEventProxy.
+     */
     protected Object writeReplace() {
         return new LogEventProxy(this);
     }
@@ -169,9 +197,12 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return sb.toString();
     }
 
+    /**
+     * Proxy pattern used to serialize the LogEvent.
+     */
     private static class LogEventProxy implements Serializable {
 
-
+        private static final long serialVersionUID = -7139032940312647146L;
         private final String fqcnOfLogger;
         private final Marker marker;
         private final Level level;
@@ -198,6 +229,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             this.threadName = event.getThreadName();
         }
 
+        /**
+         * Return a Log4jLogEvent using the data in the proxy.
+         * @returna Log4jLogEvent.
+         */
         protected Object readResolve() {
             return new Log4jLogEvent(name, marker, fqcnOfLogger, level, message, throwable, mdc, ndc, threadName,
                                      location, timestamp);

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ThresholdFilterTest {
         assertTrue(filter.filter(null, Level.ERROR, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
         LogEvent event = new Log4jLogEvent(null, null, null, Level.DEBUG, new SimpleMessage("Test"), null);
         assertTrue(filter.filter(event) == Filter.Result.DENY);
-        event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);        
+        event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
         assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
     }
 }

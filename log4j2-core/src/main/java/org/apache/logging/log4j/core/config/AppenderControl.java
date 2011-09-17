@@ -36,14 +36,26 @@ public class AppenderControl {
 
     private final Appender appender;
 
+    /**
+     * Constructor.
+     * @param appender The target Appender.
+     */
     AppenderControl(Appender appender) {
         this.appender = appender;
     }
 
+    /**
+     * Return the Appender.
+     * @return the Appender.
+     */
     public Appender getAppender() {
         return appender;
     }
 
+    /**
+     * Call the appender.
+     * @param event The event to process.
+     */
     public void callAppender(LogEvent event) {
         if (recursive.get() != null) {
             appender.getHandler().error("Recursive call to appender " + appender.getName());

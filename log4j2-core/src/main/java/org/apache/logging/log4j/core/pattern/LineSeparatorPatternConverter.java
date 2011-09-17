@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name="LineSeparatorPatternConverter", type="Converter")
 @ConverterKeys({"n"})
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
+
+  private static final String LINE_SEP = System.getProperty("line.separator");
   /**
    * Singleton.
    */
@@ -44,7 +46,7 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
    */
   private LineSeparatorPatternConverter() {
     super("Line Sep", "lineSep");
-    lineSep = Layout.LINE_SEP;
+    lineSep = LINE_SEP;
   }
 
   /**

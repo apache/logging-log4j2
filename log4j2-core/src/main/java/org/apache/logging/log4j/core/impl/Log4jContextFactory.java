@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.impl;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;

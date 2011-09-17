@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,44 +29,20 @@ import java.io.StringWriter;
  * Outputs the Throwable portion of the LoggingEvent as a full stacktrace
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
  * the number of lines to print is explicitly specified.
+ * <p>
+ * The extended stack trace will also include the location of where the class was loaded from and the
+ * version of the jar if available.
  */
-@Plugin(name = "ThrowablePatternConverter", type = "Converter")
-@ConverterKeys({"ex", "throwable", "exception"})
-public class ThrowablePatternConverter extends LogEventPatternConverter {
+@Plugin(name = "ExtendedThrowablePatternConverter", type = "Converter")
+@ConverterKeys({"xEx", "xThrowable", "xException"})
+public class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
     /**
-     * If "short", only first line of throwable report will be formatted.<br>
-     * If "full", the whole stack trace will be formatted.<br>
-     * If "numeric" the output will be limited to the specified number of lines.
-     */
-    protected final String option;
-
-    protected static final String FULL = "full";
-    protected static final String SHORT = "short";
-
-    protected final int lines;
-
-    /**
-     * Constructor.
-     * @param name Name of converter.
-     * @param style CSS style for output.
+     * Private constructor.
+     *
      * @param options options, may be null.
      */
-    protected ThrowablePatternConverter(String name, String style, final String[] options) {
-        super(name, style);
-        int count = 0;
-        if ((options != null) && (options.length > 0)) {
-            option = options[0];
-            if (option.equalsIgnoreCase(SHORT)) {
-                count = 2;
-            } else if (option.equalsIgnoreCase(FULL)) {
-            } else {
-                count = Integer.parseInt(option);
-            }
-
-        } else {
-            option = null;
-        }
-        lines = count;
+    private ExtendedThrowablePatternConverter(final String[] options) {
+        super("ExtendedThrowable", "throwable", options);
     }
 
     /**
@@ -75,40 +52,34 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static ThrowablePatternConverter newInstance(
+    public static ExtendedThrowablePatternConverter newInstance(
         final String[] options) {
-        return new ThrowablePatternConverter("Throwable", "throwable", options);
+        return new ExtendedThrowablePatternConverter(options);
     }
 
     /**
      * {@inheritDoc}
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Throwable t = event.getThrown();
-
-        if (t != null) {
-            StringWriter w = new StringWriter();
-            t.printStackTrace(new PrintWriter(w));
+        Throwable throwable = event.getThrown();
+        if (throwable != null) {
+            if (!(throwable instanceof ThrowableProxy)) {
+                super.format(event, toAppendTo);
+                return;
+            }
+            ThrowableProxy t = (ThrowableProxy) throwable;
+            String trace = t.getExtendedStackTrace();
             if (lines > 0) {
                 StringBuilder sb = new StringBuilder();
-                String[] array = w.toString().split("\n");
+                String[] array = trace.split("\n");
                 for (int i = 0; i < lines; ++i) {
                     sb.append(array[i]).append("\n");
                 }
                 toAppendTo.append(sb.toString());
 
             } else {
-                toAppendTo.append(w.toString());
+                toAppendTo.append(trace);
             }
         }
-    }
-
-    /**
-     * This converter obviously handles throwables.
-     *
-     * @return true.
-     */
-    public boolean handlesThrowable() {
-        return true;
     }
 }
