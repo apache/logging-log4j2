@@ -21,15 +21,23 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  */
 public class SimpleLogger extends AbstractLogger {
+    private List<String> array = new ArrayList<String>();
+
     @Override
     protected String getFQCN() {
         return SimpleLogger.class.getName();
+    }
+
+    public List<String> getEntries() {
+        return array;
     }
 
     @Override
@@ -58,7 +66,8 @@ public class SimpleLogger extends AbstractLogger {
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
         }
-        System.out.println(sb.toString());
+        array.add(sb.toString());
+        //System.out.println(sb.toString());
     }
 
     @Override
