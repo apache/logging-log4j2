@@ -39,6 +39,10 @@ public class ThreadDumpMessage implements Message {
 
     }
 
+    /**
+     * Generate a ThreadDumpMessage with a title.
+     * @param title The title.
+     */
     public ThreadDumpMessage(String title) {
         this.title = title == null ? "" : title;
         Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
@@ -48,6 +52,10 @@ public class ThreadDumpMessage implements Message {
         }
     }
 
+    /**
+     * Return the ThreadDump in printable format.
+     * @return the ThreadDump suitable for logging.
+     */
     public String getFormattedMessage() {
         if (formattedMessage != null) {
             return formattedMessage;
@@ -83,10 +91,19 @@ public class ThreadDumpMessage implements Message {
         }
     }
 
+    /**
+     * Returns the title.
+     * @return the title.
+     */
     public String getMessageFormat() {
         return title == null ? "" : title;
     }
 
+    /**
+     * Returns an array with a single element, a Map containing the ThreadInformation as the key
+     * and the StackTraceElement array as the value;
+     * @return the "parameters" to this Message.
+     */
     public Object[] getParameters() {
         return new Object[] {threads};
     }
@@ -118,5 +135,32 @@ public class ThreadDumpMessage implements Message {
             threadGroupName = group == null ? null : group.getName();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            ThreadInfo that = (ThreadInfo) o;
+
+            if (id != that.id) {
+                return false;
+            }
+            if (name != null ? !name.equals(that.name) : that.name != null) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (id ^ (id >>> 32));
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            return result;
+        }
     }
 }
