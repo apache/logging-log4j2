@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ import org.slf4j.ext.EventData;
 import org.slf4j.ext.EventLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.impl.SLF4JLogger;
+import org.slf4j.spi.LocationAwareLogger;
 
 import java.util.List;
 import java.util.Locale;
@@ -106,6 +109,17 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
     }
 
+    @Test
+    public void debugNoParms() {
+        logger.debug("Debug message {}");
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+        logger.debug("Debug message {}", (Object[]) null);
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+        ((LocationAwareLogger)logger).log(null, SLF4JLogger.class.getName(), LocationAwareLogger.DEBUG_INT,
+            "Debug message {}", null, null);
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+    }
+
 
     @Test
     public void debugWithParms() {
@@ -122,6 +136,14 @@ public class LoggerTest {
         MDC.clear();
         logger.debug("Debug message");
         verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
+    }
+
+    @Test
+    public void doubleSubst() {
+        logger.debug("Hello, {}", "Log4j {}");
+        verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");
+        //xlogger.debug("Hello, {}", "Log4j {}");
+        //verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");
     }
 
     @Test
@@ -152,5 +174,15 @@ public class LoggerTest {
         String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         ((ListAppender) listApp).clear();
+    }
+
+    @Before
+    public void cleanup()
+    {
+        Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        Appender listApp = list.get("List");
+        ((ListAppender) listApp).clear();
+        Appender eventApp = list.get("EventLogger");
+        ((ListAppender) eventApp).clear();
     }
 }

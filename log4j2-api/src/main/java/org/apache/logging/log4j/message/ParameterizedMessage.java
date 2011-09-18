@@ -95,6 +95,14 @@ public class ParameterizedMessage implements Message, Serializable {
         this.throwable = throwable;
     }
 
+    public ParameterizedMessage(String messagePattern, Object[] arguments, Throwable throwable) {
+        this.messagePattern = messagePattern;
+        this.throwable = throwable;
+        if (arguments != null) {
+            parseArguments(arguments);
+        }
+    }
+
     /**
      * <p>This method returns a ParameterizedMessage which contains the arguments converted to String
      * as well as an optional Throwable.</p>
@@ -138,7 +146,7 @@ public class ParameterizedMessage implements Message, Serializable {
         int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;
         if (argsCount < arguments.length) {
-            if (arguments[arguments.length - 1] instanceof Throwable) {
+            if (throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
                 throwable = (Throwable) arguments[arguments.length - 1];
                 resultArgCount--;
             }

@@ -68,6 +68,8 @@ public class LoggerTest {
         verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}\n");
         logger.info("Info Message");
         verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}\n");
+        logger.info("Info Message {}");
+        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}\n");
     }
 
     private void verify(String name, String expected) {

@@ -60,6 +60,11 @@
       <scope>test</scope>
     </dependency>
      <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.7</version>
