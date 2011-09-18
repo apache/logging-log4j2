@@ -235,7 +235,10 @@ public class ParameterizedMessage implements Message, Serializable {
 
     /**
      * Returns the Throwable that was given as the last argument, if any.
-     * It will not survive serialization.
+     * It will not survive serialization. The Throwable exists as part of the message
+     * primarily so that it can be extracted from the end of the list of parameters
+     * and then be added to the LogEvent. As such, the Throwable in the event should
+     * not be used once the LogEvent has been constructed.
      *
      * @return the Throwable, if any.
      */
