@@ -17,9 +17,11 @@
 
 package org.apache.log4j;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,6 +36,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 
 /**
@@ -116,6 +119,23 @@ public class CategoryTest {
         Logger logger = Logger.getLogger("org.example.foo");
         Priority debug = Level.DEBUG;
         logger.setPriority(debug);
+    }
+
+    @Test
+    public void testClassName() {
+        Category category = Category.getInstance("TestCategory");
+        Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null);
+        ListAppender appender = new ListAppender("List2", null, layout, false, false);
+        appender.start();
+        category.setAdditivity(false);
+        category.getLogger().addAppender(appender);
+        category.error("Test Message");
+        List<String> msgs = appender.getMessages();
+        assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
+        String msg = msgs.get(0);
+        appender.clear();
+        String expected = "ERROR o.a.l.CategoryTest [main] Test Message\n";
+        assertTrue("Incorrect message.", msg.endsWith(expected));
     }
 
     /**
