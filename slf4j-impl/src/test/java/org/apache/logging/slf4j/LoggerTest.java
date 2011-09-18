@@ -142,8 +142,8 @@ public class LoggerTest {
     public void doubleSubst() {
         logger.debug("Hello, {}", "Log4j {}");
         verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");
-        //xlogger.debug("Hello, {}", "Log4j {}");
-        //verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");
+        xlogger.debug("Hello, {}", "Log4j {}");
+        verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}\n");
     }
 
     @Test
