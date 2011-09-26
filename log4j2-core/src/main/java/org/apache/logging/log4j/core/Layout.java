@@ -23,7 +23,7 @@ import java.io.Serializable;
  *  Would introduce an EventEncoder, EventRenderer or something similar for the logging event to byte encoding.
  * (RG) A layout can be configured with a Charset and then Strings can be converted to byte arrays. OTOH, it isn't
  * possible to write byte arrays as character streams.
- * @param T The Object type that will be returned on the formatAs call.
+ * @param <T> The Object type that will be returned on the formatAs call.
  */
 public interface Layout<T extends Serializable> {
     /**

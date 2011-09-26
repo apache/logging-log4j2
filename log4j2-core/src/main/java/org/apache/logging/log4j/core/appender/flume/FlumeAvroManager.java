@@ -161,9 +161,6 @@ public class FlumeAvroManager extends AbstractManager {
         throw new AppenderRuntimeException("Unable to connect to any agents");
     }
 
-    public void releaseSub() {
-    }
-
     private FlumeEventAvroServer connect(String hostname, int port) {
         URL url;
 

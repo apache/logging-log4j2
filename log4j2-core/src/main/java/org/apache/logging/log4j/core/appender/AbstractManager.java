@@ -38,14 +38,20 @@ public abstract class AbstractManager {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
-    protected static final Logger logger = StatusLogger.getLogger();
+    protected static Logger logger = StatusLogger.getLogger();
 
     private String name;
 
     private int count;
 
-    public StringBuilder buffer = new StringBuilder();
-
+    /**
+     * Retrieves a Manager if it has been previously created or creates a new Manager.
+     * @param name The name of the Manager to retrieve.
+     * @param factory The Factory to use to create the Manager.
+     * @param data An Object that should be passed to the factory when creating the Manager.
+     * @param <T> The Type of the Manager to be created.
+     * @return A Manager with the specified name and type.
+     */
     public static <T extends AbstractManager> T getManager(String name, ManagerFactory<T, Object> factory,
                                                  Object data) {
         lock.lock();
@@ -65,6 +71,11 @@ public abstract class AbstractManager {
         }
     }
 
+    /**
+     * Determines if a Manager with the specified name exists.
+     * @param name The name of the Manager.
+     * @return True if the Manager exists, false otherwise.
+     */
     public static boolean hasManager(String name) {
         lock.lock();
         try {
@@ -78,12 +89,20 @@ public abstract class AbstractManager {
         this.name = name;
     }
 
-    public abstract void releaseSub();
+    /**
+     * May be overriden by Managers to perform processing while the Manager is being released and the
+     * lock is held.
+     */
+    protected void releaseSub() {
+    }
 
     protected int getCount() {
         return count;
     }
 
+    /**
+     * Called to signify that this Manager is no longer required by an Appender.
+     */
     public void release() {
         lock.lock();
         try {
@@ -97,6 +116,10 @@ public abstract class AbstractManager {
         }
     }
 
+    /**
+     * Return the name of the Manager.
+     * @return The name of the Manager.
+     */
     public String getName() {
         return name;
     }

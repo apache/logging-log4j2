@@ -27,6 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.Logger;
 
 /**
+ *
  * @doubt Appender should be refactored as mentioned elsewhere
  */
 public abstract class AppenderBase extends Filterable implements Appender, Lifecycle {
