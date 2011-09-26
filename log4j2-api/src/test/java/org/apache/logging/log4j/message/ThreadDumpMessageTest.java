@@ -18,6 +18,8 @@ package org.apache.logging.log4j.message;
 
 import org.junit.Test;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -34,5 +36,28 @@ public class ThreadDumpMessageTest {
         assertTrue("No header", message.contains("Testing"));
         assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
         assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
+    }
+
+
+    @Test
+    public void testMessageWithLocks() {
+        ReentrantLock lock = new ReentrantLock();
+        lock.lock();
+        ThreadDumpMessage msg;
+        synchronized(this) {
+            try {
+                msg = new ThreadDumpMessage("Testing"/* , true */);
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        String message = msg.getFormattedMessage();
+        //System.out.print(message);
+        assertTrue("No header", message.contains("Testing"));
+        assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
+        assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
+        //assertTrue("No Locks", message.contains("waiting on"));
+        //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
     }
 }
