@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -40,8 +39,6 @@ public class Category {
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
         new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
-    private static final CategoryFactory FACTORY = new CategoryFactory();
-
     private static final String FQCN = Category.class.getName();
 
     /**
@@ -57,7 +54,7 @@ public class Category {
      * @param name The name of the Logger.
      */
     protected Category(LoggerContext context, String name) {
-        this.logger = context.getLogger(getFactory(), name);
+        this.logger = context.getLogger(name);
     }
 
     /**
@@ -94,7 +91,6 @@ public class Category {
     public static Category getInstance(Class clazz) {
         return getInstance(clazz.getName());
     }
-
 
     static Category getInstance(LoggerContext context, Class clazz) {
         return getInstance(context, clazz.getName());
@@ -176,11 +172,11 @@ public class Category {
     }
 
     public void debug(Object message) {
-        logger.debug(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.DEBUG, message, null);
     }
 
     public void debug(Object message, Throwable t) {
-        logger.debug(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.DEBUG, message, t);
     }
 
     public boolean isDebugEnabled() {
@@ -188,11 +184,11 @@ public class Category {
     }
 
     public void error(Object message) {
-        logger.error(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.ERROR, message, null);
     }
 
     public void error(Object message, Throwable t) {
-        logger.error(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.ERROR, message, t);
     }
 
     public boolean isErrorEnabled() {
@@ -200,11 +196,11 @@ public class Category {
     }
 
     public void warn(Object message) {
-        logger.warn(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.WARN, message, null);
     }
 
     public void warn(Object message, Throwable t) {
-        logger.warn(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.WARN, message, t);
     }
 
     public boolean isWarnEnabled() {
@@ -212,11 +208,11 @@ public class Category {
     }
 
     public void fatal(Object message) {
-        logger.fatal(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.FATAL, message, null);
     }
 
     public void fatal(Object message, Throwable t) {
-        logger.fatal(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.FATAL, message, t);
     }
 
     public boolean isFatalEnabled() {
@@ -224,11 +220,11 @@ public class Category {
     }
 
     public void info(Object message) {
-        logger.info(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.INFO, message, null);
     }
 
     public void info(Object message, Throwable t) {
-        logger.info(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.INFO, message, t);
     }
 
     public boolean isInfoEnabled() {
@@ -236,11 +232,11 @@ public class Category {
     }
 
     public void trace(Object message) {
-        logger.trace(message);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, null);
     }
 
     public void trace(Object message, Throwable t) {
-        logger.trace(message, t);
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
     }
 
     public boolean isTraceEnabled() {
@@ -249,12 +245,12 @@ public class Category {
 
     public boolean isEnabledFor(Priority level) {
         org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        return ((CategoryFactory.CategoryLogger) logger).isEnabledFor(lvl);
+        return isEnabledFor(lvl);
     }
 
     public void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
         org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        ((CategoryFactory.CategoryLogger) logger).log(null, fqcn, lvl, new ObjectMessage(message), t);
+        logger.log(null, fqcn, lvl, new ObjectMessage(message), t);
     }
 
     public boolean exists(String name) {
@@ -305,8 +301,11 @@ public class Category {
         }
     }
 
-    protected org.apache.logging.log4j.spi.LoggerFactory getFactory() {
-        return FACTORY;
+    private void maybeLog(String fqcn, org.apache.logging.log4j.Level level,
+            Object message, Throwable throwable) {
+        if(logger.isEnabled(level, null, message, throwable)) {
+            logger.log(null, FQCN, level, new ObjectMessage(message), throwable);
+        }
     }
 
     /**
@@ -334,38 +333,8 @@ public class Category {
         }
     }
 
-    /**
-     * Private Category factory.
-     */
-    private static class CategoryFactory implements org.apache.logging.log4j.spi.LoggerFactory<LoggerContext> {
-
-        public org.apache.logging.log4j.core.Logger newInstance(LoggerContext ctx, String name) {
-            return new CategoryLogger(ctx, name);
-        }
-
-        /**
-         * Category Logger.
-         */
-        public class CategoryLogger extends org.apache.logging.log4j.core.Logger {
-
-            public CategoryLogger(LoggerContext ctx, String name) {
-                super(ctx, name);
-            }
-
-            @Override
-            public String getFQCN() {
-               return FQCN;
-            }
-
-            @Override
-            public void log(Marker marker, String fqcn, org.apache.logging.log4j.Level level,
-                               Message data, Throwable t) {
-                super.log(marker, fqcn, level, data, t);
-            }
-
-            public boolean isEnabledFor(org.apache.logging.log4j.Level level) {
-                return isEnabled(level, null, null);
-            }
-        }
+    private boolean isEnabledFor(org.apache.logging.log4j.Level level) {
+        return logger.isEnabled(level, null, null);
     }
+
 }

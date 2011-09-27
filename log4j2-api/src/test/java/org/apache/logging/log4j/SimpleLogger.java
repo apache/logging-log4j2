@@ -31,11 +31,6 @@ import java.util.Map;
 public class SimpleLogger extends AbstractLogger {
     private List<String> array = new ArrayList<String>();
 
-    @Override
-    protected String getFQCN() {
-        return SimpleLogger.class.getName();
-    }
-
     public List<String> getEntries() {
         return array;
     }

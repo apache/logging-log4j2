@@ -22,7 +22,15 @@
   </properties>
 
   <body>
-    <release version="2.0" date="" description="Rewrite of Log4j">
+    <release version="2.0" date="TBD" description="Rewrite of Log4j">
+      <action issue="VFS-51" dev="rgoers" type="fix" due-to="John Vasileff">
+        Remove LoggerContext support for custom logger factories. All Loggers returned
+        by LoggerContext should be compatibile and of the same type.
+      </action>
+      <action issue="VFS-50" dev="rgoers" type="fix" due-to="John Vasileff">
+        Make sure all application facing log methods use their own FQCN. This patch
+        resolves a unit test failure for the %C pattern when using the Category logger.
+      </action>
     </release>
   </body>
 </document>

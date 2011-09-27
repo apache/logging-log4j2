@@ -17,7 +17,6 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerFactory;
 
 /**
  *
@@ -37,7 +36,4 @@ public class SimpleLoggerContext implements LoggerContext {
         return null;
     }
 
-    public Logger getLogger(LoggerFactory factory, String name) {
-        return factory.newInstance(this, name);
-    }
 }

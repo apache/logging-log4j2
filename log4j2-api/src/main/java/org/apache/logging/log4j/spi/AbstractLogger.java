@@ -57,17 +57,14 @@ public abstract class AbstractLogger implements Logger {
      */
     public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
 
-    protected String getFQCN() {
-        return AbstractLogger.class.getName();
-    }
-
+    private static final String FQCN = AbstractLogger.class.getName();
 
     /**
      * Log entry to a method.
      */
     public void entry() {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            log(ENTRY_MARKER, getFQCN(), Level.TRACE, new SimpleMessage(" entry"), null);
+            log(ENTRY_MARKER, FQCN, Level.TRACE, new SimpleMessage(" entry"), null);
         }
     }
 
@@ -79,7 +76,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void entry(Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            log(ENTRY_MARKER, getFQCN(), Level.TRACE, entryMsg(params.length, params), null);
+            log(ENTRY_MARKER, FQCN, Level.TRACE, entryMsg(params.length, params), null);
         }
     }
 
@@ -88,7 +85,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void exit() {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(null), null);
+            log(EXIT_MARKER, FQCN, Level.TRACE, exitMsg(null), null);
         }
     }
 
@@ -99,7 +96,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void exit(Object result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, getFQCN(), Level.TRACE, exitMsg(result), null);
+            log(EXIT_MARKER, FQCN, Level.TRACE, exitMsg(result), null);
         }
     }
 
@@ -110,7 +107,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void throwing(Throwable t) {
         if (isEnabled(Level.ERROR, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, getFQCN(), Level.ERROR, new SimpleMessage("throwing"), t);
+            log(THROWING_MARKER, FQCN, Level.ERROR, new SimpleMessage("throwing"), t);
         }
     }
 
@@ -123,7 +120,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void throwing(Level level, Throwable t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("throwing"), t);
+            log(THROWING_MARKER, FQCN, level, new SimpleMessage("throwing"), t);
         }
     }
 
@@ -134,7 +131,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void catching(Throwable t) {
         if (isEnabled(Level.DEBUG, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, getFQCN(), Level.DEBUG, new SimpleMessage("catching"), t);
+            log(THROWING_MARKER, FQCN, Level.DEBUG, new SimpleMessage("catching"), t);
         }
     }
 
@@ -146,7 +143,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void catching(Level level, Throwable t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, getFQCN(), level, new SimpleMessage("catching"), t);
+            log(THROWING_MARKER, FQCN, level, new SimpleMessage("catching"), t);
         }
     }
 
@@ -157,7 +154,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(String message) {
         if (isEnabled(Level.TRACE, null, message)) {
-            log(null, getFQCN(), Level.TRACE, new SimpleMessage(message), null);
+            log(null, FQCN, Level.TRACE, new SimpleMessage(message), null);
         }
     }
 
@@ -169,7 +166,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, String message) {
         if (isEnabled(Level.TRACE, marker, message)) {
-            log(marker, getFQCN(), Level.TRACE, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.TRACE, new SimpleMessage(message), null);
         }
     }
 
@@ -186,7 +183,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(String message, Throwable t) {
         if (isEnabled(Level.TRACE, null, message, t)) {
-            log(null, getFQCN(), Level.TRACE, new SimpleMessage(message), t);
+            log(null, FQCN, Level.TRACE, new SimpleMessage(message), t);
         }
     }
 
@@ -205,7 +202,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.TRACE, marker, message, t)) {
-            log(marker, getFQCN(), Level.TRACE, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.TRACE, new SimpleMessage(message), t);
         }
     }
 
@@ -216,7 +213,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Object message) {
         if (isEnabled(Level.TRACE, null, message, null)) {
-            log(null, getFQCN(), Level.TRACE, new ObjectMessage(message), null);
+            log(null, FQCN, Level.TRACE, new ObjectMessage(message), null);
         }
     }
 
@@ -228,7 +225,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, Object message) {
         if (isEnabled(Level.TRACE, marker, message, null)) {
-            log(marker, getFQCN(), Level.TRACE, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.TRACE, new ObjectMessage(message), null);
         }
     }
 
@@ -245,7 +242,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Object message, Throwable t) {
         if (isEnabled(Level.TRACE, null, message, t)) {
-            log(null, getFQCN(), Level.TRACE, new ObjectMessage(message), t);
+            log(null, FQCN, Level.TRACE, new ObjectMessage(message), t);
         }
     }
 
@@ -263,7 +260,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.TRACE, marker, message, t)) {
-            log(marker, getFQCN(), Level.TRACE, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.TRACE, new ObjectMessage(message), t);
         }
     }
 
@@ -276,7 +273,7 @@ public abstract class AbstractLogger implements Logger {
     public void trace(String message, Object... params) {
         if (isEnabled(Level.TRACE, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.TRACE, msg, msg.getThrowable());
+            log(null, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
@@ -290,7 +287,7 @@ public abstract class AbstractLogger implements Logger {
     public void trace(Marker marker, String message, Object... params) {
         if (isEnabled(Level.TRACE, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.TRACE, msg, msg.getThrowable());
+            log(marker, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
@@ -322,7 +319,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Message msg) {
         if (isEnabled(Level.TRACE, null, msg, null)) {
-            log(null, getFQCN(), Level.TRACE, msg, null);
+            log(null, FQCN, Level.TRACE, msg, null);
         }
     }
 
@@ -334,7 +331,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Message msg, Throwable t) {
         if (isEnabled(Level.TRACE, null, msg, t)) {
-            log(null, getFQCN(), Level.TRACE, msg, t);
+            log(null, FQCN, Level.TRACE, msg, t);
         }
     }
 
@@ -346,7 +343,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, Message msg) {
         if (isEnabled(Level.TRACE, marker, msg, null)) {
-            log(marker, getFQCN(), Level.TRACE, msg, null);
+            log(marker, FQCN, Level.TRACE, msg, null);
         }
     }
 
@@ -359,7 +356,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void trace(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.TRACE, marker, msg, t)) {
-            log(marker, getFQCN(), Level.TRACE, msg, t);
+            log(marker, FQCN, Level.TRACE, msg, t);
         }
     }
 
@@ -370,7 +367,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(String message) {
         if (isEnabled(Level.DEBUG, null, message)) {
-            log(null, getFQCN(), Level.DEBUG, new SimpleMessage(message), null);
+            log(null, FQCN, Level.DEBUG, new SimpleMessage(message), null);
         }
     }
 
@@ -382,7 +379,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, String message) {
         if (isEnabled(Level.DEBUG, marker, message)) {
-            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.DEBUG, new SimpleMessage(message), null);
         }
     }
 
@@ -395,7 +392,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(String message, Throwable t) {
         if (isEnabled(Level.DEBUG, null, message, t)) {
-            log(null, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+            log(null, FQCN, Level.DEBUG, new SimpleMessage(message), t);
         }
     }
 
@@ -409,7 +406,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.DEBUG, marker, message, t)) {
-            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.DEBUG, new SimpleMessage(message), t);
         }
     }
     /**
@@ -419,7 +416,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Object message) {
         if (isEnabled(Level.DEBUG, null, message, null)) {
-            log(null, getFQCN(), Level.DEBUG, new ObjectMessage(message), null);
+            log(null, FQCN, Level.DEBUG, new ObjectMessage(message), null);
         }
     }
 
@@ -431,7 +428,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, Object message) {
         if (isEnabled(Level.DEBUG, marker, message, null)) {
-            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.DEBUG, new ObjectMessage(message), null);
         }
     }
 
@@ -444,7 +441,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Object message, Throwable t) {
         if (isEnabled(Level.DEBUG, null, message, t)) {
-            log(null, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+            log(null, FQCN, Level.DEBUG, new ObjectMessage(message), t);
         }
     }
 
@@ -458,7 +455,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.DEBUG, marker, message, t)) {
-            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.DEBUG, new ObjectMessage(message), t);
         }
     }
 
@@ -471,7 +468,7 @@ public abstract class AbstractLogger implements Logger {
     public void debug(String message, Object... params) {
         if (isEnabled(Level.DEBUG, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.DEBUG, msg, msg.getThrowable());
+            log(null, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
@@ -485,7 +482,7 @@ public abstract class AbstractLogger implements Logger {
     public void debug(Marker marker, String message, Object... params) {
         if (isEnabled(Level.DEBUG, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.DEBUG, msg, msg.getThrowable());
+            log(marker, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
@@ -517,7 +514,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Message msg) {
         if (isEnabled(Level.TRACE, null, msg, null)) {
-            log(null, getFQCN(), Level.TRACE, msg, null);
+            log(null, FQCN, Level.TRACE, msg, null);
         }
     }
 
@@ -529,7 +526,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Message msg, Throwable t) {
         if (isEnabled(Level.TRACE, null, msg, t)) {
-            log(null, getFQCN(), Level.TRACE, msg, t);
+            log(null, FQCN, Level.TRACE, msg, t);
         }
     }
 
@@ -541,7 +538,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, Message msg) {
         if (isEnabled(Level.DEBUG, marker, msg, null)) {
-            log(marker, getFQCN(), Level.DEBUG, msg, null);
+            log(marker, FQCN, Level.DEBUG, msg, null);
         }
     }
 
@@ -554,7 +551,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void debug(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.DEBUG, marker, msg, t)) {
-            log(marker, getFQCN(), Level.DEBUG, msg, t);
+            log(marker, FQCN, Level.DEBUG, msg, t);
         }
     }
 
@@ -565,7 +562,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(String message) {
         if (isEnabled(Level.INFO, null, message)) {
-            log(null, getFQCN(), Level.INFO, new SimpleMessage(message), null);
+            log(null, FQCN, Level.INFO, new SimpleMessage(message), null);
         }
     }
 
@@ -577,7 +574,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, String message) {
         if (isEnabled(Level.INFO, marker, message)) {
-            log(marker, getFQCN(), Level.INFO, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.INFO, new SimpleMessage(message), null);
         }
     }
 
@@ -590,7 +587,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(String message, Throwable t) {
         if (isEnabled(Level.INFO, null, message, t)) {
-            log(null, getFQCN(), Level.INFO, new SimpleMessage(message), t);
+            log(null, FQCN, Level.INFO, new SimpleMessage(message), t);
         }
     }
 
@@ -604,7 +601,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.INFO, marker, message, t)) {
-            log(marker, getFQCN(), Level.INFO, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.INFO, new SimpleMessage(message), t);
         }
     }
 
@@ -615,7 +612,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Object message) {
         if (isEnabled(Level.INFO, null, message, null)) {
-            log(null, getFQCN(), Level.INFO, new ObjectMessage(message), null);
+            log(null, FQCN, Level.INFO, new ObjectMessage(message), null);
         }
     }
 
@@ -627,7 +624,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, Object message) {
         if (isEnabled(Level.INFO, marker, message, null)) {
-            log(marker, getFQCN(), Level.INFO, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.INFO, new ObjectMessage(message), null);
         }
     }
 
@@ -640,7 +637,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Object message, Throwable t) {
         if (isEnabled(Level.INFO, null, message, t)) {
-            log(null, getFQCN(), Level.INFO, new ObjectMessage(message), t);
+            log(null, FQCN, Level.INFO, new ObjectMessage(message), t);
         }
     }
 
@@ -655,7 +652,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.INFO, marker, message, t)) {
-            log(marker, getFQCN(), Level.INFO, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.INFO, new ObjectMessage(message), t);
         }
     }
 
@@ -668,7 +665,7 @@ public abstract class AbstractLogger implements Logger {
     public void info(String message, Object... params) {
         if (isEnabled(Level.INFO, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.INFO, msg, msg.getThrowable());
+            log(null, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
@@ -682,7 +679,7 @@ public abstract class AbstractLogger implements Logger {
     public void info(Marker marker, String message, Object... params) {
         if (isEnabled(Level.INFO, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.INFO, msg, msg.getThrowable());
+            log(marker, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
@@ -713,7 +710,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Message msg) {
         if (isEnabled(Level.INFO, null, msg, null)) {
-            log(null, getFQCN(), Level.INFO, msg, null);
+            log(null, FQCN, Level.INFO, msg, null);
         }
     }
 
@@ -725,7 +722,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Message msg, Throwable t) {
         if (isEnabled(Level.INFO, null, msg, t)) {
-            log(null, getFQCN(), Level.INFO, msg, t);
+            log(null, FQCN, Level.INFO, msg, t);
         }
     }
 
@@ -737,7 +734,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, Message msg) {
         if (isEnabled(Level.INFO, null, msg, null)) {
-            log(marker, getFQCN(), Level.INFO, msg, null);
+            log(marker, FQCN, Level.INFO, msg, null);
         }
     }
 
@@ -750,7 +747,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void info(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.INFO, marker, msg, t)) {
-            log(marker, getFQCN(), Level.INFO, msg, t);
+            log(marker, FQCN, Level.INFO, msg, t);
         }
     }
 
@@ -761,7 +758,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(String message) {
         if (isEnabled(Level.WARN, null, message)) {
-            log(null, getFQCN(), Level.WARN, new SimpleMessage(message), null);
+            log(null, FQCN, Level.WARN, new SimpleMessage(message), null);
         }
     }
 
@@ -773,7 +770,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, String message) {
         if (isEnabled(Level.WARN, marker, message)) {
-            log(marker, getFQCN(), Level.WARN, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.WARN, new SimpleMessage(message), null);
         }
     }
 
@@ -786,7 +783,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(String message, Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+            log(null, FQCN, Level.DEBUG, new SimpleMessage(message), t);
         }
     }
 
@@ -800,7 +797,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, getFQCN(), Level.DEBUG, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.DEBUG, new SimpleMessage(message), t);
         }
     }
 
@@ -812,7 +809,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, Object message) {
         if (isEnabled(Level.WARN, marker, message, null)) {
-            log(marker, getFQCN(), Level.WARN, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.WARN, new ObjectMessage(message), null);
         }
     }
 
@@ -823,7 +820,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Object message) {
         if (isEnabled(Level.WARN, null, message, null)) {
-            log(null, getFQCN(), Level.WARN, new ObjectMessage(message), null);
+            log(null, FQCN, Level.WARN, new ObjectMessage(message), null);
         }
     }
 
@@ -836,7 +833,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Object message, Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+            log(null, FQCN, Level.DEBUG, new ObjectMessage(message), t);
         }
     }
 
@@ -850,7 +847,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, getFQCN(), Level.DEBUG, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.DEBUG, new ObjectMessage(message), t);
         }
     }
 
@@ -863,7 +860,7 @@ public abstract class AbstractLogger implements Logger {
     public void warn(String message, Object... params) {
         if (isEnabled(Level.WARN, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.WARN, msg, msg.getThrowable());
+            log(null, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
@@ -877,7 +874,7 @@ public abstract class AbstractLogger implements Logger {
     public void warn(Marker marker, String message, Object... params) {
         if (isEnabled(Level.WARN, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.WARN, msg, msg.getThrowable());
+            log(marker, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
@@ -909,7 +906,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Message msg) {
         if (isEnabled(Level.WARN, null, msg, null)) {
-            log(null, getFQCN(), Level.WARN, msg, null);
+            log(null, FQCN, Level.WARN, msg, null);
         }
     }
 
@@ -921,7 +918,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Message msg, Throwable t) {
         if (isEnabled(Level.WARN, null, msg, t)) {
-            log(null, getFQCN(), Level.WARN, msg, t);
+            log(null, FQCN, Level.WARN, msg, t);
         }
     }
 
@@ -933,7 +930,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, Message msg) {
         if (isEnabled(Level.WARN, null, msg, null)) {
-            log(marker, getFQCN(), Level.WARN, msg, null);
+            log(marker, FQCN, Level.WARN, msg, null);
         }
     }
 
@@ -946,7 +943,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.WARN, marker, msg, t)) {
-            log(marker, getFQCN(), Level.WARN, msg, t);
+            log(marker, FQCN, Level.WARN, msg, t);
         }
     }
 
@@ -957,7 +954,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(String message) {
         if (isEnabled(Level.ERROR, null, message)) {
-            log(null, getFQCN(), Level.ERROR, new SimpleMessage(message), null);
+            log(null, FQCN, Level.ERROR, new SimpleMessage(message), null);
         }
     }
 
@@ -969,7 +966,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, String message) {
         if (isEnabled(Level.ERROR, marker, message)) {
-            log(marker, getFQCN(), Level.ERROR, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.ERROR, new SimpleMessage(message), null);
         }
     }
 
@@ -982,7 +979,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(String message, Throwable t) {
         if (isEnabled(Level.ERROR, null, message, t)) {
-            log(null, getFQCN(), Level.ERROR, new SimpleMessage(message), t);
+            log(null, FQCN, Level.ERROR, new SimpleMessage(message), t);
         }
     }
 
@@ -996,7 +993,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.ERROR, marker, message, t)) {
-            log(marker, getFQCN(), Level.ERROR, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.ERROR, new SimpleMessage(message), t);
         }
     }
 
@@ -1007,7 +1004,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Object message) {
         if (isEnabled(Level.ERROR, null, message, null)) {
-            log(null, getFQCN(), Level.ERROR, new ObjectMessage(message), null);
+            log(null, FQCN, Level.ERROR, new ObjectMessage(message), null);
         }
     }
 
@@ -1019,7 +1016,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, Object message) {
         if (isEnabled(Level.ERROR, marker, message, null)) {
-            log(marker, getFQCN(), Level.ERROR, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.ERROR, new ObjectMessage(message), null);
         }
     }
 
@@ -1032,7 +1029,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Object message, Throwable t) {
         if (isEnabled(Level.ERROR, null, message, t)) {
-            log(null, getFQCN(), Level.ERROR, new ObjectMessage(message), t);
+            log(null, FQCN, Level.ERROR, new ObjectMessage(message), t);
         }
     }
 
@@ -1046,7 +1043,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.ERROR, marker, message, t)) {
-            log(marker, getFQCN(), Level.ERROR, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.ERROR, new ObjectMessage(message), t);
         }
     }
 
@@ -1059,7 +1056,7 @@ public abstract class AbstractLogger implements Logger {
     public void error(String message, Object... params) {
         if (isEnabled(Level.ERROR, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.ERROR, msg, msg.getThrowable());
+            log(null, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
@@ -1073,7 +1070,7 @@ public abstract class AbstractLogger implements Logger {
     public void error(Marker marker, String message, Object... params) {
         if (isEnabled(Level.ERROR, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.ERROR, msg, msg.getThrowable());
+            log(marker, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
@@ -1106,7 +1103,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Message msg) {
         if (isEnabled(Level.ERROR, null, msg, null)) {
-            log(null, getFQCN(), Level.ERROR, msg, null);
+            log(null, FQCN, Level.ERROR, msg, null);
         }
     }
 
@@ -1118,7 +1115,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Message msg, Throwable t) {
         if (isEnabled(Level.ERROR, null, msg, t)) {
-            log(null, getFQCN(), Level.ERROR, msg, t);
+            log(null, FQCN, Level.ERROR, msg, t);
         }
     }
 
@@ -1130,7 +1127,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, Message msg) {
         if (isEnabled(Level.ERROR, null, msg, null)) {
-            log(null, getFQCN(), Level.ERROR, msg, null);
+            log(null, FQCN, Level.ERROR, msg, null);
         }
     }
 
@@ -1143,7 +1140,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.TRACE, marker, msg, t)) {
-            log(marker, getFQCN(), Level.TRACE, msg, t);
+            log(marker, FQCN, Level.TRACE, msg, t);
         }
     }
 
@@ -1154,7 +1151,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(String message) {
         if (isEnabled(Level.FATAL, null, message)) {
-            log(null, getFQCN(), Level.FATAL, new SimpleMessage(message), null);
+            log(null, FQCN, Level.FATAL, new SimpleMessage(message), null);
         }
     }
 
@@ -1167,7 +1164,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, String message) {
         if (isEnabled(Level.FATAL, marker, message)) {
-            log(marker, getFQCN(), Level.FATAL, new SimpleMessage(message), null);
+            log(marker, FQCN, Level.FATAL, new SimpleMessage(message), null);
         }
     }
 
@@ -1180,7 +1177,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(String message, Throwable t) {
         if (isEnabled(Level.FATAL, null, message, t)) {
-            log(null, getFQCN(), Level.FATAL, new SimpleMessage(message), t);
+            log(null, FQCN, Level.FATAL, new SimpleMessage(message), t);
         }
     }
 
@@ -1194,7 +1191,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.FATAL, marker, message, t)) {
-            log(marker, getFQCN(), Level.FATAL, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.FATAL, new SimpleMessage(message), t);
         }
     }
 
@@ -1205,7 +1202,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Object message) {
         if (isEnabled(Level.FATAL, null, message, null)) {
-            log(null, getFQCN(), Level.FATAL, new ObjectMessage(message), null);
+            log(null, FQCN, Level.FATAL, new ObjectMessage(message), null);
         }
     }
 
@@ -1217,7 +1214,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, Object message) {
         if (isEnabled(Level.FATAL, marker, message, null)) {
-            log(marker, getFQCN(), Level.FATAL, new ObjectMessage(message), null);
+            log(marker, FQCN, Level.FATAL, new ObjectMessage(message), null);
         }
     }
 
@@ -1230,7 +1227,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Object message, Throwable t) {
         if (isEnabled(Level.FATAL, null, message, t)) {
-            log(null, getFQCN(), Level.FATAL, new ObjectMessage(message), t);
+            log(null, FQCN, Level.FATAL, new ObjectMessage(message), t);
         }
     }
 
@@ -1244,7 +1241,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.FATAL, marker, message, t)) {
-            log(marker, getFQCN(), Level.FATAL, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.FATAL, new ObjectMessage(message), t);
         }
     }
 
@@ -1257,7 +1254,7 @@ public abstract class AbstractLogger implements Logger {
     public void fatal(String message, Object... params) {
         if (isEnabled(Level.FATAL, null, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(null, getFQCN(), Level.FATAL, msg, msg.getThrowable());
+            log(null, FQCN, Level.FATAL, msg, msg.getThrowable());
         }
     }
 
@@ -1271,7 +1268,7 @@ public abstract class AbstractLogger implements Logger {
     public void fatal(Marker marker, String message, Object... params) {
         if (isEnabled(Level.FATAL, marker, message, params)) {
             ParameterizedMessage msg = new ParameterizedMessage(message, params);
-            log(marker, getFQCN(), Level.FATAL, msg, msg.getThrowable());
+            log(marker, FQCN, Level.FATAL, msg, msg.getThrowable());
         }
     }
 
@@ -1303,7 +1300,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Message msg) {
         if (isEnabled(Level.FATAL, null, msg, null)) {
-            log(null, getFQCN(), Level.FATAL, msg, null);
+            log(null, FQCN, Level.FATAL, msg, null);
         }
     }
 
@@ -1315,7 +1312,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Message msg, Throwable t) {
         if (isEnabled(Level.FATAL, null, msg, t)) {
-            log(null, getFQCN(), Level.FATAL, msg, t);
+            log(null, FQCN, Level.FATAL, msg, t);
         }
     }
 
@@ -1327,7 +1324,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, Message msg) {
         if (isEnabled(Level.FATAL, null, msg, null)) {
-            log(null, getFQCN(), Level.FATAL, msg, null);
+            log(null, FQCN, Level.FATAL, msg, null);
         }
     }
 
@@ -1340,7 +1337,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, Message msg, Throwable t) {
         if (isEnabled(Level.FATAL, marker, msg, t)) {
-            log(marker, getFQCN(), Level.FATAL, msg, t);
+            log(marker, FQCN, Level.FATAL, msg, t);
         }
     }
 

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.spi.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -36,8 +35,6 @@ import java.util.concurrent.ConcurrentMap;
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
 
     private static StatusLogger logger = StatusLogger.getLogger();
-
-    private static final LoggerFactory<LoggerContext> FACTORY = new Factory();
 
     private static final long JVM_START_TIME = System.currentTimeMillis();
 
@@ -139,23 +136,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @return The Logger.
      */
     public Logger getLogger(String name) {
-        return getLogger(FACTORY, name);
-    }
-
-    /**
-     * Obtain a Logger from the Context using the specified LoggerFactory.
-     * @param factory The LoggerFactory.
-     * @param name The name of the Logger.
-     * @return The Logger.
-     */
-    public Logger getLogger(LoggerFactory factory, String name) {
 
         Logger logger = loggers.get(name);
         if (logger != null) {
             return logger;
         }
 
-        logger = (Logger) factory.newInstance(this, name);
+        logger = (Logger) newInstance(this, name);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
@@ -264,13 +251,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         reconfigure();
     }
 
-    /**
-     * The default LoggerFactory.
-     */
-    private static class Factory implements LoggerFactory<LoggerContext> {
 
-        public Logger newInstance(LoggerContext ctx, String name) {
-            return new Logger(ctx, name);
-        }
+    private Logger newInstance(LoggerContext ctx, String name) {
+        return new Logger(ctx, name);
     }
 }

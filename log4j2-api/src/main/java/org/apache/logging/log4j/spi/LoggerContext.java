@@ -31,14 +31,6 @@ public interface LoggerContext {
     Logger getLogger(String name);
 
     /**
-     * Return a Logger using the specified factory to create it.
-     * @param factory The LoggerFactory.
-     * @param name The name of the Logger.
-     * @return The Logger with the specified name.
-     */
-    Logger getLogger(LoggerFactory factory, String name);
-
-    /**
      * Detect if a Logger with the specified name exists.
      * @param name The Logger name to search for.
      * @return true if the Logger exists, false otherwise.

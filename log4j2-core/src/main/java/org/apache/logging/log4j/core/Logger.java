@@ -104,48 +104,48 @@ public class Logger extends AbstractLogger {
     }
 
     @Override
-    protected void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+    public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
         config.loggerConfig.log(name, marker, fqcn, level, data, t);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg) {
+    public boolean isEnabled(Level level, Marker marker, String msg) {
         return config.filter(level, marker, msg);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Throwable t) {
+    public boolean isEnabled(Level level, Marker marker, String msg, Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1) {
+    public boolean isEnabled(Level level, Marker marker, String msg, Object p1) {
         return config.filter(level, marker, msg, p1);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2) {
+    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2) {
         return config.filter(level, marker, msg, p1, p2);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
+    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
         return config.filter(level, marker, msg, p1, p2, p3);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
+    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
                                 Object... params) {
         return config.filter(level, marker, msg, p1, p2, p3, params);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object msg, Throwable t) {
+    public boolean isEnabled(Level level, Marker marker, Object msg, Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message msg, Throwable t) {
+    public boolean isEnabled(Level level, Marker marker, Message msg, Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
