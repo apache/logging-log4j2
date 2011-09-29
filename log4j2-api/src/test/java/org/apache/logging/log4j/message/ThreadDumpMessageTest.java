@@ -40,24 +40,58 @@ public class ThreadDumpMessageTest {
 
 
     @Test
-    public void testMessageWithLocks() {
+    public void testMessageWithLocks() throws Exception {
         ReentrantLock lock = new ReentrantLock();
         lock.lock();
+        Thread thread1 = new Thread1(lock);
+        thread1.start();
         ThreadDumpMessage msg;
         synchronized(this) {
+            Thread thread2 = new Thread2(this);
+            thread2.start();
             try {
-                msg = new ThreadDumpMessage("Testing"/* , true */);
+                Thread.sleep(200);
+                msg = new ThreadDumpMessage("Testing");
             } finally {
                 lock.unlock();
             }
         }
 
         String message = msg.getFormattedMessage();
-        //System.out.print(message);
+        System.out.print(message);
         assertTrue("No header", message.contains("Testing"));
         assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
         assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
         //assertTrue("No Locks", message.contains("waiting on"));
         //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
+    }
+
+    private class Thread1 extends Thread {
+        private ReentrantLock lock;
+
+        public Thread1(ReentrantLock lock) {
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            lock.lock();
+            lock.unlock();
+        }
+    }
+
+    private class Thread2 extends Thread {
+        private Object obj;
+
+        public Thread2(Object obj) {
+            this.obj = obj;
+        }
+
+        @Override
+        public void run() {
+            synchronized (obj) {
+
+            }
+        }
     }
 }

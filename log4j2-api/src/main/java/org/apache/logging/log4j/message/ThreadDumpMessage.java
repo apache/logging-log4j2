@@ -16,7 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,11 +31,27 @@ import java.util.Map;
  */
 public class ThreadDumpMessage implements Message {
 
+    private static final long serialVersionUID = -1103400781608841088L;
+
+    private volatile Map<ThreadInformation, StackTraceElement[]> threads;
+
     private final String title;
 
-    private final Map<ThreadInfo, StackTraceElement[]> threads;
-
     private String formattedMessage = null;
+
+    private static ThreadInfoFactory factory;
+
+    static {
+        Method[] methods = ThreadInfo.class.getMethods();
+        boolean basic = true;
+        for (Method method : methods) {
+            if (method.getName().equals("getLockInfo")) {
+                basic = false;
+                break;
+            }
+        }
+        factory = basic ? new BasicThreadInfoFactory() : new ExtendedThreadInfoFactory();
+    }
 
     /**
      * Generate a ThreadDumpMessage with no title.
@@ -45,11 +67,12 @@ public class ThreadDumpMessage implements Message {
      */
     public ThreadDumpMessage(String title) {
         this.title = title == null ? "" : title;
-        Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-        threads = new HashMap<ThreadInfo, StackTraceElement[]>(map.size());
-        for (Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
-            threads.put(new ThreadInfo(entry.getKey()), entry.getValue());
-        }
+        threads = factory.createThreadInfo();
+    }
+
+    private ThreadDumpMessage(String formattedMsg, String title) {
+        this.formattedMessage = formattedMsg;
+        this.title = title;
     }
 
     /**
@@ -64,31 +87,13 @@ public class ThreadDumpMessage implements Message {
         if (title.length() > 0) {
             sb.append("\n");
         }
-        for (Map.Entry<ThreadInfo, StackTraceElement[]> entry : threads.entrySet()) {
-            printThreadInfo(sb, entry.getKey());
-            printStack(sb, entry.getValue());
+        for (Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {
+            ThreadInformation info = entry.getKey();
+            info.printThreadInfo(sb);
+            info.printStack(sb, entry.getValue());
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    private void printThreadInfo(StringBuilder sb, ThreadInfo info) {
-        sb.append("\"").append(info.name).append("\" ");
-        if (info.isDaemon) {
-            sb.append("daemon ");
-        }
-        sb.append("prio=").append(info.priority).append(" tid=").append(info.id).append(" ");
-        if (info.threadGroupName != null) {
-            sb.append("group=\"").append(info.threadGroupName).append("\"");
-        }
-        sb.append("\n");
-        sb.append("\tThread state: ").append(info.state.name()).append("\n");
-    }
-
-    private void printStack(StringBuilder sb, StackTraceElement[] trace) {
-        for (StackTraceElement element : trace) {
-            sb.append("\tat ").append(element).append("\n");
-        }
     }
 
     /**
@@ -105,62 +110,72 @@ public class ThreadDumpMessage implements Message {
      * @return the "parameters" to this Message.
      */
     public Object[] getParameters() {
-        return new Object[] {threads};
+        return null;
+    }
+
+        /**
+     * Creates a ThreadDumpMessageProxy that can be serialized.
+     * @return a ThreadDumpMessageProxy.
+     */
+    protected Object writeReplace() {
+        return new ThreadDumpMessageProxy(this);
+    }
+
+    private void readObject(ObjectInputStream stream)
+        throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 
     /**
-     * Information describing each thread.
+     * Proxy pattern used to serialize the ThreadDumpMessage.
      */
-    public class ThreadInfo implements Serializable {
+    private static class ThreadDumpMessageProxy implements Serializable {
 
-        private static final long serialVersionUID = 6899550135289181860L;
-        private final long id;
-        private final String name;
-        private final String longName;
-        private final Thread.State state;
-        private final int priority;
-        private final boolean isAlive;
-        private final boolean isDaemon;
-        private final String threadGroupName;
+        private static final long serialVersionUID = -3476620450287648269L;
+        private String formattedMsg;
+        private String title;
 
-        public ThreadInfo(Thread thread) {
-            this.id = thread.getId();
-            this.name = thread.getName();
-            this.longName = thread.toString();
-            this.state = thread.getState();
-            this.priority = thread.getPriority();
-            this.isAlive = thread.isAlive();
-            this.isDaemon = thread.isDaemon();
-            ThreadGroup group = thread.getThreadGroup();
-            threadGroupName = group == null ? null : group.getName();
+        public ThreadDumpMessageProxy(ThreadDumpMessage msg) {
+            this.formattedMsg = msg.getFormattedMessage();
+            this.title = msg.title;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            ThreadInfo that = (ThreadInfo) o;
-
-            if (id != that.id) {
-                return false;
-            }
-            if (name != null ? !name.equals(that.name) : that.name != null) {
-                return false;
-            }
-
-            return true;
+        /**
+         * Return a ThreadDumpMessage using the data in the proxy.
+         * @return a ThreadDumpMessage.
+         */
+        protected Object readResolve() {
+            return new ThreadDumpMessage(formattedMsg, title);
         }
+    }
 
-        @Override
-        public int hashCode() {
-            int result = (int) (id ^ (id >>> 32));
-            result = 31 * result + (name != null ? name.hashCode() : 0);
-            return result;
+    private interface ThreadInfoFactory {
+        Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
+    }
+
+    private static class BasicThreadInfoFactory implements ThreadInfoFactory {
+        public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
+            Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
+            Map<ThreadInformation, StackTraceElement[]> threads =
+                new HashMap<ThreadInformation, StackTraceElement[]>(map.size());
+            for (Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
+                threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
+            }
+            return threads;
+        }
+    }
+
+    private static class ExtendedThreadInfoFactory implements ThreadInfoFactory {
+        public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
+            ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+            ThreadInfo[] array = bean.dumpAllThreads(true, true);
+
+            Map<ThreadInformation, StackTraceElement[]>  threads =
+                new HashMap<ThreadInformation, StackTraceElement[]>(array.length);
+            for (ThreadInfo info : array) {
+                threads.put(new ExtendedThreadInformation(info), info.getStackTrace());
+            }
+            return threads;
         }
     }
 }
