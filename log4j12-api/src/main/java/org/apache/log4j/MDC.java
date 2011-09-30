@@ -18,31 +18,58 @@ package org.apache.log4j;
 
 import org.apache.logging.log4j.ThreadContext;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 /**
- *
+ * This class behaves just like Log4j's MDC would - and so can cause issues with the redeployment of web
+ * applications if the Objects stored in the threads Map cannot be garbage collected.
  */
 public final class MDC {
+
+
+    private static ThreadLocal<Map<String, Object>> localMap =
+        new InheritableThreadLocal<Map<String, Object>>() {
+            protected Map<String, Object> initialValue() {
+                return new HashMap<String, Object>();
+            }
+
+            protected Map<String, Object> childValue(Map<String, Object> parentValue) {
+                return parentValue == null ? new HashMap<String, Object>() : new HashMap<String, Object>(parentValue);
+            }
+        };
 
     private MDC() {
     }
 
-    public static void put(String key, Object value) {
+
+    public static void put(String key, String value) {
+        localMap.get().put(key, value);
         ThreadContext.put(key, value);
     }
 
-    public static void get(String key) {
-        ThreadContext.get(key);
+
+    public static void put(String key, Object value) {
+        localMap.get().put(key, value);
+        ThreadContext.put(key, value.toString());
+    }
+
+    public static Object get(String key) {
+        return localMap.get().get(key);
     }
 
     public static void remove(String key) {
+        localMap.get().remove(key);
         ThreadContext.remove(key);
     }
 
     public static void clear() {
+        localMap.get().clear();
         ThreadContext.clear();
     }
 
-    public static void getContext() {
-        ThreadContext.getContext();
+    public static Hashtable getContext() {
+        return new Hashtable(localMap.get());
     }
 }

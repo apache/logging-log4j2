@@ -102,7 +102,7 @@ public class LoggerTest {
     @Test
     public void mdc() {
 
-        ThreadContext.put("TestYear", new Integer(2010));
+        ThreadContext.put("TestYear", new Integer(2010).toString());
         logger.debug("Debug message");
         ThreadContext.clear();
         logger.debug("Debug message");

@@ -31,14 +31,14 @@ import java.util.Stack;
  */
 public final class ThreadContext {
 
-    private static ThreadLocal<Map<String, Object>> localMap =
-        new InheritableThreadLocal<Map<String, Object>>() {
-            protected Map<String, Object> initialValue() {
-                return new HashMap<String, Object>();
+    private static ThreadLocal<Map<String, String>> localMap =
+        new InheritableThreadLocal<Map<String, String>>() {
+            protected Map<String, String> initialValue() {
+                return new HashMap<String, String>();
             }
 
-            protected Map<String, Object> childValue(Map<String, Object> parentValue) {
-                return parentValue == null ? null : new HashMap<String, Object>(parentValue);
+            protected Map<String, String> childValue(Map<String, String> parentValue) {
+                return parentValue == null ? new HashMap<String, String>() : new HashMap<String, String>(parentValue);
             }
         };
 
@@ -69,7 +69,7 @@ public final class ThreadContext {
      * @param key The key name.
      * @param value The key value.
      */
-    public static void put(String key, Object value) {
+    public static void put(String key, String value) {
         localMap.get().put(key, value);
     }
 
@@ -78,9 +78,9 @@ public final class ThreadContext {
      * <p/>
      * <p>This method has no side effects.
      * @param key The key to locate.
-     * @return The value of the object or null.
+     * @return The value associated with the key or null.
      */
-    public static Object get(String key) {
+    public static String get(String key) {
         return localMap.get().get(key);
     }
 
