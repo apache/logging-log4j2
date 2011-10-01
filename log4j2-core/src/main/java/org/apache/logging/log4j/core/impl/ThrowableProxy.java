@@ -138,6 +138,28 @@ public class ThrowableProxy extends Throwable {
         return throwable.getStackTrace();
     }
 
+    public String getRootCauseStackTrace() {
+        StringBuilder sb = new StringBuilder();
+        if (cause != null) {
+            formatWrapper(sb, cause);
+            sb.append("Wrapped by: ");
+        }
+        sb.append(throwable.toString());
+        sb.append("\n");
+        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData);
+        return sb.toString();
+    }
+
+    public void formatWrapper(StringBuilder sb, ThrowableProxy cause) {
+        Throwable caused = cause.getCause();
+        if (caused != null) {
+            formatWrapper(sb, cause.cause);
+            sb.append("Wrapped by: ");
+        }
+        sb.append(cause).append("\n");
+        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData);
+    }
+
     public String getExtendedStackTrace() {
         StringBuilder sb = new StringBuilder(throwable.toString());
         sb.append("\n");
