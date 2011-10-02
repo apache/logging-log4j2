@@ -72,11 +72,6 @@ public class BurstFilter extends FilterBase {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
-    /**
-     * Time of last token removal.
-     */
-    private long lastTokenRemovedTime;
-
     private BurstFilter(Level level, long burstInterval, long maxBurst,
                         Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
@@ -130,10 +125,17 @@ public class BurstFilter extends FilterBase {
 
     }
 
+    /**
+     * Returns the number of available slots. Used for unit testing.
+     * @return The number of available slots.
+     */
     public int getAvailable() {
         return available.size();
     }
 
+    /**
+     * Clear the history. Used for unit testing.
+     */
     public void clear() {
         Iterator<LogDelay> iter = history.iterator();
         while (iter.hasNext()) {
@@ -143,6 +145,9 @@ public class BurstFilter extends FilterBase {
         }
     }
 
+    /**
+     * Delay object to represent each log event that has occurred within the timespan.
+     */
     private class LogDelay implements Delayed {
 
         private long expireTime;
