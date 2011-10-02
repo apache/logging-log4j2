@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="BurstTest">
+  <appenders>
+
+    <List name="ListAppender">
+      <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>
+      <filters>
+        <Burst level="INFO" burstInterval="3" maxBurst="100"/>
+      </filters>
+    </List>
+  </appenders>
+
+  <loggers>
+    <root level="TRACE">
+      <appender-ref ref="ListAppender"/>
+    </root>
+  </loggers>
+</configuration>
