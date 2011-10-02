@@ -30,6 +30,7 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -44,10 +45,14 @@ public class HTMLLayout extends AbstractStringLayout {
 
     protected static final int BUF_SIZE = 256;
 
-    private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
-
     // Print no location info by default
     protected final boolean locationInfo;
+
+    protected final String title;
+
+    protected final String contentType;
+
+    private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
@@ -55,9 +60,7 @@ public class HTMLLayout extends AbstractStringLayout {
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
 
-    protected final String title;
-
-    protected final String contentType;
+    private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
     public HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
         super(charset);
@@ -72,7 +75,7 @@ public class HTMLLayout extends AbstractStringLayout {
         sbuf.append(LINE_SEP).append("<tr>").append(LINE_SEP);
 
         sbuf.append("<td>");
-        sbuf.append(event.getMillis() - LoggerContext.getStartTime());
+        sbuf.append(event.getMillis() - jvmStartTime);
         sbuf.append("</td>").append(LINE_SEP);
 
         String escapedThread = Transform.escapeTags(event.getThreadName());

@@ -36,8 +36,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private static StatusLogger logger = StatusLogger.getLogger();
 
-    private static final long JVM_START_TIME = System.currentTimeMillis();
-
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
     /**
@@ -104,14 +102,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             configLocation = null;
         }
         reconfigure();
-    }
-
-    /**
-     * The time the LoggerContext class was loaded as a long.
-     * @return The time the LoggerContext was loaded.
-     */
-    public static long getStartTime() {
-        return JVM_START_TIME;
     }
 
     /**
