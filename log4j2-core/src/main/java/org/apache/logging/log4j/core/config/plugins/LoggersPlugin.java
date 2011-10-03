@@ -35,7 +35,7 @@ public class LoggersPlugin {
 
         for (LoggerConfig logger : loggers) {
             if (logger != null) {
-                if (logger.getName().equals("root")) {
+                if (logger.getName().length() == 0) {
                     root = logger;
                 }
                 loggerMap.put(logger.getName(), logger);

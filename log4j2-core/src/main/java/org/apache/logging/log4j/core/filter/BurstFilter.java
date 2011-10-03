@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * statements that can be sent to an appender. The filter is configured in the
  * log4j configuration file. For example, the following configuration limits the
  * number of INFO level (as well as DEBUG and TRACE) log statements that can be sent to the
- * console to a burst of 100 within 6 seconds. WARN, ERROR and FATAL messages would continue to
+ * console to a burst of 100 with an average rate of 16 per second. WARN, ERROR and FATAL messages would continue to
  * be delivered.<br>
  * <br>
  * <p/>
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * &lt;Console name="console"&gt;<br>
  * &nbsp;&lt;PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %x %t %m%n"/&gt;<br>
  * &nbsp;$lt;filters&gt;<br>
- * &nbsp;&nbsp;&lt;Burst level="INFO" burstInterval="6" maxBurst="100"/&gt;<br>
+ * &nbsp;&nbsp;&lt;Burst level="INFO" rate="16" maxBurst="100"/&gt;<br>
  * &nbsp;&lt;/filters&gt;<br>
  * &lt;/Console&gt;<br>
  * </code><br>
@@ -58,6 +58,11 @@ import java.util.concurrent.TimeUnit;
 public class BurstFilter extends FilterBase {
 
     private static final long NANOS_IN_SECONDS =  1000000000;
+
+    private static final int DEFAULT_RATE = 10;
+
+    private static final int DEFAULT_RATE_MULTIPLE = 100;
+
     /**
      * Level of messages to be filtered. Anything at or below this level will be
      * filtered out if <code>maxBurst</code> has been exceeded. The default is
@@ -72,11 +77,10 @@ public class BurstFilter extends FilterBase {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
-    private BurstFilter(Level level, long burstInterval, long maxBurst,
-                        Result onMatch, Result onMismatch) {
+    private BurstFilter(Level level, long rate, long maxBurst, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
-        this.burstInterval = burstInterval;
+        this.burstInterval = maxBurst / rate;
         for (int i = 0; i < maxBurst; ++i) {
             available.add(new LogDelay());
         }
@@ -197,37 +201,31 @@ public class BurstFilter extends FilterBase {
     }
 
     /**
-     * @param level                 The logging level.
-     * @param burstInterval Interval, in seconds, at which to add to the number of log statements
-     *                              that will be allowed following a burst. This value specifies how often
-     *                              <code>burstRecoverAmount</code> statements will be added to the total number
-     *                              allowed for every <code>burstRecoveryInterval</code> that passes
-     *                              following a burst, up to but not exceeding <code>maxBurst</code>.
-     * @param maxBurst              This value dictates the maximum traffic burst that can be logged to any appender
-     *                              that uses the <code>BurstFilter</code>, i.e. there can never be more than
-     *                              <code>maxBurst</code> log statements sent to an appender in
-     *                              <code>burstRecoveryInterval</code> seconds.
-     * @param match
-     * @param mismatch
+     * @param level  The logging level.
+     * @param rate   The average number of events per second to allow.
+     * @param maxBurst  The maximum number of events that can occur before events are filtered for exceeding the
+     * average rate. The default is 10 times the rate.
+     * @param match  The Result to return when the filter matches. Defaults to Result.NEUTRAL.
+     * @param mismatch The Result to return when the filter does not match. The default is Result.DENY.
      * @return
      */
     @PluginFactory
     public static BurstFilter createFilter(@PluginAttr("level") String level,
-                                           @PluginAttr("burstInterval") String burstInterval,
+                                           @PluginAttr("rate") String rate,
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
         Level lvl = Level.toLevel(level, Level.WARN);
-        long brInterval = burstInterval == null ? 0 : Long.parseLong(burstInterval);
-        long max = maxBurst == null ? 0 : Long.parseLong(maxBurst);
+        long eventRate = rate == null ? DEFAULT_RATE : Long.parseLong(rate);
+        long max = maxBurst == null ? eventRate * DEFAULT_RATE_MULTIPLE : Long.parseLong(maxBurst);
         if (onMatch == null) {
             onMatch = Result.NEUTRAL;
         }
         if (onMismatch == null) {
             onMismatch = Result.DENY;
         }
-        return new BurstFilter(lvl, brInterval, max, onMatch, onMismatch);
+        return new BurstFilter(lvl, eventRate, max, onMatch, onMismatch);
     }
 }

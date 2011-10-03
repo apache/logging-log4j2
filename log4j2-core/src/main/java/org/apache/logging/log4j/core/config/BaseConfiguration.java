@@ -18,8 +18,10 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.appender.DefaultErrorHandler;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
@@ -88,8 +90,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         setup();
         doConfigure();
         for (Appender appender : appenders.values()) {
-            if (appender instanceof Lifecycle)
-            ((Lifecycle)appender).start();
+            appender.start();
         }
 
         startFilters();
@@ -103,9 +104,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.clearAppenders();
         }
         for (Appender appender : appenders.values()) {
-            if (appender instanceof Lifecycle) {
-                ((Lifecycle)appender).stop();
-            }
+            appender.stop();
         }
         stopFilters();
     }
@@ -114,6 +113,8 @@ public class BaseConfiguration extends Filterable implements Configuration {
     }
 
     protected void doConfigure() {
+        boolean setRoot = false;
+        boolean setLoggers = false;
         for (Node child : rootNode.getChildren()) {
             createConfiguration(child);
             if (child.getObject() == null) {
@@ -128,10 +129,21 @@ public class BaseConfiguration extends Filterable implements Configuration {
             } else if (child.getName().equals("loggers")) {
                 Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
+                setLoggers = true;
                 if (l.getRoot() != null) {
                     root = l.getRoot();
+                    setRoot = true;
                 }
+            } else {
+                logger.error("Unknown object \"" + child.getName() + "\" of type " +
+                    child.getObject().getClass().getName() + " is ignored");
             }
+        }
+
+        if (!setLoggers) {
+            logger.warn("No Loggers were configured, using default");
+        } else if (!setRoot) {
+            logger.warn("No Root logger was configured, using default");
         }
 
         root.setConfigurationMonitor(monitor);

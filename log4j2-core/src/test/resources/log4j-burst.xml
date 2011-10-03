@@ -5,7 +5,7 @@
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>
       <filters>
-        <Burst level="INFO" burstInterval="3" maxBurst="100"/>
+        <Burst level="INFO" rate="33" maxBurst="100"/>
       </filters>
     </List>
   </appenders>
