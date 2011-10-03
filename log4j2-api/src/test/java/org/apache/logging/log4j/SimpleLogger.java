@@ -42,7 +42,7 @@ public class SimpleLogger extends AbstractLogger {
         sb.append(level.toString());
         sb.append(" ");
         sb.append(msg.getFormattedMessage());
-        Map<String, Object> mdc = ThreadContext.getContext();
+        Map<String, String> mdc = ThreadContext.getContext();
         if (mdc.size() > 0) {
             sb.append(" ");
             sb.append(mdc.toString());

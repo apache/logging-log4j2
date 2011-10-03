@@ -45,7 +45,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private final String hostname;
 
-    private final Map<String, Object> ctx = new HashMap<String, Object>();
+    private final Map<String, String> ctx = new HashMap<String, String>();
 
     private static final String DEFAULT_MDC_PREFIX = "mdc:";
 
@@ -71,7 +71,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
         this.fields = new HashMap<String, byte[]>();
-        Map<String, Object> mdc = event.getContextMap();
+        Map<String, String> mdc = event.getContextMap();
         if (includes != null) {
             String[] array = includes.split(",");
             if (array.length > 0) {
@@ -85,7 +85,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
             String[] array = excludes.split(",");
             if (array.length > 0) {
                 List<String> list = Arrays.asList(array);
-                for (Map.Entry<String, Object> entry : mdc.entrySet()) {
+                for (Map.Entry<String, String> entry : mdc.entrySet()) {
                     if (!list.contains(entry.getKey())) {
                         ctx.put(entry.getKey(), entry.getValue());
                     }
@@ -114,7 +114,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
             }
         }
 
-        for (Map.Entry<String, Object> entry : ctx.entrySet()) {
+        for (Map.Entry<String, String> entry : ctx.entrySet()) {
             fields.put(mdcPrefix + entry.getKey(), entry.getValue().toString().getBytes());
         }
 
@@ -212,7 +212,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
         return event.getThrown();
     }
 
-    public Map<String, Object> getContextMap() {
+    public Map<String, String> getContextMap() {
         return ctx;
     }
 

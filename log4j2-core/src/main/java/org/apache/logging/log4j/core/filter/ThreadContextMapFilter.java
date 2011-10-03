@@ -73,7 +73,7 @@ public class ThreadContextMapFilter extends FilterBase {
 
     @Override
     public Result filter(LogEvent event) {
-        Map<String, Object> ctx = event.getContextMap();
+        Map<String, String> ctx = event.getContextMap();
         boolean match = false;
         for (String key : map.keySet()) {
             match = map.get(key).equals(ctx.get(key));

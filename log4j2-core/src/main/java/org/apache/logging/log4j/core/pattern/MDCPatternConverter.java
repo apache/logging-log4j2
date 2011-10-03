@@ -63,7 +63,7 @@ public final class MDCPatternConverter extends LogEventPatternConverter {
      * {@inheritDoc}
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Map<String, Object> contextMap = event.getContextMap();
+        Map<String, String> contextMap = event.getContextMap();
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
         if (key == null) {

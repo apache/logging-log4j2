@@ -144,7 +144,7 @@ public class XMLLayout extends AbstractStringLayout {
 
         if (properties && event.getContextMap().size() > 0) {
             buf.append("<log4j:properties>\r\n");
-            for (Map.Entry<String, Object> entry : event.getContextMap().entrySet()) {
+            for (Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
                 buf.append("<log4j:data name=\"");
                 buf.append(Transform.escapeTags(entry.getKey()));
                 buf.append("\" value=\"");

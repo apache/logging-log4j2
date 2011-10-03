@@ -44,7 +44,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final Message message;
     private final long timestamp;
     private final ThrowableProxy throwable;
-    private final Map<String, Object> mdc;
+    private final Map<String, String> mdc;
     private final Stack<String> ndc;
     private String threadName = null;
     private StackTraceElement location;
@@ -78,7 +78,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param timestamp The timestamp of the event.
      */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
-                         Map<String, Object> mdc, Stack<String> ndc, String threadName, StackTraceElement location,
+                         Map<String, String> mdc, Stack<String> ndc, String threadName, StackTraceElement location,
                          long timestamp) {
         name = loggerName;
         this.marker = marker;
@@ -131,7 +131,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.
      */
-    public Map<String, Object> getContextMap() {
+    public Map<String, String> getContextMap() {
         return mdc;
     }
 
@@ -210,7 +210,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         private final Message message;
         private final long timestamp;
         private final Throwable throwable;
-        private final HashMap<String, Object> mdc;
+        private final HashMap<String, String> mdc;
         private final Stack<String> ndc;
         private String threadName;
         private StackTraceElement location;
@@ -223,7 +223,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             this.message = event.message;
             this.timestamp = event.timestamp;
             this.throwable = event.throwable;
-            this.mdc = new HashMap<String, Object>(event.mdc);
+            this.mdc = new HashMap<String, String>(event.mdc);
             this.ndc = event.ndc;
             this.location = event.getSource();
             this.threadName = event.getThreadName();

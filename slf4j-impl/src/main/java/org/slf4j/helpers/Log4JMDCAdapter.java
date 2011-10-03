@@ -44,13 +44,7 @@ public class Log4JMDCAdapter implements MDCAdapter {
     }
 
     public Map getCopyOfContextMap() {
-        Map<String, Object> ctx = ThreadContext.getContext();
-        Map<String, String> map = new HashMap<String, String>();
-
-        for (Map.Entry<String, Object> entry : ctx.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().toString());
-        }
-        return map;
+        return ThreadContext.getContext();
     }
 
     public void setContextMap(Map map) {

@@ -33,21 +33,13 @@ public final class ThreadContext {
 
     private static ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {
-            protected Map<String, String> initialValue() {
-                return new HashMap<String, String>();
-            }
-
             protected Map<String, String> childValue(Map<String, String> parentValue) {
-                return parentValue == null ? new HashMap<String, String>() : new HashMap<String, String>(parentValue);
+                return parentValue == null ? null : new HashMap<String, String>(parentValue);
             }
         };
 
     private static ThreadLocal<Stack<String>> localStack =
         new InheritableThreadLocal<Stack<String>>() {
-            protected Stack<String> initialValue() {
-                return new Stack<String>();
-            }
-
             protected Stack<String> childValue(Stack<String> parentValue) {
                 return parentValue == null ? null : (Stack<String>) parentValue.clone();
             }
@@ -70,7 +62,12 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void put(String key, String value) {
-        localMap.get().put(key, value);
+        Map<String, String> map = localMap.get();
+        if (map == null) {
+            map = new HashMap<String, String>();
+            localMap.set(map);
+        }
+        map.put(key, value);
     }
 
     /**
@@ -81,7 +78,8 @@ public final class ThreadContext {
      * @return The value associated with the key or null.
      */
     public static String get(String key) {
-        return localMap.get().get(key);
+        Map<String, String> map = localMap.get();
+        return map == null ? null : map.get(key);
     }
 
     /**
@@ -90,14 +88,17 @@ public final class ThreadContext {
      * @param key The key to remove.
      */
     public static void remove(String key) {
-        localMap.get().remove(key);
+        Map<String, String> map = localMap.get();
+        if (map != null) {
+            map.remove(key);
+        }
     }
 
     /**
      * Clear the context.
      */
     public static void clear() {
-        localMap.get().clear();
+        localMap.remove();
     }
 
     /**
@@ -106,7 +107,8 @@ public final class ThreadContext {
      * @return True if the key is in the context, false otherwise.
      */
     public static boolean containsKey(String key) {
-        return localMap.get().containsKey(key);
+        Map<String, String> map = localMap.get();
+        return map == null ? false : map.containsKey(key);
     }
 
     /**
@@ -114,15 +116,16 @@ public final class ThreadContext {
      * intended to be used internally.
      * @return a copy of the context.
      */
-    public static Map<String, Object> getContext() {
-        return new HashMap<String, Object>(localMap.get());
+    public static Map<String, String> getContext() {
+        Map<String, String> map = localMap.get();
+        return map == null ? new HashMap<String, String>() : new HashMap<String, String>(localMap.get());
     }
 
     /**
      * Clear the stack for this thread.
      */
     public static void clearStack() {
-        localStack.get().clear();
+        localStack.remove();
     }
 
     /**
@@ -130,7 +133,8 @@ public final class ThreadContext {
      * @return A copy of this thread's stack.
      */
     public static Stack<String> cloneStack() {
-        return (Stack<String>) localStack.get().clone();
+        Stack<String> stack = localStack.get();
+        return stack == null ? new Stack<String>() : (Stack<String>) stack.clone();
     }
 
     /**
@@ -148,7 +152,8 @@ public final class ThreadContext {
      * @see #setMaxDepth
      */
     public static int getDepth() {
-        return localStack.get().size();
+        Stack<String> stack = localStack.get();
+        return stack == null ? 0 : stack.size();
     }
 
     /**
@@ -161,7 +166,7 @@ public final class ThreadContext {
      */
     public static String pop() {
         Stack<String> s = localStack.get();
-        if (s.isEmpty()) {
+        if (s == null || s.isEmpty()) {
             return "";
         }
         return s.pop();
@@ -177,8 +182,8 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-         Stack<String> s = localStack.get();
-        if (s.isEmpty()) {
+        Stack<String> s = localStack.get();
+        if (s == null || s.isEmpty()) {
             return "";
         }
         return s.peek();
@@ -193,7 +198,11 @@ public final class ThreadContext {
      * @param message The new diagnostic context information.
      */
     public static void push(String message) {
-        localStack.get().push(message);
+        Stack<String> stack = localStack.get();
+        if (stack == null) {
+            stack = new Stack<String>();
+        }
+        stack.push(message);
     }
 
     /**

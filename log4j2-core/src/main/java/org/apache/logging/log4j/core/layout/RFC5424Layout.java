@@ -300,7 +300,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(StructuredDataId id, Map<String, Object> data, StringBuilder sb,
+    private void formatStructuredElement(StructuredDataId id, Map<String, String> data, StringBuilder sb,
                                          ListChecker checker)
     {
         if (id == null && defaultId == null)
@@ -330,19 +330,19 @@ public class RFC5424Layout extends AbstractStringLayout {
         return sb.toString();
     }
 
-    private void checkRequired(Map<String, Object> map) {
+    private void checkRequired(Map<String, String> map) {
         for (String key : mdcRequired) {
-            Object value = map.get(key);
+            String value = map.get(key);
             if (value == null) {
                 throw new LoggingException("Required key " + key + " is missing from the " + mdcId);
             }
         }
     }
 
-    private void appendMap(Map<String, Object> map, StringBuilder sb, ListChecker checker)
+    private void appendMap(Map<String, String> map, StringBuilder sb, ListChecker checker)
     {
-        SortedMap<String, Object> sorted = new TreeMap<String, Object>(map);
-        for (Map.Entry<String, Object> entry : sorted.entrySet())
+        SortedMap<String, String> sorted = new TreeMap<String, String>(map);
+        for (Map.Entry<String, String> entry : sorted.entrySet())
         {
             if (checker.check(entry.getKey())) {
                 sb.append(" ");

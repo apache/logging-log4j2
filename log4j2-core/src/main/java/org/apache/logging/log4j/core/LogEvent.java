@@ -91,7 +91,7 @@ public interface LogEvent extends Serializable {
      * @doubt as mentioned elsewhere, think MDC and NDC should be combined into a thread context object.
      * (RG) Still to do.
      */
-    Map<String, Object> getContextMap();
+    Map<String, String> getContextMap();
 
     /**
      * Get the NDC data.
