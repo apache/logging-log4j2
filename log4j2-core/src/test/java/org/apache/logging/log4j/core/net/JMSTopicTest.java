@@ -97,13 +97,13 @@ public class JMSTopicTest {
         Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         Filters clientFilters = Filters.createFilters(new Filter[] {clientFilter});
         JMSTopicAppender appender = JMSTopicAppender.createAppender(null, null, null, null, null, FACTORY_NAME,
-                TOPIC_NAME, null, null, null, clientFilters);
+                TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
         Filters serverFilters = Filters.createFilters(new Filter[] {serverFilter});
         ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         PatternLayout layout = new PatternLayout("%m %ex%n");
-        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console");
+        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
         console.start();
         Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
         serverLogger.addAppender(console);

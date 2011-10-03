@@ -34,8 +34,9 @@ public class JMSQueueAppender extends AppenderBase {
 
     private final JMSQueueManager manager;
 
-    public JMSQueueAppender(String name, Filters filters, Layout layout, JMSQueueManager manager) {
-        super(name, filters, layout);
+    public JMSQueueAppender(String name, Filters filters, Layout layout, JMSQueueManager manager,
+                            boolean handleExceptions) {
+        super(name, filters, layout, handleExceptions);
         this.manager = manager;
     }
 
@@ -63,9 +64,11 @@ public class JMSQueueAppender extends AppenderBase {
                                                   @PluginAttr("userName") String userName,
                                                   @PluginAttr("password") String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") Filters filters) {
+                                                  @PluginElement("filters") Filters filters,
+                                                  @PluginAttr("suppressExceptions") String suppress) {
 
         String name = "JMSQueue" + factoryBindingName + "." + queueBindingName;
+        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
@@ -74,6 +77,6 @@ public class JMSQueueAppender extends AppenderBase {
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
-        return new JMSQueueAppender(name, filters, layout, manager);
+        return new JMSQueueAppender(name, filters, layout, manager, handleExceptions);
     }
 }

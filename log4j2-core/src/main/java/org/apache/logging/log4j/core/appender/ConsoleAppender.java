@@ -49,25 +49,31 @@ public class ConsoleAppender extends OutputStreamAppender {
     }
 
     public ConsoleAppender(String name, Layout layout) {
-        this(name, layout, null, getManager(Target.SYSTEM_OUT));
-
+        this(name, layout, null, getManager(Target.SYSTEM_OUT), true);
     }
 
-    public ConsoleAppender(String name, Layout layout, Filters filters, OutputStreamManager manager) {
-        super(name, layout, filters, true, true, manager);
+    public ConsoleAppender(String name, Layout layout, boolean handleExceptions) {
+        this(name, layout, null, getManager(Target.SYSTEM_OUT), handleExceptions);
+    }
+
+    public ConsoleAppender(String name, Layout layout, Filters filters, OutputStreamManager manager,
+                           boolean handleExceptions) {
+        super(name, layout, filters, handleExceptions, true, manager);
     }
 
     @PluginFactory
     public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
                                                  @PluginElement("filters") Filters filters,
                                                  @PluginAttr("target") String t,
-                                                 @PluginAttr("name") String name) {
+                                                 @PluginAttr("name") String name,
+                                                 @PluginAttr("suppressExceptions") String suppress) {
         if (name == null) {
             logger.error("No name provided for ConsoleAppender");
             return null;
         }
+        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, filters, getManager(target));
+        return new ConsoleAppender(name, layout, filters, getManager(target), handleExceptions);
     }
 
     private static OutputStreamManager getManager(Target target) {

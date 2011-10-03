@@ -34,8 +34,9 @@ public class JMSTopicAppender extends AppenderBase {
 
     private final JMSTopicManager manager;
 
-    public JMSTopicAppender(String name, Filters filters, Layout layout, JMSTopicManager manager) {
-        super(name, filters, layout);
+    public JMSTopicAppender(String name, Filters filters, Layout layout, JMSTopicManager manager,
+                            boolean handleExceptions) {
+        super(name, filters, layout, handleExceptions);
         this.manager = manager;
     }
 
@@ -63,9 +64,11 @@ public class JMSTopicAppender extends AppenderBase {
                                                   @PluginAttr("userName") String userName,
                                                   @PluginAttr("password") String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") Filters filters) {
+                                                  @PluginElement("filters") Filters filters,
+                                                  @PluginAttr("suppressExceptions") String suppress) {
 
         String name = "JMSTopic" + factoryBindingName + "." + topicBindingName;
+        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
         if (manager == null) {
@@ -74,6 +77,6 @@ public class JMSTopicAppender extends AppenderBase {
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
-        return new JMSTopicAppender(name, filters, layout, manager);
+        return new JMSTopicAppender(name, filters, layout, manager, handleExceptions);
     }
 }
