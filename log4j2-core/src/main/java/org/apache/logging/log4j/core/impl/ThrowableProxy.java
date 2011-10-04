@@ -25,10 +25,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.CodeSource;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.
@@ -61,7 +60,7 @@ public class ThrowableProxy extends Throwable {
     public ThrowableProxy(Throwable throwable) {
         this.throwable = throwable;
         Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
-        Deque<Class> stack = getCurrentStack();
+        Stack<Class> stack = getCurrentStack();
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
@@ -75,7 +74,7 @@ public class ThrowableProxy extends Throwable {
      * @param map The cache containing the packaging data.
      * @param cause The Throwable to wrap.
      */
-    private ThrowableProxy(Throwable parent, Deque<Class> stack, Map<String, CacheEntry> map, Throwable cause) {
+    private ThrowableProxy(Throwable parent, Stack<Class> stack, Map<String, CacheEntry> map, Throwable cause) {
         this.throwable = cause;
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
@@ -198,35 +197,36 @@ public class ThrowableProxy extends Throwable {
      * to be accurate.
      * @return A Deque containing the current stack of Class objects.
      */
-    private Deque<Class> getCurrentStack() {
+    private Stack<Class> getCurrentStack() {
         if (getCallerClass != null) {
-            Deque<Class> classes = new ArrayDeque<Class>();
+            Stack<Class> classes = new Stack<Class>();
             int index = 2;
             Class clazz = getCallerClass(index);
             while (clazz != null) {
-                classes.add(clazz);
+                classes.push(clazz);
                 clazz = getCallerClass(++index);
             }
             return classes;
         } else if (securityManager != null) {
             Class[] array = securityManager.getClasses();
-            Deque<Class> classes = new ArrayDeque<Class>(array.length);
+            Stack<Class> classes = new Stack<Class>();
             for (Class clazz : array) {
-                classes.add(clazz);
+                classes.push(clazz);
             }
             return classes;
         }
-        return new ArrayDeque<Class>();
+        return new Stack<Class>();
     }
 
     /**
      * Resolve all the stack entries in this stack trace that are not common with the parent.
+     * @param stack The callers Class stack.
      * @param map The cache of CacheEntry objects.
      * @param rootTrace The first stack trace resolve or null.
      * @param stackTrace The stack trace being resolved.
-     * @return
+     * @return The StackTracePackageElement array.
      */
-    private StackTracePackageElement[] resolvePackageData(Deque<Class> stack, Map<String, CacheEntry> map,
+    private StackTracePackageElement[] resolvePackageData(Stack<Class> stack, Map<String, CacheEntry> map,
                                                           StackTraceElement[] rootTrace,
                                                           StackTraceElement[] stackTrace) {
         int stackLength;
@@ -244,7 +244,7 @@ public class ThrowableProxy extends Throwable {
             stackLength = stackTrace.length;
         }
         StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
-        Class clazz = stack.peekLast();
+        Class clazz = stack.peek();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0 ; --i) {
             String className = stackTrace[i].getClassName();
@@ -255,8 +255,8 @@ public class ThrowableProxy extends Throwable {
                 CacheEntry entry = resolvePackageElement(clazz, true);
                 packageArray[i] = entry.element;
                 lastLoader = entry.loader;
-                stack.removeLast();
-                clazz = stack.peekLast();
+                stack.pop();
+                clazz = stack.peek();
             } else {
                 if (map.containsKey(className)) {
                     CacheEntry entry = map.get(className);
@@ -345,7 +345,7 @@ public class ThrowableProxy extends Throwable {
      * @return The Class object for the Class or null if it could not be located.
      */
     private Class loadClass(ClassLoader lastLoader, String className) {
-        Class clazz = null;
+        Class clazz;
         if (lastLoader != null) {
             try {
                 clazz = lastLoader.loadClass(className);
