@@ -83,7 +83,7 @@ public class FlumeAvroAppender extends AppenderBase {
     }
 
     @PluginFactory
-    public static FlumeAvroAppender createAppender(@PluginAttr("agents") Agent[] agents,
+    public static FlumeAvroAppender createAppender(@PluginElement("agents") Agent[] agents,
                                                    @PluginAttr("reconnectionDelay") String delay,
                                                    @PluginAttr("agentRetries") String agentRetries,
                                                    @PluginAttr("name") String name,

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -85,7 +86,7 @@ public class DynamicThresholdFilter extends FilterBase {
 
     @PluginFactory
     public static DynamicThresholdFilter createFilter(@PluginAttr("key") String key,
-                                                      @PluginAttr("pairs") ValueLevelPair[] pairs,
+                                                      @PluginElement("pairs") ValueLevelPair[] pairs,
                                                       @PluginAttr("defaultThreshold") String level,
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
