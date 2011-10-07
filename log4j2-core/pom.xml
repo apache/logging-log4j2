@@ -19,11 +19,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.logging</groupId>
-    <artifactId>log4j2-rgoers</artifactId>
+    <groupId>org.apache.logging.rgoers</groupId>
+    <artifactId>log4j2</artifactId>
     <version>1.99.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.apache.logging</groupId>
+  <groupId>org.apache.logging.rgoers</groupId>
   <artifactId>log4j2-core</artifactId>
   <packaging>jar</packaging>
   <name>Log4J2 Core</name>
@@ -33,7 +33,7 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.apache.logging</groupId>
+      <groupId>org.apache.logging.rgoers</groupId>
       <artifactId>log4j2-api</artifactId>
     </dependency>
 	  <dependency>
