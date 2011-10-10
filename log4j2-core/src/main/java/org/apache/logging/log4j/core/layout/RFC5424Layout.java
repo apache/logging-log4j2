@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.LoggingException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;

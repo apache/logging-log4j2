@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.appender.flume;
 
 import com.cloudera.flume.core.EventBaseImpl;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggingException;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;

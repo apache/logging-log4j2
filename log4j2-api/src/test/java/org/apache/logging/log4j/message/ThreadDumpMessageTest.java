@@ -58,7 +58,7 @@ public class ThreadDumpMessageTest {
         }
 
         String message = msg.getFormattedMessage();
-        System.out.print(message);
+        //System.out.print(message);
         assertTrue("No header", message.contains("Testing"));
         assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
         assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
