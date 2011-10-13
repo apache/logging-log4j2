@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,7 +44,6 @@ public class Interpolator implements StrLookup {
         PluginManager manager = new PluginManager("Lookup");
         manager.collectPlugins();
         Map<String, PluginType> plugins = manager.getPlugins();
-        Map<String, StrLookup> lookups = new HashMap<String, StrLookup>();
 
         for (Map.Entry<String, PluginType> entry : plugins.entrySet()) {
             Class<StrLookup> clazz = entry.getValue().getPluginClass();
@@ -69,6 +69,24 @@ public class Interpolator implements StrLookup {
      */
     public String lookup(String var)
     {
+        return lookup(null, var);
+    }
+
+    /**
+     * Resolves the specified variable. This implementation will try to extract
+     * a variable prefix from the given variable name (the first colon (':') is
+     * used as prefix separator). It then passes the name of the variable with
+     * the prefix stripped to the lookup object registered for this prefix. If
+     * no prefix can be found or if the associated lookup object cannot resolve
+     * this variable, the default lookup object will be used.
+     *
+     * @param event The current LogEvent or null.
+     * @param var the name of the variable whose value is to be looked up
+     * @return the value of this variable or <b>null</b> if it cannot be
+     * resolved
+     */
+    public String lookup(LogEvent event, String var)
+    {
         if (var == null)
         {
             return null;
@@ -82,7 +100,7 @@ public class Interpolator implements StrLookup {
             StrLookup lookup = lookups.get(prefix);
             String value = null;
             if (lookup != null) {
-                value = lookup.lookup(name);
+                value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
 
             if (value != null)
@@ -92,7 +110,7 @@ public class Interpolator implements StrLookup {
             var = var.substring(prefixPos);
         }
         if (defaultLookup != null) {
-            return defaultLookup.lookup(var);
+            return event == null ? defaultLookup.lookup(var) : defaultLookup.lookup(event, var);
         }
         return null;
     }

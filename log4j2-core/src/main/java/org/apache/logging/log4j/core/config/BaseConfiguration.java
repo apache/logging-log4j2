@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
-import org.apache.logging.log4j.core.appender.DefaultErrorHandler;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.Filterable;
@@ -116,7 +116,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         boolean setRoot = false;
         boolean setLoggers = false;
         for (Node child : rootNode.getChildren()) {
-            createConfiguration(child);
+            createConfiguration(child, null);
             if (child.getObject() == null) {
                 continue;
             }
@@ -225,6 +225,10 @@ public class BaseConfiguration extends Filterable implements Configuration {
         appenders.put(appender.getName(), appender);
     }
 
+    public StrSubstitutor getSubst() {
+        return subst;
+    }
+
     /**
      * Associates an Appender with a LoggerConfig. This method is synchronized in case a Logger with the
      * same name is being updated at the same time.
@@ -302,6 +306,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
      * Remove an Appender. First removes any associations between LoggerContigs and the Appender, removes
      * the Appender from this appender list and then stops the appender. This method is synchronized in
      * case an Appender with the same name is being added during the removal.
+     * @param name the name of the appender to remove.
      */
     public synchronized void removeAppender(String name) {
         for (LoggerConfig logger : loggers.values()) {
@@ -324,7 +329,6 @@ public class BaseConfiguration extends Filterable implements Configuration {
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        int i = 0;
         String substr = name;
         while ((substr = NameUtil.getSubName(substr)) != null) {
             if (loggers.containsKey(substr)) {
@@ -392,19 +396,73 @@ public class BaseConfiguration extends Filterable implements Configuration {
         setParents();
     }
 
-    private void createConfiguration(Node node) {
-        for (Node child : node.getChildren()) {
-            createConfiguration(child);
-        }
+    public void createConfiguration(Node node, LogEvent event) {
         PluginType type = node.getType();
-        if (type == null) {
-            if (node.getParent() != null) {
-                logger.error("Unable to locate plugin for " + node.getName());
-            }
+        if (type != null && type.deferChildren()) {
+            node.setObject(createPluginObject(type, node, event));
         } else {
-            node.setObject(createPluginObject(type, node));
+            for (Node child : node.getChildren()) {
+                createConfiguration(child, event);
+            }
+
+            if (type == null) {
+                if (node.getParent() != null) {
+                    logger.error("Unable to locate plugin for " + node.getName());
+                }
+            } else {
+                node.setObject(createPluginObject(type, node, event));
+            }
         }
     }
+
+    /**
+     * Create an Object that will contain its child Nodes and defer their construction until
+     * a later time.
+     * @param type The PluginType.
+     * @param node The Node.
+     * @return The constructed container object.
+     */
+    private Object createPluginContainer(PluginType type, Node node) {
+        Class clazz = type.getPluginClass();
+        Method factoryMethod = null;
+
+        for (Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(PluginFactory.class)) {
+                factoryMethod = method;
+                break;
+            }
+        }
+        if (factoryMethod == null) {
+            return null;
+        }
+        Class[] parmClasses = factoryMethod.getParameterTypes();
+        if (parmClasses.length != 1 && Node.class.equals(parmClasses[0])) {
+            logger.error("Template factory method must contain a single Node parameter");
+        }
+
+        try
+        {
+            int mod = factoryMethod.getModifiers();
+            if (!Modifier.isStatic(mod))
+            {
+                logger.error(factoryMethod.getName() + " method is not static on class " +
+                    clazz.getName() + " for element " + node.getName());
+                return null;
+            }
+            logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
+                node.getName());
+
+            return factoryMethod.invoke(null, node);
+        }
+        catch (Exception e)
+        {
+            logger.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
+                clazz.getName() + " for element " + node.getName(), e);
+        }
+        return null;
+
+    }
+
    /*
     * Retrieve a static public 'method to create the desired object. Every parameter
     * will be annotated to identify the appropriate attribute or element to use to
@@ -420,7 +478,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     * @return the instantiate method or null if there is none by that
     * description.
     */
-    public Object createPluginObject(PluginType type, Node node)
+    private Object createPluginObject(PluginType type, Node node, LogEvent event)
     {
         Class clazz = type.getPluginClass();
 
@@ -463,7 +521,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
         Class[] parmClasses = factoryMethod.getParameterTypes();
         if (parmArray.length != parmClasses.length) {
-            logger.error("");
+            logger.error("Number of parameter annotations does not equal the number of paramters");
         }
         Object[] parms = new Object[parmClasses.length];
 
@@ -490,15 +548,24 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 } else {
                     sb.append(", ");
                 }
-                if (a instanceof PluginValue) {
+                if (a instanceof PluginNode) {
+                    parms[index] = node;
+                    sb.append("Node=").append(node.getName());
+                } else if (a instanceof PluginConfiguration) {
+                    parms[index] = this;
+                    if (this.name != null) {
+                        sb.append("Configuration(").append(name).append(")");
+                    } else {
+                        sb.append("Configuration");
+                    }
+                } else if (a instanceof PluginValue) {
                     String name = ((PluginValue)a).value();
-                    String value = subst.replace(node.getValue());
+                    String value = subst.replace(event, node.getValue());
                     sb.append(name +"=" + "\"" + value + "\"");
                     parms[index] = value;
-                }
-                if (a instanceof PluginAttr) {
+                } else if (a instanceof PluginAttr) {
                     String name = ((PluginAttr)a).value();
-                    String value = subst.replace(getAttrValue(name, attrs));
+                    String value = subst.replace(event, getAttrValue(name, attrs));
                     sb.append(name +"=" + "\"" + value + "\"");
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
@@ -519,6 +586,9 @@ public class BaseConfiguration extends Filterable implements Configuration {
                                 }
                                 first = false;
                                 Object obj = child.getObject();
+                                if (obj == null) {
+                                    System.out.println("Null object returned for " + child.getName());
+                                }
                                 if (obj.getClass().isArray()) {
                                     printArray(sb, (Object[])obj);
                                     parms[index] = obj;
@@ -587,7 +657,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.error(eb.toString());
         }
 
-        if (used.size() != children.size()) {
+        if (!type.deferChildren() && used.size() != children.size()) {
             for (Node child : children) {
                 if (used.contains(child)) {
                     continue;
@@ -608,7 +678,6 @@ public class BaseConfiguration extends Filterable implements Configuration {
             }
             logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
                 node.getName() + sb.toString());
-            StringBuilder b = new StringBuilder();
             //if (parms.length > 0) {
                 return factoryMethod.invoke(null, parms);
             //}
@@ -629,6 +698,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 sb.append(", ");
             }
             sb.append(obj.toString());
+            first = false;
         }
     }
 

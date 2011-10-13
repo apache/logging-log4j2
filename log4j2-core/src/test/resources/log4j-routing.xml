@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="debug" name="RoutingTest">
+  <properties>
+    <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
+  </properties>
+  <filters>
+    <Threshold level="debug"/>
+  </filters>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <filters>
+        <Threshold level="debug"/>
+      </filters>
+    </List>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
+                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route appender-ref="STDOUT" key="Audit"/>
+        <Route appender-ref="List" key="Service"/>
+      </Routes>
+    </Routing>
+  </appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="Routing"/>
+    </logger>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>

@@ -51,7 +51,7 @@ public class EventLoggerTest {
         EventLogger.logEvent(msg);
         ThreadContext.clear();
         assertEquals(1, results.size());
-        String expected = " ALL Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
+        String expected = " OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
         assertTrue("Incorrect structured data: " + results.get(0) + ", expected: " ,results.get(0).startsWith(expected));
     }
 

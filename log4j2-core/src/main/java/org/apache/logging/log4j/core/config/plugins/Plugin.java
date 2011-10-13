@@ -16,6 +16,7 @@ public @interface Plugin {
     public String type();
     public String elementType() default NULL;
     public boolean printObject() default false;
+    public boolean deferChildren() default false;
 
     public static final String NULL = "";
 }

@@ -2,8 +2,10 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filtering;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,4 +52,7 @@ public interface Configuration extends Filtering {
 
     void removeListener(ConfigurationListener listener);
 
+    StrSubstitutor getSubst();
+
+    void createConfiguration(Node node, LogEvent event);
 }

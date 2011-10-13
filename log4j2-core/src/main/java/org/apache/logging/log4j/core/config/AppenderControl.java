@@ -40,7 +40,7 @@ public class AppenderControl {
      * Constructor.
      * @param appender The target Appender.
      */
-    AppenderControl(Appender appender) {
+    public AppenderControl(Appender appender) {
         this.appender = appender;
     }
 

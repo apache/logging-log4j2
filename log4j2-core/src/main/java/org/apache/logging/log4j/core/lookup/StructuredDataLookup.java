@@ -19,18 +19,28 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 
 /**
  * Looks up keys from system properties
  */
-@Plugin(name="ctx",type="Lookup")
-public class ContextMapLookup implements StrLookup {
+@Plugin(name="sd",type="Lookup")
+public class StructuredDataLookup implements StrLookup {
 
     public String lookup(String key) {
-        return ThreadContext.get(key);
+        return null;
     }
 
     public String lookup(LogEvent event, String key) {
-        return ThreadContext.get(key);
+        if (event == null || !(event.getMessage() instanceof StructuredDataMessage)) {
+            return null;
+        }
+        StructuredDataMessage msg = (StructuredDataMessage) event.getMessage();
+        if (key.equalsIgnoreCase("id")) {
+            return msg.getId().getName();
+        } else if (key.equalsIgnoreCase("type")) {
+            return msg.getType();
+        }
+        return msg.get(key);
     }
 }

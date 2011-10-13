@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 import java.util.Map;
 
 /**
@@ -54,5 +56,9 @@ public class MapLookup<V> implements StrLookup<V> {
             return null;
         }
         return obj.toString();
+    }
+
+    public String lookup(LogEvent event, String key) {
+        return lookup(key);
     }
 }

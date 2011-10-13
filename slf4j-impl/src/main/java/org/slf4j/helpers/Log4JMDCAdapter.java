@@ -32,7 +32,7 @@ public class Log4JMDCAdapter implements MDCAdapter {
     }
 
     public String get(String key) {
-        return ThreadContext.get(key).toString();
+        return ThreadContext.get(key);
     }
 
     public void remove(String key) {

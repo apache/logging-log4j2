@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 /**
  * Lookup a String key to a String value.
  * <p>
@@ -57,4 +59,30 @@ public interface StrLookup<V> {
      * @return the matching value, null if no match
      */
     public String lookup(String key);
+
+    /**
+     * Looks up a String key to a String value possibly using the current LogEvent.
+     * <p>
+     * The internal implementation may use any mechanism to return the value.
+     * The simplest implementation is to use a Map. However, virtually any
+     * implementation is possible.
+     * <p>
+     * For example, it would be possible to implement a lookup that used the
+     * key as a primary key, and looked up the value on demand from the database
+     * Or, a numeric based implementation could be created that treats the key
+     * as an integer, increments the value and return the result as a string -
+     * converting 1 to 2, 15 to 16 etc.
+     * <p>
+     * The {@link #lookup(String)} method always returns a String, regardless of
+     * the underlying data, by converting it as necessary. For example:
+     * <pre>
+     * Map<String, Object> map = new HashMap<String, Object>();
+     * map.put("number", new Integer(2));
+     * assertEquals("2", StrLookup.mapLookup(map).lookup("number"));
+     * </pre>
+     * @param event The current LogEvent.
+     * @param key  the key to be looked up, may be null
+     * @return the matching value, null if no match
+     */
+    public String lookup(LogEvent event, String key);
 }

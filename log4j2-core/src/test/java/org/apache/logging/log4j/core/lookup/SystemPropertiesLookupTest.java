@@ -14,40 +14,40 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.lookup;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
- * Plugin Descriptor.
+ *
  */
-public class PluginType {
+public class SystemPropertiesLookupTest {
 
-    private Class pluginClass;
-    private String elementName;
-    private boolean printObject = false;
-    private boolean deferChildren = false;
 
-    public PluginType(Class clazz, String name, boolean printObj, boolean deferChildren) {
-        this.pluginClass = clazz;
-        this.elementName = name;
-        this.printObject = printObj;
-        this.deferChildren = deferChildren;
+    private static final String TESTKEY = "TestKey";
+    private static final String TESTVAL = "TestValue";
+
+    @BeforeClass
+    public static void before() {
+        System.setProperty(TESTKEY, TESTVAL);
     }
 
-    public Class getPluginClass() {
-        return this.pluginClass;
+    @AfterClass
+    public static void after() {
+        System.clearProperty(TESTKEY);
     }
 
-    public String getElementName() {
-        return this.elementName;
+    @Test
+    public void testLookup() {
+        StrLookup lookup = new SystemPropertiesLookup();
+        String value = lookup.lookup(TESTKEY);
+        assertEquals(TESTVAL, value);
+        value = lookup.lookup("BadKey");
+        assertNull(value);
     }
-
-    public boolean isObjectPrintable() {
-        return this.printObject;
-    }
-
-    public boolean deferChildren() {
-        return this.deferChildren;
-    }
-
 }

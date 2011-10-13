@@ -44,7 +44,7 @@ public class EventLogger {
      * @param msg The event StructuredDataMessage.
      */
     public static void logEvent(StructuredDataMessage msg) {
-        logger.log(marker, FQCN, Level.ALL, msg, null);
+        logger.log(marker, FQCN, Level.OFF, msg, null);
     }
 
     /**

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
@@ -25,6 +26,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public class SystemPropertiesLookup implements StrLookup {
 
     public String lookup(String key) {
+        return System.getProperty(key);
+    }
+
+    public String lookup(LogEvent event, String key) {
         return System.getProperty(key);
     }
 }

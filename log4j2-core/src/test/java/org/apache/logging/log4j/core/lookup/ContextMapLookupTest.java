@@ -14,40 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.ThreadContext;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
- * Plugin Descriptor.
+ *
  */
-public class PluginType {
+public class ContextMapLookupTest {
 
-    private Class pluginClass;
-    private String elementName;
-    private boolean printObject = false;
-    private boolean deferChildren = false;
+    private static final String TESTKEY = "TestKey";
+    private static final String TESTVAL = "TestValue";
 
-    public PluginType(Class clazz, String name, boolean printObj, boolean deferChildren) {
-        this.pluginClass = clazz;
-        this.elementName = name;
-        this.printObject = printObj;
-        this.deferChildren = deferChildren;
+    @Test
+    public void testLookup() {
+        ThreadContext.put(TESTKEY, TESTVAL);
+        StrLookup lookup = new ContextMapLookup();
+        String value = lookup.lookup(TESTKEY);
+        assertEquals(TESTVAL, value);
+        value = lookup.lookup("BadKey");
+        assertNull(value);
     }
-
-    public Class getPluginClass() {
-        return this.pluginClass;
-    }
-
-    public String getElementName() {
-        return this.elementName;
-    }
-
-    public boolean isObjectPrintable() {
-        return this.printObject;
-    }
-
-    public boolean deferChildren() {
-        return this.deferChildren;
-    }
-
 }

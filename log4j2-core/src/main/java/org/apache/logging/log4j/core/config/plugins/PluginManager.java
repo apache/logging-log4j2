@@ -79,7 +79,7 @@ public class PluginManager {
         {
             Plugin p = item.getAnnotation(Plugin.class);
             String type = p.elementType().equals(Plugin.NULL) ? p.name() : p.elementType();
-            plugins.put(p.name(), new PluginType(item, type, p.printObject()));
+            plugins.put(p.name(), new PluginType(item, type, p.printObject(), p.deferChildren()));
         }
     }
 
