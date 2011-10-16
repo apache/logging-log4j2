@@ -239,7 +239,7 @@
     </snapshotRepository>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/logging.apache.org/log4j2</url>
+      <url>scp://people.apache.org/www/logging.apache.org/log4j/2.0</url>
     </site>
   </distributionManagement>
   <modules>
