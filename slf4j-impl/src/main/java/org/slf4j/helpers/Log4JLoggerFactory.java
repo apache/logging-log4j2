@@ -44,10 +44,12 @@ public class Log4JLoggerFactory implements ILoggerFactory {
     public Logger getLogger(String name) {
         LoggerContext context = getContext();
         ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
+
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        org.apache.logging.log4j.Logger logger = context.getLogger(name);
+        String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
+        org.apache.logging.log4j.Logger logger = context.getLogger(key);
         if (logger instanceof AbstractLogger) {
             loggers.putIfAbsent(name, new SLF4JLogger((AbstractLogger) logger, name));
             return loggers.get(name);

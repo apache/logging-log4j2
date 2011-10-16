@@ -32,6 +32,8 @@ import java.util.Properties;
  */
 public class LogManager {
 
+    public static final String ROOT_LOGGER_NAME = "";
+
     private static final String LOGGER_RESOURCE = "META-INF/log4j-provider.xml";
     private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
     private static final String API_VERSION = "Log4jAPIVersion";

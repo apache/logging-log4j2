@@ -77,12 +77,9 @@
             </p>
 
             <p>The root logger resides at the top of the logger hierarchy. It
-               is exceptional in two ways:
-
-              <ol>
-                <li> it always exists,</li>
-                <li> it does not have a name.</li>
-              </ol>
+              is exceptional in that it always exists and it is part of every hierarchy. It can
+              be obtained as follows:
+              <source>Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</source>
             </p>
           <h4>LoggerContext</h4>
 

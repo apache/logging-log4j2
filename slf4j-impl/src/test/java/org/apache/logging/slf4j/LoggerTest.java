@@ -139,6 +139,13 @@ public class LoggerTest {
     }
 
     @Test
+    public void testRootLogger() {
+        Logger l = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        assertNotNull("No Root Logger", l);
+        assertEquals(Logger.ROOT_LOGGER_NAME, l.getName());
+    }
+
+    @Test
     public void doubleSubst() {
         logger.debug("Hello, {}", "Log4j {}");
         verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");

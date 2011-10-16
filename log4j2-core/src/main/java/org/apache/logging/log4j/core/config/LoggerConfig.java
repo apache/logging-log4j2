@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
@@ -310,7 +311,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
             Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-            return new LoggerConfig("", appenderRefs, filters, level, additive);
+            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filters, level, additive);
         }
     }
 
