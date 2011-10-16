@@ -25,14 +25,6 @@
     <src>../images/logo.jpg</src>
   </bannerRight>
   <body>
-    <menu name="Log4j">
-      <item name="Overview"                href="../index.html"/>
-      <item name="Download and Build"      href="../download.html"/>
-      <item name="Using the API"           href="../log4j2-api/api.html"/>
-      <item name="API JavaDocs"            href="../log4j2-api/apidocs/index.html"/>
-      <item name="Manual"                  href="../manual.html"/>
-      <item name="Wiki"                    href="http://wiki.apache.org/logging"/>
-    </menu>
     <links>
       <item name="Apache" href="http://www.apache.org/" />
       <item name="Logging Services" href="http://logging.apache.org/"/>

@@ -15,7 +15,7 @@
  limitations under the license.
 
 -->
-<project name="Component">
+<project name="Log4j">
   <bannerLeft>
     <name>Logging Services</name>
     <src>images/ls-logo.jpg</src>
@@ -25,15 +25,62 @@
     <src>images/logo.jpg</src>
   </bannerRight>
   <body>
-    <menu name="Log4j">
+    <menu name="Log4j" inherit="top">
       <item name="Overview"                href="/index.html"/>
       <item name="Download and Build"      href="/download.html"/>
-      <item name="Using the API"           href="log4j2-api/api.html"/>
+      <item name="Log4j 2 API"             href="log4j2-api/api.html"/>
       <item name="API JavaDocs"            href="log4j2-api/apidocs/index.html"/>
-      <item name="Manual"                  href="/manual.html"/>
+      <item name="Log4j 1.x API"           href="log4j12-api/api.html"/>
+      <item name="Commons Logging"         href="log4j2-jcl/api.html"/>
+      <item name="SLF4J"                   href="slf4j-impl/api.html"/>
+      <item name="Log4J 2 Manual"          href="/manual/index.html" collapse="true">
+        <item name="Architecture"          href="/manual/architecture.html"/>
+        <item name="Configuration"         href="/manual/configuration.html"/>
+        <item name="Plugins"               href="/manual/plugins.html" collapse="true">
+          <item name="Core"                href="/manual/plugins.html#Core"/>
+          <item name="Converters"          href="/manual/plugins.html#Converters"/>
+          <item name="Lookups"             href="/manual/plugins.html#Lookups"/>
+        </item>
+        <item name="Lookups"               href="/manual/lookups.html" collapse="true">
+          <item name="ContextMap"          href="/manual/lookups.html#ContextMapLookup"/>
+          <item name="StructuredData"      href="/manual/lookups.html#StructuredDataLookup"/>
+          <item name="SystemProperties"    href="/manual/lookups.html#SystemPropertiesLookup"/>
+        </item>
+        <item name="Appenders"             href="/manual/appenders.html" collapse="true">
+          <item name="Console"             href="/manual/appenders.html@ConsoleAppender"/>
+          <item name="File"                href="/manual/appenders.html#FileAppender"/>
+          <item name="Flume"               href="/manual/appenders.html#FlumeAppender"/>
+          <item name="JMSQueue"            href="/manual/appenders.html#JMSQueueAppender"/>
+          <item name="JSMTopic"            href="/manual/appenders.html#JMSTopicAppender"/>
+          <item name="RollingFile"         href="/manual/appenders.html#RollingFileappender"/>
+          <item name="Socket"              href="/manual/appenders.html#SocketAppender"/>
+          <item name="Syslog"              href="/manual/appenders.html#SyslogAppender"/>
+        </item>
+        <item name="Layouts"               href="/manual/layouts.html" collapse="true">
+          <item name="HTML"                href="/manual/layouts.html#HTMLLayout"/>
+          <item name="Pattern"             href="/manual/layouts.html#PatternLayout"/>
+          <item name="RFC5424"             href="/manual/layouts.html#RFC5424Layout"/>
+          <item name="Serialized"          href="/manual/layouts.html#SerializedLayout"/>
+          <item name="Syslog"              href="/manual/layouts.html#SyslogLayout"/>
+          <item name="XML"                 href="/manual/layouts.html#XMLLayout"/>
+        </item>
+        <item name="Filters"               href="/manual/filters.html" collapse="true">
+          <item name="Burst"               href="/manual/filters.html#BurstFilter"/>
+          <item name="DynamicThreshold"    href="/manual/filters.html#DynamicThresholdFilter"/>
+          <item name="Marker"              href="/manual/filters.html#MarkerFilter"/>
+          <item name="Regex"               href="/manual/filters.html#RegexFilter"/>
+          <item name="StructuredData"      href="/manual/filters.html#StructuredDataFilter"/>
+          <item name="ThreadContextMap"    href="/manual/filters.html#ThreadContextMapFilter"/>
+          <item name="Threshold"           href="/manual/filters.html#ThresholdFilter"/>
+          <item name="Time"                href="/manual/filters.html#TimeFilter"/>
+        </item>
+        <item name="ThreadContext"         href="/manual/thread-context.html"/>
+        <item name="JMX"                   href="/manual/jmx.html"/>
+        <item name="Logging Separation"    href="/manual/logsep.html"/>
+      </item>
       <item name="Wiki"                    href="http://wiki.apache.org/logging"/>
     </menu>
-    <menu name="Components">
+    <menu name="Components" inherit="top">
       <item name="API" href="log4j2-api/index.html"/>
       <item name="Impl" href="log4j2-core/index.html"/>
       <item name="Log4J 1.2 API" href="log4j12-api/index.html"/>

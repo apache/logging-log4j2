@@ -39,6 +39,14 @@
     <url>http://vmgump.apache.org/gump/public/logging-log4j-20/logging-log4j-20/index.html</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
+  <developers>
+    <developer>
+      <id>rgoers</id>
+      <name>Ralph Goers</name>
+      <email>rgoers@apache.org</email>
+      <organization>Intuit Financial Services</organization>
+    </developer>
+  </developers>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
@@ -182,6 +190,19 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <!-- Exclude the navigation file for Maven 1 sites
+               and the changes file used by the changes-plugin,
+               as they interfere with the site generation. -->
+          <moduleExcludes>
+            <xdoc>navigation.xml,changes.xml</xdoc>
+          </moduleExcludes>
         </configuration>
       </plugin>
       <!-- <plugin>
