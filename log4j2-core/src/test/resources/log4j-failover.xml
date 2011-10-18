@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="error" name="FailoverTest">
+  <Appenders>
+    <AlwaysFail name="Fail" />
+    <List name="List" />
+    <Failover name="Failover" primary="Fail" suppressExceptions="false">
+      <Failovers>
+        <appender-ref ref="List"/>
+      </Failovers>
+    </Failover>
+  </Appenders>
+
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Failover"/>
+    </root>
+  </loggers>
+
+</configuration>

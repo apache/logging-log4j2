@@ -122,11 +122,11 @@ public class BaseConfiguration extends Filterable implements Configuration {
             }
             if (child.getName().equalsIgnoreCase("properties")) {
                 subst = (StrSubstitutor) child.getObject();
-            } else if (child.getName().equals("appenders")) {
+            } else if (child.getName().equalsIgnoreCase("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
-            } else if (child.getName().equals("filters")) {
+            } else if (child.getName().equalsIgnoreCase("filters")) {
                 setFilters((Filters) child.getObject());
-            } else if (child.getName().equals("loggers")) {
+            } else if (child.getName().equalsIgnoreCase("loggers")) {
                 Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
                 setLoggers = true;
@@ -578,7 +578,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                         boolean first = true;
                         for (Node child : children) {
                             PluginType childType = child.getType();
-                            if (elem.value().equals(childType.getElementName()) ||
+                            if (elem.value().equalsIgnoreCase(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 used.add(child);
                                 if (!first) {

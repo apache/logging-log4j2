@@ -57,7 +57,7 @@ public class PluginManager {
     }
 
     public PluginType getPluginType(String name) {
-        return plugins.get(name);
+        return plugins.get(name.toLowerCase());
     }
 
     public Map<String, PluginType> getPlugins() {
@@ -79,7 +79,7 @@ public class PluginManager {
         {
             Plugin p = item.getAnnotation(Plugin.class);
             String type = p.elementType().equals(Plugin.NULL) ? p.name() : p.elementType();
-            plugins.put(p.name(), new PluginType(item, type, p.printObject(), p.deferChildren()));
+            plugins.put(p.name().toLowerCase(), new PluginType(item, type, p.printObject(), p.deferChildren()));
         }
     }
 
