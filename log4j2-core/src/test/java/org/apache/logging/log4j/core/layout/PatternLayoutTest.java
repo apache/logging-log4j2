@@ -128,6 +128,8 @@ public class PatternLayoutTest {
 
         assertTrue(Compare.compare(this.getClass(), OUTPUT_FILE + "_mdc", WITNESS_FILE + "_mdc"));
 
+        root.removeAppender(appender);
+
         appender.stop();
     }
 }
