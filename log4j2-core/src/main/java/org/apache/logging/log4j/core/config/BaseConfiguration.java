@@ -595,7 +595,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     if (parmClasses[index].isArray()) {
                         Class parmClass = parmClasses[index].getComponentType();
                         List<Object> list = new ArrayList<Object>();
-                        sb.append("{");
+                        sb.append(name).append("={");
                         boolean first = true;
                         for (Node child : children) {
                             PluginType childType = child.getType();
