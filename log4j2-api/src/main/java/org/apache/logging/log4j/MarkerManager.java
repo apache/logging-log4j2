@@ -130,5 +130,24 @@ public final class MarkerManager {
         public int hashCode() {
             return name != null ? name.hashCode() : 0;
         }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder(name);
+            if (parent != null) {
+                Marker m = parent;
+                sb.append("[ ");
+                boolean first = true;
+                while (m != null) {
+                    if (!first) {
+                        sb.append(", ");
+                    }
+                    sb.append(m.getName());
+                    first = false;
+                    m = m.getParent();
+                }
+                sb.append(" ]");
+            }
+            return sb.toString();
+        }
     }
 }

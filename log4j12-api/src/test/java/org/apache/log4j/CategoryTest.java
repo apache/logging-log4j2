@@ -143,7 +143,7 @@ public class CategoryTest {
     @Test
     public void testClassName() {
         Category category = Category.getInstance("TestCategory");
-        Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null);
+        Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
         ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);

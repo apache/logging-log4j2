@@ -74,5 +74,4 @@ public class PatternParserTest {
         validateConverter(converters, 1, "Line Sep");
     }
 
-
 }
