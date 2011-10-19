@@ -74,7 +74,7 @@ public class PatternLayoutTest {
         String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        PatternLayout layout = new PatternLayout(msgPattern);
+        PatternLayout layout = new PatternLayout(ctx.getConfiguration(), msgPattern);
         //FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         FileManager manager = FileManager.getFileManager(OUTPUT_FILE + "_mdc", false, false, false);
         FileAppender appender = new FileAppender("File", layout, null, manager, OUTPUT_FILE + "_mdc", true, false);

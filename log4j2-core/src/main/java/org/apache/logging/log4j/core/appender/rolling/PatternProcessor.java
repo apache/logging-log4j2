@@ -182,7 +182,7 @@ public class PatternProcessor {
 
     private PatternParser createPatternParser() {
 
-        return new PatternParser(KEY, null);
+        return new PatternParser(null, KEY, null);
     }
 
     private boolean patternContains(String pattern, char[] chars) {

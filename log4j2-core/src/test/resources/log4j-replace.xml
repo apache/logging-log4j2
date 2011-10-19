@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="error" name="RegexReplacementTest">
+  <Appenders>
+    <List name="List">
+       <PatternLayout>
+         <replace regex="\." replacement="/"/>
+         <pattern>%logger %msg%n</pattern>
+      </PatternLayout>
+    </List>
+  </Appenders>
+
+  <loggers>
+    <root level="trace">
+      <appender-ref ref="List"/>
+    </root>
+  </loggers>
+
+</configuration>

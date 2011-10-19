@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.plugins;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 import java.util.HashMap;
@@ -31,9 +32,9 @@ import java.util.Map;
 public class PropertiesPlugin {
 
     @PluginFactory
-    public static StrSubstitutor configureSubstitutor(@PluginElement("properties") Property[] properties) {
+    public static StrLookup configureSubstitutor(@PluginElement("properties") Property[] properties) {
         if (properties == null) {
-            return new StrSubstitutor(new Interpolator(null));
+            return new Interpolator(null);
         }
         Map<String, String> map = new HashMap<String, String>();
 
@@ -41,6 +42,6 @@ public class PropertiesPlugin {
             map.put(prop.getName(), prop.getValue());
         }
 
-        return new StrSubstitutor(new Interpolator(new MapLookup(map)));
+        return new Interpolator(new MapLookup(map));
     }
 }

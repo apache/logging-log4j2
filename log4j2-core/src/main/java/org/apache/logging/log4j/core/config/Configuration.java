@@ -55,4 +55,8 @@ public interface Configuration extends Filtering {
     StrSubstitutor getSubst();
 
     void createConfiguration(Node node, LogEvent event);
+
+    Object getComponent(String name);
+
+    void addComponent(String name, Object object);
 }

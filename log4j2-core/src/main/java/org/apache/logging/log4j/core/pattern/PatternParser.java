@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -71,20 +72,25 @@ public final class PatternParser {
      */
     private boolean handlesExceptions;
 
+    private Configuration config;
+
     private final Map<String, Class<PatternConverter>> converterRules;
 
     protected final static Logger logger = StatusLogger.getLogger();
 
 
     public PatternParser(String converterKey) {
-        this(converterKey, null);
+        this(null, converterKey, null);
     }
 
     /**
      * Constructor
+     * @param config The current Configuration.
      * @param converterKey The key to lookup the converters.
+     * @param expected The expected base Class of each Converter.
      */
-    public PatternParser(String converterKey, Class expected) {
+    public PatternParser(Configuration config, String converterKey, Class expected) {
+        this.config = config;
         PluginManager manager = new PluginManager(converterKey, expected);
         manager.collectPlugins();
         Map<String, PluginType> plugins = manager.getPlugins();
@@ -394,16 +400,49 @@ public final class PatternParser {
             return null;
         }
 
-        try {
-            Method factory = converterClass.getMethod(
-                    "newInstance",
-                    new Class[]{
-                        Class.forName("[Ljava.lang.String;")
-                    });
-            String[] optionsArray = new String[options.size()];
-            optionsArray = options.toArray(optionsArray);
+        Method[] methods = converterClass.getMethods();
+        Method newInstance = null;
+        for (Method method : methods) {
+            if (method.getName().equals("newInstance")) {
+                if (newInstance == null) {
+                    newInstance = method;
+                } else {
+                    logger.error("Class " + converterClass + " cannot contain multiple newInstance methods");
+                    return null;
+                }
+            }
+        }
+        if (newInstance == null) {
+            logger.error("Class " + converterClass + " does not contain a newInstance method");
+            return null;
+        }
 
-            Object newObj = factory.invoke(null, new Object[]{optionsArray});
+        Class[] parmTypes = newInstance.getParameterTypes();
+        Object [] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
+
+        if (parms != null) {
+            int i = 0;
+            boolean errors = false;
+            for (Class clazz : parmTypes) {
+                if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
+                    String[] optionsArray = options.toArray(new String[options.size()]);
+                    parms[i] = optionsArray;
+                } else if (clazz.isAssignableFrom(Configuration.class)) {
+                    parms[i] = config;
+                } else {
+                    logger.error("Unknown parameter type " + clazz.getName() + " for newInstance method of " +
+                        converterClass.getName());
+                    errors = true;
+                }
+                ++i;
+            }
+            if (errors) {
+                return null;
+            }
+        }
+
+        try {
+            Object newObj = newInstance.invoke(null, parms);
 
             if (newObj instanceof PatternConverter) {
                 currentLiteral.delete(0, currentLiteral.length()
@@ -415,18 +454,6 @@ public final class PatternParser {
             }
         } catch (Exception ex) {
             logger.error("Error creating converter for " + converterId, ex);
-
-            try {
-                //
-                //  try default constructor
-                PatternConverter pc = converterClass.newInstance();
-                currentLiteral.delete(0, currentLiteral.length()
-                        - (converterId.length() - converterName.length()));
-
-                return pc;
-            } catch (Exception ex2) {
-                logger.error("Error creating converter for " + converterId, ex2);
-            }
         }
 
         return null;

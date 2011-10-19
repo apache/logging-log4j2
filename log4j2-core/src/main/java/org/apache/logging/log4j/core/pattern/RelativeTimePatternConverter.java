@@ -20,10 +20,11 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
+import java.lang.management.ManagementFactory;
+
 
 /**
- * Return the relative time in milliseconds since loading of the LoggingEvent
- * class.
+ * Return the relative time in milliseconds since JVM Startup.
  */
 @Plugin(name="RelativeTimePatternConverter", type="Converter")
 @ConverterKeys({"r", "relative"})
@@ -32,7 +33,7 @@ public class RelativeTimePatternConverter extends LogEventPatternConverter {
      * Cached formatted timestamp.
      */
     private long lastTimestamp = Long.MIN_VALUE;
-    private long startTime = System.currentTimeMillis();
+    private long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
     private String relative;
 
     /**

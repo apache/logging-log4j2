@@ -40,7 +40,7 @@ public class Interpolator implements StrLookup {
     private final StrLookup defaultLookup;
 
     public Interpolator(StrLookup defaultLookup) {
-        this.defaultLookup = defaultLookup;
+        this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
         PluginManager manager = new PluginManager("Lookup");
         manager.collectPlugins();
         Map<String, PluginType> plugins = manager.getPlugins();

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.message.Message;
  * Return the event's rendered message in a StringBuffer.
  */
 @Plugin(name="MessagePatternConverter", type="Converter")
-@ConverterKeys({"m", "message"})
+@ConverterKeys({"m", "msg", "message"})
 public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private final String format;

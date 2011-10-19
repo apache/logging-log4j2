@@ -18,13 +18,17 @@
 package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.pattern.RegexReplacement;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -415,7 +419,7 @@ public class PatternLayout extends AbstractStringLayout {
      */
     private List<PatternConverter> converters;
 
-    private static final String KEY = "Converter";
+    public static final String KEY = "Converter";
 
     /**
      * Conversion pattern.
@@ -428,12 +432,19 @@ public class PatternLayout extends AbstractStringLayout {
     private boolean handlesExceptions;
 
     /**
+     * The current Configuration.
+     */
+    private final Configuration config;
+
+    private final RegexReplacement replace;
+
+    /**
      * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
      * <p/>
      * The default pattern just produces the application supplied message.
      */
     public PatternLayout() {
-        this(DEFAULT_CONVERSION_PATTERN, Charset.defaultCharset());
+        this(null, null, DEFAULT_CONVERSION_PATTERN, Charset.defaultCharset());
     }
 
     /**
@@ -442,7 +453,16 @@ public class PatternLayout extends AbstractStringLayout {
      * The default pattern just produces the application supplied message.
      */
     public PatternLayout(final String pattern) {
-        this(pattern, Charset.defaultCharset());
+        this(null, null, pattern, Charset.defaultCharset());
+    }
+
+   /**
+     * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
+     * <p/>
+     * The default pattern just produces the application supplied message.
+     */
+    public PatternLayout(Configuration config, final String pattern) {
+        this(config, null, pattern, Charset.defaultCharset());
     }
 
     /**
@@ -450,10 +470,13 @@ public class PatternLayout extends AbstractStringLayout {
      *
      * @param pattern conversion pattern.
      */
-    public PatternLayout(final String pattern, final Charset charset) {
+    public PatternLayout(Configuration config, final RegexReplacement replace, final String pattern,
+                         final Charset charset) {
         super(charset);
+        this.replace = replace;
         this.conversionPattern = pattern;
-        PatternParser parser = createPatternParser();
+        this.config = config;
+        PatternParser parser = createPatternParser(config);
         converters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
 
@@ -471,7 +494,7 @@ public class PatternLayout extends AbstractStringLayout {
         if (pattern == null) {
             return;
         }
-        PatternParser parser = createPatternParser();
+        PatternParser parser = createPatternParser(this.config);
         converters = parser.parse(pattern);
         handlesExceptions = parser.handlesExceptions();
     }
@@ -486,12 +509,24 @@ public class PatternLayout extends AbstractStringLayout {
         for (PatternConverter c : converters) {
             c.format(event, buf);
         }
-        return buf.toString();
+        String str = buf.toString();
+        if (replace != null) {
+            str = replace.format(str);
+        }
+        return config == null ? str : config.getSubst().replace(event, str);
     }
 
-    private PatternParser createPatternParser() {
-
-        return new PatternParser(KEY, LogEventPatternConverter.class);
+    private PatternParser createPatternParser(Configuration config) {
+        if (config == null) {
+            return new PatternParser(config, KEY, LogEventPatternConverter.class);
+        }
+        PatternParser parser = (PatternParser) config.getComponent(KEY);
+        if (parser == null) {
+            parser = new PatternParser(config, KEY, LogEventPatternConverter.class);
+            config.addComponent(KEY, parser);
+            parser = (PatternParser) config.getComponent(KEY);
+        }
+        return parser;
     }
 
     public String toString() {
@@ -500,6 +535,8 @@ public class PatternLayout extends AbstractStringLayout {
 
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
+                                             @PluginConfiguration Configuration config,
+                                             @PluginElement("replace") RegexReplacement replace,
                                              @PluginAttr("charset") String charset) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
@@ -510,7 +547,7 @@ public class PatternLayout extends AbstractStringLayout {
             }
         }
         if (pattern != null) {
-            return new PatternLayout(pattern, c);
+            return new PatternLayout(config, replace, pattern, c);
         }
         logger.error("No pattern specified for PatternLayout");
         return null;

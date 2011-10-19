@@ -31,6 +31,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -74,6 +76,8 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
     private boolean started = false;
 
+    private ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
+
     /**
      * Constructor.
      */
@@ -112,6 +116,14 @@ public class BaseConfiguration extends Filterable implements Configuration {
     protected void setup() {
     }
 
+    public Object getComponent(String name) {
+        return componentMap.get(name);
+    }
+
+    public void addComponent(String name, Object obj) {
+        componentMap.putIfAbsent(name, obj);
+    }
+
     protected void doConfigure() {
         boolean setRoot = false;
         boolean setLoggers = false;
@@ -121,8 +133,17 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 continue;
             }
             if (child.getName().equalsIgnoreCase("properties")) {
-                subst = (StrSubstitutor) child.getObject();
-            } else if (child.getName().equalsIgnoreCase("appenders")) {
+                if (subst.getVariableResolver() == null) {
+                    subst.setVariableResolver((StrLookup) child.getObject());
+                } else {
+                    logger.error("Properties declaration must be the first element in the configuration");
+                }
+                continue;
+            }
+            else if (subst.getVariableResolver() == null) {
+                subst.setVariableResolver(new Interpolator(null));
+            }
+            if (child.getName().equalsIgnoreCase("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
             } else if (child.getName().equalsIgnoreCase("filters")) {
                 setFilters((Filters) child.getObject());
