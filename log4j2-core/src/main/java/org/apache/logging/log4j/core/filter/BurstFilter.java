@@ -77,10 +77,10 @@ public class BurstFilter extends FilterBase {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
-    private BurstFilter(Level level, long rate, long maxBurst, Result onMatch, Result onMismatch) {
+    private BurstFilter(Level level, float rate, long maxBurst, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
-        this.burstInterval = maxBurst / rate;
+        this.burstInterval = (long) (NANOS_IN_SECONDS * (maxBurst / rate));
         for (int i = 0; i < maxBurst; ++i) {
             available.add(new LogDelay());
         }
@@ -160,7 +160,7 @@ public class BurstFilter extends FilterBase {
         }
 
         public void setDelay(long delay) {
-            this.expireTime = (delay * NANOS_IN_SECONDS) + System.nanoTime();
+            this.expireTime = delay + System.nanoTime();
         }
 
         public long getDelay(TimeUnit timeUnit) {
@@ -218,8 +218,11 @@ public class BurstFilter extends FilterBase {
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
         Level lvl = Level.toLevel(level, Level.WARN);
-        long eventRate = rate == null ? DEFAULT_RATE : Long.parseLong(rate);
-        long max = maxBurst == null ? eventRate * DEFAULT_RATE_MULTIPLE : Long.parseLong(maxBurst);
+        float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
+        if (eventRate <= 0) {
+            eventRate = DEFAULT_RATE;
+        }
+        long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
         if (onMatch == null) {
             onMatch = Result.NEUTRAL;
         }
