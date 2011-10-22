@@ -516,7 +516,7 @@ public class PatternLayout extends AbstractStringLayout {
         return config == null ? str : config.getSubst().replace(event, str);
     }
 
-    private PatternParser createPatternParser(Configuration config) {
+    public static PatternParser createPatternParser(Configuration config) {
         if (config == null) {
             return new PatternParser(config, KEY, LogEventPatternConverter.class);
         }

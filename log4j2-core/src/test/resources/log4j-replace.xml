@@ -7,9 +7,17 @@
          <pattern>%logger %msg%n</pattern>
       </PatternLayout>
     </List>
+    <List name="List2">
+       <PatternLayout>
+         <pattern>%replace{%logger %msg%n}{\.}{/}</pattern>
+      </PatternLayout>
+    </List>
   </Appenders>
 
   <loggers>
+    <logger level="trace" name="ReplacementTest" additivity="false">
+      <appender-ref ref="List2"/>
+    </logger>
     <root level="trace">
       <appender-ref ref="List"/>
     </root>

@@ -44,6 +44,7 @@ public class RegexReplacementTest {
     private static final String CONFIG = "log4j-replace.xml";
     private static Configuration config;
     private static ListAppender app;
+    private static ListAppender app2;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -54,7 +55,9 @@ public class RegexReplacementTest {
         for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
-                break;
+            }
+            if (entry.getKey().equals("List2")) {
+                app2 = (ListAppender) entry.getValue();
             }
         }
     }
@@ -68,6 +71,7 @@ public class RegexReplacementTest {
     }
 
     org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+    org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("ReplacementTest");
 
     @Test
     public void testReplacement() {
@@ -83,5 +87,16 @@ public class RegexReplacementTest {
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
         assertEquals("LoggerTest This is a test for Apache\n", msgs.get(0));
+        app.clear();
+
+    }
+     @Test
+    public void testConverter() {
+        logger2.error(this.getClass().getName());
+        List<String> msgs = app2.getMessages();
+        assertNotNull(msgs);
+        assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
+        assertTrue("Replacement failed", msgs.get(0).endsWith("/RegexReplacementTest\n"));
+        app2.clear();
     }
 }
