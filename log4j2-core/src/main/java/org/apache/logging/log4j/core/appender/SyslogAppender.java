@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.Filters;
@@ -66,6 +68,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("mdcRequired") String required,
                                                 @PluginAttr("format") String format,
                                                 @PluginElement("filters") Filters filters,
+                                                @PluginConfiguration Configuration config,
                                                 @PluginAttr("charset") String charset) {
 
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
@@ -82,7 +85,7 @@ public class SyslogAppender extends SocketAppender {
         }
         Layout layout = (format.equalsIgnoreCase(RFC5424)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, appName,  msgId,
-                excludes, includes, required, charset) :
+                excludes, includes, required, charset, config) :
             SyslogLayout.createLayout(facility, includeNL, charset);
 
         if (name == null) {

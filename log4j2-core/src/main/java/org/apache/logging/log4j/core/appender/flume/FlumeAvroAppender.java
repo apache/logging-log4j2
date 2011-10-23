@@ -116,8 +116,8 @@ public class FlumeAvroAppender extends AppenderBase {
         int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
 
         if (layout == null) {
-            layout = RFC5424Layout.createLayout(null, null, null, "True", null, null, null, null, excludes, includes,
-                required, null);
+            layout = RFC5424Layout.createLayout(null, null, null, null, "True", null, null, null, null, excludes,
+                includes, required, null);
         }
 
         if (name == null) {

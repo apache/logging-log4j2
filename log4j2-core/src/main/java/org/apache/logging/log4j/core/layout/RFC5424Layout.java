@@ -20,8 +20,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -76,9 +78,9 @@ public class RFC5424Layout extends AbstractStringLayout {
     public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
     public static final String DEFAULT_ID = "Audit";
 
-    public RFC5424Layout(Facility facility, String id, int ein, boolean includeMDC, boolean includeNL, String mdcId,
-                         String appName, String messageId, String excludes, String includes, String required,
-                         Charset charset) {
+    private RFC5424Layout(Configuration config, Facility facility, String id, int ein, boolean includeMDC,
+                          boolean includeNL, String mdcId, String appName, String messageId, String excludes,
+                          String includes, String required, Charset charset) {
         super(charset);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
@@ -133,8 +135,7 @@ public class RFC5424Layout extends AbstractStringLayout {
             mdcRequired = null;
         }
         this.checker = c != null ? c : noopChecker;
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        String name = ctx.getConfiguration().getName();
+        String name = config == null ? null :config.getName();
         configName = (name != null && name.length() > 0) ? name : null;
     }
 
@@ -385,7 +386,8 @@ public class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("mdcExcludes") String excludes,
                                              @PluginAttr("mdcIncludes") String includes,
                                              @PluginAttr("mdcRequired") String required,
-                                             @PluginAttr("charset") String charset) {
+                                             @PluginAttr("charset") String charset,
+                                             @PluginConfiguration Configuration config) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
@@ -406,7 +408,7 @@ public class RFC5424Layout extends AbstractStringLayout {
             mdcId = DEFAULT_MDCID;
         }
 
-        return new RFC5424Layout(f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId, excludes,
+        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId, excludes,
                                  includes, required, c);
     }
 }

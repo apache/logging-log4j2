@@ -75,8 +75,8 @@ public class RFC5424LayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext", "true",
-            "ATM", null, "key1, key2, locale", null, "loginId", null);
+        RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+            "true", "ATM", null, "key1, key2, locale", null, "loginId", null, null);
         ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
