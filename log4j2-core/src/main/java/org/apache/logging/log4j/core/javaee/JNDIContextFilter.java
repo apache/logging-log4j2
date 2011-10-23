@@ -96,7 +96,7 @@ public class JNDIContextFilter implements Filter {
             if (selector != null) {
                 selector.removeContext(name);
             }
-            ctx.shutdown();
+            ctx.stop();
         }
     }
 }

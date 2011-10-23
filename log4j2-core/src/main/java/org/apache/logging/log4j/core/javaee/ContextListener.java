@@ -42,7 +42,7 @@ public class ContextListener implements ServletContextListener {
         LoggerContext ctx = (LoggerContext) context.getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null) {
             context.removeAttribute(LOG4J_CONTEXT_ATTRIBUTE);
-            ctx.shutdown();
+            ctx.stop();
         }
     }
 }

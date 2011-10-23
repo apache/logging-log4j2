@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener {
+public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, Lifecycle {
 
     private static StatusLogger logger = StatusLogger.getLogger();
 
@@ -42,13 +43,15 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before
      * the reference is updated.
      */
-    private volatile Configuration config;
+    private volatile Configuration config = new DefaultConfiguration();
 
     private Object externalContext = null;
 
     private final String contextName;
 
     private final URI configLocation;
+
+    private boolean isStarted;
 
     /**
      * Constructor taking only a name.
@@ -77,7 +80,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         contextName = name;
         this.externalContext = externalContext;
         this.configLocation = configLocn;
-        reconfigure();
     }
 
     /**
@@ -101,7 +103,22 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         } else {
             configLocation = null;
         }
+    }
+
+    public void start() {
         reconfigure();
+        isStarted = true;
+    }
+
+    public synchronized void stop() {
+        isStarted = false;
+        updateLoggers(new NullConfiguration());
+        config.stop();
+        externalContext = null;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
     }
 
     /**
@@ -169,15 +186,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      */
     public void removeFiler(Filter filter) {
         config.removeFilter(filter);
-    }
-
-    /**
-     * Shutdown the logging system.
-     */
-    public synchronized void shutdown() {
-        updateLoggers(new NullConfiguration());
-        config.stop();
-        externalContext = null;
     }
 
     /**

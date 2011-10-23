@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -32,6 +33,8 @@ public class Log4jContextFactory implements LoggerContextFactory {
     private ContextSelector selector;
 
     private StatusLogger logger = StatusLogger.getLogger();
+
+    private ThreadLocal<Log4jContextFactory> recursive = new ThreadLocal<Log4jContextFactory>();
 
     public Log4jContextFactory() {
         String sel = System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR);
@@ -55,7 +58,18 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     public LoggerContext getContext(String fqcn, boolean currentContext) {
-        return selector.getContext(fqcn, currentContext);
-
+        LoggerContext ctx = selector.getContext(fqcn, currentContext);
+        synchronized (ctx) {
+            if (recursive.get() != null || ctx.isStarted()) {
+                return ctx;
+            }
+            try {
+                recursive.set(this);
+                ctx.start();
+                return ctx;
+            } finally {
+                recursive.remove();
+            }
+        }
     }
 }
