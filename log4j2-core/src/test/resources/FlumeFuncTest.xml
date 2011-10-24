@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="error" name="Flume">
+  <Filters>
+    <Marker marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
+  </Filters>
+  <Appenders>
+    <Flume name="eventLogger" suppressExceptions="false" mdcPrefix="." compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" mdcId="RequestContext" appName="MyApp"/>
+    </Flume>
+    <Console name="console">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36}:%L %M - %msg%n"/>
+    </Console>
+  </Appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="console"/>
+    </root>
+  </loggers>
+
+</configuration>
