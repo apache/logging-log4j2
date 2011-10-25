@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.TimestampMessage;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -88,7 +89,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         this.throwable = t == null ? null : new ThrowableProxy(t);
         this.mdc = mdc;
         this.ndc = ndc;
-        this.timestamp = timestamp;
+        this.timestamp = message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestamp;
         this.threadName = threadName;
         this.location = location;
         if (message != null && message instanceof LoggerNameAwareMessage) {

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.util.ArrayList;
@@ -108,6 +109,9 @@ public class Logger extends AbstractLogger {
 
     @Override
     public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+        if (data == null) {
+            data = new SimpleMessage("");
+        }
         config.loggerConfig.log(name, marker, fqcn, level, data, t);
     }
 
