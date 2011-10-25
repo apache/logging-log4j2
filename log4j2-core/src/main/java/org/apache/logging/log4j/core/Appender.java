@@ -66,12 +66,6 @@ public interface Appender extends Lifecycle {
     boolean requiresLayout();
 
     /**
-     * Returns a Filter if one is present.
-     * @return the Filter or null if no Filter is associated with the Appender.
-     */
-    Filter getFilter();
-
-    /**
      * If set to true any exceptions thrown by the Appender will be logged but not thrown.
      * @return true if Exceptions should be suppressed, false otherwise.
      */
