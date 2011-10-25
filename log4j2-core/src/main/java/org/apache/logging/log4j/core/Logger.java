@@ -20,10 +20,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -178,7 +181,16 @@ public class Logger extends AbstractLogger {
      * @return An Iterator over all the Filters associated with the Logger.
      */
     public Iterator<Filter> getFilters() {
-        return config.loggerConfig.getFilters();
+        Filter filter = config.loggerConfig.getFilter();
+        if (filter == null) {
+            return new ArrayList<Filter>().iterator();
+        } else if (filter instanceof CompositeFilter) {
+            return ((CompositeFilter) filter).iterator();
+        } else {
+            List<Filter> filters = new ArrayList<Filter>();
+            filters.add(filter);
+            return filters.iterator();
+        }
     }
 
     /**
@@ -186,7 +198,13 @@ public class Logger extends AbstractLogger {
      * @return The number of Filters associated with the Logger.
      */
     public int filterCount() {
-        return config.loggerConfig.filterCount();
+        Filter filter = config.loggerConfig.getFilter();
+        if (filter == null) {
+            return 0;
+        } else if (filter instanceof CompositeFilter) {
+            return ((CompositeFilter) filter).size();
+        }
+        return 1;
     }
 
     /**
@@ -270,14 +288,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -285,14 +300,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Throwable t) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, t);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -300,14 +312,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, p1);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, p1);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -315,14 +324,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -330,14 +336,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -346,14 +349,11 @@ public class Logger extends AbstractLogger {
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
                        Object... params) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3, params);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3, params);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -361,14 +361,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, Object msg, Throwable t) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, t);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 
@@ -376,14 +373,11 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, Message msg, Throwable t) {
-            if (config.hasFilters()) {
-                Iterator<Filter> iter = config.getFilters();
-                while (iter.hasNext()) {
-                    Filter filter = iter.next();
-                    Filter.Result r = filter.filter(logger, level, marker, msg, t);
-                    if (r != Filter.Result.NEUTRAL) {
-                        return r == Filter.Result.ACCEPT;
-                    }
+            Filter filter = config.getFilter();
+            if (filter != null) {
+                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
                 }
             }
 

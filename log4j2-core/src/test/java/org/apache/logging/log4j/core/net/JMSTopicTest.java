@@ -26,8 +26,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.JMSTopicAppender;
 import org.apache.logging.log4j.core.appender.ListAppender;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.FilterBase;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -95,11 +95,11 @@ public class JMSTopicTest {
     public void testServer() throws Exception {
         Filter clientFilter = new MessageFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        Filters clientFilters = Filters.createFilters(new Filter[] {clientFilter});
+        CompositeFilter clientFilters = CompositeFilter.createFilters(new Filter[]{clientFilter});
         JMSTopicAppender appender = JMSTopicAppender.createAppender(null, null, null, null, null, FACTORY_NAME,
                 TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
-        Filters serverFilters = Filters.createFilters(new Filter[] {serverFilter});
+        CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         PatternLayout layout = new PatternLayout("%m %ex%n");

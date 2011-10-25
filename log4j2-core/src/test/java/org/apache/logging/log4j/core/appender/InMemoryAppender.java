@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.filter.Filters;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 import java.io.ByteArrayOutputStream;
 
@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class InMemoryAppender extends OutputStreamAppender {
 
-    public InMemoryAppender(String name, Layout layout, Filters filters, boolean handleException) {
+    public InMemoryAppender(String name, Layout layout, CompositeFilter filters, boolean handleException) {
         super(name, layout, filters, handleException, true, new InMemoryManager(name));
     }
 

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.message.Message;
  *
  * The default Level is ERROR.
  */
-@Plugin(name="Threshold", type="Core", elementType="filter")
+@Plugin(name="ThresholdFilter", type="Core", elementType="filter", printObject=true)
 public class ThresholdFilter extends FilterBase {
 
     private static final String LEVEL = "level";
@@ -64,6 +64,10 @@ public class ThresholdFilter extends FilterBase {
 
     private Result filter(Level level) {
         return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
+    }
+
+    public String toString() {
+        return level.toString();
     }
 
     @PluginFactory

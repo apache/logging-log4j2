@@ -4,7 +4,7 @@
     <property name="filename">target/rolling2/rollingtest.log</property>
   </properties>
   <filters>
-    <Threshold level="debug"/>
+    <ThresholdFilter level="debug"/>
   </filters>
 
   <appenders>
@@ -19,7 +19,7 @@
     </RollingFile>
     <List name="List">
       <filters>
-        <Threshold level="error"/>
+        <ThresholdFilter level="error"/>
       </filters>
     </List>
   </appenders>

@@ -16,14 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.filter.Filters;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -61,9 +57,9 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    public OutputStreamAppender(String name, Layout layout, Filters filters, boolean handleException,
+    public OutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
                                 boolean immediateFlush, OutputStreamManager manager) {
-        super(name, filters, layout, handleException);
+        super(name, filter, layout, handleException);
         if (layout != null) {
             manager.setHeader(layout.getHeader());
             manager.setFooter(layout.getFooter());

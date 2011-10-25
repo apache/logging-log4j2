@@ -22,11 +22,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 /**
  *
@@ -36,9 +31,9 @@ public class FileAppender extends OutputStreamAppender {
 
     public final String fileName;
 
-    public FileAppender(String name, Layout layout, Filters filters, FileManager manager, String filename,
+    public FileAppender(String name, Layout layout, Filter filter, FileManager manager, String filename,
                         boolean handleException, boolean immediateFlush) {
-        super(name, layout, filters, handleException, immediateFlush, manager);
+        super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = filename;
     }
 
@@ -51,7 +46,7 @@ public class FileAppender extends OutputStreamAppender {
                                               @PluginAttr("suppressExceptions") String suppress,
                                               @PluginAttr("bufferedIO") String bufferedIO,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filters filters) {
+                                              @PluginElement("filters") Filter filter) {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
         boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
@@ -79,6 +74,6 @@ public class FileAppender extends OutputStreamAppender {
         if (manager == null) {
             return null;
         }
-        return new FileAppender(name, layout, filters, manager, fileName, handleExceptions, isFlush);
+        return new FileAppender(name, layout, filter, manager, fileName, handleExceptions, isFlush);
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -23,7 +24,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
@@ -40,9 +40,9 @@ public class SyslogAppender extends SocketAppender {
 
     public static final String RFC5424 = "RFC5424";
 
-    public SyslogAppender(String name, Layout layout, Filters filters,
+    public SyslogAppender(String name, Layout layout, Filter filter,
                           boolean handleException, boolean immediateFlush, AbstractSocketManager manager) {
-        super(name, layout, filters, manager, handleException, immediateFlush);
+        super(name, layout, filter, manager, handleException, immediateFlush);
 
     }
 
@@ -67,7 +67,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("mdcIncludes") String includes,
                                                 @PluginAttr("mdcRequired") String required,
                                                 @PluginAttr("format") String format,
-                                                @PluginElement("filters") Filters filters,
+                                                @PluginElement("filters") Filter filter,
                                                 @PluginConfiguration Configuration config,
                                                 @PluginAttr("charset") String charset) {
 
@@ -97,7 +97,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
 
-        return new SyslogAppender(name, layout, filters, handleExceptions, isFlush, manager);
+        return new SyslogAppender(name, layout, filter, handleExceptions, isFlush, manager);
     }
 
 

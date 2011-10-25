@@ -23,12 +23,9 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,8 +53,8 @@ public class ListAppender extends AppenderBase {
         raw = false;
     }
 
-    public ListAppender(String name, Filters filters, Layout layout, boolean newline, boolean raw) {
-        super(name, filters, layout);
+    public ListAppender(String name, Filter filter, Layout layout, boolean newline, boolean raw) {
+        super(name, filter, layout);
         this.newLine = newline;
         this.raw = raw;
         if (layout != null && !(layout instanceof SerializedLayout)) {
@@ -145,7 +142,7 @@ public class ListAppender extends AppenderBase {
                                               @PluginAttr("entryPerNewLine") String newLine,
                                               @PluginAttr("raw") String raw,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filters filters) {
+                                              @PluginElement("filters") Filter filter) {
 
         if (name == null) {
             logger.error("No name provided for ListAppender");
@@ -155,6 +152,6 @@ public class ListAppender extends AppenderBase {
         boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
         boolean r = (raw == null) ? false : Boolean.parseBoolean(raw);
 
-        return new ListAppender(name, filters, layout, nl, r);
+        return new ListAppender(name, filter, layout, nl, r);
     }
 }

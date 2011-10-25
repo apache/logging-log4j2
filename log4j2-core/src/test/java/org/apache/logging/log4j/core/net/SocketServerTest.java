@@ -26,28 +26,18 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ListAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.FilterBase;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.net.SocketServer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -102,11 +92,11 @@ public class SocketServerTest {
     public void testServer() throws Exception {
         Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        Filters socketFilters = Filters.createFilters(new Filter[] {socketFilter});
+        CompositeFilter socketFilters = CompositeFilter.createFilters(new Filter[]{socketFilter});
         SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
             "Test", null, null, null, socketFilters);
         appender.start();
-        Filters serverFilters = Filters.createFilters(new Filter[] {serverFilter});
+        CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         appender.start();
         PatternLayout layout = new PatternLayout("%m %ex%n");

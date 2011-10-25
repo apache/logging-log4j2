@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -29,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.Filterable;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrLookup;
@@ -93,11 +93,14 @@ public class BaseConfiguration extends Filterable implements Configuration {
         pluginManager.collectPlugins();
         setup();
         doConfigure();
+        for (LoggerConfig logger: loggers.values()) {
+            logger.startFilter();
+        }
         for (Appender appender : appenders.values()) {
             appender.start();
         }
 
-        startFilters();
+        startFilter();
     }
 
     /**
@@ -106,11 +109,12 @@ public class BaseConfiguration extends Filterable implements Configuration {
     public void stop() {
         for (LoggerConfig logger : loggers.values()) {
             logger.clearAppenders();
+            logger.stopFilter();
         }
         for (Appender appender : appenders.values()) {
             appender.stop();
         }
-        stopFilters();
+        stopFilter();
     }
 
     protected void setup() {
@@ -145,8 +149,8 @@ public class BaseConfiguration extends Filterable implements Configuration {
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
-            } else if (child.getName().equalsIgnoreCase("filters")) {
-                setFilters((Filters) child.getObject());
+            } else if (child.getObject() instanceof Filter) {
+                addFilter((Filter) child.getObject());
             } else if (child.getName().equalsIgnoreCase("loggers")) {
                 Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
@@ -180,6 +184,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     logger.error("Unable to locate appender " + ref + " for logger " + l.getName());
                 }
             }
+
         }
 
         setParents();
@@ -288,6 +293,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         String name = logger.getName();
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
+
             lc.addFilter(filter);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
@@ -637,7 +643,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                             PluginType childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
-                                sb.append(child.toString());
+                                sb.append(child.getName()).append("(").append(child.toString()).append(")");
                                 present = true;
                                 used.add(child);
                                 parms[index] = child.getObject();
@@ -683,8 +689,9 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 if (used.contains(child)) {
                     continue;
                 }
-
-                logger.error("node.getName()" + " contains invalid element " + child.getName());
+                String nodeType = node.getType().getElementName();
+                String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + " " + node.getName();
+                logger.error(start + " has no parameter that matches element " + child.getName());
             }
         }
 

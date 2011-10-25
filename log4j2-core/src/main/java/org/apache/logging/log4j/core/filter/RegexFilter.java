@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * (false). The default is false.
  *
  */
-@Plugin(name="Regex", type="Core", elementType="filter")
+@Plugin(name="RegexFilter", type="Core", elementType="filter", printObject = true)
 public class RegexFilter extends FilterBase {
 
     private final Pattern pattern;
@@ -73,6 +73,13 @@ public class RegexFilter extends FilterBase {
         }
         Matcher m = pattern.matcher(msg);
         return m.matches() ? onMatch : onMismatch;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("useRaw=").append(useRawMessage);
+        sb.append(", pattern=").append(pattern.toString());
+        return sb.toString();
     }
 
     @PluginFactory

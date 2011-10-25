@@ -4,7 +4,10 @@
   <xs:complexType name="configurationType">
     <xs:sequence>
       <xs:element type="propertiesType" name="properties"/>
-      <xs:element type="filtersType" name="filters"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element type="filtersType" name="filters"/>
+        <xs:element type="filterType" name="filter"/>
+      </xs:choice>
       <xs:element type="appendersType" name="appenders"/>
       <xs:element type="loggersType" name="loggers"/>
     </xs:sequence>
@@ -21,7 +24,10 @@
   <xs:complexType name="appenderType">
     <xs:sequence>
       <xs:element type="layoutType" name="layout" minOccurs="0"/>
-      <xs:element type="filtersType" name="filters" minOccurs="0"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element type="filtersType" name="filters"/>
+        <xs:element type="filterType" name="filter"/>
+      </xs:choice>
     </xs:sequence>
     <xs:attribute type="xs:string" name="type" use="required"/>
     <xs:attribute type="xs:string" name="name" use="required"/>
@@ -62,7 +68,10 @@
   </xs:complexType>
   <xs:complexType name="loggerType">
     <xs:sequence>
-      <xs:element type="filtersType" name="filters" minOccurs="0"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element type="filtersType" name="filters"/>
+        <xs:element type="filterType" name="filter"/>
+      </xs:choice>
       <xs:element type="appender-refType" name="appender-ref"/>
     </xs:sequence>
     <xs:attribute type="xs:string" name="name" use="required"/>

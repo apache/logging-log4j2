@@ -31,7 +31,7 @@ import org.apache.logging.log4j.message.Message;
  * configured marker as a parent.
  *
  */
-@Plugin(name="Marker", type="Core", elementType="filter", printObject=true)
+@Plugin(name="MarkerFilter", type="Core", elementType="filter", printObject=true)
 public class MarkerFilter extends FilterBase {
 
     private static final String LEVEL = "level";

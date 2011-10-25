@@ -34,7 +34,7 @@ import java.util.TimeZone;
 /**
  * Filters events that fall within a specified time period in each day.
  */
-@Plugin(name="Time", type="Core", elementType="filter")
+@Plugin(name="TimeFilter", type="Core", elementType="filter", printObject = true)
 public class TimeFilter extends FilterBase {
     /**
      * Starting offset from midnight in milliseconds.
@@ -85,6 +85,14 @@ public class TimeFilter extends FilterBase {
             calendar.get(Calendar.SECOND) * SECOND_MS +
             calendar.get(Calendar.MILLISECOND);
         return (apparentOffset >= start && apparentOffset < end) ? onMatch : onMismatch;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("start=").append(start);
+        sb.append(", end=").append(end);
+        sb.append(", timezone=").append(timezone.toString());
+        return sb.toString();
     }
 
     @PluginFactory

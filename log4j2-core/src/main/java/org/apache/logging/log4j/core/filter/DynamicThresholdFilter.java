@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name="StructuredData", type="Core", elementType="filter")
+@Plugin(name="DynamicThresholdFilter", type="Core", elementType="filter", printObject = true)
 public class DynamicThresholdFilter extends FilterBase {
     private Map<String, Level> levelMap = new HashMap<String, Level>();
     private Level defaultThreshold = Level.ERROR;
@@ -82,6 +82,25 @@ public class DynamicThresholdFilter extends FilterBase {
         }
         return Result.NEUTRAL;
 
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key=").append(key);
+        sb.append(", default=").append(defaultThreshold);
+        if (levelMap.size() > 0) {
+            sb.append("{");
+            boolean first = true;
+            for (Map.Entry<String, Level> entry : levelMap.entrySet()) {
+                if (!first) {
+                    sb.append(", ");
+                    first = false;
+                }
+                sb.append(entry.getKey()).append("=").append(entry.getValue());
+            }
+            sb.append("}");
+        }
+        return sb.toString();
     }
 
     @PluginFactory

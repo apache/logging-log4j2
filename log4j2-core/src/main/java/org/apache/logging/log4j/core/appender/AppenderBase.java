@@ -18,11 +18,11 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.filter.Filterable;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.Logger;
 
@@ -52,15 +52,15 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
 
     public static final String NAME = "name";
 
-    public AppenderBase(String name, Filters filters, Layout layout) {
-        this(name, filters, layout, true);
+    public AppenderBase(String name, Filter filter, Layout layout) {
+        this(name, filter, layout, true);
     }
 
-    public AppenderBase(String name, Filters filters, Layout layout, boolean handleException) {
+    public AppenderBase(String name, Filter filter, Layout layout, boolean handleException) {
+        super(filter);
         this.name = name;
         this.layout = layout;
         this.handleException = handleException;
-        setFilters(filters);
     }
 
     public ErrorHandler getHandler() {
@@ -114,13 +114,13 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
             logger.error("A layout is required and none was provided");
             return;
         }
-        startFilters();
+        startFilter();
         this.started = true;
     }
 
     public void stop() {
         this.started = false;
-        stopFilters();
+        stopFilter();
     }
 
     public boolean isStarted() {

@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name="StructuredData", type="Core", elementType="filter")
+@Plugin(name="StructuredDataFilter", type="Core", elementType="filter", printObject=true)
 public class StructuredDataFilter extends FilterBase {
     private final Map<String, Object> map;
 
@@ -84,6 +84,24 @@ public class StructuredDataFilter extends FilterBase {
             }
         }
         return match ? onMatch : onMismatch;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("isAnd=").append(isAnd);
+        if (map.size() > 0) {
+            sb.append(", {");
+            boolean first = true;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                if (!first) {
+                    sb.append(", ");
+                }
+                first = false;
+                sb.append(entry.getKey()).append("=").append(entry.getValue());
+            }
+            sb.append("}");
+        }
+        return sb.toString();
     }
 
     @PluginFactory

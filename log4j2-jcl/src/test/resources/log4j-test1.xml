@@ -3,9 +3,7 @@
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
-  <filters>
-    <Threshold level="trace"/>
-  </filters>
+  <ThresholdFilter level="trace"/>
 
   <appenders>
     <List name="EventLogger">

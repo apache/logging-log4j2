@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 
 import java.io.OutputStream;
 
@@ -56,14 +56,14 @@ public class ConsoleAppender extends OutputStreamAppender {
         this(name, layout, null, getManager(Target.SYSTEM_OUT), handleExceptions);
     }
 
-    public ConsoleAppender(String name, Layout layout, Filters filters, OutputStreamManager manager,
+    public ConsoleAppender(String name, Layout layout, Filter filter, OutputStreamManager manager,
                            boolean handleExceptions) {
-        super(name, layout, filters, handleExceptions, true, manager);
+        super(name, layout, filter, handleExceptions, true, manager);
     }
 
     @PluginFactory
     public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
-                                                 @PluginElement("filters") Filters filters,
+                                                 @PluginElement("filters") Filter filter,
                                                  @PluginAttr("target") String t,
                                                  @PluginAttr("name") String name,
                                                  @PluginAttr("suppressExceptions") String suppress) {
@@ -73,7 +73,7 @@ public class ConsoleAppender extends OutputStreamAppender {
         }
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, filters, getManager(target), handleExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(target), handleExceptions);
     }
 
     private static OutputStreamManager getManager(Target target) {

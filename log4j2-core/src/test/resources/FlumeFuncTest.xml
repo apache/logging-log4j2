@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration packages="" status="error" name="Flume">
-  <Filters>
-    <Marker marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
-  </Filters>
+  <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
   <Appenders>
     <Flume name="eventLogger" suppressExceptions="false" mdcPrefix="." compress="true">
       <Agent host="192.168.10.101" port="8800"/>

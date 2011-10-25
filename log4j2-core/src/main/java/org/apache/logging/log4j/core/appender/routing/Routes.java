@@ -49,7 +49,7 @@ public class Routes {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder("Routes={");
+        StringBuilder sb = new StringBuilder("{");
         boolean first = true;
         for (Route route : routes) {
             if ((!first)) {

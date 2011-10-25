@@ -1,6 +1,7 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
 
 import java.util.Iterator;
 
@@ -10,7 +11,7 @@ import java.util.Iterator;
 public interface Filtering {
 
     /**
-     * Adds a new Filter.
+     * Adds a new Filter. If a Filter already exists it is converted to a CompositeFilter.
      * @param filter The Filter to add.
      */
     void addFilter(Filter filter);
@@ -22,25 +23,21 @@ public interface Filtering {
     void removeFilter(Filter filter);
 
     /**
-     * Removes all Filters.
-     */
-    void clearFilters();
-
-    /**
      * Returns an Iterator for all the Filters.
      * @return an Iterator for all the Filters.
      */
-    Iterator<Filter> getFilters();
+    Filter getFilter();
 
     /**
-     * Determins if any Filters are present.
-     * @return true if any Filters are present, false otherwise.
+     * Determine if a Filter is present.
+     * @return true if a Filter is present, false otherwise.
      */
-    boolean hasFilters();
+    boolean hasFilter();
 
     /**
-     * Returns the number of Filters associated with the Object.
-     * @return the number of Filters associated with the Object.
+     * Determines if the event should be filtered.
+     * @param event The LogEvent.
+     * @return true if the event should be filtered, false otherwise.
      */
-    int filterCount();
+    boolean isFiltered(LogEvent event);
 }

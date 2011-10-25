@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +48,7 @@ public class RoutingAppender extends AppenderBase {
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
 
-    private RoutingAppender(String name, Filters filters, boolean handleException, Routes routes,
+    private RoutingAppender(String name, CompositeFilter filters, boolean handleException, Routes routes,
                             Configuration config) {
         super(name, filters, null, handleException);
         this.routes = routes;
@@ -162,7 +162,7 @@ public class RoutingAppender extends AppenderBase {
                                           @PluginAttr("suppressExceptions") String suppress,
                                           @PluginElement("routes") Routes routes,
                                           @PluginConfiguration Configuration config,
-                                          @PluginElement("filters") Filters filters) {
+                                          @PluginElement("filters") CompositeFilter filters) {
 
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 

@@ -54,14 +54,7 @@ public class BurstFilterTest {
         for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("ListAppender")) {
                 app = (ListAppender) entry.getValue();
-                Iterator<Filter> iter = app.getFilters();
-                while (iter.hasNext()) {
-                    Filter f = iter.next();
-                    if (f instanceof BurstFilter) {
-                        filter = (BurstFilter) f;
-                        break;
-                    }
-                }
+                filter = (BurstFilter) app.getFilter();
                 break;
             }
         }

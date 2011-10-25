@@ -3,18 +3,14 @@
   <properties>
     <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
   </properties>
-  <filters>
-    <Threshold level="debug"/>
-  </filters>
+  <ThresholdFilter level="debug"/>
 
   <appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <List name="List">
-      <filters>
-        <Threshold level="debug"/>
-      </filters>
+      <ThresholdFilter level="debug"/>
     </List>
     <Routing name="Routing">
       <Routes pattern="$${sd:type}">

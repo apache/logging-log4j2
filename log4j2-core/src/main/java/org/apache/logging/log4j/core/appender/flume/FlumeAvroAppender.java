@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.flume;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderBase;
@@ -23,7 +24,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
 import java.net.InetAddress;
@@ -52,10 +52,10 @@ public class FlumeAvroAppender extends AppenderBase {
 
     private final int retries;
 
-    private FlumeAvroAppender(String name, Filters filters, Layout layout, boolean handleException,
+    private FlumeAvroAppender(String name, Filter filter, Layout layout, boolean handleException,
                               String hostname, String includes, String excludes, String required, String mdcPrefix,
                               String eventPrefix, boolean compress, int delay, int retries, FlumeAvroManager manager) {
-        super(name, filters, layout, handleException);
+        super(name, filter, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
         this.mdcExcludes = excludes;
@@ -95,7 +95,7 @@ public class FlumeAvroAppender extends AppenderBase {
                                                    @PluginAttr("eventPrefix") String eventPrefix,
                                                    @PluginAttr("compress") String compressBody,
                                                    @PluginElement("layout") Layout layout,
-                                                   @PluginElement("filters") Filters filters) {
+                                                   @PluginElement("filters") Filter filter) {
 
         String hostname;
         try {
@@ -129,7 +129,7 @@ public class FlumeAvroAppender extends AppenderBase {
         if (manager == null) {
             return null;
         }
-        return new FlumeAvroAppender(name, filters, layout,  handleExceptions, hostname, includes,
+        return new FlumeAvroAppender(name, filter, layout,  handleExceptions, hostname, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, manager);
     }
 }

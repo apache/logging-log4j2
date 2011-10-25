@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
  * </code><br>
  */
 
-@Plugin(name = "Burst", type = "Core", elementType = "filter")
+@Plugin(name = "BurstFilter", type = "Core", elementType = "filter", printObject = true)
 public class BurstFilter extends FilterBase {
 
     private static final long NANOS_IN_SECONDS =  1000000000;
@@ -147,6 +147,10 @@ public class BurstFilter extends FilterBase {
             history.remove(delay);
             available.add(delay);
         }
+    }
+
+    public String toString() {
+        return "level=" + level.toString() + ", interval=" + burstInterval + ", max=" + history.size();
     }
 
     /**

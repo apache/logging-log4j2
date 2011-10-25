@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSQueueManager;
 
@@ -34,9 +34,9 @@ public class JMSQueueAppender extends AppenderBase {
 
     private final JMSQueueManager manager;
 
-    public JMSQueueAppender(String name, Filters filters, Layout layout, JMSQueueManager manager,
+    public JMSQueueAppender(String name, Filter filter, Layout layout, JMSQueueManager manager,
                             boolean handleExceptions) {
-        super(name, filters, layout, handleExceptions);
+        super(name, filter, layout, handleExceptions);
         this.manager = manager;
     }
 
@@ -64,7 +64,7 @@ public class JMSQueueAppender extends AppenderBase {
                                                   @PluginAttr("userName") String userName,
                                                   @PluginAttr("password") String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") Filters filters,
+                                                  @PluginElement("filters") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
 
         String name = "JMSQueue" + factoryBindingName + "." + queueBindingName;
@@ -77,6 +77,6 @@ public class JMSQueueAppender extends AppenderBase {
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
-        return new JMSQueueAppender(name, filters, layout, manager, handleExceptions);
+        return new JMSQueueAppender(name, filter, layout, manager, handleExceptions);
     }
 }

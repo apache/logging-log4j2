@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 
 /**
  *
@@ -41,9 +41,9 @@ public class RollingFileAppender extends OutputStreamAppender {
     private final boolean bufferedIO;
 
     public RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
-                               Filters filters, RollingFileManager manager, String fileName, String filePattern,
+                               Filter filter, RollingFileManager manager, String fileName, String filePattern,
                                boolean handleException, boolean immediateFlush, boolean isBuffered) {
-        super(name, layout, filters, handleException, immediateFlush, manager);
+        super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = fileName;
         this.filePattern = filePattern;
         this.policy = policy;
@@ -73,7 +73,7 @@ public class RollingFileAppender extends OutputStreamAppender {
                                               @PluginElement("policy") TriggeringPolicy policy,
                                               @PluginElement("strategy") RolloverStrategy strategy,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filters filters,
+                                              @PluginElement("filter") Filter filter,
                                               @PluginAttr("suppressExceptions") String suppress) {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
@@ -110,7 +110,7 @@ public class RollingFileAppender extends OutputStreamAppender {
             return null;
         }
 
-        return new RollingFileAppender(name, layout, policy, strategy, filters, manager, fileName, filePattern,
+        return new RollingFileAppender(name, layout, policy, strategy, filter, manager, fileName, filePattern,
             handleExceptions, isFlush, isBuffered);
     }
 }

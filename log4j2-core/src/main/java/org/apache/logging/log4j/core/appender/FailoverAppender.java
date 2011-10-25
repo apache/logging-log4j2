@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +51,9 @@ public class FailoverAppender extends AppenderBase {
     private List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
 
-    public FailoverAppender(String name, Filters filters, String primary, String[] failovers,
+    public FailoverAppender(String name, Filter filter, String primary, String[] failovers,
                             Configuration config, boolean handleExceptions) {
-        super(name, filters, null, handleExceptions);
+        super(name, filter, null, handleExceptions);
         this.primaryRef = primary;
         this.failovers = failovers;
         this.config = config;
@@ -138,7 +138,7 @@ public class FailoverAppender extends AppenderBase {
                                                   @PluginAttr("primary") String primary,
                                                   @PluginElement("failovers") String[] failovers,
                                                   @PluginConfiguration Configuration config,
-                                                  @PluginElement("filters") Filters filters,
+                                                  @PluginElement("filters") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
         if (name == null) {
             logger.error("A name for the Appender must be specified");
@@ -155,6 +155,6 @@ public class FailoverAppender extends AppenderBase {
 
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new FailoverAppender(name, filters, primary, failovers, config, handleExceptions);
+        return new FailoverAppender(name, filter, primary, failovers, config, handleExceptions);
     }
 }

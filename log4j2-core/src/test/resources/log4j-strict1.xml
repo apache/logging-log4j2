@@ -3,23 +3,21 @@
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
-  <filters>
-    <filter type="Threshold" level="trace"/>
-  </filters>
+  <filter type="ThresholdFilter" level="trace"/>
 
   <appenders>
     <appender type="Console" name="STDOUT">
       <layout type="PatternLayout" pattern="%m MDC%X%n"/>
       <filters>
-        <filter type="Marker" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
-        <filter type="Marker" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+        <filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
       </filters>
     </appender>
     <appender type="Console" name="FLOW">
       <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
       <filters>
-        <filter type="Marker" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
-        <filter type="Marker" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+        <filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
       </filters>
     </appender>
     <appender type="File" name="File" fileName="${filename}">
@@ -33,11 +31,9 @@
 
   <loggers>
     <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <filters>
-        <filter type="ThreadContextMap">
-          <KeyValuePair key="test" value="123"/>
-        </filter>
-      </filters>
+      <filter type="ThreadContextMapFilter">
+        <KeyValuePair key="test" value="123"/>
+      </filter>
       <appender-ref ref="STDOUT"/>
     </logger>>
 

@@ -25,69 +25,71 @@ import java.util.Iterator;
 /**
  *
  */
-public class Filterable {
-    private volatile Filters filters = Filters.EMPTY_FILTERS;
+public class Filterable implements Filtering {
+
+    private volatile Filter filter = null;
+
+    protected Filterable(Filter filter) {
+        this.filter = filter;
+    }
+
+    protected Filterable() {
+    }
+
+    /**
+     * Return the Filter
+     * @return the Filter.
+     */
+    public Filter getFilter() {
+        return filter;
+    }
 
     public synchronized void addFilter(Filter filter) {
-        filters = filters.addFilter(filter);
+        if (this.filter == null) {
+            this.filter = filter;
+        } else if (filter instanceof CompositeFilter) {
+            this.filter = ((CompositeFilter) this.filter).addFilter(filter);
+        } else {
+            Filter[] filters = new Filter[] {this.filter, filter};
+            this.filter = CompositeFilter.createFilters(filters);
+        }
     }
 
     public synchronized void removeFilter(Filter filter) {
-        filters = filters.removeFilter(filter);
-    }
-
-    public synchronized void clearFilters() {
-        filters = Filters.EMPTY_FILTERS;
-    }
-
-    public Iterator<Filter> getFilters() {
-        return filters.iterator();
-    }
-
-    public boolean hasFilters() {
-        return filters.hasFilters();
-    }
-
-    public int filterCount() {
-        return filters.size();
-    }
-
-    protected void startFilters() {
-        Filters f = filters;
-        if (f.hasFilters()) {
-            for (Filter filter : f) {
-                if ((filter instanceof Lifecycle)) {
-                    ((Lifecycle)filter).start();
-                }
+        if (this.filter == filter) {
+            this.filter = null;
+        } else if (filter instanceof CompositeFilter) {
+            CompositeFilter composite = (CompositeFilter) filter;
+            composite = composite.removeFilter(filter);
+            if (composite.size() > 1) {
+                this.filter = composite;
+            } else if (composite.size() == 1) {
+                Iterator<Filter> iter = composite.iterator();
+                this.filter = iter.next();
+            } else {
+                this.filter = null;
             }
         }
     }
 
-    protected void stopFilters() {
-        Filters f = filters;
-        if (f.hasFilters()) {
-            for (Filter filter : f) {
-                if ((filter instanceof Lifecycle)) {
-                    ((Lifecycle)filter).stop();
-                }
-            }
-        }
+    public boolean hasFilter() {
+        return filter != null;
     }
 
-    protected synchronized void setFilters(Filters newFilters) {
-        filters = newFilters == null ? Filters.EMPTY_FILTERS : newFilters;
+    public void startFilter() {
+       if (filter != null && filter instanceof Lifecycle) {
+           ((Lifecycle) filter).start();
+       }
     }
 
-    protected boolean isFiltered(LogEvent event) {
-        Filters f = filters;
-        if (f.hasFilters()) {
-            for (Filter filter : f) {
-                if (filter.filter(event) == Filter.Result.DENY) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public void stopFilter() {
+       if (filter != null && filter instanceof Lifecycle) {
+           ((Lifecycle) filter).stop();
+       }
+    }
+
+    public boolean isFiltered(LogEvent event) {
+        return filter != null && filter.filter(event) == Filter.Result.DENY;
     }
 
 }

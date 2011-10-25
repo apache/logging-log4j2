@@ -21,6 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.filter.Filterable;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.message.Message;
 
@@ -79,12 +79,12 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.additive = additive;
     }
 
-    protected LoggerConfig(String name, List<String> appenders, Filters filters, Level level,
+    protected LoggerConfig(String name, List<String> appenders, Filter filter, Level level,
                            boolean additive) {
+        super(filter);
         this.logEventFactory = this;
         this.name = name;
         this.appenderRefs = appenders;
-        setFilters(filters);
         this.level = level;
         this.additive = additive;
     }
@@ -274,7 +274,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * @param loggerLevel The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param refs An array of Appender names.
-     * @param filters A container for Filters.
+     * @param filter A Filter.
      * @return A new LoggerConfig.
      */
     @PluginFactory
@@ -282,7 +282,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginAttr("name") String loggerName,
                                             @PluginElement("appender-ref") String[] refs,
-                                            @PluginElement("filters") Filters filters) {
+                                            @PluginElement("filters") Filter filter) {
         if (loggerName == null) {
             logger.error("Loggers cannot be configured without a name");
             return null;
@@ -293,7 +293,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         String name = loggerName.equals("root") ? "" : loggerName;
         boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-        return new LoggerConfig(name, appenderRefs, filters, level, additive);
+        return new LoggerConfig(name, appenderRefs, filter, level, additive);
     }
 
     /**
@@ -306,12 +306,12 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginElement("appender-ref") String[] refs,
-                                            @PluginElement("filters") Filters filters) {
+                                            @PluginElement("filters") Filter filter) {
             List<String> appenderRefs = Arrays.asList(refs);
             Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filters, level, additive);
+            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive);
         }
     }
 

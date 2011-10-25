@@ -16,19 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.Filters;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TCPSocketManager;
-
-import java.net.ProtocolException;
 
 /**
  *
@@ -37,9 +35,9 @@ import java.net.ProtocolException;
 public class SocketAppender extends OutputStreamAppender {
 
 
-    public SocketAppender(String name, Layout layout, Filters filters, AbstractSocketManager manager,
+    public SocketAppender(String name, Layout layout, Filter filter, AbstractSocketManager manager,
                           boolean handleException, boolean immediateFlush) {
-        super(name, layout, filters, handleException, immediateFlush, manager);
+        super(name, layout, filter, handleException, immediateFlush, manager);
 
     }
 
@@ -52,7 +50,7 @@ public class SocketAppender extends OutputStreamAppender {
                                                 @PluginAttr("immediateFlush") String immediateFlush,
                                                 @PluginAttr("suppressExceptions") String suppress,
                                                 @PluginElement("layout") Layout layout,
-                                                @PluginElement("filters") Filters filters) {
+                                                @PluginElement("filters") Filter filter) {
 
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
@@ -71,7 +69,7 @@ public class SocketAppender extends OutputStreamAppender {
         if (manager == null) {
             return null;
         }
-        return new SocketAppender(name, layout, filters, manager, handleExceptions, isFlush);
+        return new SocketAppender(name, layout, filter, manager, handleExceptions, isFlush);
     }
 
     protected static AbstractSocketManager createSocketManager(String protocol, String host, int port, int delay) {

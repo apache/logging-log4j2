@@ -3,9 +3,7 @@
   <properties>
     <property name="filename">target/rolling1/rollingtest.log</property>
   </properties>
-  <filters>
-    <Threshold level="debug"/>
-  </filters>
+  <ThresholdFilter level="debug"/>
 
   <appenders>
     <Console name="STDOUT">
@@ -18,19 +16,15 @@
       <SizeBasedTriggeringPolicy size="500" />
     </RollingFile>
     <List name="List">
-      <filters>
-        <Threshold level="error"/>
-      </filters>
+      <ThresholdFilter level="error"/>
     </List>
   </appenders>
 
   <loggers>
     <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <filters>
-        <ThreadContextMap>
-          <KeyValuePair key="test" value="123"/>
-        </ThreadContextMap>
-      </filters>
+      <ThreadContextMapFilter>
+        <KeyValuePair key="test" value="123"/>
+      </ThreadContextMapFilter>
       <appender-ref ref="STDOUT"/>
     </logger>>
 

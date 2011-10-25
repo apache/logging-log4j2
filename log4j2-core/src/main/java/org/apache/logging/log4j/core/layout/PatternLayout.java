@@ -530,7 +530,7 @@ public class PatternLayout extends AbstractStringLayout {
     }
 
     public String toString() {
-        return "PatternLayout(" + conversionPattern + ")";
+        return conversionPattern;
     }
 
     @PluginFactory

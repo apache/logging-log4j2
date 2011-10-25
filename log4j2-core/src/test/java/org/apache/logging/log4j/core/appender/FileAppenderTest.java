@@ -174,7 +174,7 @@ public class FileAppenderTest {
             Matcher matcher = pattern.matcher(str);
             assertTrue("Bad data: " + str, matcher.matches());
         }
-        assertTrue("Incorrect count: was " + counter + " should be " + counter, count == counter);
+        assertTrue("Incorrect count: was " + counter + " should be " + count, count == counter);
 
     }
 

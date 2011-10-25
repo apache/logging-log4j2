@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="BurstTest">
   <appenders>
-
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>
-      <filters>
-        <Burst level="INFO" rate="33" maxBurst="100"/>
-      </filters>
+      <BurstFilter level="INFO" rate="33" maxBurst="100"/>
     </List>
   </appenders>
 
