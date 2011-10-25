@@ -55,7 +55,7 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private static final String EVENT_ID = "EventId";
 
-    private static final String GUID = "guid";
+    private static final String GUID = "guId";
 
     private final boolean compress;
 
