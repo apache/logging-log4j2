@@ -17,16 +17,12 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
-public class StructuredDataMessage implements FormattedMessage, Serializable {
+public class StructuredDataMessage extends MapMessage implements FormattedMessage, Serializable {
     /**
      * Full message format includes the type and message.
      */
@@ -36,15 +32,11 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
     private static final int MAX_LENGTH = 32;
     private static final int HASHVAL = 31;
 
-    private Map<String, String> data = new HashMap<String, String>();
-
     private StructuredDataId id;
 
     private String message;
 
     private String type;
-
-    private String format = null;
 
     /**
      * Constructor based on a String id.
@@ -53,6 +45,14 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      * @param type The message type.
      */
     public StructuredDataMessage(final String id, final String msg, final String type) {
+        this.id = new StructuredDataId(id, null, null);
+        this.message = msg;
+        this.type = type;
+    }
+
+    public StructuredDataMessage(final String id, final String msg, final String type,
+                                 Map<String, String> data) {
+        super(data);
         this.id = new StructuredDataId(id, null, null);
         this.message = msg;
         this.type = type;
@@ -75,22 +75,6 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      */
     protected StructuredDataMessage() {
 
-    }
-
-    /**
-     * The format String. Specifying "full" will cause the type and message to be included.
-     * @param format The message format.
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    /**
-     * Return the format String.
-     * @return the format String.
-     */
-    public String getFormat() {
-        return this.format;
     }
 
     /**
@@ -131,15 +115,6 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
         }
         this.type = type;
     }
-
-    /**
-     * Return the data elements as if they were parameters on the logging event.
-     * @return the data elements.
-     */
-    public Object[] getParameters() {
-        return data.values().toArray();
-    }
-
     /**
      * Return the message.
      * @return the message.
@@ -152,61 +127,13 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
         this.message = msg;
     }
 
-    /**
-     * Return the message data as an unmodifiable Map.
-     * @return the message data as an unmodifiable map.
-     */
-    public Map<String, String> getData() {
-        return Collections.unmodifiableMap(data);
-    }
 
-    /**
-     * Clear the data.
-     */
-    public void clear() {
-        data.clear();
-    }
-
-    /**
-     * Add an item to the data Map.
-     * @param key The name of the data item.
-     * @param value The value of the data item.
-     */
-    public void put(String key, String value) {
-        if (value == null) {
-            throw new IllegalArgumentException("No value provided for key " + key);
-        }
+    @Override
+    protected void validate(String key, String value) {
         if (value.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data values are limited to 32 characters. key: " + key +
                 " value: " + value);
         }
-        data.put(key, value);
-    }
-
-    /**
-     * Add all the elements from the specified Map.
-     * @param map The Map to add.
-     */
-    public void putAll(Map map) {
-        data.putAll(map);
-    }
-
-    /**
-     * Retrieve the value of the element with the specified key or null if the key is not present.
-     * @param key The name of the element.
-     * @return The value of the element or null if the key is not present.
-     */
-    public String get(String key) {
-        return data.get(key);
-    }
-
-    /**
-     * Remove the element with the specified name.
-     * @param key The name of the element.
-     * @return The previous value of the element.
-     */
-    public String remove(String key) {
-        return data.remove(key);
     }
 
     /**
@@ -214,7 +141,8 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      *
      * @return The formatted String.
      */
-    public final String asString() {
+    @Override
+    public String asString() {
         return asString(FULL, null);
     }
 
@@ -224,6 +152,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
      */
+
     public String asString(String format) {
         return asString(format, null);
     }
@@ -238,7 +167,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      * @return The formatted String.
      */
     public final String asString(String format, StructuredDataId structuredDataId) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean full = FULL.equals(format);
         if (full) {
             String type = getType();
@@ -258,7 +187,8 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
         }
         sb.append("[");
         sb.append(id);
-        appendMap(getData(), sb);
+        sb.append(" ");
+        appendMap(sb);
         sb.append("]");
         if (full) {
             String msg = getMessageFormat();
@@ -273,20 +203,14 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
      * Format the message and return it.
      * @return the formatted message.
      */
+    @Override
     public String getFormattedMessage() {
         return asString(FULL, null);
     }
 
-    private void appendMap(Map map, StringBuffer sb) {
-        SortedMap<String, Object> sorted = new TreeMap<String, Object>(map);
-        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
-            sb.append(" ");
-            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
-        }
-    }
-
+    @Override
     public String toString() {
-        return asString((String) null);
+        return asString(null);
     }
 
     public boolean equals(Object o) {
@@ -299,7 +223,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
 
         StructuredDataMessage that = (StructuredDataMessage) o;
 
-        if (data != null ? !data.equals(that.data) : that.data != null) {
+        if (!super.equals(o)) {
             return false;
         }
         if (type != null ? !type.equals(that.type) : that.type != null) {
@@ -316,7 +240,7 @@ public class StructuredDataMessage implements FormattedMessage, Serializable {
     }
 
     public int hashCode() {
-        int result = data != null ? data.hashCode() : 0;
+        int result = super.hashCode();
         result = HASHVAL * result + (type != null ? type.hashCode() : 0);
         result = HASHVAL * result + (id != null ? id.hashCode() : 0);
         result = HASHVAL * result + (message != null ? message.hashCode() : 0);
