@@ -49,7 +49,13 @@ public class StructuredDataMessage extends MapMessage implements FormattedMessag
         this.message = msg;
         this.type = type;
     }
-
+    /**
+     * Constructor based on a String id.
+     * @param id The String id.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     */
     public StructuredDataMessage(final String id, final String msg, final String type,
                                  Map<String, String> data) {
         super(data);
@@ -69,6 +75,22 @@ public class StructuredDataMessage extends MapMessage implements FormattedMessag
         this.message = msg;
         this.type = type;
     }
+
+    /**
+     * Constructor based on a StructuredDataId.
+     * @param id The StructuredDataId.
+     * @param msg The message.
+     * @param type The message type.
+     * @param data The StructuredData map.
+     */
+    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
+                                 Map<String, String> data) {
+        super(data);
+        this.id = id;
+        this.message = msg;
+        this.type = type;
+    }
+
 
     /**
      * Constructor based on a StructuredDataMessage.
