@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
@@ -47,12 +49,14 @@ public class RoutingAppender extends AppenderBase {
     private final Routes routes;
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final RewritePolicy rewritePolicy;
 
-    private RoutingAppender(String name, CompositeFilter filters, boolean handleException, Routes routes,
-                            Configuration config) {
-        super(name, filters, null, handleException);
+    private RoutingAppender(String name, Filter filter, boolean handleException, Routes routes,
+                            RewritePolicy rewritePolicy, Configuration config) {
+        super(name, filter, null, handleException);
         this.routes = routes;
         this.config = config;
+        this.rewritePolicy = rewritePolicy;
     }
 
     @Override
@@ -91,6 +95,9 @@ public class RoutingAppender extends AppenderBase {
     }
 
     public void append(LogEvent event) {
+        if (rewritePolicy != null) {
+            event = rewritePolicy.rewrite(event);
+        }
         String key = config.getSubst().replace(event, routes.getPattern());
         AppenderControl control = getControl(key, event);
         if (control != null) {
@@ -162,7 +169,8 @@ public class RoutingAppender extends AppenderBase {
                                           @PluginAttr("suppressExceptions") String suppress,
                                           @PluginElement("routes") Routes routes,
                                           @PluginConfiguration Configuration config,
-                                          @PluginElement("filters") CompositeFilter filters) {
+                                          @PluginElement("rewritePolicy") RewritePolicy rewritePolicy,
+                                          @PluginElement("filters") Filter filter) {
 
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
@@ -174,7 +182,7 @@ public class RoutingAppender extends AppenderBase {
             logger.error("No routes defined for RoutingAppender");
             return null;
         }
-        return new RoutingAppender(name, filters, handleExceptions, routes, config);
+        return new RoutingAppender(name, filter, handleExceptions, routes, rewritePolicy, config);
     }
 
     private static class AppenderWrapper extends AppenderControl {

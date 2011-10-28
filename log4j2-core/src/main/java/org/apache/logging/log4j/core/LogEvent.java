@@ -102,4 +102,10 @@ public interface LogEvent extends Serializable {
      */
     Stack<String> getContextStack();
 
+    /**
+     * Returns the fully qualified class name of the caller of the logging api.
+     * @return The fully qualified class name of the caller.
+     */
+    String getFQCN();
+
 }

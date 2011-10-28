@@ -23,6 +23,8 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.KeyValuePair;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 
@@ -33,18 +35,10 @@ import java.util.Map;
  *
  */
 @Plugin(name="StructuredDataFilter", type="Core", elementType="filter", printObject=true)
-public class StructuredDataFilter extends FilterBase {
-    private final Map<String, Object> map;
+public class StructuredDataFilter extends MapFilter {
 
-    private final boolean isAnd;
-
-    private StructuredDataFilter(Map<String, Object> map, boolean oper, Result onMatch, Result onMismatch) {
-        super(onMatch, onMismatch);
-        if (map == null) {
-            throw new NullPointerException("key cannot be null");
-        }
-        this.isAnd = oper;
-        this.map = map;
+    private StructuredDataFilter(Map<String, String> map, boolean oper, Result onMatch, Result onMismatch) {
+        super(map, oper, onMatch, onMismatch);
     }
 
     @Override
@@ -64,8 +58,13 @@ public class StructuredDataFilter extends FilterBase {
         return Result.NEUTRAL;
     }
 
-    private Result filter(StructuredDataMessage msg) {
+    protected Result filter(MapMessage message) {
+        if (!(message instanceof StructuredDataMessage)) {
+            return super.filter(message);
+        }
+        StructuredDataMessage msg = (StructuredDataMessage) message;
         boolean match = false;
+        Map<String, String> map = getMap();
         for (String key : map.keySet()) {
             if (key.equalsIgnoreCase("id")) {
                 match = map.get(key).equals(msg.getId().toString());
@@ -79,7 +78,7 @@ public class StructuredDataFilter extends FilterBase {
                 String data = msg.getData().get(key).toString();
                 match = map.get(key).equals(data);
             }
-            if ((!isAnd && match) || (isAnd && !match)) {
+            if ((!isAnd() && match) || (isAnd() && !match)) {
                 break;
             }
         }
@@ -88,11 +87,11 @@ public class StructuredDataFilter extends FilterBase {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("isAnd=").append(isAnd);
-        if (map.size() > 0) {
+        sb.append("isAnd=").append(isAnd());
+        if (getMap().size() > 0) {
             sb.append(", {");
             boolean first = true;
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (Map.Entry<String, String> entry : getMap().entrySet()) {
                 if (!first) {
                     sb.append(", ");
                 }
@@ -110,9 +109,10 @@ public class StructuredDataFilter extends FilterBase {
                                                     @PluginAttr("onmatch") String match,
                                                     @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
-            logger.error("keys and values must be specified for the ThreadContextMapFilter");
+            logger.error("keys and values must be specified for the StructuredDataFilter");
+            return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {

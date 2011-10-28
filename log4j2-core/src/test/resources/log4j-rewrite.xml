@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration packages="" status="error" name="RoutingTest">
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <ThresholdFilter level="debug"/>
+    </List>
+    <Rewrite name="Rewrite">
+      <MapRewritePolicy>
+        <KeyValuePair key="Key1" Value="Apache"/>
+        <KeyValuePair key="Key3" Value="Log4j"/>
+      </MapRewritePolicy>
+      <appender-ref ref="List"/>
+
+    </Rewrite>
+  </appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="trace" additivity="false">
+      <appender-ref ref="Rewrite"/>
+    </logger>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>

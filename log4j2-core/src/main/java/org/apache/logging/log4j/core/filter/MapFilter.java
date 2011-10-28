@@ -17,16 +17,16 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,50 +34,43 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name="ThreadContextMapFilter", type="Core", elementType="filter", printObject = true)
-public class ThreadContextMapFilter extends FilterBase {
-    private final Map<String, Object> map;
+@Plugin(name="MapFilter", type="Core", elementType="filter", printObject=true)
+public class MapFilter extends FilterBase {
+    private final Map<String, String> map;
 
     private final boolean isAnd;
 
-    public ThreadContextMapFilter(Map<String, Object> pairs, boolean oper, Result onMatch, Result onMismatch) {
+    protected MapFilter(Map<String, String> map, boolean oper, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
-        this.map = pairs;
+        if (map == null) {
+            throw new NullPointerException("key cannot be null");
+        }
         this.isAnd = oper;
-    }
-
-    @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
-        return filter();
-    }
-
-    @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
-        return filter();
+        this.map = map;
     }
 
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        return filter();
-    }
-
-    private Result filter() {
-        boolean match = false;
-        for (String key : map.keySet()) {
-            match = map.get(key).equals(ThreadContext.get(key));
-            if ((!isAnd && match) || (isAnd && !match)) {
-                break;
-            }
+        if (msg instanceof MapMessage) {
+            return filter((MapMessage)msg);
         }
-        return match ? onMatch : onMismatch;
+        return Result.NEUTRAL;
     }
 
     @Override
     public Result filter(LogEvent event) {
-        Map<String, String> ctx = event.getContextMap();
+        Message msg = event.getMessage();
+        if (msg instanceof MapMessage) {
+            return filter((MapMessage) msg);
+        }
+        return Result.NEUTRAL;
+    }
+
+    protected Result filter(MapMessage msg) {
         boolean match = false;
         for (String key : map.keySet()) {
-            match = map.get(key).equals(ctx.get(key));
+            String data = msg.getData().get(key);
+            match = map.get(key).equals(data);
             if ((!isAnd && match) || (isAnd && !match)) {
                 break;
             }
@@ -91,7 +84,7 @@ public class ThreadContextMapFilter extends FilterBase {
         if (map.size() > 0) {
             sb.append(", {");
             boolean first = true;
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
                 if (!first) {
                     sb.append(", ");
                 }
@@ -103,36 +96,44 @@ public class ThreadContextMapFilter extends FilterBase {
         return sb.toString();
     }
 
+    protected boolean isAnd() {
+        return isAnd;
+    }
+
+    protected Map<String, String> getMap() {
+        return map;
+    }
+
     @PluginFactory
-    public static ThreadContextMapFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
-                                                      @PluginAttr("operator") String oper,
-                                                      @PluginAttr("onmatch") String match,
-                                                      @PluginAttr("onmismatch") String mismatch) {
+    public static MapFilter createFilter(@PluginAttr("pairs") KeyValuePair[] pairs,
+                                                    @PluginAttr("operator") String oper,
+                                                    @PluginAttr("onmatch") String match,
+                                                    @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
-            logger.error("key and value pairs must be specified for the ThreadContextMapFilter");
+            logger.error("keys and values must be specified for the MapFilter");
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                logger.error("A null key is not valid in ThreadContextMapFilter");
+                logger.error("A null key is not valid in MapFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                logger.error("A null value for key " + key + " is not allowed in ThreadContextMapFilter");
+                logger.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());
         }
         if (map.size() == 0) {
-            logger.error("ThreadContextMapFilter is not configured with any valid key value pairs");
+            logger.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
         Result onMatch = match == null ? null : Result.valueOf(match);
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
-        return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
+        return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

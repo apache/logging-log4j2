@@ -128,6 +128,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return marker;
     }
 
+    public String getFQCN() {
+        return fqcnOfLogger;
+    }
+
     /**
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Test;
 
@@ -27,16 +28,16 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class StructuredDataFilterTest {
+public class MapFilterTest {
 
 
     @Test
     public void testFilter() {
-        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("id.name", "AccountTransfer"),
+        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("FromAccount", "211000"),
                                                     new KeyValuePair("ToAccount", "123456")};
-        StructuredDataFilter filter = StructuredDataFilter.createFilter(pairs, "and", null, null);
+        MapFilter filter = MapFilter.createFilter(pairs, "and", null, null);
         filter.start();
-        StructuredDataMessage msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
+        MapMessage msg = new MapMessage();
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
@@ -44,9 +45,9 @@ public class StructuredDataFilterTest {
         assertTrue(filter.filter(null, Level.DEBUG, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
         assertTrue(filter.filter(null, Level.ERROR, null, msg, (Throwable)null) == Filter.Result.DENY);
-        filter = StructuredDataFilter.createFilter(pairs, "or", null, null);
+        filter = MapFilter.createFilter(pairs, "or", null, null);
         filter.start();
-        msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
+        msg = new MapMessage();
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");

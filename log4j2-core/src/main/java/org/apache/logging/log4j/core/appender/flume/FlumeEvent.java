@@ -165,6 +165,10 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
         return Priority.INFO;
     }
 
+    public String getFQCN() {
+        return event.getFQCN();
+    }
+
     @Override
     public long getTimestamp() {
         return event.getMillis();

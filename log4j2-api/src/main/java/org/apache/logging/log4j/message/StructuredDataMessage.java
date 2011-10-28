@@ -71,6 +71,19 @@ public class StructuredDataMessage extends MapMessage implements FormattedMessag
     }
 
     /**
+     * Constructor based on a StructuredDataMessage.
+     * @param msg The StructuredDataMessage.
+     * @param map The StructuredData map.
+     */
+    private StructuredDataMessage(StructuredDataMessage msg, Map<String, String> map) {
+        super(map);
+        this.id = msg.id;
+        this.message = msg.message;
+        this.type = msg.type;
+    }
+
+
+    /**
      * Basic constructor.
      */
     protected StructuredDataMessage() {
@@ -211,6 +224,11 @@ public class StructuredDataMessage extends MapMessage implements FormattedMessag
     @Override
     public String toString() {
         return asString(null);
+    }
+
+
+    public MapMessage newInstance(Map<String, String> map) {
+        return new StructuredDataMessage(this, map);
     }
 
     public boolean equals(Object o) {

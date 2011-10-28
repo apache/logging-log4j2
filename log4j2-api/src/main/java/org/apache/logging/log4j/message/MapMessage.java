@@ -191,6 +191,10 @@ public class MapMessage implements FormattedMessage, Serializable {
         }
     }
 
+    public MapMessage newInstance(Map<String, String> map) {
+        return new MapMessage(map);
+    }
+
     public String toString() {
         return asString();
     }
