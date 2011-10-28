@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
 @Plugin(name = "MapRewritePolicy", type = "Core", elementType = "rewritePolicy", printObject = true)
 public class MapRewritePolicy implements RewritePolicy {
@@ -48,6 +48,12 @@ public class MapRewritePolicy implements RewritePolicy {
         this.mode = mode;
     }
 
+    /**
+     * Rewrite the event.
+     * @param source a logging event that may be returned or
+     * used to create a new logging event.
+     * @return The LogEvent after rewriting.
+     */
     public LogEvent rewrite(LogEvent source) {
         Message msg = source.getMessage();
         if (msg == null || !(msg instanceof MapMessage)) {
@@ -75,6 +81,10 @@ public class MapRewritePolicy implements RewritePolicy {
             source.getSource(), source.getMillis());
     }
 
+    /**
+     * An enumeration to identify whether keys not in the MapMessage should be added or whether only existing
+     * keys should be updated.
+     */
     public enum Mode {
         Add, Update
     }
@@ -95,6 +105,12 @@ public class MapRewritePolicy implements RewritePolicy {
         return sb.toString();
     }
 
+    /**
+     * The factory method to create the MapRewritePolicy.
+     * @param mode The string representation of the Mode.
+     * @param pairs key/value pairs for the new Map keys and values.
+     * @return The MapRewritePolicy.
+     */
     @PluginFactory
     public static MapRewritePolicy createPolicy(@PluginAttr("mode") String mode,
                                                 @PluginElement("KeyValuePair") KeyValuePair[] pairs) {
