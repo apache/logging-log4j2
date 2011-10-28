@@ -93,7 +93,7 @@ public class FlumeAvroAppenderTest {
     public void testLog4jAvroAppender() throws InterruptedException, IOException {
         Agent[] agents = new Agent[] {Agent.createAgent("localhost", Integer.toString(testServerPort))};
         FlumeAvroAppender avroAppender = FlumeAvroAppender.createAppender(agents, "100", "3", "avro", "false", null,
-            null, null, null, null, "true", null, null);
+            null, null, null, null, "true", null, null, null);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -167,7 +167,7 @@ public class FlumeAvroAppenderTest {
     public void testConnectionRefused() {
         Agent[] agents = new Agent[] {Agent.createAgent("localhost", Integer.toString(44000))};
         FlumeAvroAppender avroAppender = FlumeAvroAppender.createAppender(agents, "100", "3", "avro", "false", null,
-            null, null, null, null, "true", null, null);
+            null, null, null, null, "true", null, null, null);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -189,7 +189,7 @@ public class FlumeAvroAppenderTest {
     public void testReconnect() throws IOException {
         Agent[] agents = new Agent[] {Agent.createAgent("localhost", Integer.toString(testServerPort))};
         FlumeAvroAppender avroAppender = FlumeAvroAppender.createAppender(agents, "500", "10", "avro", "false", null,
-            null, null, null, null, "true", null, null);
+            null, null, null, null, "true", null, null, null);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);

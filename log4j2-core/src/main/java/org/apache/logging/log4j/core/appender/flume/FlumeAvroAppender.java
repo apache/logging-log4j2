@@ -32,7 +32,7 @@ import java.net.InetAddress;
  *
  */
 @Plugin(name="Flume",type="Core",elementType="appender",printObject=true)
-public class FlumeAvroAppender extends AppenderBase {
+public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory {
 
     private FlumeAvroManager manager;
 
@@ -52,9 +52,12 @@ public class FlumeAvroAppender extends AppenderBase {
 
     private final int retries;
 
+    private final FlumeEventFactory factory;
+
     private FlumeAvroAppender(String name, Filter filter, Layout layout, boolean handleException,
                               String hostname, String includes, String excludes, String required, String mdcPrefix,
-                              String eventPrefix, boolean compress, int delay, int retries, FlumeAvroManager manager) {
+                              String eventPrefix, boolean compress, int delay, int retries,
+                              FlumeEventFactory factory, FlumeAvroManager manager) {
         super(name, filter, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -66,11 +69,12 @@ public class FlumeAvroAppender extends AppenderBase {
         this.hostname = hostname;
         this.reconnectDelay = delay;
         this.retries = retries;
+        this.factory = factory == null ? this : factory;
     }
 
     public void append(LogEvent event) {
 
-        FlumeEvent flumeEvent = new FlumeEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
+        FlumeEvent flumeEvent = factory.createEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().format(flumeEvent));
         manager.send(flumeEvent, reconnectDelay, retries);
@@ -80,6 +84,12 @@ public class FlumeAvroAppender extends AppenderBase {
     public void stop() {
         super.stop();
         manager.release();
+    }
+
+    public FlumeEvent createEvent(LogEvent event, String hostname, String includes, String excludes, String required,
+                      String mdcPrefix, String eventPrefix, boolean compress) {
+        return new FlumeEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
+            eventPrefix, compressBody);
     }
 
     @PluginFactory
@@ -94,6 +104,7 @@ public class FlumeAvroAppender extends AppenderBase {
                                                    @PluginAttr("mdcPrefix") String mdcPrefix,
                                                    @PluginAttr("eventPrefix") String eventPrefix,
                                                    @PluginAttr("compress") String compressBody,
+                                                   @PluginAttr("flumeEventFactory") FlumeEventFactory factory,
                                                    @PluginElement("layout") Layout layout,
                                                    @PluginElement("filters") Filter filter) {
 
@@ -129,7 +140,8 @@ public class FlumeAvroAppender extends AppenderBase {
         if (manager == null) {
             return null;
         }
+
         return new FlumeAvroAppender(name, filter, layout,  handleExceptions, hostname, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, manager);
+            excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, factory, manager);
     }
 }

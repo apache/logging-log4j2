@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -51,9 +52,9 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private static final String DEFAULT_EVENT_PREFIX = "";
 
-    private static final String EVENT_TYPE = "EventType";
+    private static final String EVENT_TYPE = "eventType";
 
-    private static final String EVENT_ID = "EventId";
+    private static final String EVENT_ID = "eventId";
 
     private static final String GUID = "guId";
 
@@ -103,21 +104,39 @@ class FlumeEvent extends EventBaseImpl implements LogEvent {
                 }
             }
         }
-        if (event.getMessage() instanceof StructuredDataMessage) {
-            StructuredDataMessage msg = (StructuredDataMessage) event.getMessage();
-            fields.put(eventPrefix + EVENT_TYPE, msg.getType().getBytes());
-            StructuredDataId id = msg.getId();
-            fields.put(eventPrefix + EVENT_ID, id.getName().getBytes());
-            Map<String, String> data = msg.getData();
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                fields.put(eventPrefix + entry.getKey(), entry.getValue().getBytes());
+        Message message = event.getMessage();
+        if (message instanceof MapMessage) {
+            if (message instanceof StructuredDataMessage) {
+                addStructuredData(eventPrefix, fields, (StructuredDataMessage) message);
             }
+            addMapData(eventPrefix, fields, (MapMessage) message);
         }
 
+        addContextData(mdcPrefix, fields, ctx);
+
+        addGuid(fields);
+    }
+
+    protected void addStructuredData(String prefix, Map<String, byte[]> fields, StructuredDataMessage msg) {
+        fields.put(prefix + EVENT_TYPE, msg.getType().getBytes());
+        StructuredDataId id = msg.getId();
+        fields.put(prefix + EVENT_ID, id.getName().getBytes());
+    }
+
+    protected void addMapData(String prefix, Map<String, byte[]> fields, MapMessage msg) {
+        Map<String, String> data = msg.getData();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            fields.put(prefix + entry.getKey(), entry.getValue().getBytes());
+        }
+    }
+
+    protected void addContextData(String prefix, Map<String, byte[]> fields, Map<String, String> context) {
         for (Map.Entry<String, String> entry : ctx.entrySet()) {
-            fields.put(mdcPrefix + entry.getKey(), entry.getValue().toString().getBytes());
+            fields.put(prefix + entry.getKey(), entry.getValue().toString().getBytes());
         }
+    }
 
+    protected void addGuid(Map<String, byte[]> fields) {
         fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString().getBytes());
     }
 
