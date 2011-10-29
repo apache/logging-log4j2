@@ -104,7 +104,7 @@ public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory
                                                    @PluginAttr("mdcPrefix") String mdcPrefix,
                                                    @PluginAttr("eventPrefix") String eventPrefix,
                                                    @PluginAttr("compress") String compressBody,
-                                                   @PluginAttr("flumeEventFactory") FlumeEventFactory factory,
+                                                   @PluginElement("flumeEventFactory") FlumeEventFactory factory,
                                                    @PluginElement("layout") Layout layout,
                                                    @PluginElement("filters") Filter filter) {
 

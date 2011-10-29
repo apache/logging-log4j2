@@ -374,6 +374,18 @@ public class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("facility=").append(facility.name());
+        sb.append(" appName=").append(appName);
+        sb.append(" defaultId=").append(defaultId);
+        sb.append(" enterpriseNumber=").append(enterpriseNumber);
+        sb.append(" newLine=").append(includeNewLine);
+        sb.append(" includeMDC=").append(includeMDC);
+        sb.append(" messageId=").append(messageId);
+        return sb.toString();
+    }
+
     @PluginFactory
     public static RFC5424Layout createLayout(@PluginAttr("facility") String facility,
                                              @PluginAttr("id") String id,

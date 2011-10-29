@@ -51,6 +51,10 @@ public class Agent {
         return port;
     }
 
+    public String toString() {
+        return "host=" + host + " port=" + port;
+    }
+
 
     @PluginFactory
     public static Agent createAgent(@PluginAttr("host") String host,
