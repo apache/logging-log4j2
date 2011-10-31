@@ -35,6 +35,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class UUIDUtil
 {
+    public static final String UUID_SEQUENCE = "org.apache.logging.log4j.uuidSequence";
+    private static final String ASSIGNED_SEQUENCES = "org.apache.logging.log4j.assignedSequences";
+
     private static AtomicInteger count = new AtomicInteger(0);
 
     private static final long VERSION = 0x9000L;
@@ -46,6 +49,8 @@ public abstract class UUIDUtil
     private static final int SEQUENCE_MASK = 0x3FFF;
 
     static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+
+    private static long uuidSequence = Long.getLong(UUID_SEQUENCE, 0);
 
     private static long least;
 
@@ -99,8 +104,43 @@ public abstract class UUIDUtil
         }
         System.arraycopy(mac, index, node, index + 2, length);
         ByteBuffer buf = ByteBuffer.wrap(node);
-        long rand = (randomGenerator.nextLong() & SEQUENCE_MASK) << 48;
-        least = buf.getLong() | rand;
+        long rand = uuidSequence;
+        Runtime runtime = Runtime.getRuntime();
+        synchronized (runtime) {
+            String assigned = System.getProperty(ASSIGNED_SEQUENCES);
+            long[] sequences;
+            if (assigned == null) {
+                sequences = new long[0];
+            } else {
+                String[] array = assigned.split(",");
+                sequences = new long[array.length];
+                int i=0;
+                for (String value : array) {
+                    sequences[i] = Long.parseLong(value);
+                    ++i;
+                }
+            }
+            if (rand == 0) {
+                rand = randomGenerator.nextLong();
+            }
+            rand &= SEQUENCE_MASK;
+            boolean duplicate;
+            do {
+                duplicate = false;
+                for (long sequence : sequences) {
+                    if (sequence == rand) {
+                        duplicate = true;
+                    }
+                }
+                if (duplicate) {
+                    rand = (rand + 1) & SEQUENCE_MASK;
+                }
+            } while (duplicate);
+            assigned = assigned == null ? Long.toString(rand) : assigned + "," + Long.toString(rand);
+            System.setProperty(ASSIGNED_SEQUENCES, assigned);
+        }
+
+        least = buf.getLong() | rand << 48;
     }
 
     private static String toHexString(byte[] bytes) {
