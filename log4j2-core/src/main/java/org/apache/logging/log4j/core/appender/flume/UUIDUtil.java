@@ -24,6 +24,7 @@ import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,9 +39,16 @@ public abstract class UUIDUtil
 
     private static final long VERSION = 0x9000L;
 
-    private static final byte VARIANT = (byte)0xC0;
+    private static final long TYPE1 = 0x1000L;
+
+    private static final byte VARIANT = (byte)0x80;
+
+    private static final int SEQUENCE_MASK = 0x3FFF;
+
+    static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
     private static long least;
+
 
     static
     {
@@ -51,9 +59,19 @@ public abstract class UUIDUtil
 
             try {
                 NetworkInterface ni = NetworkInterface.getByInetAddress(address);
-                if (ni != null) {
+                if (!ni.isLoopback() && ni.isUp()) {
                     Method method = ni.getClass().getMethod("getHardwareAddress");
                     mac = (byte[]) method.invoke(ni);
+                }
+                else {
+                    Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
+                    while (enumeration.hasMoreElements() && mac == null) {
+                        ni = enumeration.nextElement();
+                        if (ni.isUp() && !ni.isLoopback()) {
+                            Method method = ni.getClass().getMethod("getHardwareAddress");
+                            mac = (byte[]) method.invoke(ni);
+                        }
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -66,8 +84,8 @@ public abstract class UUIDUtil
         catch (UnknownHostException e) {
             // Ignore exception
         }
+        Random randomGenerator = new SecureRandom();
         if (mac == null || mac.length == 0) {
-            Random randomGenerator = new SecureRandom();
             mac = new byte[6];
             randomGenerator.nextBytes(mac);
         }
@@ -81,7 +99,8 @@ public abstract class UUIDUtil
         }
         System.arraycopy(mac, index, node, index + 2, length);
         ByteBuffer buf = ByteBuffer.wrap(node);
-        least = buf.getLong();
+        long rand = (randomGenerator.nextLong() & SEQUENCE_MASK) << 48;
+        least = buf.getLong() | rand;
     }
 
     private static String toHexString(byte[] bytes) {
@@ -102,36 +121,29 @@ public abstract class UUIDUtil
     }
 
     /**
-     * Convert a UUID to a String with no dashes.
-     * @param uuid The UUID.
-     * @return The String version of the UUID with the '-' characters removed.
-     */
-    public static String getUUIDString(UUID uuid)
-    {
-        return StringUtils.replaceChars(uuid.toString(), "-", "");
-    }
-
-    /**
-     * Generates universally unique identifiers (UUIDs).
-     * UUID combines enough of the system information to make it unique across
-     * space and time. UUID string is composed of following fields:
+     * Generates Type 1 UUID. The time contains the number of 100NS intervals that have occurred
+     * since 00:00:00.00 UTC, 10 October 1582. Each UUID on a particular machine is unique to the 100NS interval
+     * until they rollover around 3400 A.D.
      * <ol>
-     * <li>Digits 1-12 are the lower 48 bits of the <code>System.currentTimeMillis()</code> call.
-     * This makes the UUID unique down to the millisecond for about 8,925 years.</li>
-     * <li>Digit 13 is the version (with a value of 9).</li>
+     * <li>Digits 1-12 are the lower 48 bits of the number of 100 ns increments since the start of the UUID
+     * epoch.</li>
+     * <li>Digit 13 is the version (with a value of 1).</li>
      * <li>Digits 14-16 are a sequence number that is incremented each time a UUID is generated.</li>
-     * <li>Digit 17 is the variant (with a value of 0xC)</li>
-     * <li>Digit 18 is zero.</li>
+     * <li>Digit 17 is the variant (with a value of binary 10) and 10 bits of the sequence number</li>
+     * <li>Digit 18 is final 16 bits of the sequence number.</li>
      * <li>Digits 19-32 represent the system the application is running on.
      * </ol>
      *
      * @return universally unique identifiers (UUID)
      */
-    public static UUID getTimeBasedUUID()
-    {
-        int timeHi = count.incrementAndGet() & 0xfff;
-        long most = (System.currentTimeMillis() << 24) | VERSION | timeHi;
+    public static UUID getTimeBasedUUID() {
 
+        long time = ((System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
+            (count.incrementAndGet() % 10000);
+        long timeLow = (time & 0xffffffffL) << 32;
+        long timeMid = (time & 0xffff00000000L) >> 16;
+        long timeHi = (time & 0xfff000000000000L) >> 48;
+        long most = timeLow | timeMid | TYPE1 | timeHi;
         return new UUID(most, least);
     }
 }

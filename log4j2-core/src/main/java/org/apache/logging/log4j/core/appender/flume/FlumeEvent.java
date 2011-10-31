@@ -38,7 +38,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  *
  */
-class FlumeEvent extends EventBaseImpl implements LogEvent {
+public class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private final LogEvent event;
 
