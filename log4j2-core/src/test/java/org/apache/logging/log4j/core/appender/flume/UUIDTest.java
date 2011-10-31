@@ -1,6 +1,5 @@
 package org.apache.logging.log4j.core.appender.flume;
 
-import org.apache.hadoop.hdfs.server.common.IncorrectVersionException;
 import org.junit.Test;
 
 import java.util.UUID;
