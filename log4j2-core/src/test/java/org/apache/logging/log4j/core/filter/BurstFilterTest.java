@@ -20,15 +20,13 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ListAppender;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

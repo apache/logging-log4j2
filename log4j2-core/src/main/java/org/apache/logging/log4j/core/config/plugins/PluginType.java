@@ -17,10 +17,12 @@
 package org.apache.logging.log4j.core.config.plugins;
 
 
+import java.io.Serializable;
+
 /**
  * Plugin Descriptor.
  */
-public class PluginType {
+public class PluginType implements Serializable {
 
     private Class pluginClass;
     private String elementName;
@@ -46,8 +48,7 @@ public class PluginType {
         return this.printObject;
     }
 
-    public boolean deferChildren() {
+    public boolean isDeferChildren() {
         return this.deferChildren;
     }
-
 }

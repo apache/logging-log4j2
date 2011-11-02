@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 
+import org.apache.logging.log4j.test.appender.InMemoryAppender;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

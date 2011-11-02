@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -425,7 +424,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
     public void createConfiguration(Node node, LogEvent event) {
         PluginType type = node.getType();
-        if (type != null && type.deferChildren()) {
+        if (type != null && type.isDeferChildren()) {
             node.setObject(createPluginObject(type, node, event));
         } else {
             for (Node child : node.getChildren()) {
@@ -684,7 +683,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.error(eb.toString());
         }
 
-        if (!type.deferChildren() && used.size() != children.size()) {
+        if (!type.isDeferChildren() && used.size() != children.size()) {
             for (Node child : children) {
                 if (used.contains(child)) {
                     continue;

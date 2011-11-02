@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration packages="" status="error" name="RegexReplacementTest">
+<configuration status="error" name="RegexReplacementTest" packages="org.apache.logging.log4j.test">
   <Appenders>
     <List name="List">
        <PatternLayout>

@@ -125,6 +125,25 @@
           <forkMode>always</forkMode>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.apache.logging.log4j.core.config.plugins.PluginManager</mainClass>
+          <arguments>
+            <argument>Core,Lookup,ConfigurationFactory,Converter,FileConverter</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>

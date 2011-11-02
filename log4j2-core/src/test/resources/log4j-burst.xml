@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="BurstTest">
+<configuration status="warn" name="BurstTest" packages="org.apache.logging.log4j.test">
   <appenders>
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>

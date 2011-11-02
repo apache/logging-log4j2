@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration packages="" status="debug" name="RoutingTest">
+<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
   </properties>

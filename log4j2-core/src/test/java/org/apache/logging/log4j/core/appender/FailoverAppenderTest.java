@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

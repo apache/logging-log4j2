@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.JMSQueueAppender;
-import org.apache.logging.log4j.core.appender.ListAppender;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.FilterBase;
 import org.apache.logging.log4j.core.layout.PatternLayout;
