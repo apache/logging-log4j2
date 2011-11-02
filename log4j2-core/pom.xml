@@ -140,7 +140,7 @@
         <configuration>
           <mainClass>org.apache.logging.log4j.core.config.plugins.PluginManager</mainClass>
           <arguments>
-            <argument>Core,Lookup,ConfigurationFactory,Converter,FileConverter</argument>
+            <argument>${project.build.outputDirectory}</argument>
           </arguments>
         </configuration>
       </plugin>

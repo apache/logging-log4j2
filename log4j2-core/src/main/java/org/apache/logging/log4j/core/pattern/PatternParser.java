@@ -106,7 +106,7 @@ public final class PatternParser {
                     }
                 }
             } catch (Exception ex) {
-
+                logger.error("Error processing plugin " + type.getElementName(), ex);
             }
         }
         converterRules = converters;

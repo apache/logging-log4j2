@@ -74,11 +74,12 @@ public final class MarkerManager {
 
         private static final long serialVersionUID = 100L;
 
-        private String name;
-        private Marker parent;
+        private final String name;
+        private final Marker parent;
 
         public Log4JMarker(String name) {
             this.name = name;
+            this.parent = null;
         }
 
         public Log4JMarker(String name, Marker parent) {

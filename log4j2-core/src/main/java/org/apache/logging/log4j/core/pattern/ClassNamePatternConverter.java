@@ -45,8 +45,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static ClassNamePatternConverter newInstance(
-        final String[] options) {
+    public static ClassNamePatternConverter newInstance(final String[] options) {
         return new ClassNamePatternConverter(options);
     }
 

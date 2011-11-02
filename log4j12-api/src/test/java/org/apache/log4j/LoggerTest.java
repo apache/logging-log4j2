@@ -26,16 +26,13 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderBase;
-import org.apache.logging.log4j.core.appender.ListAppender;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-import org.junit.Before;
-import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

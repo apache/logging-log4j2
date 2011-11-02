@@ -27,9 +27,7 @@ import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -56,22 +54,14 @@ public class PluginManager {
 
     private final String type;
     private final Class clazz;
+    private static String rootDir;
 
     public static void main(String[] args) throws Exception {
-        if (args == null || args.length == 0) {
-            System.err.println("At least 1 type must be specified.");
+        if (args == null || args.length < 1) {
+            System.err.println("A target directory must be specified");
             System.exit(-1);
         }
-        List<String> list = new ArrayList<String>();
-        for (String arg : args) {
-            String[] types = arg.trim().split(",");
-            for (String type : types) {
-                if (type.trim().length() == 0) {
-                    continue;
-                }
-                list.add(type);
-            }
-        }
+        rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + "/";
 
         PluginManager manager = new PluginManager("Core");
         manager.collectPlugins(false);
@@ -194,7 +184,7 @@ public class PluginManager {
     }
 
     private static void encode(ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
-        String fileName = "target/classes/" + PATH + FILENAME;
+        String fileName = rootDir + PATH + FILENAME;
         try {
             FileOutputStream fos = new FileOutputStream(fileName);
             BufferedOutputStream bos = new BufferedOutputStream(fos);

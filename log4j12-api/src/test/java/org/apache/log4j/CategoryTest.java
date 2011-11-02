@@ -19,16 +19,15 @@ package org.apache.log4j;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ListAppender;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-import org.junit.Before;
-import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -154,7 +153,7 @@ public class CategoryTest {
         String msg = msgs.get(0);
         appender.clear();
         String expected = "ERROR o.a.l.CategoryTest [main] Test Message\n";
-        assertTrue("Incorrect message.", msg.endsWith(expected));
+        assertTrue("Incorrect message \"" + msg + "\"" + " expected \"" + expected +"\"", msg.endsWith(expected));
     }
 
     /**
