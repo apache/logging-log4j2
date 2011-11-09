@@ -48,11 +48,15 @@
         </item>
         <item name="Appenders"             href="/manual/appenders.html" collapse="true">
           <item name="Console"             href="/manual/appenders.html@ConsoleAppender"/>
+          <item name="Failover"            href="/manual/appenders.html@FailoverAppender"/>
           <item name="File"                href="/manual/appenders.html#FileAppender"/>
-          <item name="Flume"               href="/manual/appenders.html#FlumeAppender"/>
+          <item name="Flume"               href="/manual/appenders.html#FlumeAvroAppender"/>
           <item name="JMSQueue"            href="/manual/appenders.html#JMSQueueAppender"/>
           <item name="JSMTopic"            href="/manual/appenders.html#JMSTopicAppender"/>
+          <item name="OutputStream"        href="/manual/appenders.html#OutputStreamAppender"/>
+          <item name="Rewrite"             href="/manual/appenders.html#RewriteAppender"/>
           <item name="RollingFile"         href="/manual/appenders.html#RollingFileappender"/>
+          <item name="Routing"             href="/manual/appenders.html#RoutingAppender"/>
           <item name="Socket"              href="/manual/appenders.html#SocketAppender"/>
           <item name="Syslog"              href="/manual/appenders.html#SyslogAppender"/>
         </item>

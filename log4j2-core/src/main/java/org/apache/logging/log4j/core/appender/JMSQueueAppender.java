@@ -64,7 +64,7 @@ public class JMSQueueAppender extends AppenderBase {
                                                   @PluginAttr("userName") String userName,
                                                   @PluginAttr("password") String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") Filter filter,
+                                                  @PluginElement("filter") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
 
         String name = "JMSQueue" + factoryBindingName + "." + queueBindingName;

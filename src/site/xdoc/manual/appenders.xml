@@ -24,28 +24,492 @@
 
     <body>
       <section name="Appenders">
+        <p>
+          Appenders are the component responsible for delivering LogEvents to their destination. Every Appender must
+          implement the <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
+          interface. Most Appenders will extend
+          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/appender/AppenderBase.html">AppenderBase</a>
+          which adds <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
+          and <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/filter/Filterable">Filterable</a>
+          support. Lifecycle allows components to finish initialization after configuration has completed and to
+          perform cleanup during shutdown. Filterable allows the component to have Filters attached to it which are
+          evaluated during event processing.
+        </p>
+        <p>
+          Appenders usually are only responsible for writing the event data to the target destination. In most cases
+          they delegate responsibility for formatting the event to a <a href="../layouts.html">layout</a>. Some
+          appenders wrap other appenders so that they can modify the LogEvent, handle a failure in an Appender,
+          route the event to a subordinate Appender based on advanced Filter criteria or provide similar functionality
+          that does not directly format the event for viewing.
+        </p>
+        <p>
+          Appenders always have a name so that they can be referenced from Loggers.
+        </p>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
+          <p>
+            As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
+            being the default target. A Layout must be provided to format the LogEvent.
+          </p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>String</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+            </tr>
+            <caption align="top">ConsoleAppender Parameters</caption>
+          </table>
+          <p>
+            A typical Console configuration might look like:
 
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </appenders>
+  <loggers
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
+        </subsection>
+        <a name="FailoverAppender"/>
+        <subsection name="FailoverAppender">
+          <p>The FailoverAppender wraps a set of appenders. If the primary Appender fails the secondary appenders will be
+          tried in order until one succeeds or there are no more secondaries to try.</p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>config</td>
+              <td>Configuration</td>
+              <td>Passed automatically by the Configuration, allows the Appender access to configuration information.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>primary</td>
+              <td>String</td>
+              <td>The name of the primary Appender to use.</td>
+            </tr>
+            <tr>
+              <td>failovers</td>
+              <td>String[]</td>
+              <td>The names of the secondary Appenders to use.</td>
+            </tr>
+
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>String</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+            </tr>
+            <caption align="top">FailoverAppender Parameters</caption>
+          </table>
+          <p>
+            A Failover configuration might look like:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Failover name="Failover" primary="RollingFile" suppressExceptions="false">
+      <Failovers>
+        <appender-ref ref="Console"/>
+      </Failovers>
+    </Failover>
+  </appenders>
+  <loggers
+    <root level="error">
+      <appender-ref ref="Failover"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
         </subsection>
         <a name="FileAppender"/>
         <subsection name="FileAppender">
+          <p>The FileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter. The
+            FileAppender uses a FileManager (which extends OutputStreamManager) to actually perform the file I/O. While
+            FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is
+            accessible. For example, two webapps in a servlet container can have their own configuration and safely
+            write to the same file if Log4J is in a ClassLoader that is common to both of them.</p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>append</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be appended to the end of the file. When set to false,
+                the file will be cleared before new reocrds are written.</td>
+            </tr>
+            <tr>
+              <td>bufferedIO</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be written to a buffer and the data will be written to
+                disk when the buffer is full or, if immediateFlush is set, when the record is written.
+                File locking cannot be used with bufferedIO. Performance tests have shown that using buffered I/O
+                significantly improves performance, even if immediateFlush is enabled.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>fileName</td>
+              <td>String</td>
+              <td>The name of the file to write to. If the file, or any of its parent directories, do not exist,
+                they will be created.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
+                to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>locking</td>
+              <td>boolean</td>
+              <td>When set to true, I/O operations will occur only while the file lock is held allowing FileAppenders
+                in multiple JVMs and potentially multiple hosts to write to the same file simultaneously. This
+                will significantly impact performance so should be used carefully. Furthermore, on many systems
+                the file lock is "advisory" meaning that other applications can perform operations on the file
+                without acquiring a lock. The default value is false.</td>
+            </tr>
 
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">FileAppender Parameters</caption>
+          </table>
+           <p>
+            Here is a sample File configuration:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </appenders>
+  <loggers
+    <root level="error">
+      <appender-ref ref="MyFile"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
         </subsection>
-        <a name="FlumeAppender"/>
-        <subsection name="FlumeAppender">
+        <a name="FlumeAvroAppender"/>
+        <subsection name="FlumeAvroAppender">
+          <p><a href="http://incubator.apache.org/projects/flume.html">Apache Flume</a> is a distributed, reliable,
+            and available system for efficiently collecting, aggregating, and moving large amounts of log data
+            from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
+            them to a Flume agent as serialized Avro events for consumption.</p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>agents</td>
+              <td>Agent[]</td>
+              <td>An array of Agents to which the logging events should be sent. If more than one agent is specified
+                the first Agent will be the primary and subsequent Agents will be used in the order specified as
+                secondaries should the primary Agent fail. Each Agent definition supplies the Agents host and port.</td>
+            </tr>
+            <tr>
+              <td>agentRetries</td>
+              <td>integer</td>
+              <td>The number of times the agent should be retried before failing to a secondary.</td>
+            </tr>
+            <tr>
+              <td>compress</td>
+              <td>boolean</td>
+              <td>When set to true the message body will be compressed using gzip</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>eventPrefix</td>
+              <td>String</td>
+              <td>The character string to prepend to each event attribute in order to distinguish it from MDC attributes.
+                The default is an empty string.</td>
+            </tr>
+            <tr>
+              <td>flumeEventFactory</td>
+              <td>FlumeEventFactory</td>
+              <td>Factory that generates the Flume events from Log4j events. The default factory is the
+                FlumeAvroAppender itself.</td>
+            </tr>
+            <tr>
+              <td>mdcExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be excluded from the FlumeEvent. This is mutually
+                exclusive with the mdcIncludes attribute.</td>
+            </tr>
+            <tr>
+              <td>mdcIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be included in the FlumeEvent. Any keys in the MDC
+                not found in the list will be excluded. This option is mutually exclusive with the mdcExcludes
+                attribute.</td>
+            </tr>
+            <tr>
+              <td>mdcRequired</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that must be present in the MDC. If a key is not present a
+                LoggingException will be thrown.</td>
+            </tr>
+            <tr>
+              <td>mdcPrefix</td>
+              <td>String</td>
+              <td>A string that should be prepended to each MDC key in order to distinguish it from event attributes.
+                The default string is "mdc:".</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>reconnectionDelay</td>
+              <td>integer</td>
+              <td>The number of milliseconds the application should wait before trying again to connect to the
+                agent.</td>
+            </tr>
 
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">FlumeAvroAppender Parameters</caption>
+          </table>
+            <p>
+              A sample FlumeAvroAppender configuration that is configured with a primary and a secondary agent,
+              compresses the body, and formats the body using the RFC5424Layout:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+  </appenders>
+  <loggers
+    <root level="error">
+      <appender-ref ref="eventLogger"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
         </subsection>
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
+          <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>factoryBindingName</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>factoryName</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>providerURL</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>queueBindingName</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>securityPrincipalName</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>securityCredentials</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>urlPkgPrefixes</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+             <tr>
+              <td>userName</td>
+              <td>String</td>
+              <td></td>
+            </tr>
+            <caption align="top">JMSQueueAppender Parameters</caption>
+          </table>
+           <p>
+            Here is a sample JMSQueueAppender configuration:
 
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <JMSQueue name="jms" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </JMSQueue>
+  </appenders>
+  <loggers
+    <root level="error">
+      <appender-ref ref="MyFile"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
+        </subsection>
+        <a name="OutputStreamAppender"/>
+        <subsection name="OutputStreamAppender">
+          The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket
+          appenders that write the event to an Output Stream. It cannot be directly configured. Support for
+          immediateFlush and buffering is provided by the OutputStreamAppender. The OutputStreamAppender uses an
+          OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple
+          configurations.
         </subsection>
         <a name="JMSTopicAppender"/>
         <subsection name="JMSTopicAppender">
 
         </subsection>
+         <a name="RewriteAppender"/>
+        <subsection name="RewriteAppender">
+
+        </subsection>
         <a name="RollingFileAppender"/>
         <subsection name="RollingFileAppender">
+          <h4>Triggering Policies</h4>
+            <h5>Composite Triggering Policy</h5>
+            <h5>OnStartup Triggering Policy</h5>
+            <h5>SizeBased Triggering Policy</h5>
+            <h5>TimeBased Triggering Policy</h5>
+          <h4>Rollover Strategies</h4>
+            <h5>Default Rollover Strategy</h5>
+        </subsection>
+        <a name="RoutingAppender"/>
+        <subsection name="RoutingAppender">
 
         </subsection>
         <a name="SocketAppender"/>

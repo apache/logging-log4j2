@@ -28,6 +28,10 @@
         <subsection name="BurstFilter">
 
         </subsection>
+        <a name="CompositeFilter"/>
+        <subsection name="CompositeFilter">
+
+        </subsection>
         <a name="DynamicThresholdFilter"/>
         <subsection name="DynamicThresholdFilter">
 
