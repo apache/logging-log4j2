@@ -164,7 +164,7 @@ public abstract class NameAbbreviator {
          * @param count maximum number of path elements to output.
          */
         public MaxElementAbbreviator(final int count) {
-            this.count = count;
+            this.count = count < 1 ? 1 : count;
         }
 
         /**

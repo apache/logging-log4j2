@@ -1,5 +1,6 @@
 package org.apache.logging.log4j.core.appender.flume;
 
+import org.apache.logging.log4j.core.helpers.UUIDUtil;
 import org.junit.Test;
 
 import java.util.UUID;

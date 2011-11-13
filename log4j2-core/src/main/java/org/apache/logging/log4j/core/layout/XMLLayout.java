@@ -49,7 +49,7 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  * &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
  *
- * &lt;log4j:eventSet version="1.2" xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+ * &lt;log4j:eventSet version="1.2" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
  * &nbsp;&nbsp;&data;
  * &lt;/log4j:eventSet&gt;
  * </pre>
@@ -169,7 +169,7 @@ public class XMLLayout extends AbstractStringLayout {
         }
         StringBuilder sbuf = new StringBuilder();
         sbuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
-        sbuf.append("<log4j:eventSet xmlns:log4j=\"http://jakarta.apache.org/log4j/\">\r\n");
+        sbuf.append("<log4j:eventSet xmlns:log4j=\"http://logging.apache.org/log4j/\">\r\n");
         return sbuf.toString().getBytes(getCharset());
     }
 

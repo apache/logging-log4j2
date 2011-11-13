@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.flume;
+package org.apache.logging.log4j.core.helpers;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -48,7 +48,7 @@ public abstract class UUIDUtil
 
     private static final int SEQUENCE_MASK = 0x3FFF;
 
-    static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+    public static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
     private static long uuidSequence = Long.getLong(UUID_SEQUENCE, 0);
 

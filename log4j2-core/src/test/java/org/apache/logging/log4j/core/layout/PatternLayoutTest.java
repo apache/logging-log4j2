@@ -19,15 +19,16 @@ package org.apache.logging.log4j.core.layout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Compare;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import java.io.FileOutputStream;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -46,6 +48,7 @@ public class PatternLayoutTest {
     Logger root = ctx.getLogger("");
 
     static String msgPattern = "%m%n";
+    static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @BeforeClass
@@ -131,5 +134,16 @@ public class PatternLayoutTest {
         root.removeAppender(appender);
 
         appender.stop();
+    }
+
+    @Test
+    public void testRegex() throws Exception {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(),
+            null, null);
+        LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
+            Level.INFO, new SimpleMessage("Hello, world!"), null);
+        byte[] result = layout.format(event);
+        assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
     }
 }

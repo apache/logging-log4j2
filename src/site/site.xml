@@ -81,6 +81,18 @@
         <item name="ThreadContext"         href="/manual/thread-context.html"/>
         <item name="JMX"                   href="/manual/jmx.html"/>
         <item name="Logging Separation"    href="/manual/logsep.html"/>
+        <item name="Extending Log4j"       href="/manual/extending.html" collapse="true">
+          <item name="LoggerContextFactory" href="/manual/extending.html#LoggerContextFactory"/>
+          <item name="ContextSelector"     href="/manual/extending.html#ContextSelector"/>
+          <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>
+          <item name="LoggerConfig"        href="/manual/extending.html#LoggerConfig"/>
+          <item name="Lookups"             href="/manual/extending.html#Lookups"/>
+          <item name="Filters"             href="/manual/extending.html#Filters"/>
+          <item name="Appenders"           href="/manual/extending.html#Appenders"/>
+          <item name="Layouts"             href="/manual/extending.html#Layouts"/>
+          <item name="PatternConverters"   href="/manual/extending.html#PatternConverters"/>
+          <item name="Custom Plugins"      href="/manual/extending.html#Custom"/>
+        </item>
       </item>
       <item name="Wiki"                    href="http://wiki.apache.org/logging"/>
     </menu>

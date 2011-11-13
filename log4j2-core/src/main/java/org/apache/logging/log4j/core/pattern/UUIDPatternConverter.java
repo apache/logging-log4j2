@@ -17,30 +17,32 @@
 
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.UUIDUtil;
+import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 
 /**
  * Formats the event sequence number.
  */
-@Plugin(name="SequenceNumberPatternConverter", type="Converter")
-@ConverterKeys({"sn", "sequenceNumber"})
-public class SequenceNumberPatternConverter extends LogEventPatternConverter {
-    private static AtomicLong sequence = new AtomicLong();
-    /**
-     * Singleton.
-     */
-    private static final SequenceNumberPatternConverter INSTANCE =
-        new SequenceNumberPatternConverter();
+@Plugin(name="UUIDPatternConverter", type="Converter")
+@ConverterKeys({"u", "uuid"})
+public class UUIDPatternConverter extends LogEventPatternConverter {
+
+    private final boolean isRandom;
+
+    private static Logger logger = StatusLogger.getLogger();
 
     /**
      * Private constructor.
      */
-    private SequenceNumberPatternConverter() {
-        super("Sequence Number", "sn");
+    private UUIDPatternConverter(boolean isRandom) {
+        super("u", "uuid");
+        this.isRandom = isRandom;
     }
 
     /**
@@ -49,15 +51,22 @@ public class SequenceNumberPatternConverter extends LogEventPatternConverter {
      * @param options options, currently ignored, may be null.
      * @return instance of SequencePatternConverter.
      */
-    public static SequenceNumberPatternConverter newInstance(
-        final String[] options) {
-        return INSTANCE;
+    public static UUIDPatternConverter newInstance(final String[] options) {
+        if (options.length == 0) {
+            return new UUIDPatternConverter(false);
+        }
+
+        if (options.length > 1 || (!options[0].equalsIgnoreCase("RANDOM") && !options[0].equalsIgnoreCase("Time"))) {
+            logger.error("UUID Pattern Converter only accepts a single option with the value \"RANDOM\" or \"TIME\"");
+        }
+        return new UUIDPatternConverter(options[0].equalsIgnoreCase("RANDOM"));
     }
 
     /**
      * {@inheritDoc}
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(Long.toString(sequence.incrementAndGet()));
+        UUID uuid = isRandom ? UUID.randomUUID() : UUIDUtil.getTimeBasedUUID();
+        toAppendTo.append(uuid.toString());
     }
 }
