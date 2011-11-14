@@ -111,17 +111,21 @@ public class ThreadContextMapFilter extends FilterBase {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("isAnd=").append(isAnd);
-        if (map.size() > 0) {
-            sb.append(", {");
-            boolean first = true;
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                if (!first) {
-                    sb.append(", ");
+        if (useMap) {
+            if (map.size() > 0) {
+                sb.append(", {");
+               boolean first = true;
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    if (!first) {
+                        sb.append(", ");
+                    }
+                    first = false;
+                    sb.append(entry.getKey()).append("=").append(entry.getValue());
                 }
-                first = false;
-                sb.append(entry.getKey()).append("=").append(entry.getValue());
-            }
-            sb.append("}");
+                sb.append("}");
+          }
+        } else {
+            sb.append(", {").append(key).append("=").append(value).append("}");
         }
         return sb.toString();
     }
