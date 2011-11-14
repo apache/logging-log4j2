@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -36,14 +37,32 @@ import java.util.Map;
  */
 @Plugin(name="ThreadContextMapFilter", type="Core", elementType="filter", printObject = true)
 public class ThreadContextMapFilter extends FilterBase {
-    private final Map<String, Object> map;
+    private final Map<String, String> map;
+
+    private final String key;
+    private final String value;
 
     private final boolean isAnd;
 
-    public ThreadContextMapFilter(Map<String, Object> pairs, boolean oper, Result onMatch, Result onMismatch) {
+    private final boolean useMap;
+
+    public ThreadContextMapFilter(Map<String, String> pairs, boolean oper, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
-        this.map = pairs;
-        this.isAnd = oper;
+        if (pairs.size() == 1) {
+            Iterator<Map.Entry<String, String>> iter = pairs.entrySet().iterator();
+            Map.Entry<String, String> entry = iter.next();
+            this.key = entry.getKey();
+            this.value= entry.getValue();
+            this.map = null;
+            this.isAnd = false;
+            this.useMap = false;
+        } else {
+            this.map = pairs;
+            this.isAnd = oper;
+            this.key = null;
+            this.value = null;
+            this.useMap = true;
+        }
     }
 
     @Override
@@ -63,11 +82,15 @@ public class ThreadContextMapFilter extends FilterBase {
 
     private Result filter() {
         boolean match = false;
-        for (String key : map.keySet()) {
-            match = map.get(key).equals(ThreadContext.get(key));
-            if ((!isAnd && match) || (isAnd && !match)) {
-                break;
+        if (useMap) {
+            for (String key : map.keySet()) {
+                match = map.get(key).equals(ThreadContext.get(key));
+                if ((!isAnd && match) || (isAnd && !match)) {
+                    break;
+                }
             }
+        } else {
+            match = key.equals(ThreadContext.get(key));
         }
         return match ? onMatch : onMismatch;
     }
@@ -91,7 +114,7 @@ public class ThreadContextMapFilter extends FilterBase {
         if (map.size() > 0) {
             sb.append(", {");
             boolean first = true;
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
                 if (!first) {
                     sb.append(", ");
                 }
@@ -112,7 +135,7 @@ public class ThreadContextMapFilter extends FilterBase {
             logger.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {

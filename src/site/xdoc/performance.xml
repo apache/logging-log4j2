@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+  <properties>
+    <title>Performance</title>
+    <author email="rgoers@apache.org">Ralph Goers</author>
+  </properties>
+
+  <body>
+    <section name="Performance">
+      <p>One of the often-cited arguments against logging is its
+        computational cost. This is a legitimate concern as even moderately
+        sized applications can generate thousands of log requests. Much
+        effort was spent measuring and tweaking logging performance. Log4j
+        claims to be fast and flexible: speed first, flexibility second.
+      </p>
+      <p>The user should be aware of the following performance issues.</p>
+      <ol>
+        <li>
+          <b>Logging performance when logging is turned off.</b>
+          <br/>
+          <p>When logging is turned off entirely or just for a set of Levels, the cost of a log request consists of
+            two method invocations plus an integer comparison. On a 2.53 GHz Intel Core 2 Duo MacBook Pro
+            calling isDebugEnabled 10 million times produces an average result in nanoseconds of: <br />
+            <pre>
+            Log4j: 4
+            Logback: 5
+            Log4j 2.0: 3
+            </pre>
+            The numbers above will vary slightly from run to run so the only conclusion that should be
+            drawn is that all 3 frameworks perform similarly on this task.
+          </p>
+          <p>However, The method invocation involves the "hidden" cost of parameter construction.
+          </p>
+          <p>For example,
+            <pre>
+              logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+            </pre>
+            incurs the cost of constructing the message parameter, i.e. converting both integer
+            <code>i</code> and <code>entry[i]</code> to a String, and concatenating intermediate strings,
+            regardless of whether the message will be logged or not.
+
+            This cost of parameter construction can be quite high and it
+            depends on the size of the parameters involved.
+
+            A comparison run on the same hardware as above yields:
+            <pre>
+            Log4j: 188
+            Logback: 183
+            Log4j 2.0: 188
+            </pre>
+
+            Again, no conclusion should be drawn regarding relative differences between the frameworks on
+            this task, but it should be obvious that it is considerably more expensive than simply testing
+            the level.
+          </p>
+          <p>
+            The best approach to avoid the cost of parameter construction is to use Log4J 2.0's formatting
+            capabilities. For example, instead of the above write:
+            <pre>
+            logger.debug("Entry number: {} is {}", i, entry[i]);
+            </pre>
+            Using this approach, a comparison run again on the same hardware produces:
+            <pre>
+            Log4j: Not supported
+            Logback: 9
+            Log4j 2.0: 4
+            </pre>
+            These results show that the difference in performance between the call to isDebugEnabled and
+            logger.debug is barely discernable.
+          </p>
+          <p>In some circumstances one of the parameters to logger.debug will be a costly method call that
+            should be avoided if debugging is disabled. In those cases write:
+            <pre>
+            if(logger.isDebugEnabled() {
+                logger.debug("Entry number: " + i + " is " + entry[i].toString());
+            }
+            </pre>
+          </p>
+          <p>This will not incur the cost of whatever the toString() method needs to do if debugging is disabled.
+            On the other hand, if the logger is enabled for the debug level, it will incur twice the cost of
+            evaluating whether the logger is enabled or not: once
+            in <code>isDebugEnabled</code> and once in <code>debug</code>. This is an insignificant
+            overhead because evaluating a logger takes about 1% of the time it takes to actually log.
+          </p>
+          <p>Certain users resort to preprocessing or compile-time
+            techniques to compile out all log statements. This leads to perfect
+            performance efficiency with respect to logging. However, since the
+            resulting application binary does not contain any log statements,
+            logging cannot be turned on for that binary. This seems to be
+            a disproportionate price to pay in exchange for a small performance
+            gain.
+          </p>
+        </li>
+        <li>
+          <b>The performance of deciding whether to log or not to log when logging is turned on.</b>
+          <br/>
+          <p>
+            Unlike Log4j and Logback, Log4j 2 Loggers don't "walk a hierarchy". Loggers point directly to the
+            Logger configuration that best matches the Logger's name. This incurs extra overhead when the Logger
+            is first created but reduces the overhead every time the Logger is used.
+          </p>
+        </li>
+        <li>
+          <b>Actually outputting log messages</b>
+          <br/>
+          <p>This is the cost of formatting the log output and sending it to its target destination. Here again,
+            a serious effort was made to make layouts (formatters) perform as quickly as possible. The same
+            is true for appenders. One of the fundamental tenants of Log4j 2.0 is to use immutable objects whenever
+            possible and to lock at the lowest granularity possible. However, the cost of actually formatting and
+            delivering log events will never be insignificant. For example, the results of writing to a simple log
+            file using the same format using Log4j, Logback and Log4j 2 are:
+            <pre>
+            Log4j: 4220
+            Logback: 9671
+            Log4j 2.0: 4615
+            </pre>
+          </p>
+          <p>
+            These results show that actually writing out the events can be at least 1000 times more expensive than
+            when they are disabled.
+          </p>
+        </li>
+        <li>
+          <b>Advanced Filtering</b>
+          <br />
+          <p>
+            Both Logback and Log4j 2 support advanced filtering. Logback calls them TurboFilters while
+            Log4j 2 has a single Filter object. Advanced filtering provides the capability to filter
+            LogEvents using more than just the Level before the events are passed to Appenders.
+            However, this flexibility does come with some cost. Since multi-threading can also have an impact on the
+            performance of advanced filtering, the table below shows the difference in performance in two different
+            sets of context-wide filters running on the same hardware as the previous tests using
+            various numbers of threads.
+          </p>
+          <table>
+            <tr>
+              <th>Test</th>
+              <th>1 thread</th>
+              <th>2 threads</th>
+              <th>5 threads</th>
+              <th>10 threads</th>
+              <th>20 threads</th>
+              <th>50 threads</th>
+            </tr>
+            <tr>
+              <td>Logback MDCFilter</td>
+              <td>37</td>
+              <td>50</td>
+              <td>145</td>
+              <td>316</td>
+              <td>606</td>
+              <td>1670</td>
+            </tr>
+            <tr>
+              <td>Log4j 2 ThreadContextMapFilter</td>
+              <td>30</td>
+              <td>35</td>
+              <td>85</td>
+              <td>165</td>
+              <td>341</td>
+              <td>864</td>
+            </tr>
+            <tr>
+              <td>Logback MarkerFilter</td>
+              <td>17</td>
+              <td>24</td>
+              <td>59</td>
+              <td>115</td>
+              <td>234</td>
+              <td>547</td>
+            </tr>
+             <tr>
+              <td>Log4j 2 MarkerFilter</td>
+              <td>4</td>
+              <td>5</td>
+              <td>7</td>
+              <td>20</td>
+              <td>35</td>
+              <td>92</td>
+            </tr>
+          </table>
+        </li>
+
+      </ol>
+      <p>
+        The performance results above were all derived from running the DebugDisabledPerformanceComparison,
+        FilterPerformanceComparison, and PerformanceComparison junit tests which can be found in the
+        Log4j 2 unit test source directory.
+      </p>
+    </section>
+  </body>
+</document>

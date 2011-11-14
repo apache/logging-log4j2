@@ -41,7 +41,7 @@ public class DebugDisabledPerformanceComparison {
 
 
     // How many times should we try to log:
-    private static final int COUNT = 1000000;
+    private static final int COUNT = 10000000;
     private static final int PROFILE_COUNT = 500000;
     private static final int WARMUP = 1000;
 
@@ -82,15 +82,42 @@ public class DebugDisabledPerformanceComparison {
             System.out.println("Log4j 2.0: " + result);
             System.out.println("###############################################");
         } else {
+            System.out.println("Starting isDebugEnabled tests");
             System.out.println("Starting Log4j 2.0");
-            long result3 = log4j2(COUNT);
+            long result3 = log4j2IsDebug(COUNT);
             System.out.println("Starting Log4j");
-            long result1 = log4j(COUNT);
+            long result1 = log4j2IsDebug(COUNT);
             System.out.println("Starting Logback");
-            long result2 = logback(COUNT);
+            long result2 = logbackIsDebug(COUNT );
 
             System.out.println("###############################################");
             System.out.println("Log4j: " + result1);
+            System.out.println("Logback: " + result2);
+            System.out.println("Log4j 2.0: " + result3);
+            System.out.println("###############################################");
+
+            System.out.println("Starting logger.debug tests with String concatenation");
+            System.out.println("Starting Log4j 2.0");
+            result3 = log4j2(COUNT);
+            System.out.println("Starting Log4j");
+            result1 = log4j(COUNT);
+            System.out.println("Starting Logback");
+            result2 = logback(COUNT);
+
+            System.out.println("###############################################");
+            System.out.println("Log4j: " + result1);
+            System.out.println("Logback: " + result2);
+            System.out.println("Log4j 2.0: " + result3);
+            System.out.println("###############################################");
+
+            System.out.println("Starting logger.debug tests without String concatenation");
+            System.out.println("Starting Log4j 2.0");
+            result3 = log4j2Debug(COUNT);
+            System.out.println("Starting Logback");
+            result2 = logbackDebug(COUNT);
+
+            System.out.println("###############################################");
+            System.out.println("Log4j: Not supported");
             System.out.println("Logback: " + result2);
             System.out.println("Log4j 2.0: " + result3);
             System.out.println("###############################################");
@@ -120,6 +147,37 @@ public class DebugDisabledPerformanceComparison {
         System.out.println("###############################################");
     }
 
+
+    private long log4jIsDebug(int loop) {
+        Integer j = new Integer(2);
+        long start = System.nanoTime();
+        for (int i = 0; i < loop; i++) {
+            log4jlogger.isDebugEnabled();
+        }
+        return (System.nanoTime() - start) / loop;
+    }
+
+    private long logbackIsDebug(int loop) {
+        Integer j = new Integer(2);
+        long start = System.nanoTime();
+        for (int i = 0; i < loop; i++) {
+            logbacklogger.isDebugEnabled();
+        }
+        return (System.nanoTime() - start) / loop;
+    }
+
+
+    private long log4j2IsDebug(int loop) {
+        Integer j = new Integer(2);
+        long start = System.nanoTime();
+        for (int i = 0; i < loop; i++) {
+            logger.isDebugEnabled();
+        }
+        return (System.nanoTime() - start) / loop;
+    }
+
+
+
     private long log4j(int loop) {
         Integer j = new Integer(2);
         long start = System.nanoTime();
@@ -138,12 +196,30 @@ public class DebugDisabledPerformanceComparison {
         return (System.nanoTime() - start) / loop;
     }
 
+    private long logbackDebug(int loop) {
+        Integer j = new Integer(2);
+        long start = System.nanoTime();
+        for (int i = 0; i < loop; i++) {
+            logbacklogger.debug("SEE IF THIS IS LOGGED {} .", j);
+        }
+        return (System.nanoTime() - start) / loop;
+    }
+
 
     private long log4j2(int loop) {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             logger.debug("SEE IF THIS IS LOGGED " + j + ".");
+        }
+        return (System.nanoTime() - start) / loop;
+    }
+
+     private long log4j2Debug(int loop) {
+        Integer j = new Integer(2);
+        long start = System.nanoTime();
+        for (int i = 0; i < loop; i++) {
+            logger.debug("SEE IF THIS IS LOGGED {} .", j);
         }
         return (System.nanoTime() - start) / loop;
     }

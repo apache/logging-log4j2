@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Extending Log4j</title>
+        <title>Extending Log4j 2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 

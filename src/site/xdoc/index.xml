@@ -42,7 +42,7 @@
             <h3>Improved Performance</h3>
             <p>
               Faster performance than Log4j 1.x in critical areas and similar performance to Logback in
-              most circumstances.
+              most circumstances. See <a href="performance.html">Performance</a> for more information.
             </p>
             <h3>Support for multiple APIs</h3>
             <p>

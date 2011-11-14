@@ -8,7 +8,7 @@
    </layout>
  </appender>
  <root>
-   <level value="debug"/>
+   <level value="error"/>
    <appender-ref ref="TestLogfile"/>
  </root>
 </log4j:configuration>

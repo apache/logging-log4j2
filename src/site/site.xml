@@ -70,7 +70,9 @@
         </item>
         <item name="Filters"               href="/manual/filters.html" collapse="true">
           <item name="Burst"               href="/manual/filters.html#BurstFilter"/>
+          <item name="CompositeFilter"     href="/manual/filters.html#CompositeFilter"/>
           <item name="DynamicThreshold"    href="/manual/filters.html#DynamicThresholdFilter"/>
+          <item name="Map"                 href="/manual/filters.html#MapFilter"/>
           <item name="Marker"              href="/manual/filters.html#MarkerFilter"/>
           <item name="Regex"               href="/manual/filters.html#RegexFilter"/>
           <item name="StructuredData"      href="/manual/filters.html#StructuredDataFilter"/>

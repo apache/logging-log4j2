@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4j Layouts</title>
+        <title>Log4j 2 Layouts</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -34,6 +34,9 @@
         </p>
         <a name="HTMLLayout"/>
         <subsection name="HTMLLayout">
+          <p>
+            The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
+          </p>
           <table border="1" width="100%">
             <tr>
               <th>Parameter Name</th>
