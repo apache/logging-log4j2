@@ -586,7 +586,11 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     }
                 } else if (a instanceof PluginValue) {
                     String name = ((PluginValue)a).value();
-                    String value = subst.replace(event, node.getValue());
+                    String v = node.getValue();
+                    if (v == null) {
+                        v = getAttrValue("value", attrs);
+                    }
+                    String value = subst.replace(event, v);
                     sb.append(name +"=" + "\"" + value + "\"");
                     parms[index] = value;
                 } else if (a instanceof PluginAttr) {

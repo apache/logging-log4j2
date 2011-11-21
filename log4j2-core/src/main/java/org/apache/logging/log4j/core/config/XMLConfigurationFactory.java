@@ -51,7 +51,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
 
     public static final String SUFFIX = ".xml";
 
-    private static Logger logger = StatusLogger.getLogger();
+    protected static Logger logger = StatusLogger.getLogger();
 
     private File configFile = null;
 
@@ -72,7 +72,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
                 defaultName = DEFAULT_CONFIG_FILE;
             }
             ClassLoader loader = this.getClass().getClassLoader();
-            source = getInputFromSystemProperty(loader);
+            source = getInputFromSystemProperty(loader, null);
             if (source == null) {
                 source = getInputFromResource(testName, loader);
                 if (source == null) {
@@ -86,7 +86,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
         return new XMLConfiguration(source, configFile);
     }
 
-    private InputSource getInputFromURI(URI configLocation) {
+    protected InputSource getInputFromURI(URI configLocation) {
         configFile = FileUtils.fileFromURI(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
@@ -109,9 +109,9 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
         return null;
     }
 
-    private InputSource getInputFromSystemProperty(ClassLoader loader) {
+    protected InputSource getInputFromSystemProperty(ClassLoader loader, String suffix) {
         String configFile = System.getProperty(CONFIGURATION_FILE_PROPERTY);
-        if (configFile == null) {
+        if (configFile == null || (suffix != null && !configFile.toLowerCase().endsWith(suffix.toLowerCase()))) {
             return null;
         }
         InputSource source;
@@ -135,7 +135,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
         return source;
     }
 
-    private InputSource getInputFromResource(String resource, ClassLoader loader) {
+    protected InputSource getInputFromResource(String resource, ClassLoader loader) {
         InputStream is = Loader.getResourceAsStream(resource, loader);
         if (is == null) {
             return null;

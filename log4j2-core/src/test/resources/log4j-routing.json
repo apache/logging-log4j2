@@ -1,0 +1,35 @@
+{ "configuration": { "status": "error", "name": "RoutingTest", "packages": "org.apache.logging.log4j.test",
+      "properties": {
+        "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+      },
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "Console": { "name": "STDOUT",
+        "PatternLayout": { "pattern": "%m%n" }
+      },
+      "List": { "name": "List",
+        "ThresholdFilter": { "level": "debug" }
+      },
+      "Routing": { "name": "Routing",
+        "Routes": { "pattern": "$${sd:type}",
+          "Route": [
+            {
+              "RollingFile": {
+                "name": "Rolling-${sd:type}", "fileName": "${filename}",
+                "filePattern": "target/rolling1/test1-${sd:type}.%i.log.gz",
+                "PatternLayout": {"pattern": "%d %p %C{1.} [%t] %m%n"},
+                "SizeBasedTriggeringPolicy": { "size": "500" }
+              }
+            },
+            { "appender-ref": "STDOUT", "key": "Audit"},
+            { "appender-ref": "List", "key": "Service"}
+          ]
+        }
+      }
+    },
+    "loggers": {
+      "logger": { "name": "EventLogger", "level": "info", "additivity": "false", "appender-ref": { "ref": "Routing" }},
+      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+    }
+  }
+}
