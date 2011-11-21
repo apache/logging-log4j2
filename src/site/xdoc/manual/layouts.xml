@@ -146,7 +146,7 @@
           </p>
           <table border="1" width="100%">
             <tr>
-              <th>Coversion Pattern</th>
+              <th>Conversion Pattern</th>
               <th>Description</th>
             </tr>
             <tr>
@@ -240,11 +240,45 @@
             </tr>
             <tr>
               <td align="center">
+                <b>ex</b>{depth}<br />
+                <b>exception</b>{depth}<br />
+                <b>throwable</b>{depth}
+              </td>
+              <td>
+                <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
+                  default this will output the full trace as one would normally find by a call to
+                  Throwable.printStackTrace().
+                  The throwable conversion word can be followed by an option in the form
+                  <b>%throwable{short}</b>
+                  which will only output the first line of the Throwable or <b>%throwable{n}</b> where
+                  the first n lines of the stacktrace will be printed.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>F</b><br />
                 <b>file</b>
               </td>
               <td>
                 Used to output the file name where the logging request was issued.
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>K</b>{key}<br />
+                <b>map</b>{key}<br />
+                <b>MAP</b>{key}
+              </td>
+              <td>
+                <p>Used to output the entries in a <a href="../log4j2-api/apidocs/index.html">MapMessage</a>,
+                  if one is present in the event. The <b>K</b> conversion character can be followed by the key
+                  for the map placed between braces, as in
+                  <b>%K{clientNumber}</b> where <code>clientNumber</code> is the key. The value in the Map
+                  corresponding to the key will be output. If no additional sub-option
+                  is specified, then the entire contents of the Map key value pair set
+                  is output using a format {{key1,val1},{key2,val2}}
+                </p>
               </td>
             </tr>
             <tr>
@@ -345,6 +379,28 @@
             </tr>
             <tr>
               <td align="center">
+                <b>rEx</b>{depth}<br />
+                <b>rException</b>{depth}<br />
+                <b>rThrowable</b>{depth}
+              </td>
+              <td>
+                <p>
+                  The same as the %throwable conversion word but the stack trace is printed starting with the
+                  first exception that was thrown followed by each subsequent wrapping exception.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>sn</b><br />
+                <b>sequenceNumber</b>
+              </td>
+              <td>Includes a sequence number that will be incremented in every event. The counter is a
+                static variable so will only be unique within applications that share the same converter Class
+                object.</td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>t</b><br />
                 <b>thread</b>
               </td>
@@ -362,6 +418,7 @@
             <tr>
               <td align="center">
                 <b>X</b>{key}<br />
+                <b>mdc</b>{key}<br />
                 <b>MDC</b>{key}
               </td>
               <td>
@@ -386,32 +443,16 @@
             </tr>
             <tr>
               <td align="center">
-                <b>ex</b>{depth}<br />
-                <b>exception</b>{depth}<br />
-                <b>throwable</b>{depth}
+                <b>u</b>{"RANDOM" | "TIME"}<br />
+                <b>uuid</b>
               </td>
-              <td>
-                <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
-                  default this will output the full trace as one would normally find by a call to
-                  Throwable.printStackTrace().
-                  The throwable conversion word can be followed by an option in the form
-                  <b>%throwable{short}</b>
-                  which will only output the first line of the Throwable or <b>%throwable{n}</b> where
-                  the first n lines of the stacktrace will be printed.
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td align="center">
-                <b>rEx</b>{depth}<br />
-                <b>rException</b>{depth}<br />
-                <b>rThrowable</b>{depth}
-              </td>
-              <td>
-                <p>
-                  The same as the %throwable conversion word but the stack trace is printed starting with the
-                  first exception that was thrown followed by each subsequent wrapping exception.
-                </p>
+              <td>Includes either a random or a time-based UUID. The time-based UUID is a Type 1 UUID that can
+                generate up to 10,000 unique ids per millisecond, will use the MAC address of each host, and to
+                try to insure uniqueness across multiple JVMs and/or ClassLoaders on the same host a
+                random number between 0 and 16,384 will be associated with each instance of the UUID generator
+                Class and included in each time-based UUID generated. Because time-based UUIDs contain
+                the MAC address and timestamp they should be used with care as they can cause a security
+                vulnerability.
               </td>
             </tr>
             <tr>
@@ -430,29 +471,6 @@
                   as found in that jar's manifest will be added. If the information is uncertain, then the class
                   packaging data will be preceded by a tilde, i.e. the '~' character.
                 </p>
-              </td>
-            </tr>
-            <tr>
-              <td align="center">
-                <b>sn</b><br />
-                <b>sequenceNumber</b>
-              </td>
-              <td>Includes a sequence number that will be incremented in every event. The counter is a
-                static variable so will only be unique within applications that share the same converter Class
-                object.</td>
-            </tr>
-            <tr>
-              <td align="center">
-                <b>u</b>{"RANDOM" | "TIME"}<br />
-                <b>uuid</b>
-              </td>
-              <td>Includes either a random or a time-based UUID. The time-based UUID is a Type 1 UUID that can
-                generate up to 10,000 unique ids per millisecond, will use the MAC address of each host, and to
-                try to insure uniqueness across multiple JVMs and/or ClassLoaders on the same host a
-                random number between 0 and 16,384 will be associated with each instance of the UUID generator
-                Class and included in each time-based UUID generated. Because time-based UUIDs contain
-                the MAC address and timestamp they should be used with care as they can cause a security
-                vulnerability.
               </td>
             </tr>
             <tr>
