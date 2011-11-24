@@ -24,7 +24,163 @@
 
     <body>
       <section name="Configuration">
+        <p>Inserting log requests into the application code requires a fair
+          amount of planning and effort. Observation shows that approximately 4
+          percent of code is dedicated to logging. Consequently, even moderately
+          sized applications will have thousands of logging statements embedded
+          within their code.  Given their number, it becomes imperative to
+          manage these log statements without the need to modify them manually.
+        </p>
+        <p>
+          Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
+          <ol>
+            <li>Through a configuration file written in XML or JSON.</li>
+            <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
+            <li>Programmatically, by calling the APIs exposed in the Configuration interface to add
+              components to the default configuration.</li>
+            <li>Programmatically, by calling methods on the internal Logger class.</li>
+          </ol>
+          This page focuses primarily on configuring Log4j through a configuration file. Information on
+          programmatically configuring Log4j can be found at <a href="../extending.html">Extending Log4j 2</a>.
+        </p>
+        <p>
+          Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
+          appenders and filters or manipulate the configuration in any way.
+        </p>
+        <subsection name="Automatic Configuration">
+          <p>
+            Log4j has the ability to automatically configure itself during initialization.
+            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
+            order from highest to lowest. As delivered, Log4j contains two ConfigurationFactory implementations,
+            one for JSON and one for XML.
+            <ol>
+              <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
+                load the configuration using the <code>ConfigurationFactory</code> that matches the file
+                extension.</li>
+              <li>If no system property is set the JSON ConfigurationFactory will look for log4j-test.json or
+                log4j-test.jsn in the classpath.</li>
+              <li>If no such file is found the XML ConfigurationFactory will look for log4j-test.xml in the
+                classpath.</li>
+              <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j.json or log4j.jsn
+                on the classpath.</li>
+              <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
+                log4j.xml on the classpath.</li>
+              <li>If no configuration file could be located the <code>DefaultConfiguration</code> will
+                be used. This will cause logging output to go to the console.</li>
+            </ol>
+          </p>
+          <p>An example application named <code>MyApp</code> that uses log4j can be used to illustrate how
+            this is done.
+          </p>
+          <p>
+<source> import com.foo.Bar;
 
+ // Import log4j classes.
+ import org.apache.logging.log4j.Logger;
+
+ public class MyApp {
+
+   // Define a static logger variable so that it references the
+   // Logger instance named "MyApp".
+   Logger logger = LogManager.getLogger(MyApp.class.getName());
+
+   public static void main(String[] args) {
+
+   // Set up a simple configuration that logs on the console.
+
+   logger.trace("Entering application.");
+   Bar bar = new Bar();
+   bar.doIt();
+   logger.trace("Exiting application."                 }
+ }</source>
+          </p>
+
+          <p>
+            <code>MyApp</code> begins by importing log4j related classes. It
+            then defines a static logger variable with the name <code>MyApp</code>
+            which happens to be the fully qualified name of the class.
+          </p>
+
+          <p>
+            <code>MyApp</code> uses the <code>Bar</code> class defined in the package<code>com.foo</code>.
+          </p>
+
+          <p>
+<source>  package com.foo;
+  import org.apache.logging.log4j.Logger;
+
+  public class Bar {
+    static Logger logger = LogManager.getLogger(Bar.class.getName());
+
+    public void doIt() {
+      logger.error("Did it again!");
+    }
+  }</source>
+          </p>
+
+          <p>
+            If no configuration files are present logback will default to the DefaultConfiguration which
+            will set up a minimal logging environment consisting of a <a href="">ConsoleAppender</a> attached
+            to the root logger. The output will be formatted using a
+            <a href="">PatternLayout</a> set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n".
+          </p>
+
+          <p>
+            Note that by default, the root logger is assigned to <code>Level.ERROR</code>.
+          </p>
+
+          <p>The output of MyApp would be similar to:
+            <pre>
+  17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+            </pre>
+          </p>
+          <p>
+            As was described previously, Log4j will first attempt to configure itself from configuration files. A
+            configuration equivalent to the default would look like:
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></source>
+            Once the file above is placed into the classpath as log4j.xml you will get results identical to
+            those listed above. Changing the root level to trace will result in results similar to:
+             <pre>
+  17:13:01.540 [main] TRACE MyApp - Entering application.
+  17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+  17:13:01.540 [main] TRACE MyApp - Exiting application.</pre>
+          </p>
+          <p>
+            Note that status logging is disabled using the default configuration.
+          </p>
+        </subsection>
+
+        <subsection name="Automatic Reconfiguration">
+
+        </subsection>
+
+        <subsection name="Configuration Syntax">
+
+        </subsection>
+
+        <subsection name="Property Substitution">
+
+        </subsection>
+
+
+        <subsection name="Status Messages">
+
+        </subsection>
+        <subsection name="Unit Testing in Maven">
+
+        </subsection>
       </section>
     </body>
 </document>

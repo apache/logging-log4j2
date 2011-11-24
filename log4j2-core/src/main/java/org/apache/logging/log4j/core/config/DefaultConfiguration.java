@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * The default configuration. It writes all output to the Console using the default logging level
@@ -47,33 +48,15 @@ public class DefaultConfiguration extends BaseConfiguration {
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
-        Appender appender = new ConsoleAppender("Console", new BasicLayout());
+        Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
+            null, null, null);
+        Appender appender = new ConsoleAppender("Console", layout);
         addAppender(appender);
         LoggerConfig root = getRootLogger();
         root.addAppender(appender);
+
         String l = System.getProperty(DEFAULT_LEVEL);
         Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
         root.setLevel(level);
-    }
-
-    /**
-     * Formats the event using the Message's built-in format.
-     */
-    public class BasicLayout implements Layout<String> {
-        public byte[] format(LogEvent event) {
-            return formatAs(event).getBytes();
-        }
-
-        public String formatAs(LogEvent event) {
-            return event.getMessage().getFormattedMessage() + "\n";
-        }
-
-        public byte[] getHeader() {
-            return EMPTY_STRING.getBytes();
-        }
-
-        public byte[] getFooter() {
-            return EMPTY_STRING.getBytes();
-        }
     }
 }

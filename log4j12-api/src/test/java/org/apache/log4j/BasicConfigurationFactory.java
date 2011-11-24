@@ -21,8 +21,7 @@ import org.apache.logging.log4j.core.config.BaseConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.xml.sax.InputSource;
 
 import java.net.URI;
 
@@ -31,6 +30,17 @@ import java.net.URI;
  */
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
+    @Override
+    public String[] getSupportedTypes() {
+        return new String[] {"*"};
+    }
+
+    @Override
+    public Configuration getConfiguration(InputSource source) {
+        return new BasicConfiguration();
+    }
+
+    @Override
     public Configuration getConfiguration(String name, URI configLocation) {
         return new BasicConfiguration();
     }

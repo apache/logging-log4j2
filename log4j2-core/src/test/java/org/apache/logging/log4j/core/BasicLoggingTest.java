@@ -14,27 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
+package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.xml.sax.InputSource;
-
-import java.net.URI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 /**
  *
  */
-@Plugin(name="XMLConfigurationFactory", type="ConfigurationFactory")
-@Order(5)
-public class XMLConfigurationFactory extends ConfigurationFactory {
+public class BasicLoggingTest {
 
-    public static final String[] SUFFIXES = new String[] {".xml", "*"};
-
-    public Configuration getConfiguration(InputSource source) {
-        return new XMLConfiguration(source, configFile);
-    }
-
-    public String[] getSupportedTypes() {
-        return SUFFIXES;
+    @Test
+    public void test1() {
+        Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
+        logger.debug("debug not set");
+        logger.error("Test message");
     }
 }

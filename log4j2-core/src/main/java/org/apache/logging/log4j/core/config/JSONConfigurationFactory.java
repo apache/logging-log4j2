@@ -20,28 +20,19 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.xml.sax.InputSource;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  *
  */
 @Plugin(name="JSONConfigurationFactory", type="ConfigurationFactory")
 @Order(6)
-public class JSONConfigurationFactory extends XMLConfigurationFactory {
+public class JSONConfigurationFactory extends ConfigurationFactory {
 
-    public static final String DEFAULT_CONFIG_FILE = "log4j2.json";
-
-    public static final String TEST_CONFIG_FILE = "log4j2-test.json";
-
-    public static final String TEST_PREFIX = "log4j2-test";
-
-    public static final String DEFAULT_PREFIX = "log4j2";
-
-    public static final String SUFFIX = ".json";
+    public static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
     private File configFile = null;
 
-    private String[] dependencies = new String[] {
+    private static String[] dependencies = new String[] {
         "org.codehaus.jackson.JsonNode",
         "org.codehaus.jackson.map.ObjectMapper"
     };
@@ -61,34 +52,19 @@ public class JSONConfigurationFactory extends XMLConfigurationFactory {
         isActive = true;
     }
 
-    public Configuration getConfiguration(String name, URI configLocation) {
-        InputSource source = null;
-        if (configLocation != null) {
-            source = getInputFromURI(configLocation);
-        }
-        if (source == null) {
-            String testName;
-            String defaultName;
-            boolean named = (name != null && name.length() > 0);
-            if (named) {
-                testName = TEST_PREFIX + name + SUFFIX;
-                defaultName = DEFAULT_PREFIX + name + SUFFIX;
-            } else {
-                testName = TEST_CONFIG_FILE;
-                defaultName = DEFAULT_CONFIG_FILE;
-            }
-            ClassLoader loader = this.getClass().getClassLoader();
-            source = getInputFromSystemProperty(loader, ".json");
-            if (source == null) {
-                source = getInputFromResource(testName, loader);
-                if (source == null) {
-                    source = getInputFromResource(defaultName, loader);
-                }
-                if (source == null) {
-                    return named ? getConfiguration(null, null) : null;
-                }
-            }
+    @Override
+    protected boolean isActive() {
+        return isActive;
+    }
+
+    public Configuration getConfiguration(InputSource source) {
+        if (!isActive) {
+            return null;
         }
         return new JSONConfiguration(source, configFile);
+    }
+
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
     }
 }

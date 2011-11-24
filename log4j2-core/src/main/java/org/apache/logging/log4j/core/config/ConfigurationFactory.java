@@ -3,9 +3,19 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.xml.sax.InputSource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +41,19 @@ public abstract class ConfigurationFactory {
 
     public static final String CONFIGURATION_FACTORY_PROPERTY = "log4j.configurationFactory";
 
+    public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
+
     private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
 
-    private static Logger logger = StatusLogger.getLogger();
+    protected static Logger logger = StatusLogger.getLogger();
+
+    protected File configFile = null;
+
+    protected static final String TEST_PREFIX = "log4j2-test";
+
+    protected static final String DEFAULT_PREFIX = "log4j2";
+
+    private static ConfigurationFactory configFactory = new Factory();
 
     public static ConfigurationFactory getInstance() {
         String factoryClass = System.getProperty(CONFIGURATION_FACTORY_PROPERTY);
@@ -59,7 +79,7 @@ public abstract class ConfigurationFactory {
         for (WeightedFactory wf : ordered) {
             addFactory(wf.factoryClass);
         }
-        return new Factory();
+        return configFactory;
     }
 
     private static void addFactory(String factoryClass) {
@@ -82,14 +102,92 @@ public abstract class ConfigurationFactory {
     }
 
     public static void setConfigurationFactory(ConfigurationFactory factory) {
-        factories.add(0, factory);
+        configFactory = factory;
+    }
+
+    public static void resetConfigurationFactory() {
+        configFactory = new Factory();
     }
 
     public static void removeConfigurationFactory(ConfigurationFactory factory) {
         factories.remove(factory);
     }
 
-    public abstract Configuration getConfiguration(String name, URI configLocation);
+    protected abstract String[] getSupportedTypes();
+
+    protected boolean isActive() {
+        return true;
+    }
+
+    public abstract Configuration getConfiguration(InputSource source);
+
+    public Configuration getConfiguration(String name, URI configLocation) {
+        if (!isActive()) {
+            return null;
+        }
+        if (configLocation != null) {
+            InputSource source = getInputFromURI(configLocation);
+            if (source != null) {
+                return getConfiguration(source);
+            }
+        }
+        return null;
+    }
+
+    protected InputSource getInputFromURI(URI configLocation) {
+        configFile = FileUtils.fileFromURI(configLocation);
+        if (configFile != null && configFile.exists() && configFile.canRead()) {
+            try {
+                InputSource source = new InputSource(new FileInputStream(configFile));
+                source.setSystemId(configLocation.getPath());
+                return source;
+            } catch (FileNotFoundException ex) {
+                logger.error("Cannot locate file " + configLocation.getPath(), ex);
+            }
+        }
+        try {
+            InputSource source = new InputSource(configLocation.toURL().openStream());
+            source.setSystemId(configLocation.getPath());
+            return source;
+        } catch (MalformedURLException ex) {
+            logger.error("Invalid URL " + configLocation.toString(), ex);
+        } catch (IOException ex) {
+            logger.error("Unable to access " + configLocation.toString(), ex);
+        }
+        return null;
+    }
+
+    protected InputSource getInputFromString(ClassLoader loader, String configFile) {
+        InputSource source;
+        try {
+            URL url = new URL(configFile);
+            source = new InputSource(url.openStream());
+            source.setSystemId(configFile);
+            return source;
+        } catch (Exception ex) {
+            source = getInputFromResource(configFile, loader);
+            if (source == null) {
+                try {
+                    InputStream is = new FileInputStream(configFile);
+                    source = new InputSource(is);
+                    source.setSystemId(configFile);
+                } catch (FileNotFoundException fnfe) {
+                    // Ignore the exception
+                }
+            }
+        }
+        return source;
+    }
+
+    protected InputSource getInputFromResource(String resource, ClassLoader loader) {
+        InputStream is = Loader.getResourceAsStream(resource, loader);
+        if (is == null) {
+            return null;
+        }
+        InputSource source = new InputSource(is);
+        source.setSystemId(resource);
+        return source;
+    }
 
     private static class WeightedFactory implements Comparable<WeightedFactory> {
         private int weight;
@@ -116,13 +214,81 @@ public abstract class ConfigurationFactory {
 
         public Configuration getConfiguration(String name, URI configLocation) {
 
-            for (ConfigurationFactory factory : factories) {
-                Configuration c = factory.getConfiguration(name, configLocation);
-                if (c != null) {
-                    return c;
+            if (configLocation == null) {
+                String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
+                if (config != null) {
+                    ClassLoader loader = this.getClass().getClassLoader();
+                    InputSource source = getInputFromString(loader, config);
+                    if (source != null) {
+                        for (ConfigurationFactory factory : factories) {
+                            String[] types = factory.getSupportedTypes();
+                            if (types != null) {
+                                for (String type : types) {
+                                    if (type.equals("*") || config.endsWith(type)) {
+                                        Configuration c = factory.getConfiguration(source);
+                                        if (c != null) {
+                                            return c;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (ConfigurationFactory factory : factories) {
+                    Configuration config = factory.getConfiguration(name, configLocation);
+                    if (config != null) {
+                        return config;
+                    }
                 }
             }
-            return new DefaultConfiguration();
+
+            Configuration config = getConfiguration(true, name);
+            if (config == null) {
+                config = getConfiguration(true, null);
+                if (config == null) {
+                    config = getConfiguration(false, name);
+                    if (config == null) {
+                        config = getConfiguration(false, null);
+                    }
+                }
+            }
+            return config != null ? config : new DefaultConfiguration();
+        }
+
+        private Configuration getConfiguration(boolean isTest, String name) {
+            boolean named = (name != null && name.length() > 0);
+            ClassLoader loader = this.getClass().getClassLoader();
+            for (ConfigurationFactory factory : factories) {
+                String configName;
+                String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
+                String [] types = factory.getSupportedTypes();
+                if (types == null) {
+                    continue;
+                }
+
+                for (String suffix : types) {
+                    if (suffix.equals("*")) {
+                        continue;
+                    }
+                    configName = named ? prefix + name + suffix : prefix + suffix;
+
+                    InputSource source = getInputFromResource(configName, loader);
+                    if (source != null) {
+                        return factory.getConfiguration(source);
+                    }
+                }
+            }
+            return null;
+        }
+
+        public String[] getSupportedTypes() {
+            return null;
+        }
+
+        public Configuration getConfiguration(InputSource source) {
+            return null;
         }
     }
 }
