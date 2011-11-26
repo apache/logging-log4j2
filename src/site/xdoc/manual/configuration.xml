@@ -47,6 +47,7 @@
           Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
           appenders and filters or manipulate the configuration in any way.
         </p>
+        <a name="AutomaticConfiguration"/>
         <subsection name="Automatic Configuration">
           <p>
             Log4j has the ability to automatically configure itself during initialization.
@@ -90,21 +91,20 @@
 
    logger.trace("Entering application.");
    Bar bar = new Bar();
-   bar.doIt();
+   if (!bar.doIt() {
+     logger.error("Didn't do it.");
+   }
    logger.trace("Exiting application."                 }
  }</source>
           </p>
-
           <p>
             <code>MyApp</code> begins by importing log4j related classes. It
             then defines a static logger variable with the name <code>MyApp</code>
             which happens to be the fully qualified name of the class.
           </p>
-
           <p>
             <code>MyApp</code> uses the <code>Bar</code> class defined in the package<code>com.foo</code>.
           </p>
-
           <p>
 <source>  package com.foo;
   import org.apache.logging.log4j.Logger;
@@ -112,26 +112,29 @@
   public class Bar {
     static Logger logger = LogManager.getLogger(Bar.class.getName());
 
-    public void doIt() {
+    public boolean doIt() {
+      logger.entry();
       logger.error("Did it again!");
+      logger.exit();
+      return false;
     }
   }</source>
           </p>
-
           <p>
             If no configuration files are present logback will default to the DefaultConfiguration which
-            will set up a minimal logging environment consisting of a <a href="">ConsoleAppender</a> attached
-            to the root logger. The output will be formatted using a
-            <a href="">PatternLayout</a> set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n".
+            will set up a minimal logging environment consisting of a
+            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
+            attached to the root logger. The output will be formatted using a
+            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+            set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n".
           </p>
-
           <p>
             Note that by default, the root logger is assigned to <code>Level.ERROR</code>.
           </p>
-
           <p>The output of MyApp would be similar to:
             <pre>
   17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+  17:13:01.540 [main] ERROR MyApp - Didn't do it.
             </pre>
           </p>
           <p>
@@ -152,33 +155,231 @@
 </configuration>]]></source>
             Once the file above is placed into the classpath as log4j.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
-             <pre>
+             <source>
   17:13:01.540 [main] TRACE MyApp - Entering application.
+  17:13:01.540 [main] TRACE com.foo.Bar - entry
   17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
-  17:13:01.540 [main] TRACE MyApp - Exiting application.</pre>
+  17:13:01.540 [main] TRACE com.foo.Bar - exit
+  17:13:01.540 [main] ERROR MyApp - Didn't do it.
+  17:13:01.540 [main] TRACE MyApp - Exiting application.</source>
           </p>
           <p>
-            Note that status logging is disabled using the default configuration.
+            Note that status logging is disabled when the default configuration is used.
+          </p>
+          <p>
+            Perhaps it is desired to eliminate all the TRACE output from everything except com.foo.BAR. Simply
+            changing the log level would not accomplish the task. Instead, the solution is to
+            add a new logger definition to the configuration:
+          </p>
+            <source><![CDATA[    <logger name="com.foo.Bar" level="TRACE"/>
+    <root level="ERROR">
+      <appender-ref ref="STDOUT">
+    </root>]]></source>
+          <p>
+            With this configuration all log events from com.foo.Bar will be recorded while only error events will
+            be recorded from all other components.
           </p>
         </subsection>
-
-        <subsection name="Automatic Reconfiguration">
-
+        <a name="Additivity"/>
+        <subsection name="Additivity">
+          <p>
+            In the previous example all the events from com.foo.Bar were still written to the Console. This is
+            because the logger for com.foo.Bar did not have any appenders configured while its parent did. In fact,
+            the following configuration
+          </p>
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="com.foo.Bar" level="trace">
+      <appender-ref ref="Console"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></source>
+          <p>would result in</p>
+             <source>
+  17:13:01.540 [main] TRACE com.foo.Bar - entry
+  17:13:01.540 [main] TRACE com.foo.Bar - entry
+  17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+  17:13:01.540 [main] TRACE com.foo.Bar - exit
+  17:13:01.540 [main] TRACE com.foo.Bar - exit
+  17:13:01.540 [main] ERROR MyApp - Didn't do it.</source>
+          <p>Notice that the trace messages from com.foo.Bar appear twice. This is because the appender associated
+            with logger com.foo.Bar is first used, which writes the first instance to the Console. Next, the parent
+            of com.foo.Bar, which in this case is the root logger, is referenced. The event is then passed to its
+            appender, which is also writes to the Console, resulting in the second instance. This is known as
+            additivity. While additivity can be quite a convenient feature (as in the first previous example where
+            no appender reference needed to be configured), in many cases this behavior is considered undesirable
+            and so it is possible to disable it by setting the additivity attribute on the logger to false:
+          </p>
+           <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="com.foo.Bar" level="trace" additivity="false">
+      <appender-ref ref="Console"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></source>
+          <p>
+            Once an event reaches a logger with its additivity set to false the event will not be passed to
+            any of its parent loggers, regardless of their additivity setting.
+          </p>
         </subsection>
-
+        <a name="AutomaticReconfiguration"/>
+        <subsection name="Automatic Reconfiguration">
+          <p>
+            When configured from a File, Log4j has the ability to automatically detect changes to the configuration
+            file and reconfigure itself. If the monitorInterval attribute is specified on the configuration element
+            and is set to a non-zero value then the file will be checked the next time a log event is evaluated
+            and/or logged and the monitorInterval has elapsed since the last check.
+          </p>
+        </subsection>
+        <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
 
         </subsection>
-
+        <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">
 
         </subsection>
-
-
+        <a name="StatusMessages"/>
         <subsection name="Status Messages">
+          <p>
+            Just as it is desirable to be able to diagnose problems in applications, it is frequently necessary
+            to be able to diagnose problems in the logging configuration or in the configured components. Since
+            logging has not been configured, "normal" logging cannot be used during initialization. In addition,
+            normal logging within appenders could create infinite recursion which Log4j will detect and cause
+            the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
+            <a href="../log4j2-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
+            Components declare an instance of the StatusLogger similar to</p>
+<source>
+  protected final static Logger logger = StatusLogger.getLogger();</source>
+          <p>
+            Since StatusLogger implements the Log4j 2 API's Logger interface, all the normal Logger methods may
+            be used.
+          </p>
+          <p>
+            When configuring Log4j it is sometimes necessary to view the generated status events. This can be
+            accomplished by adding the status attribute to the configuration element. The following
+            configuration has the status attribute set to debug.
 
+<source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
+<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+  <properties>
+    <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
+  </properties>
+  <ThresholdFilter level="debug"/>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <ThresholdFilter level="debug"/>
+    </List>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
+                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route appender-ref="STDOUT" key="Audit"/>
+        <Route appender-ref="List" key="Service"/>
+      </Routes>
+    </Routing>
+  </appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="Routing"/>
+    </logger>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>]]></source>
+            During startup this configuration produces:
+<source>
+  2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
+  2011-11-23 17:08:00,789 DEBUG Calling createProperty on class org.apache.logging.log4j.core.config.Property for element property with params(name="filename", value="target/rolling1/rollingtest-${sd:type}.log")
+  2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.core.config.plugins.PropertiesPlugin for element properties with params(properties={filename=target/rolling1/rollingtest-${sd:type}.log})
+  2011-11-23 17:08:00,794 DEBUG Generated plugins in 0.001362000 seconds
+  2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+  2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%m%n", Configuration(RoutingTest), null, charset="null")
+  2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
+  2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", suppressExceptions="null")
+  2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+  2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
+  2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
+  2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
+  2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
+  2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
+  2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", suppressExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+  2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+  2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
+  2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", appender-ref={Routing}, null)
+  2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="STDOUT")
+  2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", appender-ref={STDOUT}, null)
+  2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
+  2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
+  2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %C{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
+  2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
+  2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %C{1.} [%t] %m%n), null, suppressExceptions="null")
+  2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
+  2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
+  2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
+  2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
+  2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
+  2011-11-23 17:08:00,965 WARN No Loggers were configured, using default
+  2011-11-23 17:08:00,976 DEBUG Reconfiguration completed</source>
+          </p>
+          <p>
+            If the status attribute is set to error than only error messages will be written to the console. This
+            makes troubleshooting configuration errors possible. As an example, if the configuration above is changed
+            to have the status set to error and the logger declaration is:</p>
+<source><![CDATA[  <logger name="EventLogger" level="info" additivity="false">
+    <appender-ref ref="Routng"/>
+  </logger>]]></source>
+          <p>
+            the following error message will be produced.
+<source>
+ 2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger</source>
+          </p>
+          <p>
+            Applications may wish to direct the status output to some other destination. This can be accomplished
+            by insuring the configured status is set to OFF and then configuring the application programmatically
+            such as:
+<source>
+  StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
+  ((StatusLogger) logger).registerListener(listener);
+</source>
+          </p>
         </subsection>
+        <a name="UnitTestingInMaven"/>
         <subsection name="Unit Testing in Maven">
+
 
         </subsection>
       </section>

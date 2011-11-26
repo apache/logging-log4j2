@@ -89,6 +89,12 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.additive = additive;
     }
 
+    @Override
+    public Filter getFilter() {
+        monitor.checkConfiguration();
+        return super.getFilter();
+    }
+
     /**
      * Set the ConfigurationMonitor that will detect configuration changes.
      * @param monitor The ConfigurationMonitor.

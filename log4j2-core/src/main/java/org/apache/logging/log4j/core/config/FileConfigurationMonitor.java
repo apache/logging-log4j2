@@ -60,8 +60,8 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      */
     public void checkConfiguration() {
         if ((++counter & MASK) == 0) {
-            long current = System.currentTimeMillis();
             synchronized(this) {
+                long current = System.currentTimeMillis();
                 if (current >= nextCheck) {
                     nextCheck = current + interval;
                     if (lastModified >= file.lastModified()) {
