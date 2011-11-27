@@ -45,7 +45,7 @@
       <item name="Architecture" href="/manual/architecture.html"/>
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
-        <item name="Additivity" href="/manual/configuration.html#Additvity"/>
+        <item name="Additivity" href="/manual/configuration.html#Additivity"/>
         <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>
         <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax"/>
         <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>

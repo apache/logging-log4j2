@@ -62,6 +62,8 @@ public class XMLConfiguration extends BaseConfiguration {
 
     private boolean strict = false;
 
+    private String schema = null;
+
     private static final String[] verboseClasses = new String[] { ResolverUtil.class.getName() };
 
     private Validator validator;
@@ -95,6 +97,8 @@ public class XMLConfiguration extends BaseConfiguration {
                     setName(entry.getValue());
                 } else if ("strict".equalsIgnoreCase(entry.getKey())) {
                     strict = Boolean.parseBoolean(entry.getValue());
+                } else if ("schema".equalsIgnoreCase(entry.getKey())) {
+                    schema = entry.getValue();
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
                     int interval = Integer.parseInt(entry.getValue());
                     if (interval > 0 && configFile != null) {
@@ -129,24 +133,31 @@ public class XMLConfiguration extends BaseConfiguration {
         } catch (ParserConfigurationException pex) {
             logger.error("Error parsing " + source.getSystemId(), pex);
         }
-        if (strict && buffer != null) {
-            InputStream is = getClass().getClassLoader().getResourceAsStream(LOG4J_XSD);
-            Source src = new StreamSource(is, LOG4J_XSD);
-            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = null;
+        if (strict && schema != null && buffer != null) {
+            InputStream is = null;
             try {
-                schema = factory.newSchema(src);
-            } catch (SAXException ex) {
-                logger.error("Error parsing Log4j schema", ex);
+                is = getClass().getClassLoader().getResourceAsStream(schema);
+            } catch (Exception ex) {
+                logger.error("Unable to access schema " + schema);
             }
-            if (schema != null) {
-                validator = schema.newValidator();
+            if (is != null) {
+                Source src = new StreamSource(is, LOG4J_XSD);
+                SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                Schema schema = null;
                 try {
-                    validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
-                } catch (IOException ioe) {
-                    logger.error("Error reading configuration for validation", ioe);
+                    schema = factory.newSchema(src);
                 } catch (SAXException ex) {
-                    logger.error("Error validating configuration", ex);
+                    logger.error("Error parsing Log4j schema", ex);
+                }
+                if (schema != null) {
+                    validator = schema.newValidator();
+                    try {
+                        validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
+                    } catch (IOException ioe) {
+                        logger.error("Error reading configuration for validation", ioe);
+                    } catch (SAXException ex) {
+                        logger.error("Error validating configuration", ex);
+                    }
                 }
             }
         }

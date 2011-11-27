@@ -148,10 +148,15 @@ public class JSONConfiguration extends BaseConfiguration {
                 if (n.isArray()) {
                     logger.debug("Processing node for array " + entry.getKey());
                     for (int i=0; i < n.size(); ++i) {
-                        PluginType entryType = getPluginManager().getPluginType(entry.getKey());
+                        String pluginType = getType(n.get(i), entry.getKey());
+                        PluginType entryType = getPluginManager().getPluginType(pluginType);
                         Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
-                        logger.debug("Processing " + entry.getKey() + "[" + i + "]");
+                        if (pluginType.equals(entry.getKey())) {
+                            logger.debug("Processing " + entry.getKey() + "[" + i + "]");
+                        } else {
+                            logger.debug("Processing " + pluginType + " " + entry.getKey() + "[" + i + "]");
+                        }
                         Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).getFields();
                         List<Node> itemChildren = item.getChildren();
                         while (itemIter.hasNext()) {
@@ -167,8 +172,6 @@ public class JSONConfiguration extends BaseConfiguration {
                     logger.debug("Processing node for object " + entry.getKey());
                     children.add(constructNode(entry.getKey(), node, n));
                 }
-
-
             }
         }
 
@@ -184,14 +187,30 @@ public class JSONConfiguration extends BaseConfiguration {
         return node;
     }
 
+    private String getType(JsonNode node, String name) {
+        Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+        while (iter.hasNext()) {
+            Map.Entry<String, JsonNode> entry = iter.next();
+            if (entry.getKey().equalsIgnoreCase("type")) {
+                JsonNode n = entry.getValue();
+                if (n.isValueNode()) {
+                    return n.asText();
+                }
+            }
+        }
+        return name;
+    }
+
     private void processAttributes(Node parent, JsonNode node) {
         Map<String, String> attrs = parent.getAttributes();
         Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
         while (iter.hasNext()) {
             Map.Entry<String, JsonNode> entry = iter.next();
-            JsonNode n = entry.getValue();
-            if (n.isValueNode()) {
-                attrs.put(entry.getKey(), n.asText());
+            if (!entry.getKey().equalsIgnoreCase("type")) {
+                JsonNode n = entry.getValue();
+                if (n.isValueNode()) {
+                    attrs.put(entry.getKey(), n.asText());
+                }
             }
         }
     }

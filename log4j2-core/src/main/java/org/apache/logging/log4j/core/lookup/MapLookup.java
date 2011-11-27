@@ -17,12 +17,15 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.MapMessage;
 
 import java.util.Map;
 
 /**
  * The basis for a lookup based on a Map.
  */
+@Plugin(name="map",type="Lookup")
 public class MapLookup<V> implements StrLookup<V> {
     /**
      * Map keys are variable names and value.
@@ -30,12 +33,19 @@ public class MapLookup<V> implements StrLookup<V> {
     private final Map<String, V> map;
 
     /**
-     * Creates a new instance backed by a Map.
+     * Creates a new instance backed by a Map. Used by the default lookup.
      *
      * @param map the map of keys to values, may be null
      */
     public MapLookup(Map<String, V> map) {
         this.map = map;
+    }
+
+    /**
+     * Constructor when used directly as a plugin.
+     */
+    public MapLookup() {
+        this.map = null;
     }
 
     /**
@@ -59,6 +69,18 @@ public class MapLookup<V> implements StrLookup<V> {
     }
 
     public String lookup(LogEvent event, String key) {
-        return lookup(key);
+        if (map == null && !(event.getMessage() instanceof MapMessage)) {
+            return null;
+        }
+        if (map != null && map.containsKey(key)) {
+            Object obj = map.get(key);
+            if (obj != null) {
+                return obj.toString();
+            }
+        }
+        if (event.getMessage() instanceof MapMessage) {
+            return ((MapMessage) event.getMessage()).get(key);
+        }
+        return null;
     }
 }
