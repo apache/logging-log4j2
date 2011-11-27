@@ -43,7 +43,7 @@
         </p>
         <p>
           This page focuses primarily on configuring Log4j through a configuration file. Information on
-          programmatically configuring Log4j can be found at <a href="../extending.html">Extending Log4j 2</a>.
+          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
         </p>
         <p>
           Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
@@ -529,7 +529,7 @@
           <h4>Configuring loggers</h4>
           <p>
             An understanding of how loggers work in Log4j is critical before trying to configure them.
-            Please reference the Log4j <a href="../architecture.html">architecture</a> if more information is
+            Please reference the Log4j <a href="./architecture.html">architecture</a> if more information is
             required. Trying to configure Log4j without understanding those concepts will lead to frustration.
           </p>
           <p>
