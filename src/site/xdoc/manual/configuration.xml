@@ -735,6 +735,19 @@
             out in their documentation.
           </p>
           <p>
+            If no value is found for the key in the Lookup associated with the prefix then the value associated with
+            the key in the properties declaration in the configuration file will be used. If no value is found
+            the variable declaration will be returned as the value. Default values may be declared in the configuration
+            by doing:
+          </p>
+ <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
+<configuration>
+  <properties>
+    <property name="type">Audit</property>
+  </properties>
+  ...
+</configuration>]]></source>
+          <p>
             <i>As a footnote, it is worth pointing out that the variables in the RollingFile appender declaration
             will also not be evaluated when the configuration is processed. This is simply because the resolution
             of the whole RollingFile element is deferred until a match occurs.

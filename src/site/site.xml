@@ -59,6 +59,8 @@
       </item>
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
         <item name="ContextMap" href="/manual/lookups.html#ContextMapLookup"/>
+        <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
+        <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="StructuredData" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="SystemProperties" href="/manual/lookups.html#SystemPropertiesLookup"/>
       </item>
