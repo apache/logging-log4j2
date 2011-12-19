@@ -24,6 +24,7 @@ import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.xml.sax.InputSource;
 
@@ -54,7 +55,8 @@ public class JSONConfiguration extends BaseConfiguration {
             buffer = toByteArray(source.getByteStream());
             InputStream is = new ByteArrayInputStream(buffer);
             source = new InputSource(is);
-            root = new ObjectMapper().readTree(is);
+            ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+            root = mapper.readTree(is);
             if (root.size() == 1) {
                 Iterator<JsonNode> i = root.getElements();
                 root = i.next();
