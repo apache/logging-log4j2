@@ -51,7 +51,7 @@ public class FailoverAppender extends AppenderBase {
     private List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
 
-    public FailoverAppender(String name, Filter filter, String primary, String[] failovers,
+    private FailoverAppender(String name, Filter filter, String primary, String[] failovers,
                             Configuration config, boolean handleExceptions) {
         super(name, filter, null, handleExceptions);
         this.primaryRef = primary;
@@ -91,6 +91,10 @@ public class FailoverAppender extends AppenderBase {
         super.stop();
     }
 
+    /**
+     * Handle the Log event.
+     * @param event The LogEvent.
+     */
     public void append(LogEvent event) {
         RuntimeException re = null;
         if (!isStarted()) {
@@ -133,6 +137,17 @@ public class FailoverAppender extends AppenderBase {
         return sb.toString();
     }
 
+    /**
+     * Create a Failover Appender
+     * @param name The name of the Appender (required).
+     * @param primary The name of the primary Appender (required).
+     * @param failovers The name of one or more Appenders to fail over to (at least one is required).
+     * @param config The current Configuration (passed by the Configuration when the appender is created).
+     * @param filter A Filter (optional).
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @return The FailoverAppender that was created.
+     */
     @PluginFactory
     public static FailoverAppender createAppender(@PluginAttr("name") String name,
                                                   @PluginAttr("primary") String primary,

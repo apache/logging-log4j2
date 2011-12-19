@@ -47,25 +47,6 @@ public interface Appender extends Lifecycle {
     Layout getLayout();
 
     /**
-     * Configurators call this method to determine if the appender
-     * requires a layout. If this method returns <code>true</code>,
-     * meaning that layout is required, then the configurator will
-     * configure an layout using the configuration information at its
-     * disposal.  If this method returns <code>false</code>, meaning that
-     * a layout is not required, then layout configuration will be
-     * skipped even if there is available layout configuration
-     * information at the disposal of the configurator..
-     * <p/>
-     * <p>In the rather exceptional case, where the appender
-     * implementation admits a layout but can also work without it, then
-     * the appender should return <code>true</code>.
-     *
-     * @return True if a Layout is required, false otherwise.
-     * @issue LOG4J2-36 Refactor into Channel
-     */
-    boolean requiresLayout();
-
-    /**
      * If set to true any exceptions thrown by the Appender will be logged but not thrown.
      * @return true if Exceptions should be suppressed, false otherwise.
      */

@@ -62,13 +62,18 @@ public class HTMLLayout extends AbstractStringLayout {
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
-    public HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
+    private HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
         this.contentType = contentType;
     }
 
+    /**
+     * Format as a String.
+     * @param event The Logging Event.
+     * @return A String containging the LogEvent as HTML.
+     */
     public String formatAs(LogEvent event) {
         StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
@@ -101,7 +106,7 @@ public class HTMLLayout extends AbstractStringLayout {
         if (escapedLogger.length() == 0) {
             escapedLogger = "root";
         }
-        sbuf.append("<td title=\"").append(escapedLogger).append(" category\">");
+        sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");
         sbuf.append(escapedLogger);
         sbuf.append("</td>").append(LINE_SEP);
 
@@ -229,6 +234,14 @@ public class HTMLLayout extends AbstractStringLayout {
         return sbuf.toString().getBytes(getCharset());
     }
 
+    /**
+     * Create an HTML Layout.
+     * @param locationInfo If "true", location information will be included. The default is false.
+     * @param title The title to include in the file header. If none is specified the default title will be used.
+     * @param contentType The content type. Defaults to "text/html".
+     * @param charset The character set to use. If not specified, the default will be used.
+     * @return An HTML Layout.
+     */
     @PluginFactory
     public static HTMLLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
                                           @PluginAttr("title") String title,

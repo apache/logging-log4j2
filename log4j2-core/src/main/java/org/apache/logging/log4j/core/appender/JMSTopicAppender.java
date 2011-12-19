@@ -34,7 +34,7 @@ public class JMSTopicAppender extends AppenderBase {
 
     private final JMSTopicManager manager;
 
-    public JMSTopicAppender(String name, Filter filter, Layout layout, JMSTopicManager manager,
+    private JMSTopicAppender(String name, Filter filter, Layout layout, JMSTopicManager manager,
                             boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
@@ -53,6 +53,23 @@ public class JMSTopicAppender extends AppenderBase {
         }
     }
 
+    /**
+     * Create a JMSTopicAppender.
+     * @param factoryName
+     * @param providerURL
+     * @param urlPkgPrefixes
+     * @param securityPrincipalName
+     * @param securityCredentials
+     * @param factoryBindingName
+     * @param topicBindingName
+     * @param userName
+     * @param password
+     * @param layout The layout to use (defaults to SerlializedLayout).
+     * @param filter The Filter or null.
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @return The JMSTopicAppender.
+     */
     @PluginFactory
     public static JMSTopicAppender createAppender(@PluginAttr("factoryName") String factoryName,
                                                   @PluginAttr("providerURL") String providerURL,

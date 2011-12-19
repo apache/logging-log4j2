@@ -34,7 +34,7 @@ public class JMSQueueAppender extends AppenderBase {
 
     private final JMSQueueManager manager;
 
-    public JMSQueueAppender(String name, Filter filter, Layout layout, JMSQueueManager manager,
+    private JMSQueueAppender(String name, Filter filter, Layout layout, JMSQueueManager manager,
                             boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
@@ -53,6 +53,23 @@ public class JMSQueueAppender extends AppenderBase {
         }
     }
 
+    /**
+     * Create a JMSQueueAppender.
+     * @param factoryName
+     * @param providerURL
+     * @param urlPkgPrefixes
+     * @param securityPrincipalName
+     * @param securityCredentials
+     * @param factoryBindingName
+     * @param queueBindingName
+     * @param userName
+     * @param password
+     * @param layout The layout to use (defaults to SerlializedLayout).
+     * @param filter The Filter or null.
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @return The JMSQueueAppender.
+     */
     @PluginFactory
     public static JMSQueueAppender createAppender(@PluginAttr("factoryName") String factoryName,
                                                   @PluginAttr("providerURL") String providerURL,

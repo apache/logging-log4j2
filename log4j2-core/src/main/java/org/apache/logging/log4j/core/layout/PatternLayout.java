@@ -94,38 +94,14 @@ public class PatternLayout extends AbstractStringLayout {
     private final RegexReplacement replace;
 
     /**
-     * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
-     * <p/>
-     * The default pattern just produces the application supplied message.
-     */
-    public PatternLayout() {
-        this(null, null, DEFAULT_CONVERSION_PATTERN, Charset.defaultCharset());
-    }
-
-    /**
-     * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
-     * <p/>
-     * The default pattern just produces the application supplied message.
-     */
-    public PatternLayout(final String pattern) {
-        this(null, null, pattern, Charset.defaultCharset());
-    }
-
-   /**
-     * Constructs a EnhancedPatternLayout using the DEFAULT_LAYOUT_PATTERN.
-     * <p/>
-     * The default pattern just produces the application supplied message.
-     */
-    public PatternLayout(Configuration config, final String pattern) {
-        this(config, null, pattern, Charset.defaultCharset());
-    }
-
-    /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
+     * @param config The Configuration.
+     * @param replace The regular expression to match.
      * @param pattern conversion pattern.
+     * @param charset The character set.
      */
-    public PatternLayout(Configuration config, final RegexReplacement replace, final String pattern,
+    private PatternLayout(Configuration config, final RegexReplacement replace, final String pattern,
                          final Charset charset) {
         super(charset);
         this.replace = replace;
@@ -184,10 +160,19 @@ public class PatternLayout extends AbstractStringLayout {
         return parser;
     }
 
+    @Override
     public String toString() {
         return conversionPattern;
     }
 
+    /**
+     * Create a pattern layout.
+     * @param pattern The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     * @param config The Configuration. Some Converters require access to the Interpolator.
+     * @param replace A Regex replacement String.
+     * @param charset The character set.
+     * @return
+     */
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
                                              @PluginConfiguration Configuration config,
@@ -201,10 +186,6 @@ public class PatternLayout extends AbstractStringLayout {
                 logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
-        if (pattern != null) {
-            return new PatternLayout(config, replace, pattern, c);
-        }
-        logger.error("No pattern specified for PatternLayout");
-        return null;
+        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, c);
     }
 }

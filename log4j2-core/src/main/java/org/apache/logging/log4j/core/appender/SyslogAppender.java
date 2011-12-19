@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import java.nio.charset.Charset;
 
 /**
- *
+ * The Syslog Appender.
  */
 @Plugin(name="Syslog",type="Core",elementType="appender",printObject=true)
 public class SyslogAppender extends SocketAppender {
@@ -40,13 +40,38 @@ public class SyslogAppender extends SocketAppender {
 
     public static final String RFC5424 = "RFC5424";
 
-    public SyslogAppender(String name, Layout layout, Filter filter,
+    protected SyslogAppender(String name, Layout layout, Filter filter,
                           boolean handleException, boolean immediateFlush, AbstractSocketManager manager) {
         super(name, layout, filter, manager, handleException, immediateFlush);
 
     }
 
-
+    /**
+     * Create a SyslogAppender.
+     * @param host
+     * @param portNum
+     * @param protocol
+     * @param delay
+     * @param name
+     * @param immediateFlush
+     * @param suppress
+     * @param facility
+     * @param id
+     * @param ein
+     * @param includeMDC
+     * @param mdcId
+     * @param includeNL
+     * @param appName
+     * @param msgId
+     * @param excludes
+     * @param includes
+     * @param required
+     * @param format
+     * @param filter
+     * @param config
+     * @param charset
+     * @return A SyslogAppender.
+     */
     @PluginFactory
     public static SyslogAppender createAppender(@PluginAttr("host") String host,
                                                 @PluginAttr("port") String portNum,

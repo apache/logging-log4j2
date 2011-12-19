@@ -23,7 +23,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import java.io.Serializable;
 
 /**
- *
+ * Base class for Layouts.
  */
 public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
 
@@ -32,18 +32,34 @@ public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
 
     protected static final Logger logger = StatusLogger.getLogger();
 
+    /**
+     * Return the header, if one is available.
+     * @return A byte array containing the header.
+     */
     public byte[] getHeader() {
         return header;
     }
 
+    /**
+     * Set the header.
+     * @param header The header.
+     */
     public void setHeader(byte[] header) {
         this.header = header;
     }
 
+    /**
+     * Returns the footer, if one is available.
+     * @return A byte array containing the footer.
+     */
     public byte[] getFooter() {
         return footer;
     }
 
+    /**
+     * Set the footer.
+     * @param footer The footer.
+     */
     public void setFooter(byte[] footer) {
         this.footer = footer;
     }

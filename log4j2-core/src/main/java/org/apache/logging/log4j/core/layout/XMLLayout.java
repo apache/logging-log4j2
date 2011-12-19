@@ -77,7 +77,7 @@ public class XMLLayout extends AbstractStringLayout {
 
     protected static final int DEFAULT_SIZE = 256;
 
-    public XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
+    protected XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
         super(charset);
         this.locationInfo = locationInfo;
         this.properties = properties;
@@ -212,6 +212,14 @@ public class XMLLayout extends AbstractStringLayout {
         return lines;
     }
 
+    /**
+     * Create an XML Layout.
+     * @param locationInfo
+     * @param properties
+     * @param complete
+     * @param charset
+     * @return An XML Layout.
+     */
     @PluginFactory
     public static XMLLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
                                          @PluginAttr("properties") String properties,

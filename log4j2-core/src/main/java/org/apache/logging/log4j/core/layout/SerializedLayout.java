@@ -43,7 +43,6 @@ import java.util.Map;
  */
 @Plugin(name="SerializedLayout",type="Core",elementType="layout",printObject=true)
 public class SerializedLayout extends LayoutBase<LogEvent> {
-    private static int count = 0;
 
     private static byte[] header;
 
@@ -58,7 +57,7 @@ public class SerializedLayout extends LayoutBase<LogEvent> {
         }
     }
 
-    public SerializedLayout() {
+    private SerializedLayout() {
     }
 
     /**
@@ -75,16 +74,26 @@ public class SerializedLayout extends LayoutBase<LogEvent> {
         return baos.toByteArray();
     }
 
+    /**
+     * Returns the LogEvent.
+     * @param event The Logging Event.
+     * @return The LogEvent.
+     */
     public LogEvent formatAs(final LogEvent event) {
         return event;
     }
 
+    /**
+     * Create a SerializedLayout.
+     * @return A SerializedLayout.
+     */
     @PluginFactory
     public static SerializedLayout createLayout() {
 
         return new SerializedLayout();
     }
 
+    @Override
     public byte[] getHeader() {
         return header;
     }

@@ -94,14 +94,6 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
     }
 
     /**
-     * Appenders may override this method to indicate that a Layout is required.
-     * @return false if no Layout is required.
-     */
-    public boolean requiresLayout() {
-        return false;
-    }
-
-    /**
      * Some appenders need to propogate exceptions back to the application. When suppressException is false the
      * AppenderControl will allow the exception to percolate.
      */
@@ -110,10 +102,6 @@ public abstract class AppenderBase extends Filterable implements Appender, Lifec
     }
 
     public void start() {
-        if (layout == null && requiresLayout()) {
-            logger.error("A layout is required and none was provided");
-            return;
-        }
         startFilter();
         this.started = true;
     }

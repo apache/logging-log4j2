@@ -29,7 +29,7 @@
     </fluidoSkin>
   </custom>
   <bannerLeft>
-    <name>Logging Services</name>
+    <name>Logging Services™</name>
     <src>images/ls-logo.jpg</src>
     <href>http://logging.apache.org/</href>
   </bannerLeft>
@@ -37,8 +37,12 @@
     <src>images/logo.jpg</src>
   </bannerRight>
   <body>
-    <menu name="Log4j2 API" inherit="top">
+    <menu name="Apache Log4j™ 2" inherit="top">
+      <item name="About" href="/index.html"/>
       <item name="Log4j2 API" href="log4j2-api/api.html"/>
+      <item name="Download" href="/download.html"/>
+      <item name="Build and Install" href="/build.html"/>
+      <item name="Changelog" href="/changelog.html"/>
     </menu>
     <menu name="Manual" inherit="top">
       <item name="Introduction" href="/manual/index.html"/>
@@ -118,9 +122,6 @@
       <item name="Log4j 1.x API" href="log4j12-api/api.html"/>
       <item name="Commons Logging" href="log4j2-jcl/api.html"/>
       <item name="SLF4J" href="slf4j-impl/api.html"/>
-    </menu>
-    <menu name="Download and Build" inherit="top">
-      <item name="Download and Build" href="/download.html"/>
     </menu>
     <menu name="Components" inherit="top">
       <item name="API" href="log4j2-api/index.html"/>

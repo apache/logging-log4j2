@@ -29,18 +29,32 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TCPSocketManager;
 
 /**
- *
+ * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
 @Plugin(name="Socket",type="Core",elementType="appender",printObject=true)
 public class SocketAppender extends OutputStreamAppender {
 
 
-    public SocketAppender(String name, Layout layout, Filter filter, AbstractSocketManager manager,
+    protected SocketAppender(String name, Layout layout, Filter filter, AbstractSocketManager manager,
                           boolean handleException, boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
 
     }
 
+    /**
+     *
+     * @param host
+     * @param portNum
+     * @param protocol
+     * @param delay
+     * @param name
+     * @param immediateFlush
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @param layout The layout to use (defaults to SerlializedLayout).
+     * @param filter The Filter or null.
+     * @return
+     */
     @PluginFactory
     public static SocketAppender createAppender(@PluginAttr("host") String host,
                                                 @PluginAttr("port") String portNum,

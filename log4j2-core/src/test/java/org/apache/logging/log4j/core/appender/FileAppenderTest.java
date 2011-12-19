@@ -140,9 +140,9 @@ public class FileAppenderTest {
     }
 
     private static void writer(boolean lock, int count, String name) throws Exception {
-        Layout layout = new PatternLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN);
-        FileManager manager = FileManager.getFileManager(FILENAME, true, lock, false);
-        FileAppender app = new FileAppender("test", layout, null, manager, FILENAME, false, false);
+        Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null);
+        FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
+            "false", "false", layout, null);
         Thread t = Thread.currentThread();
         app.start();
         assertTrue("Appender did not start", app.isStarted());

@@ -32,7 +32,7 @@ import java.util.Locale;
 
 
 /**
- *
+ * Formats a log event as a BSD Log record.
  */
 @Plugin(name="SyslogLayout",type="Core",elementType="layout",printObject=true)
 public class SyslogLayout extends AbstractStringLayout {
@@ -50,7 +50,7 @@ public class SyslogLayout extends AbstractStringLayout {
     private final String localHostname = getLocalHostname();
 
 
-    public SyslogLayout(Facility facility, boolean includeNL, Charset c) {
+    protected SyslogLayout(Facility facility, boolean includeNL, Charset c) {
         super(c);
         this.facility = facility;
         this.includeNewLine = includeNL;
@@ -102,7 +102,13 @@ public class SyslogLayout extends AbstractStringLayout {
         }
     }
 
-
+    /**
+     * Create a SyslogLayout.
+     * @param facility
+     * @param includeNL
+     * @param charset
+     * @return A SyslogLayout.
+     */
     @PluginFactory
     public static SyslogLayout createLayout(@PluginAttr("facility") String facility,
                                             @PluginAttr("newLine") String includeNL,

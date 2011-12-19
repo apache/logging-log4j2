@@ -102,7 +102,7 @@ public class JMSTopicTest {
         CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
-        PatternLayout layout = new PatternLayout("%m %ex%n");
+        PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
         ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
         console.start();
         Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());

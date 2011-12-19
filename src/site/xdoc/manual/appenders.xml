@@ -26,11 +26,11 @@
       <section name="Appenders">
         <p>
           Appenders are the component responsible for delivering LogEvents to their destination. Every Appender must
-          implement the <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
+          implement the <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
           interface. Most Appenders will extend
-          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/appender/AppenderBase.html">AppenderBase</a>
-          which adds <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
-          and <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/filter/Filterable">Filterable</a>
+          <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/appender/AppenderBase.html">AppenderBase</a>
+          which adds <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
+          and <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/filter/Filterable">Filterable</a>
           support. Lifecycle allows components to finish initialization after configuration has completed and to
           perform cleanup during shutdown. Filterable allows the component to have Filters attached to it which are
           evaluated during event processing.
@@ -65,7 +65,8 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
             </tr>
             <tr>
               <td>name</td>

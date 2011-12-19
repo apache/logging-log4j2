@@ -45,7 +45,7 @@ import java.util.TreeMap;
 
 
 /**
- *
+ * Formats a log event in accordance with RFC 5424.
  */
 @Plugin(name="RFC5424Layout",type="Core",elementType="layout",printObject=true)
 public class RFC5424Layout extends AbstractStringLayout {
@@ -228,11 +228,11 @@ public class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
-    public List<String> getMdcExcludes() {
+    protected List<String> getMdcExcludes() {
         return mdcExcludes;
     }
 
-    public List<String> getMdcIncludes() {
+    protected List<String> getMdcIncludes() {
         return mdcIncludes;
     }
 
@@ -368,12 +368,13 @@ public class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
-    public class NoopChecker implements ListChecker {
+    private class NoopChecker implements ListChecker {
         public boolean check(String key) {
             return true;
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("facility=").append(facility.name());
@@ -386,6 +387,23 @@ public class RFC5424Layout extends AbstractStringLayout {
         return sb.toString();
     }
 
+    /**
+     * Create the RFC 5424 Layout.
+     * @param facility
+     * @param id
+     * @param ein
+     * @param includeMDC
+     * @param mdcId
+     * @param includeNL
+     * @param appName
+     * @param msgId
+     * @param excludes
+     * @param includes
+     * @param required
+     * @param charset The character set.
+     * @param config The Configuration. Some Converters require access to the Interpolator.
+     * @return An RFC5424Layout.
+     */
     @PluginFactory
     public static RFC5424Layout createLayout(@PluginAttr("facility") String facility,
                                              @PluginAttr("id") String id,

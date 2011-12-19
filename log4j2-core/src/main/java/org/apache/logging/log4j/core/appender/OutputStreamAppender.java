@@ -57,7 +57,7 @@ public abstract class OutputStreamAppender extends AppenderBase {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    public OutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
+    protected OutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
                                 boolean immediateFlush, OutputStreamManager manager) {
         super(name, filter, layout, handleException);
         if (layout != null) {
@@ -122,13 +122,5 @@ public abstract class OutputStreamAppender extends AppenderBase {
         } finally {
             readLock.unlock();
         }
-    }
-
-    /**
-     * The WriterAppender requires a layout. Hence, this method returns
-     * <code>true</code>.
-     */
-    public boolean requiresLayout() {
-        return true;
     }
 }

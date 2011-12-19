@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.OutputStream;
 
@@ -38,29 +39,33 @@ import java.io.OutputStream;
 @Plugin(name="Console",type="Core",elementType="appender",printObject=true)
 public class ConsoleAppender extends OutputStreamAppender {
 
-    public static final String LAYOUT = "layout";
-    public static final String TARGET = "target";
-    public static final String NAME = "name";
-
     private static ManagerFactory factory = new ConsoleManagerFactory();
 
+    /**
+     * Enumeration of console destinations.
+     */
     public enum Target {
-        SYSTEM_OUT, SYSTEM_ERR
+        /** Standard output */
+        SYSTEM_OUT,
+        /** Standard error output */
+        SYSTEM_ERR
     }
 
-    public ConsoleAppender(String name, Layout layout) {
-        this(name, layout, null, getManager(Target.SYSTEM_OUT), true);
-    }
-
-    public ConsoleAppender(String name, Layout layout, boolean handleExceptions) {
-        this(name, layout, null, getManager(Target.SYSTEM_OUT), handleExceptions);
-    }
-
-    public ConsoleAppender(String name, Layout layout, Filter filter, OutputStreamManager manager,
+    private ConsoleAppender(String name, Layout layout, Filter filter, OutputStreamManager manager,
                            boolean handleExceptions) {
         super(name, layout, filter, handleExceptions, true, manager);
     }
 
+    /**
+     * Create a Console Appender.
+     * @param layout The layout to use (required).
+     * @param filter The Filter or null.
+     * @param t The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
+     * @param name The name of the Appender (required).
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @return The ConsoleAppender.
+     */
     @PluginFactory
     public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
                                                  @PluginElement("filters") Filter filter,
@@ -70,6 +75,9 @@ public class ConsoleAppender extends OutputStreamAppender {
         if (name == null) {
             logger.error("No name provided for ConsoleAppender");
             return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createLayout(null, null, null, null);
         }
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);

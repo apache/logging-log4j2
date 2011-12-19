@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
- *
+ * Base class for Layouts that result in a String.
  */
 public abstract class AbstractStringLayout extends LayoutBase<String> {
 
@@ -48,6 +48,11 @@ public abstract class AbstractStringLayout extends LayoutBase<String> {
         encoder = useClass ? new ClassEncoder() : new NameEncoder();
     }
 
+    /**
+     * Format the Log Event.
+     * @param event The Log Event.
+     * @return The formatted event as a byte array.
+     */
     public byte[] format(LogEvent event) {
         return encoder.getBytes(formatAs(event));
     }

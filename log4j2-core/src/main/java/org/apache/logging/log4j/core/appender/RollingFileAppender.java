@@ -27,9 +27,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
- *
+ * An appender that writes to files andd can roll over at intervals.
  */
 @Plugin(name="RollingFile",type="Core",elementType="appender",printObject=true)
 public class RollingFileAppender extends OutputStreamAppender {
@@ -38,17 +39,15 @@ public class RollingFileAppender extends OutputStreamAppender {
     public final String filePattern;
     private final TriggeringPolicy policy;
     private final RolloverStrategy strategy;
-    private final boolean bufferedIO;
 
-    public RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
+    private RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
                                Filter filter, RollingFileManager manager, String fileName, String filePattern,
-                               boolean handleException, boolean immediateFlush, boolean isBuffered) {
+                               boolean handleException, boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = fileName;
         this.filePattern = filePattern;
         this.policy = policy;
         this.strategy = strategy;
-        this.bufferedIO = isBuffered;
         policy.initialize(manager);
     }
 
@@ -63,6 +62,23 @@ public class RollingFileAppender extends OutputStreamAppender {
         super.append(event);
     }
 
+    /**
+     * Create a RollingFileAppender.
+     * @param fileName The name of the file that is actively written to. (required).
+     * @param filePattern The pattern of the file name to use on rollover. (required).
+     * @param append If true, events are appended to the file. If false, the file
+     * is overwritten when opened. Defaults to "true"
+     * @param name The name of the Appender (required).
+     * @param bufferedIO When true, I/O will be buffered. Defaults to "true".
+     * @param immediateFlush When true, events are immediately flushed. Defaults to "true".
+     * @param policy The triggering policy. (required).
+     * @param strategy The rollover strategy. Defaults to DefaultRolloverStrategy.
+     * @param layout The layout to use (defaults to the default PatternLayout).
+     * @param filter The Filter or null.
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @return
+     */
     @PluginFactory
     public static RollingFileAppender createAppender(@PluginAttr("fileName") String fileName,
                                               @PluginAttr("filePattern") String filePattern,
@@ -110,7 +126,11 @@ public class RollingFileAppender extends OutputStreamAppender {
             return null;
         }
 
+        if (layout == null) {
+            layout = PatternLayout.createLayout(null, null, null, null);
+        }
+
         return new RollingFileAppender(name, layout, policy, strategy, filter, manager, fileName, filePattern,
-            handleExceptions, isFlush, isBuffered);
+            handleExceptions, isFlush);
     }
 }
