@@ -61,6 +61,9 @@ import java.util.List;
  */
 @Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
+
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final int MIN_WINDOW_SIZE = 1;
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
@@ -74,8 +77,6 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     private int minIndex;
 
-    protected static final Logger logger = StatusLogger.getLogger();
-
     /**
      * Constructs a new instance.
      * @param min The minimum index.
@@ -86,6 +87,12 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         maxIndex = max;
     }
 
+    /**
+     * Perform the rollover.
+     * @param manager The RollingFileManager name for current active log file.
+     * @return A RolloverDescription.
+     * @throws SecurityException if an error occurs.
+     */
     public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
         if (maxIndex >= 0) {
             int purgeStart = minIndex;
@@ -204,7 +211,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                     return false;
                 }
             } catch (Exception ex) {
-                logger.warn("Exception during purge in RollingFileAppender", ex);
+                LOGGER.warn("Exception during purge in RollingFileAppender", ex);
                 return false;
             }
         }
@@ -212,10 +219,17 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return true;
     }
 
+    @Override
     public String toString() {
         return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ")";
     }
 
+    /**
+     * Create the DefaultRolloverStrategy.
+     * @param max The maximum number of files to keep.
+     * @param min The minimum number of files to keep.
+     * @return A DefaultRolloverStrategy.
+     */
     @PluginFactory
     public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
                                                          @PluginAttr("min") String min) {
@@ -224,7 +238,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         if (min != null) {
             minIndex = Integer.parseInt(min);
             if (minIndex < 1) {
-                logger.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
+                LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
                 minIndex = MIN_WINDOW_SIZE;
             }
         } else {
@@ -235,7 +249,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             maxIndex = Integer.parseInt(max);
             if (maxIndex < minIndex) {
                 maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
-                logger.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+                LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
             }
         } else {
             maxIndex = DEFAULT_WINDOW_SIZE;

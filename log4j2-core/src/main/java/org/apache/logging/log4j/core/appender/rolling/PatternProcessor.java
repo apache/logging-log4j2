@@ -32,12 +32,7 @@ import java.util.List;
  */
 public class PatternProcessor {
 
-    private final ArrayPatternConverter[] patternConverters;
-    private final FormattingInfo[] patternFields;
-
     private static final String KEY = "FileConverter";
-
-    private RolloverFrequency frequency = null;
 
     private static final char YEAR_CHAR = 'y';
     private static final char MONTH_CHAR = 'M';
@@ -47,6 +42,11 @@ public class PatternProcessor {
     private static final char MINUTE_CHAR = 'm';
     private static final char SECOND_CHAR = 's';
     private static final char MILLIS_CHAR = 'S';
+
+    private final ArrayPatternConverter[] patternConverters;
+    private final FormattingInfo[] patternFields;
+
+    private RolloverFrequency frequency = null;
 
     /**
      * Constructor.
@@ -137,7 +137,7 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      */
     protected final void formatFileName(final Object obj, final StringBuilder buf) {
-        Object[] objects = new Object[] { new Date(System.currentTimeMillis()), obj};
+        Object[] objects = new Object[] {new Date(System.currentTimeMillis()), obj};
         formatFileName(objects, buf);
     }
 

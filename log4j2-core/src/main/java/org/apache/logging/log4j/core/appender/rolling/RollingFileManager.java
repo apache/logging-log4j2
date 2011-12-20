@@ -31,16 +31,16 @@ import java.io.OutputStream;
 import java.util.concurrent.Semaphore;
 
 /**
- * The Rolling File Manager
+ * The Rolling File Manager.
  */
 public class RollingFileManager extends FileManager {
+
+    private static ManagerFactory factory = new RollingFileManagerFactory();
 
     private long size;
     private long initialTime;
     private PatternProcessor processor;
     private final Semaphore semaphore = new Semaphore(1);
-
-    private static ManagerFactory factory = new RollingFileManagerFactory();
 
     protected RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size,
                                  long time) {
@@ -212,9 +212,9 @@ public class RollingFileManager extends FileManager {
      * Factory data.
      */
     private static class FactoryData {
-        String pattern;
-        boolean append;
-        boolean bufferedIO;
+        private String pattern;
+        private boolean append;
+        private boolean bufferedIO;
 
         /**
          * Create the data for the factory.

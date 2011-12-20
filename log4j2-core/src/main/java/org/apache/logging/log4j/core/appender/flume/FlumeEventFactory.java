@@ -19,9 +19,21 @@ package org.apache.logging.log4j.core.appender.flume;
 import org.apache.logging.log4j.core.LogEvent;
 
 /**
- *
+ * Factory to create Flume events.
  */
 public interface FlumeEventFactory {
+    /**
+     * Create a Flume event.
+     * @param event The Log4j LogEvent.
+     * @param hostname The name of the host.
+     * @param includes A comma separated list of MDC elements to include.
+     * @param excludes A comma separated list of MDC elements to exclude.
+     * @param required A comma separated list of MDC elements that are required.
+     * @param mdcPrefix The value to prefix to MDC keys.
+     * @param eventPrefix The value to prefix to event keys.
+     * @param compress If true the event body should be compressed.
+     * @return A FlumeEvent.
+     */
     FlumeEvent createEvent(LogEvent event, String hostname, String includes, String excludes, String required,
                       String mdcPrefix, String eventPrefix, boolean compress);
 }

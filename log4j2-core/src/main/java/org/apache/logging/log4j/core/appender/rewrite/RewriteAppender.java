@@ -35,8 +35,8 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
-@Plugin(name="Rewrite",type="Core",elementType="appender",printObject=true)
-public class RewriteAppender extends AppenderBase {
+@Plugin(name = "Rewrite", type = "Core", elementType = "appender", printObject = true)
+public final class RewriteAppender extends AppenderBase {
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
@@ -74,6 +74,10 @@ public class RewriteAppender extends AppenderBase {
         }
     }
 
+    /**
+     * Modify the event and pass to the subordinate Appenders.
+     * @param event The LogEvent.
+     */
     public void append(LogEvent event) {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
@@ -83,13 +87,23 @@ public class RewriteAppender extends AppenderBase {
         }
     }
 
+    /**
+     * Create a RewriteAppender.
+     * @param name The name of the Appender.
+     * @param suppress If true, exceptions will be handled in the Appender.
+     * @param appenderRefs An array of Appender names to call.
+     * @param config The Configuration.
+     * @param rewritePolicy The policy to use to modify the event.
+     * @param filter A Filter to filter events.
+     * @return The created RewriteAppender.
+     */
     @PluginFactory
     public static RewriteAppender createAppender(@PluginAttr("name") String name,
                                           @PluginAttr("suppressExceptions") String suppress,
                                           @PluginElement("appender-ref") String[] appenderRefs,
                                           @PluginConfiguration Configuration config,
                                           @PluginElement("rewritePolicy") RewritePolicy rewritePolicy,
-                                          @PluginElement("filters") Filter filter) {
+                                          @PluginElement("filter") Filter filter) {
 
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
@@ -104,7 +118,14 @@ public class RewriteAppender extends AppenderBase {
         return new RewriteAppender(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);
     }
 
+    /**
+     * Wrap the AppenderControl simply so it can be used here.
+     */
     private static class AppenderWrapper extends AppenderControl {
+        /**
+         * Constructor.
+         * @param appender The Appender to wrap.
+         */
         public AppenderWrapper(Appender appender) {
             super(appender);
         }

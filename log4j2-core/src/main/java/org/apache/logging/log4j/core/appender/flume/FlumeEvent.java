@@ -37,17 +37,9 @@ import java.util.Stack;
 import java.util.zip.GZIPOutputStream;
 
 /**
- *
+ * Class that is both a Flume and Log4j Event.
  */
 public class FlumeEvent extends EventBaseImpl implements LogEvent {
-
-    private final LogEvent event;
-
-    private byte[] body;
-
-    private final String hostname;
-
-    private final Map<String, String> ctx = new HashMap<String, String>();
 
     private static final String DEFAULT_MDC_PREFIX = "mdc:";
 
@@ -59,8 +51,27 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private static final String GUID = "guId";
 
+    private final LogEvent event;
+
+    private byte[] body;
+
+    private final String hostname;
+
+    private final Map<String, String> ctx = new HashMap<String, String>();
+
     private final boolean compress;
 
+    /**
+     * Construct the FlumeEvent.
+     * @param event The Log4j LogEvent.
+     * @param hostname The host name.
+     * @param includes A comma separated list of MDC elements to include.
+     * @param excludes A comma separated list of MDC elements to exclude.
+     * @param required A comma separated list of MDC elements that are required to be defined.
+     * @param mdcPrefix The value to prefix to MDC keys.
+     * @param eventPrefix The value to prefix to event keys.
+     * @param compress If true the event body should be compressed.
+     */
     public FlumeEvent(LogEvent event, String hostname, String includes, String excludes, String required,
                       String mdcPrefix, String eventPrefix, boolean compress) {
         this.event = event;
@@ -141,6 +152,10 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
         fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString().getBytes());
     }
 
+    /**
+     * Set the body in the event.
+     * @param body The body to add to the event.
+     */
     public void setBody(byte[] body) {
         if (body == null || body.length == 0) {
             this.body = new byte[0];
@@ -185,6 +200,10 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
         return Priority.INFO;
     }
 
+    /**
+     * Get the Frequently Qualified Class Name.
+     * @return the FQCN String.
+     */
     public String getFQCN() {
         return event.getFQCN();
     }
@@ -204,42 +223,82 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
         return hostname;
     }
 
+    /**
+     * Return the logging Level.
+     * @return the Level.
+     */
     public Level getLevel() {
         return event.getLevel();
     }
 
+    /**
+     * Return the logger name.
+     * @return the logger name.
+     */
     public String getLoggerName() {
         return event.getLoggerName();
     }
 
+    /**
+     * Return the StackTraceElement for the caller of the logging API.
+     * @return the StackTraceElement of the caller.
+     */
     public StackTraceElement getSource() {
         return event.getSource();
     }
 
+    /**
+     * Return the Message.
+     * @return the Message.
+     */
     public Message getMessage() {
         return event.getMessage();
     }
 
+    /**
+     * Return the Marker.
+     * @return the Marker.
+     */
     public Marker getMarker() {
         return event.getMarker();
     }
 
+    /**
+     * Return the name of the Thread.
+     * @return the name of the Thread.
+     */
     public String getThreadName() {
         return event.getThreadName();
     }
 
+    /**
+     * Return the event timestamp.
+     * @return the event timestamp.
+     */
     public long getMillis() {
         return event.getMillis();
     }
 
+    /**
+     * Return the Throwable associated with the event, if any.
+     * @return the Throwable.
+     */
     public Throwable getThrown() {
         return event.getThrown();
     }
 
+    /**
+     * Return a copy of the context Map.
+     * @return a copy of the context Map.
+     */
     public Map<String, String> getContextMap() {
         return ctx;
     }
 
+    /**
+     * Return a copy of the context stack.
+     * @return a copy of the context stack.
+     */
     public Stack<String> getContextStack() {
         return event.getContextStack();
     }

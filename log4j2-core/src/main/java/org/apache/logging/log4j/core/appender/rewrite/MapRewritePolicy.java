@@ -35,9 +35,9 @@ import java.util.Map;
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
 @Plugin(name = "MapRewritePolicy", type = "Core", elementType = "rewritePolicy", printObject = true)
-public class MapRewritePolicy implements RewritePolicy {
+public final class MapRewritePolicy implements RewritePolicy {
 
-    protected final static Logger logger = StatusLogger.getLogger();
+    protected final static Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<String, String> map;
 
@@ -86,9 +86,17 @@ public class MapRewritePolicy implements RewritePolicy {
      * keys should be updated.
      */
     public enum Mode {
-        Add, Update
+        /**
+         * Keys should be added.
+         */
+        Add,
+        /**
+         * Keys should be updated.
+         */
+        Update
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("mode=").append(mode);
@@ -120,30 +128,30 @@ public class MapRewritePolicy implements RewritePolicy {
         } else {
             op = Mode.valueOf(mode);
             if (op == null) {
-                logger.error("Undefined mode " + mode);
+                LOGGER.error("Undefined mode " + mode);
                 return null;
             }
         }
         if (pairs == null || pairs.length == 0) {
-            logger.error("keys and values must be specified for the MapRewritePolicy");
+            LOGGER.error("keys and values must be specified for the MapRewritePolicy");
             return null;
         }
         Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                logger.error("A null key is not valid in MapRewritePolicy");
+                LOGGER.error("A null key is not valid in MapRewritePolicy");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                logger.error("A null value for key " + key + " is not allowed in MapRewritePolicy");
+                LOGGER.error("A null value for key " + key + " is not allowed in MapRewritePolicy");
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());
         }
         if (map.size() == 0) {
-            logger.error("MapRewritePolicy is not configured with any valid key value pairs");
+            LOGGER.error("MapRewritePolicy is not configured with any valid key value pairs");
             return null;
         }
         return new MapRewritePolicy(map, op);
