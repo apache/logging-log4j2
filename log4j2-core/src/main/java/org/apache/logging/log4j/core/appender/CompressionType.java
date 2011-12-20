@@ -17,8 +17,13 @@
 package org.apache.logging.log4j.core.appender;
 
 /**
- *
+ * An enumeration of the valid compression types.
  */
 public enum CompressionType {
-    GZIP, NONE, ZIP
+    /** GZIP. */
+    GZIP,
+    /** No compression. */
+    NONE,
+    /** ZIP. */
+    ZIP
 }

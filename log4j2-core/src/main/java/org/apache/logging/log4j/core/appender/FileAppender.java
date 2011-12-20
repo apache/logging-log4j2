@@ -25,10 +25,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
- * File Appender
+ * File Appender.
  */
-@Plugin(name="File",type="Core",elementType="appender",printObject=true)
-public class FileAppender extends OutputStreamAppender {
+@Plugin(name = "File", type = "Core", elementType = "appender", printObject = true)
+public final class FileAppender extends OutputStreamAppender {
 
     private final String fileName;
 
@@ -39,7 +39,7 @@ public class FileAppender extends OutputStreamAppender {
     }
 
     /**
-     * Return the file name this appender is associated with
+     * Return the file name this appender is associated with.
      * @return The File name.
      */
     public String getFileName() {
@@ -47,7 +47,7 @@ public class FileAppender extends OutputStreamAppender {
     }
 
     /**
-     * Create a File Appender
+     * Create a File Appender.
      * @param fileName The name and path of the file.
      * @param append "True" if the file should be appended to, "false" if it should be overwritten.
      * The default is "true".
@@ -79,7 +79,7 @@ public class FileAppender extends OutputStreamAppender {
         boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
-                logger.warn("Locking and buffering are mutually exclusive. No buffereing will occur for " + fileName);
+                LOGGER.warn("Locking and buffering are mutually exclusive. No buffereing will occur for " + fileName);
             }
             isBuffered = false;
         }
@@ -87,12 +87,12 @@ public class FileAppender extends OutputStreamAppender {
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
-            logger.error("No name provided for FileAppender");
+            LOGGER.error("No name provided for FileAppender");
             return null;
         }
 
         if (fileName == null) {
-            logger.error("No filename provided for FileAppender with name "  + name);
+            LOGGER.error("No filename provided for FileAppender with name "  + name);
             return null;
         }
 

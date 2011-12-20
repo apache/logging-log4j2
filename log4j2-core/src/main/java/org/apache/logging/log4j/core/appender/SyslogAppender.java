@@ -33,12 +33,12 @@ import java.nio.charset.Charset;
 /**
  * The Syslog Appender.
  */
-@Plugin(name="Syslog",type="Core",elementType="appender",printObject=true)
+@Plugin(name = "Syslog", type = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender extends SocketAppender {
 
-    public static final String BSD = "bsd";
+    private static final String BSD = "bsd";
 
-    public static final String RFC5424 = "RFC5424";
+    private static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(String name, Layout layout, Filter filter,
                           boolean handleException, boolean immediateFlush, AbstractSocketManager manager) {
@@ -48,28 +48,31 @@ public class SyslogAppender extends SocketAppender {
 
     /**
      * Create a SyslogAppender.
-     * @param host
-     * @param portNum
-     * @param protocol
-     * @param delay
-     * @param name
-     * @param immediateFlush
-     * @param suppress
-     * @param facility
-     * @param id
-     * @param ein
-     * @param includeMDC
-     * @param mdcId
-     * @param includeNL
-     * @param appName
-     * @param msgId
-     * @param excludes
-     * @param includes
-     * @param required
-     * @param format
-     * @param filter
-     * @param config
-     * @param charset
+     * @param host The name of the host to connect to.
+     * @param portNum The port to connect to on the target host.
+     * @param protocol The Protocol to use.
+     * @param delay The interval in which failed writes should be retried.
+     * @param name The name of the Appender.
+     * @param immediateFlush "true" if data should be flushed on each write.
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @param facility The Facility is used to try to classify the message.
+     * @param id The default structured data id to use when formatting according to RFC 5424.
+     * @param ein The IANA enterprise number.
+     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
+     * record. Defaults to "true:.
+     * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
+     * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
+     * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
+     * @param includes A comma separated list of mdc keys that should be included in the FlumeEvent.
+     * @param required A comma separated list of mdc keys that must be present in the MDC.
+     * @param format If set to "RFC5424" the data will be formatted in accordance with RFC 5424. Otherwise,
+     * it will be formatted as a BSD Syslog record.
+     * @param filter A Filter to determine if the event should be handled by this Appender.
+     * @param config The Configuration.
+     * @param charset The character set to use when converting the syslog String to a byte array.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -105,7 +108,7 @@ public class SyslogAppender extends SocketAppender {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         Layout layout = (format.equalsIgnoreCase(RFC5424)) ?
@@ -114,7 +117,7 @@ public class SyslogAppender extends SocketAppender {
             SyslogLayout.createLayout(facility, includeNL, charset);
 
         if (name == null) {
-            logger.error("No name provided for SyslogAppender");
+            LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
         AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);

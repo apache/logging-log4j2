@@ -27,15 +27,15 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class DefaultErrorHandler implements ErrorHandler {
 
-    private int exceptionCount = 0;
-
-    private long lastException;
-
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final int MAX_EXCEPTIONS = 3;
 
     private static final int EXCEPTION_INTERVAL = 300000;
+
+    private int exceptionCount = 0;
+
+    private long lastException;
 
     private Appender appender;
 
@@ -51,7 +51,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void error(String msg) {
         long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
-            logger.error(msg);
+            LOGGER.error(msg);
         }
         lastException = current;
     }
@@ -64,7 +64,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void error(String msg, Throwable t) {
         long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
-            logger.error(msg, t);
+            LOGGER.error(msg, t);
         }
         lastException = current;
         if (!appender.isExceptionSuppressed() && t != null) {
@@ -81,7 +81,7 @@ public class DefaultErrorHandler implements ErrorHandler {
     public void error(String msg, LogEvent event, Throwable t) {
         long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
-            logger.error(msg, t);
+            LOGGER.error(msg, t);
         }
         lastException = current;
         if (!appender.isExceptionSuppressed() && t != null) {

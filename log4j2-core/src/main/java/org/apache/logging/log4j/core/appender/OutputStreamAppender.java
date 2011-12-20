@@ -88,10 +88,10 @@ public abstract class OutputStreamAppender extends AppenderBase {
     @Override
     public void start() {
         if (getLayout() == null) {
-            logger.error("No layout set for the appender named [" + getName() + "].");
+            LOGGER.error("No layout set for the appender named [" + getName() + "].");
         }
         if (manager == null) {
-            logger.error("No OutputStreamManager set for the appender named [" + getName() + "].");
+            LOGGER.error("No OutputStreamManager set for the appender named [" + getName() + "].");
         }
         super.start();
     }

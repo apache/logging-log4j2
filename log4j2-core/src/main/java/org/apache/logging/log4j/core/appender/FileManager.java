@@ -30,20 +30,34 @@ import java.nio.channels.FileLock;
 
 
 /**
- *
+ * Class that handles actual File I/O for File Appenders.
  */
 public class FileManager extends OutputStreamManager {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
-    protected static final Logger logger = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static ManagerFactory factory = new FileManagerFactory();
 
     private boolean isAppend;
     private boolean isLocking;
 
-    private static ManagerFactory factory = new FileManagerFactory();
+    protected FileManager(String fileName, OutputStream os, boolean append, boolean locking) {
+        super(os, fileName);
+        this.isAppend = append;
+        this.isLocking = locking;
+    }
 
+    /**
+     * Return the FileManager.
+     * @param fileName The name of the file to manage.
+     * @param append true if the file should be appended to, false if it should be overwritten.
+     * @param locking true if the file should be locked while writing, false otherwise.
+     * @param bufferedIO true if the contents should be buffered as they are written.
+     * @return A FileManager for the File.
+     */
     public static FileManager getFileManager(String fileName, boolean append, boolean locking, boolean bufferedIO) {
 
         if (locking && bufferedIO) {
@@ -52,16 +66,10 @@ public class FileManager extends OutputStreamManager {
         return (FileManager) getManager(fileName, factory, new FactoryData(append, locking, bufferedIO));
     }
 
-    public FileManager(String fileName, OutputStream os, boolean append, boolean locking) {
-        super(os, fileName);
-        this.isAppend = append;
-        this.isLocking = locking;
-    }
-
     protected synchronized void write(byte[] bytes, int offset, int length)  {
 
         if (isLocking) {
-            FileChannel channel = ((FileOutputStream)getOutputStream()).getChannel();
+            FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
             try {
                 /* Lock the whole file. This could be optimized to only lock from the current file
                    position. Note that locking may be advisory on some systems and mandatory on others,
@@ -85,23 +93,44 @@ public class FileManager extends OutputStreamManager {
         }
     }
 
+    /**
+     * Return the name of the File being managed.
+     * @return The name of the File being managed.
+     */
     public String getFileName() {
         return getName();
     }
 
+    /**
+     * Return the append status.
+     * @return true if the file will be appended to, false if it is overwritten.
+     */
     public boolean isAppend() {
         return isAppend;
     }
 
+    /**
+     * Return the lock status.
+     * @return true if the file will be locked when writing, false otherwise.
+     */
     public boolean isLocking() {
         return isLocking;
     }
 
+    /**
+     * Factory Data.
+     */
     private static class FactoryData {
-        boolean append;
-        boolean locking;
-        boolean bufferedIO;
+        private boolean append;
+        private boolean locking;
+        private boolean bufferedIO;
 
+        /**
+         * Constructor.
+         * @param append Append status.
+         * @param locking Locking status.
+         * @param bufferedIO Buffering flag.
+         */
         public FactoryData(boolean append, boolean locking, boolean bufferedIO) {
             this.append = append;
             this.locking = locking;
@@ -109,8 +138,17 @@ public class FileManager extends OutputStreamManager {
         }
     }
 
+    /**
+     * Factory to create a FileManager.
+     */
     private static class FileManagerFactory implements ManagerFactory<FileManager, FactoryData> {
 
+        /**
+         * Create a FileManager.
+         * @param name The name of the File.
+         * @param data The FactoryData
+         * @return The FileManager for the File.
+         */
         public FileManager createManager(String name, FactoryData data) {
             File file = new File(name);
             final File parent = file.getParentFile();
@@ -126,7 +164,7 @@ public class FileManager extends OutputStreamManager {
                 }
                 return new FileManager(name, os, data.append, data.locking);
             } catch (FileNotFoundException ex) {
-                logger.error("FileManager (" + name + ") " + ex);
+                LOGGER.error("FileManager (" + name + ") " + ex);
             }
             return null;
         }

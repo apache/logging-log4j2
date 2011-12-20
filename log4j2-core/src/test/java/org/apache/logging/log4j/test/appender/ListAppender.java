@@ -145,7 +145,7 @@ public class ListAppender extends AppenderBase {
                                               @PluginElement("filters") Filter filter) {
 
         if (name == null) {
-            logger.error("No name provided for ListAppender");
+            LOGGER.error("No name provided for ListAppender");
             return null;
         }
 

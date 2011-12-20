@@ -29,18 +29,27 @@ public class OutputStreamManager extends AbstractManager {
 
     private byte[] footer = null;
 
-    public StringBuilder buffer = new StringBuilder();
+    protected OutputStreamManager(OutputStream os, String streamName) {
+        super(streamName);
+        this.os = os;
+    }
 
+    /**
+     * Create a Manager.
+     * @param name The name of the stream to manage.
+     * @param factory The factory to use to create the Manager.
+     * @param data The data to pass to the Manager.
+     * @return An OutputStreamManager.
+     */
     public static OutputStreamManager getManager(String name, ManagerFactory<OutputStreamManager, Object> factory,
                                                  Object data) {
         return AbstractManager.getManager(name, factory, data);
     }
 
-    public OutputStreamManager(OutputStream os, String streamName) {
-        super(streamName);
-        this.os = os;
-    }
-
+    /**
+     * Set the header to write when the stream is opened.
+     * @param header The header.
+     */
     public synchronized void setHeader(byte[] header) {
         if (header != null) {
             try {
@@ -51,12 +60,19 @@ public class OutputStreamManager extends AbstractManager {
         }
     }
 
+    /**
+     * Set the footer to write when the stream is closed.
+     * @param footer The footer.
+     */
     public synchronized void setFooter(byte[] footer) {
         if (footer != null) {
             this.footer = footer;
         }
     }
 
+    /**
+     * Default hook to write footer during close.
+     */
     public void releaseSub() {
         if (footer != null) {
             write(footer);
@@ -64,6 +80,10 @@ public class OutputStreamManager extends AbstractManager {
         close();
     }
 
+    /**
+     * Return the status of the stream.
+     * @return true if the stream is open, false if it is not.
+     */
     public boolean isOpen() {
         return getCount() > 0;
     }
@@ -115,6 +135,9 @@ public class OutputStreamManager extends AbstractManager {
         }
     }
 
+    /**
+     * Flush any buffers.
+     */
     public void flush() {
         try {
             os.flush();

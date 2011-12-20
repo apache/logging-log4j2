@@ -32,11 +32,11 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 /**
  * An appender that writes to files andd can roll over at intervals.
  */
-@Plugin(name="RollingFile",type="Core",elementType="appender",printObject=true)
-public class RollingFileAppender extends OutputStreamAppender {
+@Plugin(name = "RollingFile", type = "Core", elementType = "appender", printObject = true)
+public final class RollingFileAppender extends OutputStreamAppender {
 
-    public final String fileName;
-    public final String filePattern;
+    private final String fileName;
+    private final String filePattern;
     private final TriggeringPolicy policy;
     private final RolloverStrategy strategy;
 
@@ -77,7 +77,7 @@ public class RollingFileAppender extends OutputStreamAppender {
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
-     * @return
+     * @return A RollingFileAppender.
      */
     @PluginFactory
     public static RollingFileAppender createAppender(@PluginAttr("fileName") String fileName,
@@ -98,22 +98,22 @@ public class RollingFileAppender extends OutputStreamAppender {
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
 
         if (name == null) {
-            logger.error("No name provided for FileAppender");
+            LOGGER.error("No name provided for FileAppender");
             return null;
         }
 
         if (fileName == null) {
-            logger.error("No filename was provided for FileAppender with name "  + name);
+            LOGGER.error("No filename was provided for FileAppender with name "  + name);
             return null;
         }
 
         if (filePattern == null) {
-            logger.error("No filename pattern provided for FileAppender with name "  + name);
+            LOGGER.error("No filename pattern provided for FileAppender with name "  + name);
             return null;
         }
 
         if (policy == null) {
-            logger.error("A TriggeringPolicy must be provided");
+            LOGGER.error("A TriggeringPolicy must be provided");
             return null;
         }
 

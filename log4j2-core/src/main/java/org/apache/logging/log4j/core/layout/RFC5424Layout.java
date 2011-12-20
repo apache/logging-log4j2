@@ -47,8 +47,8 @@ import java.util.TreeMap;
 /**
  * Formats a log event in accordance with RFC 5424.
  */
-@Plugin(name="RFC5424Layout",type="Core",elementType="layout",printObject=true)
-public class RFC5424Layout extends AbstractStringLayout {
+@Plugin(name = "RFC5424Layout", type = "Core", elementType = "layout", printObject = true)
+public final class RFC5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
@@ -389,17 +389,18 @@ public class RFC5424Layout extends AbstractStringLayout {
 
     /**
      * Create the RFC 5424 Layout.
-     * @param facility
-     * @param id
-     * @param ein
-     * @param includeMDC
-     * @param mdcId
-     * @param includeNL
-     * @param appName
-     * @param msgId
-     * @param excludes
-     * @param includes
-     * @param required
+     * @param facility The Facility is used to try to classify the message.
+     * @param id The default structured data id to use when formatting according to RFC 5424.
+     * @param ein The IANA enterprise number.
+     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
+     * record. Defaults to "true:.
+     * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
+     * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
+     * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
+     * @param includes A comma separated list of mdc keys that should be included in the FlumeEvent.
+     * @param required A comma separated list of mdc keys that must be present in the MDC.
      * @param charset The character set.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An RFC5424Layout.

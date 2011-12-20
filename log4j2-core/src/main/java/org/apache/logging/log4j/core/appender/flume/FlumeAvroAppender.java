@@ -112,11 +112,11 @@ public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (Exception ex) {
-            logger.error("Unable to determine local hostname", ex);
+            LOGGER.error("Unable to determine local hostname", ex);
             return null;
         }
         if (agents == null || agents.length == 0) {
-            logger.debug("No agents provided, using defaults");
+            LOGGER.debug("No agents provided, using defaults");
             agents = new Agent[] {Agent.createAgent(null, null)};
         }
 
@@ -132,7 +132,7 @@ public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory
         }
 
         if (name == null) {
-            logger.error("No name provided for Appender");
+            LOGGER.error("No name provided for Appender");
             return null;
         }
 

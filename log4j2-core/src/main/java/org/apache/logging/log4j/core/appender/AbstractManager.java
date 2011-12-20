@@ -29,20 +29,25 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class AbstractManager {
 
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static Logger logger = StatusLogger.getLogger();
+
     // Need to lock that map instead of using a ConcurrentMap due to stop removing the
     // manager from the map and closing the stream, requiring the whole stop method to be locked.
     private static Map<String, AbstractManager> map = new HashMap<String, AbstractManager>();
 
     private static Lock lock = new ReentrantLock();
 
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static Logger logger = StatusLogger.getLogger();
-
     private String name;
 
     private int count;
+
+    protected AbstractManager(String name) {
+        this.name = name;
+    }
+
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
@@ -83,10 +88,6 @@ public abstract class AbstractManager {
         } finally {
             lock.unlock();
         }
-    }
-
-    protected AbstractManager(String name) {
-        this.name = name;
     }
 
     /**

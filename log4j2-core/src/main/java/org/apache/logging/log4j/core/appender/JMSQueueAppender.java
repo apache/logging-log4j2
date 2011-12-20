@@ -27,10 +27,10 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSQueueManager;
 
 /**
- *
+ * Appender to write to a JMS Queue.
  */
-@Plugin(name="JMSQueue",type="Core",elementType="appender",printObject=true)
-public class JMSQueueAppender extends AppenderBase {
+@Plugin(name = "JMSQueue", type = "Core", elementType = "appender", printObject = true)
+public final class JMSQueueAppender extends AppenderBase {
 
     private final JMSQueueManager manager;
 
@@ -55,15 +55,16 @@ public class JMSQueueAppender extends AppenderBase {
 
     /**
      * Create a JMSQueueAppender.
-     * @param factoryName
-     * @param providerURL
-     * @param urlPkgPrefixes
-     * @param securityPrincipalName
-     * @param securityCredentials
-     * @param factoryBindingName
-     * @param queueBindingName
-     * @param userName
-     * @param password
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @param factoryBindingName The name to locate in the Context that provides the QueueConnectionFactory.
+     * @param queueBindingName The name to use to locate the Queue.
+     * @param userName The userid to use to create the Queue Connection.
+     * @param password The password to use to create the Queue Connection.
      * @param layout The layout to use (defaults to SerlializedLayout).
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.

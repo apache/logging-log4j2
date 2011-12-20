@@ -37,8 +37,8 @@ import java.util.Map;
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
  */
-@Plugin(name="Failover",type="Core",elementType="appender",printObject=true)
-public class FailoverAppender extends AppenderBase {
+@Plugin(name = "Failover", type = "Core", elementType = "appender", printObject = true)
+public final class FailoverAppender extends AppenderBase {
 
     private final String primaryRef;
 
@@ -49,7 +49,6 @@ public class FailoverAppender extends AppenderBase {
     private AppenderControl primary;
 
     private List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
-
 
     private FailoverAppender(String name, Filter filter, String primary, String[] failovers,
                             Configuration config, boolean handleExceptions) {
@@ -67,18 +66,18 @@ public class FailoverAppender extends AppenderBase {
         if (map.containsKey(primaryRef)) {
             primary = new AppenderControl(map.get(primaryRef));
         } else {
-            logger.error("Unable to locate primary Appender " + primaryRef);
+            LOGGER.error("Unable to locate primary Appender " + primaryRef);
             ++errors;
         }
         for (String name : failovers) {
             if (map.containsKey(name)) {
                 failoverAppenders.add(new AppenderControl(map.get(name)));
             } else {
-                logger.error("Failover appender " + name + " is not configured");
+                LOGGER.error("Failover appender " + name + " is not configured");
             }
         }
         if (failoverAppenders.size() == 0) {
-            logger.error("No failover appenders are available");
+            LOGGER.error("No failover appenders are available");
             ++errors;
         }
         if (errors == 0) {
@@ -138,7 +137,7 @@ public class FailoverAppender extends AppenderBase {
     }
 
     /**
-     * Create a Failover Appender
+     * Create a Failover Appender.
      * @param name The name of the Appender (required).
      * @param primary The name of the primary Appender (required).
      * @param failovers The name of one or more Appenders to fail over to (at least one is required).
@@ -156,15 +155,15 @@ public class FailoverAppender extends AppenderBase {
                                                   @PluginElement("filters") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
         if (name == null) {
-            logger.error("A name for the Appender must be specified");
+            LOGGER.error("A name for the Appender must be specified");
             return null;
         }
         if (primary == null) {
-            logger.error("A primary Appender must be specified");
+            LOGGER.error("A primary Appender must be specified");
             return null;
         }
         if (failovers == null || failovers.length == 0) {
-            logger.error("At least one failover Appender must be specified");
+            LOGGER.error("At least one failover Appender must be specified");
             return null;
         }
 

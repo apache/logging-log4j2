@@ -23,13 +23,24 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * The array of failover Appenders.
  */
-@Plugin(name="failovers",type="Core")
-public class FailoversPlugin {
+@Plugin(name = "failovers", type = "Core")
+public final class FailoversPlugin {
 
     private static Logger logger = StatusLogger.getLogger();
 
+    /**
+     * Prevent instantiation.
+     */
+    private FailoversPlugin() {
+    }
+
+    /**
+     * Return the appender references.
+     * @param refs The references to return.
+     * @return The appender references.
+     */
     @PluginFactory
     public static String[] createFailovers(@PluginElement("appender-ref") String[] refs) {
 

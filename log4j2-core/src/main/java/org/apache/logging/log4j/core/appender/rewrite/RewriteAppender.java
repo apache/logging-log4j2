@@ -58,7 +58,7 @@ public class RewriteAppender extends AppenderBase {
             if (appender != null) {
                 appenders.put(ref, new AppenderControl(appender));
             } else {
-                logger.error("Appender " + ref + " cannot be located. Reference ignored");
+                LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
             }
         }
         super.start();
@@ -94,11 +94,11 @@ public class RewriteAppender extends AppenderBase {
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
-            logger.error("No name provided for RewriteAppender");
+            LOGGER.error("No name provided for RewriteAppender");
             return null;
         }
         if (appenderRefs == null) {
-            logger.error("No appender references defined for RewriteAppender");
+            LOGGER.error("No appender references defined for RewriteAppender");
             return null;
         }
         return new RewriteAppender(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);

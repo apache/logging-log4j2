@@ -40,7 +40,7 @@ public class AlwaysFailAppender extends AppenderBase {
     @PluginFactory
     public static AlwaysFailAppender createAppender(@PluginAttr("name") String name) {
         if (name == null) {
-            logger.error("A name for the Appender must be specified");
+            LOGGER.error("A name for the Appender must be specified");
             return null;
         }
 

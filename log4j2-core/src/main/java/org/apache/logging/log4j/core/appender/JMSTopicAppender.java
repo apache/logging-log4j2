@@ -27,10 +27,10 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSTopicManager;
 
 /**
- *
+ * Appender to write to a JMS Topic.
  */
-@Plugin(name="JMSTopic",type="Core",elementType="appender",printObject=true)
-public class JMSTopicAppender extends AppenderBase {
+@Plugin(name = "JMSTopic", type = "Core", elementType = "appender", printObject = true)
+public final class JMSTopicAppender extends AppenderBase {
 
     private final JMSTopicManager manager;
 
@@ -55,15 +55,16 @@ public class JMSTopicAppender extends AppenderBase {
 
     /**
      * Create a JMSTopicAppender.
-     * @param factoryName
-     * @param providerURL
-     * @param urlPkgPrefixes
-     * @param securityPrincipalName
-     * @param securityCredentials
-     * @param factoryBindingName
-     * @param topicBindingName
-     * @param userName
-     * @param password
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @param factoryBindingName The name to locate in the Context that provides the TopicConnectionFactory.
+     * @param topicBindingName The name to use to locate the Topic.
+     * @param userName The userid to use to create the Topic Connection.
+     * @param password The password to use to create the Topic Connection.
      * @param layout The layout to use (defaults to SerlializedLayout).
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.

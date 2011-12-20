@@ -36,8 +36,8 @@ import java.io.OutputStream;
  * and then call getBytes which may use a configured encoding or the system
  * default. OTOH, a Writer cannot print byte streams.
  */
-@Plugin(name="Console",type="Core",elementType="appender",printObject=true)
-public class ConsoleAppender extends OutputStreamAppender {
+@Plugin(name = "Console", type = "Core", elementType = "appender", printObject = true)
+public final class ConsoleAppender extends OutputStreamAppender {
 
     private static ManagerFactory factory = new ConsoleManagerFactory();
 
@@ -45,9 +45,9 @@ public class ConsoleAppender extends OutputStreamAppender {
      * Enumeration of console destinations.
      */
     public enum Target {
-        /** Standard output */
+        /** Standard output. */
         SYSTEM_OUT,
-        /** Standard error output */
+        /** Standard error output. */
         SYSTEM_ERR
     }
 
@@ -73,7 +73,7 @@ public class ConsoleAppender extends OutputStreamAppender {
                                                  @PluginAttr("name") String name,
                                                  @PluginAttr("suppressExceptions") String suppress) {
         if (name == null) {
-            logger.error("No name provided for ConsoleAppender");
+            LOGGER.error("No name provided for ConsoleAppender");
             return null;
         }
         if (layout == null) {
@@ -92,18 +92,35 @@ public class ConsoleAppender extends OutputStreamAppender {
         return manager;
     }
 
+    /**
+     * Data to pass to factory method.
+     */
     private static class FactoryData {
-        OutputStream os;
-        String type;
+        private OutputStream os;
+        private String type;
 
+        /**
+         * Constructor.
+         * @param os The OutputStream.
+         * @param type The name of the target.
+         */
         public FactoryData(OutputStream os, String type) {
             this.os = os;
             this.type = type;
         }
     }
 
+    /**
+     * Factory to create the Appender.
+     */
     private static class ConsoleManagerFactory implements ManagerFactory<OutputStreamManager, FactoryData> {
 
+        /**
+         * Create an OutputStreamManager.
+         * @param name The name of the entity to manage.
+         * @param data The data required to create the entity.
+         * @return The OutputStreamManager
+         */
         public OutputStreamManager createManager(String name, FactoryData data) {
             return new OutputStreamManager(data.os, data.type);
         }

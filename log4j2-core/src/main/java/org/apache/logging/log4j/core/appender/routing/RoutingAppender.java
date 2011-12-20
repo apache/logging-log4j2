@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,15 +68,15 @@ public class RoutingAppender extends AppenderBase {
                     String key = route.getKey() == null ? DEFAULT_KEY : route.getKey();
                     if (appenders.containsKey(key)) {
                         if (DEFAULT_KEY.equals(key)) {
-                            logger.error("Multiple default routes. Only the first will be used");
+                            LOGGER.error("Multiple default routes. Only the first will be used");
                         } else {
-                            logger.error("Duplicate route " + key + " is ignored");
+                            LOGGER.error("Duplicate route " + key + " is ignored");
                         }
                     } else {
                         appenders.put(key, new AppenderControl(appender));
                     }
                 } else {
-                    logger.error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
+                    LOGGER.error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
                 }
             }
         }
@@ -156,11 +155,11 @@ public class RoutingAppender extends AppenderBase {
                     app.start();
                     return (Appender) node.getObject();
                 }
-                logger.error("Unable to create Appender of type " + node.getName());
+                LOGGER.error("Unable to create Appender of type " + node.getName());
                 return null;
             }
         }
-        logger.error("No Appender was configured for route " + route.getKey());
+        LOGGER.error("No Appender was configured for route " + route.getKey());
         return null;
     }
 
@@ -175,11 +174,11 @@ public class RoutingAppender extends AppenderBase {
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
-            logger.error("No name provided for RoutingAppender");
+            LOGGER.error("No name provided for RoutingAppender");
             return null;
         }
         if (routes == null) {
-            logger.error("No routes defined for RoutingAppender");
+            LOGGER.error("No routes defined for RoutingAppender");
             return null;
         }
         return new RoutingAppender(name, filter, handleExceptions, routes, rewritePolicy, config);

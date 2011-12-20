@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.net.TCPSocketManager;
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
-@Plugin(name="Socket",type="Core",elementType="appender",printObject=true)
+@Plugin(name = "Socket", type = "Core", elementType = "appender", printObject = true)
 public class SocketAppender extends OutputStreamAppender {
 
 
@@ -43,17 +43,17 @@ public class SocketAppender extends OutputStreamAppender {
 
     /**
      *
-     * @param host
-     * @param portNum
-     * @param protocol
-     * @param delay
-     * @param name
-     * @param immediateFlush
+     * @param host The name of the host to connect to.
+     * @param portNum The port to connect to on the target host.
+     * @param protocol The Protocol to use.
+     * @param delay The interval in which failed writes should be retried.
+     * @param name The name of the Appender.
+     * @param immediateFlush "true" if data should be flushed on each write.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
      * @param layout The layout to use (defaults to SerlializedLayout).
      * @param filter The Filter or null.
-     * @return
+     * @return A SocketAppender.
      */
     @PluginFactory
     public static SocketAppender createAppender(@PluginAttr("host") String host,
@@ -75,7 +75,7 @@ public class SocketAppender extends OutputStreamAppender {
         }
 
         if (name == null) {
-            logger.error("No name provided for SocketAppender");
+            LOGGER.error("No name provided for SocketAppender");
             return null;
         }
 
