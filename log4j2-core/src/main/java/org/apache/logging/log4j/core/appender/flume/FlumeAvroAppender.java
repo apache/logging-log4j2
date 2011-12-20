@@ -29,10 +29,10 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import java.net.InetAddress;
 
 /**
- *
+ * An Appender that uses the Avro protocol to route events to Flume.
  */
-@Plugin(name="Flume",type="Core",elementType="appender",printObject=true)
-public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory {
+@Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
+public final class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory {
 
     private FlumeAvroManager manager;
 
@@ -72,6 +72,10 @@ public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory
         this.factory = factory == null ? this : factory;
     }
 
+    /**
+     * Publish the event.
+     * @param event The LogEvent.
+     */
     public void append(LogEvent event) {
 
         FlumeEvent flumeEvent = factory.createEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
@@ -86,12 +90,42 @@ public class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory
         manager.release();
     }
 
+    /**
+     * Create a Flume event.
+     * @param event The Log4j LogEvent.
+     * @param hostname The host name.
+     * @param includes comma separated list of mdc elements to include.
+     * @param excludes comma separated list of mdc elements to exclude.
+     * @param required comma separated list of mdc elements that must be present with a value.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event fields.
+     * @param compress If true the body will be compressed.
+     * @return A Flume Event.
+     */
     public FlumeEvent createEvent(LogEvent event, String hostname, String includes, String excludes, String required,
                       String mdcPrefix, String eventPrefix, boolean compress) {
         return new FlumeEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
     }
 
+    /**
+     * Create a Flume Avro Appender.
+     * @param agents An array of Agents.
+     * @param delay The amount of time in milliseconds to wait between retries.
+     * @param agentRetries The number of times to retry an agent before failing to the next agent.
+     * @param name The name of the Appender.
+     * @param suppress If true exceptions will be handled in the appender.
+     * @param excludes A comma separated list of MDC elements to exclude.
+     * @param includes A comma separated list of MDC elements to include.
+     * @param required A comma separated list of MDC elements that are required.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event key names.
+     * @param compressBody If true the event body will be compressed.
+     * @param factory The factory to use to create Flume events.
+     * @param layout The layout to format the event.
+     * @param filter A Filter to filter events.
+     * @return A Flume Avro Appender.
+     */
     @PluginFactory
     public static FlumeAvroAppender createAppender(@PluginElement("agents") Agent[] agents,
                                                    @PluginAttr("reconnectionDelay") String delay,

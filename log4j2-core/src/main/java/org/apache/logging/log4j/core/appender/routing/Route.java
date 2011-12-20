@@ -24,13 +24,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.List;
-
 /**
- *
+ * A Route to an appender.
  */
-@Plugin(name="Route", type="Core", printObject=true, deferChildren=true)
-public class Route {
+@Plugin(name = "Route", type = "Core", printObject = true, deferChildren = true)
+public final class Route {
 
     private final Node node;
     private final String appenderRef;
@@ -43,18 +41,31 @@ public class Route {
         this.key = key;
     }
 
+    /**
+     * Return the Dynamic Appender Node.
+     * @return The Node.
+     */
     public Node getNode() {
         return node;
     }
 
+    /**
+     * Returns the appender reference.
+     * @return The Appender reference.
+     */
     public String getAppenderRef() {
         return appenderRef;
     }
 
+    /**
+     * Return the key for this Route.
+     * @return the key for this Route.
+     */
     public String getKey() {
         return key;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Route(");
         sb.append("type=");
@@ -72,6 +83,13 @@ public class Route {
         return sb.toString();
     }
 
+    /**
+     * Create the Route.
+     * @param appenderRef The Appender reference.
+     * @param key The key.
+     * @param node The Node.
+     * @return A Route.
+     */
     @PluginFactory
     public static Route createRoute(@PluginAttr("appender-ref") String appenderRef,
                                     @PluginAttr("key") String key,

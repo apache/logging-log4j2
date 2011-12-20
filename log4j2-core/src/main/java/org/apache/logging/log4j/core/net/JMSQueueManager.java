@@ -47,11 +47,11 @@ public class JMSQueueManager extends AbstractJMSManager {
                                                      String userName, String password) {
 
         if (factoryBindingName == null) {
-            logger.error("No factory name provided for JMSQueueManager");
+            LOGGER.error("No factory name provided for JMSQueueManager");
             return null;
         }
         if (queueBindingName == null) {
-            logger.error("No topic name provided for JMSQueueManager");
+            LOGGER.error("No topic name provided for JMSQueueManager");
             return null;
         }
 
@@ -82,7 +82,7 @@ public class JMSQueueManager extends AbstractJMSManager {
                 queueConnection.close();
             }
         } catch (JMSException ex) {
-            logger.error("Error closing " + getName(), ex);
+            LOGGER.error("Error closing " + getName(), ex);
         }
     }
 

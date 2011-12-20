@@ -76,14 +76,14 @@ public final class FileAppender extends OutputStreamAppender {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
         boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
-        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
+        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
                 LOGGER.warn("Locking and buffering are mutually exclusive. No buffereing will occur for " + fileName);
             }
             isBuffered = false;
         }
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
+        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {

@@ -32,7 +32,7 @@ public abstract class AbstractManager {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
-    protected static Logger logger = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     // Need to lock that map instead of using a ConcurrentMap due to stop removing the
     // manager from the map and closing the stream, requiring the whole stop method to be locked.

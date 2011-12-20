@@ -40,7 +40,7 @@ public abstract class ActionBase implements Action {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
-    protected static final Logger logger = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Constructor.

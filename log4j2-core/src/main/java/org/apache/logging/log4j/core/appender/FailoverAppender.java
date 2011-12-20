@@ -85,11 +85,6 @@ public final class FailoverAppender extends AppenderBase {
         }
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-    }
-
     /**
      * Handle the Log event.
      * @param event The LogEvent.

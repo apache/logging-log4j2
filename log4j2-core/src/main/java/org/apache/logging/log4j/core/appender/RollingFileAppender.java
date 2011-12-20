@@ -63,6 +63,22 @@ public final class RollingFileAppender extends OutputStreamAppender {
     }
 
     /**
+     * Return the File name for the Appender.
+     * @return The file name.
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Returns the file pattern used when rolling over.
+     * @return The file pattern.
+     */
+    public String getFilePattern() {
+        return filePattern;
+    }
+
+    /**
      * Create a RollingFileAppender.
      * @param fileName The name of the file that is actively written to. (required).
      * @param filePattern The pattern of the file name to use on rollover. (required).
@@ -94,8 +110,8 @@ public final class RollingFileAppender extends OutputStreamAppender {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);;
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
+        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
+        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");

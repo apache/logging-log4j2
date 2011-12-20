@@ -56,7 +56,7 @@ public class CompositeAction extends ActionBase {
         try {
             execute();
         } catch (IOException ex) {
-            logger.warn("Exception during file rollover.", ex);
+            LOGGER.warn("Exception during file rollover.", ex);
         }
     }
 

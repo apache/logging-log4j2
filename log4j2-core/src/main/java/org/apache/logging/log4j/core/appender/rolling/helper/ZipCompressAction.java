@@ -109,7 +109,7 @@ public final class ZipCompressAction extends ActionBase {
             fis.close();
 
             if (deleteSource && !source.delete()) {
-                logger.warn("Unable to delete " + source.toString() + ".");
+                LOGGER.warn("Unable to delete " + source.toString() + ".");
             }
 
             return true;
@@ -124,6 +124,6 @@ public final class ZipCompressAction extends ActionBase {
      * @param ex exception.
      */
     protected void reportException(final Exception ex) {
-        logger.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
 }

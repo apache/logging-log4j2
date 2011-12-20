@@ -19,11 +19,7 @@ package org.apache.logging.log4j.core.net;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
@@ -51,11 +47,11 @@ public class JMSTopicManager extends AbstractJMSManager {
                                                      String userName, String password) {
 
         if (factoryBindingName == null) {
-            logger.error("No factory name provided for JMSTopicManager");
+            LOGGER.error("No factory name provided for JMSTopicManager");
             return null;
         }
         if (topicBindingName == null) {
-            logger.error("No topic name provided for JMSTopicManager");
+            LOGGER.error("No topic name provided for JMSTopicManager");
             return null;
         }
 
@@ -86,7 +82,7 @@ public class JMSTopicManager extends AbstractJMSManager {
                 topicConnection.close();
             }
         } catch (JMSException ex) {
-            logger.error("Error closing " + getName(), ex);
+            LOGGER.error("Error closing " + getName(), ex);
         }
     }
 
@@ -136,9 +132,9 @@ public class JMSTopicManager extends AbstractJMSManager {
                 conn.start();
                 return new JMSTopicManager(name, conn, sess, pub);
             } catch (NamingException ex) {
-                logger.error("Bad Name " + data.topicBindingName, ex);
+                LOGGER.error("Bad Name " + data.topicBindingName, ex);
             } catch (JMSException jmsex) {
-                logger.error("Unable to create publisher ", jmsex);
+                LOGGER.error("Unable to create publisher ", jmsex);
             }
 
             return null;

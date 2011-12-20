@@ -61,7 +61,7 @@ public abstract class ConfigurationFactory {
 
     private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
 
-    protected static Logger logger = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     protected File configFile = null;
 
@@ -103,9 +103,9 @@ public abstract class ConfigurationFactory {
             Class clazz = Class.forName(factoryClass);
             addFactory(clazz);
         } catch (ClassNotFoundException ex) {
-            logger.error("Unable to load class " + factoryClass, ex);
+            LOGGER.error("Unable to load class " + factoryClass, ex);
         } catch (Exception ex) {
-            logger.error("Unable to load class " + factoryClass, ex);
+            LOGGER.error("Unable to load class " + factoryClass, ex);
         }
     }
 
@@ -113,7 +113,7 @@ public abstract class ConfigurationFactory {
         try {
             factories.add((ConfigurationFactory) factoryClass.newInstance());
         } catch (Exception ex) {
-            logger.error("Unable to create instance of " + factoryClass.getName(), ex);
+            LOGGER.error("Unable to create instance of " + factoryClass.getName(), ex);
         }
     }
 
@@ -158,7 +158,7 @@ public abstract class ConfigurationFactory {
                 source.setSystemId(configLocation.getPath());
                 return source;
             } catch (FileNotFoundException ex) {
-                logger.error("Cannot locate file " + configLocation.getPath(), ex);
+                LOGGER.error("Cannot locate file " + configLocation.getPath(), ex);
             }
         }
         try {
@@ -166,9 +166,9 @@ public abstract class ConfigurationFactory {
             source.setSystemId(configLocation.getPath());
             return source;
         } catch (MalformedURLException ex) {
-            logger.error("Invalid URL " + configLocation.toString(), ex);
+            LOGGER.error("Invalid URL " + configLocation.toString(), ex);
         } catch (IOException ex) {
-            logger.error("Unable to access " + configLocation.toString(), ex);
+            LOGGER.error("Unable to access " + configLocation.toString(), ex);
         }
         return null;
     }

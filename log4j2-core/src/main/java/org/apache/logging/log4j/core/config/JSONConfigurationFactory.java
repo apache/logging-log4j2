@@ -45,7 +45,7 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
                 Class.forName(item);
             }
         } catch (ClassNotFoundException ex) {
-            logger.debug("Missing dependencies for Json support");
+            LOGGER.debug("Missing dependencies for Json support");
             isActive = false;
             return;
         }

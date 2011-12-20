@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
-import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 
@@ -29,16 +28,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * Parse the rollover pattern.
  */
 public class PatternProcessor {
 
-    private final String pattern;
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
-
-    private DatePatternConverter dateConverter = null;
-    private IntegerPatternConverter integerConverter = null;
 
     private static final String KEY = "FileConverter";
 
@@ -53,8 +48,11 @@ public class PatternProcessor {
     private static final char SECOND_CHAR = 's';
     private static final char MILLIS_CHAR = 'S';
 
+    /**
+     * Constructor.
+     * @param pattern The file pattern.
+     */
     public PatternProcessor(String pattern) {
-        this.pattern = pattern;
         PatternParser parser = createPatternParser();
         List<PatternConverter> converters = new ArrayList<PatternConverter>();
         List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
@@ -66,18 +64,27 @@ public class PatternProcessor {
 
         for (ArrayPatternConverter converter : patternConverters) {
             if (converter instanceof DatePatternConverter) {
-                dateConverter = (DatePatternConverter) converter;
+                DatePatternConverter dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
-            } else if (converter instanceof IntegerPatternConverter) {
-                integerConverter = (IntegerPatternConverter) converter;
             }
         }
     }
 
+    /**
+     * Return the next expire time.
+     * @param current The current time.
+     * @return The next expire time.
+     */
     public long getNextTime(long current) {
         return getNextTime(current, 1);
     }
 
+    /**
+     * Return the next potential rollover time.
+     * @param current The current time.
+     * @param increment The increment to the next time.
+     * @return the next potential rollover time.
+     */
     public long getNextTime(long current, int increment) {
         if (frequency == null) {
             throw new IllegalStateException("Pattern does not contain a date");
@@ -150,7 +157,6 @@ public class PatternProcessor {
             }
         }
     }
-
 
     private RolloverFrequency calculateFrequency(String pattern) {
         if (patternContains(pattern, MILLIS_CHAR)) {

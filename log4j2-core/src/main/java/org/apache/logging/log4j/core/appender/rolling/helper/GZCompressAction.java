@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import java.util.zip.GZIPOutputStream;
 
-
 /**
  * Compresses a file using GZ compression.
  */
@@ -105,10 +104,8 @@ public final class GZCompressAction extends ActionBase {
             os.close();
             fis.close();
 
-            if (deleteSource) {
-                if (!source.delete()) {
-                    logger.warn("Unable to delete " + source.toString() + ".");
-                }
+            if (deleteSource && !source.delete()) {
+                LOGGER.warn("Unable to delete " + source.toString() + ".");
             }
 
             return true;
@@ -124,7 +121,7 @@ public final class GZCompressAction extends ActionBase {
      * @param ex exception.
      */
     protected void reportException(final Exception ex) {
-        logger.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
 
 }

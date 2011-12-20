@@ -19,41 +19,48 @@ package org.apache.logging.log4j.core.appender.flume;
 import com.cloudera.flume.handlers.avro.AvroFlumeEvent;
 import org.apache.avro.ipc.HttpTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 import com.cloudera.flume.handlers.avro.FlumeEventAvroServer;
 import com.cloudera.flume.handlers.avro.AvroEventConvertUtil;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- *
+ * Manager for FlumeAvroAppenders.
  */
 public class FlumeAvroManager extends AbstractManager {
-
-    private FlumeEventAvroServer client;
-
-    private final Agent[] agents;
-
-    private static final int DEFAULT_RECONNECTS = 3;
-
-    private int current = 0;
 
     /**
       The default reconnection delay (500 milliseconds or .5 seconds).
      */
     public static final int DEFAULT_RECONNECTION_DELAY   = 500;
 
+    private static final int DEFAULT_RECONNECTS = 3;
+
     private static ManagerFactory factory = new AvroManagerFactory();
 
-    private static Logger logger = StatusLogger.getLogger();
+    private FlumeEventAvroServer client;
 
+    private final Agent[] agents;
+
+    private int current = 0;
+
+    protected FlumeAvroManager(String name, Agent[] agents) {
+        super(name);
+        this.agents = agents;
+        this.client = connect(agents);
+    }
+
+    /**
+     * Return a FlumeAvroManager.
+     * @param agents The agents to use.
+     * @return A FlumeAvroManager.
+     */
     public static FlumeAvroManager getManager(Agent[] agents) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
@@ -72,11 +79,20 @@ public class FlumeAvroManager extends AbstractManager {
         return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(agents));
     }
 
+    /**
+     * Return the agents.
+     * @return The agent array.
+     */
+    public Agent[] getAgents() {
+        return agents;
+    }
 
-    public FlumeAvroManager(String name, Agent[] agents) {
-        super(name);
-        this.agents = agents;
-        this.client = connect(agents);
+    /**
+     * Returns the index of the current agent.
+     * @return The index for the current agent.
+     */
+    public int getCurrent() {
+        return current;
     }
 
     protected synchronized void send(FlumeEvent event, int delay, int retries)  {
@@ -98,7 +114,7 @@ public class FlumeAvroManager extends AbstractManager {
             } catch (Exception ex) {
                 if (i == retries - 1) {
                     msg = "Error writing to " + getName() + " at " + agents[0].getHost() + ":" + agents[0].getPort();
-                    logger.warn(msg, ex);
+                    LOGGER.warn(msg, ex);
                     break;
                 }
                 sleep(delay);
@@ -123,7 +139,7 @@ public class FlumeAvroManager extends AbstractManager {
                     if (i == retries - 1) {
                         String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
                             agent.getPort();
-                        logger.warn(warnMsg, ex);
+                        LOGGER.warn(warnMsg, ex);
                         break;
                     }
                     sleep(delay);
@@ -167,34 +183,50 @@ public class FlumeAvroManager extends AbstractManager {
         try {
             url = new URL("http", hostname, port, "/");
         } catch (MalformedURLException ex) {
-            logger.error("Unable to create a URL for hostname " + hostname + " at port " + port, ex);
+            LOGGER.error("Unable to create a URL for hostname " + hostname + " at port " + port, ex);
             return null;
         }
 
         try {
             return SpecificRequestor.getClient(FlumeEventAvroServer.class, new HttpTransceiver(url));
         } catch (IOException ioe) {
-            logger.error("Unable to create Avro client");
+            LOGGER.error("Unable to create Avro client");
             return null;
         }
     }
 
+    /**
+     * Factory data.
+     */
     private static class FactoryData {
         Agent[] agents;
 
+        /**
+         * Constructor.
+         * @param agents The agents.
+         */
         public FactoryData(Agent[] agents) {
             this.agents = agents;
         }
     }
 
+    /**
+     * Avro Manager Factory.
+     */
     private static class AvroManagerFactory implements ManagerFactory<FlumeAvroManager, FactoryData> {
 
+        /**
+         * Create the FlumeAvroManager.
+         * @param name The name of the entity to manage.
+         * @param data The data required to create the entity.
+         * @return The FlumeAvroManager.
+         */
         public FlumeAvroManager createManager(String name, FactoryData data) {
             try {
 
                 return new FlumeAvroManager(name, data.agents);
             } catch (Exception ex) {
-                logger.error("Could not create FlumeAvroManager", ex);
+                LOGGER.error("Could not create FlumeAvroManager", ex);
             }
             return null;
         }

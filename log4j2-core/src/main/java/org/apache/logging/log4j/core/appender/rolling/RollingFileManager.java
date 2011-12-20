@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
 import org.apache.logging.log4j.core.appender.rolling.helper.ActionBase;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -33,23 +31,33 @@ import java.io.OutputStream;
 import java.util.concurrent.Semaphore;
 
 /**
- *
+ * The Rolling File Manager
  */
 public class RollingFileManager extends FileManager {
-
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger logger = StatusLogger.getLogger();
 
     private long size;
     private long initialTime;
     private PatternProcessor processor;
     private final Semaphore semaphore = new Semaphore(1);
-    private static int count = 0;
 
     private static ManagerFactory factory = new RollingFileManagerFactory();
 
+    protected RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size,
+                                 long time) {
+        super(fileName, os, append, false);
+        this.size = size;
+        this.initialTime = time;
+        processor = new PatternProcessor(pattern);
+    }
+
+    /**
+     * Return a RollingFileManager.
+     * @param fileName The file name.
+     * @param pattern The pattern for rolling file.
+     * @param append true if the file should be appended to.
+     * @param bufferedIO true if data should be buffered.
+     * @return A RollingFileManager.
+     */
     public static RollingFileManager getFileManager(String fileName, String pattern, boolean append,
                                                     boolean bufferedIO) {
 
@@ -57,42 +65,50 @@ public class RollingFileManager extends FileManager {
             bufferedIO));
     }
 
-    public RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size, long time) {
-        super(fileName, os, append, false);
-        this.size = size;
-        this.initialTime = time;
-        processor = new PatternProcessor(pattern);
-    }
-
-
     protected synchronized void write(byte[] bytes, int offset, int length) {
         size += length;
         super.write(bytes, offset, length);
     }
 
+    /**
+     * Return the current size of the file.
+     * @return The size of the file in bytes.
+     */
     public long getFileSize() {
         return size;
     }
 
+    /**
+     * Return the time the file was created.
+     * @return The time the file was created.
+     */
     public long getFileTime() {
         return initialTime;
     }
 
+    /**
+     * Determine if a rollover should occur.
+     * @param event The LogEvent.
+     * @param policy The TriggeringPolicy.
+     * @param strategy The RolloverStrategy.
+     */
     public synchronized void checkRollover(LogEvent event, TriggeringPolicy policy, RolloverStrategy strategy) {
-        if (policy.isTriggeringEvent(event)) {
-            if (rollover(strategy)) {
-                try {
-                    size = 0;
-                    initialTime = System.currentTimeMillis();
-                    OutputStream os = new FileOutputStream(getFileName(), isAppend());
-                    setOutputStream(os);
-                } catch (FileNotFoundException ex) {
-                    logger.error("FileManager (" + getFileName() + ") " + ex);
-                }
+        if (policy.isTriggeringEvent(event) && rollover(strategy)) {
+            try {
+                size = 0;
+                initialTime = System.currentTimeMillis();
+                OutputStream os = new FileOutputStream(getFileName(), isAppend());
+                setOutputStream(os);
+            } catch (FileNotFoundException ex) {
+                LOGGER.error("FileManager (" + getFileName() + ") " + ex);
             }
         }
     }
 
+    /**
+     * Return the pattern processor.
+     * @return The PatternProcessor.
+     */
     public PatternProcessor getProcessor() {
         return processor;
     }
@@ -103,7 +119,7 @@ public class RollingFileManager extends FileManager {
             // Block until the asynchronous operation is completed.
             semaphore.acquire();
         } catch (InterruptedException ie) {
-            logger.error("Thread interrupted while attempting to check rollover", ie);
+            LOGGER.error("Thread interrupted while attempting to check rollover", ie);
             return false;
         }
 
@@ -121,7 +137,7 @@ public class RollingFileManager extends FileManager {
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (Exception ex) {
-                        logger.error("Error in synchronous task", ex);
+                        LOGGER.error("Error in synchronous task", ex);
                     }
                 }
 
@@ -141,11 +157,19 @@ public class RollingFileManager extends FileManager {
         return false;
     }
 
+    /**
+     * Performs actions asynchronously.
+     */
     private static class AsyncAction extends ActionBase {
 
         private final Action action;
         private final RollingFileManager manager;
 
+        /**
+         * Constructor.
+         * @param act The action to perform.
+         * @param manager The manager.
+         */
         public AsyncAction(Action act, RollingFileManager manager) {
             this.action = act;
             this.manager = manager;
@@ -184,11 +208,20 @@ public class RollingFileManager extends FileManager {
         }
     }
 
+    /**
+     * Factory data.
+     */
     private static class FactoryData {
         String pattern;
         boolean append;
         boolean bufferedIO;
 
+        /**
+         * Create the data for the factory.
+         * @param pattern The pattern.
+         * @param append The append flag.
+         * @param bufferedIO The bufferedIO flag.
+         */
         public FactoryData(String pattern, boolean append, boolean bufferedIO) {
             this.pattern = pattern;
             this.append = append;
@@ -196,8 +229,17 @@ public class RollingFileManager extends FileManager {
         }
     }
 
+    /**
+     * Factory to create a RollingFileManager.
+     */
     private static class RollingFileManagerFactory implements ManagerFactory<RollingFileManager, FactoryData> {
 
+        /**
+         * Create the RollingFileManager.
+         * @param name The name of the entity to manage.
+         * @param data The data required to create the entity.
+         * @return a RollingFileManager.
+         */
         public RollingFileManager createManager(String name, FactoryData data) {
             File file = new File(name);
             final File parent = file.getParentFile();
@@ -207,7 +249,7 @@ public class RollingFileManager extends FileManager {
             try {
                 file.createNewFile();
             } catch (IOException ioe) {
-                logger.error("Unable to create file " + name, ioe);
+                LOGGER.error("Unable to create file " + name, ioe);
                 return null;
             }
             long size = data.append ? file.length() : 0;
@@ -221,7 +263,7 @@ public class RollingFileManager extends FileManager {
                 }
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time);
             } catch (FileNotFoundException ex) {
-                logger.error("FileManager (" + name + ") " + ex);
+                LOGGER.error("FileManager (" + name + ") " + ex);
             }
             return null;
         }

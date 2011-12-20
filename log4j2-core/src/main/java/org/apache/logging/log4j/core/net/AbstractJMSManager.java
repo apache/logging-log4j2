@@ -53,7 +53,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
         try {
             return ctx.lookup(name);
         } catch(NameNotFoundException e) {
-            logger.error("Could not find name [" + name + "].");
+            LOGGER.error("Could not find name [" + name + "].");
             throw e;
         }
     }
@@ -66,7 +66,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
             if (providerURL != null) {
                 props.put(Context.PROVIDER_URL, providerURL);
             } else {
-                logger.warn("The InitalContext factory name has been provided without a ProviderURL. " +
+                LOGGER.warn("The InitalContext factory name has been provided without a ProviderURL. " +
                     "This is likely to cause problems");
             }
             if (urlPkgPrefixes != null) {
@@ -77,7 +77,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
 	              if (securityCredentials != null) {
 	                  props.put(Context.SECURITY_CREDENTIALS, securityCredentials);
 	              } else {
-	                  logger.warn("SecurityPrincipalName has been set without SecurityCredentials. " +
+	                  LOGGER.warn("SecurityPrincipalName has been set without SecurityCredentials. " +
                         "This is likely to cause problems.");
 	              }
 	          }
@@ -101,7 +101,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
             }
             producer.send(msg);
         } catch (JMSException ex) {
-            logger.error("Could not publish message via JMS " + getName());
+            LOGGER.error("Could not publish message via JMS " + getName());
             throw ex;
         }
     }

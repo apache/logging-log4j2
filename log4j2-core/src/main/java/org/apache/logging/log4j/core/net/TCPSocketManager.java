@@ -132,13 +132,13 @@ public class TCPSocketManager extends AbstractSocketManager {
                         socket = sock;
                         connector = null;
                     }
-                    logger.debug("Connection to " + host + ":" + port + " reestablished.");
+                    LOGGER.debug("Connection to " + host + ":" + port + " reestablished.");
                 } catch (InterruptedException ie) {
-                    logger.debug("Reconnection interrupted.");
+                    LOGGER.debug("Reconnection interrupted.");
                 } catch (ConnectException ex) {
-                    logger.debug(host + ":" + port + " refused connection");
+                    LOGGER.debug(host + ":" + port + " refused connection");
                 } catch (IOException ioe) {
-                    logger.debug("Unable to reconnect to " + host + ":" + port);
+                    LOGGER.debug("Unable to reconnect to " + host + ":" + port);
                 }
             }
         }
@@ -165,9 +165,9 @@ public class TCPSocketManager extends AbstractSocketManager {
                 OutputStream os = socket.getOutputStream();
                 return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay);
             } catch (UnknownHostException ex) {
-                logger.error("Could not find address of " + data.host, ex);
+                LOGGER.error("Could not find address of " + data.host, ex);
             } catch (IOException ex) {
-                logger.error("TCPSocketManager (" + name + ") " + ex);
+                LOGGER.error("TCPSocketManager (" + name + ") " + ex);
             }
             return null;
         }

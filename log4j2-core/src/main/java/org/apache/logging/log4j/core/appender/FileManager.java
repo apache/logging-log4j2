@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,11 +30,6 @@ import java.nio.channels.FileLock;
  * Class that handles actual File I/O for File Appenders.
  */
 public class FileManager extends OutputStreamManager {
-
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private static ManagerFactory factory = new FileManagerFactory();
 

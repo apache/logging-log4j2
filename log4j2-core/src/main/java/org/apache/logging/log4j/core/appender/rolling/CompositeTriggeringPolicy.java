@@ -21,26 +21,33 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import java.util.List;
-
 /**
- *
+ * Triggering policy that wraps other policies.
  */
-@Plugin(name="Policies",type="Core",printObject=true)
-public class CompositeTriggeringPolicy implements TriggeringPolicy {
+@Plugin(name = "Policies", type = "Core", printObject = true)
+public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
     private TriggeringPolicy[] policies;
 
-    public CompositeTriggeringPolicy(TriggeringPolicy[] policies) {
+    private CompositeTriggeringPolicy(TriggeringPolicy[] policies) {
         this.policies = policies;
     }
 
+    /**
+     * Initializes the policy.
+     * @param manager The RollingFileManager.
+     */
     public void initialize(RollingFileManager manager) {
         for (TriggeringPolicy policy : policies) {
             policy.initialize(manager);
         }
     }
 
+    /**
+     * Determines if a rollover should occur.
+     * @param event A reference to the currently event.
+     * @return true if a rollover should occur, false otherwise.
+     */
     public boolean isTriggeringEvent(LogEvent event) {
         for (TriggeringPolicy policy : policies) {
             if (policy.isTriggeringEvent(event)) {
@@ -50,6 +57,7 @@ public class CompositeTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CompositeTriggeringPolicy{");
         boolean first = true;
@@ -64,6 +72,11 @@ public class CompositeTriggeringPolicy implements TriggeringPolicy {
         return sb.toString();
     }
 
+    /**
+     * Create a CompositeTriggeringPolicy.
+     * @param policies The triggering policies.
+     * @return A CompositeTriggeringPolicy.
+     */
     @PluginFactory
     public static CompositeTriggeringPolicy createPolicy(@PluginElement("policies") TriggeringPolicy[] policies) {
         return new CompositeTriggeringPolicy(policies);

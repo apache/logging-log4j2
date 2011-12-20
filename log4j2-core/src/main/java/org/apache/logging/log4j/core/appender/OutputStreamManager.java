@@ -55,7 +55,7 @@ public class OutputStreamManager extends AbstractManager {
             try {
                 this.os.write(header, 0, header.length);
             } catch (IOException ioe) {
-                logger.error("Unable to write header", ioe);
+                LOGGER.error("Unable to write header", ioe);
             }
         }
     }
@@ -131,7 +131,7 @@ public class OutputStreamManager extends AbstractManager {
         try {
             os.close();
         } catch (IOException ex) {
-            logger.error("Unable to close stream " + getName() + ". " + ex);
+            LOGGER.error("Unable to close stream " + getName() + ". " + ex);
         }
     }
 

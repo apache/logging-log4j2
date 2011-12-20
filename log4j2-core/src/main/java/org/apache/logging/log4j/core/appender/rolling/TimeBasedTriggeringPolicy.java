@@ -18,25 +18,35 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- *
+ * Triggering Policy that causes a rollover based on time.
  */
-
 @Plugin(name = "TimeBasedTriggeringPolicy", type = "Core", printObject = true)
-public class TimeBasedTriggeringPolicy implements TriggeringPolicy {
+public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     private long nextRollover;
 
     private RollingFileManager manager;
 
+    private TimeBasedTriggeringPolicy() {
+    }
+
+    /**
+     * Initialize the policy.
+     * @param manager The RollingFileManager.
+     */
     public void initialize(RollingFileManager manager) {
         this.manager = manager;
         nextRollover = manager.getProcessor().getNextTime(manager.getFileTime());
     }
 
+    /**
+     * Determine whether a rollover should occur.
+     * @param event   A reference to the currently event.
+     * @return true if a rollover should occur.
+     */
     public boolean isTriggeringEvent(LogEvent event) {
         if (manager.getFileSize() == 0) {
             return false;
@@ -49,10 +59,15 @@ public class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         return false;
     }
 
+    @Override
     public String toString() {
         return "TimeBasedTriggeringPolicy";
     }
 
+    /**
+     * Create a TimeBasedTriggeringPolicy.
+     * @return a TimeBasedTriggeringPolicy.
+     */
     @PluginFactory
     public static TimeBasedTriggeringPolicy createPolicy() {
         return new TimeBasedTriggeringPolicy();

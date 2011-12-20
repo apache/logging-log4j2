@@ -99,7 +99,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginConfiguration Configuration config,
                                                 @PluginAttr("charset") String charset) {
 
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);;
+        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         int port = portNum == null ? 0 : Integer.parseInt(portNum);

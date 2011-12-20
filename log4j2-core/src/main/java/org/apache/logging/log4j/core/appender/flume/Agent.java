@@ -23,39 +23,53 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * Agent Specification for FlumeAvroAppender.
  */
-@Plugin(name="Agent",type="Core",printObject=true)
-public class Agent {
-
-    private final String host;
-
-    private final int port;
+@Plugin(name = "Agent", type = "Core", printObject = true)
+public final class Agent {
 
     private static final String DEFAULT_HOST = "localhost";
 
     private static final int DEFAULT_PORT = 35853;
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private final String host;
+
+    private final int port;
 
     private Agent(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    /**
+     * Retrieve the host name.
+     * @return The name of the host.
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Retrieve the port number.
+     * @return The port number.
+     */
     public int getPort() {
         return port;
     }
 
+    @Override
     public String toString() {
         return "host=" + host + " port=" + port;
     }
 
-
+    /**
+     * Create an Agent.
+     * @param host The host name.
+     * @param port The port number.
+     * @return The Agent.
+     */
     @PluginFactory
     public static Agent createAgent(@PluginAttr("host") String host,
                                     @PluginAttr("port") String port) {
@@ -68,7 +82,7 @@ public class Agent {
             try {
                 portNum = Integer.parseInt(port);
             } catch (Exception ex) {
-                logger.error("Error parsing port number " + port, ex);
+                LOGGER.error("Error parsing port number " + port, ex);
                 return null;
             }
         } else {
