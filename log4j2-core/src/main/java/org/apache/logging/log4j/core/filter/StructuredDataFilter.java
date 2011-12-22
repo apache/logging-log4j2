@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Filter based on data in a StructuredDataMessage.
  */
-@Plugin(name="StructuredDataFilter", type="Core", elementType="filter", printObject=true)
-public class StructuredDataFilter extends MapFilter {
+@Plugin(name = "StructuredDataFilter", type = "Core", elementType = "filter", printObject = true)
+public final class StructuredDataFilter extends MapFilter {
 
     private StructuredDataFilter(Map<String, String> map, boolean oper, Result onMatch, Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
@@ -85,6 +85,7 @@ public class StructuredDataFilter extends MapFilter {
         return match ? onMatch : onMismatch;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("isAnd=").append(isAnd());
@@ -103,6 +104,14 @@ public class StructuredDataFilter extends MapFilter {
         return sb.toString();
     }
 
+    /**
+     * Create the StructuredDataFilter.
+     * @param pairs Key and value pairs.
+     * @param oper The operator to perform. If not "or" the operation will be an "and".
+     * @param match The action to perform on a match.
+     * @param mismatch The action to perform on a mismatch.
+     * @return The StructuredDataFilter.
+     */
     @PluginFactory
     public static StructuredDataFilter createFilter(@PluginAttr("pairs") KeyValuePair[] pairs,
                                                     @PluginAttr("operator") String oper,

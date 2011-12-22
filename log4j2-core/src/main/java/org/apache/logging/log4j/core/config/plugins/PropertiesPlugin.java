@@ -20,17 +20,24 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Handles properties defined in the configuration.
  */
-@Plugin(name="properties", type="Core", printObject=true)
-public class PropertiesPlugin {
+@Plugin(name = "properties", type = "Core", printObject = true)
+public final class PropertiesPlugin {
 
+    private PropertiesPlugin() {
+    }
+
+    /**
+     * Create the Properties component.
+     * @param properties An array of Property elements.
+     * @return An Interpolator that includes the configuration properties.
+     */
     @PluginFactory
     public static StrLookup configureSubstitutor(@PluginElement("properties") Property[] properties) {
         if (properties == null) {

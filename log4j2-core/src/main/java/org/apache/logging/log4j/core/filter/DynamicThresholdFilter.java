@@ -31,10 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Compare against a log level that is associated with an MDC value.
  */
-@Plugin(name="DynamicThresholdFilter", type="Core", elementType="filter", printObject = true)
-public class DynamicThresholdFilter extends FilterBase {
+@Plugin(name = "DynamicThresholdFilter", type = "Core", elementType = "filter", printObject = true)
+public final class DynamicThresholdFilter extends FilterBase {
     private Map<String, Level> levelMap = new HashMap<String, Level>();
     private Level defaultThreshold = Level.ERROR;
     private String key;
@@ -84,6 +84,7 @@ public class DynamicThresholdFilter extends FilterBase {
 
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("key=").append(key);
@@ -103,6 +104,15 @@ public class DynamicThresholdFilter extends FilterBase {
         return sb.toString();
     }
 
+    /**
+     * Create the DynamicThresholdFilter.
+     * @param key The name of the key to compare.
+     * @param pairs An array of value and Level pairs.
+     * @param level The default Level.
+     * @param match The action to perform if a match occurs.
+     * @param mismatch The action to perform if no match occurs.
+     * @return The DynamicThresholdFilter.
+     */
     @PluginFactory
     public static DynamicThresholdFilter createFilter(@PluginAttr("key") String key,
                                                       @PluginElement("pairs") ValueLevelPair[] pairs,

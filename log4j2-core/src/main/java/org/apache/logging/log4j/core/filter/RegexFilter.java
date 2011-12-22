@@ -36,8 +36,8 @@ import java.util.regex.Pattern;
  * (false). The default is false.
  *
  */
-@Plugin(name="RegexFilter", type="Core", elementType="filter", printObject = true)
-public class RegexFilter extends FilterBase {
+@Plugin(name = "RegexFilter", type = "Core", elementType = "filter", printObject = true)
+public final class RegexFilter extends FilterBase {
 
     private final Pattern pattern;
     private final boolean useRawMessage;
@@ -75,6 +75,7 @@ public class RegexFilter extends FilterBase {
         return m.matches() ? onMatch : onMismatch;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("useRaw=").append(useRawMessage);
@@ -82,6 +83,14 @@ public class RegexFilter extends FilterBase {
         return sb.toString();
     }
 
+    /**
+     * Create a Filter that matches a regular expression.
+     * @param regex The regular expression to match.
+     * @param useRawMsg If true, the raw message will be used, otherwise the formatted message will be used.
+     * @param match The action to perform when a match occurs.
+     * @param mismatch The action to perform when a mismatch occurs.
+     * @return The RegexFilter.
+     */
     @PluginFactory
     public static RegexFilter createFilter(@PluginAttr("regex") String regex,
                                            @PluginAttr("useRawMsg") String useRawMsg,

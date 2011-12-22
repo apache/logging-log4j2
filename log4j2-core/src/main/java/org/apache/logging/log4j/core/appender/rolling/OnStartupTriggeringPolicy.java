@@ -30,12 +30,11 @@ import java.lang.management.ManagementFactory;
 
 @Plugin(name = "OnStartupTriggeringPolicy", type = "Core", printObject = true)
 public class OnStartupTriggeringPolicy implements TriggeringPolicy {
+    private static final long JVM_START_TIME = ManagementFactory.getRuntimeMXBean().getStartTime();
 
     private boolean evaluated = false;
 
     private RollingFileManager manager;
-
-    private static long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
     /**
      * Provide the RollingFileManager to the policy.
@@ -55,7 +54,7 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
             return false;
         }
         evaluated = true;
-        return manager.getFileTime() < jvmStartTime;
+        return manager.getFileTime() < JVM_START_TIME;
     }
 
     @Override

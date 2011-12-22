@@ -25,7 +25,12 @@ import org.apache.logging.log4j.core.LogEvent;
  */
 public interface TriggeringPolicy {
 
-    public void initialize(final RollingFileManager manager);
+    /**
+     * Initialize the Policy.
+     * @param manager The RollingFileManager.
+     */
+
+    void initialize(final RollingFileManager manager);
 
     /**
      * Determines if a rollover may be appropriate at this time.  If
@@ -33,8 +38,7 @@ public interface TriggeringPolicy {
      * can determine that a rollover is not warranted.
      *
      * @param event   A reference to the currently event.
-     * @param manager The RollingFileManager for the active file.
      * @return true if a rollover should occur.
      */
-    public boolean isTriggeringEvent(final LogEvent event);
+    boolean isTriggeringEvent(final LogEvent event);
 }

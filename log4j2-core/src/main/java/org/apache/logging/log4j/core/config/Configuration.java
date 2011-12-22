@@ -23,8 +23,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filtering;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**

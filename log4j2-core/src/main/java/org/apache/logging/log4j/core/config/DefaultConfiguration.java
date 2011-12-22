@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
@@ -39,8 +38,6 @@ public class DefaultConfiguration extends BaseConfiguration {
      * The System Proerty used to specify the logging level.
      */
     public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
-
-    private static final String EMPTY_STRING = "";
 
     /**
      * Constructor to create the default configuration.

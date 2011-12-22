@@ -59,9 +59,9 @@ public abstract class ConfigurationFactory {
 
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
-    private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
-
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
 
     protected File configFile = null;
 
@@ -71,6 +71,10 @@ public abstract class ConfigurationFactory {
 
     private static ConfigurationFactory configFactory = new Factory();
 
+    /**
+     * Return the ConfigurationFactory.
+     * @return the ConfigurationFactory.
+     */
     public static ConfigurationFactory getInstance() {
         String factoryClass = System.getProperty(CONFIGURATION_FACTORY_PROPERTY);
         if (factoryClass != null) {
@@ -89,7 +93,7 @@ public abstract class ConfigurationFactory {
                     ordered.add(new WeightedFactory(weight, clazz));
                 }
             } catch (Exception ex) {
-
+              LOGGER.warn("Unable to add class " + type.getPluginClass());
             }
         }
         for (WeightedFactory wf : ordered) {
@@ -117,14 +121,25 @@ public abstract class ConfigurationFactory {
         }
     }
 
+    /**
+     * Set the configuration factory.
+     * @param factory the ConfigurationFactory.
+     */
     public static void setConfigurationFactory(ConfigurationFactory factory) {
         configFactory = factory;
     }
 
+    /**
+     * Reset the ConfigurationFactory to the default.
+     */
     public static void resetConfigurationFactory() {
         configFactory = new Factory();
     }
 
+    /**
+     * Remove the ConfigurationFactory.
+     * @param factory The factory to remove.
+     */
     public static void removeConfigurationFactory(ConfigurationFactory factory) {
         factories.remove(factory);
     }
@@ -137,6 +152,12 @@ public abstract class ConfigurationFactory {
 
     public abstract Configuration getConfiguration(InputSource source);
 
+    /**
+     * Return the Configuration.
+     * @param name The configuration name.
+     * @param configLocation The configuration location.
+     * @return The Configuration.
+     */
     public Configuration getConfiguration(String name, URI configLocation) {
         if (!isActive()) {
             return null;
@@ -205,10 +226,18 @@ public abstract class ConfigurationFactory {
         return source;
     }
 
+    /**
+     * Factory that chooses a ConfigurationFactory based on weighting.
+     */
     private static class WeightedFactory implements Comparable<WeightedFactory> {
         private int weight;
         private Class<ConfigurationFactory> factoryClass;
 
+        /**
+         * Constructor.
+         * @param weight The weight.
+         * @param clazz The class.
+         */
         public WeightedFactory(int weight, Class<ConfigurationFactory> clazz) {
             this.weight = weight;
             this.factoryClass = clazz;
@@ -226,8 +255,17 @@ public abstract class ConfigurationFactory {
         }
     }
 
+    /**
+     * Default Factory.
+     */
     private static class Factory extends ConfigurationFactory {
 
+        /**
+         * Default Factory Constructor.
+         * @param name The configuration name.
+         * @param configLocation The configuration location.
+         * @return The Configuration.
+         */
         public Configuration getConfiguration(String name, URI configLocation) {
 
             if (configLocation == null) {

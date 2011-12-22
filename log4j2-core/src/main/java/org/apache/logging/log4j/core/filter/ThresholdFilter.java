@@ -33,10 +33,8 @@ import org.apache.logging.log4j.message.Message;
  *
  * The default Level is ERROR.
  */
-@Plugin(name="ThresholdFilter", type="Core", elementType="filter", printObject=true)
-public class ThresholdFilter extends FilterBase {
-
-    private static final String LEVEL = "level";
+@Plugin(name = "ThresholdFilter", type = "Core", elementType = "filter", printObject = true)
+public final class ThresholdFilter extends FilterBase {
 
     private final Level level;
 
@@ -66,10 +64,18 @@ public class ThresholdFilter extends FilterBase {
         return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
     }
 
+    @Override
     public String toString() {
         return level.toString();
     }
 
+    /**
+     * Create a ThresholdFilter.
+     * @param loggerLevel The log Level.
+     * @param match The action to take on a match.
+     * @param mismatch The action to take on a mismatch.
+     * @return The created ThresholdFilter.
+     */
     @PluginFactory
     public static ThresholdFilter createFilter(@PluginAttr("level") String loggerLevel,
                                                @PluginAttr("onMatch") String match,

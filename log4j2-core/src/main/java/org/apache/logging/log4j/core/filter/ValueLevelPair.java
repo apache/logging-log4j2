@@ -22,9 +22,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- *
+ * A key and its value.
  */
-@Plugin(name="ValueLevelPair", type="Core")
+@Plugin(name = "ValueLevelPair", type = "Core")
 public class ValueLevelPair {
 
     private String key;
@@ -43,6 +43,12 @@ public class ValueLevelPair {
         return level;
     }
 
+    /**
+     * Create a Value/Level pair using the Log Levels
+     * @param key The key.
+     * @param value Its value.
+     * @return A ValueLevelPair.
+     */
     @PluginFactory
     public static ValueLevelPair createPair(@PluginAttr("key") String key,
                                           @PluginAttr("threshold")  String value) {

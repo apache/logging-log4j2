@@ -34,8 +34,10 @@ import java.util.regex.Pattern;
  */
 @Plugin(name = "SizeBasedTriggeringPolicy", type = "Core", printObject = true)
 public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
-
-    protected static final Logger logger = StatusLogger.getLogger();
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final long KB = 1024;
     private static final long MB = KB * KB;
@@ -50,7 +52,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
     /**
      * Pattern for string parsing.
      */
-    private static final Pattern valuePattern =
+    private static final Pattern VALUE_PATTERN =
         Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
 
     private final long maxFileSize;
@@ -60,12 +62,8 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
     /**
      * Constructs a new instance.
      */
-    public SizeBasedTriggeringPolicy() {
+    protected SizeBasedTriggeringPolicy() {
         this.maxFileSize = MAX_FILE_SIZE;
-    }
-
-    public void initialize(RollingFileManager manager) {
-        this.manager = manager;
     }
 
     /**
@@ -73,18 +71,38 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      *
      * @param maxFileSize rollover threshold size in bytes.
      */
-    public SizeBasedTriggeringPolicy(final long maxFileSize) {
+    protected SizeBasedTriggeringPolicy(final long maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
 
+    /**
+     * Initialize the TriggeringPolicy.
+     * @param manager The RollingFileManager.
+     */
+    public void initialize(RollingFileManager manager) {
+        this.manager = manager;
+    }
+
+
+    /**
+     * Returns true if a rollover should occur.
+     * @param event   A reference to the currently event.
+     * @return true if a rollover should take place, false otherwise.
+     */
     public boolean isTriggeringEvent(LogEvent event) {
         return manager.getFileSize() > maxFileSize;
     }
 
+    @Override
     public String toString() {
-        return "SizeBasedTriggeringPolicy(size=" + maxFileSize +")";
+        return "SizeBasedTriggeringPolicy(size=" + maxFileSize + ")";
     }
 
+    /**
+     * Create a SizeBasedTriggeringPolicy.
+     * @param size The size of the file before rollover is required.
+     * @return A SizeBasedTriggeringPolicy.
+     */
     @PluginFactory
     public static SizeBasedTriggeringPolicy createPolicy(@PluginAttr("size") String size) {
 
@@ -100,8 +118,8 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * @param string The string to convert
      * @return The Bytes value for the string
      */
-    private static long valueOf(final String string){
-        final Matcher matcher = valuePattern.matcher(string);
+    private static long valueOf(final String string) {
+        final Matcher matcher = VALUE_PATTERN.matcher(string);
 
         // Valid input?
         if (matcher.matches()) {
@@ -122,15 +140,15 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
                 } else if (units.equalsIgnoreCase("G")) {
                     return value * GB;
                 } else {
-                    logger.error("Units not recognized: " + string);
+                    LOGGER.error("Units not recognized: " + string);
                     return MAX_FILE_SIZE;
                 }
             } catch (ParseException e) {
-                logger.error("Unable to parse numeric part: " + string, e);
+                LOGGER.error("Unable to parse numeric part: " + string, e);
                 return MAX_FILE_SIZE;
             }
         } else {
-            logger.error("Unable to parse bytes: " + string);
+            LOGGER.error("Unable to parse bytes: " + string);
             return MAX_FILE_SIZE;
         }
     }

@@ -19,21 +19,31 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.xml.sax.InputSource;
 
-import java.net.URI;
-
 /**
- *
+ * Factory to coonstruct an XMLConfiguration.
  */
-@Plugin(name="XMLConfigurationFactory", type="ConfigurationFactory")
+@Plugin(name = "XMLConfigurationFactory", type = "ConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
 
+    /**
+     * Valid file extensions for XML files.
+     */
     public static final String[] SUFFIXES = new String[] {".xml", "*"};
 
+    /**
+     * Return the Configuration.
+     * @param source The InputSource.
+     * @return The Configuration.
+     */
     public Configuration getConfiguration(InputSource source) {
         return new XMLConfiguration(source, configFile);
     }
 
+    /**
+     * Returns the file suffixes for XML files.
+     * @return An array of File extensions.
+     */
     public String[] getSupportedTypes() {
         return SUFFIXES;
     }

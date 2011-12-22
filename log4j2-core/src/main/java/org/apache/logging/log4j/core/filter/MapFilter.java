@@ -26,15 +26,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.StructuredDataMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * A Filter that operates on a Map.
  */
-@Plugin(name="MapFilter", type="Core", elementType="filter", printObject=true)
+@Plugin(name = "MapFilter", type = "Core", elementType = "filter", printObject = true)
 public class MapFilter extends FilterBase {
     private final Map<String, String> map;
 

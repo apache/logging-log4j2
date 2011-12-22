@@ -199,7 +199,7 @@ public class FlumeAvroManager extends AbstractManager {
      * Factory data.
      */
     private static class FactoryData {
-        Agent[] agents;
+        private Agent[] agents;
 
         /**
          * Constructor.

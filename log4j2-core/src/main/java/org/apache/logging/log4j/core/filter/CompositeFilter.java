@@ -34,10 +34,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *
+ * Filter that invokes multiple filters.
  */
-@Plugin(name="filters", type="Core", printObject=true)
-public class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
+@Plugin(name = "filters", type = "Core", printObject = true)
+public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
 
     private final List<Filter> filters;
     private final boolean hasFilters;
@@ -200,7 +200,7 @@ public class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
         return result;
     }
 
-
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Filter filter : filters) {
@@ -217,6 +217,11 @@ public class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
         return sb.toString();
     }
 
+    /**
+     * Create a CompositeFilter.
+     * @param filters An array of Filters to call.
+     * @return The CompositeFilter.
+     */
     @PluginFactory
     public static CompositeFilter createFilters(@PluginElement("filters") Filter[] filters) {
         List<Filter> f = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);

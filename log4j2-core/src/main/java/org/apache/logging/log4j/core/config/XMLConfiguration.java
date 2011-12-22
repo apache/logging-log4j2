@@ -106,7 +106,7 @@ public class XMLConfiguration extends BaseConfiguration {
                     }
                 }
             }
-            Iterator<StatusListener> iter = ((StatusLogger)logger).getListeners();
+            Iterator<StatusListener> iter = ((StatusLogger) LOGGER).getListeners();
             boolean found = false;
             while (iter.hasNext()) {
                 StatusListener listener = iter.next();
@@ -123,22 +123,22 @@ public class XMLConfiguration extends BaseConfiguration {
                 if (!verbose) {
                     listener.setFilters(verboseClasses);
                 }
-                ((StatusLogger) logger).registerListener(listener);
+                ((StatusLogger) LOGGER).registerListener(listener);
             }
 
         } catch (SAXException domEx) {
-            logger.error("Error parsing " + source.getSystemId(), domEx);
+            LOGGER.error("Error parsing " + source.getSystemId(), domEx);
         } catch (IOException ioe) {
-            logger.error("Error parsing " + source.getSystemId(), ioe);
+            LOGGER.error("Error parsing " + source.getSystemId(), ioe);
         } catch (ParserConfigurationException pex) {
-            logger.error("Error parsing " + source.getSystemId(), pex);
+            LOGGER.error("Error parsing " + source.getSystemId(), pex);
         }
         if (strict && schema != null && buffer != null) {
             InputStream is = null;
             try {
                 is = getClass().getClassLoader().getResourceAsStream(schema);
             } catch (Exception ex) {
-                logger.error("Unable to access schema " + schema);
+                LOGGER.error("Unable to access schema " + schema);
             }
             if (is != null) {
                 Source src = new StreamSource(is, LOG4J_XSD);
@@ -147,16 +147,16 @@ public class XMLConfiguration extends BaseConfiguration {
                 try {
                     schema = factory.newSchema(src);
                 } catch (SAXException ex) {
-                    logger.error("Error parsing Log4j schema", ex);
+                    LOGGER.error("Error parsing Log4j schema", ex);
                 }
                 if (schema != null) {
                     validator = schema.newValidator();
                     try {
                         validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
                     } catch (IOException ioe) {
-                        logger.error("Error reading configuration for validation", ioe);
+                        LOGGER.error("Error reading configuration for validation", ioe);
                     } catch (SAXException ex) {
-                        logger.error("Error validating configuration", ex);
+                        LOGGER.error("Error validating configuration", ex);
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class XMLConfiguration extends BaseConfiguration {
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
             for (Status s : status) {
-                logger.error("Error processing element " + s.name + ": " + s.errorType);
+                LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
             return;
         }

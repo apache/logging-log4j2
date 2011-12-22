@@ -17,15 +17,23 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 /**
- *
+ * Enumeration of rollover frequency values.
  */
 public enum RolloverFrequency {
+    /** Rollover annually. */
     ANNUALLY,
+    /** Rollover monthly. */
     MONTHLY,
+    /** Rollover weekly. */
     WEEKLY,
+    /** Rollover daily. */
     DAILY,
+    /** Rollover every hour. */
     HOURLY,
+    /** Rollover every minute. */
     EVERY_MINUTE,
+    /** Rollover every second. */
     EVERY_SECOND,
+    /** Rollover every millisecond. */
     EVERY_MILLISECOND
 }

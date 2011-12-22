@@ -34,22 +34,8 @@ import java.util.TimeZone;
 /**
  * Filters events that fall within a specified time period in each day.
  */
-@Plugin(name="TimeFilter", type="Core", elementType="filter", printObject = true)
-public class TimeFilter extends FilterBase {
-    /**
-     * Starting offset from midnight in milliseconds.
-     */
-    private final long start;
-    /**
-     * Ending offset from midnight in milliseconds.
-     */
-    private final long end;
-    /**
-     * Timezone.
-     */
-    private final TimeZone timezone;
-
-
+@Plugin(name = "TimeFilter", type = "Core", elementType = "filter", printObject = true)
+public final class TimeFilter extends FilterBase {
     /**
      * Length of hour in milliseconds.
      */
@@ -64,6 +50,20 @@ public class TimeFilter extends FilterBase {
      * Length of second in milliseconds.
      */
     private static final long SECOND_MS = 1000;
+
+    /**
+     * Starting offset from midnight in milliseconds.
+     */
+    private final long start;
+    /**
+     * Ending offset from midnight in milliseconds.
+     */
+    private final long end;
+    /**
+     * Timezone.
+     */
+    private final TimeZone timezone;
+
 
     private TimeFilter(long start, long end, TimeZone tz, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
@@ -87,6 +87,7 @@ public class TimeFilter extends FilterBase {
         return (apparentOffset >= start && apparentOffset < end) ? onMatch : onMismatch;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("start=").append(start);
@@ -95,6 +96,15 @@ public class TimeFilter extends FilterBase {
         return sb.toString();
     }
 
+    /**
+     * Create a TimeFilter.
+     * @param start The start time.
+     * @param end The end time.
+     * @param tz timezone.
+     * @param match Action to perform if the time matches.
+     * @param mismatch Action to perform if the action does not match.
+     * @return A TimeFilter.
+     */
     @PluginFactory
     public static TimeFilter createFilter(@PluginAttr("start") String start,
                                           @PluginAttr("end") String end,

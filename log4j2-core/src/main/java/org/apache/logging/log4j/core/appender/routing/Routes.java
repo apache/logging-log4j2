@@ -17,37 +17,45 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * Used to contain the individual Route elements.
  */
-@Plugin(name="Routes", type="Core", printObject=true)
-public class Routes {
+@Plugin(name = "Routes", type = "Core", printObject = true)
+public final class Routes {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String pattern;
     private final Route[] routes;
-    private static final Logger logger = StatusLogger.getLogger();
 
     private Routes(String pattern, Route[] routes) {
         this.pattern = pattern;
         this.routes = routes;
     }
 
+    /**
+     * Return the pattern.
+     * @return the pattern.
+     */
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * Return the array of Route elements.
+     * @return an array of Route elements.
+     */
     public Route[] getRoutes() {
         return routes;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{");
         boolean first = true;
@@ -63,15 +71,21 @@ public class Routes {
 
     }
 
+    /**
+     * Create the Routes.
+     * @param pattern The pattern.
+     * @param routes An array of Route elements.
+     * @return The Routes container.
+     */
     @PluginFactory
     public static Routes createRoutes(@PluginAttr("pattern") String pattern,
                                       @PluginElement("routes") Route[] routes) {
         if (pattern == null) {
-            logger.error("A pattern is required");
+            LOGGER.error("A pattern is required");
             return null;
         }
         if (routes == null || routes.length == 0) {
-            logger.error("No routes configured");
+            LOGGER.error("No routes configured");
             return null;
         }
         return new Routes(pattern, routes);

@@ -52,11 +52,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class BaseConfiguration extends Filterable implements Configuration {
 
+    protected final static Logger LOGGER = StatusLogger.getLogger();
+
     protected Node rootNode;
 
     protected PluginManager pluginManager;
-
-    protected final static Logger logger = StatusLogger.getLogger();
 
     protected final List<ConfigurationListener> listeners =
         new CopyOnWriteArrayList<ConfigurationListener>();
@@ -139,7 +139,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 if (subst.getVariableResolver() == null) {
                     subst.setVariableResolver((StrLookup) child.getObject());
                 } else {
-                    logger.error("Properties declaration must be the first element in the configuration");
+                    LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
             }
@@ -159,15 +159,15 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     setRoot = true;
                 }
             } else {
-                logger.error("Unknown object \"" + child.getName() + "\" of type " +
+                LOGGER.error("Unknown object \"" + child.getName() + "\" of type " +
                     child.getObject().getClass().getName() + " is ignored");
             }
         }
 
         if (!setLoggers) {
-            logger.warn("No Loggers were configured, using default");
+            LOGGER.warn("No Loggers were configured, using default");
         } else if (!setRoot) {
-            logger.warn("No Root logger was configured, using default");
+            LOGGER.warn("No Root logger was configured, using default");
         }
 
         root.setConfigurationMonitor(monitor);
@@ -180,7 +180,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 if (app != null) {
                     l.addAppender(app);
                 } else {
-                    logger.error("Unable to locate appender " + ref + " for logger " + l.getName());
+                    LOGGER.error("Unable to locate appender " + ref + " for logger " + l.getName());
                 }
             }
 
@@ -399,7 +399,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     public void addLogger(String name, LoggerConfig loggerConfig) {
         if (started) {
             String msg = "Cannot add logger " + name + " to an active configuration";
-            logger.warn(msg);
+            LOGGER.warn(msg);
             throw new IllegalStateException(msg);
         }
         loggers.put(name, loggerConfig);
@@ -415,7 +415,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     public void removeLogger(String name) {
         if (started) {
             String msg = "Cannot remove logger " + name + " in an active configuration";
-            logger.warn(msg);
+            LOGGER.warn(msg);
             throw new IllegalStateException(msg);
         }
         loggers.remove(name);
@@ -433,60 +433,12 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
             if (type == null) {
                 if (node.getParent() != null) {
-                    logger.error("Unable to locate plugin for " + node.getName());
+                    LOGGER.error("Unable to locate plugin for " + node.getName());
                 }
             } else {
                 node.setObject(createPluginObject(type, node, event));
             }
         }
-    }
-
-    /**
-     * Create an Object that will contain its child Nodes and defer their construction until
-     * a later time.
-     * @param type The PluginType.
-     * @param node The Node.
-     * @return The constructed container object.
-     */
-    private Object createPluginContainer(PluginType type, Node node) {
-        Class clazz = type.getPluginClass();
-        Method factoryMethod = null;
-
-        for (Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(PluginFactory.class)) {
-                factoryMethod = method;
-                break;
-            }
-        }
-        if (factoryMethod == null) {
-            return null;
-        }
-        Class[] parmClasses = factoryMethod.getParameterTypes();
-        if (parmClasses.length != 1 && Node.class.equals(parmClasses[0])) {
-            logger.error("Template factory method must contain a single Node parameter");
-        }
-
-        try
-        {
-            int mod = factoryMethod.getModifiers();
-            if (!Modifier.isStatic(mod))
-            {
-                logger.error(factoryMethod.getName() + " method is not static on class " +
-                    clazz.getName() + " for element " + node.getName());
-                return null;
-            }
-            logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
-                node.getName());
-
-            return factoryMethod.invoke(null, node);
-        }
-        catch (Exception e)
-        {
-            logger.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
-                clazz.getName() + " for element " + node.getName(), e);
-        }
-        return null;
-
     }
 
    /*
@@ -510,25 +462,27 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
-                Map map = (Map) clazz.newInstance();
+                Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
                 for (Node child : node.getChildren()) {
                     map.put(child.getName(), child.getObject());
                 }
                 return map;
             } catch (Exception ex) {
-
+                LOGGER.warn("Unable to create Map for " + type.getElementName() + " of class " +
+                    clazz);
             }
         }
 
         if (List.class.isAssignableFrom(clazz)) {
             try {
-                List list = (List) clazz.newInstance();
+                List<Object> list = (List<Object>) clazz.newInstance();
                 for (Node child : node.getChildren()) {
                     list.add(child.getObject());
                 }
                 return list;
             } catch (Exception ex) {
-
+                LOGGER.warn("Unable to create List for " + type.getElementName() + " of class " +
+                    clazz);
             }
         }
 
@@ -547,7 +501,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
         Class[] parmClasses = factoryMethod.getParameterTypes();
         if (parmArray.length != parmClasses.length) {
-            logger.error("Number of parameter annotations does not equal the number of paramters");
+            LOGGER.error("Number of parameter annotations does not equal the number of paramters");
         }
         Object[] parms = new Object[parmClasses.length];
 
@@ -684,7 +638,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 eb.append("\"");
 
             }
-            logger.error(eb.toString());
+            LOGGER.error(eb.toString());
         }
 
         if (!type.isDeferChildren() && used.size() != children.size()) {
@@ -694,7 +648,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 }
                 String nodeType = node.getType().getElementName();
                 String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + " " + node.getName();
-                logger.error(start + " has no parameter that matches element " + child.getName());
+                LOGGER.error(start + " has no parameter that matches element " + child.getName());
             }
         }
 
@@ -703,11 +657,11 @@ public class BaseConfiguration extends Filterable implements Configuration {
             int mod = factoryMethod.getModifiers();
             if (!Modifier.isStatic(mod))
             {
-                logger.error(factoryMethod.getName() + " method is not static on class " +
+                LOGGER.error(factoryMethod.getName() + " method is not static on class " +
                     clazz.getName() + " for element " + node.getName());
                 return null;
             }
-            logger.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
+            LOGGER.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
                 node.getName() + sb.toString());
             //if (parms.length > 0) {
                 return factoryMethod.invoke(null, parms);
@@ -716,7 +670,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         }
         catch (Exception e)
         {
-            logger.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
+            LOGGER.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
                 clazz.getName() + " for element " + node.getName(), e);
         }
         return null;

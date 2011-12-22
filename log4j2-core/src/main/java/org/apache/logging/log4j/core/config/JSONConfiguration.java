@@ -84,7 +84,7 @@ public class JSONConfiguration extends BaseConfiguration {
                 }
             }
 
-            Iterator<StatusListener> statusIter = ((StatusLogger) logger).getListeners();
+            Iterator<StatusListener> statusIter = ((StatusLogger) LOGGER).getListeners();
             boolean found = false;
             while (statusIter.hasNext()) {
                 StatusListener listener = statusIter.next();
@@ -101,13 +101,13 @@ public class JSONConfiguration extends BaseConfiguration {
                 if (!verbose) {
                     listener.setFilters(verboseClasses);
                 }
-                ((StatusLogger) logger).registerListener(listener);
+                ((StatusLogger) LOGGER).registerListener(listener);
             }
             if (getName() == null) {
                 setName(source.getSystemId());
             }
         } catch (Exception ex) {
-            logger.error("Error parsing " + source.getSystemId(), ex);
+            LOGGER.error("Error parsing " + source.getSystemId(), ex);
             ex.printStackTrace();
         }
     }
@@ -119,16 +119,16 @@ public class JSONConfiguration extends BaseConfiguration {
             Map.Entry<String, JsonNode> entry = iter.next();
             JsonNode n = entry.getValue();
             if (n.isObject()) {
-                logger.debug("Processing node for object " + entry.getKey());
+                LOGGER.debug("Processing node for object " + entry.getKey());
                 children.add(constructNode(entry.getKey(), rootNode, n));
             } else if (n.isArray()) {
-                logger.error("Arrays are not supported at the root configuration.");
+                LOGGER.error("Arrays are not supported at the root configuration.");
             }
         }
-        logger.debug("Completed parsing configuration");
+        LOGGER.debug("Completed parsing configuration");
         if (status.size() > 0) {
             for (Status s : status) {
-                logger.error("Error processing element " + s.name + ": " + s.errorType);
+                LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
             return;
         }
@@ -148,30 +148,30 @@ public class JSONConfiguration extends BaseConfiguration {
                     status.add(new Status(name, n, ErrorType.CLASS_NOT_FOUND));
                 }
                 if (n.isArray()) {
-                    logger.debug("Processing node for array " + entry.getKey());
+                    LOGGER.debug("Processing node for array " + entry.getKey());
                     for (int i=0; i < n.size(); ++i) {
                         String pluginType = getType(n.get(i), entry.getKey());
                         PluginType entryType = getPluginManager().getPluginType(pluginType);
                         Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {
-                            logger.debug("Processing " + entry.getKey() + "[" + i + "]");
+                            LOGGER.debug("Processing " + entry.getKey() + "[" + i + "]");
                         } else {
-                            logger.debug("Processing " + pluginType + " " + entry.getKey() + "[" + i + "]");
+                            LOGGER.debug("Processing " + pluginType + " " + entry.getKey() + "[" + i + "]");
                         }
                         Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).getFields();
                         List<Node> itemChildren = item.getChildren();
                         while (itemIter.hasNext()) {
                             Map.Entry<String, JsonNode> itemEntry = itemIter.next();
                             if (itemEntry.getValue().isObject()) {
-                                logger.debug("Processing node for object " + itemEntry.getKey());
+                                LOGGER.debug("Processing node for object " + itemEntry.getKey());
                                 itemChildren.add(constructNode(itemEntry.getKey(), item, itemEntry.getValue()));
                             }
                         }
                         children.add(item);
                     }
                 } else {
-                    logger.debug("Processing node for object " + entry.getKey());
+                    LOGGER.debug("Processing node for object " + entry.getKey());
                     children.add(constructNode(entry.getKey(), node, n));
                 }
             }
@@ -185,7 +185,7 @@ public class JSONConfiguration extends BaseConfiguration {
         }
 
         String p = node.getParent() == null ? "null" : node.getParent().getName() == null ? "root" : node.getParent().getName();
-        logger.debug("Returning " + node.getName() + " with parent " + p + " of type " +  t);
+        LOGGER.debug("Returning " + node.getName() + " with parent " + p + " of type " +  t);
         return node;
     }
 

@@ -31,10 +31,8 @@ import org.apache.logging.log4j.message.Message;
  * configured marker as a parent.
  *
  */
-@Plugin(name="MarkerFilter", type="Core", elementType="filter", printObject=true)
-public class MarkerFilter extends FilterBase {
-
-    private static final String LEVEL = "level";
+@Plugin(name = "MarkerFilter", type = "Core", elementType = "filter", printObject = true)
+public final class MarkerFilter extends FilterBase {
 
     private final Marker marker;
 
@@ -64,10 +62,18 @@ public class MarkerFilter extends FilterBase {
         return marker != null && marker.isInstanceOf(this.marker) ? onMatch : onMismatch;
     }
 
+    @Override
     public String toString() {
         return marker.getName();
     }
 
+    /**
+     * Create the MarkerFilter.
+     * @param marker The Marker to match.
+     * @param match The action to take if a match occurs.
+     * @param mismatch The action to take if no match occurs.
+     * @return A MarkerFilter.
+     */
     @PluginFactory
     public static MarkerFilter createFilter(@PluginAttr("marker") String marker,
                                             @PluginAttr("onMatch") String match,

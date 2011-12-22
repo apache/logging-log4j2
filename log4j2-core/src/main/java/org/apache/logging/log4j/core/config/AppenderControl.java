@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.appender.DefaultErrorHandler;
 import org.apache.logging.log4j.core.filter.Filtering;
 
 /**
@@ -61,13 +59,12 @@ public class AppenderControl {
         try {
             recursive.set(this);
 
-            if (appender instanceof Lifecycle) {
-                if (!appender.isStarted()) {
-                    appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
+            if (appender instanceof Lifecycle && !appender.isStarted()) {
+                appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
-                    if (!appender.isExceptionSuppressed()) {
-                        throw new AppenderRuntimeException("Attempted to append to non-started appender " + appender.getName());
-                    }
+                if (!appender.isExceptionSuppressed()) {
+                    throw new AppenderRuntimeException(
+                        "Attempted to append to non-started appender " + appender.getName());
                 }
             }
 

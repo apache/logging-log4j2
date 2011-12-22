@@ -29,11 +29,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "Route", type = "Core", printObject = true, deferChildren = true)
 public final class Route {
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Node node;
     private final String appenderRef;
     private final String key;
-    private static final Logger logger = StatusLogger.getLogger();
 
     private Route(Node node, String appenderRef, String key) {
         this.node = node;
@@ -99,12 +99,12 @@ public final class Route {
 
             }
             if (appenderRef != null) {
-                logger.error("A route cannot be configured with an appender reference and an appender definition");
+                LOGGER.error("A route cannot be configured with an appender reference and an appender definition");
                 return null;
             }
         } else {
             if (appenderRef == null) {
-                logger.error("A route must specify an appender reference or an appender definition");
+                LOGGER.error("A route must specify an appender reference or an appender definition");
                 return null;
             }
         }

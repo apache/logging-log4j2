@@ -21,13 +21,13 @@ package org.apache.logging.log4j.core.appender.rolling;
  *
  */
 public interface RolloverStrategy {
-  /**
-   * Prepare for a rollover.  This method is called prior to closing the active log file, performs any necessary
-   * preliminary actions and describes actions needed after close of current log file.
-   *
-   * @param manager The RollingFileManager name for current active log file.
-   * @return Description of pending rollover, may be null to indicate no rollover at this time.
-   * @throws SecurityException if denied access to log files.
+    /**
+     * Prepare for a rollover.  This method is called prior to closing the active log file, performs any necessary
+     * preliminary actions and describes actions needed after close of current log file.
+     *
+     * @param manager The RollingFileManager name for current active log file.
+     * @return Description of pending rollover, may be null to indicate no rollover at this time.
+     * @throws SecurityException if denied access to log files.
    */
-  public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException;
+    RolloverDescription rollover(final RollingFileManager manager) throws SecurityException;
 }

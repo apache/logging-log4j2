@@ -36,8 +36,10 @@ import java.util.Map;
  */
 @Plugin(name = "MapRewritePolicy", type = "Core", elementType = "rewritePolicy", printObject = true)
 public final class MapRewritePolicy implements RewritePolicy {
-
-    protected final static Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<String, String> map;
 

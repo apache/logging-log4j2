@@ -42,8 +42,8 @@ import java.util.concurrent.ConcurrentMap;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Plugin(name="Routing",type="Core",elementType="appender",printObject=true)
-public class RoutingAppender extends AppenderBase {
+@Plugin(name = "Routing", type = "Core", elementType = "appender", printObject = true)
+public final class RoutingAppender extends AppenderBase {
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
     private final Configuration config;
@@ -163,6 +163,17 @@ public class RoutingAppender extends AppenderBase {
         return null;
     }
 
+    /**
+     * Create a RoutingAppender.
+     * @param name The name of the Appender.
+     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
+     * The default is "true".
+     * @param routes The routing definitions.
+     * @param config The Configuration (automatically added by the Configuration).
+     * @param rewritePolicy A RewritePolicy, if any.
+     * @param filter A Filter to restrict events processed by the Appender or null.
+     * @return The RoutingAppender
+     */
     @PluginFactory
     public static RoutingAppender createAppender(@PluginAttr("name") String name,
                                           @PluginAttr("suppressExceptions") String suppress,

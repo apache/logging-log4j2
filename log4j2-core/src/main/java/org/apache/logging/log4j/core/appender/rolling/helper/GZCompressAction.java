@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
 import java.io.BufferedOutputStream;
@@ -43,6 +42,8 @@ public final class GZCompressAction extends ActionBase {
      * If true, attempt to delete file on completion.
      */
     private final boolean deleteSource;
+
+    private static final int BUF_SIZE = 8102;
 
 
     /**
@@ -94,7 +95,7 @@ public final class GZCompressAction extends ActionBase {
             FileOutputStream fos = new FileOutputStream(destination);
             GZIPOutputStream gzos = new GZIPOutputStream(fos);
             BufferedOutputStream os = new BufferedOutputStream(gzos);
-            byte[] inbuf = new byte[8102];
+            byte[] inbuf = new byte[BUF_SIZE];
             int n;
 
             while ((n = fis.read(inbuf)) != -1) {

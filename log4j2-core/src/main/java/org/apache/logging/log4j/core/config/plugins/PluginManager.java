@@ -34,24 +34,23 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- *
+ * Component that loads and manages all the plugins.
  */
 public class PluginManager {
 
     private static long NANOS_PER_SECOND = 1000000000L;
-    private Map<String, PluginType> plugins = new HashMap<String, PluginType>();
 
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> pluginTypeMap =
         new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
 
     private static CopyOnWriteArrayList<String> packages = new CopyOnWriteArrayList<String>();
     private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
-    private static final String PREFIX = "Log4j2";
     private static final String FILENAME = "Log4j2Plugins.dat";
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static Logger LOGGER = StatusLogger.getLogger();
 
+    private Map<String, PluginType> plugins = new HashMap<String, PluginType>();
     private final String type;
     private final Class clazz;
     private static String rootDir;
@@ -113,7 +112,7 @@ public class PluginManager {
                 pluginTypeMap = map;
                 plugins = map.get(type);
             } else {
-                logger.warn("Plugin preloads not available");
+                LOGGER.warn("Plugin preloads not available");
             }
         }
         if (plugins.size() == 0) {
@@ -144,11 +143,7 @@ public class PluginManager {
         sb.append(numFormat.format(seconds)).append(".");
         numFormat = new DecimalFormat("000000000");
         sb.append(numFormat.format(elapsed)).append(" seconds");
-        logger.debug(sb.toString());
-    }
-
-    private static String createClassName(String type, String suffix) {
-        return PREFIX + type + suffix;
+        LOGGER.debug(sb.toString());
     }
 
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(ClassLoader loader) {
@@ -178,7 +173,7 @@ public class PluginManager {
             dis.close();
             return map;
         } catch (Exception ex) {
-            logger.warn("Unable to preload plugins", ex);
+            LOGGER.warn("Unable to preload plugins", ex);
             return null;
         }
     }

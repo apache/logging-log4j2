@@ -61,7 +61,9 @@ import java.util.List;
  */
 @Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
-
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final int MIN_WINDOW_SIZE = 1;
