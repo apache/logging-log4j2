@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Formats the event sequence number.
  */
-@Plugin(name="SequenceNumberPatternConverter", type="Converter")
+@Plugin(name = "SequenceNumberPatternConverter", type = "Converter")
 @ConverterKeys({"sn", "sequenceNumber"})
 public class SequenceNumberPatternConverter extends LogEventPatternConverter {
     private static AtomicLong sequence = new AtomicLong();

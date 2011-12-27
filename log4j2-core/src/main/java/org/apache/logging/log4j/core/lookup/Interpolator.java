@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * The Interpolator is a StrLookup that acts as a proxy for all the other StrLookups.
  */
 public class Interpolator implements StrLookup {
 

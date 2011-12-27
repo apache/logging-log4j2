@@ -34,7 +34,7 @@ import java.util.Locale;
 /**
  * Formats a log event as a BSD Log record.
  */
-@Plugin(name="SyslogLayout",type="Core",elementType="layout",printObject=true)
+@Plugin(name = "SyslogLayout", type = "Core", elementType = "layout", printObject = true)
 public class SyslogLayout extends AbstractStringLayout {
 
     private final Facility facility;

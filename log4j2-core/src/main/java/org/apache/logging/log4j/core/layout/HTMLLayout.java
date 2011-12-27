@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -40,8 +39,8 @@ import java.util.ArrayList;
  * Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
  * non ASCII characters could result in corrupted log files.
  */
-@Plugin(name="HTMLLayout",type="Core",elementType="layout",printObject=true)
-public class HTMLLayout extends AbstractStringLayout {
+@Plugin(name = "HTMLLayout", type = "Core", elementType = "layout", printObject = true)
+public final class HTMLLayout extends AbstractStringLayout {
 
     protected static final int BUF_SIZE = 256;
 

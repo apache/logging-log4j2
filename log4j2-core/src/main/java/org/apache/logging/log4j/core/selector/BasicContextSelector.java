@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.javaee.ContextAnchor;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,8 +29,6 @@ import java.util.List;
 public class BasicContextSelector implements ContextSelector {
 
     private static LoggerContext context = new LoggerContext("Default");
-
-    private static StatusLogger logger = StatusLogger.getLogger();
 
     public LoggerContext getContext(String FQCN, boolean currentContext) {
 

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * date pattern for a %d specifier in a file name is different than
  * the %d pattern in pattern layout.
  */
-@Plugin(name="FileDatePatternConverter", type="FileConverter")
+@Plugin(name = "FileDatePatternConverter", type = "FileConverter")
 @ConverterKeys({"d", "date"})
 public final class FileDatePatternConverter {
     /**

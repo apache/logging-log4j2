@@ -22,11 +22,10 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 import java.lang.management.ManagementFactory;
 
-
 /**
  * Return the relative time in milliseconds since JVM Startup.
  */
-@Plugin(name="RelativeTimePatternConverter", type="Converter")
+@Plugin(name = "RelativeTimePatternConverter", type = "Converter")
 @ConverterKeys({"r", "relative"})
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
     /**

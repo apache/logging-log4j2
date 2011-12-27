@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -34,7 +32,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -70,9 +67,6 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private long lastTimestamp = -1;
     private String timestamppStr = null;
-
-    private static final DecimalFormat TWO_DIGIT = new DecimalFormat("00");
-    private static final DecimalFormat FOUR_DIGIT = new DecimalFormat("0000");
 
     // Not a very good default - it is the Apache Software Foundation's.
     public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
@@ -175,7 +169,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(" ");
         if (isStructured || includeMDC) {
             StructuredDataId id = null;
-            String text = "";
+            String text;
             if (isStructured) {
                 StructuredDataMessage data = (StructuredDataMessage) msg;
                 Map map = data.getData();

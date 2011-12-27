@@ -30,11 +30,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- *
+ * Receives Log Events over a JMS Queue. This implementation expects that all messages will
+ * contain a serialized LogEvent.
  */
 public class JMSQueueReceiver extends AbstractJMSReceiver {
 
-    static public void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
         }
@@ -80,7 +81,7 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
         }
     }
 
-    static void usage(String msg) {
+    private static void usage(String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + JMSQueueReceiver.class.getName()
             + " QueueConnectionFactoryBindingName QueueBindingName username password");

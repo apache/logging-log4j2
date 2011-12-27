@@ -16,26 +16,19 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
- *
+ * Base class for managing sockets.
  */
 public abstract class AbstractSocketManager extends OutputStreamManager {
 
     protected final InetAddress address;
     protected final String host;
     protected final int port;
-
 
     public AbstractSocketManager(String name, OutputStream os, InetAddress addr, String host, int port) {
         super(os, name);

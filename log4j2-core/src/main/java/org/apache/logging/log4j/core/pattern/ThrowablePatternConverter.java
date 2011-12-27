@@ -57,8 +57,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             option = options[0];
             if (option.equalsIgnoreCase(SHORT)) {
                 count = 2;
-            } else if (option.equalsIgnoreCase(FULL)) {
-            } else {
+            } else if (!option.equalsIgnoreCase(FULL)) {
                 count = Integer.parseInt(option);
             }
 

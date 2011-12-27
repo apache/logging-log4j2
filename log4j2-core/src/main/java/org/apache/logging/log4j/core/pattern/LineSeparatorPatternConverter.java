@@ -17,15 +17,13 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
 
 /**
  * Formats a line separator.
  */
-@Plugin(name="LineSeparatorPatternConverter", type="Converter")
+@Plugin(name = "LineSeparatorPatternConverter", type = "Converter")
 @ConverterKeys({"n"})
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
 
@@ -54,8 +52,7 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
    * @param options options, may be null.
    * @return instance of pattern converter.
    */
-  public static LineSeparatorPatternConverter newInstance(
-    final String[] options) {
+  public static LineSeparatorPatternConverter newInstance(final String[] options) {
     return INSTANCE;
   }
 

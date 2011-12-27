@@ -100,9 +100,6 @@ import java.util.Properties;
  * {@link #setEnableSubstitutionInVariables(boolean) enableSubstitutionInVariables}
  * property to <b>true</b>.
  *
- * @author Apache Software Foundation
- * @version $Id$
- * @since 2.2
  */
 public class StrSubstitutor {
 

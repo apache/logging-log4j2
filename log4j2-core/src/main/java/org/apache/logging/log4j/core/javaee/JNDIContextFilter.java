@@ -34,13 +34,12 @@ import javax.servlet.UnavailableException;
 import java.io.IOException;
 
 /**
- *
+ * ServletFilter than may be used to set up a LoggerContext for each web application.
  */
 public class JNDIContextFilter implements Filter {
 
     public static final String CONTEXT_NAME = "context-name";
     public static final String CONFIG_LOCATION = "config-location";
-    private static final String CONTEXT_CLASS = "org.apache.logging.log4j.core.LoggerContext";
     private ServletContext context;
     private boolean created = false;
     private String name;

@@ -23,14 +23,25 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Looks up keys from system properties
  */
-@Plugin(name="ctx",type="Lookup")
+@Plugin(name = "ctx", type = "Lookup")
 public class ContextMapLookup implements StrLookup {
 
+    /**
+     * Lookup the value from the ThreadContext Map.
+     * @param key  the key to be looked up, may be null
+     * @return The value associated with the key.
+     */
     public String lookup(String key) {
         return ThreadContext.get(key);
     }
 
+    /**
+     * Lookup the value from the ThreadContext Map.
+     * @param event The current LogEvent.
+     * @param key  the key to be looked up, may be null
+     * @return The value associated with the key.
+     */
     public String lookup(LogEvent event, String key) {
-        return ThreadContext.get(key);
+        return event.getContextMap().get(key);
     }
 }

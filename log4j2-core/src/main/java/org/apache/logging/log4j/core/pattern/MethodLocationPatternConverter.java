@@ -46,8 +46,7 @@ public final class MethodLocationPatternConverter extends LogEventPatternConvert
      * @param options options, may be null.
      * @return instance of MethodLocationPatternConverter.
      */
-    public static MethodLocationPatternConverter newInstance(
-        final String[] options) {
+    public static MethodLocationPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

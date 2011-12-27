@@ -20,18 +20,13 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.FormattedMessage;
-import org.apache.logging.log4j.message.Message;
-
 
 /**
  * Return the event's rendered message in a StringBuffer.
  */
-@Plugin(name="MarkerPatternConverter", type="Converter")
+@Plugin(name = "MarkerPatternConverter", type = "Converter")
 @ConverterKeys({"marker"})
 public final class MarkerPatternConverter extends LogEventPatternConverter {
-
-    private final String format;
 
     /**
      * Private constructor.
@@ -39,7 +34,6 @@ public final class MarkerPatternConverter extends LogEventPatternConverter {
      */
     private MarkerPatternConverter(final String[] options) {
         super("Marker", "marker");
-        format = (options != null && options.length > 0) ? options[0] : null;
     }
 
     /**

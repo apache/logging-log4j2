@@ -21,8 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -32,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Replacement pattern converter.
  */
-@Plugin(name="replace", type="Converter")
+@Plugin(name = "replace", type = "Converter")
 @ConverterKeys({"replace"})
 public final class RegexReplacementConverter extends LogEventPatternConverter {
 
@@ -40,7 +38,7 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
 
     private final String substitution;
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private List<PatternConverter> converters;
 
@@ -68,19 +66,19 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      */
     public static RegexReplacementConverter newInstance(Configuration config, final String[] options) {
         if (options.length != 3) {
-            logger.error("Incorrect number of options on replace. Expected 3 received " + options.length);
+            LOGGER.error("Incorrect number of options on replace. Expected 3 received " + options.length);
             return null;
         }
         if (options[0] == null) {
-            logger.error("No pattern supplied on replace");
+            LOGGER.error("No pattern supplied on replace");
             return null;
         }
         if (options[1] == null) {
-            logger.error("No regular expression supplied on replace");
+            LOGGER.error("No regular expression supplied on replace");
             return null;
         }
         if (options[2] == null) {
-            logger.error("No substitution supplied on replace");
+            LOGGER.error("No substitution supplied on replace");
             return null;
         }
         Pattern p = Pattern.compile(options[1]);

@@ -188,11 +188,11 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return new LogEventProxy(this);
     }
 
-    private void readObject(ObjectInputStream stream)
-        throws InvalidObjectException {
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String n = name.length() == 0 ? "root" : name;
@@ -236,7 +236,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
 
         /**
          * Return a Log4jLogEvent using the data in the proxy.
-         * @returna Log4jLogEvent.
+         * @return Log4jLogEvent.
          */
         protected Object readResolve() {
             return new Log4jLogEvent(name, marker, fqcnOfLogger, level, message, throwable, mdc, ndc, threadName,

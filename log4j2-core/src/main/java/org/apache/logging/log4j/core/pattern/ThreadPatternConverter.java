@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Formats the event thread name.
  */
-@Plugin(name="ThreadPatternConverter", type="Converter")
+@Plugin(name = "ThreadPatternConverter", type = "Converter")
 @ConverterKeys({"t", "thread"})
 public class ThreadPatternConverter extends LogEventPatternConverter {
     /**

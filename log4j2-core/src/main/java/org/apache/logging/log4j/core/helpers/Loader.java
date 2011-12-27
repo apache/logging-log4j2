@@ -21,11 +21,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.InputStream;
-import java.net.URL;
+import java.io.InterruptedIOException;
 import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
-import java.io.InterruptedIOException;
-
+import java.net.URL;
 
 /**
  * Load resources (or images) from various sources.
@@ -64,10 +63,12 @@ public class Loader {
      * built-in class loader in JDK 1.1.
      * <p/>
      * </ol>
+     * @param resource The resource to load.
+     * @return A URL to the resource.
      */
-    static public URL getResource(String resource) {
-        ClassLoader classLoader = null;
-        URL url = null;
+    public static URL getResource(String resource) {
+        ClassLoader classLoader;
+        URL url;
 
         try {
             classLoader = getTCL();
@@ -112,7 +113,7 @@ public class Loader {
         return ClassLoader.getSystemResource(resource);
     }
 
-     /**
+    /**
      * This method will search for <code>resource</code> in different
      * places. The search order is as follows:
      * <p/>
@@ -130,9 +131,12 @@ public class Loader {
      * built-in class loader in JDK 1.1.
      * <p/>
      * </ol>
+     * @param resource The resource to load.
+     * @param defaultLoader The default ClassLoader.
+     * @return An InputStream to read the resouce.
      */
-    static public InputStream getResourceAsStream(String resource, ClassLoader defaultLoader) {
-        ClassLoader classLoader = null;
+    public static InputStream getResourceAsStream(String resource, ClassLoader defaultLoader) {
+        ClassLoader classLoader;
         InputStream is;
 
         try {
@@ -206,7 +210,7 @@ public class Loader {
         try {
             cl = getTCL();
         } catch (Exception ex) {
-
+            // Ignore the exception. The ClassLoader will be located.
         }
         if (cl == null) {
             cl = Loader.getClassLoader();

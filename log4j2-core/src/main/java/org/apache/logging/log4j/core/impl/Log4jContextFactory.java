@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
 /**
- *
+ * Factory to locate a ContextSelector and then load a LoggerContext.
  */
 public class Log4jContextFactory implements LoggerContextFactory {
 
@@ -36,6 +35,9 @@ public class Log4jContextFactory implements LoggerContextFactory {
 
     private ThreadLocal<Log4jContextFactory> recursive = new ThreadLocal<Log4jContextFactory>();
 
+    /**
+     * Constructor that initializes the ContextSelector.
+     */
     public Log4jContextFactory() {
         String sel = System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
@@ -53,10 +55,21 @@ public class Log4jContextFactory implements LoggerContextFactory {
         selector = new ClassLoaderContextSelector();
     }
 
+    /**
+     * Return the ContextSelector.
+     * @return The ContextSelector.
+     */
     public ContextSelector getSelector() {
         return selector;
     }
 
+    /**
+     * Load the LoggerContext using the ContextSelector.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @return The LoggerContext.
+     */
     public LoggerContext getContext(String fqcn, boolean currentContext) {
         LoggerContext ctx = selector.getContext(fqcn, currentContext);
         synchronized (ctx) {

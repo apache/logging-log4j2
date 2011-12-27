@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -33,14 +31,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Generates a unique id. The generated UUID will be unique for approximately 8,925 years so long as
  * less than 4095 ids are generated per millisecond on the same device (as identified by its MAC adddress).
  */
-public abstract class UUIDUtil
+public final class UUIDUtil
 {
+    /**
+     * System property that may be used to seed the uuid generation with an integer value.
+     */
     public static final String UUID_SEQUENCE = "org.apache.logging.log4j.uuidSequence";
+
     private static final String ASSIGNED_SEQUENCES = "org.apache.logging.log4j.assignedSequences";
 
     private static AtomicInteger count = new AtomicInteger(0);
-
-    private static final long VERSION = 0x9000L;
 
     private static final long TYPE1 = 0x1000L;
 
@@ -143,18 +143,6 @@ public abstract class UUIDUtil
         least = buf.getLong() | rand << 48;
     }
 
-    private static String toHexString(byte[] bytes) {
-        char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] hexChars = new char[bytes.length * 2];
-        int v;
-
-        for (int j = 0; j < bytes.length; j++) {
-            v = bytes[j] & 0xFF;
-            hexChars[j*2] = hexArray[v/16];
-            hexChars[j*2 + 1] = hexArray[v%16];
-        }
-        return new String(hexChars);
-    }
 
     /* This class cannot be instantiated */
     private UUIDUtil() {

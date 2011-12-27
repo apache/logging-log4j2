@@ -21,10 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stacktrace
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if

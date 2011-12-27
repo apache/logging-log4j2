@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Format the event's line location information.
  */
-@Plugin(name="FullLocationPatternConverter", type="Converter")
+@Plugin(name = "FullLocationPatternConverter", type = "Converter")
 @ConverterKeys({"l", "location"})
 public final class FullLocationPatternConverter extends LogEventPatternConverter {
     /**
@@ -46,8 +46,7 @@ public final class FullLocationPatternConverter extends LogEventPatternConverter
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static FullLocationPatternConverter newInstance(
-        final String[] options) {
+    public static FullLocationPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

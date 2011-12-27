@@ -31,7 +31,7 @@ import java.util.TreeSet;
  * within the property bundle
  * when this pattern converter has the option set.
  */
- @Plugin(name="MDCPatternConverter", type="Converter")
+ @Plugin(name = "MDCPatternConverter", type = "Converter")
 @ConverterKeys({"X", "mdc", "MDC"})
 public final class MDCPatternConverter extends LogEventPatternConverter {
     /**

@@ -18,30 +18,17 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Transform;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.LineNumberReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 
 /**
- *
+ * Format a LogEvent in its serialized form.
  */
-@Plugin(name="SerializedLayout",type="Core",elementType="layout",printObject=true)
+@Plugin(name = "SerializedLayout", type = "Core", elementType = "layout", printObject = true)
 public class SerializedLayout extends LayoutBase<LogEvent> {
 
     private static byte[] header;

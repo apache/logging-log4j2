@@ -68,7 +68,7 @@ import org.apache.logging.log4j.core.LogEvent;
  * non ASCII characters could result in corrupted
  * log files.
  */
-@Plugin(name="XMLLayout",type="Core",elementType="layout",printObject=true)
+@Plugin(name = "XMLLayout", type = "Core", elementType = "layout", printObject = true)
 public class XMLLayout extends AbstractStringLayout {
 
     private final boolean locationInfo;
@@ -214,10 +214,10 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Create an XML Layout.
-     * @param locationInfo
-     * @param properties
-     * @param complete
-     * @param charset
+     * @param locationInfo If "true" include the location information in the generated XML.
+     * @param properties If "true" include the thread context in the generated XML.
+     * @param complete If "true" include the XML header.
+     * @param charset The character set to use.
      * @return An XML Layout.
      */
     @PluginFactory

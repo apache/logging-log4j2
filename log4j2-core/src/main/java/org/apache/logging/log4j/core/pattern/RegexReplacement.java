@@ -18,22 +18,17 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Replace tokens in the LogEvent message.
  */
-@Plugin(name="replace", type="Core", printObject=true)
+@Plugin(name = "replace", type = "Core", printObject = true)
 public final class RegexReplacement {
 
     private final Pattern pattern;
@@ -63,6 +58,12 @@ public final class RegexReplacement {
         return "replace(regex=" + pattern.pattern() + ", replacement=" + substitution + ")";
     }
 
+    /**
+     * Create a RegexReplacement.
+     * @param regex The regular expression to locate.
+     * @param replacement The replacement value.
+     * @return A RegexReplacement.
+     */
     @PluginFactory
     public static RegexReplacement createRegexReplacement(@PluginAttr("regex") String regex,
                                                           @PluginAttr("replacement") String replacement) {

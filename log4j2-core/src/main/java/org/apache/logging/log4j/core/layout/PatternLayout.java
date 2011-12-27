@@ -46,7 +46,7 @@ import java.util.List;
  *
  * See the Log4j Manual for details on the supported pattern converters.
  */
-@Plugin(name="PatternLayout",type="Core",elementType="layout",printObject=true)
+@Plugin(name = "PatternLayout", type = "Core", elementType = "layout", printObject = true)
 public class PatternLayout extends AbstractStringLayout {
     /**
      * Default pattern string for log output. Currently set to the

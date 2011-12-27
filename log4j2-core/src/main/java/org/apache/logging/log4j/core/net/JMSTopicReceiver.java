@@ -16,13 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractServer;
-import org.apache.logging.log4j.core.LogEvent;
-
 import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
@@ -31,17 +25,17 @@ import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- *
+ * Receives Topic messages that contain LogEvents. This implementation expects that all messages
+ * are serialized log events.
  */
 public class JMSTopicReceiver extends AbstractJMSReceiver {
 
-    static public void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
         }
@@ -86,7 +80,7 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
         }
     }
 
-    static void usage(String msg) {
+    private static void usage(String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + JMSTopicReceiver.class.getName()
             + " TopicConnectionFactoryBindingName TopicBindingName username password");
