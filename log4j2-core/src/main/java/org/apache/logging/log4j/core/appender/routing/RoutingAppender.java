@@ -195,6 +195,9 @@ public final class RoutingAppender extends AppenderBase {
         return new RoutingAppender(name, filter, handleExceptions, routes, rewritePolicy, config);
     }
 
+    /**
+     * Wrapper to allow AppenderControl to be used here.
+     */
     private static class AppenderWrapper extends AppenderControl {
         public AppenderWrapper(Appender appender) {
             super(appender);

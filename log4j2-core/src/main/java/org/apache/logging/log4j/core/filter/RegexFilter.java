@@ -98,7 +98,7 @@ public final class RegexFilter extends FilterBase {
                                             @PluginAttr("onMismatch") String mismatch) {
 
         if (regex == null) {
-            logger.error("A regular expression must be provided for RegexFilter");
+            LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
         boolean raw = useRawMsg == null ? false : Boolean.parseBoolean(useRawMsg);
@@ -106,7 +106,7 @@ public final class RegexFilter extends FilterBase {
         try {
             pattern = Pattern.compile(regex);
         } catch (Exception ex) {
-            logger.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
+            LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
             return null;
         }
         Result onMatch = match == null ? null : Result.valueOf(match);

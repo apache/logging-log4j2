@@ -22,17 +22,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Annotation that identifies a Class as a Plugin.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
+    /**
+     * Value of the elementType when none is specified.
+     */
+    String EMPTY = "";
 
-    public String name();
-    public String type();
-    public String elementType() default NULL;
-    public boolean printObject() default false;
-    public boolean deferChildren() default false;
-
-    public static final String NULL = "";
+    String name();
+    String type();
+    String elementType() default EMPTY;
+    boolean printObject() default false;
+    boolean deferChildren() default false;
 }

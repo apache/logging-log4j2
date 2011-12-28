@@ -28,6 +28,9 @@ import java.util.zip.GZIPOutputStream;
  * Compresses a file using GZ compression.
  */
 public final class GZCompressAction extends ActionBase {
+
+    private static final int BUF_SIZE = 8102;
+
     /**
      * Source file.
      */
@@ -42,9 +45,6 @@ public final class GZCompressAction extends ActionBase {
      * If true, attempt to delete file on completion.
      */
     private final boolean deleteSource;
-
-    private static final int BUF_SIZE = 8102;
-
 
     /**
      * Create new instance of GZCompressAction.

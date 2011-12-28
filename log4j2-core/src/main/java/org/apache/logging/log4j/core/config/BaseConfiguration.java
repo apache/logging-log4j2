@@ -51,16 +51,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The Base Configuration. Many configuration implementations will extend this class.
  */
 public class BaseConfiguration extends Filterable implements Configuration {
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    protected final static Logger LOGGER = StatusLogger.getLogger();
-
+    /**
+     * The root node of the configuration.
+     */
     protected Node rootNode;
 
+    /**
+     * The Plugin Manager.
+     */
     protected PluginManager pluginManager;
 
+    /**
+     * Listeners for configuration changes.
+     */
     protected final List<ConfigurationListener> listeners =
         new CopyOnWriteArrayList<ConfigurationListener>();
 
+    /**
+     * The ConfigurationMonitor that checks for configuration changes.
+     */
     protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
 
     private String name;
@@ -92,7 +106,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         pluginManager.collectPlugins();
         setup();
         doConfigure();
-        for (LoggerConfig logger: loggers.values()) {
+        for (LoggerConfig logger : loggers.values()) {
             logger.startFilter();
         }
         for (Appender appender : appenders.values()) {
@@ -142,8 +156,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
-            }
-            else if (subst.getVariableResolver() == null) {
+            } else if (subst.getVariableResolver() == null) {
                 subst.setVariableResolver(new Interpolator(null));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
@@ -539,21 +552,21 @@ public class BaseConfiguration extends Filterable implements Configuration {
                         sb.append("Configuration");
                     }
                 } else if (a instanceof PluginValue) {
-                    String name = ((PluginValue)a).value();
+                    String name = ((PluginValue) a).value();
                     String v = node.getValue();
                     if (v == null) {
                         v = getAttrValue("value", attrs);
                     }
                     String value = subst.replace(event, v);
-                    sb.append(name +"=" + "\"" + value + "\"");
+                    sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginAttr) {
-                    String name = ((PluginAttr)a).value();
+                    String name = ((PluginAttr) a).value();
                     String value = subst.replace(event, getAttrValue(name, attrs));
-                    sb.append(name +"=" + "\"" + value + "\"");
+                    sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
-                    PluginElement elem = (PluginElement)a;
+                    PluginElement elem = (PluginElement) a;
                     String name = elem.value();
                     if (parmClasses[index].isArray()) {
                         Class parmClass = parmClasses[index].getComponentType();
@@ -574,7 +587,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                                     System.out.println("Null object returned for " + child.getName());
                                 }
                                 if (obj.getClass().isArray()) {
-                                    printArray(sb, (Object[])obj);
+                                    printArray(sb, (Object[]) obj);
                                     parms[index] = obj;
                                     break;
                                 }
@@ -587,7 +600,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                             break;
                         }
                         Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
-                        int i=0;
+                        int i = 0;
                         for (Object obj : list) {
                             array[i] = obj;
                             ++i;
@@ -652,24 +665,20 @@ public class BaseConfiguration extends Filterable implements Configuration {
             }
         }
 
-        try
-        {
+        try {
             int mod = factoryMethod.getModifiers();
-            if (!Modifier.isStatic(mod))
-            {
+            if (!Modifier.isStatic(mod)) {
                 LOGGER.error(factoryMethod.getName() + " method is not static on class " +
                     clazz.getName() + " for element " + node.getName());
                 return null;
             }
-            LOGGER.debug("Calling " + factoryMethod.getName() + " on class " + clazz.getName() + " for element " +
-                node.getName() + sb.toString());
+            LOGGER.debug("Calling {} on class {} for element {}", factoryMethod.getName(), clazz.getName(),
+                node.getName(), sb.toString());
             //if (parms.length > 0) {
                 return factoryMethod.invoke(null, parms);
             //}
             //return factoryMethod.invoke(null, node);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             LOGGER.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
                 clazz.getName() + " for element " + node.getName(), e);
         }
@@ -687,7 +696,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         }
     }
 
-    private String getAttrValue(String name, Map<String, String>attrs) {
+    private String getAttrValue(String name, Map<String, String> attrs) {
         for (String key : attrs.keySet()) {
             if (key.equalsIgnoreCase(name)) {
                 String attr = attrs.get(key);

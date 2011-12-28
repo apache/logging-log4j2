@@ -22,11 +22,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * An Appender container.
  */
 @Plugin(name = "appenders", type = "Core")
-public class AppendersPlugin {
+public final class AppendersPlugin {
 
+    private AppendersPlugin() {
+    }
+
+    /**
+     * Create a Map of the Appenders.
+     * @param appenders An array of Appenders.
+     * @return The Appender Map.
+     */
     @PluginFactory
     public static ConcurrentMap<String, Appender> createAppenders(@PluginElement("appenders") Appender[] appenders) {
         ConcurrentMap<String, Appender> map = new ConcurrentHashMap<String, Appender>();

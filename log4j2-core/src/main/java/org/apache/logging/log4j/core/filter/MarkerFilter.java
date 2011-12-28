@@ -80,7 +80,7 @@ public final class MarkerFilter extends FilterBase {
                                             @PluginAttr("onMismatch") String mismatch) {
 
         if (marker == null) {
-            logger.error("A marker must be provided for MarkerFilter");
+            LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
         Marker m = MarkerManager.getMarker(marker);

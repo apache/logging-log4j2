@@ -51,7 +51,7 @@ public class MapFilter extends FilterBase {
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         if (msg instanceof MapMessage) {
-            return filter((MapMessage)msg);
+            return filter((MapMessage) msg);
         }
         return Result.NEUTRAL;
     }
@@ -109,25 +109,25 @@ public class MapFilter extends FilterBase {
                                                     @PluginAttr("onmatch") String match,
                                                     @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
-            logger.error("keys and values must be specified for the MapFilter");
+            LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
         }
         Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                logger.error("A null key is not valid in MapFilter");
+                LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                logger.error("A null value for key " + key + " is not allowed in MapFilter");
+                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());
         }
         if (map.size() == 0) {
-            logger.error("MapFilter is not configured with any valid key value pairs");
+            LOGGER.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");

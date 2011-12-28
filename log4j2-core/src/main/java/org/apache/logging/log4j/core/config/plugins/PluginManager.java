@@ -38,7 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PluginManager {
 
-    private static long NANOS_PER_SECOND = 1000000000L;
+    private static final long NANOS_PER_SECOND = 1000000000L;
 
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> pluginTypeMap =
         new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
@@ -48,12 +48,32 @@ public class PluginManager {
     private static final String FILENAME = "Log4j2Plugins.dat";
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static String rootDir;
 
     private Map<String, PluginType> plugins = new HashMap<String, PluginType>();
     private final String type;
     private final Class clazz;
-    private static String rootDir;
+
+    /**
+     * Constructor that takes only a type name.
+     * @param type The type name.
+     */
+    public PluginManager(String type) {
+        this.type = type;
+        this.clazz = null;
+    }
+
+    /**
+     * Constructor that takes a type name and a Class.
+     * @param type The type that must be matched.
+     * @param clazz The Class each match must be an instance of.
+     */
+    public PluginManager(String type, Class clazz) {
+        this.type = type;
+        this.clazz = clazz;
+    }
 
     public static void main(String[] args) throws Exception {
         if (args == null || args.length < 1) {
@@ -67,34 +87,42 @@ public class PluginManager {
         encode(pluginTypeMap);
     }
 
-    public PluginManager(String type) {
-        this.type = type;
-        this.clazz = null;
-    }
-
-
-    public PluginManager(String type, Class clazz) {
-        this.type = type;
-        this.clazz = clazz;
-    }
-
+    /**
+     * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
+     * @param p The package name.
+     */
     public static void addPackage(String p) {
         packages.addIfAbsent(p);
     }
 
+    /**
+     * Returns the type of a specified plugin.
+     * @param name The name of the plugin.
+     * @return The plugin's type.
+     */
     public PluginType getPluginType(String name) {
         return plugins.get(name.toLowerCase());
     }
 
+    /**
+     * Returns all the matching plugins.
+     * @return A Map containing the name of the plugin and its type.
+     */
     public Map<String, PluginType> getPlugins() {
         return plugins;
     }
 
+    /**
+     * Locates all the plugins.
+     */
     public void collectPlugins() {
         collectPlugins(true);
     }
 
-
+    /**
+     * Collects plugins, optionally obtaining them from a preload map.
+     * @param preLoad if true, plugins will be obtained from the preload map.
+     */
     public void collectPlugins(boolean preLoad) {
         if (pluginTypeMap.containsKey(type)) {
             plugins = pluginTypeMap.get(type);
@@ -108,7 +136,7 @@ public class PluginManager {
         }
         if (preLoad) {
             ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(loader);
-            if (map != null){
+            if (map != null) {
                 pluginTypeMap = map;
                 plugins = map.get(type);
             } else {
@@ -122,15 +150,14 @@ public class PluginManager {
         for (String pkg : packages) {
             r.findInPackage(test, pkg);
         }
-        for (Class<?> item : r.getClasses())
-        {
+        for (Class<?> item : r.getClasses()) {
             Plugin p = item.getAnnotation(Plugin.class);
             String pluginType = p.type();
             if (!pluginTypeMap.containsKey(pluginType)) {
                 pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType>());
             }
             Map<String, PluginType> map = pluginTypeMap.get(pluginType);
-            String type = p.elementType().equals(Plugin.NULL) ? p.name() : p.elementType();
+            String type = p.elementType().equals(Plugin.EMPTY) ? p.name() : p.elementType();
             map.put(p.name().toLowerCase(), new PluginType(item, type, p.printObject(), p.deferChildren()));
         }
         long elapsed = System.nanoTime() - start;
@@ -155,11 +182,11 @@ public class PluginManager {
             int count = dis.readInt();
             ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
                 new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>(count);
-            for (int j=0; j < count; ++j) {
+            for (int j = 0; j < count; ++j) {
                 String type = dis.readUTF();
                 int entries = dis.readInt();
                 ConcurrentMap<String, PluginType> types = new ConcurrentHashMap<String, PluginType>(count);
-                for (int i=0; i < entries; ++i) {
+                for (int i = 0; i < entries; ++i) {
                     String key = dis.readUTF();
                     String className = dis.readUTF();
                     String name = dis.readUTF();
@@ -210,18 +237,26 @@ public class PluginManager {
     public static class PluginTest extends ResolverUtil.ClassTest {
         private final Class isA;
 
-        /** Constructs an AnnotatedWith test for the specified annotation type. */
+        /**
+         * Constructs an AnnotatedWith test for the specified annotation type.
+         * @param isA The class to compare against.
+         */
         public PluginTest(Class isA) {
             this.isA = isA;
         }
 
-        /** Returns true if the type is annotated with the class provided to the constructor. */
+        /**
+         * Returns true if the type is annotated with the class provided to the constructor.
+         * @param type The type to check for.
+         * @return true if the Class is of the specified type.
+         */
         public boolean matches(Class type) {
             return type != null && type.isAnnotationPresent(Plugin.class) &&
                 (isA == null || isA.isAssignableFrom(type));
         }
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
             if (isA != null) {
                 msg.append(" is assignable to " + isA.getSimpleName());

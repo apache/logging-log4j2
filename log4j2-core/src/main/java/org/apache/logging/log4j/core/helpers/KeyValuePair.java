@@ -21,31 +21,51 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- *
+ * Key/Value pair configuration item.
  */
-@Plugin(name="KeyValuePair", type="Core", printObject=true)
+@Plugin(name = "KeyValuePair", type = "Core", printObject = true)
 public class KeyValuePair {
 
     private final String key;
     private final String value;
 
+    /**
+     * Constructs a key/value pair. The constructor should only be called from test classes.
+     * @param key The key.
+     * @param value The value.
+     */
     public KeyValuePair(String key, String value) {
         this.key = key;
         this.value = value;
     }
 
+    /**
+     * Return the key.
+     * @return the key.
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * Return the value.
+     * @return The value.
+     */
     public String getValue() {
         return value;
     }
 
+    @Override
     public String toString() {
         return key + "=" + value;
     }
 
+    /**
+     * Create a Key/Value pair.
+     * @param key The key.
+     * @param value The value.
+     * @return A KeyValuePair.
+     */
     @PluginFactory
     public static KeyValuePair createPair(@PluginAttr("key") String key,
                                           @PluginAttr("value")  String value) {

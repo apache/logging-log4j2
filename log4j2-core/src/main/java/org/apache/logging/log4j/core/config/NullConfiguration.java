@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 
 /**
- *
+ * This configuration defaults to no logging.
  */
 public class NullConfiguration extends BaseConfiguration {
 
-    public static final String NULL_NAME = "Null";
+    private static final String NULL_NAME = "Null";
 
     public NullConfiguration() {
 

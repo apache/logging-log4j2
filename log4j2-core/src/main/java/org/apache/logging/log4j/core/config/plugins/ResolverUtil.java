@@ -64,126 +64,11 @@ import java.util.jar.JarInputStream;
  * </p>
  *
  * @author Tim Fennell
+ * @param <T> The type of the Class that can be returned.
  */
 public class ResolverUtil<T> {
     /** An instance of Log to use for logging in this class. */
     private static final Logger LOG = StatusLogger.getLogger();
-
-    /**
-     * A simple interface that specifies how to test classes to determine if they
-     * are to be included in the results produced by the ResolverUtil.
-     */
-    public static interface Test {
-        /**
-         * Will be called repeatedly with candidate classes. Must return True if a class
-         * is to be included in the results, false otherwise.
-         */
-        boolean matches(Class type);
-
-        boolean matches(URI resource);
-
-        boolean doesMatchClass();
-        boolean doesMatchResource();
-    }
-
-    public static abstract class ClassTest implements Test {
-        public boolean matches(URI resource) {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean doesMatchClass() {
-            return true;
-        }
-        public boolean doesMatchResource() {
-            return false;
-        }
-    }
-
-    public static abstract class ResourceTest implements Test {
-        public boolean matches(Class cls) {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean doesMatchClass() {
-            return false;
-        }
-        public boolean doesMatchResource() {
-            return true;
-        }
-    }
-
-    /**
-     * A Test that checks to see if each class is assignable to the provided class. Note
-     * that this test will match the parent type itself if it is presented for matching.
-     */
-    public static class IsA extends ClassTest {
-        private Class parent;
-
-        /** Constructs an IsA test using the supplied Class as the parent class/interface. */
-        public IsA(Class parentType) { this.parent = parentType; }
-
-        /** Returns true if type is assignable to the parent type supplied in the constructor. */
-        public boolean matches(Class type) {
-            return type != null && parent.isAssignableFrom(type);
-        }
-
-        @Override public String toString() {
-            return "is assignable to " + parent.getSimpleName();
-        }
-    }
-
-    /**
-     * A Test that checks to see if each class name ends with the provided suffix.
-     */
-    public static class NameEndsWith extends ClassTest {
-        private String suffix;
-
-        /** Constructs a NameEndsWith test using the supplied suffix. */
-        public NameEndsWith(String suffix) { this.suffix = suffix; }
-
-        /** Returns true if type name ends with the suffix supplied in the constructor. */
-        public boolean matches(Class type) {
-            return type != null && type.getName().endsWith(suffix);
-        }
-
-        @Override public String toString() {
-            return "ends with the suffix " + suffix;
-        }
-    }
-
-    /**
-     * A Test that checks to see if each class is annotated with a specific annotation. If it
-     * is, then the test returns true, otherwise false.
-     */
-    public static class AnnotatedWith extends ClassTest {
-        private Class<? extends Annotation> annotation;
-
-        /** Constructs an AnnotatedWith test for the specified annotation type. */
-        public AnnotatedWith(Class<? extends Annotation> annotation) { this.annotation = annotation; }
-
-        /** Returns true if the type is annotated with the class provided to the constructor. */
-        public boolean matches(Class type) {
-            return type != null && type.isAnnotationPresent(annotation);
-        }
-
-        @Override public String toString() {
-            return "annotated with @" + annotation.getSimpleName();
-        }
-    }
-
-    public static class NameIs extends ResourceTest {
-        private String name;
-
-        public NameIs(String name) { this.name = "/" + name; }
-
-        public boolean matches(URI resource) {
-            return (resource.getPath().endsWith(name));
-        }
-
-        @Override public String toString() {
-            return "named " + name;
-        }
-    }
 
     /** The set of matches being accumulated. */
     private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
@@ -207,6 +92,10 @@ public class ResolverUtil<T> {
         return classMatches;
     }
 
+    /**
+     * Return the matching resources.
+     * @return A Set of URIs that match the criteria.
+     */
     public Set<URI> getResources() {
         return resourceMatches;
     }
@@ -240,7 +129,9 @@ public class ResolverUtil<T> {
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
     public void findImplementations(Class parent, String... packageNames) {
-        if (packageNames == null) return;
+        if (packageNames == null) {
+            return;
+        }
 
         Test test = new IsA(parent);
         for (String pkg : packageNames) {
@@ -256,7 +147,9 @@ public class ResolverUtil<T> {
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
     public void findSuffix(String suffix, String... packageNames) {
-        if (packageNames == null) return;
+        if (packageNames == null) {
+            return;
+        }
 
         Test test = new NameEndsWith(suffix);
         for (String pkg : packageNames) {
@@ -272,7 +165,9 @@ public class ResolverUtil<T> {
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
     public void findAnnotated(Class<? extends Annotation> annotation, String... packageNames) {
-        if (packageNames == null) return;
+        if (packageNames == null) {
+            return;
+        }
 
         Test test = new AnnotatedWith(annotation);
         for (String pkg : packageNames) {
@@ -281,7 +176,9 @@ public class ResolverUtil<T> {
     }
 
     public void findNamedResource(String name, String... pathNames) {
-        if (pathNames == null) return;
+        if (pathNames == null) {
+            return;
+        }
 
         Test test = new NameIs(name);
         for (String pkg : pathNames) {
@@ -297,7 +194,9 @@ public class ResolverUtil<T> {
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
     public void find(Test test, String... packageNames) {
-        if (packageNames == null) return;
+        if (packageNames == null) {
+            return;
+        }
 
         for (String pkg : packageNames) {
             findInPackage(test, pkg);
@@ -321,8 +220,7 @@ public class ResolverUtil<T> {
 
         try {
             urls = loader.getResources(packageName);
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             LOG.warn("Could not read package: " + packageName, ioe);
             return;
         }
@@ -333,7 +231,7 @@ public class ResolverUtil<T> {
                 urlPath = URLDecoder.decode(urlPath, "UTF-8");
 
                 // If it's a file in a directory, trim the stupid file: spec
-                if ( urlPath.startsWith("file:") ) {
+                if (urlPath.startsWith("file:")) {
                     urlPath = urlPath.substring(5);
                 }
 
@@ -344,14 +242,12 @@ public class ResolverUtil<T> {
 
                 LOG.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
                 File file = new File(urlPath);
-                if ( file.isDirectory() ) {
+                if (file.isDirectory()) {
                     loadImplementationsInDirectory(test, packageName, file);
-                }
-                else {
+                } else {
                     loadImplementationsInJar(test, packageName, file);
                 }
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 LOG.warn("could not read entries", ioe);
             }
         }
@@ -375,14 +271,13 @@ public class ResolverUtil<T> {
         StringBuilder builder;
 
         for (File file : files) {
-            builder = new StringBuilder(100);
+            builder = new StringBuilder();
             builder.append(parent).append("/").append(file.getName());
-            String packageOrClass = ( parent == null ? file.getName() : builder.toString() );
+            String packageOrClass = parent == null ? file.getName() : builder.toString();
 
             if (file.isDirectory()) {
                 loadImplementationsInDirectory(test, packageOrClass, file);
-            }
-            else if (isTestApplicable(test, file.getName())) {
+            } else if (isTestApplicable(test, file.getName())) {
                 addIfMatching(test, packageOrClass);
             }
         }
@@ -407,14 +302,13 @@ public class ResolverUtil<T> {
             JarEntry entry;
             JarInputStream jarStream = new JarInputStream(new FileInputStream(jarfile));
 
-            while ( (entry = jarStream.getNextJarEntry() ) != null) {
+            while ((entry = jarStream.getNextJarEntry()) != null) {
                 String name = entry.getName();
                 if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                     addIfMatching(test, name);
                 }
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
                       test + " due to an IOException", ioe);
         }
@@ -437,8 +331,8 @@ public class ResolverUtil<T> {
                 }
 
                 Class type = loader.loadClass(externalName);
-                if (test.matches(type) ) {
-                    classMatches.add( (Class<T>) type);
+                if (test.matches(type)) {
+                    classMatches.add((Class<T>) type);
                 }
             }
             if (test.doesMatchResource()) {
@@ -450,10 +344,167 @@ public class ResolverUtil<T> {
                     resourceMatches.add(url.toURI());
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             LOG.warn("Could not examine class '" + fqn + "' due to a " +
                      t.getClass().getName() + " with message: " + t.getMessage());
+        }
+    }
+
+    /**
+     * A simple interface that specifies how to test classes to determine if they
+     * are to be included in the results produced by the ResolverUtil.
+     */
+    public interface Test {
+        /**
+         * Will be called repeatedly with candidate classes. Must return True if a class
+         * is to be included in the results, false otherwise.
+         * @param type The Class to match against.
+         * @return true if the Class matches.
+         */
+        boolean matches(Class type);
+
+        /**
+         * Test for a resource.
+         * @param resource The URI to the resource.
+         * @return true if the resource matches.
+         */
+        boolean matches(URI resource);
+
+        boolean doesMatchClass();
+        boolean doesMatchResource();
+    }
+
+    /**
+     * Test against a Class.
+     */
+    public abstract static class ClassTest implements Test {
+        public boolean matches(URI resource) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean doesMatchClass() {
+            return true;
+        }
+        public boolean doesMatchResource() {
+            return false;
+        }
+    }
+
+    /**
+     * Test against a resource.
+     */
+    public abstract static class ResourceTest implements Test {
+        public boolean matches(Class cls) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean doesMatchClass() {
+            return false;
+        }
+        public boolean doesMatchResource() {
+            return true;
+        }
+    }
+
+    /**
+     * A Test that checks to see if each class is assignable to the provided class. Note
+     * that this test will match the parent type itself if it is presented for matching.
+     */
+    public static class IsA extends ClassTest {
+        private Class parent;
+
+        /**
+         * Constructs an IsA test using the supplied Class as the parent class/interface.
+         * @param parentType The parent class to check for.
+         */
+        public IsA(Class parentType) { this.parent = parentType; }
+
+        /**
+         * Returns true if type is assignable to the parent type supplied in the constructor.
+         * @param type The Class to check.
+         * @return true if the Class matches.
+         */
+        public boolean matches(Class type) {
+            return type != null && parent.isAssignableFrom(type);
+        }
+
+        @Override
+        public String toString() {
+            return "is assignable to " + parent.getSimpleName();
+        }
+    }
+
+    /**
+     * A Test that checks to see if each class name ends with the provided suffix.
+     */
+    public static class NameEndsWith extends ClassTest {
+        private String suffix;
+
+        /**
+         * Constructs a NameEndsWith test using the supplied suffix.
+         * @param suffix the String suffix to check for.
+         */
+        public NameEndsWith(String suffix) { this.suffix = suffix; }
+
+        /**
+         * Returns true if type name ends with the suffix supplied in the constructor.
+         * @param type The Class to check.
+         * @return true if the Class matches.
+         */
+        public boolean matches(Class type) {
+            return type != null && type.getName().endsWith(suffix);
+        }
+
+        @Override
+        public String toString() {
+            return "ends with the suffix " + suffix;
+        }
+    }
+
+    /**
+     * A Test that checks to see if each class is annotated with a specific annotation. If it
+     * is, then the test returns true, otherwise false.
+     */
+    public static class AnnotatedWith extends ClassTest {
+        private Class<? extends Annotation> annotation;
+
+        /**
+         * Constructs an AnnotatedWith test for the specified annotation type.
+         * @param annotation The annotation to check for.
+         */
+        public AnnotatedWith(Class<? extends Annotation> annotation) {
+            this.annotation = annotation;
+        }
+
+        /**
+         * Returns true if the type is annotated with the class provided to the constructor.
+         * @param type the Class to match against.
+         * @return true if the Classes match.
+         */
+        public boolean matches(Class type) {
+            return type != null && type.isAnnotationPresent(annotation);
+        }
+
+        @Override
+        public String toString() {
+            return "annotated with @" + annotation.getSimpleName();
+        }
+    }
+
+    /**
+     * A Test that checks to see if the class name matches.
+     */
+    public static class NameIs extends ResourceTest {
+        private String name;
+
+        public NameIs(String name) { this.name = "/" + name; }
+
+        public boolean matches(URI resource) {
+            return (resource.getPath().endsWith(name));
+        }
+
+        @Override public String toString() {
+            return "named " + name;
         }
     }
 }

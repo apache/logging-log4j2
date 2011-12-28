@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Represents a Configuration element.
  */
 
 public class Node {
@@ -99,8 +99,9 @@ public class Node {
         return type;
     }
 
+    @Override
     public String toString() {
         return type.isObjectPrintable() ? object.toString() :
-            type.getPluginClass().getName() + " with name " + name; 
+            type.getPluginClass().getName() + " with name " + name;
     }
 }

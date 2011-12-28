@@ -54,22 +54,39 @@ import java.util.TreeSet;
  * DefaultConfiguration is always called last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory {
-
+    /**
+     * Allow the ConfigurationFactory class to be specified as a system property.
+     */
     public static final String CONFIGURATION_FACTORY_PROPERTY = "log4j.configurationFactory";
 
+    /**
+     * Allow the location of the configuration file to be specified as a system property.
+     */
     public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
 
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    /**
+     * File name prefix for test configurations.
+     */
+    protected static final String TEST_PREFIX = "log4j2-test";
+
+    /**
+     * File name prefix for standard configurations.
+     */
+    protected static final String DEFAULT_PREFIX = "log4j2";
 
     private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
 
-    protected File configFile = null;
-
-    protected static final String TEST_PREFIX = "log4j2-test";
-
-    protected static final String DEFAULT_PREFIX = "log4j2";
-
     private static ConfigurationFactory configFactory = new Factory();
+
+    /**
+     * The configuration File.
+     */
+    protected File configFile = null;
 
     /**
      * Return the ConfigurationFactory.

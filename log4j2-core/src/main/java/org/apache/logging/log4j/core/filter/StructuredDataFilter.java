@@ -44,7 +44,7 @@ public final class StructuredDataFilter extends MapFilter {
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         if (msg instanceof StructuredDataMessage) {
-            return filter((StructuredDataMessage)msg);
+            return filter((StructuredDataMessage) msg);
         }
         return Result.NEUTRAL;
     }
@@ -118,25 +118,25 @@ public final class StructuredDataFilter extends MapFilter {
                                                     @PluginAttr("onmatch") String match,
                                                     @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
-            logger.error("keys and values must be specified for the StructuredDataFilter");
+            LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
         }
         Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                logger.error("A null key is not valid in StructuredDataFilter");
+                LOGGER.error("A null key is not valid in StructuredDataFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                logger.error("A null value for key " + key + " is not allowed in StructuredDataFilter");
+                LOGGER.error("A null value for key " + key + " is not allowed in StructuredDataFilter");
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());
         }
         if (map.size() == 0) {
-            logger.error("StructuredDataFilter is not configured with any valid key value pairs");
+            LOGGER.error("StructuredDataFilter is not configured with any valid key value pairs");
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");

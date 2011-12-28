@@ -42,9 +42,12 @@ import java.util.Map;
  * Creates a Node hierarchy from a JSON file.
  */
 public class JSONConfiguration extends BaseConfiguration {
-    private List<Status> status = new ArrayList<Status>();
 
-    private static final String[] verboseClasses = new String[] { ResolverUtil.class.getName() };
+    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
+
+    private static final int BUF_SIZE = 16384;
+
+    private List<Status> status = new ArrayList<Status>();
 
     private JsonNode root;
 
@@ -92,14 +95,14 @@ public class JSONConfiguration extends BaseConfiguration {
                     found = true;
                     ((StatusConsoleListener) listener).setLevel(status);
                     if (!verbose) {
-                        ((StatusConsoleListener) listener).setFilters(verboseClasses);
+                        ((StatusConsoleListener) listener).setFilters(VERBOSE_CLASSES);
                     }
                 }
             }
             if (!found && status != Level.OFF) {
                 StatusConsoleListener listener = new StatusConsoleListener(status);
                 if (!verbose) {
-                    listener.setFilters(verboseClasses);
+                    listener.setFilters(VERBOSE_CLASSES);
                 }
                 ((StatusLogger) LOGGER).registerListener(listener);
             }
@@ -149,7 +152,7 @@ public class JSONConfiguration extends BaseConfiguration {
                 }
                 if (n.isArray()) {
                     LOGGER.debug("Processing node for array " + entry.getKey());
-                    for (int i=0; i < n.size(); ++i) {
+                    for (int i = 0; i < n.size(); ++i) {
                         String pluginType = getType(n.get(i), entry.getKey());
                         PluginType entryType = getPluginManager().getPluginType(pluginType);
                         Node item = new Node(node, entry.getKey(), entryType);
@@ -184,7 +187,8 @@ public class JSONConfiguration extends BaseConfiguration {
             t = type.getElementName() + ":" + type.getPluginClass();
         }
 
-        String p = node.getParent() == null ? "null" : node.getParent().getName() == null ? "root" : node.getParent().getName();
+        String p = node.getParent() == null ? "null" : node.getParent().getName() == null ?
+            "root" : node.getParent().getName();
         LOGGER.debug("Returning " + node.getName() + " with parent " + p + " of type " +  t);
         return node;
     }
@@ -221,7 +225,7 @@ public class JSONConfiguration extends BaseConfiguration {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
-        byte[] data = new byte[16384];
+        byte[] data = new byte[BUF_SIZE];
 
         while ((nRead = is.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, nRead);
@@ -230,14 +234,20 @@ public class JSONConfiguration extends BaseConfiguration {
         return buffer.toByteArray();
     }
 
-     private enum ErrorType {
+    /**
+     * The error that occurred.
+     */
+    private enum ErrorType {
         CLASS_NOT_FOUND
     }
 
-     private class Status {
-        JsonNode node;
-        String name;
-        ErrorType errorType;
+    /**
+     * Status for recording errors.
+     */
+    private class Status {
+        private JsonNode node;
+        private String name;
+        private ErrorType errorType;
 
         public Status(String name, JsonNode node, ErrorType errorType) {
             this.name = name;

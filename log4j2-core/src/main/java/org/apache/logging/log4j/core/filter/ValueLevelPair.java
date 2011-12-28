@@ -44,7 +44,7 @@ public class ValueLevelPair {
     }
 
     /**
-     * Create a Value/Level pair using the Log Levels
+     * Create a Value/Level pair using the Log Levels.
      * @param key The key.
      * @param value Its value.
      * @return A ValueLevelPair.

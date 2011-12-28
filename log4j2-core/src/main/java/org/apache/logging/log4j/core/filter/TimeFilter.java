@@ -112,8 +112,8 @@ public final class TimeFilter extends FilterBase {
             stf.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
                 s = stf.parse(start).getTime();
-            } catch(ParseException ex) {
-                logger.warn("Error parsing start value " + start, ex);
+            } catch (ParseException ex) {
+                LOGGER.warn("Error parsing start value " + start, ex);
             }
         }
         long e = Long.MAX_VALUE;
@@ -121,8 +121,8 @@ public final class TimeFilter extends FilterBase {
             stf.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
                 e = stf.parse(end).getTime();
-            } catch(ParseException ex) {
-                logger.warn("Error parsing start value " + end, ex);
+            } catch (ParseException ex) {
+                LOGGER.warn("Error parsing start value " + end, ex);
             }
         }
         TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);

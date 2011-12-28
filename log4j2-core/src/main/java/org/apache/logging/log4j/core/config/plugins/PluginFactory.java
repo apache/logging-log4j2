@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Identifies a Method as the factory to create the plugin.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

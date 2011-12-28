@@ -17,10 +17,13 @@
 package org.apache.logging.log4j.core.helpers;
 
 /**
- *
+ * Log4j Constants.
  */
 public final class Constants {
 
+    /**
+     * Name of the system property to use to identify the ContextSelector Class.
+     */
     public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
 
     /**
@@ -31,5 +34,6 @@ public final class Constants {
     /**
      * Prevent class instantiation.
      */
-    private Constants() {};
+    private Constants() {
+    }
 }

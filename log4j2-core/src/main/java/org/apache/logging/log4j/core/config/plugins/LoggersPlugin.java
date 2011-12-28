@@ -23,11 +23,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * Container of Logger objects.
  */
 @Plugin(name = "loggers", type = "Core")
-public class LoggersPlugin {
+public final class LoggersPlugin {
 
+    private LoggersPlugin() {
+    }
+
+    /**
+     * Create a Loggers object to contain all the Loggers.
+     * @param loggers An array of Loggers.
+     * @return A Loggers object.
+     */
     @PluginFactory
     public static Loggers createLoggers(@PluginElement("loggers") LoggerConfig[] loggers) {
         ConcurrentMap<String, LoggerConfig> loggerMap = new ConcurrentHashMap<String, LoggerConfig>();

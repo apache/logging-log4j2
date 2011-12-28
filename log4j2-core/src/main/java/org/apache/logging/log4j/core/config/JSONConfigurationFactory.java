@@ -24,18 +24,21 @@ import java.io.File;
 /**
  *
  */
-@Plugin(name="JSONConfigurationFactory", type="ConfigurationFactory")
+@Plugin(name = "JSONConfigurationFactory", type = "ConfigurationFactory")
 @Order(6)
 public class JSONConfigurationFactory extends ConfigurationFactory {
 
+    /**
+     * The file extensions supported by this factory.
+     */
     public static final String[] SUFFIXES = new String[] {".json", ".jsn"};
-
-    private File configFile = null;
 
     private static String[] dependencies = new String[] {
         "org.codehaus.jackson.JsonNode",
         "org.codehaus.jackson.map.ObjectMapper"
     };
+
+    private File configFile = null;
 
     private boolean isActive;
 

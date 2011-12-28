@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import java.util.Iterator;
 
 /**
- *
+ * Enhances a Class by allowing it to contain Filters.
  */
 public class Filterable implements Filtering {
 
@@ -37,13 +37,17 @@ public class Filterable implements Filtering {
     }
 
     /**
-     * Return the Filter
+     * Return the Filter.
      * @return the Filter.
      */
     public Filter getFilter() {
         return filter;
     }
 
+    /**
+     * Add a filter.
+     * @param filter The Filter to add.
+     */
     public synchronized void addFilter(Filter filter) {
         if (this.filter == null) {
             this.filter = filter;
@@ -55,6 +59,10 @@ public class Filterable implements Filtering {
         }
     }
 
+    /**
+     * Remove a Filter.
+     * @param filter The Filter to remove.
+     */
     public synchronized void removeFilter(Filter filter) {
         if (this.filter == filter) {
             this.filter = null;
@@ -72,22 +80,37 @@ public class Filterable implements Filtering {
         }
     }
 
+    /**
+     * Determines if a Filter is present.
+     * @return false if no Filter is present.
+     */
     public boolean hasFilter() {
         return filter != null;
     }
 
+    /**
+     * Make the Filter available for use.
+     */
     public void startFilter() {
        if (filter != null && filter instanceof Lifecycle) {
            ((Lifecycle) filter).start();
        }
     }
 
+    /**
+     * Cleanup the Filter.
+     */
     public void stopFilter() {
        if (filter != null && filter instanceof Lifecycle) {
            ((Lifecycle) filter).stop();
        }
     }
 
+    /**
+     * Determine if the LogEvent should be processed or ignored.
+     * @param event The LogEvent.
+     * @return true if the LogEvent should be processed.
+     */
     public boolean isFiltered(LogEvent event) {
         return filter != null && filter.filter(event) == Filter.Result.DENY;
     }

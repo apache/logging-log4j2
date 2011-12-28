@@ -27,7 +27,9 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private static final int MASK = 0x0f;
 
-    private final static int MIN_INTERVAL = 30;
+    private static final int MIN_INTERVAL = 30;
+
+    private static final int MILLIS_PER_SECOND = 1000;
 
     private final File file;
 
@@ -51,7 +53,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
         this.file = file;
         this.lastModified = file.lastModified();
         this.listeners = listeners;
-        this.interval = (interval < MIN_INTERVAL ? MIN_INTERVAL : interval) * 1000;
+        this.interval = (interval < MIN_INTERVAL ? MIN_INTERVAL : interval) * MILLIS_PER_SECOND;
         this.nextCheck = System.currentTimeMillis() + interval;
     }
 
@@ -60,7 +62,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      */
     public void checkConfiguration() {
         if ((++counter & MASK) == 0) {
-            synchronized(this) {
+            synchronized (this) {
                 long current = System.currentTimeMillis();
                 if (current >= nextCheck) {
                     nextCheck = current + interval;

@@ -43,10 +43,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Logger object that is created via configuration.
  */
-@Plugin(name="logger",type="Core", printObject=true)
+@Plugin(name = "logger", type = "Core", printObject = true)
 public class LoggerConfig extends Filterable implements LogEventFactory {
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private List<String> appenderRefs = new ArrayList<String>();
     private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
@@ -233,7 +233,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Logs an event/
+     * Logs an event.
      * @param event Yhe log event.
      */
     public void log(LogEvent event) {
@@ -250,7 +250,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     private void callAppenders(LogEvent event) {
-        for (AppenderControl control: appenders.values()) {
+        for (AppenderControl control : appenders.values()) {
             control.callAppender(event);
         }
     }
@@ -270,6 +270,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         return new Log4jLogEvent(loggerName, marker, fqcn, level, data, t);
     }
 
+    @Override
     public String toString() {
         return name == null || name.length() == 0 ? "root" : name;
     }
@@ -290,7 +291,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
                                             @PluginElement("appender-ref") String[] refs,
                                             @PluginElement("filters") Filter filter) {
         if (loggerName == null) {
-            logger.error("Loggers cannot be configured without a name");
+            LOGGER.error("Loggers cannot be configured without a name");
             return null;
         }
 
@@ -305,7 +306,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     /**
      * The root Logger.
      */
-    @Plugin(name = "root", type = "Core", printObject=true)
+    @Plugin(name = "root", type = "Core", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

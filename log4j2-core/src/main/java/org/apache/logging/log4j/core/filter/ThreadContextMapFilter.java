@@ -33,9 +33,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
+ * Filter based on a value in the Thread Context Map (MDC).
  */
-@Plugin(name="ThreadContextMapFilter", type="Core", elementType="filter", printObject = true)
+@Plugin(name = "ThreadContextMapFilter", type = "Core", elementType = "filter", printObject = true)
 public class ThreadContextMapFilter extends FilterBase {
     private final Map<String, String> map;
 
@@ -52,7 +52,7 @@ public class ThreadContextMapFilter extends FilterBase {
             Iterator<Map.Entry<String, String>> iter = pairs.entrySet().iterator();
             Map.Entry<String, String> entry = iter.next();
             this.key = entry.getKey();
-            this.value= entry.getValue();
+            this.value = entry.getValue();
             this.map = null;
             this.isAnd = false;
             this.useMap = false;
@@ -136,25 +136,25 @@ public class ThreadContextMapFilter extends FilterBase {
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
-            logger.error("key and value pairs must be specified for the ThreadContextMapFilter");
+            LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
         }
         Map<String, String> map = new HashMap<String, String>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                logger.error("A null key is not valid in ThreadContextMapFilter");
+                LOGGER.error("A null key is not valid in ThreadContextMapFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                logger.error("A null value for key " + key + " is not allowed in ThreadContextMapFilter");
+                LOGGER.error("A null value for key " + key + " is not allowed in ThreadContextMapFilter");
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());
         }
         if (map.size() == 0) {
-            logger.error("ThreadContextMapFilter is not configured with any valid key value pairs");
+            LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");

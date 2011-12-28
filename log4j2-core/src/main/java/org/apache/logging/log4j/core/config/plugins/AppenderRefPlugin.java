@@ -20,18 +20,26 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- *
+ * An Appender reference.
  */
 @Plugin(name = "appender-ref", type = "Core", printObject = true)
-public class AppenderRefPlugin {
+public final class AppenderRefPlugin {
 
-    protected final static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private AppenderRefPlugin() {
+    }
+
+    /**
+     * Create an Appender reference.
+     * @param ref The name of the Appender.
+     * @return The name of the Appender.
+     */
     @PluginFactory
     public static String createAppenderRef(@PluginAttr("ref") String ref) {
 
         if (ref == null) {
-            logger.error("Appender references must contain a reference");
+            LOGGER.error("Appender references must contain a reference");
         }
         return ref;
     }

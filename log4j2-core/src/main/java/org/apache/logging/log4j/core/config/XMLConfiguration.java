@@ -56,6 +56,12 @@ import java.util.Map;
  */
 public class XMLConfiguration extends BaseConfiguration {
 
+    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
+
+    private static final String LOG4J_XSD = "Log4J-V2.0.xsd";
+
+    private static final int BUF_SIZE = 16384;
+
     private List<Status> status = new ArrayList<Status>();
 
     private Element rootElement = null;
@@ -64,11 +70,7 @@ public class XMLConfiguration extends BaseConfiguration {
 
     private String schema = null;
 
-    private static final String[] verboseClasses = new String[] { ResolverUtil.class.getName() };
-
     private Validator validator;
-
-    private static final String LOG4J_XSD = "Log4J-V2.0.xsd";
 
     public XMLConfiguration(InputSource source, File configFile) {
         byte[] buffer = null;
@@ -114,14 +116,14 @@ public class XMLConfiguration extends BaseConfiguration {
                     found = true;
                     ((StatusConsoleListener) listener).setLevel(status);
                     if (!verbose) {
-                        ((StatusConsoleListener)listener).setFilters(verboseClasses);
+                        ((StatusConsoleListener) listener).setFilters(VERBOSE_CLASSES);
                     }
                 }
             }
             if (!found && status != Level.OFF) {
                 StatusConsoleListener listener = new StatusConsoleListener(status);
                 if (!verbose) {
-                    listener.setFilters(verboseClasses);
+                    listener.setFilters(VERBOSE_CLASSES);
                 }
                 ((StatusLogger) LOGGER).registerListener(listener);
             }
@@ -216,7 +218,7 @@ public class XMLConfiguration extends BaseConfiguration {
     private String getType(Element element) {
         if (strict) {
             NamedNodeMap attrs = element.getAttributes();
-            for (int i= 0; i < attrs.getLength(); ++i) {
+            for (int i = 0; i < attrs.getLength(); ++i) {
                 org.w3c.dom.Node w3cNode = attrs.item(i);
                 if (w3cNode instanceof Attr) {
                     Attr attr = (Attr) w3cNode;
@@ -235,7 +237,7 @@ public class XMLConfiguration extends BaseConfiguration {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
-        byte[] data = new byte[16384];
+        byte[] data = new byte[BUF_SIZE];
 
         while ((nRead = is.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, nRead);
@@ -258,14 +260,20 @@ public class XMLConfiguration extends BaseConfiguration {
         return attributes;
     }
 
+    /**
+     * The error that occurred.
+     */
     private enum ErrorType {
         CLASS_NOT_FOUND
     }
 
+    /**
+     * Status for recording errors.
+     */
     private class Status {
-        Element element;
-        String name;
-        ErrorType errorType;
+        private Element element;
+        private String name;
+        private ErrorType errorType;
 
         public Status(String name, Element element, ErrorType errorType) {
             this.name = name;

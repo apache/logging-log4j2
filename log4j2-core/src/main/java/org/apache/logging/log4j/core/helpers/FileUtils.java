@@ -26,10 +26,9 @@ import java.net.URI;
 import java.net.URLDecoder;
 
 /**
- *
+ * File utilities.
  */
 public final class FileUtils {
-
 
     /** Constant for the file URL protocol.*/
     private static final String PROTOCOL_FILE = "file";
@@ -46,14 +45,10 @@ public final class FileUtils {
      * @param uri the URI
      * @return the resulting file object
      */
-    public static File fileFromURI(URI uri)
-    {
-        if (uri == null || !uri.getScheme().equals(PROTOCOL_FILE))
-        {
+    public static File fileFromURI(URI uri) {
+        if (uri == null || !uri.getScheme().equals(PROTOCOL_FILE)) {
             return null;
-        }
-        else
-        {
+        } else {
             try {
                 return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
             } catch (MalformedURLException ex) {

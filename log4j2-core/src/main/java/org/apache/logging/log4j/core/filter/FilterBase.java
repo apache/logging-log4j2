@@ -32,59 +32,91 @@ import org.apache.logging.log4j.message.Message;
  *
  */
 public abstract class FilterBase implements Filter, Lifecycle {
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
-    protected boolean started;
-
+    /**
+     * The onMatch Result.
+     */
     protected final Result onMatch;
 
+    /**
+     * The onMismatch Result.
+     */
     protected final Result onMismatch;
 
-    protected static final org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
+    private boolean started;
 
-    protected static final String ON_MATCH = "onmatch";
-    protected static final String ON_MISMATCH = "onmismatch";
-
+    /**
+     * The default constructor.
+     */
     protected FilterBase() {
         this(null, null);
     }
 
+    /**
+     * Constructor that allows the onMatch and onMismatch actions to be set.
+     * @param onMatch The result to return when a match occurs.
+     * @param onMismatch The result to return when a match dos not occur.
+     */
     protected FilterBase(Result onMatch, Result onMismatch) {
         this.onMatch = onMatch == null ? Result.NEUTRAL : onMatch;
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
 
+    /**
+     * Mark the Filter as started.
+     */
     public void start() {
         started = true;
     }
 
+    /**
+     * Determine if the the Filter has started.
+     * @return true if the Filter is started, false otherwise.
+     */
     public boolean isStarted() {
         return started;
     }
 
+    /**
+     * Mark the Filter as stopped.
+     */
     public void stop() {
         started = false;
     }
 
+    /**
+     * Return the Result to be returned when a match does not occur.
+     * @return the onMismatch Result.
+     */
     public final Result getOnMismatch() {
         return onMismatch;
     }
 
+    /**
+     * Return the Result to be returned when a match occurs.
+     * @return the onMatch Result.
+     */
     public final Result getOnMatch() {
         return onMatch;
     }
 
+    @Override
     public String toString() {
         return this.getClass().getSimpleName();
     }
 
     /**
      * Appender Filter method. The default returns NEUTRAL.
-     * @param logger the logger
-     * @param level
-     * @param marker
-     * @param msg
-     * @param params
-     * @return
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param params An array of parameters or null.
+     * @return The Result of filtering.
      */
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
         return Result.NEUTRAL;
@@ -92,12 +124,12 @@ public abstract class FilterBase implements Filter, Lifecycle {
 
     /**
      * Appender Filter method. The default returns NEUTRAL.
-     * @param logger
-     * @param level
-     * @param marker
-     * @param msg
-     * @param t
-     * @return
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param t A throwable or null.
+     * @return The Result of filtering.
      */
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
         return Result.NEUTRAL;
@@ -105,12 +137,12 @@ public abstract class FilterBase implements Filter, Lifecycle {
 
     /**
      * Appender Filter method. The default returns NEUTRAL.
-     * @param logger
-     * @param level
-     * @param marker
-     * @param msg
-     * @param t
-     * @return
+     * @param logger the Logger.
+     * @param level The logging Level.
+     * @param marker The Marker, if any.
+     * @param msg The message, if present.
+     * @param t A throwable or null.
+     * @return The Result of filtering.
      */
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         return Result.NEUTRAL;
@@ -118,8 +150,8 @@ public abstract class FilterBase implements Filter, Lifecycle {
 
     /**
      * Context Filter method. The default returns NEUTRAL.
-     * @param event
-     * @return
+     * @param event The LogEvent.
+     * @return The Result of filtering.
      */
     public Result filter(LogEvent event) {
         return Result.NEUTRAL;
