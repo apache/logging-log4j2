@@ -42,14 +42,7 @@ import java.util.ArrayList;
 @Plugin(name = "HTMLLayout", type = "Core", elementType = "layout", printObject = true)
 public final class HTMLLayout extends AbstractStringLayout {
 
-    protected static final int BUF_SIZE = 256;
-
-    // Print no location info by default
-    protected final boolean locationInfo;
-
-    protected final String title;
-
-    protected final String contentType;
+    private static final int BUF_SIZE = 256;
 
     private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -60,6 +53,13 @@ public final class HTMLLayout extends AbstractStringLayout {
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
 
     private final long jvmStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+
+    // Print no location info by default
+    private final boolean locationInfo;
+
+    private final String title;
+
+    private final String contentType;
 
     private HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
         super(charset);
@@ -148,23 +148,24 @@ public final class HTMLLayout extends AbstractStringLayout {
         return sbuf.toString();
     }
 
-    void appendThrowableAsHTML(Throwable throwable, StringBuilder sbuf) {
+    private void appendThrowableAsHTML(Throwable throwable, StringBuilder sbuf) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         try {
             throwable.printStackTrace(pw);
-        } catch(RuntimeException ex) {
+        } catch (RuntimeException ex) {
+            // Ignore the exception.
         }
         pw.flush();
         LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
         ArrayList<String> lines = new ArrayList<String>();
         try {
           String line = reader.readLine();
-          while(line != null) {
+          while (line != null) {
             lines.add(line);
             line = reader.readLine();
           }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             if (ex instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -184,6 +185,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     /**
      * Returns appropriate HTML headers.
+     * @return The header as a byte array.
      */
     @Override
     public byte[] getHeader() {
@@ -223,6 +225,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     /**
      * Returns the appropriate HTML footers.
+     * @return the footer as a byet array.
      */
     @Override
     public byte[] getFooter() {

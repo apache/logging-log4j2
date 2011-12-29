@@ -97,18 +97,34 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         }
     }
 
+    /**
+     * Returns the logging Level.
+     * @return the Level associated with this event.
+     */
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * Return the name of the Logger used to generate the event.
+     * @return The Logger name.
+     */
     public String getLoggerName() {
         return name;
     }
 
+    /**
+     * Return the Message associated with the event.
+     * @return The Message.
+     */
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * Return the name of the Thread on which the event was generated.
+     * @return The name of the Thread.
+     */
     public String getThreadName() {
         if (threadName == null) {
             threadName = Thread.currentThread().getName();
@@ -116,18 +132,34 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return threadName;
     }
 
+    /**
+     * Return the time in milliseconds from the epoch when the event occurred.
+     * @return The time the event occurred.
+     */
     public long getMillis() {
         return timestamp;
     }
 
+    /**
+     * Return the Throwable associated with the event, or null.
+     * @return The Throwable associated with the event.
+     */
     public Throwable getThrown() {
         return throwable;
     }
 
+    /**
+     * Return the Marker associated with the event, or null.
+     * @return the Marker associated with the event.
+     */
     public Marker getMarker() {
         return marker;
     }
 
+    /**
+     * The fully qualified class name of the class that was called by the caller.
+     * @return the fully qualified class name of the class that is performing logging.
+     */
     public String getFQCN() {
         return fqcnOfLogger;
     }
@@ -135,6 +167,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     /**
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.
+     * @return The context Map.
      */
     public Map<String, String> getContextMap() {
         return mdc;
@@ -143,6 +176,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     /**
      * @doubt Allows direct access to the map passed into the constructor, would allow appender
      * or layout to manipulate event as seen by other appenders.
+     * @return The context Stack.
      */
     public Stack<String> getContextStack() {
         return ndc;
@@ -151,6 +185,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     /**
      * Return the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.
+     * @return the StackTraceElement for the caller.
      */
     public StackTraceElement getSource() {
         if (fqcnOfLogger == null) {

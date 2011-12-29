@@ -20,13 +20,16 @@ package org.apache.logging.log4j.core.helpers;
 /**
  * Utility class for transforming strings.
  */
-public class Transform {
+public final class Transform {
 
     private static final String CDATA_START = "<![CDATA[";
     private static final String CDATA_END = "]]>";
     private static final String CDATA_PSEUDO_END = "]]&gt;";
     private static final String CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
     private static final int CDATA_END_LEN = CDATA_END.length();
+
+    private Transform() {
+    }
 
     /**
      * This method takes a string which may contain HTML tags (ie,
@@ -37,7 +40,7 @@ public class Transform {
      * @param input The text to be converted.
      * @return The input string with the special characters replaced.
      */
-    static public String escapeTags(final String input) {
+    public static String escapeTags(final String input) {
         //Check if the string is null, zero length or devoid of special characters
         // if so, return what was sent in.
 
@@ -85,8 +88,7 @@ public class Transform {
      *            section are the responsibility of the calling method.
      * @param str The String that is inserted into an existing CDATA Section within buf.
      */
-    static public void appendEscapingCDATA(final StringBuilder buf,
-                                           final String str) {
+    public static void appendEscapingCDATA(final StringBuilder buf, final String str) {
         if (str != null) {
             int end = str.indexOf(CDATA_END);
             if (end < 0) {

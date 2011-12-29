@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.io.Serializable;
 
 /**
- * Package data for a StackTraceElement
+ * Package data for a StackTraceElement.
  */
 public class StackTracePackageElement implements Serializable {
 
@@ -31,24 +31,43 @@ public class StackTracePackageElement implements Serializable {
 
     private final boolean isExact;
 
+    /**
+     * Constructor that takes the location, version, and exact match flag.
+     * @param location The location of the Class.
+     * @param version The version of the component.
+     * @param exact if true this is an exact package element.
+     */
     public StackTracePackageElement(String location, String version, boolean exact) {
         this.location = location;
         this.version = version;
         this.isExact = exact;
     }
 
+    /**
+     * Return the location of the element.
+     * @return The location of the element.
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Return the version of the element.
+     * @return the version of the element.
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Return the indicator of whether this is an exact match.
+     * @return true if the location was determined exactly.
+     */
     public boolean isExact() {
         return isExact;
     }
 
+    @Override
     public String toString() {
         String exact = isExact ? "" : "~";
         return exact + "[" + location + ":" + version + "]";

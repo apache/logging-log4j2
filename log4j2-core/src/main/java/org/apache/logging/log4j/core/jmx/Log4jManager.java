@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class Log4jManager {
 
-    public StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     public List<LoggerContext> getLoggerContexts() {
         Log4jContextFactory factory = (Log4jContextFactory) LogManager.getFactory();
@@ -39,6 +39,6 @@ public class Log4jManager {
     }
 
     public List<StatusData> getStatusData() {
-        return logger.getStatusData();
+        return LOGGER.getStatusData();
     }
 }

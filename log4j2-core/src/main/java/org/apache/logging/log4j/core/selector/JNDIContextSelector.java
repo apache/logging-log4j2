@@ -95,7 +95,7 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     public LoggerContext getContext(String FQCN, boolean currentContext) {
 
-        LoggerContext lc = ContextAnchor.threadContext.get();
+        LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
             return lc;
         }

@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.Logger;
@@ -22,7 +21,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
@@ -30,19 +28,22 @@ import java.net.URL;
  * Load resources (or images) from various sources.
  */
 
-public class Loader {
+public final class Loader {
 
-    static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
+    private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-    static private boolean ignoreTCL = false;
+    private static boolean ignoreTCL = false;
 
-    static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
         String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
         if (ignoreTCLProp != null) {
             ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);
         }
+    }
+
+    private Loader() {
     }
 
     /**
@@ -73,7 +74,7 @@ public class Loader {
         try {
             classLoader = getTCL();
             if (classLoader != null) {
-                logger.trace("Trying to find [" + resource + "] using context classloader "
+                LOGGER.trace("Trying to find [" + resource + "] using context classloader "
                         + classLoader + ".");
                 url = classLoader.getResource(resource);
                 if (url != null) {
@@ -84,32 +85,32 @@ public class Loader {
             // We could not find resource. Let us now try with the classloader that loaded this class.
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
-                logger.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
+                LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
                 url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
             }
         } catch (IllegalAccessException t) {
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         } catch (InvocationTargetException t) {
             if (t.getTargetException() instanceof InterruptedException
                 || t.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         } catch (Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
             //    since not declared, must be error or RuntimeError.
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         }
 
         // Last ditch attempt: get the resource from the class path. It
         // may be the case that clazz was loaded by the Extentsion class
         // loader which the parent of the system class loader. Hence the
         // code below.
-        logger.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
+        LOGGER.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
         return ClassLoader.getSystemResource(resource);
     }
 
@@ -142,7 +143,7 @@ public class Loader {
         try {
             classLoader = getTCL();
             if (classLoader != null) {
-                logger.trace("Trying to find [" + resource + "] using context classloader " + classLoader + ".");
+                LOGGER.trace("Trying to find [" + resource + "] using context classloader " + classLoader + ".");
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
@@ -152,7 +153,7 @@ public class Loader {
             // We could not find resource. Let us now try with the classloader that loaded this class.
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
-                logger.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
+                LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
@@ -161,35 +162,41 @@ public class Loader {
 
             // We could not find resource. Finally try with the default ClassLoader.
             if (defaultLoader != null) {
-                logger.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
+                LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
                 is = defaultLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
                 }
             }
         } catch (IllegalAccessException t) {
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         } catch (InvocationTargetException t) {
             if (t.getTargetException() instanceof InterruptedException
                 || t.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         } catch (Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
             //    since not declared, must be error or RuntimeError.
-            logger.warn(TSTR, t);
+            LOGGER.warn(TSTR, t);
         }
 
         // Last ditch attempt: get the resource from the class path. It
         // may be the case that clazz was loaded by the Extentsion class
         // loader which the parent of the system class loader. Hence the
         // code below.
-        logger.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
+        LOGGER.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
         return ClassLoader.getSystemResourceAsStream(resource);
     }
 
+    /**
+     * Load a Class by name.
+     * @param clazz The class name.
+     * @return The Class.
+     * @throws ClassNotFoundException if the Class could not be found.
+     */
     public static Class loadClass(String clazz) throws ClassNotFoundException {
         // Just call Class.forName(clazz) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
@@ -197,13 +204,16 @@ public class Loader {
         } else {
             try {
                 return getTCL().loadClass(clazz);
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 return Class.forName(clazz);
             }
         }
     }
 
+    /**
+     * Return the ClassLoader to use.
+     * @return the ClassLoader.
+     */
     public static ClassLoader getClassLoader() {
         ClassLoader cl = null;
 

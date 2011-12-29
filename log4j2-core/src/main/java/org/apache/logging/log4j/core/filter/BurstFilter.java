@@ -61,6 +61,8 @@ public final class BurstFilter extends FilterBase {
 
     private static final int DEFAULT_RATE_MULTIPLE = 100;
 
+    private static final int HASH_SHIFT = 32;
+
     /**
      * Level of messages to be filtered. Anything at or below this level will be
      * filtered out if <code>maxBurst</code> has been exceeded. The default is
@@ -198,7 +200,7 @@ public final class BurstFilter extends FilterBase {
 
         @Override
         public int hashCode() {
-            return (int) (expireTime ^ (expireTime >>> 32));
+            return (int) (expireTime ^ (expireTime >>> HASH_SHIFT));
         }
     }
 

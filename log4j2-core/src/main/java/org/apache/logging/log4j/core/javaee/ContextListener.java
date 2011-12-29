@@ -23,13 +23,14 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- *
+ * Saves the LoggerContext into the ServletContext as an attribute.
  */
 public class ContextListener implements ServletContextListener {
 
+    /**
+     * The name of the attribute to use to store the LoggerContext into the ServletContext.
+     */
     public static final String LOG4J_CONTEXT_ATTRIBUTE = "Log4JContext";
-
-    public static ThreadLocal<LoggerContext> threadContext = new ThreadLocal<LoggerContext>();
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();

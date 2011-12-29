@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.Logger;
@@ -25,14 +24,15 @@ import java.util.Properties;
 /**
  * A convenience class to convert property values to specific types.
  */
-public class OptionConverter {
+public final class OptionConverter {
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    static String DELIM_START = "${";
-    static char DELIM_STOP = '}';
-    static int DELIM_START_LEN = 2;
-    static int DELIM_STOP_LEN = 1;
+    private static final String DELIM_START = "${";
+    private static final char DELIM_STOP = '}';
+    private static final int DELIM_START_LEN = 2;
+    private static final int DELIM_STOP_LEN = 1;
+    private static final int ONE_K = 1024;
 
     /**
      * OptionConverter is a static class.
@@ -97,7 +97,7 @@ public class OptionConverter {
         try {
             return System.getProperty(key, def);
         } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-            logger.debug("Was not allowed to read system property \"" + key + "\".");
+            LOGGER.debug("Was not allowed to read system property \"" + key + "\".");
             return def;
         }
     }
@@ -109,7 +109,7 @@ public class OptionConverter {
         // Get the value of the property in string form
         String className = findAndSubst(key, props);
         if (className == null) {
-            logger.error("Could not find value for key " + key);
+            LOGGER.error("Could not find value for key " + key);
             return defaultValue;
         }
         // Trim className to avoid trailing spaces that cause problems.
@@ -124,6 +124,9 @@ public class OptionConverter {
      * returned.
      * <p/>
      * <p>Case of value is unimportant.
+     * @param value The value to convert.
+     * @param dEfault The default value.
+     * @return true or false, depending on the value and/or default.
      */
     public static boolean toBoolean(String value, boolean dEfault) {
         if (value == null) {
@@ -150,9 +153,8 @@ public class OptionConverter {
             String s = value.trim();
             try {
                 return Integer.valueOf(s);
-            }
-            catch (NumberFormatException e) {
-                logger.error("[" + s + "] is not in proper int form.");
+            } catch (NumberFormatException e) {
+                LOGGER.error("[" + s + "] is not in proper int form.");
                 e.printStackTrace();
             }
         }
@@ -175,22 +177,21 @@ public class OptionConverter {
         int index;
 
         if ((index = s.indexOf("KB")) != -1) {
-            multiplier = 1024;
+            multiplier = ONE_K;
             s = s.substring(0, index);
         } else if ((index = s.indexOf("MB")) != -1) {
-            multiplier = 1024 * 1024;
+            multiplier = ONE_K * ONE_K;
             s = s.substring(0, index);
         } else if ((index = s.indexOf("GB")) != -1) {
-            multiplier = 1024 * 1024 * 1024;
+            multiplier = ONE_K * ONE_K * ONE_K;
             s = s.substring(0, index);
         }
         if (s != null) {
             try {
                 return Long.valueOf(s) * multiplier;
-            }
-            catch (NumberFormatException e) {
-                logger.error("[" + s + "] is not in proper int form.");
-                logger.error("[" + value + "] not in expected format.", e);
+            } catch (NumberFormatException e) {
+                LOGGER.error("[" + s + "] is not in proper int form.");
+                LOGGER.error("[" + value + "] not in expected format.", e);
             }
         }
         return dEfault;
@@ -213,7 +214,7 @@ public class OptionConverter {
         try {
             return substVars(value, props);
         } catch (IllegalArgumentException e) {
-            logger.error("Bad option value [" + value + "].", e);
+            LOGGER.error("Bad option value [" + value + "].", e);
             return value;
         }
     }
@@ -235,23 +236,23 @@ public class OptionConverter {
             try {
                 Class classObj = Loader.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
-                    logger.error("A \"" + className + "\" object is not assignable to a \"" +
+                    LOGGER.error("A \"" + className + "\" object is not assignable to a \"" +
                         superClass.getName() + "\" variable.");
-                    logger.error("The class \"" + superClass.getName() + "\" was loaded by ");
-                    logger.error("[" + superClass.getClassLoader() + "] whereas object of type ");
-                    logger.error("\"" + classObj.getName() + "\" was loaded by ["
+                    LOGGER.error("The class \"" + superClass.getName() + "\" was loaded by ");
+                    LOGGER.error("[" + superClass.getClassLoader() + "] whereas object of type ");
+                    LOGGER.error("\"" + classObj.getName() + "\" was loaded by ["
                         + classObj.getClassLoader() + "].");
                     return defaultValue;
                 }
                 return classObj.newInstance();
             } catch (ClassNotFoundException e) {
-                logger.error("Could not instantiate class [" + className + "].", e);
+                LOGGER.error("Could not instantiate class [" + className + "].", e);
             } catch (IllegalAccessException e) {
-                logger.error("Could not instantiate class [" + className + "].", e);
+                LOGGER.error("Could not instantiate class [" + className + "].", e);
             } catch (InstantiationException e) {
-                logger.error("Could not instantiate class [" + className + "].", e);
+                LOGGER.error("Could not instantiate class [" + className + "].", e);
             } catch (RuntimeException e) {
-                logger.error("Could not instantiate class [" + className + "].", e);
+                LOGGER.error("Could not instantiate class [" + className + "].", e);
             }
         }
         return defaultValue;
@@ -301,7 +302,8 @@ public class OptionConverter {
         StringBuilder sbuf = new StringBuilder();
 
         int i = 0;
-        int j, k;
+        int j;
+        int k;
 
         while (true) {
             j = val.indexOf(DELIM_START, i);

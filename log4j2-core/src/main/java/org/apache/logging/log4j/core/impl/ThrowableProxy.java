@@ -40,7 +40,7 @@ public class ThrowableProxy extends Throwable {
 
     private static PrivateSecurityManager securityManager;
 
-    private static final org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
+    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
     private static Method getSuppressed;
 
@@ -159,6 +159,10 @@ public class ThrowableProxy extends Throwable {
         return throwable.getStackTrace();
     }
 
+    /**
+     * Format the Throwable that is the cause of this Throwable.
+     * @return The formatted Throwable that caused this Throwable.
+     */
     public String getRootCauseStackTrace() {
         StringBuilder sb = new StringBuilder();
         if (cause != null) {
@@ -171,6 +175,11 @@ public class ThrowableProxy extends Throwable {
         return sb.toString();
     }
 
+    /**
+     * Formats the specified Throwable.
+     * @param sb StringBuilder to contain the formatted Throwable.
+     * @param cause The Throwable to format.
+     */
     public void formatWrapper(StringBuilder sb, ThrowableProxy cause) {
         Throwable caused = cause.getCause();
         if (caused != null) {
@@ -181,12 +190,31 @@ public class ThrowableProxy extends Throwable {
         formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData);
     }
 
+    /**
+     * Format the stack trace including packaging information.
+     * @return The formatted stack trace including packaging information.
+     */
     public String getExtendedStackTrace() {
         StringBuilder sb = new StringBuilder(throwable.toString());
         sb.append("\n");
         formatElements(sb, 0, throwable.getStackTrace(), callerPackageData);
         if (cause != null) {
             formatCause(sb, cause);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Format the suppressed Throwables.
+     * @return The formatted suppressed Throwables.
+     */
+    public String getSuppressedStackTrace() {
+        if (suppressed == null || suppressed.length == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder("Suppressed Stack Trace Elements:\n");
+        for (ThrowableProxy proxy : suppressed) {
+            sb.append(proxy.getExtendedStackTrace());
         }
         return sb.toString();
     }
@@ -201,7 +229,7 @@ public class ThrowableProxy extends Throwable {
 
     private void formatElements(StringBuilder sb, int commonCount, StackTraceElement[] causedTrace,
                                 StackTracePackageElement[] packageData) {
-        for (int i=0; i < packageData.length; ++i) {
+        for (int i = 0; i < packageData.length; ++i) {
             sb.append("\tat ");
             sb.append(causedTrace[i]);
             sb.append(" ");
@@ -268,7 +296,7 @@ public class ThrowableProxy extends Throwable {
         StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
         Class clazz = stack.peek();
         ClassLoader lastLoader = null;
-        for (int i = stackLength - 1; i >= 0 ; --i) {
+        for (int i = stackLength - 1; i >= 0; --i) {
             String className = stackTrace[i].getClassName();
             // The stack returned from getCurrentStack will be missing entries for  java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
@@ -419,7 +447,7 @@ public class ThrowableProxy extends Throwable {
                 }
             }
         } catch (ClassNotFoundException cnfe) {
-            logger.debug("sun.reflect.Reflection is not installed");
+            LOGGER.debug("sun.reflect.Reflection is not installed");
         }
 
         try {
@@ -428,10 +456,10 @@ public class ThrowableProxy extends Throwable {
                 securityManager = mgr;
             } else {
                 // This shouldn't happen.
-                logger.error("Unable to obtain call stack from security manager");
+                LOGGER.error("Unable to obtain call stack from security manager");
             }
         } catch (Exception ex) {
-            logger.debug("Unable to install security manager", ex);
+            LOGGER.debug("Unable to install security manager", ex);
         }
     }
 
@@ -453,9 +481,12 @@ public class ThrowableProxy extends Throwable {
         return supp;
     }
 
+    /**
+     * Cached StackTracePackageElement and the ClassLoader.
+     */
     private class CacheEntry {
-        StackTracePackageElement element;
-        ClassLoader loader;
+        private StackTracePackageElement element;
+        private ClassLoader loader;
 
         public CacheEntry(StackTracePackageElement element, ClassLoader loader) {
             this.element = element;
@@ -463,6 +494,9 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
+    /**
+     * Security Manager for accessing the call stack.
+     */
     private static class PrivateSecurityManager extends SecurityManager {
         public Class[] getClasses() {
             return getClassContext();

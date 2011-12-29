@@ -61,6 +61,9 @@ public abstract class AbstractStringLayout extends LayoutBase<String> {
         return charset;
     }
 
+    /**
+     * Encoder interface to support Java 5 and Java 6+.
+     */
     private interface StringEncoder {
 
         byte[] getBytes(String str);

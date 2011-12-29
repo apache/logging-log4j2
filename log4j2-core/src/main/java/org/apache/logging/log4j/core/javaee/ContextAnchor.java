@@ -19,9 +19,15 @@ package org.apache.logging.log4j.core.javaee;
 import org.apache.logging.log4j.core.LoggerContext;
 
 /**
- *
+ * Anchor for the ThreadContext.
  */
-public class ContextAnchor {
+public final class ContextAnchor {
 
-    public static final ThreadLocal<LoggerContext> threadContext = new ThreadLocal<LoggerContext>();
+    /**
+     * Anchor for the LoggerContext for the current Thread.
+     */
+    public static final ThreadLocal<LoggerContext> THREAD_CONTEXT = new ThreadLocal<LoggerContext>();
+
+    private ContextAnchor() {
+    }
 }

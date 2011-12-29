@@ -65,7 +65,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
     public LoggerContext getContext(String fqcn, boolean currentContext) {
 
         if (currentContext) {
-            LoggerContext ctx = ContextAnchor.threadContext.get();
+            LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
                 return ctx;
             }
@@ -122,7 +122,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
                     //System.out.println("Could not load class " + name);
                 }
             }
-            LoggerContext lc = ContextAnchor.threadContext.get();
+            LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
             if (lc != null) {
                 return lc;
             }

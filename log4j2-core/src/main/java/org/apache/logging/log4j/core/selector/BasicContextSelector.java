@@ -32,7 +32,7 @@ public class BasicContextSelector implements ContextSelector {
 
     public LoggerContext getContext(String FQCN, boolean currentContext) {
 
-        LoggerContext ctx = ContextAnchor.threadContext.get();
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : context;
     }
 

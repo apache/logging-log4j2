@@ -31,8 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Generates a unique id. The generated UUID will be unique for approximately 8,925 years so long as
  * less than 4095 ids are generated per millisecond on the same device (as identified by its MAC adddress).
  */
-public final class UUIDUtil
-{
+public final class UUIDUtil {
     /**
      * System property that may be used to seed the uuid generation with an integer value.
      */
@@ -44,22 +43,28 @@ public final class UUIDUtil
 
     private static final long TYPE1 = 0x1000L;
 
-    private static final byte VARIANT = (byte)0x80;
+    private static final byte VARIANT = (byte) 0x80;
 
     private static final int SEQUENCE_MASK = 0x3FFF;
 
-    public static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+    private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
     private static long uuidSequence = Long.getLong(UUID_SEQUENCE, 0);
 
     private static long least;
 
+    private static final long LOW_MASK = 0xffffffffL;
+    private static final long MID_MASK = 0xffff00000000L;
+    private static final long HIGH_MASK = 0xfff000000000000L;
+    private static final int NODE_SIZE = 8;
+    private static final int SHIFT_2 = 16;
+    private static final int SHIFT_4 = 32;
+    private static final int SHIFT_6 = 48;
+    private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
-    static
-    {
+    static {
         byte[] mac = null;
-        try
-        {
+        try {
             InetAddress address = InetAddress.getLocalHost();
 
             try {
@@ -67,8 +72,7 @@ public final class UUIDUtil
                 if (!ni.isLoopback() && ni.isUp()) {
                     Method method = ni.getClass().getMethod("getHardwareAddress");
                     mac = (byte[]) method.invoke(ni);
-                }
-                else {
+                } else {
                     Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
                     while (enumeration.hasMoreElements() && mac == null) {
                         ni = enumeration.nextElement();
@@ -85,8 +89,7 @@ public final class UUIDUtil
             if (mac == null || mac.length == 0) {
                 mac = address.getAddress();
             }
-        }
-        catch (UnknownHostException e) {
+        } catch (UnknownHostException e) {
             // Ignore exception
         }
         Random randomGenerator = new SecureRandom();
@@ -96,10 +99,10 @@ public final class UUIDUtil
         }
         int length = mac.length >= 6 ? 6 : mac.length;
         int index = mac.length >= 6 ? mac.length - 6 : 0;
-        byte[] node = new byte[8];
+        byte[] node = new byte[NODE_SIZE];
         node[0] = VARIANT;
         node[1] = 0;
-        for (int i=2; i < 8 ; ++i) {
+        for (int i = 2; i < NODE_SIZE; ++i) {
             node[i] = 0;
         }
         System.arraycopy(mac, index, node, index + 2, length);
@@ -114,7 +117,7 @@ public final class UUIDUtil
             } else {
                 String[] array = assigned.split(",");
                 sequences = new long[array.length];
-                int i=0;
+                int i = 0;
                 for (String value : array) {
                     sequences[i] = Long.parseLong(value);
                     ++i;
@@ -140,7 +143,7 @@ public final class UUIDUtil
             System.setProperty(ASSIGNED_SEQUENCES, assigned);
         }
 
-        least = buf.getLong() | rand << 48;
+        least = buf.getLong() | rand << SHIFT_6;
     }
 
 
@@ -166,11 +169,11 @@ public final class UUIDUtil
      */
     public static UUID getTimeBasedUUID() {
 
-        long time = ((System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
-            (count.incrementAndGet() % 10000);
-        long timeLow = (time & 0xffffffffL) << 32;
-        long timeMid = (time & 0xffff00000000L) >> 16;
-        long timeHi = (time & 0xfff000000000000L) >> 48;
+        long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
+            (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+        long timeLow = (time & LOW_MASK) << SHIFT_4;
+        long timeMid = (time & MID_MASK) >> SHIFT_2;
+        long timeHi = (time & HIGH_MASK) >> SHIFT_6;
         long most = timeLow | timeMid | TYPE1 | timeHi;
         return new UUID(most, least);
     }

@@ -37,8 +37,13 @@ import java.io.IOException;
  * ServletFilter than may be used to set up a LoggerContext for each web application.
  */
 public class JNDIContextFilter implements Filter {
-
+    /**
+     * The Filter init parameter that defines the name of the LoggerContext.
+     */
     public static final String CONTEXT_NAME = "context-name";
+    /**
+     * The Filter init parameter that defines the configuration location for the LoggerContext.
+     */
     public static final String CONFIG_LOCATION = "config-location";
     private ServletContext context;
     private boolean created = false;
@@ -76,11 +81,11 @@ public class JNDIContextFilter implements Filter {
         throws IOException, ServletException {
         LoggerContext ctx = (LoggerContext) context.getAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null) {
-            ContextAnchor.threadContext.set(ctx);
+            ContextAnchor.THREAD_CONTEXT.set(ctx);
             try {
                 filterChain.doFilter(servletRequest, servletResponse);
             } finally {
-                ContextAnchor.threadContext.remove();
+                ContextAnchor.THREAD_CONTEXT.remove();
             }
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
