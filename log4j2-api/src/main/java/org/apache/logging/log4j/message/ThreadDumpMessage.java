@@ -33,13 +33,13 @@ public class ThreadDumpMessage implements Message {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
+    private static ThreadInfoFactory factory;
+
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
 
     private final String title;
 
     private String formattedMessage = null;
-
-    private static ThreadInfoFactory factory;
 
     static {
         Method[] methods = ThreadInfo.class.getMethods();
@@ -105,7 +105,7 @@ public class ThreadDumpMessage implements Message {
     }
 
     /**
-     * Returns an array with a single element, a Map containing the ThreadInformation as the key
+     * Returns an array with a single element, a Map containing the ThreadInformation as the key.
      * and the StackTraceElement array as the value;
      * @return the "parameters" to this Message.
      */
@@ -149,10 +149,16 @@ public class ThreadDumpMessage implements Message {
         }
     }
 
+    /**
+     * Factory to create Thread information.
+     */
     private interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
     }
 
+    /**
+     * Factory to create basic thread information.
+     */
     private static class BasicThreadInfoFactory implements ThreadInfoFactory {
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
@@ -165,6 +171,9 @@ public class ThreadDumpMessage implements Message {
         }
     }
 
+    /**
+     * Factory to create extended thread information.
+     */
     private static class ExtendedThreadInfoFactory implements ThreadInfoFactory {
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             ThreadMXBean bean = ManagementFactory.getThreadMXBean();

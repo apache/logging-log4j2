@@ -24,12 +24,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
+ * Represents a Message that consists of a Map.
  */
 public class MapMessage implements FormattedMessage, Serializable {
-
+    /**
+     * When set as the format specifier causes the Map to be formatted as XML.
+     */
     public static final String XML = "XML";
-    private static final int HASHVAL = 31;
     private static final long serialVersionUID = -5031471831131487120L;
 
     private final Map<String, String> data;

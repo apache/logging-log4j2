@@ -23,7 +23,12 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 /**
  *  Logs "Events" that are represented as StructuredDataMessages.
  */
-public class EventLogger {
+public final class EventLogger {
+
+    /**
+     * Define the Event Marker.
+     */
+    public static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
 
     private static final String FQCN = EventLogger.class.getName();
 
@@ -37,14 +42,16 @@ public class EventLogger {
         logger = new AbstractLoggerWrapper((AbstractLogger) l, "EventLogger");
     }
 
-    public static final Marker marker = MarkerManager.getMarker("EVENT");
+
+    private EventLogger() {
+    }
 
     /**
      * Log events with a level of ALL.
      * @param msg The event StructuredDataMessage.
      */
     public static void logEvent(StructuredDataMessage msg) {
-        logger.log(marker, FQCN, Level.OFF, msg, null);
+        logger.log(EVENT_MARKER, FQCN, Level.OFF, msg, null);
     }
 
     /**
@@ -53,6 +60,6 @@ public class EventLogger {
      * @param level The logging Level.
      */
     public static void logEvent(StructuredDataMessage msg, Level level) {
-        logger.log(marker, FQCN, level, msg, null);
+        logger.log(EVENT_MARKER, FQCN, level, msg, null);
     }
 }

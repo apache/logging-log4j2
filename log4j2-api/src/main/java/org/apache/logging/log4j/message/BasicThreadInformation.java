@@ -17,60 +17,69 @@
 package org.apache.logging.log4j.message;
 
 /**
- *
+ * Generates information about the current Thread. Used internally by ThreadDumpMessage.
  */
 class BasicThreadInformation implements ThreadInformation {
+    private static final int HASH_SHIFT = 32;
+    private static final int HASH_MULTIPLIER = 31;
+    private final long id;
+    private final String name;
+    private final String longName;
+    private final Thread.State state;
+    private final int priority;
+    private final boolean isAlive;
+    private final boolean isDaemon;
+    private final String threadGroupName;
 
-        private final long id;
-        private final String name;
-        private final String longName;
-        private final Thread.State state;
-        private final int priority;
-        private final boolean isAlive;
-        private final boolean isDaemon;
-        private final String threadGroupName;
+    /**
+     * The Constructor.
+     * @param thread The Thread to capture.
+     */
+    public BasicThreadInformation(Thread thread) {
+        this.id = thread.getId();
+        this.name = thread.getName();
+        this.longName = thread.toString();
+        this.state = thread.getState();
+        this.priority = thread.getPriority();
+        this.isAlive = thread.isAlive();
+        this.isDaemon = thread.isDaemon();
+        ThreadGroup group = thread.getThreadGroup();
+        threadGroupName = group == null ? null : group.getName();
+    }
 
-        public BasicThreadInformation(Thread thread) {
-            this.id = thread.getId();
-            this.name = thread.getName();
-            this.longName = thread.toString();
-            this.state = thread.getState();
-            this.priority = thread.getPriority();
-            this.isAlive = thread.isAlive();
-            this.isDaemon = thread.isDaemon();
-            ThreadGroup group = thread.getThreadGroup();
-            threadGroupName = group == null ? null : group.getName();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            BasicThreadInformation that = (BasicThreadInformation) o;
-
-            if (id != that.id) {
-                return false;
-            }
-            if (name != null ? !name.equals(that.name) : that.name != null) {
-                return false;
-            }
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-
-        @Override
-        public int hashCode() {
-            int result = (int) (id ^ (id >>> 32));
-            result = 31 * result + (name != null ? name.hashCode() : 0);
-            return result;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
 
-     public void printThreadInfo(StringBuilder sb) {
+        BasicThreadInformation that = (BasicThreadInformation) o;
+
+        if (id != that.id) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> HASH_SHIFT));
+        result = HASH_MULTIPLIER * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    /**
+     * Print the thread information.
+     * @param sb The StringBuilder.
+     */
+    public void printThreadInfo(StringBuilder sb) {
         sb.append("\"").append(name).append("\" ");
         if (isDaemon) {
             sb.append("daemon ");
@@ -83,6 +92,11 @@ class BasicThreadInformation implements ThreadInformation {
         sb.append("\tThread state: ").append(state.name()).append("\n");
     }
 
+    /**
+     * Format the StackTraceElements.
+     * @param sb The StringBuilder.
+     * @param trace The stack trace element array to format.
+     */
     public void printStack(StringBuilder sb, StackTraceElement[] trace) {
         for (StackTraceElement element : trace) {
             sb.append("\tat ").append(element).append("\n");
