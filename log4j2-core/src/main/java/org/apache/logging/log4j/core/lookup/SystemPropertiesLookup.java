@@ -20,15 +20,26 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Looks up keys from system properties
+ * Looks up keys from system properties.
  */
 @Plugin(name = "sys", type = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
 
+    /**
+     * Lookup the value for the key.
+     * @param key  the key to be looked up, may be null
+     * @return The value for the key.
+     */
     public String lookup(String key) {
         return System.getProperty(key);
     }
 
+    /**
+     * Lookup the value for the key using the data in the LogEvent.
+     * @param event The current LogEvent.
+     * @param key  the key to be looked up, may be null
+     * @return The value associated with the key.
+     */
     public String lookup(LogEvent event, String key) {
         return System.getProperty(key);
     }

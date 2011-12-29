@@ -47,6 +47,21 @@ import java.util.TreeMap;
 @Plugin(name = "RFC5424Layout", type = "Core", elementType = "layout", printObject = true)
 public final class RFC5424Layout extends AbstractStringLayout {
 
+    /**
+     * Not a very good default - it is the Apache Software Foundation's enterprise number.
+     */
+    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
+    /**
+     * The default event id.
+     */
+    public static final String DEFAULT_ID = "Audit";
+
+    private static final String DEFAULT_MDCID = "mdc";
+    private static final int TWO_DIGITS = 10;
+    private static final int THREE_DIGITS = 100;
+    private static final int MILLIS_PER_MINUTE = 60000;
+    private static final int MINUTES_PER_HOUR = 60;
+
     private final Facility facility;
     private final String defaultId;
     private final Integer enterpriseNumber;
@@ -63,14 +78,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
 
-    private static final String DEFAULT_MDCID = "mdc";
-
     private long lastTimestamp = -1;
     private String timestamppStr = null;
 
-    // Not a very good default - it is the Apache Software Foundation's.
-    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
-    public static final String DEFAULT_ID = "Audit";
 
     private RFC5424Layout(Configuration config, Facility facility, String id, int ein, boolean includeMDC,
                           boolean includeNL, String mdcId, String appName, String messageId, String excludes,
@@ -129,12 +139,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcRequired = null;
         }
         this.checker = c != null ? c : noopChecker;
-        String name = config == null ? null :config.getName();
+        String name = config == null ? null : config.getName();
         configName = (name != null && name.length() > 0) ? name : null;
     }
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the RFC 5424 Syslog specification.
+     * @param event The LogEvent.
+     * @return The RFC 5424 String representation of the LogEvent.
      */
     public String formatAs(final LogEvent event) {
         Message msg = event.getMessage();
@@ -179,8 +191,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             } else {
                 text = msg.getFormattedMessage();
             }
-            if (includeMDC)
-            {
+            if (includeMDC) {
                 if (mdcRequired != null) {
                     checkRequired(event.getContextMap());
                 }
@@ -217,7 +228,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             InetAddress addr = InetAddress.getLocalHost();
             return addr.getHostName();
         } catch (UnknownHostException uhe) {
-            logger.error("Could not determine local host name", uhe);
+            LOGGER.error("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
         }
     }
@@ -244,23 +255,23 @@ public final class RFC5424Layout extends AbstractStringLayout {
         cal.setTimeInMillis(now);
         buf.append(Integer.toString(cal.get(Calendar.YEAR)));
         buf.append("-");
-        pad(cal.get(Calendar.MONTH) + 1, 10, buf);
+        pad(cal.get(Calendar.MONTH) + 1, TWO_DIGITS, buf);
         buf.append("-");
-        pad(cal.get(Calendar.DAY_OF_MONTH), 10, buf);
+        pad(cal.get(Calendar.DAY_OF_MONTH), TWO_DIGITS, buf);
         buf.append("T");
-        pad(cal.get(Calendar.HOUR_OF_DAY), 10, buf);
+        pad(cal.get(Calendar.HOUR_OF_DAY), TWO_DIGITS, buf);
         buf.append(":");
-        pad(cal.get(Calendar.MINUTE), 10, buf);
+        pad(cal.get(Calendar.MINUTE), TWO_DIGITS, buf);
         buf.append(":");
-        pad(cal.get(Calendar.SECOND), 10, buf);
+        pad(cal.get(Calendar.SECOND), TWO_DIGITS, buf);
 
         int millis = cal.get(Calendar.MILLISECOND);
         if (millis != 0) {
             buf.append(".");
-            pad((int) ((float) millis / 10F), 100, buf);
+            pad((int) ((float) millis / 10F), THREE_DIGITS, buf);
         }
 
-        int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / 60000;
+        int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / MILLIS_PER_MINUTE;
         if (tzmin == 0) {
             buf.append("Z");
         } else {
@@ -270,11 +281,11 @@ public final class RFC5424Layout extends AbstractStringLayout {
             } else {
                 buf.append("+");
             }
-            int tzhour = tzmin / 60;
-            tzmin -= tzhour * 60;
-            pad(tzhour, 10, buf);
+            int tzhour = tzmin / MINUTES_PER_HOUR;
+            tzmin -= tzhour * MINUTES_PER_HOUR;
+            pad(tzhour, TWO_DIGITS, buf);
             buf.append(":");
-            pad(tzmin, 10, buf);
+            pad(tzmin, TWO_DIGITS, buf);
         }
         synchronized (this) {
             if (last == lastTimestamp) {
@@ -290,16 +301,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
             if (val < max) {
                 buf.append("0");
             }
-            max = max / 10;
+            max = max / TWO_DIGITS;
         }
         buf.append(Integer.toString(val));
     }
 
     private void formatStructuredElement(StructuredDataId id, Map<String, String> data, StringBuilder sb,
-                                         ListChecker checker)
-    {
-        if (id == null && defaultId == null)
-        {
+                                         ListChecker checker) {
+        if (id == null && defaultId == null) {
             return;
         }
         sb.append("[");
@@ -319,7 +328,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         if (ein < 0) {
             ein = enterpriseNumber;
         }
-        if (ein >=0) {
+        if (ein >= 0) {
             sb.append("@").append(ein);
         }
         return sb.toString();
@@ -337,8 +346,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private void appendMap(Map<String, String> map, StringBuilder sb, ListChecker checker)
     {
         SortedMap<String, String> sorted = new TreeMap<String, String>(map);
-        for (Map.Entry<String, String> entry : sorted.entrySet())
-        {
+        for (Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey())) {
                 sb.append(" ");
                 sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
@@ -346,22 +354,34 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
+    /**
+     * Interface used to check keys in a Map.
+     */
     private interface ListChecker {
         boolean check(String key);
     }
 
+    /**
+     * Includes only the listed keys.
+     */
     private class IncludeChecker implements ListChecker {
         public boolean check(String key) {
             return mdcIncludes.contains(key);
         }
     }
 
+    /**
+     * Excludes the listed keys.
+     */
     private class ExcludeChecker implements ListChecker {
         public boolean check(String key) {
             return !mdcExcludes.contains(key);
         }
     }
 
+    /**
+     * Does nothing.
+     */
     private class NoopChecker implements ListChecker {
         public boolean check(String key) {
             return true;
@@ -418,11 +438,11 @@ public final class RFC5424Layout extends AbstractStringLayout {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         if (includes != null && excludes != null) {
-            logger.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
+            LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
         Facility f = facility != null ? Facility.valueOf(facility.toUpperCase()) : Facility.LOCAL0;
@@ -433,7 +453,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcId = DEFAULT_MDCID;
         }
 
-        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId, excludes,
-                                 includes, required, c);
+        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId,
+                                 excludes, includes, required, c);
     }
 }

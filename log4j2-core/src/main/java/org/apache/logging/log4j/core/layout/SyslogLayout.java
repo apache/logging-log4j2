@@ -58,6 +58,8 @@ public class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     * @param event The LogEvent
+     * @return the event formatted as a String.
      */
     public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
@@ -88,7 +90,7 @@ public class SyslogLayout extends AbstractStringLayout {
             InetAddress addr = InetAddress.getLocalHost();
             return addr.getHostName();
         } catch (UnknownHostException uhe) {
-            logger.error("Could not determine local host name", uhe);
+            LOGGER.error("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
         }
     }
@@ -104,9 +106,9 @@ public class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Create a SyslogLayout.
-     * @param facility
-     * @param includeNL
-     * @param charset
+     * @param facility The Facility is used to try to classify the message.
+     * @param includeNL If true a newline will be appended to the result.
+     * @param charset The character set.
      * @return A SyslogLayout.
      */
     @PluginFactory
@@ -119,7 +121,7 @@ public class SyslogLayout extends AbstractStringLayout {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);

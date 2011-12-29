@@ -71,11 +71,11 @@ import org.apache.logging.log4j.core.LogEvent;
 @Plugin(name = "XMLLayout", type = "Core", elementType = "layout", printObject = true)
 public class XMLLayout extends AbstractStringLayout {
 
+    private static final int DEFAULT_SIZE = 256;
+
     private final boolean locationInfo;
     private final boolean properties;
     private final boolean complete;
-
-    protected static final int DEFAULT_SIZE = 256;
 
     protected XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
         super(charset);
@@ -86,6 +86,8 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     * @param event The LogEvent.
+     * @return The XML representation of the LogEvent.
      */
     public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
@@ -161,6 +163,7 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Returns appropriate XML headers.
+     * @return a byte array containing the header.
      */
     @Override
     public byte[] getHeader() {
@@ -176,6 +179,7 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Returns appropriate XML headers.
+     * @return a byte array containing the footer.
      */
     @Override
     public byte[] getFooter() {
@@ -192,18 +196,19 @@ public class XMLLayout extends AbstractStringLayout {
         PrintWriter pw = new PrintWriter(sw);
         try {
             throwable.printStackTrace(pw);
-        } catch(RuntimeException ex) {
+        } catch (RuntimeException ex) {
+            // Ignore any exceptions.
         }
         pw.flush();
         LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
         ArrayList<String> lines = new ArrayList<String>();
         try {
           String line = reader.readLine();
-          while(line != null) {
+          while (line != null) {
             lines.add(line);
             line = reader.readLine();
           }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             if (ex instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -230,7 +235,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);

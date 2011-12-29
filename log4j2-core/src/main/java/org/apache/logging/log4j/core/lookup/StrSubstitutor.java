@@ -116,6 +116,8 @@ public class StrSubstitutor {
      */
     public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher("}");
 
+    private static final int BUF_SIZE = 256;
+
     /**
      * Stores the escape character.
      */
@@ -139,70 +141,17 @@ public class StrSubstitutor {
 
     //-----------------------------------------------------------------------
     /**
-     * Replaces all the occurrences of variables in the given source object with
-     * their matching values from the map.
-     *
-     * @param source  the source text containing the variables to substitute, null returns null
-     * @param valueMap  the map with the values, may be null
-     * @return the result of the replace operation
-     */
-    public static <V> String replace(Object source, Map<String, V> valueMap) {
-        return new StrSubstitutor(valueMap).replace(source);
-    }
-
-    /**
-     * Replaces all the occurrences of variables in the given source object with
-     * their matching values from the map. This method allows to specifiy a
-     * custom variable prefix and suffix
-     *
-     * @param source  the source text containing the variables to substitute, null returns null
-     * @param valueMap  the map with the values, may be null
-     * @param prefix  the prefix of variables, not null
-     * @param suffix  the suffix of variables, not null
-     * @return the result of the replace operation
-     * @throws IllegalArgumentException if the prefix or suffix is null
-     */
-    public static <V> String replace(Object source, Map<String, V> valueMap, String prefix, String suffix) {
-        return new StrSubstitutor(valueMap, prefix, suffix).replace(source);
-    }
-
-    /**
-     * Replaces all the occurrences of variables in the given source object with their matching
-     * values from the properties.
-     *
-     * @param source the source text containing the variables to substitute, null returns null
-     * @param valueProperties the properties with values, may be null
-     * @return the result of the replace operation
-     */
-    public static String replace(Object source, Properties valueProperties)
-    {
-        if (valueProperties == null) {
-            return source.toString();
-        }
-        Map<String,String> valueMap = new HashMap<String,String>();
-        Enumeration<?> propNames = valueProperties.propertyNames();
-        while (propNames.hasMoreElements())
-        {
-            String propName = (String)propNames.nextElement();
-            String propValue = valueProperties.getProperty(propName);
-            valueMap.put(propName, propValue);
-        }
-        return StrSubstitutor.replace(source, valueMap);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Creates a new instance with defaults for variable prefix and suffix
      * and the escaping character.
      */
     public StrSubstitutor() {
-        this((StrLookup<?>) null, DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
+        this(null, DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
-
     /**
      * Creates a new instance and initializes it. Uses defaults for variable
      * prefix and suffix and the escaping character.
      *
+     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      */
     public <V> StrSubstitutor(Map<String, V> valueMap) {
@@ -212,6 +161,7 @@ public class StrSubstitutor {
     /**
      * Creates a new instance and initializes it. Uses a default escaping character.
      *
+     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      * @param prefix  the prefix for variables, not null
      * @param suffix  the suffix for variables, not null
@@ -224,6 +174,7 @@ public class StrSubstitutor {
     /**
      * Creates a new instance and initializes it.
      *
+     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      * @param prefix  the prefix for variables, not null
      * @param suffix  the suffix for variables, not null
@@ -268,12 +219,64 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(
-            StrLookup<?> variableResolver, StrMatcher prefixMatcher, StrMatcher suffixMatcher, char escape) {
+    public StrSubstitutor(StrLookup<?> variableResolver, StrMatcher prefixMatcher, StrMatcher suffixMatcher,
+                          char escape) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefixMatcher(prefixMatcher);
         this.setVariableSuffixMatcher(suffixMatcher);
         this.setEscapeChar(escape);
+    }
+    //-----------------------------------------------------------------------
+    /**
+     * Replaces all the occurrences of variables in the given source object with
+     * their matching values from the map.
+     *
+     * @param <V> The type of object contained in the Map.
+     * @param source  the source text containing the variables to substitute, null returns null
+     * @param valueMap  the map with the values, may be null
+     * @return the result of the replace operation
+     */
+    public static <V> String replace(Object source, Map<String, V> valueMap) {
+        return new StrSubstitutor(valueMap).replace(source);
+    }
+
+    /**
+     * Replaces all the occurrences of variables in the given source object with
+     * their matching values from the map. This method allows to specifiy a
+     * custom variable prefix and suffix
+     *
+     * @param <V> The type of object contained in the Map.
+     * @param source  the source text containing the variables to substitute, null returns null
+     * @param valueMap  the map with the values, may be null
+     * @param prefix  the prefix of variables, not null
+     * @param suffix  the suffix of variables, not null
+     * @return the result of the replace operation
+     * @throws IllegalArgumentException if the prefix or suffix is null
+     */
+    public static <V> String replace(Object source, Map<String, V> valueMap, String prefix, String suffix) {
+        return new StrSubstitutor(valueMap, prefix, suffix).replace(source);
+    }
+
+    /**
+     * Replaces all the occurrences of variables in the given source object with their matching
+     * values from the properties.
+     *
+     * @param source the source text containing the variables to substitute, null returns null
+     * @param valueProperties the properties with values, may be null
+     * @return the result of the replace operation
+     */
+    public static String replace(Object source, Properties valueProperties) {
+        if (valueProperties == null) {
+            return source.toString();
+        }
+        Map<String, String> valueMap = new HashMap<String, String>();
+        Enumeration<?> propNames = valueProperties.propertyNames();
+        while (propNames.hasMoreElements()) {
+            String propName = (String) propNames.nextElement();
+            String propValue = valueProperties.getProperty(propName);
+            valueMap.put(propName, propValue);
+        }
+        return StrSubstitutor.replace(source, valueMap);
     }
 
     //-----------------------------------------------------------------------
@@ -301,7 +304,7 @@ public class StrSubstitutor {
             return null;
         }
         StringBuilder buf = new StringBuilder(source);
-        if (substitute(event, buf, 0, source.length()) == false) {
+        if (!substitute(event, buf, 0, source.length())) {
             return source;
         }
         return buf.toString();
@@ -341,7 +344,7 @@ public class StrSubstitutor {
             return null;
         }
         StringBuilder buf = new StringBuilder(length).append(source, offset, length);
-        if (substitute(event, buf, 0, length) == false) {
+        if (!substitute(event, buf, 0, length)) {
             return source.substring(offset, offset + length);
         }
         return buf.toString();
@@ -510,8 +513,9 @@ public class StrSubstitutor {
      * from the resolver using the given source builder as a template.
      * The builder is not altered by this method.
      *
-     * @param source  the builder to use as a template, not changed, null returns null
-     * @return the result of the replace operation
+     * @param event The LogEvent.
+     * @param source  the builder to use as a template, not changed, null returns null.
+     * @return the result of the replace operation.
      */
     public String replace(LogEvent event, StringBuilder source) {
         if (source == null) {
@@ -644,7 +648,7 @@ public class StrSubstitutor {
             return false;
         }
         StringBuilder buf = new StringBuilder(length).append(source, offset, length);
-        if (substitute(event, buf, 0, length) == false) {
+        if (!substitute(event, buf, 0, length)) {
             return false;
         }
         source.replace(offset, offset + length, buf.toString());
@@ -862,10 +866,10 @@ public class StrSubstitutor {
      * @param priorVariables  the list of prior variables
      */
     private void checkCyclicSubstitution(String varName, List<String> priorVariables) {
-        if (priorVariables.contains(varName) == false) {
+        if (!priorVariables.contains(varName)) {
             return;
         }
-        StringBuilder buf = new StringBuilder(256);
+        StringBuilder buf = new StringBuilder(BUF_SIZE);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");
@@ -1078,7 +1082,6 @@ public class StrSubstitutor {
      * Returns a flag whether substitution is done in variable names.
      *
      * @return the substitution in variable names flag
-     * @since 3.0
      */
     public boolean isEnableSubstitutionInVariables() {
         return enableSubstitutionInVariables;
@@ -1091,10 +1094,8 @@ public class StrSubstitutor {
      * <code>${jre-${java.version}}</code>. The default value is <b>false</b>.
      *
      * @param enableSubstitutionInVariables the new value of the flag
-     * @since 3.0
      */
-    public void setEnableSubstitutionInVariables(
-            boolean enableSubstitutionInVariables) {
+    public void setEnableSubstitutionInVariables(boolean enableSubstitutionInVariables) {
         this.enableSubstitutionInVariables = enableSubstitutionInVariables;
     }
 
@@ -1109,9 +1110,9 @@ public class StrSubstitutor {
      * not before the first or after the last.
      * Appending a null iterable will have no effect..
      *
+     * @param sb StringBuilder that contains the String being constructed.
      * @param iterable  the iterable to append
      * @param separator  the separator to use, null means no separator
-     * @return this, to enable chaining
      */
     public void appendWithSeparators(StringBuilder sb, Iterable<?> iterable, String separator) {
         if (iterable != null) {
@@ -1126,6 +1127,7 @@ public class StrSubstitutor {
         }
     }
 
+    @Override
     public String toString() {
         return "StrSubstitutor(" + variableResolver.toString() + ")";
     }

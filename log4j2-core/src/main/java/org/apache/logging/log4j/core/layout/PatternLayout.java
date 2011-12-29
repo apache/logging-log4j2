@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -47,7 +46,7 @@ import java.util.List;
  * See the Log4j Manual for details on the supported pattern converters.
  */
 @Plugin(name = "PatternLayout", type = "Core", elementType = "layout", printObject = true)
-public class PatternLayout extends AbstractStringLayout {
+public final class PatternLayout extends AbstractStringLayout {
     /**
      * Default pattern string for log output. Currently set to the
      * string <b>"%m%n"</b> which just prints the application supplied
@@ -69,12 +68,12 @@ public class PatternLayout extends AbstractStringLayout {
     public static final String SIMPLE_CONVERSION_PATTERN =
         "%d [%t] %p %c - %m%n";
 
+    private static final String KEY = "Converter";
+
     /**
      * Initial converter for pattern.
      */
     private List<PatternConverter> converters;
-
-    public static final String KEY = "Converter";
 
     /**
      * Conversion pattern.
@@ -134,6 +133,7 @@ public class PatternLayout extends AbstractStringLayout {
      * Formats a logging event to a writer.
      *
      * @param event logging event to be formatted.
+     * @return The event formatted as a String.
      */
     public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
@@ -147,6 +147,11 @@ public class PatternLayout extends AbstractStringLayout {
         return config == null ? str : config.getSubst().replace(event, str);
     }
 
+    /**
+     * Create a PatternParser.
+     * @param config The Configuration.
+     * @return The PatternParser.
+     */
     public static PatternParser createPatternParser(Configuration config) {
         if (config == null) {
             return new PatternParser(config, KEY, LogEventPatternConverter.class);
@@ -171,7 +176,7 @@ public class PatternLayout extends AbstractStringLayout {
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @param replace A Regex replacement String.
      * @param charset The character set.
-     * @return
+     * @return The PatternLayout.
      */
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
@@ -183,7 +188,7 @@ public class PatternLayout extends AbstractStringLayout {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, c);

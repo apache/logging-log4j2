@@ -254,7 +254,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                logger.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
         boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);

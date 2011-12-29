@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class Interpolator implements StrLookup {
 
-    protected final static Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /** Constant for the prefix separator. */
     private static final char PREFIX_SEPARATOR = ':';
@@ -50,7 +50,7 @@ public class Interpolator implements StrLookup {
             try {
                 lookups.put(entry.getKey(), clazz.newInstance());
             } catch (Exception ex) {
-                logger.error("Unable to create Lookup for " + entry.getKey(), ex);
+                LOGGER.error("Unable to create Lookup for " + entry.getKey(), ex);
             }
         }
     }
@@ -67,8 +67,7 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
-    public String lookup(String var)
-    {
+    public String lookup(String var) {
         return lookup(null, var);
     }
 
@@ -85,16 +84,13 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
-    public String lookup(LogEvent event, String var)
-    {
-        if (var == null)
-        {
+    public String lookup(LogEvent event, String var) {
+        if (var == null) {
             return null;
         }
 
         int prefixPos = var.indexOf(PREFIX_SEPARATOR);
-        if (prefixPos >= 0)
-        {
+        if (prefixPos >= 0) {
             String prefix = var.substring(0, prefixPos);
             String name = var.substring(prefixPos + 1);
             StrLookup lookup = lookups.get(prefix);
@@ -103,8 +99,7 @@ public class Interpolator implements StrLookup {
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
 
-            if (value != null)
-            {
+            if (value != null) {
                 return value;
             }
             var = var.substring(prefixPos);

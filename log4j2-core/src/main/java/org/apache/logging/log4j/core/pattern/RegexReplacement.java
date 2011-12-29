@@ -40,7 +40,8 @@ public final class RegexReplacement {
     /**
      * Private constructor.
      *
-     * @param options options, may be null.
+     * @param pattern The Pattern.
+     * @param substitution The substitution String.
      */
     private RegexReplacement(Pattern pattern, String substitution) {
         this.pattern = pattern;
@@ -48,7 +49,9 @@ public final class RegexReplacement {
     }
 
     /**
-     * {@inheritDoc}
+     * Perform the replacement.
+     * @param msg The String to match against.
+     * @return the replacement String.
      */
     public String format(String msg) {
         return pattern.matcher(msg).replaceAll(substitution);

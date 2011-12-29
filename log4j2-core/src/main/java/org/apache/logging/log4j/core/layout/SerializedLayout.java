@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * Format a LogEvent in its serialized form.
  */
 @Plugin(name = "SerializedLayout", type = "Core", elementType = "layout", printObject = true)
-public class SerializedLayout extends LayoutBase<LogEvent> {
+public final class SerializedLayout extends LayoutBase<LogEvent> {
 
     private static byte[] header;
 
@@ -40,7 +40,7 @@ public class SerializedLayout extends LayoutBase<LogEvent> {
             oos.close();
             header = baos.toByteArray();
         } catch (Exception ex) {
-            logger.error("Unable to generate Object stream header", ex);
+            LOGGER.error("Unable to generate Object stream header", ex);
         }
     }
 
@@ -49,6 +49,8 @@ public class SerializedLayout extends LayoutBase<LogEvent> {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     * @param event The LogEvent.
+     * @return the formatted LogEvent.
      */
     public byte[] format(final LogEvent event) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -56,7 +58,7 @@ public class SerializedLayout extends LayoutBase<LogEvent> {
             ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
             oos.writeObject(event);
         } catch (IOException ioe) {
-            logger.error("Serialization of Logging Event failed.", ioe);
+            LOGGER.error("Serialization of Logging Event failed.", ioe);
         }
         return baos.toByteArray();
     }

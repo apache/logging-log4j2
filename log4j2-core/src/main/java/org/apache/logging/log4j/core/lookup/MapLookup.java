@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * The basis for a lookup based on a Map.
+ * @param <V> The type of object contained in the Map.
  */
 @Plugin(name = "map", type = "Lookup")
 public class MapLookup<V> implements StrLookup<V> {

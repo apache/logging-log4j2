@@ -24,13 +24,21 @@ import java.io.Serializable;
 
 /**
  * Base class for Layouts.
+ * @param <T> The Class that the Layout will format the LogEvent into.
  */
 public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
-
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * The header to include when the stream is opened. May be null.
+     */
     protected byte[] header;
+    /**
+     * The footer to add when the stream is closed. May be null.
+     */
     protected byte[] footer;
-
-    protected static final Logger logger = StatusLogger.getLogger();
 
     /**
      * Return the header, if one is available.

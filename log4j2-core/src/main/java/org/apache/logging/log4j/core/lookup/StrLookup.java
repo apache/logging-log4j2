@@ -33,6 +33,8 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  * @author Apache Software Foundation
  * @version $Id$
+ *
+ * @param <V> The type of the value that is being queried.
  */
 public interface StrLookup<V> {
     /**
@@ -58,7 +60,7 @@ public interface StrLookup<V> {
      * @param key  the key to be looked up, may be null
      * @return the matching value, null if no match
      */
-    public String lookup(String key);
+    String lookup(String key);
 
     /**
      * Looks up a String key to a String value possibly using the current LogEvent.
@@ -84,5 +86,5 @@ public interface StrLookup<V> {
      * @param key  the key to be looked up, may be null
      * @return the matching value, null if no match
      */
-    public String lookup(LogEvent event, String key);
+    String lookup(LogEvent event, String key);
 }

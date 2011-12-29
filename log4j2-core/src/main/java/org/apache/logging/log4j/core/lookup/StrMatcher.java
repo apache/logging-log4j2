@@ -65,7 +65,11 @@ public abstract class StrMatcher {
      */
     private static final StrMatcher NONE_MATCHER = new NoMatcher();
 
-    // -----------------------------------------------------------------------
+    /**
+     * Constructor.
+     */
+    protected StrMatcher() {
+    }
 
     /**
      * Returns a matcher which matches the comma character.
@@ -204,14 +208,6 @@ public abstract class StrMatcher {
         return new StringMatcher(str);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Constructor.
-     */
-    protected StrMatcher() {
-        super();
-    }
-
     /**
      * Returns the number of matching characters, zero for no match.
      * <p>
@@ -276,7 +272,7 @@ public abstract class StrMatcher {
          *
          * @param chars  the characters to match, must not be null
          */
-        CharSetMatcher(char chars[]) {
+        CharSetMatcher(char[] chars) {
             super();
             this.chars = chars.clone();
             Arrays.sort(this.chars);
