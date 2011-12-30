@@ -207,6 +207,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
         return context.get();
     }
 
+    /**
+     * SecurityManager that will locate the caller of the Log4j2 API.
+     */
     private static class PrivateSecurityManager extends SecurityManager {
 
         public Class getCaller(String fqcn) {

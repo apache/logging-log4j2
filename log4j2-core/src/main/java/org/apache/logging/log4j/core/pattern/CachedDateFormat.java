@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.pattern;
 
 import java.text.DateFormat;
@@ -40,18 +39,18 @@ final class CachedDateFormat extends DateFormat {
     public static final int NO_MILLISECONDS = -2;
 
     /**
+     * Constant used to represent that there was an
+     * observed change, but was an expected change.
+     */
+    public static final int UNRECOGNIZED_MILLISECONDS = -1;
+
+    /**
      * Supported digit set.  If the wrapped DateFormat uses
      * a different unit set, the millisecond pattern
      * will not be recognized and duplicate requests
      * will use the cache.
      */
     private static final String DIGITS = "0123456789";
-
-    /**
-     * Constant used to represent that there was an
-     * observed change, but was an expected change.
-     */
-    public static final int UNRECOGNIZED_MILLISECONDS = -1;
 
     /**
      * First magic number used to detect the millisecond position.
@@ -78,6 +77,18 @@ final class CachedDateFormat extends DateFormat {
      */
     private static final String ZERO_STRING = "000";
 
+    private static final int BUF_SIZE = 50;
+
+    private static final int MILLIS_IN_SECONDS = 1000;
+
+    private static final int DEFAULT_VALIDITY = 1000;
+
+    private static final int THREE_DIGITS = 100;
+
+    private static final int TWO_DIGITS = 10;
+
+    private static final long SLOTS = 1000L;
+
     /**
      * Wrapped formatter.
      */
@@ -97,7 +108,7 @@ final class CachedDateFormat extends DateFormat {
     /**
      * Cache of previous conversion.
      */
-    private StringBuffer cache = new StringBuffer(50);
+    private StringBuffer cache = new StringBuffer(BUF_SIZE);
 
     /**
      * Maximum validity period for the cache.
@@ -156,10 +167,10 @@ final class CachedDateFormat extends DateFormat {
      *         field (likely RelativeTimeDateFormat)
      */
     public static int findMillisecondStart(final long time, final String formatted, final DateFormat formatter) {
-        long slotBegin = (time / 1000) * 1000;
+        long slotBegin = (time / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
 
         if (slotBegin > time) {
-            slotBegin -= 1000;
+            slotBegin -= MILLIS_IN_SECONDS;
         }
 
         int millis = (int) (time - slotBegin);
@@ -252,8 +263,7 @@ final class CachedDateFormat extends DateFormat {
             //    Check if the cache is still valid.
             //    If the requested time is within the same integral second
             //       as the last request and a shorter expiration was not requested.
-            (now < (slotBegin + expiration)) && (now >= slotBegin)
-            && (now < (slotBegin + 1000L))) {
+            (now < (slotBegin + expiration)) && (now >= slotBegin) && (now < (slotBegin + SLOTS))) {
             //
             //    if there was a millisecond field then update it
             //
@@ -278,10 +288,10 @@ final class CachedDateFormat extends DateFormat {
         cache.append(formatter.format(tmpDate));
         buf.append(cache);
         previousTime = now;
-        slotBegin = (previousTime / 1000) * 1000;
+        slotBegin = (previousTime / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
 
         if (slotBegin > previousTime) {
-            slotBegin -= 1000;
+            slotBegin -= MILLIS_IN_SECONDS;
         }
 
         //
@@ -306,9 +316,9 @@ final class CachedDateFormat extends DateFormat {
      */
     private static void millisecondFormat(
         final int millis, final StringBuffer buf, final int offset) {
-        buf.setCharAt(offset, DIGITS.charAt(millis / 100));
-        buf.setCharAt(offset + 1, DIGITS.charAt((millis / 10) % 10));
-        buf.setCharAt(offset + 2, DIGITS.charAt(millis % 10));
+        buf.setCharAt(offset, DIGITS.charAt(millis / THREE_DIGITS));
+        buf.setCharAt(offset + 1, DIGITS.charAt((millis / TWO_DIGITS) % TWO_DIGITS));
+        buf.setCharAt(offset + 2, DIGITS.charAt(millis % TWO_DIGITS));
     }
 
     /**
@@ -366,6 +376,6 @@ final class CachedDateFormat extends DateFormat {
             return 1;
         }
 
-        return 1000;
+        return DEFAULT_VALIDITY;
     }
 }

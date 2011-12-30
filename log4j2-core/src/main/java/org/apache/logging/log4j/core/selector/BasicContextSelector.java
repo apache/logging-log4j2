@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Returns either this Thread's context or the default LoggerContext.
  */
 public class BasicContextSelector implements ContextSelector {
 
     private static LoggerContext context = new LoggerContext("Default");
 
-    public LoggerContext getContext(String FQCN, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, boolean currentContext) {
 
         LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : context;

@@ -124,16 +124,15 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("</tr>").append(LINE_SEP);
 
         if (event.getContextStack().size() > 0) {
-            sbuf.append(
-                "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Nested Diagnostic Context\">");
+            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" ");
+            sbuf.append("title=\"Nested Diagnostic Context\">");
             sbuf.append("NDC: ").append(Transform.escapeTags(event.getContextStack().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 
-
         if (event.getContextMap().size() > 0) {
-            sbuf.append(
-                "<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" title=\"Mapped Diagnostic Context\">");
+            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" ");
+            sbuf.append("title=\"Mapped Diagnostic Context\">");
             sbuf.append("MDC: ").append(Transform.escapeTags(event.getContextMap().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
@@ -190,8 +189,8 @@ public final class HTMLLayout extends AbstractStringLayout {
     @Override
     public byte[] getHeader() {
         StringBuilder sbuf = new StringBuilder();
-        sbuf.append(
-            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+        sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
+        sbuf.append("\"http://www.w3.org/TR/html4/loose.dtd\">");
         sbuf.append(LINE_SEP);
         sbuf.append("<html>").append(LINE_SEP);
         sbuf.append("<head>").append(LINE_SEP);

@@ -91,9 +91,9 @@ public class JNDIContextSelector implements NamedContextSelector {
     private static ConcurrentMap<String, LoggerContext> contextMap =
         new ConcurrentHashMap<String, LoggerContext>();
 
-    private static StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    public LoggerContext getContext(String FQCN, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, boolean currentContext) {
 
         LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
@@ -106,7 +106,7 @@ public class JNDIContextSelector implements NamedContextSelector {
             Context ctx = new InitialContext();
             loggingContextName = (String) lookup(ctx, Constants.JNDI_CONTEXT_NAME);
         } catch (NamingException ne) {
-            logger.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
+            LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
         }
 
         return loggingContextName == null ? context : locateContext(loggingContextName, null);
@@ -114,7 +114,7 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     public LoggerContext locateContext(String name, String configLocation) {
         if (name == null) {
-            logger.error("A context name is required to locate a LoggerContext");
+            LOGGER.error("A context name is required to locate a LoggerContext");
             return null;
         }
         if (!contextMap.containsKey(name)) {
@@ -149,8 +149,8 @@ public class JNDIContextSelector implements NamedContextSelector {
         }
         try {
             return ctx.lookup(name);
-        } catch(NameNotFoundException e) {
-            logger.error("Could not find name [" + name + "].");
+        } catch (NameNotFoundException e) {
+            LOGGER.error("Could not find name [" + name + "].");
             throw e;
         }
     }

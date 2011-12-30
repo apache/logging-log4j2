@@ -31,11 +31,13 @@ public class UUIDTest {
     private static final int COUNT = 200;
     private static final int THREADS = 10;
 
+    private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+
     @Test
     public void testTimeBaseUUID() {
         UUID uuid = UUIDUtil.getTimeBasedUUID();
         UUID uuid2 = UUIDUtil.getTimeBasedUUID();
-        long current = (System.currentTimeMillis() * 10000) + UUIDUtil.NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
+        long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
         long time = uuid.timestamp();
         assertTrue("Incorrect time", current + 10000 - time > 0);
         UUID[] uuids = new UUID[COUNT];

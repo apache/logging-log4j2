@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
@@ -43,29 +42,40 @@ public final class PatternParser {
     private static final char ESCAPE_CHAR = '%';
 
     /**
-     * Literal state.
+     * The states the parser can be in while parsing the pattern.
      */
-    private static final int LITERAL_STATE = 0;
+    private enum ParserState {
+        /**
+         * Literal state.
+         */
+        LITERAL_STATE,
 
-    /**
-     * In converter name state.
-     */
-    private static final int CONVERTER_STATE = 1;
+        /**
+         * In converter name state.
+         */
+        CONVERTER_STATE,
 
-    /**
-     * Dot state.
-     */
-    private static final int DOT_STATE = 3;
+        /**
+         * Dot state.
+         */
+        DOT_STATE,
 
-    /**
-     * Min state.
-     */
-    private static final int MIN_STATE = 4;
+        /**
+         * Min state.
+         */
+        MIN_STATE,
 
-    /**
-     * Max state.
-     */
-    private static final int MAX_STATE = 5;
+        /**
+         * Max state.
+         */
+        MAX_STATE;
+    }
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final int BUF_SIZE = 32;
+
+    private static final int DECIMAL = 10;
 
     /**
      * Does pattern process exceptions.
@@ -76,15 +86,17 @@ public final class PatternParser {
 
     private final Map<String, Class<PatternConverter>> converterRules;
 
-    protected final static Logger logger = StatusLogger.getLogger();
 
-
+    /**
+     * Constructor.
+     * @param converterKey The type of converters that will be used.
+     */
     public PatternParser(String converterKey) {
         this(null, converterKey, null);
     }
 
     /**
-     * Constructor
+     * Constructor.
      * @param config The current Configuration.
      * @param converterKey The key to lookup the converters.
      * @param expected The expected base Class of each Converter.
@@ -106,7 +118,7 @@ public final class PatternParser {
                     }
                 }
             } catch (Exception ex) {
-                logger.error("Error processing plugin " + type.getElementName(), ex);
+                LOGGER.error("Error processing plugin " + type.getElementName(), ex);
             }
         }
         converterRules = converters;
@@ -226,10 +238,10 @@ public final class PatternParser {
             throw new NullPointerException("pattern");
         }
 
-        StringBuilder currentLiteral = new StringBuilder(32);
+        StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
 
         int patternLength = pattern.length();
-        int state = LITERAL_STATE;
+        ParserState state = ParserState.LITERAL_STATE;
         char c;
         int i = 0;
         FormattingInfo formattingInfo = FormattingInfo.getDefault();
@@ -265,7 +277,7 @@ public final class PatternParser {
 
                                 currentLiteral.setLength(0);
                                 currentLiteral.append(c); // append %
-                                state = CONVERTER_STATE;
+                                state = ParserState.CONVERTER_STATE;
                                 formattingInfo = FormattingInfo.getDefault();
                         }
                     } else {
@@ -286,7 +298,7 @@ public final class PatternParser {
                             break;
 
                         case '.':
-                            state = DOT_STATE;
+                            state = ParserState.DOT_STATE;
 
                             break;
 
@@ -295,13 +307,13 @@ public final class PatternParser {
                             if ((c >= '0') && (c <= '9')) {
                                 formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), c - '0',
                                         formattingInfo.getMaxLength());
-                                state = MIN_STATE;
+                                state = ParserState.MIN_STATE;
                             } else {
                                 i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
                                         converterRules, patternConverters, formattingInfos);
 
                                 // Next pattern is assumed to be a literal.
-                                state = LITERAL_STATE;
+                                state = ParserState.LITERAL_STATE;
                                 formattingInfo = FormattingInfo.getDefault();
                                 currentLiteral.setLength(0);
                             }
@@ -313,15 +325,16 @@ public final class PatternParser {
                     currentLiteral.append(c);
 
                     if ((c >= '0') && (c <= '9')) {
+                        // Multiply the existing value and add the value of the number just encountered.
                         formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(),
-                                (formattingInfo.getMinLength() * 10) + (c - '0'),
+                                (formattingInfo.getMinLength() * DECIMAL) + (c - '0'),
                                 formattingInfo.getMaxLength());
                     } else if (c == '.') {
-                        state = DOT_STATE;
+                        state = ParserState.DOT_STATE;
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
                                 converterRules, patternConverters, formattingInfos);
-                        state = LITERAL_STATE;
+                        state = ParserState.LITERAL_STATE;
                         formattingInfo = FormattingInfo.getDefault();
                         currentLiteral.setLength(0);
                     }
@@ -334,12 +347,12 @@ public final class PatternParser {
                     if ((c >= '0') && (c <= '9')) {
                         formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(),
                             formattingInfo.getMinLength(), c - '0');
-                        state = MAX_STATE;
+                        state = ParserState.MAX_STATE;
                     } else {
-                        logger.error("Error occurred in position " + i
+                        LOGGER.error("Error occurred in position " + i
                                 + ".\n Was expecting digit, instead got char \"" + c + "\".");
 
-                        state = LITERAL_STATE;
+                        state = ParserState.LITERAL_STATE;
                     }
 
                     break;
@@ -348,13 +361,14 @@ public final class PatternParser {
                     currentLiteral.append(c);
 
                     if ((c >= '0') && (c <= '9')) {
+                        // Multiply the existing value and add the value of the number just encountered.
                         formattingInfo = new FormattingInfo(
                                 formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-                                (formattingInfo.getMaxLength() * 10) + (c - '0'));
+                                (formattingInfo.getMaxLength() * DECIMAL) + (c - '0'));
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
                                 converterRules, patternConverters, formattingInfos);
-                        state = LITERAL_STATE;
+                        state = ParserState.LITERAL_STATE;
                         formattingInfo = FormattingInfo.getDefault();
                         currentLiteral.setLength(0);
                     }
@@ -395,7 +409,7 @@ public final class PatternParser {
         }
 
         if (converterClass == null) {
-            logger.error("Unrecognized format specifier [" + converterId + "]");
+            LOGGER.error("Unrecognized format specifier [" + converterId + "]");
 
             return null;
         }
@@ -407,13 +421,13 @@ public final class PatternParser {
                 if (newInstance == null) {
                     newInstance = method;
                 } else {
-                    logger.error("Class " + converterClass + " cannot contain multiple newInstance methods");
+                    LOGGER.error("Class " + converterClass + " cannot contain multiple newInstance methods");
                     return null;
                 }
             }
         }
         if (newInstance == null) {
-            logger.error("Class " + converterClass + " does not contain a newInstance method");
+            LOGGER.error("Class " + converterClass + " does not contain a newInstance method");
             return null;
         }
 
@@ -430,7 +444,7 @@ public final class PatternParser {
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;
                 } else {
-                    logger.error("Unknown parameter type " + clazz.getName() + " for newInstance method of " +
+                    LOGGER.error("Unknown parameter type " + clazz.getName() + " for newInstance method of " +
                         converterClass.getName());
                     errors = true;
                 }
@@ -450,10 +464,10 @@ public final class PatternParser {
 
                 return (PatternConverter) newObj;
             } else {
-                logger.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
+                LOGGER.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
             }
         } catch (Exception ex) {
-            logger.error("Error creating converter for " + converterId, ex);
+            LOGGER.error("Error creating converter for " + converterId, ex);
         }
 
         return null;
@@ -501,7 +515,7 @@ public final class PatternParser {
             msg.append(Integer.toString(i));
             msg.append(" in conversion pattern.");
 
-            logger.error(msg.toString());
+            LOGGER.error(msg.toString());
 
             patternConverters.add(new LiteralPatternConverter(currentLiteral.toString()));
             formattingInfos.add(FormattingInfo.getDefault());

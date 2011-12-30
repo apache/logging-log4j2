@@ -420,7 +420,7 @@ public abstract class StrMatcher {
          */
         @Override
         public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
-            return buffer[pos] <= 32 ? 1 : 0;
+            return buffer[pos] <= ' ' ? 1 : 0;
         }
     }
 
