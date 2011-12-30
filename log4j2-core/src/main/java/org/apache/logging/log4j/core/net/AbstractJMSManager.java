@@ -32,14 +32,29 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- *
+ * Base Class for Managers of JMS connections.
  */
 public abstract class AbstractJMSManager extends AbstractManager {
 
+    /**
+     * The Constructor.
+     * @param name The name of the Appender.
+     */
     public AbstractJMSManager(String name) {
         super(name);
     }
 
+    /**
+     * Create the InitialContext.
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @return the InitialContext.
+     * @throws NamingException if a naming error occurs.
+     */
     protected static Context createContext(String factoryName, String providerURL, String urlPkgPrefixes,
                                            String securityPrincipalName, String securityCredentials)
         throws NamingException {
@@ -49,15 +64,32 @@ public abstract class AbstractJMSManager extends AbstractManager {
         return new InitialContext(props);
     }
 
+    /**
+     * Looks up the name in the context.
+     * @param ctx The Context.
+     * @param name The name to locate.
+     * @return The object to be located.
+     * @throws NamingException If an error occurs locating the name.
+     */
     protected static Object lookup(Context ctx, String name) throws NamingException {
         try {
             return ctx.lookup(name);
-        } catch(NameNotFoundException e) {
+        } catch (NameNotFoundException e) {
             LOGGER.error("Could not find name [" + name + "].");
             throw e;
         }
     }
 
+    /**
+     * Sets up the properties to pass to the InitialContext.
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @return The Properties.
+     */
     protected static Properties getEnvironment(String factoryName, String providerURL, String urlPkgPrefixes,
                                                String securityPrincipalName, String securityCredentials) {
         Properties props = new Properties();
@@ -72,23 +104,34 @@ public abstract class AbstractJMSManager extends AbstractManager {
             if (urlPkgPrefixes != null) {
                 props.put(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
             }
-	          if (securityPrincipalName != null) {
-	              props.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
-	              if (securityCredentials != null) {
-	                  props.put(Context.SECURITY_CREDENTIALS, securityCredentials);
-	              } else {
-	                  LOGGER.warn("SecurityPrincipalName has been set without SecurityCredentials. " +
+            if (securityPrincipalName != null) {
+                props.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
+                if (securityCredentials != null) {
+                    props.put(Context.SECURITY_CREDENTIALS, securityCredentials);
+                } else {
+                    LOGGER.warn("SecurityPrincipalName has been set without SecurityCredentials. " +
                         "This is likely to cause problems.");
-	              }
-	          }
+                }
+            }
             return props;
         }
         return null;
     }
 
-    public abstract void send(Serializable Object) throws Exception;
+    /**
+     * Send the message.
+     * @param object The Object to sent.
+     * @throws Exception if an error occurs.
+     */
+    public abstract void send(Serializable object) throws Exception;
 
-
+    /**
+     * Send the Object.
+     * @param object The Object to send.
+     * @param session The Session.
+     * @param producer The MessageProducer.
+     * @throws Exception if an error occurs.
+     */
     public synchronized void send(Serializable object, Session session, MessageProducer producer) throws Exception {
         try {
             Message msg;

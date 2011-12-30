@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.net;
 import org.apache.logging.log4j.Level;
 
 /**
- *  Severity values used by the Syslog system
+ *  Severity values used by the Syslog system.
  *
  *        Numerical   Severity<br>
  *          Code<br>
@@ -34,13 +34,21 @@ import org.apache.logging.log4j.Level;
  *            7       Debug: debug-level messages
  */
 public enum Severity {
+    /** System is unusable. */
     EMERG(0),
+    /** Action must be taken immediately. */
     ALERT(1),
+    /** Critical conditions. */
     CRITICAL(2),
+    /** Error conditions. */
     ERROR(3),
+    /** Warning conditions. */
     WARNING(4),
+    /** Normal but significant conditions. */
     NOTICE(5),
+    /** Informational messages. */
     INFO(6),
+    /** Debug level messages. */
     DEBUG(7);
 
     private final int code;
@@ -62,7 +70,7 @@ public enum Severity {
      * @param name the name to match.
      * @return true if the name matches, false otherwise.
      */
-    public boolean equals(String name) {
+    public boolean isEqual(String name) {
         return this.name().equalsIgnoreCase(name);
     }
 

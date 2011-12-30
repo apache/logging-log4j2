@@ -268,7 +268,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         int millis = cal.get(Calendar.MILLISECOND);
         if (millis != 0) {
             buf.append(".");
-            pad((int) ((float) millis / 10F), THREE_DIGITS, buf);
+            pad(millis, THREE_DIGITS, buf);
         }
 
         int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / MILLIS_PER_MINUTE;

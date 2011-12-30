@@ -28,9 +28,19 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- *
+ * Manager of TCP Socket connections.
  */
 public class TCPSocketManager extends AbstractSocketManager {
+    /**
+      The default reconnection delay (30000 milliseconds or 30 seconds).
+     */
+    public static final int DEFAULT_RECONNECTION_DELAY   = 30000;
+    /**
+      The default port number of remote logging server (4560).
+     */
+    private static final int DEFAULT_PORT = 4560;
+
+    private static ManagerFactory factory = new TCPSocketManagerFactory();
 
     private final int reconnectionDelay;
 
@@ -41,17 +51,30 @@ public class TCPSocketManager extends AbstractSocketManager {
     private final boolean retry;
 
     /**
-      The default port number of remote logging server (4560).
+     * The Constructor.
+     * @param name The unique name of this connection.
+     * @param os The OutputStream.
+     * @param sock The Socket.
+     * @param addr The internet address of the host.
+     * @param host The name of the host.
+     * @param port The port number on the host.
+     * @param delay Reconnection interval.
      */
-    private static final int DEFAULT_PORT = 4560;
+    public TCPSocketManager(String name, OutputStream os, Socket sock, InetAddress addr, String host, int port,
+                            int delay) {
+        super(name, os, addr, host, port);
+        this.reconnectionDelay = delay;
+        this.socket = sock;
+        retry = delay > 0;
+    }
 
     /**
-      The default reconnection delay (30000 milliseconds or 30 seconds).
+     * Obtain a TCPSocketManager.
+     * @param host The host to connect to.
+     * @param port The port on the host.
+     * @param delay The interval to pause between retries.
+     * @return A TCPSocketManager.
      */
-    public static final int DEFAULT_RECONNECTION_DELAY   = 30000;
-
-    private static ManagerFactory factory = new TCPSocketManagerFactory();
-
     public static TCPSocketManager getSocketManager(String host, int port, int delay) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
@@ -62,16 +85,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TCPSocketManager) getManager("TCP:" + host +":" + port, factory, new FactoryData(host, port, delay));
-    }
-
-
-    public TCPSocketManager(String name, OutputStream os, Socket sock, InetAddress addr, String host, int port,
-                            int delay) {
-        super(name, os, addr, host, port);
-        this.reconnectionDelay = delay;
-        this.socket = sock;
-        retry = delay > 0;
+        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, factory, new FactoryData(host, port, delay));
     }
 
     @Override
@@ -101,9 +115,12 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
     }
 
+    /**
+     * Handles recoonecting to a Thread.
+     */
     private class Reconnector extends Thread {
 
-        boolean shutdown = false;
+        private boolean shutdown = false;
 
         private final Object owner;
 
@@ -144,10 +161,13 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
     }
 
+    /**
+     * Data for the factory.
+     */
     private static class FactoryData {
-        String host;
-        int port;
-        int delay;
+        private String host;
+        private int port;
+        private int delay;
 
         public FactoryData(String host, int port, int delay) {
             this.host = host;
@@ -156,6 +176,9 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
     }
 
+    /**
+     * Factory to create a TCPSocketManager.
+     */
     private static class TCPSocketManagerFactory implements ManagerFactory<TCPSocketManager, FactoryData> {
 
         public TCPSocketManager createManager(String name, FactoryData data) {
@@ -172,5 +195,4 @@ public class TCPSocketManager extends AbstractSocketManager {
             return null;
         }
     }
-
 }

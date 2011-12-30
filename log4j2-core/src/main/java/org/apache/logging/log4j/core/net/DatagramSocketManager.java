@@ -21,12 +21,29 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import java.io.OutputStream;
 
 /**
- *
+ * Socket Manager for UDP connections.
  */
 public class DatagramSocketManager extends AbstractSocketManager {
 
     private static ManagerFactory factory = new DatagramSocketManagerFactory();
 
+    /**
+     * The Constructor.
+     * @param os The OutputStream.
+     * @param name The unique name of the connection.
+     * @param host The host to connect to.
+     * @param port The port on the host.
+     */
+    protected DatagramSocketManager(OutputStream os, String name, String host, int port) {
+        super(name, os, null, host, port);
+    }
+
+    /**
+     * Obtain a SocketManager.
+     * @param host The host to connect to.
+     * @param port The port on the host.
+     * @return A DatagramSocketManager.
+     */
     public static DatagramSocketManager getSocketManager(String host, int port) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
@@ -34,18 +51,16 @@ public class DatagramSocketManager extends AbstractSocketManager {
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host +":" + port, factory,
+        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, factory,
             new FactoryData(host, port));
     }
 
-    public DatagramSocketManager(OutputStream os, String name, String host, int port) {
-        super(name, os, null, host, port);
-    }
-
-
+    /**
+     * Data for the factory.
+     */
     private static class FactoryData {
-        String host;
-        int port;
+        private String host;
+        private int port;
 
         public FactoryData(String host, int port) {
             this.host = host;
@@ -53,6 +68,9 @@ public class DatagramSocketManager extends AbstractSocketManager {
         }
     }
 
+    /**
+     * Factory to create the DatagramSocketManager.
+     */
     private static class DatagramSocketManagerFactory implements ManagerFactory<DatagramSocketManager, FactoryData> {
 
         public DatagramSocketManager createManager(String name, FactoryData data) {

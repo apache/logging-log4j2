@@ -20,9 +20,9 @@ package org.apache.logging.log4j.core.net;
  * Enumeration of the supported protocols.
  */
 public enum Protocol {
-    /** TCP Protocol */
+    /** TCP Protocol. */
     TCP,
-    /** UDP Protocol */
+    /** UDP Protocol. */
     UDP;
 
     /**
@@ -30,7 +30,7 @@ public enum Protocol {
      * @param name The enumeration name to check.
      * @return true if this enumeration has the specified name.
      */
-    public boolean equals(String name) {
+    public boolean isEqual(String name) {
         return this.name().equalsIgnoreCase(name);
     }
 }

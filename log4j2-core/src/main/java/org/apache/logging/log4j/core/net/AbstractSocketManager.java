@@ -26,10 +26,27 @@ import java.net.InetAddress;
  */
 public abstract class AbstractSocketManager extends OutputStreamManager {
 
+    /**
+     * The internet address of the host.
+     */
     protected final InetAddress address;
+    /**
+     * The name of the host.
+     */
     protected final String host;
+    /**
+     * The port on the host.
+     */
     protected final int port;
 
+    /**
+     * The Constructor.
+     * @param name The unique name of this connection.
+     * @param os The OutputStream to manage.
+     * @param addr The internet address.
+     * @param host The target host name.
+     * @param port The target port number.
+     */
     public AbstractSocketManager(String name, OutputStream os, InetAddress addr, String host, int port) {
         super(os, name);
         this.address = addr;

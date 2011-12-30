@@ -45,11 +45,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- *
+ * Listens for events over a socket connection.
  */
 public class SocketServer extends AbstractServer implements Runnable {
 
     private static Logger logger;
+
+    private static final int MAX_PORT = 65534;
 
     private boolean isActive = true;
 
@@ -57,6 +59,22 @@ public class SocketServer extends AbstractServer implements Runnable {
 
     private ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
 
+    /**
+     * Constructor.
+     * @param port to listen on.
+     * @throws IOException If an error occurs.
+     */
+    public SocketServer(int port) throws IOException {
+        server = new ServerSocket(port);
+        if (logger == null) {
+            logger = LogManager.getLogger(getClass().getName());
+        }
+    }
+     /**
+     * Main startup for the server.
+     * @param args The command line arguments.
+     * @throws Exception if an error occurs.
+     */
     public static void main(String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
             System.err.println("Incorrect number of arguments");
@@ -64,7 +82,7 @@ public class SocketServer extends AbstractServer implements Runnable {
             return;
         }
         int port = Integer.parseInt(args[0]);
-        if (port <= 0 || port > 65535) {
+        if (port <= 0 || port >= MAX_PORT) {
             System.err.println("Invalid port number");
             printUsage();
             return;
@@ -91,23 +109,20 @@ public class SocketServer extends AbstractServer implements Runnable {
         System.out.println("Usage: ServerSocket port configFilePath");
     }
 
-    public SocketServer(int port) throws IOException {
-        server = new ServerSocket(port);
-        if (logger == null) {
-            logger = LogManager.getLogger(getClass().getName());
-        }
-    }
-
+    /**
+     * Shutdown the server.
+     */
     public void shutdown() {
         this.isActive = false;
         Thread.currentThread().interrupt();
     }
 
+    /**
+     * Accept incoming events and processes them.
+     */
     public void run() {
-        while(isActive)
-        {
-            try
-            {
+        while (isActive) {
+            try {
                 // Accept incoming connections.
                 Socket clientSocket = server.accept();
 
@@ -118,9 +133,7 @@ public class SocketServer extends AbstractServer implements Runnable {
                 SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(handler.getId(), handler);
                 handler.start();
-            }
-            catch(IOException ioe)
-            {
+            } catch (IOException ioe) {
                 System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                 ioe.printStackTrace();
             }
@@ -136,6 +149,9 @@ public class SocketServer extends AbstractServer implements Runnable {
         }
     }
 
+    /**
+     * Thread that processes the events.
+     */
     private class SocketHandler extends Thread {
         private final ObjectInputStream ois;
 
@@ -155,7 +171,7 @@ public class SocketServer extends AbstractServer implements Runnable {
             boolean closed = false;
             try {
                 try {
-                    while(!shutdown) {
+                    while (!shutdown) {
                         LogEvent event = (LogEvent) ois.readObject();
                         if (event != null) {
                             log(event);
@@ -183,6 +199,9 @@ public class SocketServer extends AbstractServer implements Runnable {
         }
     }
 
+    /**
+     * Factory that creates a Configuration for the server.
+     */
     private static class ServerConfigurationFactory extends XMLConfigurationFactory {
 
         private final String path;

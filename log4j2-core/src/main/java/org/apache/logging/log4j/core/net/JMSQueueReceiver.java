@@ -35,6 +35,39 @@ import java.io.InputStreamReader;
  */
 public class JMSQueueReceiver extends AbstractJMSReceiver {
 
+    /**
+     * Constructor.
+     * @param qcfBindingName The QueueConnectionFactory binding name.
+     * @param queueBindingName The Queue binding name.
+     * @param username The userid to connect to the queue.
+     * @param password The password to connect to the queue.
+     */
+    public JMSQueueReceiver(String qcfBindingName, String queueBindingName, String username, String password) {
+
+        try {
+            Context ctx = new InitialContext();
+            QueueConnectionFactory queueConnectionFactory;
+            queueConnectionFactory = (QueueConnectionFactory) lookup(ctx, qcfBindingName);
+            QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
+            queueConnection.start();
+            QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = (Queue) ctx.lookup(queueBindingName);
+            QueueReceiver queueReceiver = queueSession.createReceiver(queue);
+            queueReceiver.setMessageListener(this);
+        } catch (JMSException e) {
+            logger.error("Could not read JMS message.", e);
+        } catch (NamingException e) {
+            logger.error("Could not read JMS message.", e);
+        } catch (RuntimeException e) {
+            logger.error("Could not read JMS message.", e);
+        }
+    }
+
+    /**
+     * Main startup for the receiver.
+     * @param args The command line arguments.
+     * @throws Exception if an error occurs.
+     */
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
@@ -60,26 +93,6 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
         }
     }
 
-    public JMSQueueReceiver(String qcfBindingName, String queueBindingName, String username, String password) {
-
-        try {
-            Context ctx = new InitialContext();
-            QueueConnectionFactory queueConnectionFactory;
-            queueConnectionFactory = (QueueConnectionFactory) lookup(ctx,qcfBindingName);
-            QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
-            queueConnection.start();
-            QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue queue = (Queue) ctx.lookup(queueBindingName);
-            QueueReceiver queueReceiver = queueSession.createReceiver(queue);
-            queueReceiver.setMessageListener(this);
-        } catch (JMSException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (NamingException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (RuntimeException e) {
-            logger.error("Could not read JMS message.", e);
-        }
-    }
 
     private static void usage(String msg) {
         System.err.println(msg);

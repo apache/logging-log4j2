@@ -30,17 +30,44 @@ import javax.naming.NamingException;
 import java.io.Serializable;
 
 /**
- *
+ * Manager for a JMS Queue.
  */
 public class JMSQueueManager extends AbstractJMSManager {
+
+    private static ManagerFactory factory = new JMSQueueManagerFactory();
 
     private QueueConnection queueConnection;
     private QueueSession queueSession;
     private QueueSender queueSender;
 
+    /**
+     * The Constructor.
+     * @param name The unique name of the connection.
+     * @param conn The QueueConnection.
+     * @param sess The QueueSession.
+     * @param sender The QueueSender.
+     */
+    protected JMSQueueManager(String name, QueueConnection conn, QueueSession sess, QueueSender sender) {
+        super(name);
+        this.queueConnection = conn;
+        this.queueSession = sess;
+        this.queueSender = sender;
+    }
 
-    private static ManagerFactory factory = new JMSTopicManagerFactory();
-
+    /**
+     * Obtain a JMSQueueManager.
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @param factoryBindingName The name to locate in the Context that provides the QueueConnectionFactory.
+     * @param queueBindingName The name to use to locate the Queue.
+     * @param userName The userid to use to create the Queue Connection.
+     * @param password The password to use to create the Queue Connection.
+     * @return The JMSQueueManager.
+     */
     public static JMSQueueManager getJMSQueueManager(String factoryName, String providerURL, String urlPkgPrefixes,
                                                      String securityPrincipalName, String securityCredentials,
                                                      String factoryBindingName, String queueBindingName,
@@ -58,13 +85,6 @@ public class JMSQueueManager extends AbstractJMSManager {
         String name = "JMSQueue:" + factoryBindingName + "." + queueBindingName;
         return (JMSQueueManager) getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password));
-    }
-
-    public JMSQueueManager(String name, QueueConnection conn, QueueSession sess, QueueSender sender) {
-        super(name);
-        this.queueConnection = conn;
-        this.queueSession = sess;
-        this.queueSender = sender;
     }
 
     @Override
@@ -86,17 +106,19 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
     }
 
-
+    /**
+     * Data for the factory.
+     */
     private static class FactoryData {
-        String factoryName;
-        String providerURL;
-        String urlPkgPrefixes;
-        String securityPrincipalName;
-        String securityCredentials;
-        String factoryBindingName;
-        String queueBindingName;
-        String userName;
-        String password;
+        private String factoryName;
+        private String providerURL;
+        private String urlPkgPrefixes;
+        private String securityPrincipalName;
+        private String securityCredentials;
+        private String factoryBindingName;
+        private String queueBindingName;
+        private String userName;
+        private String password;
 
         public FactoryData(String factoryName, String providerURL, String urlPkgPrefixes, String securityPrincipalName,
                            String securityCredentials, String factoryBindingName, String queueBindingName,
@@ -113,7 +135,10 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
     }
 
-    private static class JMSTopicManagerFactory implements ManagerFactory<JMSQueueManager, FactoryData> {
+    /**
+     * Factory to create the JMSQueueManager.
+     */
+    private static class JMSQueueManagerFactory implements ManagerFactory<JMSQueueManager, FactoryData> {
 
         public JMSQueueManager createManager(String name, FactoryData data) {
             try {
@@ -133,9 +158,9 @@ public class JMSQueueManager extends AbstractJMSManager {
                 return new JMSQueueManager(name, conn, sess, sender);
 
             } catch (NamingException ex) {
-
+                LOGGER.error("Unable to locate resource", ex);
             } catch (JMSException jmsex) {
-
+                LOGGER.error("Unable to establish connection", jmsex);
             }
 
             return null;

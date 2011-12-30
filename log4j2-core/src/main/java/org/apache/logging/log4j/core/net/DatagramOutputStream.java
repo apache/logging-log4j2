@@ -29,9 +29,18 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- *
+ * OutputStream for UDP connections.
  */
 public class DatagramOutputStream extends OutputStream {
+
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final int SHIFT_1 = 8;
+    private static final int SHIFT_2 = 16;
+    private static final int SHIFT_3 = 24;
 
     private DatagramSocket ds;
     private InetAddress address;
@@ -39,26 +48,26 @@ public class DatagramOutputStream extends OutputStream {
 
     private byte[] data;
 
-     /**
-     * Allow subclasses access to the status logger without creating another instance.
+    /**
+     * The Constructor.
+     * @param host The host to connect to.
+     * @param port The port on the host.
      */
-    protected static final Logger logger = StatusLogger.getLogger();
-
     public DatagramOutputStream(String host, int port) {
         this.port = port;
         try {
             address = InetAddress.getByName(host);
         } catch (UnknownHostException ex) {
             String msg = "Could not find host " + host;
-            logger.error(msg, ex);
+            LOGGER.error(msg, ex);
             throw new AppenderRuntimeException(msg, ex);
         }
 
         try {
             ds = new DatagramSocket();
-        } catch(SocketException ex) {
+        } catch (SocketException ex) {
             String msg = "Could not instantiate DatagramSocket to " + host;
-            logger.error(msg, ex);
+            LOGGER.error(msg, ex);
             throw new AppenderRuntimeException(msg, ex);
         }
     }
@@ -70,7 +79,7 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(int i) throws IOException {
-        copy(new byte[] { (byte)(i >>> 24),(byte)(i >>> 16),(byte)(i >>> 8),(byte)i}, 0, 4);
+        copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
     }
 
     @Override

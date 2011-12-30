@@ -30,17 +30,44 @@ import javax.naming.NamingException;
 import java.io.Serializable;
 
 /**
- *
+ * Manager for JMS Topic connections.
  */
 public class JMSTopicManager extends AbstractJMSManager {
+
+    private static ManagerFactory factory = new JMSTopicManagerFactory();
 
     private TopicConnection topicConnection;
     private TopicSession topicSession;
     private TopicPublisher topicPublisher;
 
+    /**
+     * Constructor.
+     * @param name The unique name of the connection.
+     * @param conn The TopicConnection.
+     * @param sess The TopicSession.
+     * @param pub The TopicPublisher.
+     */
+    public JMSTopicManager(String name, TopicConnection conn, TopicSession sess, TopicPublisher pub) {
+        super(name);
+        this.topicConnection = conn;
+        this.topicSession = sess;
+        this.topicPublisher = pub;
+    }
 
-    private static ManagerFactory factory = new JMSTopicManagerFactory();
-
+    /**
+     * Obtain a JSMTopicManager.
+     * @param factoryName The fully qualified class name of the InitialContextFactory.
+     * @param providerURL The URL of the provider to use.
+     * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
+     * will create a URL context factory
+     * @param securityPrincipalName The name of the identity of the Principal.
+     * @param securityCredentials The security credentials of the Principal.
+     * @param factoryBindingName The name to locate in the Context that provides the TopicConnectionFactory.
+     * @param topicBindingName The name to use to locate the Topic.
+     * @param userName The userid to use to create the Topic Connection.
+     * @param password The password to use to create the Topic Connection.
+     * @return A JMSTopicManager.
+     */
     public static JMSTopicManager getJMSTopicManager(String factoryName, String providerURL, String urlPkgPrefixes,
                                                      String securityPrincipalName, String securityCredentials,
                                                      String factoryBindingName, String topicBindingName,
@@ -60,12 +87,6 @@ public class JMSTopicManager extends AbstractJMSManager {
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password));
     }
 
-    public JMSTopicManager(String name, TopicConnection conn, TopicSession sess, TopicPublisher pub) {
-        super(name);
-        this.topicConnection = conn;
-        this.topicSession = sess;
-        this.topicPublisher = pub;
-    }
 
     @Override
     public void send(Serializable object) throws Exception {
@@ -86,17 +107,19 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
-
+    /**
+     * Data for the factory.
+     */
     private static class FactoryData {
-        String factoryName;
-        String providerURL;
-        String urlPkgPrefixes;
-        String securityPrincipalName;
-        String securityCredentials;
-        String factoryBindingName;
-        String topicBindingName;
-        String userName;
-        String password;
+        private String factoryName;
+        private String providerURL;
+        private String urlPkgPrefixes;
+        private String securityPrincipalName;
+        private String securityCredentials;
+        private String factoryBindingName;
+        private String topicBindingName;
+        private String userName;
+        private String password;
 
         public FactoryData(String factoryName, String providerURL, String urlPkgPrefixes, String securityPrincipalName,
                            String securityCredentials, String factoryBindingName, String topicBindingName,
@@ -113,6 +136,9 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
+    /**
+     * Factory to create a JMSTopicManager.
+     */
     private static class JMSTopicManagerFactory implements ManagerFactory<JMSTopicManager, FactoryData> {
 
         public JMSTopicManager createManager(String name, FactoryData data) {

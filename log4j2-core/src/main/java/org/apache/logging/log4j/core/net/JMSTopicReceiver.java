@@ -35,6 +35,38 @@ import java.io.InputStreamReader;
  */
 public class JMSTopicReceiver extends AbstractJMSReceiver {
 
+    /**
+     * Constructor.
+     * @param tcfBindingName The TopicConnectionFactory binding name.
+     * @param topicBindingName The Topic binding name.
+     * @param username The userid to connect to the topic.
+     * @param password The password to connect to the topic.
+     */
+    public JMSTopicReceiver(String tcfBindingName, String topicBindingName, String username, String password) {
+        try {
+            Context ctx = new InitialContext();
+            TopicConnectionFactory topicConnectionFactory;
+            topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
+            TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(username, password);
+            topicConnection.start();
+            TopicSession topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic topic = (Topic) ctx.lookup(topicBindingName);
+            TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
+            topicSubscriber.setMessageListener(this);
+        } catch (JMSException e) {
+            logger.error("Could not read JMS message.", e);
+        } catch (NamingException e) {
+            logger.error("Could not read JMS message.", e);
+        } catch (RuntimeException e) {
+            logger.error("Could not read JMS message.", e);
+        }
+    }
+
+    /**
+     * Main startup for the receiver.
+     * @param args The command line arguments.
+     * @throws Exception if an error occurs.
+     */
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
@@ -57,26 +89,6 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
                     + "due to daemon threads.");
                 return;
             }
-        }
-    }
-
-    public JMSTopicReceiver(String tcfBindingName, String topicBindingName, String username, String password) {
-        try {
-            Context ctx = new InitialContext();
-            TopicConnectionFactory topicConnectionFactory;
-            topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
-            TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(username, password);
-            topicConnection.start();
-            TopicSession topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic topic = (Topic) ctx.lookup(topicBindingName);
-            TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
-            topicSubscriber.setMessageListener(this);
-        } catch (JMSException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (NamingException e) {
-            logger.error("Could not read JMS message.", e);
-        } catch (RuntimeException e) {
-            logger.error("Could not read JMS message.", e);
         }
     }
 

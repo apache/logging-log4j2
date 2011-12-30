@@ -32,9 +32,15 @@ import javax.naming.NamingException;
  */
 public abstract class AbstractJMSReceiver extends AbstractServer implements javax.jms.MessageListener {
 
-
+    /**
+     * Logger to capture diagnostics.
+     */
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    /**
+     * Listener that receives the event.
+     * @param message The received message.
+     */
     public void onMessage(javax.jms.Message message) {
 
         try {
@@ -51,7 +57,13 @@ public abstract class AbstractJMSReceiver extends AbstractServer implements java
         }
     }
 
-
+    /**
+     * Looks up an object from the Context.
+     * @param ctx The Context.
+     * @param name The name of the object to locate.
+     * @return The object.
+     * @throws NamingException if an error occurs.
+     */
     protected Object lookup(Context ctx, String name) throws NamingException {
         try {
             return ctx.lookup(name);
