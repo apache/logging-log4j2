@@ -45,6 +45,7 @@
         <p>
           Appenders always have a name so that they can be referenced from Loggers.
         </p>
+        <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
           <p>
             As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
@@ -105,6 +106,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="FailoverAppender"/>
         <subsection name="FailoverAppender">
           <p>The FailoverAppender wraps a set of appenders. If the primary Appender fails the secondary appenders will be
           tried in order until one succeeds or there are no more secondaries to try.</p>
@@ -179,6 +181,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="FileAppender"/>
         <subsection name="FileAppender">
           <p>The FileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter. The
             FileAppender uses a FileManager (which extends OutputStreamManager) to actually perform the file I/O. While
@@ -272,6 +275,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="FlumeAvroAppender"/>
         <subsection name="FlumeAvroAppender">
           <p><a href="http://incubator.apache.org/projects/flume.html">Apache Flume</a> is a distributed, reliable,
             and available system for efficiently collecting, aggregating, and moving large amounts of log data
@@ -390,6 +394,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
           <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
           <table border="1" width="100%">
@@ -497,6 +502,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="JMSTopicAppender"/>
         <subsection name="JMSTopicAppender">
           <p>The JMSTopicAppender sends the formatted log event to a JMS Topic.</p>
           <table border="1" width="100%">
@@ -605,6 +611,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="OutputStreamAppender"/>
         <subsection name="OutputStreamAppender">
           The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket
           appenders that write the event to an Output Stream. It cannot be directly configured. Support for
@@ -612,6 +619,7 @@
           OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple
           configurations.
         </subsection>
+        <a name="RewriteAppender"/>
         <subsection name="RewriteAppender">
           <p>
             The RewriteAppender allows the LogEvent to manipulated before it is processed by another Appender. This
@@ -707,6 +715,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="RollingFileAppender"/>
         <subsection name="RollingFileAppender">
           <p>The RollingFileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter
             and rolls the file over according the TriggeringPolicy and the RolloverPolicy. The
@@ -763,7 +772,9 @@
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
                 <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
-                and and/or a %d which represents an integer counter.</td>
+                and and/or a %d which represents an integer counter. The pattern also supports interpolation at
+                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
+                be included in the pattern.</td>
             </tr>
             <tr>
               <td>immediateFlush</td>
@@ -833,7 +844,8 @@
                 it will be incremented on each rollover. If the pattern contains both a date/time and integer
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
                 the file pattern ends with ".gz" or ".zip" the resulting archive will be compressed using the
-                compression scheme that matches the suffix.
+                compression scheme that matches the suffix. The pattern may also contain lookup references that
+                can be resolved at runtime such as is shown in the example below.
               </p>
               <table border="1" width="100%">
                 <tr>
@@ -856,13 +868,15 @@
               </table>
           <p>
             Below is a sample configuration that uses a RollingFileAppender with both the time and size based
-            triggering policies, will create up to 7 archives on the same day (1-7), and will compress each
+            triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
+            based on the current year and month, and will compress each
             archive using gzip:
 
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}-%d.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%d.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
@@ -881,6 +895,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">
            <p>
              The RoutingAppender evaluates LogEvents and then routes them to a subordinate Appender. The target
@@ -974,6 +989,7 @@
   ]]></source>
           </p>
         </subsection>
+        <a name="SocketAppender"/>
         <subsection name="SocketAppender">
           <p>
             The SocketAppender is an OutputStreamAppender that writes its output to a remote destination
@@ -1041,6 +1057,7 @@
             <caption align="top">SocketAppender Parameters</caption>
           </table>
         </subsection>
+        <a name="SyslogAppender"/>
         <subsection name="SyslogAppender">
           <p>
             The SyslogAppender is a SocketAppender that writes its output to a remote destination

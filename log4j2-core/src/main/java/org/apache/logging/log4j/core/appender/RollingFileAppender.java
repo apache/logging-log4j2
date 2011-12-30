@@ -23,8 +23,10 @@ import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -93,6 +95,7 @@ public final class RollingFileAppender extends OutputStreamAppender {
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
+     * @param config The Configuration.
      * @return A RollingFileAppender.
      */
     @PluginFactory
@@ -106,7 +109,8 @@ public final class RollingFileAppender extends OutputStreamAppender {
                                               @PluginElement("strategy") RolloverStrategy strategy,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filter") Filter filter,
-                                              @PluginAttr("suppressExceptions") String suppress) {
+                                              @PluginAttr("suppressExceptions") String suppress,
+                                              @PluginConfiguration Configuration config) {
 
         boolean isAppend = append == null ? true : Boolean.valueOf(append);
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
@@ -134,7 +138,7 @@ public final class RollingFileAppender extends OutputStreamAppender {
         }
 
         if (strategy == null) {
-            strategy = DefaultRolloverStrategy.createStrategy(null, null);
+            strategy = DefaultRolloverStrategy.createStrategy(null, null, config);
         }
 
         RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered);

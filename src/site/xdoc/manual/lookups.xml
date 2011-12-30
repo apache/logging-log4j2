@@ -48,6 +48,22 @@
       </PatternLayout>
     </File>]]></source>
         </subsection>
+        <a name="DateLookup"/>
+        <subsection name="DateLookup">
+          <p>
+            The DateLookup is somewhat unusual from the other lookups as it doesn't use the key to locate an item.
+            Instead, the key can be used to specify a date format string that is valid for
+            <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
+            The current date, or the date associated with the current log event will be formatted as specified.
+          </p>
+          <source><![CDATA[    <RollingFile name="Rolling-${map:type}" fileName="${filename}"
+                 filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}.%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <SizeBasedTriggeringPolicy size="500" />
+    </RollingFile>]]></source>
+        </subsection>
         <a name="EnvironmentLookup"/>
         <subsection name="EnvironmentLookup">
           <p>

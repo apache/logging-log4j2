@@ -63,6 +63,7 @@
       </item>
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
         <item name="ContextMap" href="/manual/lookups.html#ContextMapLookup"/>
+        <item name="Date" href="/manual/lookups.html#DateLookcup"/>
         <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="StructuredData" href="/manual/lookups.html#StructuredDataLookup"/>
@@ -77,7 +78,7 @@
         <item name="JSMTopic" href="/manual/appenders.html#JMSTopicAppender"/>
         <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
-        <item name="RollingFile" href="/manual/appenders.html#RollingFileappender"/>
+        <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>

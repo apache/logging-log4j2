@@ -21,9 +21,12 @@ import org.apache.logging.log4j.core.appender.rolling.helper.Action;
 import org.apache.logging.log4j.core.appender.rolling.helper.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.helper.GZCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.helper.ZipCompressAction;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
@@ -72,21 +75,24 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     /**
      * Index for oldest retained log file.
      */
-    private int maxIndex;
+    private final int maxIndex;
 
     /**
      * Index for most recent log file.
      */
-    private int minIndex;
+    private final int minIndex;
+
+    private final StrSubstitutor subst;
 
     /**
      * Constructs a new instance.
      * @param min The minimum index.
      * @param max The maximum index.
      */
-    public DefaultRolloverStrategy(int min, int max) {
+    protected DefaultRolloverStrategy(int min, int max, StrSubstitutor subst) {
         minIndex = min;
         maxIndex = max;
+        this.subst = subst;
     }
 
     /**
@@ -107,7 +113,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             manager.getProcessor().formatFileName(purgeStart, buf);
             String currentFileName = manager.getFileName();
 
-            String renameTo = buf.toString();
+            String renameTo = subst.replace(buf);
             String compressedName = renameTo;
             Action compressAction = null;
 
@@ -143,7 +149,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         StringBuilder buf = new StringBuilder();
         manager.getProcessor().formatFileName(lowIndex, buf);
 
-        String lowFilename = buf.toString();
+        String lowFilename = subst.replace(buf);
 
         if (lowFilename.endsWith(".gz")) {
             suffixLength = 3;
@@ -188,7 +194,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 buf.setLength(0);
                 manager.getProcessor().formatFileName(i + 1, buf);
 
-                String highFilename = buf.toString();
+                String highFilename = subst.replace(buf);
                 String renameTo = highFilename;
 
                 if (isBase) {
@@ -230,11 +236,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Create the DefaultRolloverStrategy.
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
+     * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
      */
     @PluginFactory
     public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
-                                                         @PluginAttr("min") String min) {
+                                                         @PluginAttr("min") String min,
+                                                         @PluginConfiguration Configuration config) {
 
         int minIndex;
         if (min != null) {
@@ -256,7 +264,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         } else {
             maxIndex = DEFAULT_WINDOW_SIZE;
         }
-        return new DefaultRolloverStrategy(minIndex, maxIndex);
+        return new DefaultRolloverStrategy(minIndex, maxIndex, config.getSubst());
     }
 
 }
