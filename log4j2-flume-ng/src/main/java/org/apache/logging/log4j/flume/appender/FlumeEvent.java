@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.flume;
+package org.apache.logging.log4j.flume.appender;
 
-import com.cloudera.flume.core.EventBaseImpl;
+import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
@@ -39,7 +39,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Class that is both a Flume and Log4j Event.
  */
-public class FlumeEvent extends EventBaseImpl implements LogEvent {
+public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private static final String DEFAULT_MDC_PREFIX = "mdc:";
 
@@ -53,10 +53,6 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
 
     private final LogEvent event;
 
-    private byte[] body;
-
-    private final String hostname;
-
     private final Map<String, String> ctx = new HashMap<String, String>();
 
     private final boolean compress;
@@ -64,7 +60,6 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
     /**
      * Construct the FlumeEvent.
      * @param event The Log4j LogEvent.
-     * @param hostname The host name.
      * @param includes A comma separated list of MDC elements to include.
      * @param excludes A comma separated list of MDC elements to exclude.
      * @param required A comma separated list of MDC elements that are required to be defined.
@@ -72,18 +67,17 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
      * @param eventPrefix The value to prefix to event keys.
      * @param compress If true the event body should be compressed.
      */
-    public FlumeEvent(LogEvent event, String hostname, String includes, String excludes, String required,
+    public FlumeEvent(LogEvent event, String includes, String excludes, String required,
                       String mdcPrefix, String eventPrefix, boolean compress) {
         this.event = event;
-        this.hostname = hostname;
         this.compress = compress;
+        Map<String, String> headers = getHeaders();
         if (mdcPrefix == null) {
             mdcPrefix = DEFAULT_MDC_PREFIX;
         }
         if (eventPrefix == null) {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
-        this.fields = new HashMap<String, byte[]>();
         Map<String, String> mdc = event.getContextMap();
         if (includes != null) {
             String[] array = includes.split(",");
@@ -119,37 +113,37 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
         Message message = event.getMessage();
         if (message instanceof MapMessage) {
             if (message instanceof StructuredDataMessage) {
-                addStructuredData(eventPrefix, fields, (StructuredDataMessage) message);
+                addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
             }
-            addMapData(eventPrefix, fields, (MapMessage) message);
+            addMapData(eventPrefix, headers, (MapMessage) message);
         }
 
-        addContextData(mdcPrefix, fields, ctx);
+        addContextData(mdcPrefix, headers, ctx);
 
-        addGuid(fields);
+        addGuid(headers);
     }
 
-    protected void addStructuredData(String prefix, Map<String, byte[]> fields, StructuredDataMessage msg) {
-        fields.put(prefix + EVENT_TYPE, msg.getType().getBytes());
+    protected void addStructuredData(String prefix, Map<String, String> fields, StructuredDataMessage msg) {
+        fields.put(prefix + EVENT_TYPE, msg.getType());
         StructuredDataId id = msg.getId();
-        fields.put(prefix + EVENT_ID, id.getName().getBytes());
+        fields.put(prefix + EVENT_ID, id.getName());
     }
 
-    protected void addMapData(String prefix, Map<String, byte[]> fields, MapMessage msg) {
+    protected void addMapData(String prefix, Map<String, String> fields, MapMessage msg) {
         Map<String, String> data = msg.getData();
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            fields.put(prefix + entry.getKey(), entry.getValue().getBytes());
+            fields.put(prefix + entry.getKey(), entry.getValue());
         }
     }
 
-    protected void addContextData(String prefix, Map<String, byte[]> fields, Map<String, String> context) {
-        for (Map.Entry<String, String> entry : ctx.entrySet()) {
-            fields.put(prefix + entry.getKey(), entry.getValue().toString().getBytes());
+    protected void addContextData(String prefix, Map<String, String> fields, Map<String, String> context) {
+        for (Map.Entry<String, String> entry : context.entrySet()) {
+            fields.put(prefix + entry.getKey(), entry.getValue());
         }
     }
 
-    protected void addGuid(Map<String, byte[]> fields) {
-        fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString().getBytes());
+    protected void addGuid(Map<String, String> fields) {
+        fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString());
     }
 
     /**
@@ -158,7 +152,7 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
      */
     public void setBody(byte[] body) {
         if (body == null || body.length == 0) {
-            this.body = new byte[0];
+            super.setBody(new byte[0]);
             return;
         }
         if (compress) {
@@ -170,34 +164,10 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
             } catch (IOException ioe) {
                 throw new LoggingException("Unable to compress message", ioe);
             }
-            this.body = baos.toByteArray();
+            super.setBody(baos.toByteArray());
         } else {
-            this.body = body;
+            super.setBody(body);
         }
-    }
-
-    @Override
-    public byte[] getBody() {
-        return this.body;
-    }
-
-    @Override
-    public Priority getPriority() {
-        switch (event.getLevel()) {
-            case INFO:
-                return Priority.INFO;
-            case ERROR:
-                return Priority.ERROR;
-            case DEBUG:
-                return Priority.DEBUG;
-            case WARN:
-                return Priority.WARN;
-            case TRACE:
-                return Priority.TRACE;
-            case FATAL:
-                return Priority.FATAL;
-        }
-        return Priority.INFO;
     }
 
     /**
@@ -206,21 +176,6 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
      */
     public String getFQCN() {
         return event.getFQCN();
-    }
-
-    @Override
-    public long getTimestamp() {
-        return event.getMillis();
-    }
-
-    @Override
-    public long getNanos() {
-        return System.nanoTime();
-    }
-
-    @Override
-    public String getHost() {
-        return hostname;
     }
 
     /**

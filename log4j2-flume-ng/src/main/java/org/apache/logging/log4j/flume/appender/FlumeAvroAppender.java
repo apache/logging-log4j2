@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.flume;
+package org.apache.logging.log4j.flume.appender;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -78,7 +78,7 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
      */
     public void append(LogEvent event) {
 
-        FlumeEvent flumeEvent = factory.createEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
+        FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().format(flumeEvent));
         manager.send(flumeEvent, reconnectDelay, retries);
@@ -93,7 +93,6 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
     /**
      * Create a Flume event.
      * @param event The Log4j LogEvent.
-     * @param hostname The host name.
      * @param includes comma separated list of mdc elements to include.
      * @param excludes comma separated list of mdc elements to exclude.
      * @param required comma separated list of mdc elements that must be present with a value.
@@ -102,9 +101,9 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
      * @param compress If true the body will be compressed.
      * @return A Flume Event.
      */
-    public FlumeEvent createEvent(LogEvent event, String hostname, String includes, String excludes, String required,
+    public FlumeEvent createEvent(LogEvent event, String includes, String excludes, String required,
                       String mdcPrefix, String eventPrefix, boolean compress) {
-        return new FlumeEvent(event, hostname, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
+        return new FlumeEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
     }
 
@@ -121,6 +120,7 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
      * @param mdcPrefix The prefix to add to MDC key names.
      * @param eventPrefix The prefix to add to event key names.
      * @param compressBody If true the event body will be compressed.
+     * @param batchSize Number of events to include in a batch. Defaults to 1.
      * @param factory The factory to use to create Flume events.
      * @param layout The layout to format the event.
      * @param filter A Filter to filter events.
@@ -138,6 +138,7 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
                                                    @PluginAttr("mdcPrefix") String mdcPrefix,
                                                    @PluginAttr("eventPrefix") String eventPrefix,
                                                    @PluginAttr("compress") String compressBody,
+                                                   @PluginAttr("batchSize") String batchSize,
                                                    @PluginElement("flumeEventFactory") FlumeEventFactory factory,
                                                    @PluginElement("layout") Layout layout,
                                                    @PluginElement("filters") Filter filter) {
@@ -157,12 +158,13 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
 
+        int batchCount = batchSize == null ? 1 : Integer.parseInt(batchSize);
         int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
 
         if (layout == null) {
-            layout = RFC5424Layout.createLayout(null, null, null, null, "True", null, null, null, null, excludes,
-                includes, required, null);
+            layout = RFC5424Layout.createLayout(null, null, null, "True", null, null, null, null, excludes,
+                includes, required, null, null);
         }
 
         if (name == null) {
@@ -170,7 +172,7 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
             return null;
         }
 
-        FlumeAvroManager manager = FlumeAvroManager.getManager(agents);
+        FlumeAvroManager manager = FlumeAvroManager.getManager(agents, batchCount);
         if (manager == null) {
             return null;
         }

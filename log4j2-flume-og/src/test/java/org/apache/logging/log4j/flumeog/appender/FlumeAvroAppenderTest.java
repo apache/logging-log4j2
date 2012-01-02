@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.flume;
+package org.apache.logging.log4j.flumeog.appender;
 
 import com.cloudera.flume.core.Event;
 import com.cloudera.flume.handlers.avro.AvroEventSource;

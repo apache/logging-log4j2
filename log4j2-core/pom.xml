@@ -93,18 +93,6 @@
       <artifactId>logback-core</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
-      <groupId>com.cloudera</groupId>
-      <artifactId>flume-core</artifactId>
-      <version>0.9.4-cdh3u1</version>
-      <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>

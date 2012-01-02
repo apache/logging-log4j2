@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.flume;
+package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.core.helpers.UUIDUtil;
 import org.junit.Test;
