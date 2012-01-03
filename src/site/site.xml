@@ -130,6 +130,8 @@
       <item name="Log4J 1.2 API" href="log4j12-api/index.html"/>
       <item name="Commons Logging Bridge" href="log4j2-jcl/index.html"/>
       <item name="SLF4J Binding" href="slf4j-impl/index.html"/>
+      <item name="Flume OG" href="log4j2-flume-og/index.html"/>
+      <item name="Flume NG" href="log4j2-flume-ng/index.html"/>
     </menu>
     <links>
       <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>

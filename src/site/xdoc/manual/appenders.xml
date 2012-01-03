@@ -277,10 +277,16 @@
         </subsection>
         <a name="FlumeAvroAppender"/>
         <subsection name="FlumeAvroAppender">
+          <p><i>This is an optional component supplied in a separate jar.</i></p>
           <p><a href="http://incubator.apache.org/projects/flume.html">Apache Flume</a> is a distributed, reliable,
             and available system for efficiently collecting, aggregating, and moving large amounts of log data
             from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
             them to a Flume agent as serialized Avro events for consumption.</p>
+          <p>
+            There are two versions of the Flume Appender available. The first is for "Flume OG", the original
+            version of Flume before it became an Apache project. The second is for "Flume NG", which is
+            maintained by the Apache Flume project.
+          </p>
           <table border="1" width="100%">
             <tr>
               <th>Parameter Name</th>
@@ -298,6 +304,12 @@
               <td>agentRetries</td>
               <td>integer</td>
               <td>The number of times the agent should be retried before failing to a secondary.</td>
+            </tr>
+            <tr>
+              <td>batchSize</td>
+              <td>integer</td>
+              <td>Specifies the number of events that should be sent as a batch. The default is 1. <i>This
+                parameter only applies to the Flume NG Appender.</i></td>
             </tr>
             <tr>
               <td>compress</td>
