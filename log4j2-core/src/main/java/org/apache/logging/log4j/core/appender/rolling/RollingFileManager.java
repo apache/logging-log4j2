@@ -123,14 +123,15 @@ public class RollingFileManager extends FileManager {
             return false;
         }
 
-        RolloverDescription descriptor = strategy.rollover(this);
+        boolean success = false;
+        Thread thread = null;
 
-        if (descriptor != null) {
+        try {
+            RolloverDescription descriptor = strategy.rollover(this);
 
-            close();
+            if (descriptor != null) {
 
-            boolean success = false;
-            try {
+                close();
 
                 if (descriptor.getSynchronous() != null) {
 
@@ -142,19 +143,18 @@ public class RollingFileManager extends FileManager {
                 }
 
                 if (success) {
-                    Action async = new AsyncAction(descriptor.getAsynchronous(), this);
-                    if (async != null) {
-                        new Thread(async).start();
-                    }
+                    thread = new Thread(new AsyncAction(descriptor.getAsynchronous(), this));
+                    thread.start();
                 }
-            } finally {
-                if (!success && semaphore.availablePermits() == 0) {
-                    semaphore.release();
-                }
+                return true;
             }
-            return true;
+            return false;
+        } finally {
+            if (thread == null) {
+                semaphore.release();
+            }
         }
-        return false;
+
     }
 
     /**
