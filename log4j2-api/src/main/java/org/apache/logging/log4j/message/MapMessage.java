@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -149,7 +153,7 @@ public class MapMessage implements FormattedMessage, Serializable {
      * @return The formatted String.
      */
     public String asString() {
-        return asString("");
+        return asString(format == null ? "" : format);
     }
 
     /**
@@ -169,7 +173,12 @@ public class MapMessage implements FormattedMessage, Serializable {
     }
 
     public void asXML(StringBuilder sb) {
-
+        sb.append("<Map>\n");
+        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
+        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+            sb.append("  <Entry key=").append(entry.getKey()).append(">").append(entry.getValue()).append("</Entry>\n");
+        }
+        sb.append("</Map>");
     }
 
     /**

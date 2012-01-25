@@ -35,4 +35,18 @@ public class MapMessageTest {
         String expected = "message=\"Test message {}\" project=\"Log4j\"";
         assertEquals(expected, result);
     }
+
+    @Test
+    public void testXML() {
+        String testMsg = "Test message {}";
+        MapMessage msg = new MapMessage();
+        msg.setFormat("XML");
+        msg.put("message", testMsg);
+        msg.put("project", "Log4j");
+        String result = msg.getFormattedMessage();
+        String expected = "<Map>\n  <Entry key=message>Test message {}</Entry>\n" +
+            "  <Entry key=project>Log4j</Entry>\n" +
+            "</Map>";
+        assertEquals(expected, result);
+    }
 }

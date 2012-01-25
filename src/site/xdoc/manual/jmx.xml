@@ -18,13 +18,15 @@
 
 <document>
     <properties>
-        <title>Overview</title>
+        <title>JMX</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
       <section name="JMX">
-
+        <p>
+          JMX support is incomplete at this time. Patches are welcome!
+        </p>
       </section>
     </body>
 </document>

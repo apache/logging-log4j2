@@ -39,7 +39,6 @@
   <body>
     <menu name="Apache Log4j™ 2" inherit="top">
       <item name="About" href="/index.html"/>
-      <item name="Log4j2 API" href="log4j2-api/api.html"/>
       <item name="Download" href="/download.html"/>
       <item name="Build and Install" href="/build.html"/>
       <item name="Changelog" href="/changelog.html"/>
@@ -47,6 +46,13 @@
     <menu name="Manual" inherit="top">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="API" href="/manual/api.html" collapse="true">
+        <item name="Overview" href="manual/api.html#Overview"/>
+        <item name="Markers" href="manual/api.html#Markers"/>
+        <item name="Event Logging" href="/manual/api.html#EventLogging"/>
+        <item name="Messages" href="/manual/messages.html"/>
+        <item name="ThreadContext" href="/manual/thread-context.html"/>
+      </item>
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
@@ -103,7 +109,6 @@
         <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>
         <item name="Time" href="/manual/filters.html#TimeFilter"/>
       </item>
-      <item name="ThreadContext" href="/manual/thread-context.html"/>
       <item name="JMX" href="/manual/jmx.html"/>
       <item name="Logging Separation" href="/manual/logsep.html"/>
       <item name="Extending Log4j" href="/manual/extending.html" collapse="true">

@@ -586,7 +586,7 @@
         <subsection name="RFC5424Layout">
           <p>
             As the name implies, the RFC5424Layout formats LogEvents in accordance with
-            <a href="">RFC 5424</a>, the enhanced Syslog specification. Although the specification
+            <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
           </p>

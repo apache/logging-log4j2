@@ -24,19 +24,22 @@
 
     <body>
         <section name="Log4j 2.0 API">
-
+          <a name="Overview"/>
+          <subsection name="Overview">
             <p>
               The Log4Jj 2.0 API provides the interface that applications should code to and provides the
               adapter components required for implementers to create a logging implementation.
             </p>
+          </subsection>
+          <a name="Markers"/>
+          <subsection name="Markers">
+
+          </subsection>
+          <a name="EventLogging"/>
+          <subsection name="EventLogging">
+
+          </subsection>
 
         </section>
-
-        <section name="Requirements">
-           <p>
-             The Log4j 2.0 API requires at least Java 5.
-          </p>
-        </section>
-
     </body>
 </document>
