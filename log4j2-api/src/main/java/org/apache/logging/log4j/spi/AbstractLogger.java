@@ -93,22 +93,26 @@ public abstract class AbstractLogger implements Logger {
      * Log exiting from a method with the result.
      *
      * @param result The result being returned from the method call.
+     * @return the Throwable.
      */
-    public void exit(Object result) {
+    public <R> R exit(R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
             log(EXIT_MARKER, FQCN, Level.TRACE, exitMsg(result), null);
         }
+        return result;
     }
 
     /**
      * Log an exception or error to be thrown.
      *
      * @param t The Throwable.
+     * @return the Throwable.
      */
-    public void throwing(Throwable t) {
+    public <T extends Throwable> T throwing(T t) {
         if (isEnabled(Level.ERROR, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, FQCN, Level.ERROR, new SimpleMessage("throwing"), t);
         }
+        return t;
     }
 
 
@@ -117,11 +121,13 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param level The logging Level.
      * @param t     The Throwable.
+     * @return the Throwable.
      */
-    public void throwing(Level level, Throwable t) {
+    public <T extends Throwable> T throwing(Level level, T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, FQCN, level, new SimpleMessage("throwing"), t);
         }
+        return t;
     }
 
     /**

@@ -48,23 +48,30 @@ public interface Logger {
   void exit();
 
   /**
-   * Log exiting from a method with the result.
+   * Log exiting from a method with the result. This may be coded as <br />
+   *     return logger.exit(myResult);
    * @param result The result being returned from the method call.
+   * @return the result.
    */
-  void exit(Object result);
+  <R> R exit(R result);
 
   /**
-   * Log an exception or error to be thrown.
+   * Log an exception or error to be thrown. This may be coded as <br />
+   *    throw logger.throwing(myException);
+   *
    * @param t The Throwable.
+   * @return the Throwable.
    */
-  void throwing(Throwable t);
+  <T extends Throwable> T throwing(T t);
 
   /**
-   * Log an exception or error to be thrown.
+   * Log an exception or error to be thrown. This may be coded as <br />
+   *    throw logger.throwing(debug, myException);
    * @param level The logging Level.
    * @param t The Throwable.
+   * @return the Throwable.
    */
-  void throwing(Level level, Throwable t);
+  <T extends Throwable> T throwing(Level level, T t);
 
   /**
    * Log an exception or error that has been caught.
