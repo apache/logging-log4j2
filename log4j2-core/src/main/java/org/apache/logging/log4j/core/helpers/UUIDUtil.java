@@ -66,19 +66,24 @@ public final class UUIDUtil {
         byte[] mac = null;
         try {
             InetAddress address = InetAddress.getLocalHost();
-
             try {
                 NetworkInterface ni = NetworkInterface.getByInetAddress(address);
-                if (!ni.isLoopback() && ni.isUp()) {
+                if (ni != null && !ni.isLoopback() && ni.isUp()) {
                     Method method = ni.getClass().getMethod("getHardwareAddress");
-                    mac = (byte[]) method.invoke(ni);
-                } else {
+                    if (method != null) {
+                        mac = (byte[]) method.invoke(ni);
+                    }
+                }
+
+                if (mac == null) {
                     Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
                     while (enumeration.hasMoreElements() && mac == null) {
                         ni = enumeration.nextElement();
-                        if (ni.isUp() && !ni.isLoopback()) {
+                        if (ni != null && ni.isUp() && !ni.isLoopback()) {
                             Method method = ni.getClass().getMethod("getHardwareAddress");
-                            mac = (byte[]) method.invoke(ni);
+                            if (method != null) {
+                                mac = (byte[]) method.invoke(ni);
+                            }
                         }
                     }
                 }
