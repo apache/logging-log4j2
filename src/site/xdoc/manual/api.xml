@@ -73,15 +73,6 @@
               only occur when debug logging is enabled.
             </p>
           </subsection>
-          <a name="Markers"/>
-          <subsection name="Markers">
-
-          </subsection>
-          <a name="EventLogging"/>
-          <subsection name="EventLogging">
-
-          </subsection>
-
         </section>
     </body>
 </document>

@@ -48,8 +48,9 @@
       <item name="Architecture" href="/manual/architecture.html"/>
       <item name="API" href="/manual/api.html" collapse="true">
         <item name="Overview" href="manual/api.html#Overview"/>
-        <item name="Markers" href="manual/api.html#Markers"/>
-        <item name="Event Logging" href="/manual/api.html#EventLogging"/>
+        <item name="Flow Tracing" href="manual/flowtracing.html"/>
+        <item name="Markers" href="manual/markers.html"/>
+        <item name="Event Logging" href="/manual/eventlogging.html"/>
         <item name="Messages" href="/manual/messages.html"/>
         <item name="ThreadContext" href="/manual/thread-context.html"/>
       </item>

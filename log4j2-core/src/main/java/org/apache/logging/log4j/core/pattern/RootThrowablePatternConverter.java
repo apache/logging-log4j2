@@ -65,6 +65,10 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
             }
             ThrowableProxy t = (ThrowableProxy) throwable;
             String trace = t.getRootCauseStackTrace();
+            int len = toAppendTo.length();
+            if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
+                toAppendTo.append(" ");
+            }
             if (lines > 0) {
                 StringBuilder sb = new StringBuilder();
                 String[] array = trace.split("\n");

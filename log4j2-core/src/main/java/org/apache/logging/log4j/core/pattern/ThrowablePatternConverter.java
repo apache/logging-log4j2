@@ -96,6 +96,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         if (t != null) {
             StringWriter w = new StringWriter();
             t.printStackTrace(new PrintWriter(w));
+            int len = toAppendTo.length();
+            if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
+                toAppendTo.append(" ");
+            }
             if (lines > 0) {
                 StringBuilder sb = new StringBuilder();
                 String[] array = w.toString().split("\n");

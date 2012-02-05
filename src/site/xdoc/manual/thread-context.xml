@@ -23,8 +23,9 @@
     </properties>
 
     <body>
-      <section name="Thread Context">
-        <subsection name="Introduction">
+      <section name="Log4j 2.0 API">
+        <subsection name="Thread Context">
+          <h4>Introduction</h4>
           <p>Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It has been documented and
             discussed in numerous places including
             <a href="http://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
@@ -40,8 +41,7 @@
             NDC. Although these are frequently used for purposes other than diagnosing problems, they are still
             frequently referred to as the MDC and NDC in Log4j 2 since they are already well known by those acronyms.
           </p>
-        </subsection>
-        <subsection name="Fish Tagging">
+          <h4>Fish Tagging</h4>
           <p>Most real-world systems have to deal with multiple clients simultaneously. In a typical multithreaded
             implementation of such asystem, different threads will handle different clients. Logging is
             especially well suited to trace and debug complex distributed applications. A common approach to
@@ -109,8 +109,7 @@
             <a href="../log4j2-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
             class are static.
           </p>
-        </subsection>
-        <subsection name="Including the ThreadContext when writing logs">
+          <h4>Including the ThreadContext when writing logs</h4>
           <p>
             The PatternLayout provides mechanisms to print the contents of the ThreadContext Map and Stack. Using
             %X by itself will cause the full contents of the Map to be included while %X{key} will cause the value

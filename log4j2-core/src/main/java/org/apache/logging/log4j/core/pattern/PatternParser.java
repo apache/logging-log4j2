@@ -414,7 +414,7 @@ public final class PatternParser {
             return null;
         }
 
-        Method[] methods = converterClass.getMethods();
+        Method[] methods = converterClass.getDeclaredMethods();
         Method newInstance = null;
         for (Method method : methods) {
             if (method.getName().equals("newInstance")) {
