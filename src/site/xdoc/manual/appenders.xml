@@ -784,7 +784,7 @@
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
                 <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
-                and and/or a %d which represents an integer counter. The pattern also supports interpolation at
+                and and/or a %i which represents an integer counter. The pattern also supports interpolation at
                 runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
                 be included in the pattern.</td>
             </tr>
@@ -888,7 +888,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
-                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%d.log.gz">
+                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
