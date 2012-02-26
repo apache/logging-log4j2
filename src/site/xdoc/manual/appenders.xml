@@ -964,9 +964,9 @@
               will be reused each time a matching Appender name is referenced through a Route.
             </p>
           <p>
-            Below is a sample configuration that uses a RoutingFileAppender to route all Audit events to
+            Below is a sample configuration that uses a RoutingAppender to route all Audit events to
             a FlumeAppender and all other events will be routed to a RollingFileAppender that captures only
-            the specific event type. Note that the AuditAppender was predefined while the RoutingFileAppenders
+            the specific event type. Note that the AuditAppender was predefined while the RollingFileAppenders
             are created as needed.
 
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
