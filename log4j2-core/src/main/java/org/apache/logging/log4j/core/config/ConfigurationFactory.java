@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,6 +189,11 @@ public abstract class ConfigurationFactory {
         return null;
     }
 
+    /**
+     * Load the configuration from a URI.
+     * @param configLocation A URI representing the location of the configuration.
+     * @return The InputSource for the configuration.
+     */
     protected InputSource getInputFromURI(URI configLocation) {
         configFile = FileUtils.fileFromURI(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
@@ -211,20 +217,31 @@ public abstract class ConfigurationFactory {
         return null;
     }
 
-    protected InputSource getInputFromString(ClassLoader loader, String configFile) {
+    /**
+     * Load the configuration from the location represented by the String.
+     * @param config The configuration location.
+     * @param loader The default ClassLoader to use.
+     * @return The InputSource to use to read the configuration.
+     */
+    protected InputSource getInputFromString(String config, ClassLoader loader) {
         InputSource source;
         try {
-            URL url = new URL(configFile);
+            URL url = new URL(config);
             source = new InputSource(url.openStream());
-            source.setSystemId(configFile);
+            if (FileUtils.isFile(url)) {
+                configFile = FileUtils.fileFromURI(url.toURI());
+            }
+            source.setSystemId(config);
             return source;
         } catch (Exception ex) {
-            source = getInputFromResource(configFile, loader);
+            source = getInputFromResource(config, loader);
             if (source == null) {
                 try {
-                    InputStream is = new FileInputStream(configFile);
+                    File file = new File(config);
+                    FileInputStream is = new FileInputStream(file);
+                    configFile = file;
                     source = new InputSource(is);
-                    source.setSystemId(configFile);
+                    source.setSystemId(config);
                 } catch (FileNotFoundException fnfe) {
                     // Ignore the exception
                 }
@@ -233,12 +250,34 @@ public abstract class ConfigurationFactory {
         return source;
     }
 
+    /**
+     * Retrieve the configuration via the ClassLoader.
+     * @param resource The resource to load.
+     * @param loader The default ClassLoader to use.
+     * @return The InputSource for the configuration.
+     */
     protected InputSource getInputFromResource(String resource, ClassLoader loader) {
-        InputStream is = Loader.getResourceAsStream(resource, loader);
+        URL url = Loader.getResource(resource, loader);
+        if (url == null) {
+            return null;
+        }
+        InputStream is = null;
+        try {
+            is = url.openStream();
+        } catch (IOException ioe) {
+            return null;
+        }
         if (is == null) {
             return null;
         }
         InputSource source = new InputSource(is);
+        if (FileUtils.isFile(url)) {
+            try {
+                configFile = FileUtils.fileFromURI(url.toURI());
+            } catch (URISyntaxException ex) {
+                // Just ignore the exception.
+            }
+        }
         source.setSystemId(resource);
         return source;
     }
@@ -289,7 +328,7 @@ public abstract class ConfigurationFactory {
                 String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
                 if (config != null) {
                     ClassLoader loader = this.getClass().getClassLoader();
-                    InputSource source = getInputFromString(loader, config);
+                    InputSource source = getInputFromString(config, loader);
                     if (source != null) {
                         for (ConfigurationFactory factory : factories) {
                             String[] types = factory.getSupportedTypes();

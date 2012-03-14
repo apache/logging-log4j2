@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 
 /**
@@ -32,6 +33,8 @@ public final class FileUtils {
 
     /** Constant for the file URL protocol.*/
     private static final String PROTOCOL_FILE = "file";
+    
+    private static final String JBOSS_FILE = "vfsfile";
 
     private static Logger logger = StatusLogger.getLogger();
 
@@ -46,7 +49,7 @@ public final class FileUtils {
      * @return the resulting file object
      */
     public static File fileFromURI(URI uri) {
-        if (uri == null || !uri.getScheme().equals(PROTOCOL_FILE)) {
+        if (uri == null || !uri.getScheme().equals(PROTOCOL_FILE) || !uri.getScheme().equals(JBOSS_FILE)) {
             return null;
         } else {
             try {
@@ -58,5 +61,9 @@ public final class FileUtils {
             }
             return null;
         }
+    }
+    
+    public static boolean isFile(URL url) {
+        return url != null && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
     }
 }

@@ -65,9 +65,10 @@ public final class Loader {
      * <p/>
      * </ol>
      * @param resource The resource to load.
+     * @param defaultLoader The default ClassLoader.
      * @return A URL to the resource.
      */
-    public static URL getResource(String resource) {
+    public static URL getResource(String resource, ClassLoader defaultLoader) {
         ClassLoader classLoader;
         URL url;
 
@@ -87,6 +88,14 @@ public final class Loader {
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
                 url = classLoader.getResource(resource);
+                if (url != null) {
+                    return url;
+                }
+            }
+            // We could not find resource. Finally try with the default ClassLoader.
+            if (defaultLoader != null) {
+                LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
+                url = defaultLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
