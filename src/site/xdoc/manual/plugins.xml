@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4j 2 Plugins</title>
+        <title>Log4j2 Plugins</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -30,14 +30,14 @@
             Log4j 1.x allowed for extension by requiring class attributes on most of the configuration
             declarations. In the case of some elements, notably the PatternLayout, the only way to add
             new pattern converters was to extend the PatternLayout class and add them via code. One of
-            goals of Log4j 2 is to make extending it extremely easy through the use of plugins.
+            goals of Log4j2 is to make extending it extremely easy through the use of plugins.
           </p>
           <p>
-            In Log4j 2 a plugin is declared by adding a Plugin annotation to the class declaration. During
+            In Log4j2 a plugin is declared by adding a Plugin annotation to the class declaration. During
             initialization the Configuration will invoke the PluginManager to locate all the Log4j plugins
             that are located in the declared <a href="./configuration.html#ConfigurationSyntax">packages</a>.
             As the configuration is processed the appropriate plugins will be automatically configured and
-            initialized.  Log4j 2 utilizes a few different types of plugins which are described in the follownig
+            initialized.  Log4j2 utilizes a few different types of plugins which are described in the follownig
             sections.
           </p>
         </subsection>

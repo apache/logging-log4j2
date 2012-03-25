@@ -18,12 +18,12 @@
 
 <document>
     <properties>
-        <title>Log4J 2.0 API</title>
+        <title>Log4j2 API</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Log4j 2.0 API">
+        <section name="Log4j2 API">
           <a name="Markers"/>
           <subsection name="Markers">
             <p>

@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Configuring Log4j 2</title>
+        <title>Configuring Log4j2</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -32,7 +32,7 @@
           manage these log statements without the need to modify them manually.
         </p>
         <p>
-          Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
+          Configuration of Log4j2 can be accomplished in 1 of 4 ways:
           <ol>
             <li>Through a configuration file written in XML or JSON.</li>
             <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
@@ -43,10 +43,10 @@
         </p>
         <p>
           This page focuses primarily on configuring Log4j through a configuration file. Information on
-          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
+          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j2</a>.
         </p>
         <p>
-          Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
+          Note that unlike Log4j 1.x, the public Log4j2 API does not expose methods to add, modify or remove
           appenders and filters or manipulate the configuration in any way.
         </p>
         <a name="AutomaticConfiguration"/>
@@ -637,7 +637,7 @@
         <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">
           <p>
-            Log4j 2 supports the ability to specify tokens in the configuration as references to properties defined
+            Log4j2 supports the ability to specify tokens in the configuration as references to properties defined
             elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
             others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
             uses variations Apache Commons Lang's
@@ -761,13 +761,13 @@
             to be able to diagnose problems in the logging configuration or in the configured components. Since
             logging has not been configured, "normal" logging cannot be used during initialization. In addition,
             normal logging within appenders could create infinite recursion which Log4j will detect and cause
-            the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
+            the recursive events to be ignored. To accomodate this need, the Log4j2 API includes a
             <a href="../log4j2-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
             Components declare an instance of the StatusLogger similar to</p>
 <source>
   protected final static Logger logger = StatusLogger.getLogger();</source>
           <p>
-            Since StatusLogger implements the Log4j 2 API's Logger interface, all the normal Logger methods may
+            Since StatusLogger implements the Log4j2 API's Logger interface, all the normal Logger methods may
             be used.
           </p>
           <p>
@@ -884,7 +884,7 @@
           log configuration can be used during testing than what is used in production.
         </p>
         <p>
-          A second approach, which is extensively used by Log4j 2, is to set the log4j.configurationFile property
+          A second approach, which is extensively used by Log4j2, is to set the log4j.configurationFile property
           in the method annotated with @BeforeClass in the junit test class. This will allow an arbitrarily
           named file to be used during the test.
         </p>

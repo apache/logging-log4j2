@@ -18,20 +18,20 @@
 
 <document>
     <properties>
-        <title>Log4J 2.0 Guide</title>
+        <title>Log4J2 Guide</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="About Log4j 2.0">
+        <section name="About Log4j2">
 
             <p>
-              Log4Jj 2.0 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j
+              Log4j2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j
               1.x, and provides many of the improvements available in Logback while fixing some inherent problems in
               Logback's architecture.
             </p>
 
-            <p>Some of the features and improvements in Log4j 2.0 are:</p>
+            <p>Some of the features and improvements in Log4j2 are:</p>
 
             <h3>API Separation</h3>
             <p>
@@ -46,17 +46,17 @@
             </p>
             <h3>Support for multiple APIs</h3>
             <p>
-              While the Log4j 2.0 API will provide the best performance, support for the SL4J and Commons Logging
+              While the Log4j2 API will provide the best performance, support for the SL4J and Commons Logging
               APIs are provided.
             </p>
             <h3>Automatic Reloading of Configurations</h3>
             <p>
-              Like Logback, Log4j 2.0 can automatically reload its configuration upon modification. Unlike Logback,
+              Like Logback, Log4j2 can automatically reload its configuration upon modification. Unlike Logback,
               it will do so without losing log events while reconfiguration is taking place.
             </p>
             <h3>Advanced Filtering</h3>
             <p>
-              Like Logback, Log4j 2.0 supports filtering based on context data, markers, regular expressions and
+              Like Logback, Log4j2 supports filtering based on context data, markers, regular expressions and
               other components in the Log event and can be specified to apply to all events before being passed
               to Loggers or as they pass through appenders. In addition, filters can also be associated with
               Loggers. Unlike Logback, a common Filter class can be used in any of these circumstances.
@@ -80,7 +80,7 @@
 
         <section name="Requirements">
            <p>
-             Log4j 2.0 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
+             Log4j2 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
              Some features may require optional dependencies. These dependencies are
              specified in the documentation for those features.
           </p>
@@ -88,7 +88,7 @@
 
         <section name="News">
           <p>
-            Log4j 2.0 is now available. The API for Log4j 2.0 is not compatible with Log4j 1.x, however an adapter
+            Log4j2 is now available for testing. The API for Log4j2 is not compatible with Log4j 1.x, however an adapter
             is available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for
             Commons Logging and SLF4J.
           </p>

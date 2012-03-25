@@ -18,7 +18,7 @@
 
 <document>
   <properties>
-    <title>Log4j 2 Architecture</title>
+    <title>Log4j2 Architecture</title>
     <author email="rgoers@apache.org">Ralph Goers</author>
   </properties>
 
@@ -26,9 +26,9 @@
     <section name="Architecture">
       <subsection name="Main Components">
         <p>Log4j uses the classes shown in the diagram below.</p>
-        <img src="../images/Log4jClasses.jpg" title="Log4j 2.0 Class Relationships"
-             caption="Log4j 2 Class Relationships"/>
-        <p>Applications using the Log4j 2 API will request a Logger with a specific name from the
+        <img src="../images/Log4jClasses.jpg" title="Log4j2 Class Relationships"
+             caption="Log4j2 Class Relationships"/>
+        <p>Applications using the Log4j2 API will request a Logger with a specific name from the
           LogManager. The LogManager will locate the appropriate LoggerContext and then obtain the Logger from it.
           If the Logger must be created it will be associated with the LoggerConfig that contains either a) the
           same name as the Logger, b) the name of a parent package, or c) the root LoggerConfig. LoggerConfig
@@ -45,7 +45,7 @@
           developer-chosen criteria.
         </p>
         <p>In Log4j 1.x the Logger Hierarchy was maintained through a relationship between Loggers.
-          In Log4j 2 this relationship no longers exists. Instead, the hierarchy is maintained
+          In Log4j2 this relationship no longers exists. Instead, the hierarchy is maintained
           in the relationship between LoggerConfig objects.
         </p>
 
@@ -100,7 +100,7 @@
             LogManager.getLogger
           </a>
           static method and passing the name of the desired Logger. Further informaiton on the Logging
-          API can be found at<a href="../log4j2-api/api.html">Log4j 2 API</a>.
+          API can be found at<a href="../log4j2-api/api.html">Log4j2 API</a>.
         </p>
         <h4>LoggerContext</h4>
         <p>
@@ -183,7 +183,7 @@
         </table>
         <p>LoggerConfigs will be assigned a Log
           <a href="../log4j2-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of possible
-          levels includes (TRACE, DEBUG, INFO, WARN, ERROR and FATAL). Note that in Log4j 2, the Level is
+          levels includes (TRACE, DEBUG, INFO, WARN, ERROR and FATAL). Note that in Log4j2, the Level is
           an Enum and cannot be sub-classed. Users who desire more granularity are encouraged to use
           <a href="../log4j2-api/api.html#Markers">Markers</a>
           instead.
@@ -192,7 +192,7 @@
           <a href="http://logging.apache.org/log4j/1.2/manual.html">Log4j 1.x</a>
           and
           <a href="http://logback.qos.ch/manual/architecture.html#effectiveLevel">Logback</a>
-          both have the concept of "Level Inheritance". In Log4j 2, Loggers and LoggerConfigs are two different
+          both have the concept of "Level Inheritance". In Log4j2, Loggers and LoggerConfigs are two different
           objects so this concept is implemented differently. Each Logger references the
           appropriate LoggerConfig which in turn can reference its parent, thus achieving the same effect.
         </p>

@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4j 2 Layouts</title>
+        <title>Log4j2 Layouts</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -27,7 +27,7 @@
         <p>
           Layouts are used by Appenders to format the LogEvent into a form that meets the needs of whoever will be
           consuming the log events. In Log4j 1.x and Logback Layouts were expected to transform an event into a
-          String. In Log4j 2.0 Layouts return a byte array. This allows the result of the Layout to be useful in
+          String. In Log4j2 Layouts return a byte array. This allows the result of the Layout to be useful in
           many more types of Appenders. However, this means most Layouts need to be configured with a
           <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a> to
           insure the byte array contains correct values.

@@ -41,7 +41,7 @@
             <pre>
             Log4j: 4
             Logback: 5
-            Log4j 2.0: 3
+            Log4j2: 3
             </pre>
             The numbers above will vary slightly from run to run so the only conclusion that should be
             drawn is that all 3 frameworks perform similarly on this task.
@@ -63,7 +63,7 @@
             <pre>
             Log4j: 188
             Logback: 183
-            Log4j 2.0: 188
+            Log4j2: 188
             </pre>
 
             Again, no conclusion should be drawn regarding relative differences between the frameworks on
@@ -71,7 +71,7 @@
             the level.
           </p>
           <p>
-            The best approach to avoid the cost of parameter construction is to use Log4J 2.0's formatting
+            The best approach to avoid the cost of parameter construction is to use Log4j2's formatting
             capabilities. For example, instead of the above write:
             <pre>
             logger.debug("Entry number: {} is {}", i, entry[i]);
@@ -80,7 +80,7 @@
             <pre>
             Log4j: Not supported
             Logback: 9
-            Log4j 2.0: 4
+            Log4j2: 4
             </pre>
             These results show that the difference in performance between the call to isDebugEnabled and
             logger.debug is barely discernable.
@@ -122,14 +122,14 @@
           <br/>
           <p>This is the cost of formatting the log output and sending it to its target destination. Here again,
             a serious effort was made to make layouts (formatters) perform as quickly as possible. The same
-            is true for appenders. One of the fundamental tenants of Log4j 2.0 is to use immutable objects whenever
+            is true for appenders. One of the fundamental tenants of Log4j2 is to use immutable objects whenever
             possible and to lock at the lowest granularity possible. However, the cost of actually formatting and
             delivering log events will never be insignificant. For example, the results of writing to a simple log
             file using the same format using Log4j, Logback and Log4j 2 are:
             <pre>
             Log4j: 4220
             Logback: 9671
-            Log4j 2.0: 4615
+            Log4j2: 4615
             </pre>
           </p>
           <p>

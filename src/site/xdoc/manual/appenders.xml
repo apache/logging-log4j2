@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4j 2 Appenders</title>
+        <title>Log4j2 Appenders</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -1006,7 +1006,7 @@
           <p>
             The SocketAppender is an OutputStreamAppender that writes its output to a remote destination
             specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
-            The default format is to send a Serialized LogEvent. Log4j 2.0 contains a SocketServer which is capable
+            The default format is to send a Serialized LogEvent. Log4j2 contains a SocketServer which is capable
             of receiving serialized LogEvents and routing them through the logging system on the server.
           </p>
           <table border="1" width="100%">
