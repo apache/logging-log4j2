@@ -27,7 +27,7 @@
 
             <p>
               The Log4j 1.2 Bridge allows applications coded to use Log4j 1.2 API to use
-              Log4j 2.0 instead.
+              Log4j2 instead.
             </p>
 
         </section>

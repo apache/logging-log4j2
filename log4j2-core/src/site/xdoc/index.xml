@@ -18,15 +18,15 @@
 
 <document>
     <properties>
-        <title>Log4J 2.0 Implementation</title>
+        <title>Log4J2 Implementation</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Log4j 2.0 Implementation">
+        <section name="Log4j2 Implementation">
 
             <p>
-              The Log4Jj 2.0 implementation provides the functional components of the logging system. Users are
+              The Log4Jj2 implementation provides the functional components of the logging system. Users are
               free to create their own plugins and include them in the logging configuration.
             </p>
 
@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             Log4j 2.0 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
+             Log4j2 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
              Some features may require optional dependencies. These dependencies are
              specified in the documentation for those features.
           </p>

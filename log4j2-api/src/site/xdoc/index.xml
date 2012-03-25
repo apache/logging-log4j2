@@ -18,15 +18,15 @@
 
 <document>
     <properties>
-        <title>Log4J 2.0 API</title>
+        <title>Log4J2 API</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Log4j 2.0 API">
+        <section name="Log4j2 API">
 
             <p>
-              The Log4Jj 2.0 API provides the interface that applications should code to and provides the
+              The Log4Jj2 API provides the interface that applications should code to and provides the
               adapter components required for implementers to create a logging implementation.
             </p>
 
@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2.0 API requires at least Java 5.
+             The Log4j2 API requires at least Java 5.
           </p>
         </section>
 
