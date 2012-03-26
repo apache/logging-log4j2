@@ -54,8 +54,8 @@ public class ExtendedThrowablePatternConverterTest {
         PrintWriter pw = new PrintWriter(sw);
         parent.printStackTrace(pw);
         String result = sb.toString();
-        //System.out.print(result);
         result = result.replaceAll(" ~?\\[.*\\]", "");
-        assertEquals(sw.toString(), result);
+        String expected = sw.toString().replaceAll("\r", "");
+        assertEquals(expected, result);
     }
 }

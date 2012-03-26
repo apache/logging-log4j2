@@ -54,7 +54,7 @@ public class XMLLayoutTest {
     }
 
     private static final String body =
-        "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
+        "<log4j:message><![CDATA[empty mdc]]></log4j:message>";
 
 
     /**
@@ -92,8 +92,8 @@ public class XMLLayoutTest {
         List<String> list = appender.getMessages();
 
         assertTrue("Incorrect number of lines. Require at least 50 " + list.size(), list.size() > 50);
-        assertTrue("Incorrect header", list.get(0).equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</log4j:eventSet>\r"));
+        assertTrue("Incorrect header", list.get(0).equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</log4j:eventSet>"));
         assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(8), list.get(8).equals(body));
     }
 }

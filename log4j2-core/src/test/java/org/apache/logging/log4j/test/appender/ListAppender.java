@@ -47,7 +47,7 @@ public class ListAppender extends AppenderBase {
 
     private final boolean raw;
     
-    private static final String LINE_SEP = System.getProperty("line.separator");
+    private static final String WINDOWS_LINE_SEP = "\r\n";
 
     public ListAppender(String name) {
         super(name, null, null);
@@ -92,9 +92,19 @@ public class ListAppender extends AppenderBase {
         if (newLine) {
             int index = 0;
             while (index < str.length()) {
-                int end = str.indexOf(LINE_SEP, index);
+                int end;
+                int wend = str.indexOf(WINDOWS_LINE_SEP, index);
+                int lend = str.indexOf("\n", index);
+                int length;
+                if (wend >= 0 && wend < lend) {
+                    end = wend;
+                    length = 2;
+                } else {
+                    end = lend;
+                    length = 1;
+                }
                 if (index == end) {
-                    if (!messages.get(messages.size() - LINE_SEP.length()).equals("")) {
+                    if (!messages.get(messages.size() - length).equals("")) {
                         messages.add("");
                     }
                 } else if (end >= 0) {
@@ -103,7 +113,7 @@ public class ListAppender extends AppenderBase {
                     messages.add(str.substring(index));
                     break;
                 }
-                index = end + LINE_SEP.length();
+                index = end + length;
             }
         } else {
             messages.add(str);

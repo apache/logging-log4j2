@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class RegexReplacementConverterTest {
 
-
+    private static final String LINE_SEP = System.getProperty("line.separator");
     @Test
     public void testReplacement() {
         ThreadContext.put("MyKey", "Apache");
@@ -50,7 +50,7 @@ public class RegexReplacementConverterTest {
         RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
         converter.format(event, sb);
-        assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test\n",
+        assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" + LINE_SEP,
             sb.toString());
     }
 }

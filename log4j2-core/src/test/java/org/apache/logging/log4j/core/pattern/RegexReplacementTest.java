@@ -44,6 +44,9 @@ public class RegexReplacementTest {
     private static ListAppender app;
     private static ListAppender app2;
     private static LoggerContext ctx;
+    
+    private static final String LINE_SEP = System.getProperty("line.separator");
+    private static final String EXPECTED = "/RegexReplacementTest" + LINE_SEP;
 
     @BeforeClass
     public static void setupClass() {
@@ -77,14 +80,14 @@ public class RegexReplacementTest {
         List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertTrue("Replacement failed", msgs.get(0).endsWith("/RegexReplacementTest\n"));
+        assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
         app.clear();
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertEquals("LoggerTest This is a test for Apache\n", msgs.get(0));
+        assertEquals("LoggerTest This is a test for Apache" + LINE_SEP , msgs.get(0));
         app.clear();
 
     }
@@ -94,7 +97,7 @@ public class RegexReplacementTest {
         List<String> msgs = app2.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertTrue("Replacement failed", msgs.get(0).endsWith("/RegexReplacementTest\n"));
+         assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));
         app2.clear();
     }
 }
