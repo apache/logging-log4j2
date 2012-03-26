@@ -133,7 +133,7 @@ public class FileAppenderTest {
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
-
+            is.close();
             p.destroy();
         }
         verifyFile(count * processes);
@@ -164,7 +164,8 @@ public class FileAppenderTest {
         //String expected = "[\\w]* \\[\\s*\\] INFO TestLogger - Test$";
         String expected = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
         Pattern pattern = Pattern.compile(expected);
-        DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(FILENAME)));
+        FileInputStream fis = new FileInputStream(FILENAME);
+        DataInputStream is = new DataInputStream(new BufferedInputStream(fis));
         int counter = 0;
         String str = "";
         while (is.available() != 0) {
@@ -174,6 +175,7 @@ public class FileAppenderTest {
             Matcher matcher = pattern.matcher(str);
             assertTrue("Bad data: " + str, matcher.matches());
         }
+        fis.close();
         assertTrue("Incorrect count: was " + counter + " should be " + count, count == counter);
 
     }
@@ -182,7 +184,7 @@ public class FileAppenderTest {
     private static void deleteFile() {
         File file = new File(FILENAME);
         if (file.exists()) {
-            file.delete();
+            assertTrue(file.delete());
         }
     }
 
