@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class OutputStreamAppenderTest {
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
 
     @Test
     public void testAppender() {
@@ -46,9 +47,8 @@ public class OutputStreamAppenderTest {
         assertTrue("Appender did not start", app.isStarted());
         app.append(event);
         String msg = app.toString();
-        System.out.println("\"" + msg + "\"");
         assertNotNull("No message", msg);
-        assertTrue("Incorrect message: " + msg , msg.endsWith("Test\n") || msg.endsWith("Test\r\n"));
+        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + LINE_SEP));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
     }
