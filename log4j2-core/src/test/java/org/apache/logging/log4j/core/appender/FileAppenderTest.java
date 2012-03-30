@@ -177,6 +177,7 @@ public class FileAppenderTest {
         }
         fis.close();
         assertTrue("Incorrect count: was " + counter + " should be " + count, count == counter);
+        fis.close();
 
     }
 

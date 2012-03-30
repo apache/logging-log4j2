@@ -98,6 +98,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                     }
                 }
             }
+        } else {
+            ctx.putAll(mdc);
         }
 
         if (required != null) {

@@ -104,6 +104,8 @@ public class FlumeEvent extends EventBaseImpl implements LogEvent {
                     }
                 }
             }
+        } else {
+            ctx.putAll(mdc);
         }
 
         if (required != null) {
