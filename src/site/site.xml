@@ -29,7 +29,7 @@
     </fluidoSkin>
   </custom>
   <bannerLeft>
-    <name>Logging Services™</name>
+    <name>Apache Logging Services™</name>
     <src>images/ls-logo.jpg</src>
     <href>http://logging.apache.org/</href>
   </bannerLeft>

@@ -51,6 +51,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private static final String GUID = "guId";
 
+    private static final String TIMESTAMP = "timestamp";;
+
     private final LogEvent event;
 
     private final Map<String, String> ctx = new HashMap<String, String>();
@@ -72,6 +74,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         this.event = event;
         this.compress = compress;
         Map<String, String> headers = getHeaders();
+        headers.put(TIMESTAMP, Long.toString(event.getMillis()));
         if (mdcPrefix == null) {
             mdcPrefix = DEFAULT_MDC_PREFIX;
         }

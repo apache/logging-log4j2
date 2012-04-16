@@ -16,7 +16,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
@@ -41,20 +41,20 @@
       <artifactId>jackson-core-asl</artifactId>
       <version>1.9.2</version>
       <optional>true</optional>
-     </dependency>
-     <dependency>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.9.2</version>
       <optional>true</optional>
     </dependency>
-	  <dependency>
+    <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
       <version>2.0.8</version>
       <scope>test</scope>
     </dependency>
-	  <dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4</version>
@@ -71,12 +71,12 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.7</version>
@@ -147,122 +147,122 @@
     </plugins>
   </build>
   <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <version>2.6</version>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>changes-report</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-            <configuration>
-              <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.7</version>
-            <configuration>
-              <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
-              <configLocation>${log4j.parent.dir}/checkstyle.xml</configLocation>
-              <suppressionsLocation>${log4j.parent.dir}/checkstyle-suppressions.xml</suppressionsLocation>
-              <enableRulesSummary>false</enableRulesSummary>
-              <propertyExpansion>basedir=${basedir}</propertyExpansion>
-              <propertyExpansion>licensedir=${log4j.parent.dir}/checkstyle-header.txt</propertyExpansion>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8</version>
-            <configuration>
-              <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
-                   project -->
-              <detectOfflineLinks>false</detectOfflineLinks>
-              <linksource>true</linksource>
-              <tags>
-                <tag>
-                  <name>issue</name>
-                  <placement>a</placement>
-                  <head>JIRA issue:</head>
-                </tag>
-                <tag>
-                  <name>doubt</name>
-                  <placement>a</placement>
-                  <head>Troublesome:</head>
-                </tag>
-                <tag>
-                  <name>compare</name>
-                  <placement>a</placement>
-                  <head>Compare with:</head>
-                </tag>
-              </tags>
-            </configuration>
-            <reportSets>
-              <reportSet>
-                <id>non-aggregate</id>
-                <reports>
-                  <report>javadoc</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-              <threshold>Normal</threshold>
-              <effort>Default</effort>
-              <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.3</version>
-            <reportSets>
-              <reportSet>
-                <id>non-aggregate</id>
-                <reports>
-                  <report>jxr</report>
-                </reports>
-              </reportSet>
-              <reportSet>
-                <id>aggregate</id>
-                <reports>
-                  <report>aggregate</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <configuration>
-              <targetJdk>1.5</targetJdk>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.2</version>
-            <reportSets>
-              <reportSet>
-                <!-- Disabled at it kills the site generation via a NoClassDefFoundError -->
-                <reports/>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.6</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
+          <configLocation>${log4j.parent.dir}/checkstyle.xml</configLocation>
+          <suppressionsLocation>${log4j.parent.dir}/checkstyle-suppressions.xml</suppressionsLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <propertyExpansion>basedir=${basedir}</propertyExpansion>
+          <propertyExpansion>licensedir=${log4j.parent.dir}/checkstyle-header.txt</propertyExpansion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
+         project -->
+          <detectOfflineLinks>false</detectOfflineLinks>
+          <linksource>true</linksource>
+          <tags>
+            <tag>
+              <name>issue</name>
+              <placement>a</placement>
+              <head>JIRA issue:</head>
+            </tag>
+            <tag>
+              <name>doubt</name>
+              <placement>a</placement>
+              <head>Troublesome:</head>
+            </tag>
+            <tag>
+              <name>compare</name>
+              <placement>a</placement>
+              <head>Compare with:</head>
+            </tag>
+          </tags>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>findbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <reports>
+              <report>jxr</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.2</version>
+        <reportSets>
+          <reportSet>
+            <!-- Disabled at it kills the site generation via a NoClassDefFoundError -->
+            <reports/>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
-     <profile>
+    <profile>
       <!-- http://www.yourkit.com/docs/80/help/agent.jsp -->
       <id>yourkit</id>
 
@@ -278,7 +278,7 @@
           <systemPath>${yourkit.home}/lib/yjp-controller-api-redist.jar</systemPath>
         </dependency>
       </dependencies>
-        <build>
+      <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
