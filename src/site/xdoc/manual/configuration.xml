@@ -62,12 +62,12 @@
                 extension.</li>
               <li>If no system property is set the JSON ConfigurationFactory will look for log4j-test.json or
                 log4j-test.jsn in the classpath.</li>
-              <li>If no such file is found the XML ConfigurationFactory will look for log4j-test.xml in the
+              <li>If no such file is found the XML ConfigurationFactory will look for log4j2-test.xml in the
                 classpath.</li>
               <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j.json or log4j.jsn
                 on the classpath.</li>
               <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
-                log4j.xml on the classpath.</li>
+                log4j2.xml on the classpath.</li>
               <li>If no configuration file could be located the <code>DefaultConfiguration</code> will
                 be used. This will cause logging output to go to the console.</li>
             </ol>
