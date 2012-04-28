@@ -44,7 +44,7 @@
           way this could be accomplished is by doing:
         </p>
         <pre>
-          logger.info("User {} has logged in using id {}, map.get("Name"), user.getId());
+          logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());
         </pre>
         <p>
           While there is nothing inherently wrong with this, as the complexity of the objects and desired output
