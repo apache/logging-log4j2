@@ -29,20 +29,20 @@
 				<param name="fromDepth" value="2"/>
 			</macro>
 
-			<subsection name="Apache Log4j2" id="Apache_Log4j2">
+			<subsection name="Apache Log4j 2" id="Apache_Log4j 2">
 
 				<p>Release date: TBA</p>
 				<p><a href="changes-report.html#a1.0-alpha1">JIRA change log</a></p>
 
-				<p>Apache Log4j2 is not compatible with the previous versions. Please have the following in mind
-				when upgrading to Log4j2 in your project:</p>
+				<p>Apache Log4j 2 is not compatible with the previous versions. Please have the following in mind
+				when upgrading to Log4j 2 in your project:</p>
 
 				<ul>
 					<li>Java 5 is required</li>
           <li>The XML configuration has been simplified and is not compatible with Log4j 1.x</li>
           <li>Configuration via property files is not supported.</li>
           <li>Configuration via JSON is supported.</li>
-          <li>Although Log4j2 is not directly compatible with Log4j 1.x and compatibility bridge
+          <li>Although Log4j 2 is not directly compatible with Log4j 1.x and compatibility bridge
             has been provided to reduce the need to make coding changes.</li>
 				</ul>
 			</subsection>
