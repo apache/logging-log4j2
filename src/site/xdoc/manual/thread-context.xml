@@ -18,12 +18,12 @@
 
 <document>
     <properties>
-        <title>Log4j2 Thread Context</title>
+        <title>Log4j 2 Thread Context</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-      <section name="Log4j2 API">
+      <section name="Log4j 2 API">
         <subsection name="Thread Context">
           <h4>Introduction</h4>
           <p>Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It has been documented and
@@ -36,10 +36,10 @@
             SLF4J/Logback followed with its own implementation of the MDC, which is documented very well at
             <a href="http://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context</a>.
           </p>
-          <p>Log4j2 continues with the idea of the MDC and the NDC but merges them into a single Thread Context.
+          <p>Log4j 2 continues with the idea of the MDC and the NDC but merges them into a single Thread Context.
             The Thread Context Map is the equivalent of the MDC and the Thread Context Stack is the equivalent of the
             NDC. Although these are frequently used for purposes other than diagnosing problems, they are still
-            frequently referred to as the MDC and NDC in Log4j2 since they are already well known by those acronyms.
+            frequently referred to as the MDC and NDC in Log4j 2 since they are already well known by those acronyms.
           </p>
           <h4>Fish Tagging</h4>
           <p>Most real-world systems have to deal with multiple clients simultaneously. In a typical multithreaded
