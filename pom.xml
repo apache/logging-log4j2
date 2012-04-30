@@ -79,10 +79,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL
-    </developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/trunk</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -92,7 +91,7 @@
     <slf4j.version>1.6.4</slf4j.version>
     <logback.version>1.0.0</logback.version>
     <log4j.parent.dir>${basedir}</log4j.parent.dir>
-    <Log4j2ReleaseVersion>1.0-alpha1</Log4j2ReleaseVersion>
+    <Log4jReleaseVersion>2.0-alpha1</Log4jReleaseVersion>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.commons.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
@@ -376,30 +375,30 @@
     </site>
   </distributionManagement>
   <modules>
-    <module>log4j2-api</module>
+    <module>api</module>
     <module>log4j12-api</module>
-    <module>log4j2-core</module>
+    <module>core</module>
     <module>slf4j-impl</module>
-    <module>log4j2-jcl</module>
+    <module>jcl-bridge</module>
   </modules>
   <profiles>
     <profile>
       <id>include-flume</id>
       <modules>
-        <module>log4j2-flume-og</module>
-        <module>log4j2-flume-ng</module>
+        <module>flume-og</module>
+        <module>flume-ng</module>
       </modules>
     </profile>
     <profile>
       <id>include-flume-ng</id>
       <modules>
-        <module>log4j2-flume-ng</module>
+        <module>flume-ng</module>
       </modules>
     </profile>
     <profile>
       <id>include-flume-og</id>
       <modules>
-        <module>log4j2-flume-og</module>
+        <module>flume-og</module>
       </modules>
     </profile>
     <profile>
@@ -417,7 +416,7 @@
               <outputDirectory>.</outputDirectory>
               <announcementFile>RELEASE-NOTES.txt</announcementFile>
               <announcementParameters>
-                <releaseVersion>${Log4j2ReleaseVersion}</releaseVersion>
+                <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
               </announcementParameters>
             </configuration>
             <executions>
@@ -451,8 +450,8 @@
         </plugins>
       </build>
       <modules>
-        <module>log4j2-flume-og</module>
-        <module>log4j2-flume-ng</module>
+        <module>flume-og</module>
+        <module>flume-ng</module>
         <module>dist</module>
       </modules>
     </profile>
