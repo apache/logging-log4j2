@@ -20,8 +20,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j2</artifactId>
-    <version>1.0-alpha1-SNAPSHOT</version>
+    <artifactId>log4j</artifactId>
+    <version>2.0-alpha1-SNAPSHOT</version>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>slf4j-impl</artifactId>
@@ -42,15 +42,15 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-api</artifactId>
+      <artifactId>log4j-api</artifactId>
     </dependency>
      <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-core</artifactId>
+      <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-core</artifactId>
+      <artifactId>log4j-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

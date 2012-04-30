@@ -20,17 +20,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>log4j2</artifactId>
+    <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>1.0-alpha1-SNAPSHOT</version>
+    <version>2.0-alpha1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j2-jcl</artifactId>
+  <artifactId>log4j-jcl</artifactId>
   <packaging>jar</packaging>
-  <name>Log4J2 Commons Logging</name>
-  <description>Log4j2 Commons Logging Adapter</description>
+  <name>Log4J Commons Logging</name>
+  <description>Log4j 2.0 Commons Logging Adapter</description>
   <properties>
     <log4j.parent.dir>${basedir}/..</log4j.parent.dir>
   </properties>
@@ -48,11 +48,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-core</artifactId>
+      <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-core</artifactId>
+      <artifactId>log4j-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

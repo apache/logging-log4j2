@@ -20,13 +20,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j2</artifactId>
-    <version>1.0-alpha1-SNAPSHOT</version>
+    <artifactId>log4j</artifactId>
+    <version>2.0-alpha1-SNAPSHOT</version>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j2-flume-og</artifactId>
+  <artifactId>log4j-flume-og</artifactId>
   <packaging>jar</packaging>
-  <name>Log4J2 Flume OG</name>
+  <name>Log4J Flume OG</name>
   <description>Log4j 2.0 Flume (Original) Appender</description>
   <properties>
     <log4j.parent.dir>${basedir}/..</log4j.parent.dir>
@@ -34,11 +34,11 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-api</artifactId>
+      <artifactId>log4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j2-core</artifactId>
+      <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

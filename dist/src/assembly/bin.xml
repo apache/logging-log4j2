@@ -29,12 +29,12 @@ limitations under the License.
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>org.apache.logging.log4j:log4j2-*</include>
+                <include>org.apache.logging.log4j:log4j-*</include>
                 <include>org.apache.logging.log4j:slf4j-*</include>
                 <include>org.apache.logging.log4j:log4j12-*</include>
             </includes>
             <excludes>
-                <exclude>org.apache.logging.log4j:log4j2-distribution</exclude>
+                <exclude>org.apache.logging.log4j:log4j-distribution</exclude>
             </excludes>
             <outputDirectory></outputDirectory>
             <unpack>false</unpack>

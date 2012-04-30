@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="1.0-alpha1" date="TBD" description="Rewrite of Log4j">
+    <release version="2.0-alpha1" date="TBD" description="Rewrite of Log4j">
       <action issue="LOG4J2-56" dev="rgoers" type="fix" due-to="John Owen Atala">
         Level.toLevel would throw an IllegalArgumentException instead of returning the default value.
       </action>
