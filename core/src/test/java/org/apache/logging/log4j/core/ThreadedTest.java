@@ -26,6 +26,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
  *
  */
 public class ThreadedTest {
+    private static final String DIR = "target/threaded";
     private static final String CONFIG = "log4j-threaded.xml";
     private Logger logger = LogManager.getLogger(ThreadedTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
@@ -42,6 +44,7 @@ public class ThreadedTest {
 
     @BeforeClass
     public static void setupClass() {
+        deleteDir();
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
         Configuration config = ctx.getConfiguration();
@@ -49,6 +52,7 @@ public class ThreadedTest {
 
     @AfterClass
     public static void cleanupClass() {
+        deleteDir();
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -91,6 +95,17 @@ public class ThreadedTest {
                 Thread.yield();
                 state.setState();
             }
+        }
+    }
+
+    private static void deleteDir() {
+        File dir = new File(DIR);
+        if (dir.exists()) {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                file.delete();
+            }
+            dir.delete();
         }
     }
 

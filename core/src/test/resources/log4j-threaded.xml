@@ -19,6 +19,11 @@
 <configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
 
   <appenders>
+    <File name="File" fileName="target/threaded/test.log" bufferedIO="false">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
     <Console name="STDOUT">
       <PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/>
     </Console>
@@ -31,7 +36,7 @@
 
   <loggers>
     <root level="debug">
-      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="File"/>
     </root>
   </loggers>
 
