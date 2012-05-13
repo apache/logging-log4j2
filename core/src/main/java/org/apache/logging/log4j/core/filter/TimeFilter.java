@@ -126,8 +126,8 @@ public final class TimeFilter extends FilterBase {
             }
         }
         TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch);
+        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase());
 
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
     }

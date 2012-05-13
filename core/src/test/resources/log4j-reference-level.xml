@@ -16,40 +16,31 @@
  limitations under the License.
 
 -->
-<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
-  </properties>
-  <ThresholdFilter level="debug"/>
-
+<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <List name="List">
-      <ThresholdFilter level="debug"/>
-    </List>
-    <Routing name="Routing">
-      <Routes pattern="$${sd:type}">
-        <Route>
-          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
-                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
-            <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-        <Route ref="STDOUT" key="Audit"/>
-        <Route ref="List" key="Service"/>
-      </Routes>
-    </Routing>
+    <List name="LIST1"/>
+    <List name="LIST2"/>
   </appenders>
 
   <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="Routing"/>
-    </logger>
+    <logger name="org.apache.logging.log4j.test1" level="trace" additivity="false">
+      <appender-ref ref="LIST1" level="trace"/>
+      <appender-ref ref="LIST2" level="error"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <appender-ref ref="LIST1" level="WARN"/>
+      <appender-ref ref="LIST2" level="debug"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test3" level="trace" additivity="false">
+      <appender-ref ref="LIST1" level="trace">
+          <MarkerFilter marker="TEST" onmatch="deny" onmismatch="accept"/>
+      </appender-ref>
+    </logger>>
 
     <root level="error">
       <appender-ref ref="STDOUT"/>

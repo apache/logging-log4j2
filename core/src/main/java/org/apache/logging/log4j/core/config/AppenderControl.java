@@ -16,27 +16,37 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.Filtering;
 
 /**
  * Wraps appenders with details the appender implementation shouldn't need to know about.
  */
-public class AppenderControl {
+public class AppenderControl extends Filterable {
 
     private ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
 
     private final Appender appender;
 
+    private final Level level;
+    private final int intLevel;
+
     /**
      * Constructor.
      * @param appender The target Appender.
      */
-    public AppenderControl(Appender appender) {
+    public AppenderControl(Appender appender, Level level, Filter filter) {
+        super(filter);
         this.appender = appender;
+        this.level = level;
+        this.intLevel = level == null ? Level.ALL.intLevel() : level.intLevel();
+        startFilter();
     }
 
     /**
@@ -52,6 +62,17 @@ public class AppenderControl {
      * @param event The event to process.
      */
     public void callAppender(LogEvent event) {
+        if (getFilter() != null) {
+            Filter.Result r = getFilter().filter(event);
+            if (r == Filter.Result.DENY) {
+                return;
+            }
+        }
+        if (level != null) {
+            if (intLevel < event.getLevel().intLevel()) {
+                return;
+            }
+        }
         if (recursive.get() != null) {
             appender.getHandler().error("Recursive call to appender " + appender.getName());
             return;

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -42,11 +43,15 @@ public final class FailoversPlugin {
      * @return The appender references.
      */
     @PluginFactory
-    public static String[] createFailovers(@PluginElement("appender-ref") String[] refs) {
+    public static String[] createFailovers(@PluginElement("appender-ref") AppenderRef[] refs) {
 
         if (refs == null) {
-            logger.error("failovers must contain an appender-refernce");
+            logger.error("failovers must contain an appender-reference");
         }
-        return refs;
+        String[] arr = new String[refs.length];
+        for (int i=0; i < refs.length; ++i) {
+            arr[i] = refs[i].getRef();
+        }
+        return arr;
     }
 }

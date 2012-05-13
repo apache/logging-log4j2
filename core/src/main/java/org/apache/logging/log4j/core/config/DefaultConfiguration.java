@@ -50,7 +50,7 @@ public class DefaultConfiguration extends BaseConfiguration {
         Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
         addAppender(appender);
         LoggerConfig root = getRootLogger();
-        root.addAppender(appender);
+        root.addAppender(appender, null, null);
 
         String l = System.getProperty(DEFAULT_LEVEL);
         Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;

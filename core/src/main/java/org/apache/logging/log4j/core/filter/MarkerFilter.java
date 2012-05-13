@@ -84,8 +84,8 @@ public final class MarkerFilter extends FilterBase {
             return null;
         }
         Marker m = MarkerManager.getMarker(marker);
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
 
         return new MarkerFilter(m, onMatch, onMismatch);
     }

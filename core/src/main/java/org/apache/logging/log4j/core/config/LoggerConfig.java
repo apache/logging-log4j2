@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,10 +36,16 @@ import org.apache.logging.log4j.message.Message;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Logger object that is created via configuration.
@@ -48,7 +55,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private List<String> appenderRefs = new ArrayList<String>();
+    private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
     private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final String name;
     private LogEventFactory logEventFactory;
@@ -56,6 +63,10 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     private boolean additive = true;
     private LoggerConfig parent;
     private ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
+    private AtomicInteger counter = new AtomicInteger();
+    private boolean shutdown = false;
+    private static final int MAX_RETRIES = 3;
+    private static final long WAIT_TIME = 1000;
 
     /**
      * Default constructor.
@@ -79,7 +90,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.additive = additive;
     }
 
-    protected LoggerConfig(String name, List<String> appenders, Filter filter, Level level,
+    protected LoggerConfig(String name, List<AppenderRef> appenders, Filter filter, Level level,
                            boolean additive) {
         super(filter);
         this.logEventFactory = this;
@@ -131,8 +142,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * Add an Appender to the LoggerConfig.
      * @param appender The Appender to add.
      */
-    public void addAppender(Appender appender) {
-        appenders.put(appender.getName(), new AppenderControl(appender));
+    public void addAppender(Appender appender, Level level, Filter filter) {
+        appenders.put(appender.getName(), new AppenderControl(appender, level, filter));
     }
 
     /**
@@ -140,7 +151,10 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * @param name The name of the Appender.
      */
     public void removeAppender(String name) {
-        appenders.remove(name);
+        AppenderControl ctl = appenders.remove(name);
+        if (ctl != null) {
+            cleanupFilter(ctl);
+        }
     }
 
     /**
@@ -159,14 +173,31 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * Remove all Appenders.
      */
     protected void clearAppenders() {
-        appenders.clear();
+        waitForCompletion();
+        Collection<AppenderControl> controls = appenders.values();
+        Iterator<AppenderControl> iterator = controls.iterator();
+        while (iterator.hasNext()) {
+            AppenderControl ctl = iterator.next();
+            iterator.remove();
+            cleanupFilter(ctl);
+        }
+    }
+
+    private void cleanupFilter(AppenderControl ctl) {
+        Filter filter = ctl.getFilter();
+        if (filter != null) {
+            ctl.removeFilter(filter);
+            if (filter instanceof Lifecycle) {
+                ((Lifecycle) filter).stop();
+            }
+        }
     }
 
     /**
      * Return the Appender references.
      * @return a List of all the Appender names attached to this LoggerConfig.
      */
-    public List<String> getAppenderRefs() {
+    public List<AppenderRef> getAppenderRefs() {
         return appenderRefs;
     }
 
@@ -233,19 +264,52 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
+     * Wait for all log events to complete before shutting down this loggerConfig.
+     */
+    private synchronized void waitForCompletion() {
+        if (shutdown) {
+            return;
+        }
+        shutdown = true;
+        int retries = 0;
+        while (counter.get() > 0) {
+            try {
+                wait(WAIT_TIME * (retries + 1));
+            } catch (InterruptedException ie) {
+                if (++retries > MAX_RETRIES) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Logs an event.
      * @param event Yhe log event.
      */
     public void log(LogEvent event) {
-        monitor.checkConfiguration();
-        if (isFiltered(event)) {
-            return;
-        }
 
-        callAppenders(event);
+        counter.incrementAndGet();
+        try {
+            monitor.checkConfiguration();
+            if (isFiltered(event)) {
+                return;
+            }
 
-        if (additive && parent != null) {
-            parent.log(event);
+            callAppenders(event);
+
+            if (additive && parent != null) {
+                parent.log(event);
+            }
+        } finally {
+            if (counter.decrementAndGet() == 0) {
+                synchronized(this) {
+                    if (shutdown) {
+                        notifyAll();
+                    }
+                }
+
+            }
         }
     }
 
@@ -288,14 +352,14 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginAttr("name") String loggerName,
-                                            @PluginElement("appender-ref") String[] refs,
+                                            @PluginElement("appender-ref") AppenderRef[] refs,
                                             @PluginElement("filters") Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
             return null;
         }
 
-        List<String> appenderRefs = Arrays.asList(refs);
+        List<AppenderRef> appenderRefs = Arrays.asList(refs);
         Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
         String name = loggerName.equals("root") ? "" : loggerName;
         boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
@@ -312,9 +376,9 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         @PluginFactory
         public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
-                                            @PluginElement("appender-ref") String[] refs,
+                                            @PluginElement("appender-ref") AppenderRef[] refs,
                                             @PluginElement("filters") Filter filter) {
-            List<String> appenderRefs = Arrays.asList(refs);
+            List<AppenderRef> appenderRefs = Arrays.asList(refs);
             Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 

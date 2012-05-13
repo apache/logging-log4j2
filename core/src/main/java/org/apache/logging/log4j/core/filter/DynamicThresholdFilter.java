@@ -119,8 +119,8 @@ public final class DynamicThresholdFilter extends FilterBase {
                                                       @PluginAttr("defaultThreshold") String level,
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
         Map<String, Level> map = new HashMap<String, Level>();
         for (ValueLevelPair pair : pairs) {
             map.put(pair.getKey(), pair.getLevel());

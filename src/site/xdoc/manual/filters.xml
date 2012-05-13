@@ -30,7 +30,7 @@
           one of 3 values - ACCEPT, DENY or NEUTRAL.
         </p>
         <p>
-          Filters may be configured in one of three locations;
+          Filters may be configured in one of four locations;
           <ol>
             <li>Context-wide Filters are configured directly in the configuration. Events that are
             rejected by these filters will not be passed to loggers for further processing. Once an
@@ -43,6 +43,8 @@
             of the additivity setting.</li>
             <li>Appender Filters are used to determine if a specific Appender should handle the
             formatting and publication of the event.</li>
+            <li>Appender Reference Filters are used to determine if a Logger should route the event to
+            an appender.</li>
           </ol>
         </p>
         <a name="BurstFilter"/>
@@ -278,6 +280,62 @@
   <loggers>
     <root level="error">
       <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
+          <p>
+            This sample configuration will exhibit the same behavior as the preceding example since the only
+          logger configured is the root.
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+        <KeyValuePair key="eventId" value="Login"/>
+        <KeyValuePari key="eventId" value="Logout"/>
+      </MapFilter>
+      <appender-ref ref="RollingFile">
+      </appender-ref>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
+          <p>
+            This third sample configuration will exhibit the same behavior as the preceding examples since the only
+            logger configured is the root and the root is only configured with a single appender reference.
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile">
+        <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+          <KeyValuePair key="eventId" value="Login"/>
+          <KeyValuePari key="eventId" value="Logout"/>
+        </MapFilter>
+      </appender-ref>
     </root>
   </loggers>
 </configuration>

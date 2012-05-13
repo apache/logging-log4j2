@@ -81,8 +81,8 @@ public final class ThresholdFilter extends FilterBase {
                                                @PluginAttr("onMatch") String match,
                                                @PluginAttr("onMismatch") String mismatch) {
         Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase());
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch);
+        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase());
 
         return new ThresholdFilter(level, onMatch, onMismatch);
     }

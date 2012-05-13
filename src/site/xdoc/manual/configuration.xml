@@ -569,13 +569,15 @@
           </p>
           <h4>Configuring Filters</h4>
           <p>
-            Log4j allows a filter to be specified in any of 3 places:
+            Log4j allows a filter to be specified in any of 4 places:
             <ol>
               <li>At the same level as the appenders, loggers and properties elements. These filters can accept
               or reject events before they have been passed to a LoggerConfig.</li>
               <li>In a logger element. These filters can accept or reject events for specific loggers.</li>
               <li>In an appender element. These filters can prevent or cause events to be processed by
                 the appender.</li>
+              <li>In an appender reference element. These filters are used to determine if a Logger should route
+                the event to an appender.</li>
             </ol>
           </p>
           <p>
@@ -594,10 +596,6 @@
   <appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
-      <filters>
-        <MarkerFilter marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
-        <MarkerFilter marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
-      </filters>
     </Console>
     <Console name="FLOW">
       <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
@@ -624,7 +622,12 @@
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
+      <appender-ref ref="File">
+        <ThreadContextMapFilter>
+          <KeyValuePair key="test" value="123"/>
+        </ThreadContextMapFilter>
+      </appender-ref>
+      <appender-ref ref="STDOUT" level="error"/>
     </logger>>
 
     <root level="trace">

@@ -37,8 +37,8 @@
                 "SizeBasedTriggeringPolicy": { "size": "500" }
               }
             },
-            { "appender-ref": "STDOUT", "key": "Audit"},
-            { "appender-ref": "List", "key": "Service"}
+            { "ref": "STDOUT", "key": "Audit"},
+            { "ref": "List", "key": "Service"}
           ]
         }
       }

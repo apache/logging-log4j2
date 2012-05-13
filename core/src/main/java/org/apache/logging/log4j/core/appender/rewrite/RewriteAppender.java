@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Lifecycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderBase;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -40,9 +43,9 @@ public final class RewriteAppender extends AppenderBase {
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
-    private final String[] appenderRefs;
+    private final AppenderRef[] appenderRefs;
 
-    private RewriteAppender(String name, Filter filter, boolean handleException, String[] appenderRefs,
+    private RewriteAppender(String name, Filter filter, boolean handleException, AppenderRef[] appenderRefs,
                             RewritePolicy rewritePolicy, Configuration config) {
         super(name, filter, null, handleException);
         this.config = config;
@@ -53,10 +56,11 @@ public final class RewriteAppender extends AppenderBase {
     @Override
     public void start() {
         Map<String, Appender> map = config.getAppenders();
-        for (String ref : appenderRefs) {
-            Appender appender = map.get(ref);
+        for (AppenderRef ref : appenderRefs) {
+            String name = ref.getRef();
+            Appender appender = map.get(name);
             if (appender != null) {
-                appenders.put(ref, new AppenderControl(appender));
+                appenders.put(name, new AppenderControl(appender, ref.getLevel(), null));
             } else {
                 LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
             }
@@ -68,9 +72,7 @@ public final class RewriteAppender extends AppenderBase {
     public void stop() {
         super.stop();
         for (AppenderControl control : appenders.values()) {
-            if (control instanceof AppenderWrapper) {
-                control.getAppender().stop();
-            }
+            control.getAppender().stop();
         }
     }
 
@@ -100,7 +102,7 @@ public final class RewriteAppender extends AppenderBase {
     @PluginFactory
     public static RewriteAppender createAppender(@PluginAttr("name") String name,
                                           @PluginAttr("suppressExceptions") String suppress,
-                                          @PluginElement("appender-ref") String[] appenderRefs,
+                                          @PluginElement("appender-ref") AppenderRef[] appenderRefs,
                                           @PluginConfiguration Configuration config,
                                           @PluginElement("rewritePolicy") RewritePolicy rewritePolicy,
                                           @PluginElement("filter") Filter filter) {
@@ -116,18 +118,5 @@ public final class RewriteAppender extends AppenderBase {
             return null;
         }
         return new RewriteAppender(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);
-    }
-
-    /**
-     * Wrap the AppenderControl simply so it can be used here.
-     */
-    private static class AppenderWrapper extends AppenderControl {
-        /**
-         * Constructor.
-         * @param appender The Appender to wrap.
-         */
-        public AppenderWrapper(Appender appender) {
-            super(appender);
-        }
     }
 }

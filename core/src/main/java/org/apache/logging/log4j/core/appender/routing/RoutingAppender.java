@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -73,7 +74,7 @@ public final class RoutingAppender extends AppenderBase {
                             LOGGER.error("Duplicate route " + key + " is ignored");
                         }
                     } else {
-                        appenders.put(key, new AppenderControl(appender));
+                        appenders.put(key, new AppenderControl(appender, null, null));
                     }
                 } else {
                     LOGGER.error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
@@ -87,9 +88,7 @@ public final class RoutingAppender extends AppenderBase {
     public void stop() {
         super.stop();
         for (AppenderControl control : appenders.values()) {
-            if (control instanceof AppenderWrapper) {
-                control.getAppender().stop();
-            }
+            control.getAppender().stop();
         }
     }
 
@@ -135,7 +134,7 @@ public final class RoutingAppender extends AppenderBase {
             if (app == null) {
                 return null;
             }
-            control = new AppenderWrapper(app);
+            control = new AppenderControl(app, null, null);
             appenders.put(key, control);
             if (defaultRoute) {
                 appenders.put(DEFAULT_KEY, control);
@@ -193,14 +192,5 @@ public final class RoutingAppender extends AppenderBase {
             return null;
         }
         return new RoutingAppender(name, filter, handleExceptions, routes, rewritePolicy, config);
-    }
-
-    /**
-     * Wrapper to allow AppenderControl to be used here.
-     */
-    private static class AppenderWrapper extends AppenderControl {
-        public AppenderWrapper(Appender appender) {
-            super(appender);
-        }
     }
 }

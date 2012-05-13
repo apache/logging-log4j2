@@ -490,8 +490,9 @@
           <p>In addition to the automatic log Level filtering that takes place as described in the previous
             section, Log4j provides
             <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Filter.html">Filter</a>s that can
-            be applied before control is passed to any LoggerConfig, after control is pased to a LoggerConfig
-            but before calling any Appenders, and on each Appender. In a manner very similar to firewall filters,
+            be applied before control is passed to any LoggerConfig, after control is passed to a LoggerConfig
+            but before calling any Appenders, after control is passed to a LoggerConfig but before calling a
+            specific Appender, and on each Appender. In a manner very similar to firewall filters,
             each Filter can return one of three results, Accept, Deny or Neutral. A response of Accept means
             that no other Filters should be called and the event should progress. A response of Deny means
             the event should be immediately ignored and control should be returned to the caller. A response

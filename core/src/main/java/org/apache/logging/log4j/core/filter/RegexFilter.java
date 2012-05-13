@@ -109,8 +109,8 @@ public final class RegexFilter extends FilterBase {
             LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
             return null;
         }
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
 
         return new RegexFilter(raw, pattern, onMatch, onMismatch);
     }

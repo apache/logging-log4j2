@@ -219,8 +219,8 @@ public final class BurstFilter extends FilterBase {
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
         Level lvl = Level.toLevel(level, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {

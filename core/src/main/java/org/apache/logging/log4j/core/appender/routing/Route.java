@@ -91,7 +91,7 @@ public final class Route {
      * @return A Route.
      */
     @PluginFactory
-    public static Route createRoute(@PluginAttr("appender-ref") String appenderRef,
+    public static Route createRoute(@PluginAttr("ref") String appenderRef,
                                     @PluginAttr("key") String key,
                                     @PluginNode Node node) {
         if (node != null && node.hasChildren()) {

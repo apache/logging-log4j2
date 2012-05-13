@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -64,14 +65,14 @@ public final class FailoverAppender extends AppenderBase {
         Map<String, Appender> map = config.getAppenders();
         int errors = 0;
         if (map.containsKey(primaryRef)) {
-            primary = new AppenderControl(map.get(primaryRef));
+            primary = new AppenderControl(map.get(primaryRef), null, null);
         } else {
             LOGGER.error("Unable to locate primary Appender " + primaryRef);
             ++errors;
         }
         for (String name : failovers) {
             if (map.containsKey(name)) {
-                failoverAppenders.add(new AppenderControl(map.get(name)));
+                failoverAppenders.add(new AppenderControl(map.get(name), null, null));
             } else {
                 LOGGER.error("Failover appender " + name + " is not configured");
             }

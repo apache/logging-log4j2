@@ -158,8 +158,8 @@ public class ThreadContextMapFilter extends FilterBase {
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = match == null ? null : Result.valueOf(match);
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch);
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
         return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

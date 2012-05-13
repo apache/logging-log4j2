@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -188,12 +189,12 @@ public class BaseConfiguration extends Filterable implements Configuration {
         for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
             LoggerConfig l = entry.getValue();
             l.setConfigurationMonitor(monitor);
-            for (String ref : l.getAppenderRefs()) {
-                Appender app = appenders.get(ref);
+            for (AppenderRef ref : l.getAppenderRefs()) {
+                Appender app = appenders.get(ref.getRef());
                 if (app != null) {
-                    l.addAppender(app);
+                    l.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender " + ref + " for logger " + l.getName());
+                    LOGGER.error("Unable to locate appender " + ref.getRef() + " for logger " + l.getName());
                 }
             }
 
@@ -281,11 +282,11 @@ public class BaseConfiguration extends Filterable implements Configuration {
         appenders.putIfAbsent(name, appender);
         LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
-            lc.addAppender(appender);
+            lc.addAppender(appender, null, null);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
             nlc.setConfigurationMonitor(monitor);
-            nlc.addAppender(appender);
+            nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
             setParents();
@@ -597,6 +598,12 @@ public class BaseConfiguration extends Filterable implements Configuration {
                         }
                         sb.append("}");
                         if (parms[index] != null) {
+                            break;
+                        }
+                        if (list.size() > 0 && !parmClass.isAssignableFrom(list.get(0).getClass())) {
+                            LOGGER.error("Attempted to assign List containing class " +
+                                list.get(0).getClass().getName() + " to array of type " + parmClass +
+                                " for attribute " + name);
                             break;
                         }
                         Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
