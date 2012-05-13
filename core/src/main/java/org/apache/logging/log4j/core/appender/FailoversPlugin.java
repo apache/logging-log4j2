@@ -47,9 +47,10 @@ public final class FailoversPlugin {
 
         if (refs == null) {
             logger.error("failovers must contain an appender-reference");
+            return null;
         }
         String[] arr = new String[refs.length];
-        for (int i=0; i < refs.length; ++i) {
+        for (int i = 0; i < refs.length; ++i) {
             arr[i] = refs[i].getRef();
         }
         return arr;

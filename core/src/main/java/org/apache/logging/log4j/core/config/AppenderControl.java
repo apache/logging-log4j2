@@ -40,6 +40,8 @@ public class AppenderControl extends Filterable {
     /**
      * Constructor.
      * @param appender The target Appender.
+     * @param level the Level to filter on.
+     * @param filter the Filter(s) to apply.
      */
     public AppenderControl(Appender appender, Level level, Filter filter) {
         super(filter);

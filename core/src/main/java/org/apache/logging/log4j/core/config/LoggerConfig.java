@@ -41,10 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -54,6 +51,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LoggerConfig extends Filterable implements LogEventFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final int MAX_RETRIES = 3;
+    private static final long WAIT_TIME = 1000;
 
     private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
     private Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
@@ -65,8 +64,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     private ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
     private AtomicInteger counter = new AtomicInteger();
     private boolean shutdown = false;
-    private static final int MAX_RETRIES = 3;
-    private static final long WAIT_TIME = 1000;
+
 
     /**
      * Default constructor.
@@ -141,6 +139,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     /**
      * Add an Appender to the LoggerConfig.
      * @param appender The Appender to add.
+     * @param level The Level to use.
+     * @param filter A Filter for the Appender reference.
      */
     public void addAppender(Appender appender, Level level, Filter filter) {
         appenders.put(appender.getName(), new AppenderControl(appender, level, filter));
@@ -303,7 +303,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
             }
         } finally {
             if (counter.decrementAndGet() == 0) {
-                synchronized(this) {
+                synchronized (this) {
                     if (shutdown) {
                         notifyAll();
                     }

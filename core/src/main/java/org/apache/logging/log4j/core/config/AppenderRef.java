@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * An Appender reference.
  */
 @Plugin(name = "appender-ref", type = "Core", printObject = true)
-public class AppenderRef {
+public final class AppenderRef {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String ref;
@@ -57,6 +57,8 @@ public class AppenderRef {
     /**
      * Create an Appender reference.
      * @param ref The name of the Appender.
+     * @param level The Level to filter against.
+     * @param filter The filter(s) to use.
      * @return The name of the Appender.
      */
     @PluginFactory
