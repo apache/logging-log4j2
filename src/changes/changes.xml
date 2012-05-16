@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-alpha1" date="TBD" description="Rewrite of Log4j">
+      <action issue="LOG4J2-60" dev="rgoers" type="add" due-to="Shane Kelly">
+        Added ability to filter on the appender-ref by adding either a level or a filter.
+      </action>
       <action issue="LOG4J2-56" dev="rgoers" type="fix" due-to="John Owen Atala">
         Level.toLevel would throw an IllegalArgumentException instead of returning the default value.
       </action>
