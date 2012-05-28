@@ -51,6 +51,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class LoggerTest {
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
+    
     private static final String CONFIG = "log4j-test1.xml";
     private static LoggerContext ctx;
 
@@ -74,23 +76,23 @@ public class LoggerTest {
     @Test
     public void basicFlow() {
         xlogger.entry();
-        verify("List", "o.a.l.s.LoggerTest entry MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest entry MDC{}" + LINE_SEP);
         xlogger.exit();
-        verify("List", "o.a.l.s.LoggerTest exit MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest exit MDC{}" + LINE_SEP);
     }
 
     @Test
     public void simpleFlow() {
         xlogger.entry(CONFIG);
-        verify("List", "o.a.l.s.LoggerTest entry with (log4j-test1.xml) MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest entry with (log4j-test1.xml) MDC{}" + LINE_SEP);
         xlogger.exit(0);
-        verify("List", "o.a.l.s.LoggerTest exit with (0) MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest exit with (0) MDC{}" + LINE_SEP);
     }
 
     @Test
     public void throwing() {
         xlogger.throwing(new IllegalArgumentException("Test Exception"));
-        verify("List", "o.a.l.s.LoggerTest throwing MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest throwing MDC{}" + LINE_SEP);
     }
 
     @Test
@@ -99,32 +101,32 @@ public class LoggerTest {
             throw new NullPointerException();
         } catch (Exception e) {
             xlogger.catching(e);
-            verify("List", "o.a.l.s.LoggerTest catching MDC{}\n");
+            verify("List", "o.a.l.s.LoggerTest catching MDC{}" + LINE_SEP);
         }
     }
 
     @Test
     public void debug() {
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + LINE_SEP);
     }
 
     @Test
     public void debugNoParms() {
         logger.debug("Debug message {}");
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + LINE_SEP);
         logger.debug("Debug message {}", (Object[]) null);
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + LINE_SEP);
         ((LocationAwareLogger)logger).log(null, SLF4JLogger.class.getName(), LocationAwareLogger.DEBUG_INT,
             "Debug message {}", null, null);
-        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + LINE_SEP);
     }
 
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
-        verify("List", "o.a.l.s.LoggerTest Hello, World MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Hello, World MDC{}" + LINE_SEP);
     }
 
     @Test
@@ -132,10 +134,10 @@ public class LoggerTest {
 
         MDC.put("TestYear", "2010");
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}" + LINE_SEP);
         MDC.clear();
         logger.debug("Debug message");
-        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + LINE_SEP);
     }
 
     @Test
@@ -148,9 +150,9 @@ public class LoggerTest {
     @Test
     public void doubleSubst() {
         logger.debug("Hello, {}", "Log4j {}");
-        verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + LINE_SEP);
         xlogger.debug("Hello, {}", "Log4j {}");
-        verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}\n");
+        verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}" + LINE_SEP);
     }
 
     @Test
@@ -167,7 +169,7 @@ public class LoggerTest {
         data.put("Amount", "200.00");
         EventLogger.logEvent(data);
         MDC.clear();
-        verify("EventLogger", "o.a.l.s.LoggerTest Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete\n");
+        verify("EventLogger", "o.a.l.s.LoggerTest Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete" + LINE_SEP);
     }
 
     private void verify(String name, String expected) {

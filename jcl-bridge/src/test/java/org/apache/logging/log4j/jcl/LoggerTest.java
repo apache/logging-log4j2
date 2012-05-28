@@ -43,6 +43,8 @@ public class LoggerTest {
 
     private static final String CONFIG = "log4j-test1.xml";
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
+
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
@@ -63,13 +65,13 @@ public class LoggerTest {
     @Test
     public void testLog() {
         logger.debug("Test message");
-        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}\n");
+        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + LINE_SEP);
         logger.debug("Exception: " , new NullPointerException("Test"));
-        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}\n");
+        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + LINE_SEP);
         logger.info("Info Message");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}\n");
+        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + LINE_SEP);
         logger.info("Info Message {}");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}\n");
+        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + LINE_SEP);
     }
 
     private void verify(String name, String expected) {

@@ -45,6 +45,8 @@ public class CategoryTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
+
     private ListAppender appender = new ListAppender("List");
 
     @BeforeClass
@@ -152,7 +154,7 @@ public class CategoryTest {
         assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
         String msg = msgs.get(0);
         appender.clear();
-        String expected = "ERROR o.a.l.CategoryTest [main] Test Message\n";
+        String expected = "ERROR o.a.l.CategoryTest [main] Test Message" + LINE_SEP;
         assertTrue("Incorrect message \"" + msg + "\"" + " expected \"" + expected +"\"", msg.endsWith(expected));
     }
 
