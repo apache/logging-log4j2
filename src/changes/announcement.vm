@@ -16,9 +16,9 @@
 ## under the License.
 
 #set($relVersion=$announceParameters.releaseVersion)
-              Apache Log4j2 ${releaseVersion} RELEASE NOTES
+              Apache Log4j2 ${relVersion} RELEASE NOTES
 
-The ${developmentTeam} is pleased to announce the Log4j2 ${releaseVersion} release!
+The ${developmentTeam} is pleased to announce the Log4j2 ${relVersion} release!
 
 Apache Log4j2 ${relVersion} requires a minimum of Java 5 to build and run. Basic compatibility with
 Log4j 1.x is provided through the log4j12-api component, however it does not implement some of the

@@ -23,8 +23,27 @@
 	</properties>
 
 	<body>
-		<section name="Releases">
+		<section name="Building and Installing Log4j 2.x">
 
+      <subsection name="Building">
+       <p>
+         Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
+         most current source code can be found at
+         <a href="http://logging.apache.org/log4j/2.x/source-repository.html">Log4j Source Repository]</a>.
+         The source from the latest release may be obtained by downloading it using the instructions at
+         <a href="http://logging.apache.org/log4j/2.x/download.html">Log4j Downloads</a>.
+       </p>
+        <p>
+          Log4j 2.x uses Maven 2 or 3 as its build tool. To build Log4j simply run "mvn install" from the root
+          directory.
+        </p>
+      </subsection>
+        <p>
+          Applications that use Maven can retrieve the artifacts from the Maven Central repository by using
+        </p>
+      <subsection name="Using In Applications">
+
+      </subsection>
 
 		</section>
 	</body>

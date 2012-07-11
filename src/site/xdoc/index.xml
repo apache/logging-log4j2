@@ -46,7 +46,7 @@
             </p>
             <h3>Support for multiple APIs</h3>
             <p>
-              While the Log4j 2 API will provide the best performance, support for the SL4J and Commons Logging
+              While the Log4j 2 API will provide the best performance, support for the SLF4J and Commons Logging
               APIs are provided.
             </p>
             <h3>Automatic Reloading of Configurations</h3>
@@ -80,7 +80,7 @@
 
         <section name="Requirements">
            <p>
-             Log4j 2 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
+             Log4j 2 requires Java 5 but will take advantage of enhancements in Java 6 to improve performance.
              Some features may require optional dependencies. These dependencies are
              specified in the documentation for those features.
           </p>
