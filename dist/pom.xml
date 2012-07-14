@@ -93,7 +93,7 @@ limitations under the License.
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-flume-og</artifactId>
       <version>${project.version}</version>
@@ -109,7 +109,7 @@ limitations under the License.
       <artifactId>log4j-flume-og</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-flume-ng</artifactId>

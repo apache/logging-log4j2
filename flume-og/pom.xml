@@ -22,6 +22,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>2.0-alpha1-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-flume-og</artifactId>

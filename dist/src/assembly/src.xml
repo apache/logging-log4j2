@@ -31,7 +31,7 @@
       <outputDirectory>/</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
-        <exclude>**/sandbox/**</exclude>
+        <exclude>**/flume-og/**</exclude>
         <!-- build output -->
         <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/).*${project.build.directory}.*]</exclude>
 
