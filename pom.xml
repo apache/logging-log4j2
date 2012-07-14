@@ -475,7 +475,6 @@
         </plugins>
       </build>
       <modules>
-        <module>flume-og</module>
         <module>flume-ng</module>
         <module>dist</module>
       </modules>
