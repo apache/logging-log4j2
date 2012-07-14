@@ -1,0 +1,40 @@
+
+              Apache Log4j2 2.0-alpha1 RELEASE NOTES
+
+The Apache Log4j 2 team is pleased to announce the Log4j2 2.0-alpha1 release!
+
+Apache Log4j2 2.0-alpha1 requires a minimum of Java 5 to build and run. Basic compatibility with
+Log4j 1.x is provided through the log4j12-api component, however it does not implement some of the
+very implementation specific classes and methods. The package names and Maven groupId have been changed to
+org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
+
+Rewrite of Log4j
+
+Changes in this version include:
+
+New features:
+o LOG4J2-60:  Added ability to filter on the appender-ref by adding either a level or a filter. Thanks to Shane Kelly. 
+o LOG4J2-54:  Support existing ability to modify any of an event's fields 
+o LOG4J2-53:  Better control over timestamp 
+o LOG4J2-32:  Create a Layout and SyslogAppender that support RFC 5424. 
+o LOG4J2-31:  The Logging API should support a Message object 
+o LOG4J2-17:  Provide enhanced logger filtering support. 
+
+Fixed Bugs:
+o LOG4J2-56:  Level.toLevel would throw an IllegalArgumentException instead of returning the default value. Thanks to John Owen Atala. 
+o LOG4J2-51:  Remove LoggerContext support for custom logger factories. All Loggers returned
+        by LoggerContext should be compatibile and of the same type. Thanks to John Vasileff. 
+o LOG4J2-50:  Make sure all application facing log methods use their own FQCN. This patch
+        resolves a unit test failure for the %C pattern when using the Category logger. Thanks to John Vasileff. 
+
+Changes:
+o LOG4J2-19:  Provide looser coupling of PatternConverters 
+o LOG4J2-15:  Provide a "Proxy" Appender to support lazy initialization of Appenders. 
+
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
+patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
+
+http://logging.apache.org/log4j/2.0/
+
+
