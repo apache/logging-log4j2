@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.0-alpha1</version>
+  <version>2.0-alpha2-SNAPSHOT</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -78,9 +78,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0-alpha1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0-alpha1</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/tags/log4j-2.0-alpha1</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/trunk</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
