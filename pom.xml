@@ -380,6 +380,7 @@
     <module>core</module>
     <module>slf4j-impl</module>
     <module>jcl-bridge</module>
+    <module>flume-ng</module>
   </modules>
   <profiles>
     <profile>
@@ -400,19 +401,6 @@
                 </plugin>
             </plugins>
         </build>
-    </profile>
-    <profile>
-      <id>include-flume</id>
-      <modules>
-        <module>flume-og</module>
-        <module>flume-ng</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>include-flume-ng</id>
-      <modules>
-        <module>flume-ng</module>
-      </modules>
     </profile>
     <profile>
       <id>include-flume-og</id>
@@ -474,7 +462,6 @@
         </plugins>
       </build>
       <modules>
-        <module>flume-ng</module>
         <module>dist</module>
       </modules>
     </profile>
