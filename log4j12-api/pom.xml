@@ -88,6 +88,8 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.8</version>
             <configuration>
+              <bottom>Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved. Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the
+                Apache Logging project logo are trademarks of The Apache Software Foundation.</bottom>
               <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                    project -->
               <detectOfflineLinks>false</detectOfflineLinks>
