@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="2.0-alpha1" date="TBD" description="Rewrite of Log4j">
+    <release version="2.0-alpha1" date="2012-07-21" description="Rewrite of Log4j">
       <action issue="LOG4J2-60" dev="rgoers" type="add" due-to="Shane Kelly">
         Added ability to filter on the appender-ref by adding either a level or a filter.
       </action>
