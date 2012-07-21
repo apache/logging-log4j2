@@ -38,9 +38,6 @@
           directory.
         </p>
       </subsection>
-        <p>
-          Applications that use Maven can retrieve the artifacts from the Maven Central repository by using
-        </p>
       <subsection name="Using In Applications">
        <p>
          To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
