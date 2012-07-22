@@ -35,6 +35,9 @@ public class ObjectMessage implements Message, Serializable {
      * @param obj The Object to format.
      */
     public ObjectMessage(Object obj) {
+        if (obj == null) {
+            obj = "null";
+        }
         this.obj = obj;
     }
 
