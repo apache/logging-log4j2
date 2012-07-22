@@ -1,0 +1,1003 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ | (Unfortunately) copied from the Fluido skin to allow the footer to be centered.
+-->
+#macro ( topMenu $menus )
+    #foreach( $menu in $menus )
+        #if ( $menu.name )
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">$menu.name <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                #foreach( $item in $menu.items )
+                    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+                    #set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
+                    <li>#topLink( $currentItemHref $item.name $item.target )</li>
+                #end
+            </ul>
+        </li>
+        #end
+    #end
+#end
+##
+#macro ( topLink $href $name $target )
+    #set ( $linkTitle = ' title="' + $name + '"' )
+    #if( $target )
+        #set ( $linkTarget = ' target="' + $target + '"' )
+    #else
+        #set ( $linkTarget = "" )
+    #end
+<a href="$href" $linkTarget title="$name">$name</a>
+#end
+##
+#macro ( topLinks $links )
+    #set ( $counter = 0 )
+    #foreach( $item in $links )
+        #set ( $counter = $counter + 1 )
+        #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+        #set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
+    <li>#topLink( $currentItemHref $item.name $item.target )</li>
+    #end
+#end
+##
+#macro ( link $href $name $target $img $position $alt $border $width $height )
+    #set ( $linkTitle = ' title="' + $name + '"' )
+    #if( $target )
+        #set ( $linkTarget = ' target="' + $target + '"' )
+    #else
+        #set ( $linkTarget = "" )
+    #end
+    #if ( $href.toLowerCase().startsWith("http:/") || $href.toLowerCase().startsWith("https:/") ||
+        $href.toLowerCase().startsWith("ftp:/") || $href.toLowerCase().startsWith("mailto:") ||
+        $href.toLowerCase().startsWith("file:/") || ($href.toLowerCase().indexOf("://") != -1) )
+        #set ( $linkClass = ' class="externalLink"' )
+    #else
+        #set ( $linkClass = "" )
+    #end
+    #if ( $img )
+        #if ( $position == "left" )
+        <a href="$href"$linkClass$linkTarget$linkTitle>#image($img $alt $border $width $height)$name</a>
+        #else
+        <a href="$href"$linkClass$linkTarget$linkTitle>$name #image($img $alt $border $width $height)</a>
+        #end
+    #else
+    <a href="$href"$linkClass$linkTarget$linkTitle>$name</a>
+    #end
+#end
+##
+#macro ( image $img $alt $border $width $height )
+    #if( $img )
+        #if ( ! ( $img.toLowerCase().startsWith("http:/") || $img.toLowerCase().startsWith("https:/") ||
+            $img.toLowerCase().startsWith("ftp:/") || $img.toLowerCase().startsWith("mailto:") ||
+            $img.toLowerCase().startsWith("file:/") || ($img.toLowerCase().indexOf("://") != -1) ) )
+            #set ( $imgSrc = $PathTool.calculateLink( $img, $relativePath ) )
+            #set ( $imgSrc = $imgSrc.replaceAll( '\\', '/' ) )
+            #set ( $imgSrc = ' src="' + $imgSrc + '"' )
+        #else
+            #set ( $imgSrc = ' src="' + $img + '"' )
+        #end
+        #if( $alt )
+            #set ( $imgAlt = ' alt="' + $alt + '"' )
+        #else
+            #set ( $imgAlt = ' alt=""' )
+        #end
+        #if( $border )
+            #set ( $imgBorder = ' border="' + $border + '"' )
+        #else
+            #set ( $imgBorder = "" )
+        #end
+        #if( $width )
+            #set ( $imgWidth = ' width="' + $width + '"' )
+        #else
+            #set ( $imgWidth = "" )
+        #end
+        #if( $height )
+            #set ( $imgHeight = ' height="' + $height + '"' )
+        #else
+            #set ( $imgHeight = "" )
+        #end
+    <img class="imageLink"$imgSrc$imgAlt$imgBorder$imgWidth$imgHeight/>
+    #end
+#end
+#macro ( banner $banner $id )
+    #if ( $banner )
+        #if( $banner.href )
+            #set ( $hrf = $banner.href )
+            #if ( ! ( $hrf.toLowerCase().startsWith("http:/") || $hrf.toLowerCase().startsWith("https:/") ||
+                $hrf.toLowerCase().startsWith("ftp:/") || $hrf.toLowerCase().startsWith("mailto:") ||
+                $hrf.toLowerCase().startsWith("file:/") || ($hrf.toLowerCase().indexOf("://") != -1) ) )
+                #set ( $hrf = $PathTool.calculateLink( $hrf, $relativePath ) )
+                #set ( $hrf = $hrf.replaceAll( '\\', '/' ) )
+                #if ( ( $hrf == '' ) )
+                    #set ( $hrf = './' )
+                #end
+            #end
+        <a href="$hrf" id="$id"#if( $banner.alt ) title="$banner.alt"#end>
+        #else
+        <div id="$id">
+        #end
+    ##
+        #if( $banner.src )
+            #set ( $src = $banner.src )
+            #if ( ! ( $src.toLowerCase().startsWith("http:/") || $src.toLowerCase().startsWith("https:/") ||
+                $src.toLowerCase().startsWith("ftp:/") || $src.toLowerCase().startsWith("mailto:") ||
+                $src.toLowerCase().startsWith("file:/") || ($src.toLowerCase().indexOf("://") != -1) ) )
+                #set ( $src = $PathTool.calculateLink( $src, $relativePath ) )
+                #set ( $src = $src.replaceAll( '\\', '/' ) )
+            #end
+            #if ( $banner.alt )
+                #set ( $alt = ' alt="' + $banner.alt + '"' )
+            #elseif ( $banner.name )
+                #set ( $alt = ' alt="' + $banner.name + '"' )
+            #else
+                #set ( $alt = "" )
+            #end
+            #if( $banner.border )
+                #set ( $imgBorder = ' border="' + $banner.border + '"' )
+            #else
+                #set ( $imgBorder = "" )
+            #end
+            #if( $banner.width )
+                #set ( $imgWidth = ' width="' + $banner.width + '"' )
+            #else
+                #set ( $imgWidth = "" )
+            #end
+            #if( $banner.height )
+                #set ( $imgHeight = ' height="' + $banner.height + '"' )
+            #else
+                #set ( $imgHeight = "" )
+            #end
+            <img src="$src" $alt$imgBorder$imgWidth$imgHeight/>
+        #else
+            <h2>$banner.name</h2>
+        #end
+    ##
+        #if( $banner.href )
+        </a>
+        #else
+        </div>
+        #end
+    #end
+#end
+##
+#macro ( links $links )
+    #set ( $counter = 0 )
+## MSKINS-41
+    #set ( $begin = $links.size() - 1 )
+    #foreach( $index in [$begin..0] )
+        #set ( $item = $links.get( $index ) )
+        #set ( $counter = $counter + 1 )
+        #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+        #set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
+
+    <li class="pull-right">#link( $currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )</li>
+
+        #if ( $counter > 0 && $counter < $links.size() )
+        <li class="divider pull-right">|</li>
+        #end
+    #end
+#end
+##
+#macro ( breadcrumbs $breadcrumbs $cssClass )
+    #foreach( $item in $breadcrumbs )
+        #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+        #set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
+        #if ( ( $currentItemHref == '' ) )
+            #set ( $currentItemHref = './' )
+        #end
+    ##
+    <li class="$cssClass">
+        #link( $currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )
+    </li>
+    <li class="divider $cssClass">/</li>
+    #end
+    #if ( $shortTitle )
+    <li class="$cssClass">$shortTitle</li>
+    #else
+    <li class="$cssClass">$title</li>
+    #end
+#end
+##
+#macro ( displayTree $display $item )
+    #if ( $item && $item.items && $item.items.size() > 0 )
+        #foreach( $subitem in $item.items )
+            #set ( $subitemHref = $PathTool.calculateLink( $subitem.href, $relativePath ) )
+            #set ( $subitemHref = $subitemHref.replaceAll( '\\', '/' ) )
+        ##
+            #if ( $alignedFileName == $subitemHref )
+                #set ( $display = true )
+            #end
+        ##
+            #displayTree( $display $subitem )
+        #end
+    #end
+#end
+##
+#macro ( menuItem $item )
+    #set ( $collapse = "none" )
+    #set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
+    #set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
+##
+    #if ( $item && $item.items && $item.items.size() > 0 )
+        #if ( $item.collapse == false )
+            #set ( $collapse = "expanded" )
+        #else
+        ## By default collapsed
+            #set ( $collapse = "collapsed" )
+        #end
+    ##
+        #set ( $display = false )
+        #displayTree( $display $item )
+    ##
+        #if ( $alignedFileName == $currentItemHref || $display )
+            #set ( $collapse = "expanded" )
+        #end
+    #end
+<li class="$collapse">
+    #if ( $item.img )
+        #if ( $item.position == "left" )
+            #if ( $alignedFileName == $currentItemHref )
+                <strong>#image($item.img $item.alt $item.border $item.width $item.height) $item.name</strong>
+            #else
+                #link($currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height)
+            #end
+        #else
+            #if ( $alignedFileName == $currentItemHref )
+                <strong>$item.name #image($item.img $item.alt $item.border $item.width $item.height)</strong>
+            #else
+                #link($currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height)
+            #end
+        #end
+    #else
+        #if ( $alignedFileName == $currentItemHref )
+            <strong>$item.name</strong>
+        #else
+            #link( $currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )
+        #end
+    #end
+    #if ( $item && $item.items && $item.items.size() > 0 )
+        #if ( $collapse == "expanded" )
+            <ul>
+                #foreach( $subitem in $item.items )
+          #menuItem( $subitem )
+        #end
+            </ul>
+        #end
+    #end
+</li>
+#end
+##
+#macro ( mainMenu $menus )
+    #foreach( $menu in $menus )
+        #if ( $menu.name )
+            #if ( $menu.img )
+                #if( $menu.position )
+                    #set ( $position = $menu.position )
+                #else
+                    #set ( $position = "left" )
+                #end
+            ##
+                #if ( ! ( $menu.img.toLowerCase().startsWith("http:/") || $menu.img.toLowerCase().startsWith("https:/") ||
+                    $menu.img.toLowerCase().startsWith("ftp:/") || $menu.img.toLowerCase().startsWith("mailto:") ||
+                    $menu.img.toLowerCase().startsWith("file:/") || ($menu.img.toLowerCase().indexOf("://") != -1) ) )
+                    #set ( $src = $PathTool.calculateLink( $menu.img, $relativePath ) )
+                    #set ( $src = $src.replaceAll( '\\', '/' ) )
+                    #set ( $src = ' src="' + $src + '"' )
+                #else
+                    #set ( $src = ' src="' + $menu.img + '"' )
+                #end
+            ##
+                #if( $menu.alt )
+                    #set ( $alt = ' alt="' + $menu.alt + '"' )
+                #else
+                    #set ( $alt = ' alt="' + $menu.name + '"' )
+                #end
+            ##
+                #if( $menu.border )
+                    #set ( $border = ' border="' + $menu.border + '"' )
+                #else
+                    #set ( $border = ' border="0"' )
+                #end
+            ##
+                #if( $menu.width )
+                    #set ( $width = ' width="' + $menu.width + '"' )
+                #else
+                    #set ( $width = "" )
+                #end
+                #if( $menu.height )
+                    #set ( $height = ' height="' + $menu.height + '"' )
+                #else
+                    #set ( $height = "" )
+                #end
+            ##
+                #set ( $img = '<img class="imageLink"' + $src + $alt + $border + $width + $height + "/>" )
+            ##
+                #if ( $position == "left" )
+                <h3>$img $menu.name</h3>
+                #else
+                <h3>$menu.name $img</h3>
+                #end
+            #else
+            <h3>$menu.name</h3>
+            #end
+        #end
+        #if ( $menu.items && $menu.items.size() > 0 )
+        <ul>
+            #foreach( $item in $menu.items )
+        #menuItem( $item )
+      #end
+        </ul>
+        #end
+    #end
+#end
+##
+#macro ( copyright )
+    #if ( $project )
+        #if ( ${project.organization} && ${project.organization.name} )
+            #set ( $period = "" )
+        #else
+            #set ( $period = "." )
+        #end
+    ##
+        #set ( $currentYear = ${currentDate.year} + 1900 )
+    ##
+        #if ( ${project.inceptionYear} && ( ${project.inceptionYear} != ${currentYear.toString()} ) )
+            ${project.inceptionYear}-${currentYear}${period}
+        #else
+            ${currentYear}${period}
+        #end
+    ##
+        #if ( ${project.organization} )
+            #if ( ${project.organization.name} && ${project.organization.url} )
+            <a href="$project.organization.url">${project.organization.name}</a>.
+            #elseif ( ${project.organization.name} )
+                ${project.organization.name}.
+            #end
+        #end
+    #end
+#end
+##
+#macro ( publishDate $position $decorationPublishDate $version )
+    #if ( $decorationPublishDate && $decorationPublishDate.format )
+        #set ( $format = $decorationPublishDate.format )
+    #else
+        #set ( $format = "yyyy-MM-dd" )
+    #end
+##
+    $dateFormat.applyPattern( $format )
+##
+    #if ( $publishDate )
+        #set ( $dateValue = $dateFormat.format( $publishDate ) )
+    #elseif ( $decoration.custom.getChild( 'publishDate' ) )
+        #set ( $dateValue = $decoration.custom.getChild( 'publishDate' ).getValue() )
+    #else
+        #set ( $dateValue = $dateFormat.format( $currentDate ) )
+    #end
+##
+    #if ( $decorationPublishDate && $decorationPublishDate.position )
+        #set ( $datePosition = $decorationPublishDate.position )
+    #else
+        #set ( $datePosition = "left" )
+    #end
+##
+    #if ( $version )
+        #if ( $version.position )
+            #set ( $versionPosition = $version.position )
+        #else
+            #set ( $versionPosition = "left" )
+        #end
+    #else
+        #set ( $version = "" )
+        #set ( $versionPosition = "left" )
+    #end
+##
+    #set ( $breadcrumbs = $decoration.body.breadcrumbs )
+    #set ( $links = $decoration.body.links )
+
+    #if ( $datePosition.equalsIgnoreCase( "right" ) && $versionPosition.equalsIgnoreCase( "right" ) )
+        #set ( $prefix = '<li class="divider pull-right">|</li>' )
+    #else
+        #set ( $prefix = "" )
+    #end
+##
+    #if ( $datePosition.equalsIgnoreCase( $position ) )
+        #if ( ( $datePosition.equalsIgnoreCase( "right" ) ) || ( $datePosition.equalsIgnoreCase( "bottom" ) ) )
+        <li id="publishDate" class="pull-right">$i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateValue</li> $prefix
+            #if ( $versionPosition.equalsIgnoreCase( $position ) )
+            <li id="projectVersion" class="pull-right">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</li>
+            #end
+        #elseif ( ( $datePosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $datePosition.equalsIgnoreCase( "navigation-top" ) ) )
+        <div id="lastPublished">
+            <span id="publishDate">$i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateValue</span>
+            #if ( $versionPosition.equalsIgnoreCase( $position ) )
+                <span class="divider">|</span> <span id="projectVersion">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</span>
+            #end
+        </div>
+        #elseif ( $datePosition.equalsIgnoreCase("left") )
+        <li id="publishDate">$i18n.getString( "site-renderer", $locale, "template.lastpublished" ): $dateValue</li>
+            #if ( $versionPosition.equalsIgnoreCase( $position ) )
+            <li class="divider">|</li> <li id="projectVersion">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</li>
+            #end
+            #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+            <li class="divider">|</li> #breadcrumbs( $breadcrumbs "" )
+            #end
+        #end
+    #elseif ( $versionPosition.equalsIgnoreCase( $position ) )
+        #if ( $versionPosition.equalsIgnoreCase( "right" ) )
+            $prefix <li id="projectVersion" class="pull-right">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</li>
+        #elseif ( $versionPosition.equalsIgnoreCase( "bottom" ) )
+        <span id="projectVersion">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</span>
+        #elseif ( ( $versionPosition.equalsIgnoreCase( "navigation-bottom" ) ) || ( $versionPosition.equalsIgnoreCase( "navigation-top" ) ) )
+        <div id="lastPublished">
+            <span id="projectVersion">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</span>
+        </div>
+        #elseif ( $versionPosition.equalsIgnoreCase("left") )
+        <li id="projectVersion">$i18n.getString( "site-renderer", $locale, "template.version" ): ${project.version}</li>
+            #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+            | #breadcrumbs( $breadcrumbs "")
+            #end
+        #end
+    #elseif ( $position.equalsIgnoreCase( "left" ) )
+        #if ( $breadcrumbs && $breadcrumbs.size() > 0 )
+            #breadcrumbs( $breadcrumbs "" )
+        #end
+    #end
+#end
+##
+#macro ( poweredByLogo $poweredBy )
+    #if( $poweredBy )
+        #foreach ($item in $poweredBy)
+            #if( $item.href )
+                #set ( $href = $PathTool.calculateLink( $item.href, $relativePath ) )
+                #set ( $href = $href.replaceAll( '\\', '/' ) )
+            #else
+                #set ( $href="http://maven.apache.org/" )
+            #end
+        ##
+            #if( $item.name )
+                #set ( $name = $item.name )
+            #else
+                #set ( $name = $i18n.getString( "site-renderer", $locale, "template.builtby" )  )
+                #set ( $name = "${name} Maven"  )
+            #end
+        ##
+            #if( $item.img )
+                #set ( $img = $item.img )
+            #else
+                #set ( $img = "images/logos/maven-feather.png" )
+            #end
+        ##
+            #if ( ! ( $img.toLowerCase().startsWith("http:/") || $img.toLowerCase().startsWith("https:/") ||
+                $img.toLowerCase().startsWith("ftp:/") || $img.toLowerCase().startsWith("mailto:") ||
+                $img.toLowerCase().startsWith("file:/") || ($img.toLowerCase().indexOf("://") != -1) ) )
+                #set ( $img = $PathTool.calculateLink( $img, $relativePath ) )
+                #set ( $img = $img.replaceAll( '\\', '/' ) )
+            #end
+        ##
+            #if( $item.alt )
+                #set ( $alt = ' alt="' + $item.alt + '"' )
+            #else
+                #set ( $alt = ' alt="' + $name + '"' )
+            #end
+        ##
+            #if( $item.border )
+                #set ( $border = ' border="' + $item.border + '"' )
+            #else
+                #set ( $border = "" )
+            #end
+        ##
+            #if( $item.width )
+                #set ( $width = ' width="' + $item.width + '"' )
+            #else
+                #set ( $width = "" )
+            #end
+            #if( $item.height )
+                #set ( $height = ' height="' + $item.height + '"' )
+            #else
+                #set ( $height = "" )
+            #end
+        ##
+        <a href="$href" title="$name" class="poweredBy">
+            <img class="poweredBy" $alt src="$img" $border $width $height />
+        </a>
+        #end
+        #if( $poweredBy.isEmpty() )
+        <a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+            <img class="poweredBy" alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" src="$relativePath/images/logos/maven-feather.png" />
+        </a>
+        #end
+    #else
+    <a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+        <img class="poweredBy" alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" src="$relativePath/images/logos/maven-feather.png" />
+    </a>
+    #end
+#end
+##
+#macro ( googleAnalytics $accountId )
+    #if( $accountId && $accountId != "" )
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '$accountId']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+    #end
+#end
+##
+#macro ( googleSearch $top )
+<form id="search-form" action="http://www.google.com/search" method="get" #if ( $top ) class="navbar-search pull-right" #end>
+    #if( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'googleSearch' ).getChild( 'sitesearch' ) )
+        #set( $sitesearchValue = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'googleSearch' ).getChild( 'sitesearch' ).getValue() )
+    #else
+        #set( $startIndex = $project.url.indexOf("://") + 3 )
+        #set( $sitesearchValue = $project.url.substring( $startIndex, $project.url.length() ) )
+    #end
+
+    <input value="$sitesearchValue" name="sitesearch" type="hidden"/>
+    <input class="search-query" name="q" id="query" type="text" />
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=search-form"></script>
+#end
+##
+#macro ( forkMeOnGitHub )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'gitHub' )
+    && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'gitHub' ).getChild( 'projectId' ) )
+
+        #set ( $gitHubProjectId = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'gitHub' ).getChild( 'projectId' ).getValue() )
+
+        #set ( $leftRibbon = { "red" : "forkme_left_red_aa0000.png", "green" : "forkme_left_green_007200.png", "black" : "forkme_left_darkblue_121621.png", "darkblue" : "forkme_left_darkblue_121621.png", "orange" : "forkme_left_orange_ff7600.png", "gray" : "forkme_left_gray_6d6d6d.png" } )
+        #set ( $rightRibbon = { "red" : "forkme_right_red_aa0000.png", "green" : "forkme_right_green_007200.png", "black" : "forkme_right_darkblue_121621.png", "darkblue" : "forkme_right_darkblue_121621.png", "orange" : "forkme_right_orange_ff7600.png", "gray" : "forkme_right_gray_6d6d6d.png" } )
+
+        #set ( $ribbon = $leftRibbon )
+        #set ( $ribbonOrientation = 'left' )
+        #set ( $definedRibbonOrientation = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'gitHub' ).getChild( 'ribbonOrientation' ) )
+        #if ( $definedRibbonOrientation && $definedRibbonOrientation.getValue().equalsIgnoreCase( "right" ) )
+            #set ( $ribbonOrientation = 'right' )
+            #set ( $ribbon = $rightRibbon )
+        #end
+
+        #set ( $ribbonColor = 'red' )
+        #set ( $definedRibbonColor = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'gitHub' ).getChild( 'ribbonColor' ) )
+
+        #if ( $definedRibbonColor
+        && ( $definedRibbonColor.getValue().equalsIgnoreCase( "red" )
+        || $definedRibbonColor.getValue().equalsIgnoreCase( "green" )
+        || $definedRibbonColor.getValue().equalsIgnoreCase( "black" )
+        || $definedRibbonColor.getValue().equalsIgnoreCase( "orange" )
+        || $definedRibbonColor.getValue().equalsIgnoreCase( "gray" ) ) )
+            #set ( $ribbonColor = $definedRibbonColor.getValue().toLowerCase() )
+        #end
+
+    <a href="http://github.com/$gitHubProjectId">
+        <img style="position: absolute; top: 0; $ribbonOrientation: 0; border: 0; z-index: 100;"
+             src="https://s3.amazonaws.com/github/ribbons/$ribbon.get( $ribbonColor )"
+             alt="Fork me on GitHub">
+    </a>
+    #end
+#end
+##
+#macro ( prjProfile )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'profile' ) )
+
+        #set ( $profile = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'profile' ).getValue() )
+
+        #if ( $profile.equalsIgnoreCase( "retired" )
+        || $profile.equalsIgnoreCase( "pre-release" )
+        || $profile.equalsIgnoreCase( "sandbox" ) )
+        <style type="text/css">body{background-image: url('$relativePath/images/profiles/${profile}.png');}</style>
+        #end
+
+    #end
+#end
+##
+#macro ( googlePlusOne $sideBarEnabled )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'googlePlusOne' )
+    && $project.url )
+        #set( $dataSize = 'tall' )
+        #if( !$sideBarEnabled )
+            #set( $dataSize = 'medium' )
+        #end
+
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+        #if( !$sideBarEnabled )
+        <ul class="nav pull-right"><li style="margin-top: 10px;">
+        #end
+
+        <div class="g-plusone" data-href="$project.url" data-size="$dataSize" #if( !$sideBarEnabled ) width="60px" align="right" #end></div>
+
+        #if( !$sideBarEnabled )
+        </li></ul>
+        #end
+    #end
+#end
+##
+#macro ( facebookLike $sideBarEnabled )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'facebookLike' )
+    && $project.url )
+        #set( $facebookLike = $decoration.custom.getChild( 'facebookLike' ) )
+    ## kindly hardcoded
+
+        #set( $layout = 'box_count' )
+        #if( !$sideBarEnabled )
+            #set( $layout = 'button_count' )
+        #end
+
+        #set( $colorscheme = 'light' )
+        #if( !$sideBarEnabled )
+            #set( $colorscheme = 'dark' )
+        #end
+
+        #set( $frameWidth = 'width:48px; height:63px' )
+        #if( !$sideBarEnabled )
+            #set( $frameWidth = 'width:80px; height:20px' )
+        #end
+
+    <iframe src="http://www.facebook.com/plugins/like.php?href=$project.url&send=false&layout=$layout&show-faces=false&action=like&colorscheme=$colorscheme"
+            scrolling="no" frameborder="0"
+            style="border:none; $frameWidth; margin-top: 10px;" #if( !$sideBarEnabled ) class="pull-right" #end></iframe>
+    #end
+#end
+##
+#macro ( followTwitter $sideBarEnabled )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' )
+    && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'user' ) )
+        #set ( $user = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'user' ).getValue() )
+
+        #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'showUser' )
+        && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'showUser' ).getValue().equalsIgnoreCase( "true" ) )
+            #set( $showUser = true )
+        #else
+            #set( $showUser = false )
+        #end
+
+        #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'showFollowers' )
+        && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'twitter' ).getChild( 'showFollowers' ).getValue().equalsIgnoreCase( "true" ) )
+            #set( $showFollowers = true )
+        #else
+            #set( $showFollowers = false )
+        #end
+
+        #if ( $sideBarEnabled )
+            #set( $dataSize = "medium" )
+            #set( $dataAlign = "left" )
+        <div id="twitter">
+        #else
+            #set( $dataSize = "large" )
+            #set( $dataAlign = "right" )
+        <ul class="nav pull-right"><li>
+        #end
+
+        <a href="https://twitter.com/${user}" class="twitter-follow-button" data-show-count="${showFollowers}" data-align="${dataAlign}" data-size="${dataSize}" data-show-screen-name="${showUser}" data-lang="${locale}">Follow ${user}</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+        #if ( $sideBarEnabled )
+        </div>
+        #else
+        </li></ul>
+        #end
+    #end
+#end
+##
+#macro ( ohloh )
+    #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'ohloh' )
+    && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'ohloh' ).getChild( 'projectId' ) )
+        #set ( $projectId = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'ohloh' ).getChild( 'projectId' ).getValue() )
+
+        #set( $widget = "users_logo.js" )
+
+        #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'ohloh' ).getChild( 'widget' ) )
+            #set( $definedWidget = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'ohloh' ).getChild( 'widget' ).getValue() )
+
+            #if ( $definedWidget.equalsIgnoreCase( "users-logo" ) )
+                #set( $widget = "users_logo.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users-green" ) )
+                #set( $widget = "users.js?style=green" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users-red" ) )
+                #set( $widget = "users.js?style=red" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users-blue" ) )
+                #set( $widget = "users.js?style=blue" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users-gray" ) )
+                #set( $widget = "users.js?style=gray" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users-rainbow" ) )
+                #set( $widget = "users.js?style=rainbow" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "users" ) )
+                #set( $widget = "users.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "thin-badge" ) )
+                #set( $widget = "thin_badge.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "partner-badge" ) )
+                #set( $widget = "partner_badge.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "languages" ) )
+                #set( $widget = "languages.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "factoids" ) )
+                #set( $widget = "factoids.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "cocomo" ) )
+                #set( $widget = "cocomo.js" )
+            #elseif ( $definedWidget.equalsIgnoreCase( "stats" ) )
+                #set( $widget = "basic_stats.js" )
+            #end
+        #end
+
+    <div id="ohloh" class="pull-right">
+        <script type="text/javascript" src="http://www.ohloh.net/p/${projectId}/widgets/project_${widget}"></script>
+    </div>
+    #end
+#end
+##
+<html xmlns="http://www.w3.org/1999/xhtml"#if ( $locale ) xml:lang="$locale.language" lang="$locale.language"#end>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=${outputEncoding}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>$title</title>
+    <link rel="stylesheet" href="$relativePath/css/apache-maven-fluido.min.css" />
+    <link rel="stylesheet" href="$relativePath/css/site.css" />
+    <link rel="stylesheet" href="$relativePath/css/print.css" media="print" />
+
+    #prjProfile()
+
+    <script type="text/javascript" src="$relativePath/js/apache-maven-fluido.min.js"></script>
+
+    #if ( $decoration.body.head )
+        #foreach( $item in $decoration.body.head.getChildren() )
+            #set ( $head = $item.toString().trim() )
+
+            #if ( $item.name == "script" )
+                #set ( $head = $StringUtils.replace( $item.toUnescapedString(), $documentHeader, "" ) )
+            #else
+                #set ( $head = $StringUtils.replace( $item.toString(), $documentHeader, "" ) )
+            #end
+
+            $StringUtils.replace( $head, '@relativePath@', ${relativePath} )
+        #end
+    #end
+
+    #foreach( $author in $authors )
+        <meta name="author" content="$author" />
+    #end
+    #if ( $dateCreation )
+        <meta name="Date-Creation-yyyymmdd" content="$dateCreation" />
+    #end
+    #if ( $dateRevision )
+        <meta name="Date-Revision-yyyymmdd" content="$dateRevision" />
+    #end
+    #if ( $locale )
+        <meta http-equiv="Content-Language" content="$locale.language" />
+    #end
+    #if( $headContent )$headContent#end
+    #googleAnalytics( $decoration.googleAnalyticsAccountId )
+</head>
+    #if ( $decoration.custom.getChild( 'fluidoSkin' )
+    && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'topBarEnabled' )
+    && 'true' == $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'topBarEnabled' ).getValue() )
+        #set( $topBarEnabled = true )
+    <body class="topBarEnabled">
+    #else
+    <body class="topBarDisabled">
+    #end
+    #forkMeOnGitHub()
+
+    #set ( $sideBarEnabled = true )
+    #if ( $decoration.custom.getChild('fluidoSkin') )
+        #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'sideBarEnabled' )
+        && 'false' == $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'sideBarEnabled' ).getValue() )
+            #set ( $sideBarEnabled = false )
+        #end
+
+        #if ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'googleSearch' )
+        && ( $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'googleSearch' ).getChild( 'sitesearch' )
+        || $project.url ) )
+            #set ( $searchEnabled = true )
+        #else
+            #set ( $searchEnabled = false )
+        #end
+    #end
+
+    #if ( $topBarEnabled )
+    <div id="topbar" class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        #if ( $sideBarEnabled )
+        <div class="container-fluid">
+            <a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+        #else
+        <div class="container">
+        #end
+        #if ( $decoration.custom.getChild('fluidoSkin')
+        && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'topBarIcon' ) )
+            #set ( $topBarIcon = $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'topBarIcon' ) )
+
+            #if ( $topBarIcon.getChild( 'href' ) )
+                #set ( $hrf = $topBarIcon.getChild( 'href' ).getValue() )
+                #if ( ! ( $hrf.toLowerCase().startsWith("http:/") || $hrf.toLowerCase().startsWith("https:/") ||
+                    $hrf.toLowerCase().startsWith("ftp:/") || $hrf.toLowerCase().startsWith("mailto:") ||
+                    $hrf.toLowerCase().startsWith("file:/") || ($hrf.toLowerCase().indexOf("://") != -1) ) )
+                    #set ( $hrf = $PathTool.calculateLink( $hrf, $relativePath ) )
+                    #set ( $hrf = $hrf.replaceAll( '\\', '/' ) )
+                    #if ( ( $hrf == '' ) )
+                        #set ( $hrf = './' )
+                    #end
+                #end
+                <a class="brand" href="$hrf" #if( $topBarIcon.getChild( 'alt' ) ) title="$topBarIcon.getChild( 'alt' ).getValue()"#end>
+
+                    #if( $topBarIcon.getChild( 'name' ) )
+                        #set ( $topBarIconName = $topBarIcon.getChild( 'name' ).getValue() )
+                    #else
+                        #set ( $topBarIconName = $project.name )
+                    #end
+
+                    #if( $topBarIcon.getChild( 'src' ) )
+                        #set ( $src = $topBarIcon.getChild( 'src' ).getValue() )
+                        #if ( ! ( $src.toLowerCase().startsWith("http:/") || $src.toLowerCase().startsWith("https:/") ||
+                            $src.toLowerCase().startsWith("ftp:/") || $src.toLowerCase().startsWith("mailto:") ||
+                            $src.toLowerCase().startsWith("file:/") || ($src.toLowerCase().indexOf("://") != -1) ) )
+                            #set ( $src = $PathTool.calculateLink( $src, $relativePath ) )
+                            #set ( $src = $src.replaceAll( '\\', '/' ) )
+                        #end
+                        #if ( $topBarIcon.getChild( 'alt' ) )
+                            #set ( $alt = $topBarIcon.getChild( 'alt' ).getValue() )
+                        #else
+                            #set ( $alt = $topBarIconName )
+                        #end
+                        <img src="$src" alt="$alt" />
+                    #else
+                        $topBarIconName
+                    #end
+
+                </a>
+            #end
+        #end
+
+    ## MSKINS-31
+        #if( $decoration.body && $decoration.body.menus )
+            <div class="nav-collapse">
+                <ul class="nav">
+                    #topMenu( $decoration.body.menus )
+                </ul>
+            </div>
+        #end
+
+        #if ( $searchEnabled && !$sideBarEnabled )
+            #googleSearch(true)
+        #end
+
+        #if ( !$sideBarEnabled )
+            #facebookLike( $sideBarEnabled )
+            #googlePlusOne( $sideBarEnabled )
+            #followTwitter( $sideBarEnabled )
+        #end
+
+    ## MSKINS-31
+        #if( $decoration.body
+        && $decoration.body.links
+        && $decoration.body.links.size() > 0 )
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">External Links <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        #topLinks( $decoration.body.links )
+                    </ul>
+                </li>
+            </ul>
+        #end
+    </div>
+    </div>
+    </div>
+    #end
+
+    #if ( $sideBarEnabled )
+    <div class="container-fluid">
+    #else
+    <div class="container">
+    #end
+    <div id="banner">
+        <div class="pull-left">
+            #if( $decoration.bannerLeft )
+                #banner( $decoration.bannerLeft "bannerLeft" )
+            #else
+            ## MSKINS-32
+                <h1>
+                    #if( $project.name && $project.name != '' )
+              $project.name
+            #else
+                        $project.artifactId
+                    #end
+                </h1>
+            #end
+        </div>
+        <div class="pull-right">#banner( $decoration.bannerRight "bannerRight" )</div>
+        <div class="clear"><hr/></div>
+    </div>
+
+    <div id="breadcrumbs">
+        <ul class="breadcrumb">
+            #publishDate( "left" $decoration.publishDate $decoration.version )
+
+            #publishDate( "right" $decoration.publishDate $decoration.version )
+
+        ## MSITE-44
+            #if ( !$topBarEnabled
+            && $decoration.body.links
+            && $decoration.body.links.size() > 0 )
+                #if ( ( $decoration.publishDate
+                && $decoration.publishDate.position
+                && $decoration.publishDate.position.equalsIgnoreCase( "right" ) )
+                || ( $decoration.version
+                && $decoration.version.position
+                && $decoration.version.position.equalsIgnoreCase( "right" ) ) )
+                    <li class="divider pull-right">|</li>
+                #end
+                #links( $decoration.body.links )
+            #end
+        </ul>
+    </div>
+
+    #if ( $sideBarEnabled )
+    <div class="row-fluid">
+        <div id="leftColumn" class="span2">
+            <div class="well sidebar-nav">
+                #publishDate( "navigation-top" $decoration.publishDate $decoration.version )
+                #mainMenu( $decoration.body.menus )
+                #publishDate( "navigation-bottom" $decoration.publishDate $decoration.version )
+                #if ( $searchEnabled )
+                    #googleSearch( false )
+                #end
+
+                <hr class="divider" />
+
+                <div id="poweredBy">
+                    #googlePlusOne( $sideBarEnabled )
+                    <div class="clear"></div>
+                    #facebookLike( $sideBarEnabled )
+                    <div class="clear"></div>
+                    #followTwitter( $sideBarEnabled )
+                    <div class="clear"></div>
+                    #poweredByLogo( $decoration.poweredBy )
+                </div>
+            </div>
+        </div>
+    #end
+
+    <div id="bodyColumn" #if ( $sideBarEnabled ) class="span10" #end>
+        #if ( $title && $title.endsWith( "Project License" ) )
+            $bodyContent
+          #else
+            #if ( $decoration.custom.getChild('fluidoSkin')
+            && $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'sourceLineNumbersEnabled' )
+            && 'true' == $decoration.custom.getChild( 'fluidoSkin' ).getChild( 'sourceLineNumbersEnabled' ).getValue() )
+                #set ( $sourceStyle = "prettyprint linenums" )
+            #else
+                #set ( $sourceStyle = "prettyprint" )
+            #end
+
+            $bodyContent.replaceAll( "<div class=\"source\"><pre>", "<div class=\"source\"><pre class=\"$sourceStyle\">" ).replaceAll( "class=\"bodyTable\"", "class=\"table table-striped\"" )
+        #end
+    </div>
+    #if ( $sideBarEnabled )
+    </div>
+    #end
+
+    <hr/>
+
+    <footer>
+        #if ( $sideBarEnabled )
+        <div class="container-fluid">
+        #else
+        <div class="container">
+        #end
+        #set ( $currentYear = ${currentDate.year} + 1900 )
+        <div class="row footer">Copyright &copy; ${project.inceptionYear}-${currentYear} <a href="$project.organization.url">${project.organization.name}</a>. All Rights Reserved.</br />
+            Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</div>
+        </div>
+    </footer>
+</body>
+</html>

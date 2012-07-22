@@ -257,6 +257,8 @@
           <moduleExcludes>
             <xdoc>navigation.xml,changes.xml</xdoc>
           </moduleExcludes>
+          <templateDirectory>${log4j.parent.dir}/src/site</templateDirectory>
+          <template>site.vm</template>
         </configuration>
       </plugin>
       <!-- <plugin>
