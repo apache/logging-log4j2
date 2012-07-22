@@ -27,7 +27,7 @@
 
             <p>
               The Commons Logging Bridge allows applications coded to the Commons Logging API to use
-              Log4j2 as the implementation.
+              Log4j 2 as the implementation.
             </p>
 
         </section>

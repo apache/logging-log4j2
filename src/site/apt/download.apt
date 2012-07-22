@@ -13,14 +13,14 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
  ------
-Download Apache Log4j2
+Download Apache Log4j 2
  ------
  ------
  ------
 
-Download Apache Log4j2
+Download Apache Log4j 2
 
-  Apache Log4j2 is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
+  Apache Log4j 2 is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
 
   The link in the Mirrors column should display a list of available mirrors with a
   default selection based on your inferred location.  If you do not see that page,
@@ -30,9 +30,9 @@ Download Apache Log4j2
 *-------------------------+---------+----------+-----------+
 |                         | Mirrors | Checksum | Signature |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j2 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz} apache-log4j2-1.0-alpha1.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz.md5} apache-log4j2-1.0-alpha1.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz.asc} apache-log4j2-1.0-alpha1.tar.gz.asc}} |
+| Apache Log4j 2 (tar.gz)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz} apache-log4j2-1.0-alpha1.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz.md5} apache-log4j2-1.0-alpha1.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.tar.gz.asc} apache-log4j2-1.0-alpha1.tar.gz.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache Log4j2 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j2/apache-log4j2-1.0-alpha1.zip} apache-log4j2-1.0-alpha1.zip}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.zip.md5} apache-log4j2-1.0-alpha1.zip.md5}} | {{{http://www.apache.org/dist/logging/log42/apache-log4j2-1.0-alpha1.zip.asc} apache-log4j2-1.0-alpha1.zip.asc}} |
+| Apache Log4j 2 (zip)     | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j2/apache-log4j2-1.0-alpha1.zip} apache-log4j2-1.0-alpha1.zip}} | {{{http://www.apache.org/dist/logging/log4j2/apache-log4j2-1.0-alpha1.zip.md5} apache-log4j2-1.0-alpha1.zip.md5}} | {{{http://www.apache.org/dist/logging/log42/apache-log4j2-1.0-alpha1.zip.asc} apache-log4j2-1.0-alpha1.zip.asc}} |
 *-------------------------+---------+----------+-----------+
 
     It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures.
@@ -48,7 +48,7 @@ Download Apache Log4j2
 % gpg --verify log4j2-1.0-alpha1.tar.gz.asc
 ---
 
-    Apache Log4j2 is signed by Ralph Goers  B3D8E1BA
+    Apache Log4j 2 is signed by Ralph Goers  B3D8E1BA
 
     Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included
     in many unix distributions.

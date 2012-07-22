@@ -27,7 +27,7 @@
 
             <p>
               The SLF4J Bridge allows applications coded to the SLF4J API to use
-              Log4j2 as the implementation.
+              Log4j 2 as the implementation.
             </p>
 
         </section>

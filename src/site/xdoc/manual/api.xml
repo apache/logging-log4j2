@@ -27,7 +27,7 @@
           <a name="Overview"/>
           <subsection name="Overview">
             <p>
-              The Log4Jj 2.0 API provides the interface that applications should code to and provides the
+              The Log4Jj 2 API provides the interface that applications should code to and provides the
               adapter components required for implementers to create a logging implementation. Although Log4j 2
               is broken up between an API and an implementation, the primary purpose of doing so was not to
               allow multiple implementations, although that is certainly possible, but to clearly define
