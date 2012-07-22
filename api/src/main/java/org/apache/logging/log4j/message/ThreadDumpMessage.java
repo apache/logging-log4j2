@@ -72,7 +72,17 @@ public class ThreadDumpMessage implements Message {
 
     private ThreadDumpMessage(String formattedMsg, String title) {
         this.formattedMessage = formattedMsg;
-        this.title = title;
+        this.title = title == null ? "" : title;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ThreadDumpMessage[");
+        if (this.title.length() > 0) {
+            sb.append("Title=\"").append(this.title).append("\"");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     /**
