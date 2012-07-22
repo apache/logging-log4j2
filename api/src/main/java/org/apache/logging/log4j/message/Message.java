@@ -49,7 +49,7 @@ public interface Message extends Serializable {
      * @return The message format.
      * @doubt Do all messages have a format?  What syntax?  Using a Formatter object could be cleaner.
      * (RG) In SimpleMessage the format is identical to the formatted message. In ParameterizedMessage and
-     * StructuredDataMessage itis not. It is up to the Message implementer to determine what this
+     * StructuredDataMessage it is not. It is up to the Message implementer to determine what this
      * method will return. A Formatter is inappropriate as this is very specific to the Message
      * implementation so it isn't clear to me how having a Formatter separate from the Message would be cleaner.
      */
