@@ -89,7 +89,7 @@
   <properties>
     <slf4j.version>1.6.4</slf4j.version>
     <logback.version>1.0.0</logback.version>
-    <log4j.parent.dir>${basedir}</log4j.parent.dir>
+    <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-alpha1</Log4jReleaseVersion>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.commons.${project.artifactId}</osgi.symbolicName>
@@ -101,6 +101,7 @@
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.5</maven.compile.source>
     <maven.compile.target>1.5</maven.compile.target>
+    <docLabel>Site Documentation</docLabel>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -238,7 +239,31 @@
           </archive>
         </configuration>
       </plugin>
-
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>copy-sitecss</id>
+            <!-- fetch site.xml before creating site documentation -->
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/css</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${log4jParentDir}/src/site/resources/css</directory>
+                  <includes>
+                    <include>**/site.css</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -257,7 +282,7 @@
           <moduleExcludes>
             <xdoc>navigation.xml,changes.xml</xdoc>
           </moduleExcludes>
-          <templateDirectory>${log4j.parent.dir}/src/site</templateDirectory>
+          <templateDirectory>${log4jParentDir}/src/site</templateDirectory>
           <template>site.vm</template>
         </configuration>
       </plugin>

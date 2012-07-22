@@ -312,12 +312,30 @@
                 #set ( $img = '<img class="imageLink"' + $src + $alt + $border + $width + $height + "/>" )
             ##
                 #if ( $position == "left" )
-                <h3>$img $menu.name</h3>
+                    #if ( $menu.name.equals("Project Documentation"))
+                        #if ( $docLabel )
+                            #set ( $menuName = $docLabel )
+                        #else
+                            #set ($menuName = $menu.name )
+                        #end
+                        <h3>$menuName</h3>
+                    #else
+                        <h3>$img $menu.name</h3>
+                    #end
                 #else
                 <h3>$menu.name $img</h3>
                 #end
             #else
-            <h3>$menu.name</h3>
+                #if ( $menu.name.equals("Project Documentation"))
+                    #if ( $docLabel )
+                        #set ( $menuName = $docLabel )
+                    #else
+                        #set ($menuName = $menu.name )
+                    #end
+                <h3>$menuName</h3>
+                #else
+                <h3>$menu.name</h3>
+                #end
             #end
         #end
         #if ( $menu.items && $menu.items.size() > 0 )

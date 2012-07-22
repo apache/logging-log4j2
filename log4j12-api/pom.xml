@@ -29,7 +29,8 @@
   <name>Log4J Compatibility API</name>
   <description>The Log4J Compatibility API</description>
   <properties>
-    <log4j.parent.dir>${basedir}/..</log4j.parent.dir>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>Log4j 1.2 Documentation</docLabel>
   </properties>
   <dependencies>
     <dependency>
@@ -76,11 +77,11 @@
             <version>2.7</version>
             <configuration>
               <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
-              <configLocation>${log4j.parent.dir}/checkstyle.xml</configLocation>
-              <suppressionsLocation>${log4j.parent.dir}/checkstyle-suppressions.xml</suppressionsLocation>
+              <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
+              <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
               <enableRulesSummary>false</enableRulesSummary>
               <propertyExpansion>basedir=${basedir}</propertyExpansion>
-              <propertyExpansion>licensedir=${log4j.parent.dir}/checkstyle-header.txt</propertyExpansion>
+              <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
             </configuration>
           </plugin>
           <plugin>

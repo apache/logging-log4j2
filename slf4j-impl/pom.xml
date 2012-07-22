@@ -29,7 +29,8 @@
   <name>SLF4J Binding</name>
   <description>Binding between SLF4J API and Log4J2 Core</description>
   <properties>
-    <log4j.parent.dir>${basedir}/..</log4j.parent.dir>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>SLF4J Documentation</docLabel>
   </properties>
   <dependencies>
     <dependency>
@@ -83,11 +84,11 @@
             <version>2.7</version>
             <configuration>
               <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
-              <configLocation>${log4j.parent.dir}/checkstyle.xml</configLocation>
-              <suppressionsLocation>${log4j.parent.dir}/checkstyle-suppressions.xml</suppressionsLocation>
+              <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
+              <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
               <enableRulesSummary>false</enableRulesSummary>
               <propertyExpansion>basedir=${basedir}</propertyExpansion>
-              <propertyExpansion>licensedir=${log4j.parent.dir}/checkstyle-header.txt</propertyExpansion>
+              <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
             </configuration>
           </plugin>
           <plugin>
