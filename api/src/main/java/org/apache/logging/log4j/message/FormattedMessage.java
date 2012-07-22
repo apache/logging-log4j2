@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.message;
 
 /**
- * A Message that can have a format String attached to it.
+ * A Message that can have a format String attached to it. The format string is used by the
+ * Message implementation as extra information that it may use to help it to determine how
+ * to format itself. For example, MapMessage accepts a format of "XML" to tell it to render
+ * the Map as XML instead of its default format of {key1="value1" key2="value2"}.
  */
 public interface FormattedMessage extends Message {
     /**
