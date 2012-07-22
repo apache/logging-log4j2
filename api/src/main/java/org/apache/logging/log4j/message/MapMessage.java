@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
