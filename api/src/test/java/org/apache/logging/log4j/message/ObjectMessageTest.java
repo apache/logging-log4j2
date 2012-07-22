@@ -21,7 +21,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
+ * Tests {@link ObjectMessage}.
  */
 public class ObjectMessageTest {
 
