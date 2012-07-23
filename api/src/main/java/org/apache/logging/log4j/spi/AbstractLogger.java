@@ -28,7 +28,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  *
- * @doubt See Jira LOG4J2-39.
  */
 public abstract class AbstractLogger implements Logger {
 
