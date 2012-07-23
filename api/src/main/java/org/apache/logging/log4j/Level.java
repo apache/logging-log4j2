@@ -30,7 +30,6 @@ package org.apache.logging.log4j;
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
  * A special level, ALL, is guaranteed to capture all levels when used in logging configurations.
- * @doubt see LOG4J-41
  */
 public enum Level {
     /**
