@@ -18,11 +18,14 @@ package org.apache.logging.log4j.flume.appender;
 
 import org.apache.flume.Channel;
 import org.apache.flume.ChannelException;
+import org.apache.flume.ChannelSelector;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 
 import org.apache.flume.Transaction;
+import org.apache.flume.channel.ChannelProcessor;
 import org.apache.flume.channel.MemoryChannel;
+import org.apache.flume.channel.ReplicatingChannelSelector;
 import org.apache.flume.conf.Configurables;
 import org.apache.flume.lifecycle.LifecycleController;
 import org.apache.flume.lifecycle.LifecycleState;
@@ -44,6 +47,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -80,31 +85,28 @@ public class FlumeAvroAppenderTest {
 
         Configurables.configure(channel, new Context());
 
-        eventSource.setChannel(channel);
-
         avroLogger = (Logger) LogManager.getLogger("avrologger");
         /*
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
         removeAppenders(avroLogger);
-        boolean bound = false;
+        Context context = new Context();
+        testPort = String.valueOf(testServerPort);
+        context.put("port", testPort);
+        context.put("bind", "0.0.0.0");
+        Configurables.configure(eventSource, context);
 
-        for (int i = 0; i < 100 && !bound; i++) {
-            try {
-                Context context = new Context();
-                testPort = String.valueOf(testServerPort + i);
-                context.put("port", testPort);
-                context.put("bind", "0.0.0.0");
+        List<Channel> channels = new ArrayList<Channel>();
+        channels.add(channel);
 
-                Configurables.configure(eventSource, context);
+        ChannelSelector cs = new ReplicatingChannelSelector();
+        cs.setChannels(channels);
 
-                eventSource.start();
-                bound = true;
-            } catch (ChannelException e) {
+        eventSource.setChannelProcessor(new ChannelProcessor(cs));
 
-            }
-        }
+        eventSource.start();
+
     	  Assert.assertTrue("Reached start or error", LifecycleController.waitForOneOf(
             eventSource, LifecycleState.START_OR_ERROR));
         Assert.assertEquals("Server is started", LifecycleState.START, eventSource.getLifecycleState());
