@@ -31,5 +31,8 @@
       <item name="Log4j" href="../index.html"/>
     </links>
     <menu ref="reports"/>
+    <footer><div class="row span16">Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the
+      Apache Logging project logo are trademarks of The Apache Software Foundation.</div>
+    </footer>
   </body>
 </project>

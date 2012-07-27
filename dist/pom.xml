@@ -30,7 +30,7 @@ limitations under the License.
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.0-alpha1</version>
+    <version>2.0-alpha1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -178,7 +178,7 @@ limitations under the License.
               <goal>single</goal>
             </goals>
             <configuration>
-              <finalName>log4j-${project.version}</finalName>
+              <finalName>apache-log4j-${project.version}</finalName>
               <descriptors>
                 <descriptor>src/assembly/src.xml</descriptor>
               </descriptors>

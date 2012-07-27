@@ -21,7 +21,6 @@ import org.apache.logging.log4j.message.Message;
 /**
  * This is the central interface in the log4j package. Most logging
  * operations, except configuration, are done through this interface.
- * @doubt See LOG4J2-39.
  * @doubt See LOG4J2-16.
  */
 public interface Logger {

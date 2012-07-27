@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.FormattedMessage;
+import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.message.Message;
 @ConverterKeys({"m", "msg", "message" })
 public final class MessagePatternConverter extends LogEventPatternConverter {
 
-    private final String format;
+    private final String[] formats;
 
     /**
      * Private constructor.
@@ -36,7 +36,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     private MessagePatternConverter(final String[] options) {
         super("Message", "message");
-        format = (options != null && options.length > 0) ? options[0] : null;
+        formats = options;
     }
 
     /**
@@ -54,9 +54,12 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Message msg = event.getMessage();
-        if (msg != null && msg instanceof FormattedMessage) {
-            ((FormattedMessage) msg).setFormat(format);
+        if (msg != null) {
+            if (msg instanceof MultiformatMessage) {
+                toAppendTo.append(((MultiformatMessage) msg).getFormattedMessage(formats));
+            } else{
+                toAppendTo.append(msg.getFormattedMessage());
+            }
         }
-        toAppendTo.append(msg.getFormattedMessage());
     }
 }

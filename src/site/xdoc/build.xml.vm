@@ -38,11 +38,25 @@
           directory.
         </p>
       </subsection>
-        <p>
-          Applications that use Maven can retrieve the artifacts from the Maven Central repository by using
-        </p>
       <subsection name="Using In Applications">
-
+       <p>
+         To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
+         classpath. With Maven add the dependencies listed below to your pom.xml.
+       </p>
+        <source><![CDATA[
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${Log4jReleaseVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${Log4jReleaseVersion}</version>
+      </dependency>
+    </dependecies>
+            ]]></source>
       </subsection>
 
 		</section>

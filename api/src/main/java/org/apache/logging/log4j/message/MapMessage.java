@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,16 +26,18 @@ import java.util.TreeMap;
 /**
  * Represents a Message that consists of a Map.
  */
-public class MapMessage implements FormattedMessage, Serializable {
+public class MapMessage implements MultiformatMessage, Serializable {
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */
-    public static final String XML = "XML";
+
+    public enum MapFormat {
+        XML, JSON, JAVA
+    }
+
     private static final long serialVersionUID = -5031471831131487120L;
 
     private final Map<String, String> data;
-
-    private String format = null;
 
     /**
      * Constructor.
@@ -55,23 +53,6 @@ public class MapMessage implements FormattedMessage, Serializable {
     public MapMessage(Map<String, String> map) {
         this.data = map;
     }
-
-    /**
-     * The format String. Specifying "xml" will cause the message to be XML.
-     * @param format The message format.
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    /**
-     * Return the format String.
-     * @return the format String.
-     */
-    public String getFormat() {
-        return this.format;
-    }
-
 
     /**
      * Return the data elements as if they were parameters on the logging event.
@@ -153,21 +134,44 @@ public class MapMessage implements FormattedMessage, Serializable {
      * @return The formatted String.
      */
     public String asString() {
-        return asString(format == null ? "" : format);
+        return asString((MapFormat) null);
     }
 
+    public String asString(String format) {
+        try {
+            return asString(MapFormat.valueOf(format.toUpperCase()));
+        } catch (IllegalArgumentException ex) {
+            return asString();
+        }
+    }
     /**
      * Format the Structured data as described in RFC 5424.
      *
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
      */
-    public String asString(String format) {
+    private String asString(MapFormat format) {
         StringBuilder sb = new StringBuilder();
-        if (format.equalsIgnoreCase(XML)) {
-            asXML(sb);
-        } else {
+        if (format == null) {
             appendMap(sb);
+        } else {
+            switch (format) {
+                case XML : {
+                    asXML(sb);
+                    break;
+                }
+                case JSON : {
+                    asJSON(sb);
+                    break;
+                }
+                case JAVA : {
+                    asJava(sb);
+                    break;
+                }
+                default : {
+                    appendMap(sb);
+                }
+            }
         }
         return sb.toString();
     }
@@ -189,6 +193,30 @@ public class MapMessage implements FormattedMessage, Serializable {
         return asString();
     }
 
+    /**
+     *
+     * @param formats An array of Strings that provide extra information about how to format the message.
+     * MapMessage uses the first format specifier it recognizes. The supported formats are XML, JSON, and
+     * JAVA. The default format is key1="value1" key2="value2" as required by RFC 5424 messages.
+     *
+     * @return The formatted message.
+     */
+    public String getFormattedMessage(String[] formats) {
+        if (formats == null || formats.length == 0) {
+            return asString();
+        } else {
+            for (String format : formats) {
+                for (MapFormat f : MapFormat.values()) {
+                    if (f.name().equalsIgnoreCase(format)) {
+                        return asString(f);
+                    }
+                }
+            }
+            return asString();
+        }
+
+    }
+
     protected void appendMap(StringBuilder sb) {
         SortedMap<String, String> sorted = new TreeMap<String, String>(data);
         boolean first = true;
@@ -199,6 +227,36 @@ public class MapMessage implements FormattedMessage, Serializable {
             first = false;
             sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
         }
+    }
+
+    protected void asJSON(StringBuilder sb) {
+        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
+        boolean first = true;
+        sb.append("{");
+        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append("\"").append(entry.getKey()).append("\":");
+            sb.append("\"").append(entry.getValue()).append("\"");
+        }
+        sb.append("}");
+    }
+
+
+    protected void asJava(StringBuilder sb) {
+        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
+        boolean first = true;
+        sb.append("{");
+        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            first = false;
+            sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+        }
+        sb.append("}");
     }
 
     public MapMessage newInstance(Map<String, String> map) {

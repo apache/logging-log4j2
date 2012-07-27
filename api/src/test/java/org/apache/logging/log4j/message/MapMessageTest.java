@@ -40,13 +40,34 @@ public class MapMessageTest {
     public void testXML() {
         String testMsg = "Test message {}";
         MapMessage msg = new MapMessage();
-        msg.setFormat("XML");
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
-        String result = msg.getFormattedMessage();
+        String result = msg.getFormattedMessage(new String[]{"XML"});
         String expected = "<Map>\n  <Entry key=message>Test message {}</Entry>\n" +
             "  <Entry key=project>Log4j</Entry>\n" +
             "</Map>";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testJSON() {
+        String testMsg = "Test message {}";
+        MapMessage msg = new MapMessage();
+        msg.put("message", testMsg);
+        msg.put("project", "Log4j");
+        String result = msg.getFormattedMessage(new String[]{"JSON"});
+        String expected = "{\"message\":\"Test message {}\", \"project\":\"Log4j\"}";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testJava() {
+        String testMsg = "Test message {}";
+        MapMessage msg = new MapMessage();
+        msg.put("message", testMsg);
+        msg.put("project", "Log4j");
+        String result = msg.getFormattedMessage(new String[]{"Java"});
+        String expected = "{message=\"Test message {}\", project=\"Log4j\"}";
         assertEquals(expected, result);
     }
 }

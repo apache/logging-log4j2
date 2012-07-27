@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
 /**
  * Handles messages that contain an Object.
  */
@@ -34,6 +35,9 @@ public class ObjectMessage implements Message, Serializable {
      * @param obj The Object to format.
      */
     public ObjectMessage(Object obj) {
+        if (obj == null) {
+            obj = "null";
+        }
         this.obj = obj;
     }
 

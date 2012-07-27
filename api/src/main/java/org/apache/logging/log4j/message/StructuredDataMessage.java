@@ -22,11 +22,11 @@ import java.util.Map;
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
-public class StructuredDataMessage extends MapMessage implements FormattedMessage, Serializable {
+public class StructuredDataMessage extends MapMessage implements MultiformatMessage, Serializable {
     /**
      * Full message format includes the type and message.
      */
-    public static final String FULL = "full";
+    public static final String FULL = "FULL";
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
@@ -243,9 +243,32 @@ public class StructuredDataMessage extends MapMessage implements FormattedMessag
         return asString(FULL, null);
     }
 
+    /**
+     * Format the message according the the specified format.
+     * @param formats An array of Strings that provide extra information about how to format the message.
+     * StructuredDataMessage accepts only a format of "FULL" which will cause the event type to be
+     * prepended and the event message to be appended. Specifying any other value will cause only the
+     * StructuredData to be included. The default is "FULL".
+     *
+     * @return
+     */
+    @Override
+    public String getFormattedMessage(String[] formats) {
+        if (formats != null && formats.length > 0) {
+            for (String format : formats) {
+                if (format.equalsIgnoreCase(FULL)) {
+                    return asString(FULL, null);
+                }
+            }
+            return asString(null, null);
+        } else {
+            return asString(FULL, null);
+        }
+    }
+
     @Override
     public String toString() {
-        return asString(null);
+        return asString(null, null);
     }
 
 

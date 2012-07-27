@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -64,6 +65,13 @@ public class ThreadDumpMessageTest {
         assertTrue("No ThreadDumpMessage", message.contains("ThreadDumpMessage"));
         //assertTrue("No Locks", message.contains("waiting on"));
         //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
+    }
+
+    @Test
+    public void testToString() {
+        ThreadDumpMessage msg = new ThreadDumpMessage("Test");
+        String expected = "ThreadDumpMessage[Title=\"Test\"]";
+        assertEquals(expected, msg.toString());
     }
 
     private class Thread1 extends Thread {
