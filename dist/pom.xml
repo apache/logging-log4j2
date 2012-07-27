@@ -178,7 +178,7 @@ limitations under the License.
               <goal>single</goal>
             </goals>
             <configuration>
-              <finalName>log4j-${project.version}</finalName>
+              <finalName>apache-log4j-${project.version}</finalName>
               <descriptors>
                 <descriptor>src/assembly/src.xml</descriptor>
               </descriptors>
