@@ -303,7 +303,7 @@ public class Category {
 
     private void maybeLog(String fqcn, org.apache.logging.log4j.Level level,
             Object message, Throwable throwable) {
-        if(logger.isEnabled(level, null, message, throwable)) {
+        if (logger.isEnabled(level, null, message, throwable)) {
             logger.log(null, FQCN, level, new ObjectMessage(message), throwable);
         }
     }

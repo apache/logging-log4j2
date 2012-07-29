@@ -91,6 +91,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log exiting from a method with the result.
      *
+     * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the Throwable.
      */
@@ -104,6 +105,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log an exception or error to be thrown.
      *
+     * @param <T> the type of the Throwable.
      * @param t The Throwable.
      * @return the Throwable.
      */
@@ -118,6 +120,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Log an exception or error to be thrown.
      *
+     * @param <T> the type of the Throwable.
      * @param level The logging Level.
      * @param t     The Throwable.
      * @return the Throwable.

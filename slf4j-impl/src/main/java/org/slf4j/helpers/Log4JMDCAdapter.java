@@ -19,7 +19,6 @@ package org.slf4j.helpers;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.spi.MDCAdapter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

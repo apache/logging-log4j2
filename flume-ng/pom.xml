@@ -31,6 +31,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Flume Documentation</docLabel>
+    <projectDir>/flume-ng</projectDir>
   </properties>
   <dependencies>
     <dependency>
