@@ -57,7 +57,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
         if (msg != null) {
             if (msg instanceof MultiformatMessage) {
                 toAppendTo.append(((MultiformatMessage) msg).getFormattedMessage(formats));
-            } else{
+            } else {
                 toAppendTo.append(msg.getFormattedMessage());
             }
         }

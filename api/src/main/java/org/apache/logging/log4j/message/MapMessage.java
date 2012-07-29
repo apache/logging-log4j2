@@ -32,7 +32,12 @@ public class MapMessage implements MultiformatMessage, Serializable {
      */
 
     public enum MapFormat {
-        XML, JSON, JAVA
+        /** The map should be formatted as XML. */
+        XML,
+        /** The map should be formatted as JSON. */
+        JSON,
+        /** The map should be formatted the same as documented by java.util.AbstractMap.toString(). */
+        JAVA
     }
 
     private static final long serialVersionUID = -5031471831131487120L;

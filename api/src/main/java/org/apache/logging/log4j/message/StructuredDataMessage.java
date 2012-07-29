@@ -250,7 +250,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * prepended and the event message to be appended. Specifying any other value will cause only the
      * StructuredData to be included. The default is "FULL".
      *
-     * @return
+     * @return the formatted message.
      */
     @Override
     public String getFormattedMessage(String[] formats) {

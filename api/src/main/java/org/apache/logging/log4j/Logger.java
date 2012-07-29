@@ -49,6 +49,7 @@ public interface Logger {
   /**
    * Log exiting from a method with the result. This may be coded as <br />
    *     return logger.exit(myResult);
+   * @param <R> The type of the parameter and object being returned.
    * @param result The result being returned from the method call.
    * @return the result.
    */
@@ -58,6 +59,7 @@ public interface Logger {
    * Log an exception or error to be thrown. This may be coded as <br />
    *    throw logger.throwing(myException);
    *
+   * @param <T> the Throwable type.
    * @param t The Throwable.
    * @return the Throwable.
    */
@@ -66,6 +68,7 @@ public interface Logger {
   /**
    * Log an exception or error to be thrown. This may be coded as <br />
    *    throw logger.throwing(debug, myException);
+   * @param <T> the Throwable type.
    * @param level The logging Level.
    * @param t The Throwable.
    * @return the Throwable.
