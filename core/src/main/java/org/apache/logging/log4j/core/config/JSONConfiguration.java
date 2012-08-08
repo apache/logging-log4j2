@@ -51,6 +51,8 @@ public class JSONConfiguration extends BaseConfiguration {
 
     private JsonNode root;
 
+    private List<String> messages = new ArrayList<String>();
+
     public JSONConfiguration(InputSource source, File configFile) {
         byte[] buffer;
 
@@ -69,18 +71,22 @@ public class JSONConfiguration extends BaseConfiguration {
             boolean verbose = false;
             for (Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    status = Level.toLevel(entry.getValue().toUpperCase(), Level.OFF);
+                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(), null);
+                    if (status == null) {
+                        status = Level.ERROR;
+                        messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
+                    }
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    verbose = Boolean.parseBoolean(entry.getValue());
+                    verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(entry.getKey())) {
-                    String[] packages = entry.getValue().split(",");
+                    String[] packages = getSubst().replace(entry.getValue()).split(",");
                     for (String p : packages) {
                         PluginManager.addPackage(p);
                     }
                 } else if ("name".equalsIgnoreCase(entry.getKey())) {
-                    setName(entry.getValue());
+                    setName(getSubst().replace(entry.getValue()));
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
-                    int interval = Integer.parseInt(entry.getValue());
+                    int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(configFile, listeners, interval);
                     }
@@ -105,6 +111,9 @@ public class JSONConfiguration extends BaseConfiguration {
                     listener.setFilters(VERBOSE_CLASSES);
                 }
                 ((StatusLogger) LOGGER).registerListener(listener);
+                for (String msg : messages) {
+                    LOGGER.error(msg);
+                }
             }
             if (getName() == null) {
                 setName(source.getSystemId());

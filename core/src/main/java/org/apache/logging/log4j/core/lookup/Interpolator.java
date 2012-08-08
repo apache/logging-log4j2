@@ -55,6 +55,11 @@ public class Interpolator implements StrLookup {
         }
     }
 
+    public Interpolator() {
+        this.defaultLookup= new MapLookup(new HashMap<String, String>());
+        lookups.put("sys", new SystemPropertiesLookup());
+    }
+
      /**
      * Resolves the specified variable. This implementation will try to extract
      * a variable prefix from the given variable name (the first colon (':') is

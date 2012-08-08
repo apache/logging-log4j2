@@ -360,7 +360,13 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         }
 
         List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+        Level level;
+        try {
+            level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+        } catch (Exception ex) {
+            LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
+            level = Level.ERROR;
+        }
         String name = loggerName.equals("root") ? "" : loggerName;
         boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
@@ -379,7 +385,13 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
                                             @PluginElement("appender-ref") AppenderRef[] refs,
                                             @PluginElement("filters") Filter filter) {
             List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            Level level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+            Level level;
+            try {
+                level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+            } catch (Exception ex) {
+                LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
+                level = Level.ERROR;
+            }
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive);

@@ -22,6 +22,11 @@
   </properties>
 
   <body>
+    <release version="2.0-alpha2" date="TBD" description="Bug fixes and minor enhancements">
+      <action issue="LOG4J2-65" dev="rgoers">
+        Allow variable substitution on the configuration attributes and on the root log level.
+      </action>
+    </release>
     <release version="2.0-alpha1" date="2012-07-29" description="Rewrite of Log4j">
       <action issue="LOG4J2-60" dev="rgoers" type="add" due-to="Shane Kelly">
         Added ability to filter on the appender-ref by adding either a level or a filter.

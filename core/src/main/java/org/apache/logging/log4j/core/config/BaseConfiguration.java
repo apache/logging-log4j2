@@ -83,7 +83,9 @@ public class BaseConfiguration extends Filterable implements Configuration {
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
 
-    private StrSubstitutor subst = new StrSubstitutor();
+    private StrLookup tempLookup = new Interpolator();
+
+    private StrSubstitutor subst = new StrSubstitutor(tempLookup);
 
     private LoggerConfig root = new LoggerConfig();
 
@@ -150,13 +152,13 @@ public class BaseConfiguration extends Filterable implements Configuration {
                 continue;
             }
             if (child.getName().equalsIgnoreCase("properties")) {
-                if (subst.getVariableResolver() == null) {
+                if (tempLookup == subst.getVariableResolver()) {
                     subst.setVariableResolver((StrLookup) child.getObject());
                 } else {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
-            } else if (subst.getVariableResolver() == null) {
+            } else if (tempLookup == subst.getVariableResolver()) {
                 subst.setVariableResolver(new Interpolator(null));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
