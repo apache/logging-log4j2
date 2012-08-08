@@ -87,8 +87,8 @@ public final class ConsoleAppender extends OutputStreamAppender {
     private static OutputStreamManager getManager(Target target) {
         String type = target.name();
         OutputStream os = target == Target.SYSTEM_OUT ? System.out : System.err;
-        OutputStreamManager manager = OutputStreamManager.getManager(target.name(), factory,
-            new FactoryData(os, type));
+        OutputStreamManager manager = OutputStreamManager.getManager(target.name(), new FactoryData(os, type), factory
+        );
         return manager;
     }
 

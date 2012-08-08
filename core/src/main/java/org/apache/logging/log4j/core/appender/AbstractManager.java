@@ -42,7 +42,7 @@ public abstract class AbstractManager {
 
     private String name;
 
-    private int count;
+    protected int count;
 
     protected AbstractManager(String name) {
         this.name = name;

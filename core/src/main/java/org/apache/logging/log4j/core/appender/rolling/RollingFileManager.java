@@ -61,8 +61,8 @@ public class RollingFileManager extends FileManager {
     public static RollingFileManager getFileManager(String fileName, String pattern, boolean append,
                                                     boolean bufferedIO) {
 
-        return (RollingFileManager) getManager(fileName, factory, new FactoryData(pattern, append,
-            bufferedIO));
+        return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
+            bufferedIO), factory);
     }
 
     protected synchronized void write(byte[] bytes, int offset, int length) {

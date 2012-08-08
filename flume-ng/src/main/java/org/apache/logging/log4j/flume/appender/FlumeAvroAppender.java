@@ -27,6 +27,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -145,7 +149,7 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
 
         String hostname;
         try {
-            hostname = InetAddress.getLocalHost().getHostName();
+            hostname = getHostName();
         } catch (Exception ex) {
             LOGGER.error("Unable to determine local hostname", ex);
             return null;
@@ -179,5 +183,30 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
 
         return new FlumeAvroAppender(name, filter, layout,  handleExceptions, hostname, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, factory, manager);
+    }
+
+    private static String getHostName() throws Exception {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception ex) {
+            // Could not locate host the easy way.
+        }
+
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface nic = interfaces.nextElement();
+            Enumeration<InetAddress> addresses = nic.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                if (!address.isLoopbackAddress()) {
+                    String hostname = address.getHostName();
+                    if (hostname != null) {
+                        return hostname;
+                    }
+                }
+            }
+        }
+        throw new UnknownHostException("Unable to determine host name");
+
     }
 }

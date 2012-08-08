@@ -43,10 +43,10 @@ public class ThrowableProxy extends Throwable {
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
     private static Method getSuppressed;
+    private static Method addSuppressed;
 
     private final Throwable throwable;
     private final ThrowableProxy cause;
-    private final ThrowableProxy[] suppressed;
     private int commonElementCount;
 
     private final StackTracePackageElement[] callerPackageData;
@@ -68,7 +68,7 @@ public class ThrowableProxy extends Throwable {
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
-        suppressed = getSuppressed(throwable);
+        setSuppressed(throwable);
     }
 
     /**
@@ -84,7 +84,7 @@ public class ThrowableProxy extends Throwable {
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(parent, stack, map, throwable.getCause());
-        suppressed = getSuppressed(throwable);
+        setSuppressed(throwable);
     }
 
 
@@ -106,22 +106,6 @@ public class ThrowableProxy extends Throwable {
     @Override
     public Throwable getCause() {
         return cause;
-    }
-
-    /**
-     * Added in Java 7.
-     * @param exception A Throwable that was suppressed.
-     */
-    public void addSuppressed(Throwable exception) {
-        throw new UnsupportedOperationException("Cannot add suppressed exceptions to a ThrowableProxy");
-    }
-
-    /**
-     * Added in Java 7.
-     * @return Any suppressed exceptions.
-     */
-    public Throwable[] getSuppressed() {
-        return suppressed;
     }
 
     @Override
@@ -209,6 +193,7 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted suppressed Throwables.
      */
     public String getSuppressedStackTrace() {
+        ThrowableProxy[] suppressed = getSuppressedProxies();
         if (suppressed == null || suppressed.length == 0) {
             return "";
         }
@@ -427,6 +412,8 @@ public class ThrowableProxy extends Throwable {
         for (Method method : methods) {
             if (method.getName().equals("getSuppressed")) {
                 getSuppressed = method;
+            } else if (method.getName().equals("addSuppressed")) {
+                addSuppressed = method;
             }
         }
     }
@@ -463,22 +450,29 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
-    private ThrowableProxy[] getSuppressed(Throwable throwable) {
-        ThrowableProxy[] supp = null;
+    private ThrowableProxy[] getSuppressedProxies() {
         if (getSuppressed != null) {
             try {
+                return (ThrowableProxy[]) getSuppressed.invoke(this, null);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private void setSuppressed(Throwable throwable) {
+        if (getSuppressed != null && addSuppressed != null) {
+            try {
                 Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable, null);
-                supp = new ThrowableProxy[array.length];
                 int i = 0;
                 for (Throwable t : array) {
-                    supp[i] = new ThrowableProxy(t);
-                    ++i;
+                    addSuppressed.invoke(this, new ThrowableProxy(t));
                 }
             } catch (Exception ex) {
                 //
             }
         }
-        return supp;
     }
 
     /**

@@ -36,13 +36,14 @@ public class OutputStreamManager extends AbstractManager {
 
     /**
      * Create a Manager.
+     *
      * @param name The name of the stream to manage.
-     * @param factory The factory to use to create the Manager.
      * @param data The data to pass to the Manager.
+     * @param factory The factory to use to create the Manager.
      * @return An OutputStreamManager.
      */
-    public static OutputStreamManager getManager(String name, ManagerFactory<OutputStreamManager, Object> factory,
-                                                 Object data) {
+    public static OutputStreamManager getManager(String name, Object data,
+                                                 ManagerFactory<OutputStreamManager, Object> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
 

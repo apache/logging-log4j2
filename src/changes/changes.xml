@@ -23,7 +23,10 @@
 
   <body>
     <release version="2.0-alpha2" date="TBD" description="Bug fixes and minor enhancements">
-      <action issue="LOG4J2-65" dev="rgoers">
+      <action issue="LOG4J2-64" dev="rgoers" type="fix">
+        Fix compilation problems in Java 7.
+      </action>
+      <action issue="LOG4J2-65" dev="rgoers" type="fix">
         Allow variable substitution on the configuration attributes and on the root log level.
       </action>
     </release>

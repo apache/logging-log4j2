@@ -85,7 +85,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, factory, new FactoryData(host, port, delay));
+        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, new FactoryData(host, port, delay), factory);
     }
 
     @Override

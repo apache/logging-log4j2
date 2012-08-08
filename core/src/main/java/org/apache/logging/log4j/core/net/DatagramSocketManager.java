@@ -51,8 +51,8 @@ public class DatagramSocketManager extends AbstractSocketManager {
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, factory,
-            new FactoryData(host, port));
+        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port), factory
+        );
     }
 
     /**
