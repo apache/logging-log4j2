@@ -24,9 +24,13 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,7 +87,9 @@ public class PluginManager {
         rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + "/";
 
         PluginManager manager = new PluginManager("Core");
-        manager.collectPlugins(false);
+        String packages = args.length == 2 ? args[1] : null;
+
+        manager.collectPlugins(false, packages);
         encode(pluginTypeMap);
     }
 
@@ -116,14 +122,16 @@ public class PluginManager {
      * Locates all the plugins.
      */
     public void collectPlugins() {
-        collectPlugins(true);
+        collectPlugins(true, null);
     }
 
     /**
      * Collects plugins, optionally obtaining them from a preload map.
      * @param preLoad if true, plugins will be obtained from the preload map.
+     * @param pkgs A comma separated list of package names to scan for plugins. If
+     * null the default Log4j package name will be used.
      */
-    public void collectPlugins(boolean preLoad) {
+    public void collectPlugins(boolean preLoad, String pkgs) {
         if (pluginTypeMap.containsKey(type)) {
             plugins = pluginTypeMap.get(type);
             preLoad = false;
@@ -144,7 +152,14 @@ public class PluginManager {
             }
         }
         if (plugins.size() == 0) {
-            packages.add(LOG4J_PACKAGES);
+            if (pkgs == null) {
+                packages.add(LOG4J_PACKAGES);
+            } else {
+                String[] names = pkgs.split(",");
+                for (String name : names) {
+                    packages.add(name);
+                }
+            }
         }
         ResolverUtil.Test test = new PluginTest(clazz);
         for (String pkg : packages) {
@@ -174,40 +189,52 @@ public class PluginManager {
     }
 
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(ClassLoader loader) {
-        String resource = PATH + FILENAME;
+        Enumeration<URL> resources;
         try {
-            InputStream is = loader.getResourceAsStream(resource);
-            BufferedInputStream bis = new BufferedInputStream(is);
-            DataInputStream dis = new DataInputStream(bis);
-            int count = dis.readInt();
-            ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
-                new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>(count);
-            for (int j = 0; j < count; ++j) {
-                String type = dis.readUTF();
-                int entries = dis.readInt();
-                ConcurrentMap<String, PluginType> types = new ConcurrentHashMap<String, PluginType>(count);
-                for (int i = 0; i < entries; ++i) {
-                    String key = dis.readUTF();
-                    String className = dis.readUTF();
-                    String name = dis.readUTF();
-                    boolean printable = dis.readBoolean();
-                    boolean defer = dis.readBoolean();
-                    Class clazz = Class.forName(className);
-                    types.put(key, new PluginType(clazz, name, printable, defer));
-                }
-                map.putIfAbsent(type, types);
-            }
-            dis.close();
-            return map;
-        } catch (Exception ex) {
-            LOGGER.warn("Unable to preload plugins", ex);
+            resources = loader.getResources(PATH + FILENAME);
+        } catch (IOException ioe) {
+            LOGGER.warn("Unable to preload plugins", ioe);
             return null;
         }
+        ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
+            new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
+        while (resources.hasMoreElements()) {
+            try {
+                URL url = resources.nextElement();
+                LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
+                InputStream is = url.openStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                DataInputStream dis = new DataInputStream(bis);
+                int count = dis.readInt();
+                for (int j = 0; j < count; ++j) {
+                    String type = dis.readUTF();
+                    int entries = dis.readInt();
+                    ConcurrentMap<String, PluginType> types = new ConcurrentHashMap<String, PluginType>(count);
+                    for (int i = 0; i < entries; ++i) {
+                        String key = dis.readUTF();
+                        String className = dis.readUTF();
+                        String name = dis.readUTF();
+                        boolean printable = dis.readBoolean();
+                        boolean defer = dis.readBoolean();
+                        Class clazz = Class.forName(className);
+                        types.put(key, new PluginType(clazz, name, printable, defer));
+                    }
+                    map.putIfAbsent(type, types);
+                }
+                dis.close();
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to preload plugins", ex);
+                return null;
+            }
+        }
+        return map.size() == 0 ? null : map;
     }
 
     private static void encode(ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
         String fileName = rootDir + PATH + FILENAME;
         try {
+            File file = new File(rootDir + PATH);
+            file.mkdirs();
             FileOutputStream fos = new FileOutputStream(fileName);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             DataOutputStream dos = new DataOutputStream(bos);

@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-alpha2" date="TBD" description="Bug fixes and minor enhancements">
+      <action issue="LOG4J2-67" dev="rgoers" type="add">
+        Allow components besides core to create a PluginMap for faster plugin loading and not
+        having to specify the plugin package in the configuration.
+      </action>
       <action issue="LOG4J2-64" dev="rgoers" type="fix">
         Fix compilation problems in Java 7.
       </action>

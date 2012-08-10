@@ -69,7 +69,6 @@ public class FlumeAvroAppenderTest {
 
     @BeforeClass
     public static void setupClass() {
-        PluginManager.addPackage("org.apache.logging.log4j.flume");
         ctx = (LoggerContext) LogManager.getContext();
     }
 
