@@ -153,7 +153,7 @@ public class FlumeEmbeddedAppenderTest {
     @Test
     public void testLog4Event() throws InterruptedException, IOException {
 
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message", "Test");
+        StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
 
         Transaction transaction = channel.getTransaction();
@@ -163,7 +163,7 @@ public class FlumeEmbeddedAppenderTest {
    	    Assert.assertNotNull(event);
         String body = getBody(event);
   	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("Test Message"));
+            body.endsWith("Test Log4j"));
 	      transaction.commit();
 	      transaction.close();
 
@@ -174,7 +174,7 @@ public class FlumeEmbeddedAppenderTest {
     public void testMultiple() throws InterruptedException, IOException {
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -185,7 +185,7 @@ public class FlumeEmbeddedAppenderTest {
             Assert.assertNotNull(event);
             String body = getBody(event);
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+                body.endsWith("Test Multiple " + i));
             transaction.commit();
             transaction.close();
         }
@@ -199,7 +199,7 @@ public class FlumeEmbeddedAppenderTest {
         Logger logger = LogManager.getLogger("testFailover");
         logger.debug("Starting testFailover");
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -210,7 +210,7 @@ public class FlumeEmbeddedAppenderTest {
             Assert.assertNotNull(event);
             String body = getBody(event);
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+                body.endsWith("Test Primary " + i));
             transaction.commit();
             transaction.close();
         }
@@ -219,7 +219,7 @@ public class FlumeEmbeddedAppenderTest {
 
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -230,7 +230,7 @@ public class FlumeEmbeddedAppenderTest {
             Assert.assertNotNull(event);
             String body = getBody(event);
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+                body.endsWith("Test Alternate " + i));
             transaction.commit();
             transaction.close();
         }
