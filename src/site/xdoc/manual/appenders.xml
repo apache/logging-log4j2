@@ -275,18 +275,31 @@
   ]]></source>
           </p>
         </subsection>
-        <a name="FlumeAvroAppender"/>
-        <subsection name="FlumeAvroAppender">
+        <a name="FlumeAppender"/>
+        <subsection name="FlumeAppender">
           <p><i>This is an optional component supplied in a separate jar.</i></p>
           <p><a href="http://incubator.apache.org/projects/flume.html">Apache Flume</a> is a distributed, reliable,
             and available system for efficiently collecting, aggregating, and moving large amounts of log data
             from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
             them to a Flume agent as serialized Avro events for consumption.</p>
-          <p>
+          <p><i>Note:</i><br/>
             There are two versions of the Flume Appender in the source control. The first is for "Flume OG", the
             original version of Flume before it became an Apache project. The second is for "Flume NG", which is
             maintained by the Apache Flume project. Only the Flume NG appender is included in Log4j 2 releases as
             Flume OG itself is considered deprecated.
+          </p>
+          <p>
+            The Flume Appender supports two modes of operation.
+            <ol>
+              <li>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured
+              with an Avro Source.</li>
+              <li>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</li>
+            </ol>
+            Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
+            control will be immediately returned to the application. All interaction with remote agents will occur
+            asynchronously. Setting the "embedded" attribute to "true" will force the use of the embedded agent. In
+            addition, configuring agent properties in the appender configuration will also cause the embedded agent
+            to be used.
           </p>
           <table border="1" width="100%">
             <tr>
@@ -299,7 +312,9 @@
               <td>Agent[]</td>
               <td>An array of Agents to which the logging events should be sent. If more than one agent is specified
                 the first Agent will be the primary and subsequent Agents will be used in the order specified as
-                secondaries should the primary Agent fail. Each Agent definition supplies the Agents host and port.</td>
+                secondaries should the primary Agent fail. Each Agent definition supplies the Agents host and port.
+                The specification of agents and properties are mutually exclusive. If both are configured an
+                error will result.</td>
             </tr>
             <tr>
               <td>agentRetries</td>
@@ -316,6 +331,13 @@
               <td>compress</td>
               <td>boolean</td>
               <td>When set to true the message body will be compressed using gzip</td>
+            </tr>
+            <tr>
+              <td>embedded</td>
+              <td>boolean</td>
+              <td>When set to true the embedded Flume agent will be used. When Agent elements are used the events
+                will be sent to a file channel and then routed to a FailoverSinkProcessor which will use
+                each configured agent in the order they are declared.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -371,6 +393,14 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
+              <td>properties</td>
+              <td>Property[]</td>
+              <td>One or more Property elements that are used to configure the Flume Agent. The properties must be
+                configured without the agent name (the appender name is used for this) and no sources can be
+                configured. All other Flume configuration properties are allowed. Specifying both Agent and Property
+                elements will result in an error.</td>
+            </tr>
+            <tr>
               <td>reconnectionDelay</td>
               <td>integer</td>
               <td>The number of milliseconds the application should wait before trying again to connect to the
@@ -386,7 +416,7 @@
             <caption align="top">FlumeAvroAppender Parameters</caption>
           </table>
             <p>
-              A sample FlumeAvroAppender configuration that is configured with a primary and a secondary agent,
+              A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
               compresses the body, and formats the body using the RFC5424Layout:
 
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -406,6 +436,78 @@
 </configuration>
   ]]></source>
           </p>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
+            compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume
+            Agent.
+          </p>
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d [%p] %c %m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="EventLogger" level="info">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="warn">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>
+   ]]></source>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent using
+            Flume configuration properties, compresses the body, formats the body using RFC5424Layout and passes the
+            events to an embedded Flume Agent.
+          </p>
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
+      <Property name="channels">file</Property>
+      <Property name="channels.file.type">file</Property>
+      <Property name="channels.file.checkpointDir">target/file-channel/checkpoint</Property>
+      <Property name="channels.file.dataDirs">target/file-channel/data</Property>
+      <Property name="sinks">agent1 agent2</Property>
+      <Property name="sinks.agent1.channel">file</Property>
+      <Property name="sinks.agent1.type">avro</Property>
+      <Property name="sinks.agent1.hostname">192.168.10.101</Property>
+      <Property name="sinks.agent1.port">8800</Property>
+      <Property name="sinks.agent1.batch-size">100</Property>
+      <Property name="sinks.agent2.channel">file</Property>
+      <Property name="sinks.agent2.type">avro</Property>
+      <Property name="sinks.agent2.hostname">192.168.10.102</Property>
+      <Property name="sinks.agent2.port">8800</Property>
+      <Property name="sinks.agent2.batch-size">100</Property>
+      <Property name="sinkgroups">group1</Property>
+      <Property name="sinkgroups.group1.sinks">agent1 agent2</Property>
+      <Property name="sinkgroups.group1.processor.type">failover</Property>
+      <Property name="sinkgroups.group1.processor.priority.agent1">10</Property>
+      <Property name="sinkgroups.group1.processor.priority.agent2">5</Property>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d [%p] %c %m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="EventLogger" level="info">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="warn">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>
+   ]]></source>
         </subsection>
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">

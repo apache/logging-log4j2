@@ -56,6 +56,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * See Flume's PropertiesFileConfigurationProvider. This class would extend that if it were possible.
@@ -71,31 +75,36 @@ public class FlumeConfigurationBuilder {
 
     public NodeConfiguration load(String name, Properties props, NodeConfigurationAware configurationAware) {
         NodeConfiguration conf = new SimpleNodeConfiguration();
-        FlumeConfiguration fconfig = new FlumeConfiguration(props);
-        List<FlumeConfigurationError> errors = fconfig.getConfigurationErrors();
-        if (errors.size() > 0) {
-            boolean isError = false;
-            for (FlumeConfigurationError error : errors) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(error.getComponentName()).append(" ").append(error.getKey()).append(" ");
-                sb.append(error.getErrorType().name()).append(" - ").append(error.getErrorType().getError());
-                switch (error.getErrorOrWarning()) {
-                    case ERROR:
-                        isError = true;
-                        LOGGER.error(sb.toString());
-                        break;
-                    case WARNING:
-                        LOGGER.warn(sb.toString());
-                        break;
+        FlumeConfiguration fconfig;
+        try {
+            fconfig = new FlumeConfiguration(props);
+            List<FlumeConfigurationError> errors = fconfig.getConfigurationErrors();
+            if (errors.size() > 0) {
+                boolean isError = false;
+                for (FlumeConfigurationError error : errors) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Component: ").append(error.getComponentName()).append(" ");
+                    sb.append("Key: ").append(error.getKey()).append(" ");
+                    sb.append(error.getErrorType().name()).append(" - ").append(error.getErrorType().getError());
+                    switch (error.getErrorOrWarning()) {
+                        case ERROR:
+                            isError = true;
+                            LOGGER.error(sb.toString());
+                            break;
+                        case WARNING:
+                            LOGGER.warn(sb.toString());
+                            break;
+                    }
+                }
+                if (isError) {
+                    throw new ConfigurationException("Unable to configure Flume due to errors");
                 }
             }
-            if (isError) {
-                for (String key : props.stringPropertyNames()) {
-                    LOGGER.error(key + "=" + props.getProperty(key));
-                }
-                throw new ConfigurationException("Unable to configure Flume due to errors");
-            }
+        } catch (RuntimeException ex) {
+            printProps(props);
+            throw ex;
         }
+
         FlumeConfiguration.AgentConfiguration agentConf = fconfig.getConfigurationFor(name);
 
         if (agentConf != null) {
@@ -109,6 +118,12 @@ public class FlumeConfigurationBuilder {
             LOGGER.warn("No configuration found for: {}", name);
         }
         return conf;
+    }
+
+    private void printProps(Properties props) {
+        for (String key : new TreeSet<String>(props.stringPropertyNames())) {
+            LOGGER.error(key + "=" + props.getProperty(key));
+        }
     }
 
     protected void loadChannels(FlumeConfiguration.AgentConfiguration agentConf, NodeConfiguration conf) {

@@ -212,18 +212,18 @@ public class FlumeEmbeddedManager extends FlumeManager {
                 for (int i=0; i < agents.length; ++i) {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
-                    String prefix = name + "sinks.agent" + i;
+                    String prefix = name + ".sinks.agent" + i;
                     props.put(prefix + ".channel", "file");
                     props.put(prefix + ".type", "avro");
                     props.put(prefix + ".hostname", agents[i].getHost());
-                    props.put(prefix + ".port", agents[i].getPort());
-                    props.put(prefix + ".batch-size", batchSize);
-                    props.put(name + ".sinkgroups.group1.sinks", "agent" +i);
+                    props.put(prefix + ".port", Integer.toString(agents[i].getPort()));
+                    props.put(prefix + ".batch-size", Integer.toString(batchSize));
                     props.put(name + ".sinkgroups.group1.processor.priority.agent" + i, Integer.toString(priority));
                     --priority;
                 }
                 props.put(name + ".sinks", sb.toString());
                 props.put(name + ".sinkgroups", "group1");
+                props.put(name + ".sinkgroups.group1.sinks", sb.toString());
                 props.put(name + ".sinkgroups.group1.processor.type", "failover");
                 String sourceChannels = "file";
                 props.put(name + ".channels", sourceChannels);
