@@ -209,7 +209,10 @@ public class PluginManager {
                 for (int j = 0; j < count; ++j) {
                     String type = dis.readUTF();
                     int entries = dis.readInt();
-                    ConcurrentMap<String, PluginType> types = new ConcurrentHashMap<String, PluginType>(count);
+                    ConcurrentMap<String, PluginType> types = map.get(type);
+                    if (types == null) {
+                        types = new ConcurrentHashMap<String, PluginType>(count);
+                    }
                     for (int i = 0; i < entries; ++i) {
                         String key = dis.readUTF();
                         String className = dis.readUTF();

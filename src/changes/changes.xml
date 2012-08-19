@@ -23,7 +23,10 @@
 
   <body>
     <release version="2.0-alpha2" date="TBD" description="Bug fixes and minor enhancements">
-      <action dev="rgoers" type="add">
+      <action issue="LOG4J2-69" dev="rgoers" type="add">
+        Allow Flume agents to be embedded into the Flume Appender.
+      </action>
+      <action issue="LOG4J2-68" dev="rgoers" type="add">
         Add support for formatting using String.format().
       </action>
       <action issue="LOG4J2-67" dev="rgoers" type="add">

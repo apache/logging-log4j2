@@ -30,10 +30,13 @@ import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -228,6 +231,25 @@ public final class RFC5424Layout extends AbstractStringLayout {
             InetAddress addr = InetAddress.getLocalHost();
             return addr.getHostName();
         } catch (UnknownHostException uhe) {
+            try {
+                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                while (interfaces.hasMoreElements()) {
+                    NetworkInterface nic = interfaces.nextElement();
+                    Enumeration<InetAddress> addresses = nic.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        InetAddress address = addresses.nextElement();
+                        if (!address.isLoopbackAddress()) {
+                            String hostname = address.getHostName();
+                            if (hostname != null) {
+                                return hostname;
+                            }
+                        }
+                    }
+                }
+            } catch (SocketException se) {
+                LOGGER.error("Could not determine local host name", uhe);
+                return "UNKNOWN_LOCALHOST";
+            }
             LOGGER.error("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
         }

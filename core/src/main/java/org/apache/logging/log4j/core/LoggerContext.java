@@ -27,6 +27,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -51,7 +53,17 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private final URI configLocation;
 
-    private boolean isStarted;
+    public enum Status {
+        INITIALIZED,
+        STARTING,
+        STARTED,
+        STOPPING,
+        STOPPED
+    }
+
+    private volatile Status status = Status.INITIALIZED;
+
+    private Lock configLock = new ReentrantLock();
 
     /**
      * Constructor taking only a name.
@@ -106,19 +118,38 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     public void start() {
-        reconfigure();
-        isStarted = true;
+        if (configLock.tryLock()) {
+            try {
+                if (status == Status.INITIALIZED) {
+                    status = Status.STARTING;
+                    reconfigure();
+                    status = Status.STARTED;
+                }
+            } finally {
+                configLock.unlock();
+            }
+        }
     }
 
-    public synchronized void stop() {
-        isStarted = false;
-        updateLoggers(new NullConfiguration());
-        config.stop();
-        externalContext = null;
+    public void stop() {
+        configLock.lock();
+        try {
+            status = Status.STOPPING;
+            updateLoggers(new NullConfiguration());
+            config.stop();
+            externalContext = null;
+            status = Status.STOPPED;
+        } finally {
+            configLock.unlock();
+        }
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public boolean isStarted() {
-        return isStarted;
+        return status == Status.STARTED;
     }
 
     /**

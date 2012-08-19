@@ -20,25 +20,20 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
  */
 @Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
-public final class FlumeAvroAppender extends AppenderBase implements FlumeEventFactory {
+public final class FlumeAppender extends AppenderBase implements FlumeEventFactory {
 
-    private FlumeAvroManager manager;
+    private FlumeManager manager;
 
     private final String mdcIncludes;
     private final String mdcExcludes;
@@ -50,18 +45,16 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
 
     private final boolean compressBody;
 
-    private final String hostname;
-
     private final int reconnectDelay;
 
     private final int retries;
 
     private final FlumeEventFactory factory;
 
-    private FlumeAvroAppender(String name, Filter filter, Layout layout, boolean handleException,
-                              String hostname, String includes, String excludes, String required, String mdcPrefix,
-                              String eventPrefix, boolean compress, int delay, int retries,
-                              FlumeEventFactory factory, FlumeAvroManager manager) {
+    private FlumeAppender(String name, Filter filter, Layout layout, boolean handleException,
+                          String includes, String excludes, String required, String mdcPrefix,
+                          String eventPrefix, boolean compress, int delay, int retries,
+                          FlumeEventFactory factory, FlumeManager manager) {
         super(name, filter, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -70,7 +63,6 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
         this.eventPrefix = eventPrefix;
         this.mdcPrefix = mdcPrefix;
         this.compressBody = compress;
-        this.hostname = hostname;
         this.reconnectDelay = delay;
         this.retries = retries;
         this.factory = factory == null ? this : factory;
@@ -131,7 +123,9 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAvroAppender createAppender(@PluginElement("agents") Agent[] agents,
+    public static FlumeAppender createAppender(@PluginElement("agents") Agent[] agents,
+                                                   @PluginElement("properties") Property[] properties,
+                                                   @PluginAttr("embedded") String embedded,
                                                    @PluginAttr("reconnectionDelay") String delay,
                                                    @PluginAttr("agentRetries") String agentRetries,
                                                    @PluginAttr("name") String name,
@@ -147,18 +141,8 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
                                                    @PluginElement("layout") Layout layout,
                                                    @PluginElement("filters") Filter filter) {
 
-        String hostname;
-        try {
-            hostname = getHostName();
-        } catch (Exception ex) {
-            LOGGER.error("Unable to determine local hostname", ex);
-            return null;
-        }
-        if (agents == null || agents.length == 0) {
-            LOGGER.debug("No agents provided, using defaults");
-            agents = new Agent[] {Agent.createAgent(null, null)};
-        }
-
+        boolean embed = embedded != null ? Boolean.valueOf(embedded) :
+            (agents == null || agents.length == 0) && properties != null && properties.length > 0;
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
 
@@ -176,37 +160,23 @@ public final class FlumeAvroAppender extends AppenderBase implements FlumeEventF
             return null;
         }
 
-        FlumeAvroManager manager = FlumeAvroManager.getManager(agents, batchCount);
+        FlumeManager manager;
+
+        if (embed) {
+            manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount);
+        } else {
+            if (agents == null || agents.length == 0) {
+                LOGGER.debug("No agents provided, using defaults");
+                agents = new Agent[] {Agent.createAgent(null, null)};
+            }
+            manager = FlumeAvroManager.getManager(name, agents, batchCount);
+        }
+
         if (manager == null) {
             return null;
         }
 
-        return new FlumeAvroAppender(name, filter, layout,  handleExceptions, hostname, includes,
+        return new FlumeAppender(name, filter, layout,  handleExceptions, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, factory, manager);
-    }
-
-    private static String getHostName() throws Exception {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (Exception ex) {
-            // Could not locate host the easy way.
-        }
-
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface nic = interfaces.nextElement();
-            Enumeration<InetAddress> addresses = nic.getInetAddresses();
-            while (addresses.hasMoreElements()) {
-                InetAddress address = addresses.nextElement();
-                if (!address.isLoopbackAddress()) {
-                    String hostname = address.getHostName();
-                    if (hostname != null) {
-                        return hostname;
-                    }
-                }
-            }
-        }
-        throw new UnknownHostException("Unable to determine host name");
-
     }
 }

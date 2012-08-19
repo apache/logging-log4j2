@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * Manager for FlumeAvroAppenders.
  */
-public class FlumeAvroManager extends AbstractManager {
+public class FlumeAvroManager extends FlumeManager {
 
     /**
       The default reconnection delay (500 milliseconds or .5 seconds).
@@ -67,7 +67,7 @@ public class FlumeAvroManager extends AbstractManager {
      * @param agents An array of Agents.
      * @param batchSize The number of evetns to include in a batch.
      */
-    protected FlumeAvroManager(String name, Agent[] agents, int batchSize) {
+    protected FlumeAvroManager(String name, String shortName, Agent[] agents, int batchSize) {
         super(name);
         this.agents = agents;
         this.batchSize = batchSize;
@@ -80,7 +80,7 @@ public class FlumeAvroManager extends AbstractManager {
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.
      */
-    public static FlumeAvroManager getManager(Agent[] agents, int batchSize) {
+    public static FlumeAvroManager getManager(String name, Agent[] agents, int batchSize) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -99,7 +99,7 @@ public class FlumeAvroManager extends AbstractManager {
             first = false;
         }
         sb.append("]");
-        return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(agents, batchSize));
+        return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize));
     }
 
     /**
@@ -118,7 +118,7 @@ public class FlumeAvroManager extends AbstractManager {
         return current;
     }
 
-    protected synchronized void send(FlumeEvent event, int delay, int retries)  {
+    public synchronized void send(FlumeEvent event, int delay, int retries)  {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
@@ -276,15 +276,18 @@ public class FlumeAvroManager extends AbstractManager {
      * Factory data.
      */
     private static class FactoryData {
+        private String name;
         private Agent[] agents;
         private int batchSize;
 
         /**
          * Constructor.
+         * @param name The name of the Appender.
          * @param agents The agents.
          * @param batchSize The number of events to include in a batch.
          */
-        public FactoryData(Agent[] agents, int batchSize) {
+        public FactoryData(String name, Agent[] agents, int batchSize) {
+            this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
         }
@@ -304,7 +307,7 @@ public class FlumeAvroManager extends AbstractManager {
         public FlumeAvroManager createManager(String name, FactoryData data) {
             try {
 
-                return new FlumeAvroManager(name, data.agents, data.batchSize);
+                return new FlumeAvroManager(name, data.name, data.agents, data.batchSize);
             } catch (Exception ex) {
                 LOGGER.error("Could not create FlumeAvroManager", ex);
             }

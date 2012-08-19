@@ -33,8 +33,6 @@ public class Log4jContextFactory implements LoggerContextFactory {
 
     private StatusLogger logger = StatusLogger.getLogger();
 
-    private ThreadLocal<Log4jContextFactory> recursive = new ThreadLocal<Log4jContextFactory>();
-
     /**
      * Constructor that initializes the ContextSelector.
      */
@@ -72,17 +70,9 @@ public class Log4jContextFactory implements LoggerContextFactory {
      */
     public LoggerContext getContext(String fqcn, boolean currentContext) {
         LoggerContext ctx = selector.getContext(fqcn, currentContext);
-        synchronized (ctx) {
-            if (recursive.get() != null || ctx.isStarted()) {
-                return ctx;
-            }
-            try {
-                recursive.set(this);
-                ctx.start();
-                return ctx;
-            } finally {
-                recursive.remove();
-            }
+        if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
+            ctx.start();
         }
+        return ctx;
     }
 }
