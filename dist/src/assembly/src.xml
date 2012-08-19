@@ -24,6 +24,7 @@
     <format>zip</format>
     <format>tar.gz</format>
   </formats>
+  <baseDirectory>apache-log4j-${project.version}-src</baseDirectory>
   <fileSets>
     <!-- main project directory structure -->
     <fileSet>

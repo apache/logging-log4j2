@@ -188,7 +188,7 @@ limitations under the License.
           <execution>
             <id>binary</id>
             <configuration>
-              <finalName>log4j-${project.version}</finalName>
+              <finalName>apache-log4j-${project.version}</finalName>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
               </descriptors>
