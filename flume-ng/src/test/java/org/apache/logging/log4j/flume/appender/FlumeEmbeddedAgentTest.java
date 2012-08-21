@@ -150,7 +150,7 @@ public class FlumeEmbeddedAgentTest {
     @Test
     public void testLog4Event() throws InterruptedException, IOException {
 
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message", "Test");
+        StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
 
         Transaction transaction = channel.getTransaction();
@@ -160,7 +160,7 @@ public class FlumeEmbeddedAgentTest {
    	    Assert.assertNotNull(event);
         String body = getBody(event);
   	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("Test Message"));
+            body.endsWith("Test Log4j"));
 	      transaction.commit();
 	      transaction.close();
 
@@ -171,7 +171,7 @@ public class FlumeEmbeddedAgentTest {
     public void testMultiple() throws InterruptedException, IOException {
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -181,8 +181,9 @@ public class FlumeEmbeddedAgentTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+            String expected = "Test Multiple " + i;
+            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
+                " Received: " + body, body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
@@ -195,7 +196,7 @@ public class FlumeEmbeddedAgentTest {
         Logger logger = LogManager.getLogger("testFailover");
         logger.debug("Starting testFailover");
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -205,8 +206,9 @@ public class FlumeEmbeddedAgentTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+            String expected = "Test Primary " + i;
+            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
+                " Received: " + body, body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
@@ -215,7 +217,7 @@ public class FlumeEmbeddedAgentTest {
 
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Message " + i, "Test");
+            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
@@ -225,8 +227,9 @@ public class FlumeEmbeddedAgentTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Message " + i));
+            String expected = "Test Alternate " + i;
+            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
+                " Received: " + body, body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
