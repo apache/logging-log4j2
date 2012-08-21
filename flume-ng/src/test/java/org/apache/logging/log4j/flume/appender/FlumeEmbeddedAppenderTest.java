@@ -184,8 +184,9 @@ public class FlumeEmbeddedAppenderTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
+            String expected = "Test Multiple " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Multiple " + i));
+                body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
@@ -209,8 +210,9 @@ public class FlumeEmbeddedAppenderTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
+            String expected = "Test Primary " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Primary " + i));
+                body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
@@ -229,8 +231,9 @@ public class FlumeEmbeddedAppenderTest {
             Event event = channel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
+            String expected = "Test Alternate " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith("Test Alternate " + i));
+                body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
