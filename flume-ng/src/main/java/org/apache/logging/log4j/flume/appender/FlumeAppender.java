@@ -126,6 +126,7 @@ public final class FlumeAppender extends AppenderBase implements FlumeEventFacto
     public static FlumeAppender createAppender(@PluginElement("agents") Agent[] agents,
                                                    @PluginElement("properties") Property[] properties,
                                                    @PluginAttr("embedded") String embedded,
+                                                   @PluginAttr("dataDir") String dataDir,
                                                    @PluginAttr("reconnectionDelay") String delay,
                                                    @PluginAttr("agentRetries") String agentRetries,
                                                    @PluginAttr("name") String name,
@@ -163,7 +164,7 @@ public final class FlumeAppender extends AppenderBase implements FlumeEventFacto
         FlumeManager manager;
 
         if (embed) {
-            manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount);
+            manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount, dataDir);
         } else {
             if (agents == null || agents.length == 0) {
                 LOGGER.debug("No agents provided, using defaults");

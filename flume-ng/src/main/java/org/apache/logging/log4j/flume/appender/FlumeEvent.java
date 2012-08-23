@@ -51,7 +51,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     private static final String GUID = "guId";
 
-    private static final String TIMESTAMP = "timestamp";;
+    private static final String TIMESTAMP = "timeStamp";;
 
     private final LogEvent event;
 

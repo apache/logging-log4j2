@@ -41,6 +41,8 @@ public class FlumeEmbeddedManager extends FlumeManager {
 
     protected static final String SOURCE_NAME = "log4j-source";
 
+    private static final String LINE_SEP = System.getProperty("file.separator");
+
     private final Log4jEventSource source;
 
     private final String shortName;
@@ -68,7 +70,8 @@ public class FlumeEmbeddedManager extends FlumeManager {
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.
      */
-    public static FlumeEmbeddedManager getManager(String name, Agent[] agents, Property[] properties, int batchSize) {
+    public static FlumeEmbeddedManager getManager(String name, Agent[] agents, Property[] properties, int batchSize,
+                                                  String dataDir) {
 
         if (batchSize <= 0) {
             batchSize = 1;
@@ -120,7 +123,7 @@ public class FlumeEmbeddedManager extends FlumeManager {
             }
         }
         return (FlumeEmbeddedManager) getManager(sb.toString(), factory,
-            new FactoryData(name, agents, properties, batchSize));
+            new FactoryData(name, agents, properties, batchSize, dataDir));
     }
 
     public void send(FlumeEvent event, int delay, int retries) {
@@ -139,6 +142,7 @@ public class FlumeEmbeddedManager extends FlumeManager {
         private Agent[] agents;
         private Property[] properties;
         private int batchSize;
+        private String dataDir;
         private String name;
 
         /**
@@ -147,12 +151,14 @@ public class FlumeEmbeddedManager extends FlumeManager {
          * @param agents The agents.
          * @param properties The Flume configuration properties.
          * @param batchSize The number of events to include in a batch.
+         * @param dataDir The directory where Flume should write to.
          */
-        public FactoryData(String name, Agent[] agents, Property[] properties, int batchSize) {
+        public FactoryData(String name, Agent[] agents, Property[] properties, int batchSize, String dataDir) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
             this.properties = properties;
+            this.dataDir = dataDir;
         }
     }
 
@@ -171,7 +177,8 @@ public class FlumeEmbeddedManager extends FlumeManager {
         public FlumeEmbeddedManager createManager(String name, FactoryData data) {
             try {
                 DefaultLogicalNodeManager nodeManager = new DefaultLogicalNodeManager();
-                Properties props = createProperties(data.name, data.agents, data.properties, data.batchSize);
+                Properties props = createProperties(data.name, data.agents, data.properties, data.batchSize,
+                    data.dataDir);
                 FlumeConfigurationBuilder builder = new FlumeConfigurationBuilder();
                 NodeConfiguration conf = builder.load(data.name, props, nodeManager);
 
@@ -187,7 +194,8 @@ public class FlumeEmbeddedManager extends FlumeManager {
             return null;
         }
 
-        private Properties createProperties(String name, Agent[] agents, Property[] properties, int batchSize) {
+        private Properties createProperties(String name, Agent[] agents, Property[] properties, int batchSize,
+                                            String dataDir) {
             Properties props = new Properties();
 
             if ((agents == null || agents.length == 0) && (properties == null || properties.length == 0)) {
@@ -205,6 +213,14 @@ public class FlumeEmbeddedManager extends FlumeManager {
                 props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", sourceType);
                 props.put(name + ".channels", "file");
                 props.put(name + ".channels.file.type", "file");
+                if (dataDir != null && dataDir.length() > 0) {
+                    if (!dataDir.endsWith(LINE_SEP)) {
+                        dataDir = dataDir + LINE_SEP;
+                    }
+
+                    props.put(name + ".channels.file.checkpointDir", dataDir + "checkpoint");
+                    props.put(name + ".channels.file.dataDirs", dataDir + "data");
+                }
 
                 StringBuilder sb = new StringBuilder();
                 String leading = "";

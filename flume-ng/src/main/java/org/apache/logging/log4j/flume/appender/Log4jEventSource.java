@@ -60,5 +60,7 @@ public class Log4jEventSource extends AbstractSource implements EventDrivenSourc
             logger.warn("Unabled to process event {}" + event, ex);
             throw ex;
         }
+        sourceCounter.incrementAppendAcceptedCount();
+        sourceCounter.incrementEventAcceptedCount();
     }
 }

@@ -46,6 +46,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -65,11 +66,11 @@ public class FlumeEmbeddedAppenderTest {
 
     private AvroSource primarySource;
     private AvroSource altSource;
-    private Channel channel;
+    private Channel primaryChannel;
+    private Channel alternateChannel;
 
     private String testPort;
     private String altPort;
-    private int counter;
 
     @BeforeClass
     public static void setupClass() {
@@ -83,15 +84,19 @@ public class FlumeEmbeddedAppenderTest {
 
     @Before
     public void setUp() throws Exception {
+        File file = new File("target/file-channel");
+        boolean result = deleteFiles(file);
         primarySource = new AvroSource();
         primarySource.setName("Primary");
         altSource = new AvroSource();
         altSource.setName("Alternate");
-        channel = new MemoryChannel();
-        channel.setName("Memory");
-        ++counter;
+        primaryChannel = new MemoryChannel();
+        primaryChannel.setName("Primary Memory");
+        alternateChannel = new MemoryChannel();
+        alternateChannel.setName("Alternate Memory");
 
-        Configurables.configure(channel, new Context());
+        Configurables.configure(primaryChannel, new Context());
+        Configurables.configure(alternateChannel, new Context());
 
         /*
         * Clear out all other appenders associated with this logger to ensure we're
@@ -110,13 +115,19 @@ public class FlumeEmbeddedAppenderTest {
         Configurables.configure(altSource, context);
 
         List<Channel> channels = new ArrayList<Channel>();
-        channels.add(channel);
+        channels.add(primaryChannel);
 
-        ChannelSelector cs = new ReplicatingChannelSelector();
-        cs.setChannels(channels);
+        ChannelSelector primaryCS = new ReplicatingChannelSelector();
+        primaryCS.setChannels(channels);
 
-        primarySource.setChannelProcessor(new ChannelProcessor(cs));
-        altSource.setChannelProcessor(new ChannelProcessor(cs));
+        List<Channel> altChannels = new ArrayList<Channel>();
+        altChannels.add(alternateChannel);
+
+        ChannelSelector alternateCS = new ReplicatingChannelSelector();
+        alternateCS.setChannels(altChannels);
+
+        primarySource.setChannelProcessor(new ChannelProcessor(primaryCS));
+        altSource.setChannelProcessor(new ChannelProcessor(alternateCS));
 
         primarySource.start();
         altSource.start();
@@ -139,6 +150,8 @@ public class FlumeEmbeddedAppenderTest {
 	           LifecycleController.waitForOneOf(primarySource, LifecycleState.STOP_OR_ERROR));
 	      Assert.assertEquals("Server is stopped", LifecycleState.STOP,
             primarySource.getLifecycleState());
+        File file = new File("target/file-channel");
+        boolean result = deleteFiles(file);
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         Set<ObjectName> names = server.queryNames(new ObjectName("org.apache.flume.*:*"), null);
         for (ObjectName name : names) {
@@ -156,10 +169,10 @@ public class FlumeEmbeddedAppenderTest {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
 
-        Transaction transaction = channel.getTransaction();
+        Transaction transaction = primaryChannel.getTransaction();
         transaction.begin();
 
-        Event event = channel.take();
+        Event event = primaryChannel.take();
    	    Assert.assertNotNull(event);
         String body = getBody(event);
   	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
@@ -178,10 +191,10 @@ public class FlumeEmbeddedAppenderTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = channel.getTransaction();
+            Transaction transaction = primaryChannel.getTransaction();
             transaction.begin();
 
-            Event event = channel.take();
+            Event event = primaryChannel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
             String expected = "Test Multiple " + i;
@@ -204,10 +217,10 @@ public class FlumeEmbeddedAppenderTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = channel.getTransaction();
+            Transaction transaction = primaryChannel.getTransaction();
             transaction.begin();
 
-            Event event = channel.take();
+            Event event = primaryChannel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
             String expected = "Test Primary " + i;
@@ -225,17 +238,17 @@ public class FlumeEmbeddedAppenderTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = channel.getTransaction();
+            Transaction transaction = alternateChannel.getTransaction();
             transaction.begin();
 
-            Event event = channel.take();
+            Event event = alternateChannel.take();
             Assert.assertNotNull(event);
             String body = getBody(event);
             String expected = "Test Alternate " + i;
             /* When running in Gump Flume consistently returns the last event from the primary channel after
-               the failover, which fails this test
+               the failover, which fails this test */
             Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
-                " Received: " + body, body.endsWith(expected)); */
+                " Received: " + body, body.endsWith(expected));
             transaction.commit();
             transaction.close();
         }
@@ -251,5 +264,21 @@ public class FlumeEmbeddedAppenderTest {
             }
             return new String(baos.toByteArray());
 
+    }
+
+    private boolean deleteFiles(File file) {
+        boolean result = true;
+        if (file.isDirectory()) {
+
+            File[] files = file.listFiles();
+            for (File child : files) {
+                result &= deleteFiles(child);
+            }
+
+        } else if (!file.exists()) {
+            return false;
+        }
+
+        return result &= file.delete();
     }
 }

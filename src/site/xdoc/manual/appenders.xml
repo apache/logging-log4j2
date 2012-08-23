@@ -333,6 +333,12 @@
               <td>When set to true the message body will be compressed using gzip</td>
             </tr>
             <tr>
+              <td>dataDir</td>
+              <td>String</td>
+              <td>Directory where the Flume write ahead log should be written. Valid only when embedded is set
+                to true and Agent elements are used instead of Property elements.</td>
+            </tr>
+            <tr>
               <td>embedded</td>
               <td>boolean</td>
               <td>When set to true the embedded Flume agent will be used. When Agent elements are used the events
