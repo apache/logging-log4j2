@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -127,5 +128,11 @@ public class LoggerTest {
         assertEquals(1, results.size());
         assertTrue("Incorrect structured data: " + results.get(0),results.get(0).startsWith(
             " INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));
+    }
+
+    @Test
+    public void LoggerByClass() {
+        Logger classLogger = LogManager.getLogger(LoggerTest.class);
+        assertNotNull(classLogger);
     }
 }

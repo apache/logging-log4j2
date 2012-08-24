@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-alpha2" date="2012-08-24" description="Bug fixes and minor enhancements">
+      <action issue="LOG4J2-70" dev="rgoers" type="add">
+        Add getLogger(Class) to LogManager.
+      </action>
       <action issue="LOG4J2-69" dev="rgoers" type="add">
         Allow Flume agents to be embedded into the Flume Appender.
       </action>

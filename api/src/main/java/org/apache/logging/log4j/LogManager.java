@@ -130,6 +130,15 @@ public class LogManager {
     }
 
     /**
+     * Return a Logger using the fully qualified name of the Class as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name.
+     * @return The Logger.
+     */
+    public static Logger getLogger(Class clazz) {
+        return factory.getContext(LogManager.class.getName(), false).getLogger(clazz.getName());
+    }
+
+    /**
      * Return a Logger with the specified name.
      *
      * @param fqcn The fully qualified class name of the class that this method is a member of.
