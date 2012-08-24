@@ -13,6 +13,7 @@ Bug fixes and minor enhancements
 Changes in this version include:
 
 New features:
+o LOG4J2-70:  Add getLogger(Class) to LogManager. 
 o LOG4J2-69:  Allow Flume agents to be embedded into the Flume Appender. 
 o LOG4J2-68:  Add support for formatting using String.format(). 
 o LOG4J2-67:  Allow components besides core to create a PluginMap for faster plugin loading and not
