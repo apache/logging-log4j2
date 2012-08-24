@@ -478,7 +478,7 @@
               <announcementFile>RELEASE-NOTES.txt</announcementFile>
               <issueManagementSystems>
                 <issueManagementSystem>changes.xml</issueManagementSystem>
-                <issueManagementSystem>JIRA</issueManagementSystem>
+                <!--<issueManagementSystem>JIRA</issueManagementSystem> -->
               </issueManagementSystems>
               <version>${Log4jReleaseVersion}</version>
               <announceParameters>

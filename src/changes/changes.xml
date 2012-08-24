@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="2.0-alpha2" date="TBD" description="Bug fixes and minor enhancements">
+    <release version="2.0-alpha2" date="2012-08-24" description="Bug fixes and minor enhancements">
       <action issue="LOG4J2-69" dev="rgoers" type="add">
         Allow Flume agents to be embedded into the Flume Appender.
       </action>
