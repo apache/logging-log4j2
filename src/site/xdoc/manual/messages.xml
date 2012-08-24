@@ -221,6 +221,14 @@
         <p>
           SimpleMessage contains a String that requires no formatting.
         </p>
+      <a name="StringFormattedMessage"/>
+      <h4>StringFormattedMessage</h4>
+        <p>
+          <a href="../log4j2-api/apidocs/org/apache/logging/log4j/message/StringFormattedMessage.html">StringFormattedMessage</a>
+          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">conversion format</a>
+          that is compliant with <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
+          While this Message has more flexibility than ParameterizedMessage, it is also 5 to 10 times slower.
+        </p>
       <a name="StructuredDataMessage"/>
       <h4>StructuredDataMessage</h4>
         <p>
