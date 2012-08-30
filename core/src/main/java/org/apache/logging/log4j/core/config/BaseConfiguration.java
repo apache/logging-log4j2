@@ -680,7 +680,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
                     clazz.getName() + " for element " + node.getName());
                 return null;
             }
-            LOGGER.debug("Calling {} on class {} for element {}", factoryMethod.getName(), clazz.getName(),
+            LOGGER.debug("Calling {} on class {} for element {}{}", factoryMethod.getName(), clazz.getName(),
                 node.getName(), sb.toString());
             //if (parms.length > 0) {
                 return factoryMethod.invoke(null, parms);
