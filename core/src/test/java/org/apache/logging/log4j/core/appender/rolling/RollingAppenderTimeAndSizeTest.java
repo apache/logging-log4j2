@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 public class RollingAppenderTimeAndSizeTest {
 
     private static final String CONFIG = "log4j-rolling3.xml";
-    private static final String DIR = "target/rolling3";
+    private static final String DIR = "target/rolling3/test";
 
     org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
 
@@ -49,7 +49,7 @@ public class RollingAppenderTimeAndSizeTest {
 
     @AfterClass
     public static void cleanupClass() {
-        deleteDir();
+        //deleteDir();
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();

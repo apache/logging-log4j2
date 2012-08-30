@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,6 +30,9 @@ import java.nio.channels.FileChannel;
  * File rename action.
  */
 public final class FileRenameAction extends ActionBase {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     /**
      * Source.
      */
@@ -74,17 +80,31 @@ public final class FileRenameAction extends ActionBase {
      */
     public static boolean execute(final File source, final File destination, boolean renameEmptyFiles) {
         if (renameEmptyFiles || (source.length() > 0)) {
+            File parent = destination.getParentFile();
+            if (!parent.exists()) {
+                if (!parent.mkdirs()) {
+                    LOGGER.error("Unable to create directory {}", parent.getAbsolutePath());
+                    return false;
+                }
+            }
             try {
-
-                boolean result = source.renameTo(destination);
-                //System.out.println("Rename of " + source.getName() + " to " + destination.getName() + ": " + result);
-                return result;
+                if (!source.renameTo(destination)) {
+                    try {
+                        copyFile(source, destination);
+                        return source.delete();
+                    } catch (IOException iex) {
+                        LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
+                            destination.getAbsolutePath(), iex.getMessage());
+                    }
+                }
+                return true;
             } catch (Exception ex) {
                 try {
                     copyFile(source, destination);
                     return source.delete();
                 } catch (IOException iex) {
-                    iex.printStackTrace();
+                    LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
+                        destination.getAbsolutePath(), iex.getMessage());
                 }
             }
         }

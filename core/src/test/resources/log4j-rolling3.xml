@@ -26,7 +26,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
+    <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>

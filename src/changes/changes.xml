@@ -26,6 +26,9 @@
       <action dev="rgoers" type="update">
         Update the versions of SLF4J and Logback.
       </action>
+      <action issue="LOG4J2-71" dev="rgoers" type="fix">
+        FileRenameAction did not create the parent directories of the archive files causing the rollover to fail.
+      </action>
     </release>
     <release version="2.0-alpha2" date="2012-08-24" description="Bug fixes and minor enhancements">
       <action issue="LOG4J2-70" dev="rgoers" type="add">
