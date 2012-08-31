@@ -142,7 +142,7 @@ public class RollingFileManager extends FileManager {
                     }
                 }
 
-                if (success) {
+                if (success && descriptor.getAsynchronous() != null) {
                     thread = new Thread(new AsyncAction(descriptor.getAsynchronous(), this));
                     thread.start();
                 }
