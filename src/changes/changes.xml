@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action issue="LOG4J2-74" dev="rgoers" type="fix">
+        Logger.error(Marker, Message, Throwable) was internally using Level.TRACE.
+      </action>
       <action issue="LOG4J2-75" dev="rgoers" type="fix">
         Enhanced Log4jContextListener to accept a configuration file location. Modified FileConfigurationMonitor
         to monitor files configured that way. Fixed other reconfiguration related bugs. Tested in JBoss and

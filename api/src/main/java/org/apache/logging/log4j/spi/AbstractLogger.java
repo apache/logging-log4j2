@@ -1147,8 +1147,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t      A Throwable or null.
      */
     public void error(Marker marker, Message msg, Throwable t) {
-        if (isEnabled(Level.TRACE, marker, msg, t)) {
-            log(marker, FQCN, Level.TRACE, msg, t);
+        if (isEnabled(Level.ERROR, marker, msg, t)) {
+            log(marker, FQCN, Level.ERROR, msg, t);
         }
     }
 
