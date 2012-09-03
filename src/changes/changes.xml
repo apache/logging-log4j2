@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action issue="LOG4J2-76" dev="rgoers" type="fix">
+        RewriteAppender was calling the stop method of the referenced appender causing the referenced appender's
+        manager to have its use count decremented too many times.
+      </action>
       <action issue="LOG4J2-74" dev="rgoers" type="fix">
         Logger.error(Marker, Message, Throwable) was internally using Level.TRACE.
       </action>

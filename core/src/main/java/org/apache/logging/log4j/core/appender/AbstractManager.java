@@ -46,6 +46,7 @@ public abstract class AbstractManager {
 
     protected AbstractManager(String name) {
         this.name = name;
+        LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
 
 
@@ -110,6 +111,7 @@ public abstract class AbstractManager {
             --count;
             if (count <= 0) {
                 map.remove(name);
+                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
                 releaseSub();
             }
         } finally {

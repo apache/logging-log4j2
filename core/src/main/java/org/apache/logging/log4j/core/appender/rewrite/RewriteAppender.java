@@ -69,9 +69,6 @@ public final class RewriteAppender extends AppenderBase {
     @Override
     public void stop() {
         super.stop();
-        for (AppenderControl control : appenders.values()) {
-            control.getAppender().stop();
-        }
     }
 
     /**
