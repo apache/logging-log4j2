@@ -38,6 +38,8 @@ public final class FileUtils {
 
     private static Logger logger = StatusLogger.getLogger();
 
+
+
     private FileUtils() {
     }
 
@@ -49,9 +51,18 @@ public final class FileUtils {
      * @return the resulting file object
      */
     public static File fileFromURI(URI uri) {
-        if (uri == null || !uri.getScheme().equals(PROTOCOL_FILE) || !uri.getScheme().equals(JBOSS_FILE)) {
+        if (uri == null || (uri.getScheme() != null &&
+            (!PROTOCOL_FILE.equals(uri.getScheme()) && !JBOSS_FILE.equals(uri.getScheme())))) {
             return null;
         } else {
+            if (uri.getScheme() == null) {
+                try {
+                    uri = new File(uri.getPath()).toURI();
+                } catch (Exception ex) {
+                    logger.warn("Invalid URI " + uri);
+                    return null;
+                }
+            }
             try {
                 return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
             } catch (MalformedURLException ex) {

@@ -21,5 +21,5 @@ package org.apache.logging.log4j.core.config;
  */
 public interface ConfigurationListener {
 
-    void onChange();
+    void onChange(Reconfigurable reconfigurable);
 }

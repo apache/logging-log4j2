@@ -44,6 +44,8 @@ import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ import java.util.Map;
 /**
  * Creates a Node hierarchy from an XML file.
  */
-public class XMLConfiguration extends BaseConfiguration {
+public class XMLConfiguration extends BaseConfiguration implements Reconfigurable {
 
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
@@ -74,7 +76,10 @@ public class XMLConfiguration extends BaseConfiguration {
 
     private List<String> messages = new ArrayList<String>();
 
+    private File configFile;
+
     public XMLConfiguration(InputSource source, File configFile) {
+        this.configFile = configFile;
         byte[] buffer = null;
 
         try {
@@ -110,7 +115,7 @@ public class XMLConfiguration extends BaseConfiguration {
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
                     int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
-                        monitor = new FileConfigurationMonitor(configFile, listeners, interval);
+                        monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 }
             }
@@ -187,6 +192,19 @@ public class XMLConfiguration extends BaseConfiguration {
             return;
         }
         rootElement = null;
+    }
+
+    public Configuration reconfigure() {
+        if (configFile != null) {
+            try {
+                InputSource source = new InputSource(new FileInputStream(configFile));
+                source.setSystemId(configFile.getAbsolutePath());
+                return new XMLConfiguration(source, configFile);
+            } catch (FileNotFoundException ex) {
+                LOGGER.error("Cannot locate file " + configFile, ex);
+            }
+        }
+        return null;
     }
 
     private void constructHierarchy(Node node, Element element) {

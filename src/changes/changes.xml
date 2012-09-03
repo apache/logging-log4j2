@@ -23,6 +23,11 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action issue="LOG4J2-75" dev="rgoers" type="fix">
+        Enhanced Log4jContextListener to accept a configuration file location. Modified FileConfigurationMonitor
+        to monitor files configured that way. Fixed other reconfiguration related bugs. Tested in JBoss and
+        Tomcat.
+      </action>
       <action issue="LOG4J2-72" dev="rgoers" type="fix">
         NullPointerException in RollingFileManager when filePattern does not cause the file to be compressed.
       </action>

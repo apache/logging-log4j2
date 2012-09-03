@@ -61,7 +61,6 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     private Level level;
     private boolean additive = true;
     private LoggerConfig parent;
-    private ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
     private AtomicInteger counter = new AtomicInteger();
     private boolean shutdown = false;
 
@@ -100,16 +99,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
 
     @Override
     public Filter getFilter() {
-        monitor.checkConfiguration();
         return super.getFilter();
-    }
-
-    /**
-     * Set the ConfigurationMonitor that will detect configuration changes.
-     * @param monitor The ConfigurationMonitor.
-     */
-    public void setConfigurationMonitor(ConfigurationMonitor monitor) {
-        this.monitor = monitor;
     }
 
     /**
@@ -291,7 +281,6 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
 
         counter.incrementAndGet();
         try {
-            monitor.checkConfiguration();
             if (isFiltered(event)) {
                 return;
             }

@@ -27,7 +27,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private static final int MASK = 0x0f;
 
-    private static final int MIN_INTERVAL = 30;
+    private static final int MIN_INTERVAL = 5;
 
     private static final int MILLIS_PER_SECOND = 1000;
 
@@ -43,13 +43,17 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private volatile int counter = 0;
 
+    private Reconfigurable reconfigurable;
+
     /**
      * Constructor.
      * @param file The File to monitor.
      * @param listeners The List of ConfigurationListeners to notify upon a change.
      * @param interval The monitor interval in seconds. The minimum interval is 30 seconds.
      */
-    public FileConfigurationMonitor(File file, List<ConfigurationListener> listeners, int interval) {
+    public FileConfigurationMonitor(Reconfigurable reconfigurable, File file, List<ConfigurationListener> listeners,
+                                    int interval) {
+        this.reconfigurable = reconfigurable;
         this.file = file;
         this.lastModified = file.lastModified();
         this.listeners = listeners;
@@ -66,10 +70,10 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
                 long current = System.currentTimeMillis();
                 if (current >= nextCheck) {
                     nextCheck = current + interval;
-                    if (lastModified >= file.lastModified()) {
+                    if (file.lastModified() > lastModified) {
                         lastModified = file.lastModified();
                         for (ConfigurationListener listener : listeners) {
-                            listener.onChange();
+                            listener.onChange(reconfigurable);
                         }
                     }
                 }

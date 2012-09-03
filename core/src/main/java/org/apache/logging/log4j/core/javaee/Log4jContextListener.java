@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.javaee;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -25,25 +26,33 @@ import javax.servlet.ServletContextListener;
 /**
  * Saves the LoggerContext into the ServletContext as an attribute.
  */
-public class ContextListener implements ServletContextListener {
+public class Log4jContextListener implements ServletContextListener {
 
     /**
      * The name of the attribute to use to store the LoggerContext into the ServletContext.
      */
     public static final String LOG4J_CONTEXT_ATTRIBUTE = "Log4JContext";
 
+    public static final String LOG4J_CONFIG = "log4jConfiguration";
+
+    public static final String LOG4J_CONTEXT_NAME = "log4jContextName";
+
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
-        LoggerContext ctx = new LoggerContext(context.getServletContextName(), context);
-        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, ctx);
+        String locn = context.getInitParameter(LOG4J_CONFIG);
+        String name = context.getInitParameter(LOG4J_CONTEXT_NAME);
+        if (name == null) {
+            name = context.getServletContextName();
+        }
+        if (name == null && locn == null) {
+            context.log("No Log4j context configuration provided");
+            return;
+        }
+        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, Configurator.intitalize(name, locn));
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        ServletContext context = event.getServletContext();
-        LoggerContext ctx = (LoggerContext) context.getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
-        if (ctx != null) {
-            context.removeAttribute(LOG4J_CONTEXT_ATTRIBUTE);
-            ctx.stop();
-        }
+        event.getServletContext().removeAttribute(LOG4J_CONTEXT_ATTRIBUTE);
+        Configurator.shutdown();
     }
 }

@@ -112,6 +112,7 @@ public class Logger extends AbstractLogger {
         if (data == null) {
             data = new SimpleMessage("");
         }
+        config.config.getConfigurationMonitor().checkConfiguration();
         config.loggerConfig.log(name, marker, fqcn, level, data, t);
     }
 
@@ -288,10 +289,12 @@ public class Logger extends AbstractLogger {
         }
 
         protected void logEvent(LogEvent event) {
+            config.getConfigurationMonitor().checkConfiguration();
             loggerConfig.log(event);
         }
 
         boolean filter(Level level, Marker marker, String msg) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg);
@@ -304,6 +307,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Throwable t) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, t);
@@ -316,6 +320,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, p1);
@@ -328,6 +333,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2);
@@ -340,6 +346,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3);
@@ -353,6 +360,7 @@ public class Logger extends AbstractLogger {
 
         boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
                        Object... params) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3, params);
@@ -365,6 +373,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, Object msg, Throwable t) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, t);
@@ -377,6 +386,7 @@ public class Logger extends AbstractLogger {
         }
 
         boolean filter(Level level, Marker marker, Message msg, Throwable t) {
+            config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, t);

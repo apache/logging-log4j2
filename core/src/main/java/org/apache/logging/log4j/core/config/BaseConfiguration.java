@@ -185,11 +185,8 @@ public class BaseConfiguration extends Filterable implements Configuration {
             LOGGER.warn("No Root logger was configured, using default");
         }
 
-        root.setConfigurationMonitor(monitor);
-
         for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
             LoggerConfig l = entry.getValue();
-            l.setConfigurationMonitor(monitor);
             for (AppenderRef ref : l.getAppenderRefs()) {
                 Appender app = appenders.get(ref.getRef());
                 if (app != null) {
@@ -269,6 +266,10 @@ public class BaseConfiguration extends Filterable implements Configuration {
         return subst;
     }
 
+    public ConfigurationMonitor getConfigurationMonitor() {
+        return monitor;
+    }
+
     /**
      * Associates an Appender with a LoggerConfig. This method is synchronized in case a Logger with the
      * same name is being updated at the same time.
@@ -286,7 +287,6 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.addAppender(appender, null, null);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
-            nlc.setConfigurationMonitor(monitor);
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -311,7 +311,6 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.addFilter(filter);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
-            nlc.setConfigurationMonitor(monitor);
             nlc.addFilter(filter);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -335,7 +334,6 @@ public class BaseConfiguration extends Filterable implements Configuration {
             lc.setAdditive(additive);
         } else {
             LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
-            nlc.setConfigurationMonitor(monitor);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
             setParents();

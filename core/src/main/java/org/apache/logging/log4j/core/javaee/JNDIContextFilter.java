@@ -57,7 +57,7 @@ public class JNDIContextFilter implements Filter {
         if (name == null) {
             throw new UnavailableException("A context-name attribute is required");
         }
-        if (context.getAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE) == null) {
+        if (context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE) == null) {
             LoggerContext ctx;
             LoggerContextFactory factory = LogManager.getFactory();
             if (factory instanceof Log4jContextFactory) {
@@ -71,7 +71,7 @@ public class JNDIContextFilter implements Filter {
             } else {
                 return;
             }
-            context.setAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE, ctx);
+            context.setAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE, ctx);
             created = true;
             context.log("Created context for " + name + " using " + ctx.getClass().getClassLoader());
         }
@@ -79,7 +79,7 @@ public class JNDIContextFilter implements Filter {
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
         throws IOException, ServletException {
-        LoggerContext ctx = (LoggerContext) context.getAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE);
+        LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null) {
             ContextAnchor.THREAD_CONTEXT.set(ctx);
             try {
@@ -93,10 +93,10 @@ public class JNDIContextFilter implements Filter {
     }
 
     public void destroy() {
-        LoggerContext ctx = (LoggerContext) context.getAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE);
+        LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null && created) {
             context.log("Removing context for " + name);
-            context.removeAttribute(ContextListener.LOG4J_CONTEXT_ATTRIBUTE);
+            context.removeAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
             if (selector != null) {
                 selector.removeContext(name);
             }

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
@@ -276,8 +277,15 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Cause a reconfiguration to take place when the underlying configuration file changes.
      */
-    public void onChange() {
-        reconfigure();
+    public synchronized void onChange(Reconfigurable reconfigurable) {
+        logger.debug("Reconfiguration started for context " + contextName);
+        Configuration config = reconfigurable.reconfigure();
+        if (config != null) {
+            setConfiguration(config);
+            logger.debug("Reconfiguration completed");
+        } else {
+            logger.debug("Reconfiguration failed");
+        }
     }
 
 

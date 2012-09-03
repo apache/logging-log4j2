@@ -21,6 +21,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URI;
@@ -77,6 +78,8 @@ public class ResolverUtil<T> {
 
     /** The set of matches being accumulated. */
     private Set<URI> resourceMatches = new HashSet<URI>();
+
+    private static final String VFSZIP = "vfszip";
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
@@ -229,7 +232,8 @@ public class ResolverUtil<T> {
 
         while (urls.hasMoreElements()) {
             try {
-                String urlPath = urls.nextElement().getFile();
+                URL url = urls.nextElement();
+                String urlPath = url.getFile();
                 urlPath = URLDecoder.decode(urlPath, "UTF-8");
 
                 // If it's a file in a directory, trim the stupid file: spec
@@ -243,11 +247,19 @@ public class ResolverUtil<T> {
                 }
 
                 LOG.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
-                File file = new File(urlPath);
-                if (file.isDirectory()) {
-                    loadImplementationsInDirectory(test, packageName, file);
+                // Check for a jar in a war in JBoss
+                if (VFSZIP.equals(url.getProtocol())) {
+                    String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
+                    URL newURL = new URL(url.getProtocol(), url.getHost(), path);
+                    JarInputStream stream = new JarInputStream(newURL.openStream());
+                    loadImplementationsInJar(test, packageName, path, stream);
                 } else {
-                    loadImplementationsInJar(test, packageName, file);
+                    File file = new File(urlPath);
+                    if (file.isDirectory()) {
+                        loadImplementationsInDirectory(test, packageName, file);
+                    } else {
+                        loadImplementationsInJar(test, packageName, file);
+                    }
                 }
             } catch (IOException ioe) {
                 LOG.warn("could not read entries", ioe);
@@ -299,20 +311,42 @@ public class ResolverUtil<T> {
      * @param jarfile the jar file to be examined for classes
      */
     private void loadImplementationsInJar(Test test, String parent, File jarfile) {
+        JarInputStream jarStream;
+        try {
+            jarStream = new JarInputStream(new FileInputStream(jarfile));
+            loadImplementationsInJar(test, parent, jarfile.getPath(), jarStream);
+        } catch (FileNotFoundException ex) {
+            LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
+                test + " file not found");
+        } catch (IOException ioe) {
+            LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
+                test + " due to an IOException", ioe);
+        }
+    }
+
+    /**
+     * Finds matching classes within a jar files that contains a folder structure
+     * matching the package structure.  If the File is not a JarFile or does not exist a warning
+     * will be logged, but no error will be raised.
+     *
+     * @param test a Test used to filter the classes that are discovered
+     * @param parent the parent package under which classes must be in order to be considered
+     * @param stream The jar InputStream
+     */
+    private void loadImplementationsInJar(Test test, String parent, String path, JarInputStream stream) {
 
         try {
             JarEntry entry;
-            JarInputStream jarStream = new JarInputStream(new FileInputStream(jarfile));
 
-            while ((entry = jarStream.getNextJarEntry()) != null) {
+            while ((entry = stream.getNextJarEntry()) != null) {
                 String name = entry.getName();
                 if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                     addIfMatching(test, name);
                 }
             }
         } catch (IOException ioe) {
-            LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
-                      test + " due to an IOException", ioe);
+            LOG.error("Could not search jar file '" + path + "' for classes matching criteria: " +
+                test + " due to an IOException", ioe);
         }
     }
 

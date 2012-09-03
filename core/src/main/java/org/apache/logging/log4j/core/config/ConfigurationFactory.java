@@ -199,10 +199,18 @@ public abstract class ConfigurationFactory {
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
                 InputSource source = new InputSource(new FileInputStream(configFile));
-                source.setSystemId(configLocation.getPath());
+                source.setSystemId(configFile.getAbsolutePath());
                 return source;
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configLocation.getPath(), ex);
+            }
+        }
+        String scheme = configLocation.getScheme();
+        if (scheme == null || scheme.equals("classloader")) {
+            ClassLoader loader = this.getClass().getClassLoader();
+            InputSource source = getInputFromResource(configLocation.getPath(), loader);
+            if (source != null) {
+                return source;
             }
         }
         try {
@@ -212,6 +220,8 @@ public abstract class ConfigurationFactory {
         } catch (MalformedURLException ex) {
             LOGGER.error("Invalid URL " + configLocation.toString(), ex);
         } catch (IOException ex) {
+            LOGGER.error("Unable to access " + configLocation.toString(), ex);
+        } catch (Exception ex){
             LOGGER.error("Unable to access " + configLocation.toString(), ex);
         }
         return null;
@@ -347,9 +357,16 @@ public abstract class ConfigurationFactory {
                 }
             } else {
                 for (ConfigurationFactory factory : factories) {
-                    Configuration config = factory.getConfiguration(name, configLocation);
-                    if (config != null) {
-                        return config;
+                    String[] types = factory.getSupportedTypes();
+                    if (types != null) {
+                        for (String type : types) {
+                            if (type.equals("*") || configLocation.getPath().endsWith(type)) {
+                                Configuration config = factory.getConfiguration(name, configLocation);
+                                if (config != null) {
+                                    return config;
+                                }
+                            }
+                        }
                     }
                 }
             }

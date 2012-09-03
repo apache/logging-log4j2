@@ -73,4 +73,6 @@ public interface Configuration extends Filtering {
     Object getComponent(String name);
 
     void addComponent(String name, Object object);
+
+    ConfigurationMonitor getConfigurationMonitor();
 }
