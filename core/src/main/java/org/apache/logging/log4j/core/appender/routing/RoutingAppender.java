@@ -86,8 +86,12 @@ public final class RoutingAppender extends AppenderBase {
     @Override
     public void stop() {
         super.stop();
-        for (AppenderControl control : appenders.values()) {
-            control.getAppender().stop();
+        Map<String, Appender> map = config.getAppenders();
+        for (Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
+            String name = entry.getValue().getAppender().getName();
+            if (!DEFAULT_KEY.equals(entry.getKey()) && !map.containsKey(name)) {
+                entry.getValue().getAppender().stop();
+            }
         }
     }
 
