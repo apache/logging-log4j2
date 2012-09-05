@@ -96,7 +96,11 @@ public class LogFactoryImpl extends LogFactory {
 
     @Override
     public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
+        if (value != null) {
+            attributes.put(name, value);
+        } else {
+            removeAttribute(name);
+        }
     }
 
     /**

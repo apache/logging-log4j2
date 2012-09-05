@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action issue="LOG4J2-78" dev="rgoers" type="fix">
+        LogFactoryImpl.setAttribute in the Commons Logging bridge got a NullPointerException when passed a null value.
+        It will now remove the attribute.
+      </action>
       <action issue="LOG4J2-77" dev="rgoers" type="fix">
         RoutingAppender was calling the stop method for each of its referenced Appenders and was calling
         the stop method of the default Appender a second time. It will now only call the stop method of
