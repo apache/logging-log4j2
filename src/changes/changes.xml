@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action issue="LOG4J2-80" dev="rgoers" type="fix" due-to="Oliver Lamy">
+        Allow Log4j 2 to be used as the implementation with SLF4J and SLF4J's jcl-over-slf4j by adding filtering
+        to the log method in SLF4JLogger.
+      </action>
       <action issue="LOG4J2-78" dev="rgoers" type="fix">
         LogFactoryImpl.setAttribute in the Commons Logging bridge got a NullPointerException when passed a null value.
         It will now remove the attribute.

@@ -87,7 +87,7 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <slf4j.version>1.6.6</slf4j.version>
+    <slf4j.version>1.7.0</slf4j.version>
     <logback.version>1.0.7</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-alpha3</Log4jReleaseVersion>
