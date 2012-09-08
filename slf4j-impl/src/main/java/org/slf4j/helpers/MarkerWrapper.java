@@ -49,6 +49,17 @@ public class MarkerWrapper extends BasicMarker implements Marker {
             throw new IllegalArgumentException("A marker parameter is required");
         }
 
-        return contains((MarkerWrapper) marker);
+        if (marker instanceof MarkerWrapper) {
+            return contains((MarkerWrapper) marker);
+        } else {
+            return contains(marker.getName());
+        }
+    }
+
+    public boolean isInstanceOf(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("A marker name is required");
+        }
+        return contains(name);
     }
 }

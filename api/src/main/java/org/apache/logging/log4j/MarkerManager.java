@@ -109,12 +109,26 @@ public final class MarkerManager {
             return false;
         }
 
+        public boolean isInstanceOf(String name) {
+            if (name == null) {
+                throw new IllegalArgumentException("A marker name is required");
+            }
+            Marker toTest = this;
+            do {
+                if (name.equals(toTest.getName())) {
+                    return true;
+                }
+                toTest = toTest.getParent();
+            } while (toTest != null);
+            return false;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (o == null || !(o instanceof Marker)) {
                 return false;
             }
 

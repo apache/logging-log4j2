@@ -34,11 +34,11 @@ import org.apache.logging.log4j.message.Message;
 @Plugin(name = "MarkerFilter", type = "Core", elementType = "filter", printObject = true)
 public final class MarkerFilter extends FilterBase {
 
-    private final Marker marker;
+    private final String name;
 
-    private MarkerFilter(Marker marker, Result onMatch, Result onMismatch) {
+    private MarkerFilter(String name, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
-        this.marker = marker;
+        this.name = name;
     }
 
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
@@ -59,17 +59,17 @@ public final class MarkerFilter extends FilterBase {
     }
 
     private Result filter(Marker marker) {
-        return marker != null && marker.isInstanceOf(this.marker) ? onMatch : onMismatch;
+        return marker != null && marker.isInstanceOf(name) ? onMatch : onMismatch;
     }
 
     @Override
     public String toString() {
-        return marker.getName();
+        return name;
     }
 
     /**
      * Create the MarkerFilter.
-     * @param marker The Marker to match.
+     * @param marker The Marker name to match.
      * @param match The action to take if a match occurs.
      * @param mismatch The action to take if no match occurs.
      * @return A MarkerFilter.
@@ -83,11 +83,10 @@ public final class MarkerFilter extends FilterBase {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        Marker m = MarkerManager.getMarker(marker);
         Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
 
-        return new MarkerFilter(m, onMatch, onMismatch);
+        return new MarkerFilter(marker, onMatch, onMismatch);
     }
 
 }
