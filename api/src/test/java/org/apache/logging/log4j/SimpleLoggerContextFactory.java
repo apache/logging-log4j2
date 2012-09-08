@@ -26,7 +26,7 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
     private static LoggerContext ctx = new SimpleLoggerContext();
 
-    public LoggerContext getContext(String FQCN, boolean currentContext) {
+    public LoggerContext getContext(String FQCN, ClassLoader loader, boolean currentContext) {
         return ctx;
     }
 }

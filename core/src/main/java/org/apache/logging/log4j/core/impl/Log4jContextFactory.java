@@ -64,12 +64,13 @@ public class Log4jContextFactory implements LoggerContextFactory {
     /**
      * Load the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @return The LoggerContext.
      */
-    public LoggerContext getContext(String fqcn, boolean currentContext) {
-        LoggerContext ctx = selector.getContext(fqcn, currentContext);
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
         }

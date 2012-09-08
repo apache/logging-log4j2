@@ -219,22 +219,42 @@ public final class Loader {
         }
     }
 
+    public static ClassLoader getClassLoader(Class class1, Class class2) {
+
+        ClassLoader loader1 = null;
+        try {
+            loader1 = getTCL();
+        } catch (Exception ex) {
+            LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
+        }
+        ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
+        ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
+
+        if (isChild(loader1, loader2)) {
+            return isChild(loader1, loader3) ? loader1 : loader3;
+        } else {
+            return isChild(loader2, loader3) ? loader2 : loader3;
+        }
+    }
+
+    private static boolean isChild(ClassLoader loader1, ClassLoader loader2) {
+        if (loader1 != null && loader2 != null) {
+            ClassLoader parent = loader1.getParent();
+            while (parent != null && parent != loader2) {
+                parent = parent.getParent();
+            }
+            return parent != null;
+        }
+        return loader1 != null;
+    }
+
     /**
      * Return the ClassLoader to use.
      * @return the ClassLoader.
      */
     public static ClassLoader getClassLoader() {
-        ClassLoader cl = null;
 
-        try {
-            cl = getTCL();
-        } catch (Exception ex) {
-            // Ignore the exception. The ClassLoader will be located.
-        }
-        if (cl == null) {
-            cl = Loader.getClassLoader();
-        }
-        return cl;
+        return getClassLoader(Loader.class, null);
     }
 
     private static ClassLoader getTCL() throws IllegalAccessException, InvocationTargetException {

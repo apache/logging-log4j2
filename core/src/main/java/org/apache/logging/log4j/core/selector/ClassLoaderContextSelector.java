@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.javaee.ContextAnchor;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.lang.ref.WeakReference;
@@ -62,7 +62,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
         setupCallerCheck();
     }
 
-    public LoggerContext getContext(String fqcn, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
 
         if (currentContext) {
             LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -70,6 +70,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
                 return ctx;
             }
             return getDefault();
+        } else if (loader != null) {
+            return locateContext(loader, null);
         } else {
             if (getCallerClass != null) {
                 try {

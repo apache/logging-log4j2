@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.javaee.ContextAnchor;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class BasicContextSelector implements ContextSelector {
 
     private static LoggerContext context = new LoggerContext("Default");
 
-    public LoggerContext getContext(String fqcn, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
 
         LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : context;

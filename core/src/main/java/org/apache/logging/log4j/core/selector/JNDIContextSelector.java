@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.javaee.ContextAnchor;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import javax.naming.Context;
@@ -93,7 +93,7 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    public LoggerContext getContext(String fqcn, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
 
         LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {

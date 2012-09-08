@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class ResolverUtil<T> {
      * @return the ClassLoader that will be used to scan for classes
      */
     public ClassLoader getClassLoader() {
-        return classloader == null ? Thread.currentThread().getContextClassLoader() : classloader;
+        return classloader != null ? classloader : (classloader = Loader.getClassLoader(ResolverUtil.class, null));
     }
 
     /**

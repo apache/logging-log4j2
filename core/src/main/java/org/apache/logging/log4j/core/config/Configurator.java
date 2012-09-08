@@ -25,17 +25,24 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- *
+ * Class that can be used to initialize and configure the Logging system.
  */
 public final class Configurator {
 
     private Configurator() {
     }
 
-    public static LoggerContext intitalize(String name, String configLocation) {
+    /**
+     * Initialize the Logging Context.
+     * @param name The Context name.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param configLocation The configuration for the logging context.
+     * @return
+     */
+    public static LoggerContext intitalize(String name, ClassLoader loader, String configLocation) {
 
         try {
-            LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+            LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
             URI uri = configLocation == null ? null : new URI(configLocation);
             Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, uri);
             ctx.setConfiguration(config);

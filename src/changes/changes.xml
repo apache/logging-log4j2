@@ -23,6 +23,11 @@
 
   <body>
     <release version="2.0-alpha3" date="TBD" description="">
+      <action dev="rgoers" type="fix">
+        Created web module to allow web applications to include the Log4j context listener in WEB-INF/lib even if
+        Log4j is in the container's class path. Allow locating the LoggerContext to include the ClassLoader. Updated
+        the Loader utility to always choose the child ClassLoader. Verified in Jboss 5 and Tomcat.
+      </action>
       <action issue="LOG4J2-82" dev="rgoers" type="fix">
         MarkerFilter called MarkerManager.getMarker causing the Marker to be created during the processing of the
         configuration. This prevents the application from creating the Marker with any parents. MarkerWrapper in

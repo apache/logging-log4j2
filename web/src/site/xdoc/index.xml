@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Log4j Web</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+        <section name="Log4j Web">
+
+            <p>
+              Contains classes that can be used to initialize logging within a web application.
+            </p>
+
+          <subsection name="Log4jContextListener">
+            <p>Log4j provides a ServletContextListener that will initialize the LoggerContext for your web
+              application. It accepts two initialization parameters:
+              <ol>
+                <li>log4jContextName - the name to be given to the LoggerContext. If not specified this will
+                  default to the display-name of the web application.</li>
+                <li>log4jConfiguration - the location of the Log4j configuration file. If the file protocol
+                  is not specified then the file will be located both in the class path and on the file system.
+                  If the location is a relative path the file location will be relative to the current
+                  working directory of the running server.</li>
+              </ol>
+            </p>
+          </subsection>
+          <subsection name="JNDIContextFilter">
+            <p>The JNDIContextFilter is a Servlet Filter that can be used in conjunction with the JNDIContextSelector
+              to identify the LoggerContext that should be used. It accepts two parameters.</p>
+            <ol>
+              <li>context-name - the name to be given to the LoggerContext. A context name must be specified.</li>
+              <li>config-location - the location of the Log4j configuration file.</li>
+            </ol>
+          </subsection>
+
+        </section>
+
+        <section name="Requirements">
+           <p>
+             The Log4j web components require at least Java 5.
+          </p>
+        </section>
+
+    </body>
+</document>

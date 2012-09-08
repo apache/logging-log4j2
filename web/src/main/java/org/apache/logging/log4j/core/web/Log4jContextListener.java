@@ -14,14 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.javaee;
+package org.apache.logging.log4j.core.web;
 
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.helpers.Loader;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.lang.reflect.Method;
 
 /**
  * Saves the LoggerContext into the ServletContext as an attribute.
@@ -37,6 +38,8 @@ public class Log4jContextListener implements ServletContextListener {
 
     public static final String LOG4J_CONTEXT_NAME = "log4jContextName";
 
+    private static final String CLASSES = "WEB-INF/classes";
+
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
         String locn = context.getInitParameter(LOG4J_CONFIG);
@@ -48,11 +51,32 @@ public class Log4jContextListener implements ServletContextListener {
             context.log("No Log4j context configuration provided");
             return;
         }
-        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, Configurator.intitalize(name, locn));
+        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, Configurator.intitalize(name, getClassLoader(context), locn));
     }
 
     public void contextDestroyed(ServletContextEvent event) {
         event.getServletContext().removeAttribute(LOG4J_CONTEXT_ATTRIBUTE);
         Configurator.shutdown();
+    }
+
+    private ClassLoader getClassLoader(ServletContext context) {
+        Method[] methods = context.getClass().getMethods();
+        Method getClassLoader = null;
+        for (Method method : methods) {
+            if (method.getName().equals("getClassLoader")) {
+                getClassLoader = method;
+                break;
+            }
+        }
+
+        if (getClassLoader != null) {
+            try {
+                return (ClassLoader) getClassLoader.invoke(context, null);
+            } catch (Exception ex) {
+                // Ignore the exception
+            }
+        }
+
+        return Log4jContextListener.class.getClassLoader();
     }
 }

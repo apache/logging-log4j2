@@ -126,7 +126,7 @@ public class LogManager {
      */
     public static Logger getLogger(String name) {
 
-        return factory.getContext(LogManager.class.getName(), false).getLogger(name);
+        return factory.getContext(LogManager.class.getName(), null, false).getLogger(name);
     }
 
     /**
@@ -135,7 +135,7 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(Class clazz) {
-        return factory.getContext(LogManager.class.getName(), false).getLogger(clazz.getName());
+        return factory.getContext(LogManager.class.getName(), null, false).getLogger(clazz.getName());
     }
 
     /**
@@ -147,7 +147,7 @@ public class LogManager {
      */
     protected static Logger getLogger(String fqcn, String name) {
 
-        return factory.getContext(fqcn, false).getLogger(name);
+        return factory.getContext(fqcn, null, false).getLogger(name);
     }
 
     /**
@@ -158,7 +158,7 @@ public class LogManager {
      * @return  The current LoggerContext.
      */
     public static LoggerContext getContext() {
-        return factory.getContext(LogManager.class.getName(), true);
+        return factory.getContext(LogManager.class.getName(), null, true);
     }
 
     /**
@@ -171,8 +171,24 @@ public class LogManager {
      * @return a LoggerContext.
      */
     public static LoggerContext getContext(boolean currentContext) {
-        return factory.getContext(LogManager.class.getName(), currentContext);
+        return factory.getContext(LogManager.class.getName(), null, currentContext);
     }
+
+    /**
+     * Returns a LoggerContext.
+     *
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @return a LoggerContext.
+     */
+    public static LoggerContext getContext(ClassLoader loader, boolean currentContext) {
+        return factory.getContext(LogManager.class.getName(), loader, currentContext);
+    }
+
 
     /**
      * Returns a LoggerContext
@@ -184,7 +200,23 @@ public class LogManager {
      * @return a LoggerContext.
      */
     protected static LoggerContext getContext(String fqcn, boolean currentContext) {
-        return factory.getContext(fqcn, currentContext);
+        return factory.getContext(fqcn, null, currentContext);
+    }
+
+
+    /**
+     * Returns a LoggerContext
+     * @param fqcn The fully qualified class name of the Class that this method is a member of.
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @return a LoggerContext.
+     */
+    protected static LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        return factory.getContext(fqcn, loader, currentContext);
     }
 
     private static ClassLoader findClassLoader() {
@@ -199,6 +231,9 @@ public class LogManager {
                     }
                 }
             );
+        }
+        if (cl != null && cl.getParent() != null) {
+
         }
         if (cl == null) {
             cl = LogManager.class.getClassLoader();

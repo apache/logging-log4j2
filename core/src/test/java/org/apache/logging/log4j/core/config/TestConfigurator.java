@@ -41,7 +41,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromFile() throws Exception {
-        Configurator.intitalize("Test1", "target/test-classes/log4j2-config.xml");
+        Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
@@ -59,7 +59,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPath() throws Exception {
-        Configurator.intitalize("Test1", "log4j2-config.xml");
+        Configurator.intitalize("Test1", null, "log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
@@ -77,7 +77,7 @@ public class TestConfigurator {
 
     @Test
     public void testByName() throws Exception {
-        Configurator.intitalize("-config", null);
+        Configurator.intitalize("-config", null, null);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
@@ -97,7 +97,7 @@ public class TestConfigurator {
     public void testReconfiguration() throws Exception {
         File file = new File("target/test-classes/log4j2-config.xml");
         file.setLastModified(System.currentTimeMillis() - 120000);
-        Configurator.intitalize("Test1", "target/test-classes/log4j2-config.xml");
+        Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
