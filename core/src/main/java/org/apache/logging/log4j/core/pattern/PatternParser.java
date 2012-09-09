@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
@@ -125,35 +126,33 @@ public final class PatternParser {
     }
 
 
-    public List<PatternConverter> parse(String pattern) {
+    public List<PatternFormatter> parse(String pattern) {
+        List<PatternFormatter> list = new ArrayList<PatternFormatter>();
         List<PatternConverter> converters = new ArrayList<PatternConverter>();
         List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
 
         parse(pattern, converters, fields);
 
-        LogEventPatternConverter[] patternConverters = new LogEventPatternConverter[converters.size()];
-        FormattingInfo[] patternFields = new FormattingInfo[converters.size()];
-
-        int i = 0;
         Iterator fieldIter = fields.iterator();
 
         for (PatternConverter converter : converters) {
+            LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
-                patternConverters[i] = (LogEventPatternConverter) converter;
-                handlesExceptions |= patternConverters[i].handlesThrowable();
+                pc = (LogEventPatternConverter) converter;
+                handlesExceptions |= pc.handlesThrowable();
             } else {
-                patternConverters[i] = new LiteralPatternConverter("");
+                pc = new LiteralPatternConverter("");
             }
 
+            FormattingInfo field;
             if (fieldIter.hasNext()) {
-                patternFields[i] = (FormattingInfo) fieldIter.next();
+                field = (FormattingInfo) fieldIter.next();
             } else {
-                patternFields[i] = FormattingInfo.getDefault();
+                field = FormattingInfo.getDefault();
             }
-
-            i++;
+            list.add(new PatternFormatter(pc, field));
         }
-        return converters;
+        return list;
     }
 
     public boolean handlesExceptions() {

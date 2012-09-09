@@ -35,20 +35,20 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
 
     private final String substitution;
 
-    private List<PatternConverter> converters;
+    private List<PatternFormatter> formatters;
 
     /**
      * Construct the converter.
-     * @param converters The PatternConverters to generate the text to manipulate.
+     * @param formatters The PatternFormatters to generate the text to manipulate.
      * @param pattern The regular expression Pattern.
      * @param substitution The substitution string.
      */
-    private RegexReplacementConverter(List<PatternConverter> converters,
+    private RegexReplacementConverter(List<PatternFormatter> formatters,
                                       Pattern pattern, String substitution) {
         super("replace", "replace");
         this.pattern = pattern;
         this.substitution = substitution;
-        this.converters = converters;
+        this.formatters = formatters;
     }
 
     /**
@@ -78,8 +78,8 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
         }
         Pattern p = Pattern.compile(options[1]);
         PatternParser parser = PatternLayout.createPatternParser(config);
-        List<PatternConverter> converters = parser.parse(options[0]);
-        return new RegexReplacementConverter(converters, p, options[2]);
+        List<PatternFormatter> formatters = parser.parse(options[0]);
+        return new RegexReplacementConverter(formatters, p, options[2]);
     }
 
 
@@ -88,8 +88,8 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         StringBuilder buf = new StringBuilder();
-        for (PatternConverter c : converters) {
-            c.format(event, buf);
+        for (PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
         }
         toAppendTo.append(pattern.matcher(buf.toString()).replaceAll(substitution));
     }

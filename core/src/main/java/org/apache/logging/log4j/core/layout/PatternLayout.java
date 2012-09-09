@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
 
@@ -73,7 +74,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Initial converter for pattern.
      */
-    private List<PatternConverter> converters;
+    private List<PatternFormatter> formatters;
 
     /**
      * Conversion pattern.
@@ -107,7 +108,7 @@ public final class PatternLayout extends AbstractStringLayout {
         this.conversionPattern = pattern;
         this.config = config;
         PatternParser parser = createPatternParser(config);
-        converters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
+        formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
 
     }
@@ -125,7 +126,7 @@ public final class PatternLayout extends AbstractStringLayout {
             return;
         }
         PatternParser parser = createPatternParser(this.config);
-        converters = parser.parse(pattern);
+        formatters = parser.parse(pattern);
         handlesExceptions = parser.handlesExceptions();
     }
 
@@ -137,8 +138,8 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public String formatAs(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
-        for (PatternConverter c : converters) {
-            c.format(event, buf);
+        for (PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
         }
         String str = buf.toString();
         if (replace != null) {

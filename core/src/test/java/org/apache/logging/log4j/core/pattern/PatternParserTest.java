@@ -16,10 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Logger;
 
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +33,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -47,6 +54,8 @@ public class PatternParserTest {
     private String mdcMsgPattern4 = "%m : %X{key3}%n";
     private String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
+    private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
+
 
     private static final String KEY = "Converter";
     private PatternParser parser;
@@ -56,8 +65,8 @@ public class PatternParserTest {
         parser = new PatternParser(KEY);
     }
 
-    private void validateConverter(List<PatternConverter> converters, int index, String name) {
-        PatternConverter pc = converters.get(index);
+    private void validateConverter(List<PatternFormatter> formatter, int index, String name) {
+        PatternConverter pc = formatter.get(index).getConverter();
         assertEquals("Incorrect converter " + pc.getName() + " at index " + index + " expected " + name,
             pc.getName(), name);
     }
@@ -67,11 +76,35 @@ public class PatternParserTest {
      */
     @Test
     public void defaultPattern() {
-        List<PatternConverter> converters = parser.parse(msgPattern);
-        assertNotNull(converters);
-        assertTrue(converters.size() == 2);
-        validateConverter(converters, 0, "Message");
-        validateConverter(converters, 1, "Line Sep");
+        List<PatternFormatter> formatters = parser.parse(msgPattern);
+        assertNotNull(formatters);
+        assertTrue(formatters.size() == 2);
+        validateConverter(formatters, 0, "Message");
+        validateConverter(formatters, 1, "Line Sep");
     }
+
+    /**
+     * Test the custome pattern
+     */
+    @Test
+    public void testCustomPattern() {
+        List<PatternFormatter> formatters = parser.parse(customPattern);
+        assertNotNull(formatters);
+        Map<String, String> mdc = new HashMap<String, String>();
+        mdc.put("loginId", "Fred");
+        Throwable t = new Throwable();
+        StackTraceElement[] elements = t.getStackTrace();
+        LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
+            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
+            mdc, null, "Thread1", elements[0], System.currentTimeMillis());
+        StringBuilder buf = new StringBuilder();
+        for (PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
+        }
+        String str = buf.toString();
+        String expected = "INFO  [PatternParserTest        :95  ] - Hello, world\n";
+        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+    }
+
 
 }
