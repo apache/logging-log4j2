@@ -230,6 +230,9 @@ public class FlumeEmbeddedAppenderTest {
             transaction.close();
         }
 
+        // Give the AvroSink time to receive notification and notify the channel.
+        Thread.sleep(500);
+
         primarySource.stop();
 
 
