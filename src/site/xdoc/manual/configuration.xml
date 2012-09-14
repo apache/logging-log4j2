@@ -96,7 +96,7 @@
    if (!bar.doIt() {
      logger.error("Didn't do it.");
    }
-   logger.trace("Exiting application."                 }
+   logger.trace("Exiting application.");                 }
  }</source>
           </p>
           <p>
@@ -117,8 +117,7 @@
     public boolean doIt() {
       logger.entry();
       logger.error("Did it again!");
-      logger.exit();
-      return false;
+      return logger.exit(false);
     }
   }</source>
           </p>
@@ -161,7 +160,7 @@
   17:13:01.540 [main] TRACE MyApp - Entering application.
   17:13:01.540 [main] TRACE com.foo.Bar - entry
   17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
-  17:13:01.540 [main] TRACE com.foo.Bar - exit
+  17:13:01.540 [main] TRACE com.foo.Bar - exit with (false)
   17:13:01.540 [main] ERROR MyApp - Didn't do it.
   17:13:01.540 [main] TRACE MyApp - Exiting application.</source>
           </p>
@@ -210,8 +209,8 @@
   17:13:01.540 [main] TRACE com.foo.Bar - entry
   17:13:01.540 [main] TRACE com.foo.Bar - entry
   17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
-  17:13:01.540 [main] TRACE com.foo.Bar - exit
-  17:13:01.540 [main] TRACE com.foo.Bar - exit
+  17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
+  17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
   17:13:01.540 [main] ERROR MyApp - Didn't do it.</source>
           <p>Notice that the trace messages from com.foo.Bar appear twice. This is because the appender associated
             with logger com.foo.Bar is first used, which writes the first instance to the Console. Next, the parent
@@ -250,7 +249,7 @@
             and is set to a non-zero value then the file will be checked the next time a log event is evaluated
             and/or logged and the monitorInterval has elapsed since the last check. The example below shows how
             to configure the attribute so that the configuration file will be checked for changes only after at
-            least 30 seconds have elapsed.  The minimum, and default, interval is 30 seconds.
+            least 30 seconds have elapsed.  The minimum interval is 5 seconds.
           </p>
           <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration monitorInterval="30">
@@ -526,6 +525,20 @@
     }
   }
 }</source>
+          <p>
+            The JSON support uses Jackson to parse the JSON files. These dependencies must be added to a project
+            that wants to use JSON for configuration:
+          <source><![CDATA[    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>1.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.2</version>
+    </dependency>]]></source>
+          </p>
           <h4>Configuring loggers</h4>
           <p>
             An understanding of how loggers work in Log4j is critical before trying to configure them.
@@ -705,6 +718,10 @@
               <tr>
                 <td>ctx</td>
                 <td>Thread Context Map (MDC)</td>
+              </tr>
+              <tr>
+                <td>date</td>
+                <td>Inserts the current date and/or time using the specified format</td>
               </tr>
               <tr>
                 <td>env</td>

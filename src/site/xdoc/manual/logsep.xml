@@ -75,7 +75,25 @@
 
           <h4>Using Context Selectors</h4>
             <p>
-
+              There are a few patterns for achieving the desired state of logging separation using ContextSelectors:
+              <ol>
+                <li>Place the logging jars in the container's classpath and set the system property
+                  "Log4jContextSelector" to "org.apache.logging.log4j.core.selector.BasicContextSelector". This will
+                  create a single LoggerContext using a single configuration that will be shared across all
+                  applications.</li>
+                <li>
+                  Place the logging jars in the container's classpath and use the default ClassLoaderContextSelector.
+                  Include the Log4jContextListener in each web application. Each ContextListener can be configured
+                  to share the same configuration used at the container or they can be individually configured. If
+                  status logging is set to debug in the configuration there will be output from when logging is
+                  initialized in the container and then again in each web application.
+                </li>
+                <li>
+                  Use the JNDIContextFilter and set the system property "Log4jContextSelector" to
+                  "org.apache.logging.log4j.core.selector.JNDIContextSelector". This will cause the container to
+                  use JNDI to locate each's web application's LoggerContext.
+                </li>
+              </ol>
             </p>
         </subsection>
       </section>
