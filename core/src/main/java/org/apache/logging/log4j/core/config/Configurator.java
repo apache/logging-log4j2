@@ -18,11 +18,8 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.xml.sax.InputSource;
 
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 
 /**
  * Class that can be used to initialize and configure the Logging system.
@@ -37,7 +34,7 @@ public final class Configurator {
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
-     * @return
+     * @return The LoggerContext.
      */
     public static LoggerContext intitalize(String name, ClassLoader loader, String configLocation) {
 
@@ -53,9 +50,10 @@ public final class Configurator {
         return null;
     }
 
-    public static void shutdown() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        ctx.setConfiguration(new DefaultConfiguration());
+    public static void shutdown(LoggerContext ctx) {
+        if (ctx != null) {
+            ctx.setConfiguration(new DefaultConfiguration());
+        }
     }
 
 }

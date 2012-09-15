@@ -41,9 +41,8 @@ public class TestConfigurator {
 
     @Test
     public void testFromFile() throws Exception {
-        Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
+        LoggerContext ctx = Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
@@ -51,7 +50,7 @@ public class TestConfigurator {
         Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
-        Configurator.shutdown();
+        Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
             config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
@@ -59,9 +58,8 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPath() throws Exception {
-        Configurator.intitalize("Test1", null, "log4j2-config.xml");
+        LoggerContext ctx = Configurator.intitalize("Test1", null, "log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
@@ -69,7 +67,7 @@ public class TestConfigurator {
         Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
-        Configurator.shutdown();
+        Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
             config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
@@ -77,9 +75,8 @@ public class TestConfigurator {
 
     @Test
     public void testByName() throws Exception {
-        Configurator.intitalize("-config", null, null);
+        LoggerContext ctx = Configurator.intitalize("-config", null, null);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
@@ -87,7 +84,7 @@ public class TestConfigurator {
         Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
-        Configurator.shutdown();
+        Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
             config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
@@ -97,9 +94,8 @@ public class TestConfigurator {
     public void testReconfiguration() throws Exception {
         File file = new File("target/test-classes/log4j2-config.xml");
         file.setLastModified(System.currentTimeMillis() - 120000);
-        Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
+        LoggerContext ctx = Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
@@ -115,7 +111,7 @@ public class TestConfigurator {
         }
         Configuration newConfig = ctx.getConfiguration();
         assertTrue("Configuration not reset", newConfig != config);
-        Configurator.shutdown();
+        Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
         assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
             config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));

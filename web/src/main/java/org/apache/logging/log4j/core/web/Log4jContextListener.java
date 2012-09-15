@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.web;
 
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -38,8 +38,6 @@ public class Log4jContextListener implements ServletContextListener {
 
     public static final String LOG4J_CONTEXT_NAME = "log4jContextName";
 
-    private static final String CLASSES = "WEB-INF/classes";
-
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
         String locn = context.getInitParameter(LOG4J_CONFIG);
@@ -55,8 +53,8 @@ public class Log4jContextListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        event.getServletContext().removeAttribute(LOG4J_CONTEXT_ATTRIBUTE);
-        Configurator.shutdown();
+        LoggerContext ctx = (LoggerContext) event.getServletContext().getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
+        Configurator.shutdown(ctx);
     }
 
     private ClassLoader getClassLoader(ServletContext context) {
