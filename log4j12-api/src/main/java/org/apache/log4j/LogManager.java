@@ -46,6 +46,11 @@ public final class LogManager {
         return Logger.getLogger(name);
     }
 
+    static void reconfigure() {
+        LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
+        ctx.reconfigure();
+    }
+
     /**
      * Internal LogManager.
      */
