@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Class that can be used to initialize and configure the Logging system.
@@ -36,12 +37,29 @@ public final class Configurator {
      * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
      */
-    public static LoggerContext intitalize(String name, ClassLoader loader, String configLocation) {
+    public static LoggerContext initialize(String name, ClassLoader loader, String configLocation) {
+
+        try {
+            URI uri = configLocation == null ? null : new URI(configLocation);
+            return initialize(name, loader, uri);
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Initialize the Logging Context.
+     * @param name The Context name.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param configLocation The configuration for the logging context.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(String name, ClassLoader loader, URI configLocation) {
 
         try {
             LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
-            URI uri = configLocation == null ? null : new URI(configLocation);
-            Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, uri);
+            Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
             ctx.setConfiguration(config);
             return ctx;
         } catch (Exception ex) {

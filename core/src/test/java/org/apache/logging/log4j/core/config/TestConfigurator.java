@@ -41,7 +41,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromFile() throws Exception {
-        LoggerContext ctx = Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
+        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -58,7 +58,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPath() throws Exception {
-        LoggerContext ctx = Configurator.intitalize("Test1", null, "log4j2-config.xml");
+        LoggerContext ctx = Configurator.initialize("Test1", null, "log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -75,7 +75,7 @@ public class TestConfigurator {
 
     @Test
     public void testByName() throws Exception {
-        LoggerContext ctx = Configurator.intitalize("-config", null, null);
+        LoggerContext ctx = Configurator.initialize("-config", null, (String) null);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -94,7 +94,7 @@ public class TestConfigurator {
     public void testReconfiguration() throws Exception {
         File file = new File("target/test-classes/log4j2-config.xml");
         file.setLastModified(System.currentTimeMillis() - 120000);
-        LoggerContext ctx = Configurator.intitalize("Test1", null, "target/test-classes/log4j2-config.xml");
+        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);

@@ -49,7 +49,7 @@ public class Log4jContextListener implements ServletContextListener {
             context.log("No Log4j context configuration provided");
             return;
         }
-        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, Configurator.intitalize(name, getClassLoader(context), locn));
+        context.setAttribute(LOG4J_CONTEXT_ATTRIBUTE, Configurator.initialize(name, getClassLoader(context), locn));
     }
 
     public void contextDestroyed(ServletContextEvent event) {
