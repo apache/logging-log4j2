@@ -22,7 +22,10 @@
   </properties>
 
   <body>
-    <release version="2.0-alpha3" date="TBD" description="">
+    <release version="2.0-alpha3" date="2012-09-17" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="add">
+        Added AsynchAppender.
+      </action>
       <action issue="LOG4J-81" dev="rgoers" type="fix">
         PatternLayout was not honoring format modifiers.
       </action>

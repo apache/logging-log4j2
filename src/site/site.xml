@@ -46,6 +46,7 @@
     <menu name="Manual" inherit="top">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="Log4j 1.x Migration" href="manual/migration.html"/>
       <item name="API" href="/manual/api.html" collapse="true">
         <item name="Overview" href="manual/api.html#Overview"/>
         <item name="Flow Tracing" href="manual/flowtracing.html"/>

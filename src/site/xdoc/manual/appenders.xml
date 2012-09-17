@@ -45,6 +45,83 @@
         <p>
           Appenders always have a name so that they can be referenced from Loggers.
         </p>
+        <a name="AsynchAppender"/>
+        <subsection name="AsynchAppender">
+          <p>The AsynchAppender accepts references to other Appenders and causes LogEvents to be written to them
+            on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
+            the application. </p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>appender-ref</td>
+              <td>String</td>
+              <td>The name of the Appenders to invoke asynchronously. Multiple appender-ref
+                elements can be configured.</td>
+            </tr>
+            <tr>
+              <td>blocking</td>
+              <td>boolean</td>
+              <td>If true, the appender will wait until there are free slots in the queue. If false, the event
+                will be written to the error appender if the queue is full.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>integer</td>
+              <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
+            </tr>
+            <tr>
+              <td>error-ref</td>
+              <td>String</td>
+              <td>The name of the Appender to invoke if none of the appenders can be called, either due to errors
+                in the appenders or because the queue is full. If not specified then errors will be ignored.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">AsynchAppender Parameters</caption>
+          </table>
+          <p>
+            A typical AsynchAppender configuration might look like:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+    <Asynch name="Asynch">
+      <appender-ref ref="MyFile"/>
+    </Asynch>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Asynch"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
+        </subsection>
         <a name="ConsoleAppender"/>
         <subsection name="ConsoleAppender">
           <p>
@@ -756,7 +833,8 @@
             <tr>
               <td>appender-ref</td>
               <td>String</td>
-              <td>The name of the Appender to call after the LogEvent has been manipulated.</td>
+              <td>The name of the Appenders to call after the LogEvent has been manipulated. Multiple appender-ref
+                elements can be configured.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -960,7 +1038,8 @@
             <a name="DefaultRolloverStrategy"/>
             <h5>Default Rollover Strategy</h5>
               <p>
-                The default rollover strategy accepts both a date/time pattern and an integer. If the date/time pattern
+                The default rollover strategy accepts both a date/time pattern and an integer from the filePattern
+                attribute specified on the RollingFileAppender itself. If the date/time pattern
                 is present it will be replaced with the current date and time values. If the pattern contains an integer
                 it will be incremented on each rollover. If the pattern contains both a date/time and integer
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
@@ -968,6 +1047,9 @@
                 compression scheme that matches the suffix. The pattern may also contain lookup references that
                 can be resolved at runtime such as is shown in the example below.
               </p>
+              <p>The Default rollover strategy also accepts a minimum value and a maximum value. When a minimim
+                value other than 1 is specified than files with an index lower than that value will not be
+                deleted when the maximum value is exceeded.</p>
               <table border="1" width="100%">
                 <tr>
                   <th>Parameter Name</th>
@@ -982,7 +1064,7 @@
                 <tr>
                   <td>max</td>
                   <td>integer</td>
-                  <td>The maximum value of the counter. Once this values is reached. Older archives will be
+                  <td>The maximum value of the counter. Once this values is reached older archives will be
                     deleted on subsequent rollovers.</td>
                 </tr>
                 <caption align="top">DefaultRolloverStrategy Parameters</caption>
@@ -1015,6 +1097,31 @@
 </configuration>
   ]]></source>
           </p>
+          <p>
+            This second example shows a rollover strategy that will keep up to 20 files before removing them.
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+        </p>
         </subsection>
         <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">
@@ -1177,6 +1284,21 @@
             </tr>
             <caption align="top">SocketAppender Parameters</caption>
           </table>
+
+          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Socket name="socket" host="localhost" port="9500">
+      <SerlializedLayout />
+    </Socket>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="socket"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
         </subsection>
         <a name="SyslogAppender"/>
         <subsection name="SyslogAppender">
