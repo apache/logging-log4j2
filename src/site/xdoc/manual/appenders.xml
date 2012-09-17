@@ -49,7 +49,8 @@
         <subsection name="AsynchAppender">
           <p>The AsynchAppender accepts references to other Appenders and causes LogEvents to be written to them
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
-            the application. </p>
+            the application. The AsynchAppender should be configured after the appenders it references to allow it
+            to shut down properly.</p>
           <table border="1" width="100%">
             <tr>
               <th>Parameter Name</th>
@@ -822,7 +823,8 @@
           <p>
             The RewriteAppender allows the LogEvent to manipulated before it is processed by another Appender. This
             can be used to mask sensitive information such as passwords or to inject information into each event.
-            The RewriteAppender must be configured with a <a href="RewritePolicy">RewritePolicy</a>.
+            The RewriteAppender must be configured with a <a href="RewritePolicy">RewritePolicy</a>. The
+            RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
           </p>
           <table border="1" width="100%">
             <tr>
@@ -1128,7 +1130,8 @@
            <p>
              The RoutingAppender evaluates LogEvents and then routes them to a subordinate Appender. The target
              Appender may be an appender previously configured and may be referenced by its name or the
-             Appender can be dynamically created as needed.
+             Appender can be dynamically created as needed. The RoutingAppender should be configured after any
+             Appenders it references to allow it to shut down properly.
           </p>
           <table border="1" width="100%">
             <tr>
