@@ -223,6 +223,22 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return new LogEventProxy(this);
     }
 
+    public static Serializable serialize(Log4jLogEvent event) {
+        return new LogEventProxy(event);
+    }
+
+    public static Log4jLogEvent deserialize(Serializable event) {
+        if (event == null) {
+            throw new NullPointerException("Event cannot be null");
+        }
+        if (event instanceof LogEventProxy) {
+            LogEventProxy proxy = (LogEventProxy) event;
+            return new Log4jLogEvent(proxy.name, proxy.marker, proxy.fqcnOfLogger, proxy.level, proxy.message,
+                proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName, proxy.location, proxy.timestamp);
+        }
+        throw new IllegalArgumentException("Event is not a serialized LogEvent: " + event.toString());
+    }
+
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }

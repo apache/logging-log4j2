@@ -126,8 +126,10 @@ public class BaseConfiguration extends Filterable implements Configuration {
             logger.clearAppenders();
             logger.stopFilter();
         }
-        for (Appender appender : appenders.values()) {
-            appender.stop();
+        // Stop the appenders in reverse order in case they still have activity.
+        Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
+        for (int i = array.length - 1; i > 0; --i) {
+            array[i].stop();
         }
         stopFilter();
     }
