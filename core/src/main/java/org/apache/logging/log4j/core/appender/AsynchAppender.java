@@ -54,6 +54,7 @@ public final class AsynchAppender extends AppenderBase {
     private AsynchThread thread = null;
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
+    private static final String SHUTDOWN = "Shutdown";
 
     private AsynchAppender(String name, Filter filter, AppenderRef[] appenderRefs, String errorRef,
                            int queueSize, boolean blocking,
@@ -183,13 +184,33 @@ public final class AsynchAppender extends AppenderBase {
 
         public void run() {
             while (!shutdown) {
+                Serializable s;
                 try {
-                    Log4jLogEvent event = Log4jLogEvent.deserialize(queue.take());
-                    for (AppenderControl control : appenders) {
-                        control.callAppender(event);
+                    s = queue.take();
+                    if (s != null && s instanceof String && SHUTDOWN.equals(s.toString())) {
+                        shutdown = true;
+                        continue;
                     }
                 } catch (InterruptedException ex) {
-                    // May have been interrupted to shut down.
+                    // No good reason for this.
+                    continue;
+                }
+                Log4jLogEvent event = Log4jLogEvent.deserialize(s);
+                boolean success = false;
+                for (AppenderControl control : appenders) {
+                    try {
+                        control.callAppender(event);
+                        success = true;
+                    } catch (Exception ex) {
+                        // If no appender is successful the error appender will get it.
+                    }
+                }
+                if (!success && errorAppender != null) {
+                    try {
+                        errorAppender.callAppender(event);
+                    } catch (Exception ex) {
+                        // Silently accept the error.
+                    }
                 }
             }
             // Process any remaining items in the queue.
@@ -207,7 +228,9 @@ public final class AsynchAppender extends AppenderBase {
 
         public void shutdown() {
             shutdown = true;
-            this.interrupt();
+            if (queue.isEmpty()) {
+                queue.offer(SHUTDOWN);
+            }
         }
     }
 }
