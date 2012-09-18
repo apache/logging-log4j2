@@ -74,13 +74,13 @@ public class ResolverUtil<T> {
     /** An instance of Log to use for logging in this class. */
     private static final Logger LOG = StatusLogger.getLogger();
 
+    private static final String VFSZIP = "vfszip";
+
     /** The set of matches being accumulated. */
     private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
 
     /** The set of matches being accumulated. */
     private Set<URI> resourceMatches = new HashSet<URI>();
-
-    private static final String VFSZIP = "vfszip";
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned

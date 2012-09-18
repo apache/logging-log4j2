@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.IllegalFormatException;
 
 /**
- * Handles messages that consist of a format string conforming to java.util.Formatter
+ * Handles messages that consist of a format string conforming to java.util.Formatter.
  */
 public class StringFormattedMessage implements Message, Serializable {
 
@@ -152,7 +152,7 @@ public class StringFormattedMessage implements Message, Serializable {
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
         int i = 0;
-        for (Object obj: argArray) {
+        for (Object obj : argArray) {
             stringArgs[i] = obj.toString();
             ++i;
         }
@@ -164,7 +164,7 @@ public class StringFormattedMessage implements Message, Serializable {
         messagePattern = in.readUTF();
         int length = in.readInt();
         stringArgs = new String[length];
-        for (int i=0; i < length; ++i) {
+        for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();
         }
     }

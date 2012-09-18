@@ -221,7 +221,7 @@ public abstract class ConfigurationFactory {
             LOGGER.error("Invalid URL " + configLocation.toString(), ex);
         } catch (IOException ex) {
             LOGGER.error("Unable to access " + configLocation.toString(), ex);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             LOGGER.error("Unable to access " + configLocation.toString(), ex);
         }
         return null;

@@ -54,11 +54,19 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private final URI configLocation;
 
+    /**
+     * Status of the LoggerContext.
+     */
     public enum Status {
+        /** Initialized but not yet started. */
         INITIALIZED,
+        /** In the process of starting. */
         STARTING,
+        /** Is active. */
         STARTED,
+        /** Shutdown is in progress. */
         STOPPING,
+        /** Has shutdown. */
         STOPPED
     }
 
@@ -276,6 +284,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     /**
      * Cause a reconfiguration to take place when the underlying configuration file changes.
+     * @param reconfigurable The Configuration that can be reconfigured.
      */
     public synchronized void onChange(Reconfigurable reconfigurable) {
         logger.debug("Reconfiguration started for context " + contextName);

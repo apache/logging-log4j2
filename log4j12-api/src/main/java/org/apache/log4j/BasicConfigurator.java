@@ -17,7 +17,7 @@
 package org.apache.log4j;
 
 /**
- * Provided for compatibility with Log4j 1.x
+ * Provided for compatibility with Log4j 1.x.
  */
 public class BasicConfigurator {
 

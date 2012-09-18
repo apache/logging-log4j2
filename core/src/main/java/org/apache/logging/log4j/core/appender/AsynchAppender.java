@@ -45,6 +45,9 @@ import java.util.concurrent.BlockingQueue;
 @Plugin(name = "Asynch", type = "Core", elementType = "appender", printObject = true)
 public final class AsynchAppender extends AppenderBase {
 
+    private static final int DEFAULT_QUEUE_SIZE = 128;
+    private static final String SHUTDOWN = "Shutdown";
+
     private final BlockingQueue<Serializable> queue;
     private final boolean blocking;
     private final Configuration config;
@@ -52,9 +55,6 @@ public final class AsynchAppender extends AppenderBase {
     private final String errorRef;
     private AppenderControl errorAppender = null;
     private AsynchThread thread = null;
-
-    private static final int DEFAULT_QUEUE_SIZE = 128;
-    private static final String SHUTDOWN = "Shutdown";
 
     private AsynchAppender(String name, Filter filter, AppenderRef[] appenderRefs, String errorRef,
                            int queueSize, boolean blocking,
@@ -85,7 +85,7 @@ public final class AsynchAppender extends AppenderBase {
                 LOGGER.error("Unable to set up error Appender. No appender named {} was configured", errorRef);
             }
         }
-        if (appenders.size() > 0 ) {
+        if (appenders.size() > 0) {
             thread = new AsynchThread(appenders, queue);
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsynchAppender " + getName());
@@ -168,9 +168,13 @@ public final class AsynchAppender extends AppenderBase {
 
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new AsynchAppender(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions, config);
+        return new AsynchAppender(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions,
+                                  config);
     }
 
+    /**
+     * Thread that calls the Appenders.
+     */
     private class AsynchThread extends Thread {
 
         private volatile boolean shutdown = false;

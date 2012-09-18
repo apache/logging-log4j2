@@ -48,7 +48,7 @@ public interface Marker extends Serializable {
 
     /**
      * Checks whether this Marker is an instance of the specified Marker.
-     * @param m The Marker name to check.
+     * @param name The name of the Marker.
      * @return true of this Marker or one of its ancestors matches the specified name, false otherwise.
      */
     boolean isInstanceOf(String name);

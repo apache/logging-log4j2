@@ -40,15 +40,17 @@ public abstract class AbstractManager {
 
     private static Lock lock = new ReentrantLock();
 
-    private String name;
-
+    /**
+     * Number of Appenders using this manager.
+     */
     protected int count;
+
+    private String name;
 
     protected AbstractManager(String name) {
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
-
 
     /**
      * Retrieves a Manager if it has been previously created or creates a new Manager.
