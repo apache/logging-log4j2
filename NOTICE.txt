@@ -1,4 +1,4 @@
-Apache log4j2 1.0-alpha1
+Apache log4j2 1.0-beta1
 Copyright 2012 The Apache Software Foundation
 
 This product includes software developed at
