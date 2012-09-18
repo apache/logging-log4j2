@@ -1,28 +1,46 @@
 
-              Apache Log4j 2.0-alpha2 RELEASE NOTES
+              Apache Log4j 2.0-beta1 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0-alpha2 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta1 release!
 
-Apache Log4j 2.0-alpha2 requires a minimum of Java 5 to build and run. Basic compatibility with
+Apache Log4j 2.0-beta1 requires a minimum of Java 5 to build and run. Basic compatibility with
 Log4j 1.x is provided through the log4j12-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
 
-Bug fixes and minor enhancements
+Bug fixes and enhancements
 
 Changes in this version include:
 
 New features:
-o LOG4J2-70:  Add getLogger(Class) to LogManager. 
-o LOG4J2-69:  Allow Flume agents to be embedded into the Flume Appender. 
-o LOG4J2-68:  Add support for formatting using String.format(). 
-o LOG4J2-67:  Allow components besides core to create a PluginMap for faster plugin loading and not
-        having to specify the plugin package in the configuration. 
+o Added AsynchAppender. 
 
 Fixed Bugs:
-o LOG4J2-64:  Fix compilation problems in Java 7. 
-o LOG4J2-65:  Allow variable substitution on the configuration attributes and on the root log level. 
+o LOG4J-81:  PatternLayout was not honoring format modifiers. 
+o Created web module to allow web applications to include the Log4j context listener in WEB-INF/lib even if
+        Log4j is in the container's class path. Allow locating the LoggerContext to include the ClassLoader. Updated
+        the Loader utility to always choose the child ClassLoader. Verified in Jboss 5 and Tomcat. 
+o LOG4J2-82:  MarkerFilter called MarkerManager.getMarker causing the Marker to be created during the processing of the
+        configuration. This prevents the application from creating the Marker with any parents. MarkerWrapper in
+        SLF4J-impl was getting a ClassCastException in instanceOf because the Marker isn't a MarkerWrapper. 
+o LOG4J2-80:  Allow Log4j 2 to be used as the implementation with SLF4J and SLF4J's jcl-over-slf4j by adding filtering
+        to the log method in SLF4JLogger. Thanks to Oliver Lamy. 
+o LOG4J2-78:  LogFactoryImpl.setAttribute in the Commons Logging bridge got a NullPointerException when passed a null value.
+        It will now remove the attribute. 
+o LOG4J2-77:  RoutingAppender was calling the stop method for each of its referenced Appenders and was calling
+        the stop method of the default Appender a second time. It will now only call the stop method of
+        Appenders it creates. 
+o LOG4J2-76:  RewriteAppender was calling the stop method of the referenced appender causing the referenced appender's
+        manager to have its use count decremented too many times. 
+o LOG4J2-74:  Logger.error(Marker, Message, Throwable) was internally using Level.TRACE. 
+o LOG4J2-75:  Enhanced Log4jContextListener to accept a configuration file location. Modified FileConfigurationMonitor
+        to monitor files configured that way. Fixed other reconfiguration related bugs. Tested in JBoss and
+        Tomcat. 
+o LOG4J2-72:  NullPointerException in RollingFileManager when filePattern does not cause the file to be compressed. 
+o LOG4J2-71:  FileRenameAction did not create the parent directories of the archive files causing the rollover to fail. 
 
+Changes:
+o Update the versions of SLF4J and Logback. 
 
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
