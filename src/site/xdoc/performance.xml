@@ -112,7 +112,7 @@
           <b>The performance of deciding whether to log or not to log when logging is turned on.</b>
           <br/>
           <p>
-            Unlike Log4j and Logback, Log4j 2 Loggers don't "walk a hierarchy". Loggers point directly to the
+            Unlike Log4j, Log4j 2 Loggers don't "walk a hierarchy". Loggers point directly to the
             Logger configuration that best matches the Logger's name. This incurs extra overhead when the Logger
             is first created but reduces the overhead every time the Logger is used.
           </p>
@@ -127,9 +127,9 @@
             delivering log events will never be insignificant. For example, the results of writing to a simple log
             file using the same format using Log4j, Logback and Log4j 2 are:
             <pre>
-            Log4j: 4220
-            Logback: 9671
-            Log4j 2: 4615
+              Log4j: 1427
+              Logback: 1401
+              Log4j 2.0: 1963
             </pre>
           </p>
           <p>
