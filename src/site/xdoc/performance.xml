@@ -127,14 +127,18 @@
             delivering log events will never be insignificant. For example, the results of writing to a simple log
             file using the same format using Log4j, Logback and Log4j 2 are:
             <pre>
-              Log4j: 1427
-              Logback: 1401
-              Log4j 2.0: 1963
+              Log4j: 1651
+              Logback: 1419
+              Log4j 2.0: 1542
             </pre>
           </p>
           <p>
-            These results show that actually writing out the events can be at least 1000 times more expensive than
-            when they are disabled.
+            As with many of the other results on this page the differences between the frameworks above should be
+            considered insignificant. The values will change somewhat on each execution and changing the order the
+            frameworks are tested or adding calls to System.gc() between the tests can cause a variation in the
+            reported times. However, these results show that actually writing out the events can be at least 1000
+            times more expensive than when they are disabled, so it is always recommended to take advantage of
+            Log4j 2's fine-grained filtering capabilities.
           </p>
         </li>
         <li>

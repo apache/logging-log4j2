@@ -22,6 +22,11 @@
   </properties>
 
   <body>
+    <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="fix">
+        Move variable substitution from PatternLayout to appropriate converters to improve performance.
+      </action>
+    </release>
     <release version="2.0-beta1" date="2012-09-18" description="Bug fixes and enhancements">
       <action dev="rgoers" type="add">
         Added AsynchAppender.
