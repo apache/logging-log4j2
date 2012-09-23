@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.Message;
@@ -30,13 +31,16 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private final String[] formats;
 
+    private final Configuration config;
+
     /**
      * Private constructor.
      * @param options options, may be null.
      */
-    private MessagePatternConverter(final String[] options) {
+    private MessagePatternConverter(final Configuration config, final String[] options) {
         super("Message", "message");
         formats = options;
+        this.config = config;
     }
 
     /**
@@ -45,8 +49,8 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static MessagePatternConverter newInstance(final String[] options) {
-        return new MessagePatternConverter(options);
+    public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
+        return new MessagePatternConverter(config, options);
     }
 
     /**
@@ -55,11 +59,14 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Message msg = event.getMessage();
         if (msg != null) {
+            String result;
             if (msg instanceof MultiformatMessage) {
-                toAppendTo.append(((MultiformatMessage) msg).getFormattedMessage(formats));
+                result = ((MultiformatMessage) msg).getFormattedMessage(formats);
             } else {
-                toAppendTo.append(msg.getFormattedMessage());
+                result = msg.getFormattedMessage();
             }
+            toAppendTo.append(config != null && result.contains("${") ?
+                config.getSubst().replace(event, result) : result);
         }
     }
 }

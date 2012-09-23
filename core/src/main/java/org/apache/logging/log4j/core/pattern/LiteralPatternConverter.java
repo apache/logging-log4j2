@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 
 
 /**
@@ -28,33 +29,40 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
      */
     private final String literal;
 
+    private final Configuration config;
+
+    private final boolean substitute;
+
     /**
      * Create a new instance.
      *
+     * @param config The Configuration.
      * @param literal string literal.
      */
-    public LiteralPatternConverter(final String literal) {
+    public LiteralPatternConverter(final Configuration config, final String literal) {
         super("Literal", "literal");
         this.literal = literal;
+        this.config = config;
+        substitute = config != null && literal.contains("${");
     }
 
     /**
      * {@inheritDoc}
      */
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(literal);
+        toAppendTo.append(substitute ? config.getSubst().replace(event, literal) : literal);
     }
     /**
      * {@inheritDoc}
      */
     public void format(final Object obj, final StringBuilder output) {
-        output.append(literal);
+        output.append(substitute ? config.getSubst().replace(literal) : literal);
     }
 
     /**
      * {@inheritDoc}
      */
     public void format(Object[] objects, final StringBuilder output) {
-        output.append(literal);
+        output.append(substitute ? config.getSubst().replace(literal) : literal);
     }
 }

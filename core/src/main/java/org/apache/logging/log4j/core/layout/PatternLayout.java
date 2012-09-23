@@ -109,7 +109,6 @@ public final class PatternLayout extends AbstractStringLayout {
         PatternParser parser = createPatternParser(config);
         formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
-
     }
 
     /**
@@ -144,7 +143,7 @@ public final class PatternLayout extends AbstractStringLayout {
         if (replace != null) {
             str = replace.format(str);
         }
-        return config == null ? str : config.getSubst().replace(event, str);
+        return str;
     }
 
     /**

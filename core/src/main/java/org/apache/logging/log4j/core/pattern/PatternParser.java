@@ -140,7 +140,7 @@ public final class PatternParser {
                 pc = (LogEventPatternConverter) converter;
                 handlesExceptions |= pc.handlesThrowable();
             } else {
-                pc = new LiteralPatternConverter("");
+                pc = new LiteralPatternConverter(config, "");
             }
 
             FormattingInfo field;
@@ -269,7 +269,7 @@ public final class PatternParser {
                             default:
 
                                 if (currentLiteral.length() != 0) {
-                                    patternConverters.add(new LiteralPatternConverter(currentLiteral.toString()));
+                                    patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
                                     formattingInfos.add(FormattingInfo.getDefault());
                                 }
 
@@ -377,7 +377,7 @@ public final class PatternParser {
 
         // while
         if (currentLiteral.length() != 0) {
-            patternConverters.add(new LiteralPatternConverter(currentLiteral.toString()));
+            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
             formattingInfos.add(FormattingInfo.getDefault());
         }
     }
@@ -515,14 +515,14 @@ public final class PatternParser {
 
             LOGGER.error(msg.toString());
 
-            patternConverters.add(new LiteralPatternConverter(currentLiteral.toString()));
+            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
             formattingInfos.add(FormattingInfo.getDefault());
         } else {
             patternConverters.add(pc);
             formattingInfos.add(formattingInfo);
 
             if (currentLiteral.length() > 0) {
-                patternConverters.add(new LiteralPatternConverter(currentLiteral.toString()));
+                patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
                 formattingInfos.add(FormattingInfo.getDefault());
             }
         }
