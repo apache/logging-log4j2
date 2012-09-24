@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-90" dev="rgoers" type="fix">
+        Add documentation on client vs server mode to performance page.
+      </action>
       <action dev="rgoers" type="fix">
         Move variable substitution from PatternLayout to appropriate converters to improve performance.
       </action>
