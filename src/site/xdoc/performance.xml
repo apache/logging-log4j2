@@ -201,6 +201,17 @@
             </tr>
           </table>
         </li>
+        <li>
+          <b>Client vs Server</b>
+          <br />
+          <p>
+            Java supports a "client" and a "server" mode of operation. By default, applications that are
+            run in Java 5 on machines with 2 CPUs or more and 2GB of memory or more on operating systems
+            other than Windows or are run in a 64-bit JVM are automatically configured to run in "server" mode.
+            Testing has shown that Log4j 2 benefits greatly from running in server mode and user's are
+            strongly encouraged to configure their applications to run in server mode when using Log4j 2.
+          </p>
+        </li>
 
       </ol>
       <p>
