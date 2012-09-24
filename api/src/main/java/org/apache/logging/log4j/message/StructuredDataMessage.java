@@ -23,10 +23,6 @@ import java.util.Map;
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
 public class StructuredDataMessage extends MapMessage implements MultiformatMessage, Serializable {
-    /**
-     * Full message format includes the type and message.
-     */
-    public static final String FULL = "FULL";
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
@@ -37,6 +33,13 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     private String message;
 
     private String type;
+
+    public enum Format {
+        /** The map should be formatted as XML. */
+        XML,
+        /** Full message format includes the type and message. */
+        FULL
+    }
 
     /**
      * Constructor based on a String id.
@@ -113,6 +116,19 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     }
 
     /**
+     * Return the supported formats.
+     * @return An array of the supported format names.
+     */
+    public String[] getFormats() {
+        String[] formats = new String[Format.values().length];
+        int i = 0;
+        for (Format format : Format.values()) {
+            formats[i++] = format.name();
+        }
+        return formats;
+    }
+
+    /**
      * Return the id.
      * @return the StructuredDataId.
      */
@@ -178,7 +194,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      */
     @Override
     public String asString() {
-        return asString(FULL, null);
+        return asString(Format.FULL, null);
     }
 
     /**
@@ -189,7 +205,11 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      */
 
     public String asString(String format) {
-        return asString(format, null);
+        try {
+            return asString(Format.valueOf(format.toUpperCase()), null);
+        } catch (IllegalArgumentException ex) {
+            return asString();
+        }
     }
 
     /**
@@ -201,9 +221,9 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      *                         will be used.
      * @return The formatted String.
      */
-    public final String asString(String format, StructuredDataId structuredDataId) {
+    public final String asString(Format format, StructuredDataId structuredDataId) {
         StringBuilder sb = new StringBuilder();
-        boolean full = FULL.equals(format);
+        boolean full = Format.FULL.equals(format);
         if (full) {
             String type = getType();
             if (type == null) {
@@ -240,7 +260,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      */
     @Override
     public String getFormattedMessage() {
-        return asString(FULL, null);
+        return asString(Format.FULL, null);
     }
 
     /**
@@ -256,14 +276,30 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     public String getFormattedMessage(String[] formats) {
         if (formats != null && formats.length > 0) {
             for (String format : formats) {
-                if (format.equalsIgnoreCase(FULL)) {
-                    return asString(FULL, null);
+                if (Format.XML.name().equalsIgnoreCase(format)) {
+                    return asXML();
+                } else if (Format.FULL.name().equalsIgnoreCase(format)) {
+                    return asString(Format.FULL, null);
                 }
             }
             return asString(null, null);
         } else {
-            return asString(FULL, null);
+            return asString(Format.FULL, null);
         }
+    }
+
+    private String asXML() {
+        StringBuilder sb = new StringBuilder();
+        StructuredDataId id = getId();
+        if (id == null || id.getName() == null || type == null) {
+            return sb.toString();
+        }
+        sb.append("<StructuredData>\n");
+        sb.append("<type>").append(type).append("</type>\n");
+        sb.append("<id>").append(id).append("</id>\n");
+        super.asXML(sb);
+        sb.append("</StructuredData>\n");
+        return sb.toString();
     }
 
     @Override

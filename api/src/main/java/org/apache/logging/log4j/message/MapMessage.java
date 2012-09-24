@@ -59,6 +59,15 @@ public class MapMessage implements MultiformatMessage, Serializable {
         this.data = map;
     }
 
+    public String[] getFormats() {
+        String[] formats = new String[MapFormat.values().length];
+        int i = 0;
+        for (MapFormat format : MapFormat.values()) {
+            formats[i++] = format.name();
+        }
+        return formats;
+    }
+
     /**
      * Return the data elements as if they were parameters on the logging event.
      * @return the data elements.

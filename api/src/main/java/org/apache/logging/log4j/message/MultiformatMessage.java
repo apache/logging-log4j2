@@ -33,4 +33,10 @@ public interface MultiformatMessage extends Message {
      * @return The message String.
      */
     String getFormattedMessage(String[] formats);
+
+    /**
+     * Returns the supported formats.
+     * @return The supported formats.
+     */
+    String[] getFormats();
 }

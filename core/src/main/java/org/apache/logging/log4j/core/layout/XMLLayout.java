@@ -32,6 +32,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Transform;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MultiformatMessage;
 
 
 /**
@@ -77,6 +79,8 @@ public class XMLLayout extends AbstractStringLayout {
     private final boolean properties;
     private final boolean complete;
 
+    private static final String[] FORMATS = new String[] {"xml"};
+
     protected XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
         super(charset);
         this.locationInfo = locationInfo;
@@ -108,13 +112,31 @@ public class XMLLayout extends AbstractStringLayout {
         buf.append(Transform.escapeTags(event.getThreadName()));
         buf.append("\">\r\n");
 
-        buf.append("<log4j:message><![CDATA[");
-        // Append the rendered message. Also make sure to escape any
-        // existing CDATA sections.
-        Transform.appendEscapingCDATA(buf, event.getMessage().getFormattedMessage());
-        buf.append("]]></log4j:message>\r\n");
+        Message msg = event.getMessage();
+        if (msg != null) {
+            boolean xmlSupported = false;
+            if (msg instanceof MultiformatMessage) {
+                String[] formats = ((MultiformatMessage) msg).getFormats();
+                for (String format : formats) {
+                    if (format.equalsIgnoreCase("XML")) {
+                        xmlSupported = true;
+                    }
+                }
+            }
+            if (xmlSupported) {
+                buf.append("<log4j:message>");
+                buf.append(((MultiformatMessage) msg).getFormattedMessage(FORMATS));
+                buf.append("</log4j:message>");
+            } else {
+                buf.append("<log4j:message><![CDATA[");
+                // Append the rendered message. Also make sure to escape any
+                // existing CDATA sections.
+                Transform.appendEscapingCDATA(buf, event.getMessage().getFormattedMessage());
+                buf.append("]]></log4j:message>\r\n");
+            }
+        }
 
-        if (event.getContextStack().size() > 0) {
+        if (event.getContextStack() != null && event.getContextStack().size() > 0) {
             buf.append("<log4j:NDC><![CDATA[");
             Transform.appendEscapingCDATA(buf, event.getContextStack().toString());
             buf.append("]]></log4j:NDC>\r\n");
