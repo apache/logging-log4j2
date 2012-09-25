@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  *
@@ -94,9 +94,9 @@ public interface LogEvent extends Serializable {
     /**
      * Get the NDC data.
      *
-     * @return A copy of the Nested Diagnostic Context of null;
+     * @return A copy of the Nested Diagnostic Context or null;
      */
-    Stack<String> getContextStack();
+    ThreadContext.ContextStack getContextStack();
 
     /**
      * Returns the fully qualified class name of the caller of the logging api.

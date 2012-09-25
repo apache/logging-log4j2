@@ -23,6 +23,16 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-84" dev="rgoers" type="fix">
+        If the ThreadContext stack is empty the LogEvent will contain a null value to reduce the overhead of
+        creating log events and in the size of the serialized object. Changed the ThreadContext stack to use
+        a custom stack interface instead of java.util.Stack as that class is overly heavy. This change will
+        cause an API incompatibility.
+      </action>
+      <action issue="LOG4J2-83" dev="rgoers" type="fix">
+        If the ThreadContext map is empty the LogEvent will contain a null value to reduce the overhead of creating
+        log events and in the size of the serialized object.
+      </action>
       <action dev="rgoers" type="add">
         Add getFormats to MultiformatMessage and allow StructuredDataMessage to format as XML.
       </action>

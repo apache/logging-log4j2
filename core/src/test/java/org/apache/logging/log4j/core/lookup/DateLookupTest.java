@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.junit.Test;
@@ -84,7 +85,7 @@ public class DateLookupTest {
             return null;
         }
 
-        public Stack<String> getContextStack() {
+        public ThreadContext.ContextStack getContextStack() {
             return null;
         }
 

@@ -27,9 +27,7 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * Implementation of a LogEvent.
@@ -46,7 +44,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final long timestamp;
     private final ThrowableProxy throwable;
     private final Map<String, String> mdc;
-    private final Stack<String> ndc;
+    private ThreadContext.ContextStack ndc;
     private String threadName = null;
     private StackTraceElement location;
 
@@ -60,8 +58,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param t A Throwable or null.
      */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t) {
-        this(loggerName, marker, fqcn, level, message, t, ThreadContext.getContext(), ThreadContext.cloneStack(), null,
-             null, System.currentTimeMillis());
+        this(loggerName, marker, fqcn, level, message, t,
+            ThreadContext.getContext().size() == 0 ? null : ThreadContext.getImmutableContext(),
+            ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
+            null, System.currentTimeMillis());
     }
 
     /**
@@ -79,8 +79,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param timestamp The timestamp of the event.
      */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
-                         Map<String, String> mdc, Stack<String> ndc, String threadName, StackTraceElement location,
-                         long timestamp) {
+                         Map<String, String> mdc, ThreadContext.ContextStack ndc, String threadName,
+                         StackTraceElement location, long timestamp) {
         name = loggerName;
         this.marker = marker;
         this.fqcnOfLogger = fqcn;
@@ -165,21 +165,19 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * @doubt Allows direct access to the map passed into the constructor, would allow appender
-     * or layout to manipulate event as seen by other appenders.
+     * Returns the immutable copy of the ThreadContext Map.
      * @return The context Map.
      */
     public Map<String, String> getContextMap() {
-        return mdc;
+        return mdc == null ? ThreadContext.EMPTY_MAP : mdc;
     }
 
     /**
-     * @doubt Allows direct access to the map passed into the constructor, would allow appender
-     * or layout to manipulate event as seen by other appenders.
+     * Returns an immutable copy of the ThreadContext stack.
      * @return The context Stack.
      */
-    public Stack<String> getContextStack() {
-        return ndc;
+    public ThreadContext.ContextStack getContextStack() {
+        return ndc == null ? ThreadContext.EMPTY_STACK : ndc;
     }
 
     /**
@@ -266,8 +264,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         private final Message message;
         private final long timestamp;
         private final Throwable throwable;
-        private final HashMap<String, String> mdc;
-        private final Stack<String> ndc;
+        private final Map<String, String> mdc;
+        private ThreadContext.ContextStack ndc;
         private String threadName;
         private StackTraceElement location;
 
@@ -279,7 +277,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             this.message = event.message;
             this.timestamp = event.timestamp;
             this.throwable = event.throwable;
-            this.mdc = new HashMap<String, String>(event.mdc);
+            this.mdc = event.mdc;
             this.ndc = event.ndc;
             this.location = event.getSource();
             this.threadName = event.getThreadName();

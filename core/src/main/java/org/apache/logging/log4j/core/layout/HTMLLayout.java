@@ -123,7 +123,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("</td>").append(LINE_SEP);
         sbuf.append("</tr>").append(LINE_SEP);
 
-        if (event.getContextStack().size() > 0) {
+        if (event.getContextStack().getDepth() > 0) {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" ");
             sbuf.append("title=\"Nested Diagnostic Context\">");
             sbuf.append("NDC: ").append(Transform.escapeTags(event.getContextStack().toString()));

@@ -20,6 +20,7 @@ import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.helpers.UUIDUtil;
 import org.apache.logging.log4j.message.MapMessage;
@@ -259,7 +260,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Return a copy of the context stack.
      * @return a copy of the context stack.
      */
-    public Stack<String> getContextStack() {
+    public ThreadContext.ContextStack getContextStack() {
         return event.getContextStack();
     }
 }

@@ -75,11 +75,11 @@ public class XMLLayout extends AbstractStringLayout {
 
     private static final int DEFAULT_SIZE = 256;
 
+    private static final String[] FORMATS = new String[] {"xml"};
+
     private final boolean locationInfo;
     private final boolean properties;
     private final boolean complete;
-
-    private static final String[] FORMATS = new String[] {"xml"};
 
     protected XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
         super(charset);
@@ -136,7 +136,7 @@ public class XMLLayout extends AbstractStringLayout {
             }
         }
 
-        if (event.getContextStack() != null && event.getContextStack().size() > 0) {
+        if (event.getContextStack().getDepth() > 0) {
             buf.append("<log4j:NDC><![CDATA[");
             Transform.appendEscapingCDATA(buf, event.getContextStack().toString());
             buf.append("]]></log4j:NDC>\r\n");

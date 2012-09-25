@@ -46,6 +46,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     /**
      * Obtains an instance of pattern converter.
      *
+     * @param config The Configuration.
      * @param options options, may be null.
      * @return instance of pattern converter.
      */

@@ -34,6 +34,9 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
 
     private String type;
 
+    /**
+     * Supported formats.
+     */
     public enum Format {
         /** The map should be formatted as XML. */
         XML,

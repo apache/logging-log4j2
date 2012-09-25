@@ -17,10 +17,13 @@
 
 package org.apache.logging.log4j;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-
+import java.util.NoSuchElementException;
 
 /**
  * The ThreadContext allows applications to store information either in a Map
@@ -31,6 +34,16 @@ import java.util.Stack;
  */
 public final class ThreadContext {
 
+    /**
+     * Empty, immutable Map.
+     */
+    public static final Map<String, String> EMPTY_MAP = new ImmutableMap();
+
+    /**
+     * Empty, immutable ContextStack.
+     */
+    public static final ContextStack EMPTY_STACK = new ImmutableStack();
+
     private static ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {
             protected Map<String, String> childValue(Map<String, String> parentValue) {
@@ -38,14 +51,7 @@ public final class ThreadContext {
             }
         };
 
-    private static ThreadLocal<Stack<String>> localStack =
-        new InheritableThreadLocal<Stack<String>>() {
-            protected Stack<String> childValue(Stack<String> parentValue) {
-                return parentValue == null ? null : (Stack<String>) parentValue.clone();
-            }
-        };
-
-
+    private static ThreadLocal<ContextStack> localStack = new ThreadLocal<ContextStack>();
 
     private ThreadContext() {
 
@@ -112,13 +118,30 @@ public final class ThreadContext {
     }
 
     /**
-     * Get the current thread's MDC as a hashtable. This method is
-     * intended to be used internally.
+     * Get a copy of current thread's context Map.
      * @return a copy of the context.
      */
     public static Map<String, String> getContext() {
         Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<String, String>() : new HashMap<String, String>(localMap.get());
+        return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
+    }
+
+    /**
+     * Get an immutable copy of the current thread's context Map.
+     * @return An immutable copy of the ThreadContext Map.
+     */
+    public static Map<String, String> getImmutableContext() {
+        Map<String, String> map = localMap.get();
+        return map == null ? new ImmutableMap() : new ImmutableMap(map);
+    }
+
+    /**
+     * Return true if the Map is empty.
+     * @return true if the Map is empty, false otherwise.
+     */
+    public static boolean isEmpty() {
+        Map<String, String> map = localMap.get();
+        return map == null || map.size() == 0;
     }
 
     /**
@@ -132,28 +155,40 @@ public final class ThreadContext {
      * Return a copy of this thread's stack.
      * @return A copy of this thread's stack.
      */
-    public static Stack<String> cloneStack() {
-        Stack<String> stack = localStack.get();
-        return stack == null ? new Stack<String>() : (Stack<String>) stack.clone();
+    public static ContextStack cloneStack() {
+        ContextStack stack = localStack.get();
+        return stack == null ? new ThreadContextStack() : new ThreadContextStack(stack.asList());
+    }
+
+    /**
+     * Get an immutable copy of this current thread's context stack.
+     * @return an immutable copy of the ThreadContext stack.
+     */
+    public static ContextStack getImmutableStack() {
+        ContextStack stack = localStack.get();
+        return stack == null ? EMPTY_STACK : new ImmutableStack(stack.asList());
     }
 
     /**
      * Set this thread's stack.
      * @param stack The stack to use.
      */
-    public static void setStack(Stack<String> stack) {
-        localStack.set(stack);
+    public static void setStack(Collection<String> stack) {
+        if (stack.size() == 0) {
+            return;
+        }
+        localStack.set(new ThreadContextStack(stack));
     }
 
     /**
      * Get the current nesting depth of this thread's stack.
      * @return the number of items in the stack.
      *
-     * @see #setMaxDepth
+     * @see #trim
      */
     public static int getDepth() {
-        Stack<String> stack = localStack.get();
-        return stack == null ? 0 : stack.size();
+        ContextStack stack = localStack.get();
+        return stack == null ? 0 : stack.getDepth();
     }
 
     /**
@@ -165,8 +200,8 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String pop() {
-        Stack<String> s = localStack.get();
-        if (s == null || s.isEmpty()) {
+        ContextStack s = localStack.get();
+        if (s == null || s.getDepth() == 0) {
             return "";
         }
         return s.pop();
@@ -182,8 +217,8 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-        Stack<String> s = localStack.get();
-        if (s == null || s.isEmpty()) {
+        ContextStack s = localStack.get();
+        if (s == null || s.getDepth() == 0) {
             return "";
         }
         return s.peek();
@@ -198,9 +233,10 @@ public final class ThreadContext {
      * @param message The new diagnostic context information.
      */
     public static void push(String message) {
-        Stack<String> stack = localStack.get();
+        ContextStack stack = localStack.get();
         if (stack == null) {
-            stack = new Stack<String>();
+            stack = new ThreadContextStack();
+            localStack.set(stack);
         }
         stack.push(message);
     }
@@ -228,24 +264,25 @@ public final class ThreadContext {
     }
 
     /**
-     * Set maximum depth of this diagnostic context. If the current
+     * Trims elements from this diagnostic context. If the current
      * depth is smaller or equal to <code>maxDepth</code>, then no
-     * action is taken.
+     * action is taken. If the current depth is larger than newDepth
+     * then all elements at maxDepth or higher are discarded.
      * <p/>
      * <p>This method is a convenient alternative to multiple {@link
      * #pop} calls. Moreover, it is often the case that at the end of
-     * complex call sequences, the depth of the NDC is
-     * unpredictable. The <code>setMaxDepth</code> method circumvents
+     * complex call sequences, the depth of the ThreadContext is
+     * unpredictable. The <code>trim</code> method circumvents
      * this problem.
      * <p/>
      * <p>For example, the combination
      * <pre>
      * void foo() {
-     * &nbsp;  int depth = NDC.getDepth();
+     * &nbsp;  int depth = ThreadContext.getDepth();
      * <p/>
      * &nbsp;  ... complex sequence of calls
      * <p/>
-     * &nbsp;  NDC.setMaxDepth(depth);
+     * &nbsp;  ThreadContext.trim(depth);
      * }
      * </pre>
      * <p/>
@@ -253,9 +290,190 @@ public final class ThreadContext {
      * diagnostic stack is conserved.
      *
      * @see #getDepth
-     * @param maxDepth The maximum depth of the stack.
+     * @param depth The number of elements to keep.
      */
-    public static void setMaxDepth(int maxDepth) {
+    public static void trim(int depth) {
+        ContextStack stack = localStack.get();
+        if (stack != null) {
+            stack.trim(depth);
+        }
+    }
 
+    /**
+     * The ThreadContext Stack interface.
+     */
+    public interface ContextStack extends Serializable {
+
+        /**
+         * Clears all elements from the stack.
+         */
+        void clear();
+
+        /**
+         * Return the element at the top of the stack.
+         * @return The element at the top of the stack.
+         * @throws java.util.NoSuchElementException if the stack is empty.
+         */
+        String pop();
+
+        /**
+         * Return the element at the top of the stack without removing it or null if the stack is empty.
+         * @return the element at the top of the stack or null if the stack is empty.
+         */
+        String peek();
+
+        /**
+         * Add an element to the stack.
+         * @param message The element to add.
+         */
+        void push(String message);
+
+        /**
+         * Return the number of elements in the stack.
+         * @return the number of elements in the stack.
+         */
+        int getDepth();
+
+        /**
+         * Returns all the elements in the stack in a List.
+         * @return all the elements in the stack in a List.
+         */
+        List<String> asList();
+
+        /**
+         * Trims elements from the end of the stack.
+         * @param depth The maximum number of items in the stack to keep.
+         */
+        void trim(int depth);
+
+        /**
+         * Returns a copy of the ContextStack.
+         * @return a copy of the ContextStack.
+         */
+        ContextStack copy();
+    }
+
+    /**
+     * The ContextStack implementation.
+     */
+    private static class ThreadContextStack extends ArrayList<String> implements ContextStack {
+
+        private static final long serialVersionUID = 5050501L;
+
+        public ThreadContextStack() {
+            super();
+        }
+
+        public ThreadContextStack(Collection<String> collection) {
+            super(collection);
+        }
+
+        public String pop() {
+            int index = size() - 1;
+            if (index >= 0) {
+                String result = get(index);
+                remove(index);
+                return result;
+            }
+            throw new NoSuchElementException("The ThreadContext stack is empty");
+        }
+
+        public String peek() {
+            int index = size() - 1;
+            if (index >= 0) {
+                return get(index);
+            }
+            return null;
+        }
+
+        public void push(String message) {
+            add(message);
+        }
+
+        public int getDepth() {
+            return size();
+        }
+
+        public List<String> asList() {
+            return this;
+        }
+
+        public void trim(int depth) {
+            if (depth < 0) {
+                throw new IllegalArgumentException("Maximum stack depth cannot be negative");
+            }
+            while (size() > depth) {
+                remove(size() - 1);
+            }
+
+        }
+
+        public ContextStack copy() {
+            return new ThreadContextStack(this);
+        }
+    }
+
+    /**
+     * An immutable ContextStack.
+     */
+    private static class ImmutableStack extends ThreadContextStack {
+
+        private static final long serialVersionUID = 5050502L;
+
+        public ImmutableStack() {
+        }
+
+        public ImmutableStack(Collection<String> collection) {
+            super(collection);
+        }
+
+        public ImmutableStack(ThreadContextStack stack) {
+            super(stack);
+        }
+
+        @Override
+        public void push(String message) {
+            throw new UnsupportedOperationException("Stack cannot be modified");
+        }
+
+        @Override
+        public void trim(int depth) {
+            throw new UnsupportedOperationException("Stack cannot be modified");
+        }
+    }
+
+    /**
+     * An immutable Context Map.
+     */
+    private static class ImmutableMap extends HashMap<String, String> {
+        private static final long serialVersionUID = 5050503L;
+
+        public ImmutableMap() {
+            super();
+        }
+
+        public ImmutableMap(Map<String, String> map) {
+            super(map);
+        }
+
+        @Override
+        public String put(String s, String s1) {
+            throw new UnsupportedOperationException("Map cannot be modified");
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends String> map) {
+            throw new UnsupportedOperationException("Map cannot be modified");
+        }
+
+        @Override
+        public String remove(Object o) {
+            throw new UnsupportedOperationException("Map cannot be modified");
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException("Map cannot be modified");
+        }
     }
 }

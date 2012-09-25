@@ -269,7 +269,8 @@ public final class PatternParser {
                             default:
 
                                 if (currentLiteral.length() != 0) {
-                                    patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString()));
+                                    patternConverters.add(new LiteralPatternConverter(config,
+                                        currentLiteral.toString()));
                                     formattingInfos.add(FormattingInfo.getDefault());
                                 }
 
@@ -292,12 +293,10 @@ public final class PatternParser {
                             formattingInfo =
                                 new FormattingInfo(true, formattingInfo.getMinLength(),
                                     formattingInfo.getMaxLength());
-
                             break;
 
                         case '.':
                             state = ParserState.DOT_STATE;
-
                             break;
 
                         default:
