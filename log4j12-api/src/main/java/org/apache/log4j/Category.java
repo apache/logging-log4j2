@@ -21,6 +21,8 @@ import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -298,6 +300,27 @@ public class Category {
         if (isEnabledFor(priority)) {
             Message msg = new LocalizedMessage(bundle, key, params);
             forcedLog(FQCN, priority, msg, t);
+        }
+    }
+
+    public void log(Priority priority, Object message, Throwable t) {
+        if (isEnabledFor(priority)) {
+            Message msg = new ObjectMessage(message);
+            forcedLog(FQCN, priority, msg, t);
+        }
+    }
+
+    public void log(Priority priority, Object message) {
+        if (isEnabledFor(priority)) {
+            Message msg = new ObjectMessage(message);
+            forcedLog(FQCN, priority, msg, null);
+        }
+    }
+
+    public void log(String fqcn, Priority priority, Object message, Throwable t) {
+        if (isEnabledFor(priority)) {
+            Message msg = new ObjectMessage(message);
+            forcedLog(fqcn, priority, msg, t);
         }
     }
 

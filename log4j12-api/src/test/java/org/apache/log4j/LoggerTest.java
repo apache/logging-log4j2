@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.After;
@@ -432,6 +433,36 @@ public class LoggerTest {
 
         assertTrue(tracer.isTraceEnabled());
         assertFalse(root.isTraceEnabled());
+    }
+
+    @Test
+    public void testLog() {
+        PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null);
+        ListAppender appender = new ListAppender("List", null, layout, false, false);
+        Logger root = Logger.getRootLogger();
+        root.getLogger().addAppender(appender);
+        root.setLevel(Level.INFO);
+        MyLogger log = new MyLogger(root);
+        log.logInfo("This is a test", null);
+        root.log(Priority.INFO, "Test msg2", null);
+        root.log(Priority.INFO, "Test msg3");
+        List<String> msgs = appender.getMessages();
+        assertTrue("Incorrect number of messages", msgs.size() == 3);
+        String msg = msgs.get(0);
+        assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+    }
+
+    private static class MyLogger {
+
+        private Logger logger;
+
+        public MyLogger(Logger logger) {
+            this.logger = logger;
+        }
+
+        public void logInfo(String msg, Throwable t) {
+            logger.log(MyLogger.class.getName(), Priority.INFO, msg, t);
+        }
     }
 
     private static class CountingAppender extends AppenderBase {

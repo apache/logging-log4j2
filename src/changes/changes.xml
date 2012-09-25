@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-91" dev="rgoers" type="fix">
+        Log4j 1.2 adapter's Category class was missing 3 log methods.
+      </action>
       <action issue="LOG4J2-84" dev="rgoers" type="fix">
         If the ThreadContext stack is empty the LogEvent will contain a null value to reduce the overhead of
         creating log events and in the size of the serialized object. Changed the ThreadContext stack to use
