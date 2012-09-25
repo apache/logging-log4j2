@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
+import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,8 +34,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -74,12 +79,27 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             processAttributes(rootNode, root);
             Level status = Level.OFF;
             boolean verbose = false;
+            PrintStream stream = System.out;
             for (Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
                     status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(), null);
                     if (status == null) {
                         status = Level.ERROR;
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
+                    }
+                } else if ("dest".equalsIgnoreCase(entry.getKey())) {
+                    String dest = entry.getValue();
+                    if (dest != null) {
+                        if (dest.equalsIgnoreCase("err")) {
+                            stream = System.err;
+                        } else {
+                            try {
+                                File destFile = FileUtils.fileFromURI(new URI(dest));
+                                stream = new PrintStream(new FileOutputStream(destFile));
+                            } catch (URISyntaxException use) {
+                                System.err.println("Unable to write to " + dest + ". Writing to stdout");
+                            }
+                        }
                     }
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
@@ -111,7 +131,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 }
             }
             if (!found && status != Level.OFF) {
-                StatusConsoleListener listener = new StatusConsoleListener(status);
+                StatusConsoleListener listener = new StatusConsoleListener(status, stream);
                 if (!verbose) {
                     listener.setFilters(VERBOSE_CLASSES);
                 }

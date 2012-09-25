@@ -18,6 +18,8 @@ package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.Level;
 
+import java.io.PrintStream;
+
 /**
  * StatusListener that writes to the Console.
  */
@@ -29,6 +31,8 @@ public class StatusConsoleListener implements StatusListener {
 
     private String[] filters = null;
 
+    private final PrintStream stream;
+
     /**
      * Creates the StatusConsoleListener using either the level configured by the
      * "org.apache.logging.log4j.StatusLevel" system property if it is set or to a
@@ -39,6 +43,7 @@ public class StatusConsoleListener implements StatusListener {
         if (str != null) {
             level = Level.toLevel(str, Level.FATAL);
         }
+        stream = System.out;
     }
 
     /**
@@ -47,6 +52,16 @@ public class StatusConsoleListener implements StatusListener {
      */
     public StatusConsoleListener(Level level) {
         this.level = level;
+        stream = System.out;
+    }
+
+    /**
+     * Creates the StatusConsoleListener using the supplied Level.
+     * @param level The Level of status messages that should appear on the console.
+     */
+    public StatusConsoleListener(Level level, PrintStream stream) {
+        this.level = level;
+        this.stream = stream;
     }
 
     /**
@@ -63,7 +78,7 @@ public class StatusConsoleListener implements StatusListener {
      */
     public void log(StatusData data) {
         if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
-            System.out.println(data.getFormattedStatus());
+            stream.println(data.getFormattedStatus());
         }
     }
 

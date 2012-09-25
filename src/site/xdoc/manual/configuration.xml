@@ -274,6 +274,10 @@
                 <th>Description</th>
               </tr>
               <tr>
+                <td>dest</td>
+                <td>Either "err", which will send output to stderr, or a file path or URL.</td>
+              </tr>
+              <tr>
                 <td>monitorInterval</td>
                 <td>The minimum amount of time, in seconds, that must elapse before the file configuration
                   is checked for changes.</td>
@@ -886,8 +890,9 @@
           </p>
           <p>
             Applications may wish to direct the status output to some other destination. This can be accomplished
-            by insuring the configured status is set to OFF and then configuring the application programmatically
-            such as:
+            by setting the dest attribute to either "err" to send the output to stderr or to a file location or URL.
+            This can also be done by insuring the configured status is set to OFF and then configuring the application
+            programmatically such as:
 <source>
   StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
   ((StatusLogger) logger).registerListener(listener);
