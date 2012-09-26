@@ -56,6 +56,7 @@ public class PatternParserTest {
 
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
 
+    private static final String LINE_SEP = System.getProperty("line.separator");
 
     private static final String KEY = "Converter";
     private PatternParser parser;
@@ -102,7 +103,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         String str = buf.toString();
-        String expected = "INFO  [PatternParserTest        :95  ] - Hello, world\n";
+        String expected = "INFO  [PatternParserTest        :96  ] - Hello, world" + LINE_SEP;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
