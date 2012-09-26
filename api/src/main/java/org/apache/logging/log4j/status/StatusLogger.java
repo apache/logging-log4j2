@@ -193,23 +193,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object p1) {
-        return isEnabled(level, marker);
-    }
-
-    @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2) {
-        return isEnabled(level, marker);
-    }
-
-    @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3) {
-        return isEnabled(level, marker);
-    }
-
-    @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3,
-                                Object... params) {
+    protected boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
         return isEnabled(level, marker);
     }
 

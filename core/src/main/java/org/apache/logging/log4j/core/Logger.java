@@ -127,24 +127,8 @@ public class Logger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Object p1) {
+    public boolean isEnabled(Level level, Marker marker, String msg, Object... p1) {
         return config.filter(level, marker, msg, p1);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2) {
-        return config.filter(level, marker, msg, p1, p2);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
-        return config.filter(level, marker, msg, p1, p2, p3);
-    }
-
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
-                                Object... params) {
-        return config.filter(level, marker, msg, p1, p2, p3, params);
     }
 
     @Override
@@ -319,51 +303,11 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
 
-        boolean filter(Level level, Marker marker, String msg, Object p1) {
+        boolean filter(Level level, Marker marker, String msg, Object... p1) {
             config.getConfigurationMonitor().checkConfiguration();
             Filter filter = config.getFilter();
             if (filter != null) {
                 Filter.Result r = filter.filter(logger, level, marker, msg, p1);
-                if (r != Filter.Result.NEUTRAL) {
-                    return r == Filter.Result.ACCEPT;
-                }
-            }
-
-            return intLevel >= level.intLevel();
-        }
-
-        boolean filter(Level level, Marker marker, String msg, Object p1, Object p2) {
-            config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
-            if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2);
-                if (r != Filter.Result.NEUTRAL) {
-                    return r == Filter.Result.ACCEPT;
-                }
-            }
-
-            return intLevel >= level.intLevel();
-        }
-
-        boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
-            config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
-            if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3);
-                if (r != Filter.Result.NEUTRAL) {
-                    return r == Filter.Result.ACCEPT;
-                }
-            }
-
-            return intLevel >= level.intLevel();
-        }
-
-        boolean filter(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
-                       Object... params) {
-            config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
-            if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, p1, p2, p3, params);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }

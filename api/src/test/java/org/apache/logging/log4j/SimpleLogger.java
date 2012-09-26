@@ -66,12 +66,6 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3,
-                                Object...params) {
-        return true;
-    }
-
-    @Override
     protected boolean isEnabled(Level level, Marker marker, String msg) {
         return true;
     }
@@ -83,17 +77,7 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1) {
-        return true;
-    }
-
-    @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2) {
-        return true;
-    }
-
-    @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object p1, Object p2, Object p3) {
+    protected boolean isEnabled(Level level, Marker marker, String msg, Object... p1) {
         return true;
     }
 

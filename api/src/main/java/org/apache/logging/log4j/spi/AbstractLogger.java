@@ -138,8 +138,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void catching(Throwable t) {
-        if (isEnabled(Level.DEBUG, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, Level.DEBUG, new SimpleMessage("catching"), t);
+        if (isEnabled(Level.DEBUG, CATCHING_MARKER, (Object) null, null)) {
+            log(CATCHING_MARKER, FQCN, Level.ERROR, new SimpleMessage("catching"), t);
         }
     }
 
@@ -150,8 +150,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void catching(Level level, Throwable t) {
-        if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, level, new SimpleMessage("catching"), t);
+        if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
+            log(CATCHING_MARKER, FQCN, level, new SimpleMessage("catching"), t);
         }
     }
 
@@ -521,8 +521,8 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      */
     public void debug(Message msg) {
-        if (isEnabled(Level.TRACE, null, msg, null)) {
-            log(null, FQCN, Level.TRACE, msg, null);
+        if (isEnabled(Level.DEBUG, null, msg, null)) {
+            log(null, FQCN, Level.DEBUG, msg, null);
         }
     }
 
@@ -533,8 +533,8 @@ public abstract class AbstractLogger implements Logger {
      * @param t   A Throwable or null.
      */
     public void debug(Message msg, Throwable t) {
-        if (isEnabled(Level.TRACE, null, msg, t)) {
-            log(null, FQCN, Level.TRACE, msg, t);
+        if (isEnabled(Level.DEBUG, null, msg, t)) {
+            log(null, FQCN, Level.DEBUG, msg, t);
         }
     }
 
@@ -791,7 +791,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(String message, Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, FQCN, Level.DEBUG, new SimpleMessage(message), t);
+            log(null, FQCN, Level.WARN, new SimpleMessage(message), t);
         }
     }
 
@@ -805,7 +805,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, String message, Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, FQCN, Level.DEBUG, new SimpleMessage(message), t);
+            log(marker, FQCN, Level.WARN, new SimpleMessage(message), t);
         }
     }
 
@@ -841,7 +841,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Object message, Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, FQCN, Level.DEBUG, new ObjectMessage(message), t);
+            log(null, FQCN, Level.WARN, new ObjectMessage(message), t);
         }
     }
 
@@ -855,7 +855,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void warn(Marker marker, Object message, Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, FQCN, Level.DEBUG, new ObjectMessage(message), t);
+            log(marker, FQCN, Level.WARN, new ObjectMessage(message), t);
         }
     }
 
@@ -1287,7 +1287,7 @@ public abstract class AbstractLogger implements Logger {
      *         FATAL, <code>false</code> otherwise.
      */
     public boolean isFatalEnabled() {
-        return isEnabled(Level.ERROR, null, (Object) null, null);
+        return isEnabled(Level.FATAL, null, (Object) null, null);
     }
 
     /**
@@ -1390,48 +1390,10 @@ public abstract class AbstractLogger implements Logger {
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param data The message.
-     * @param p1 The first parameter.
+     * @param p1 The parameters.
      * @return True if logging is enabled, false otherwise.
      */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object p1);
-
-    /**
-     * Determine if logging is enabled.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2);
-
-    /**
-     * Determine if logging is enabled.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @param p3 The third parameter.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3);
-
-
-    /**
-     * Determine if logging is enabled.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @param p3 The third parameter.
-     * @param params More message parameters.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2,
-                                         Object p3, Object... params);
+    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object... p1);
 
     /**
      * Determine if logging is enabled.

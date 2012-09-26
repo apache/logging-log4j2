@@ -87,58 +87,12 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param level The logging Level to check.
      * @param marker A Marker or null.
      * @param data The message.
-     * @param p1 The first parameter.
+     * @param p1 The parameters.
      * @return true if the event would be logged for the Level, Marker, data and parameter.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Object p1) {
+    public boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
         return logger.isEnabled(level, marker, data, p1);
-    }
-
-    /**
-     * Detect if the event would be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @return true if the event would be logged for the Level, Marker, data and parameters.
-     */
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2) {
-        return logger.isEnabled(level, marker, data, p1, p2);
-    }
-
-    /**
-     * Detect if the event would be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @param p3 The third parameter.
-     * @return true if the event would be logged for the Level, Marker, data and parameters.
-     */
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3) {
-        return logger.isEnabled(level, marker, data, p1, p2, p3);
-    }
-
-    /**
-     * Detect if the event would be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The first parameter.
-     * @param p2 The second parameter.
-     * @param p3 The third parameter.
-     * @param params More message parameters.
-     * @return true if the event would be logged for the Level, Marker, data and parameters.
-     */
-    @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Object p1, Object p2, Object p3,
-                                Object... params) {
-        return logger.isEnabled(level, marker, data, p2, p2, p3, params);
     }
 
     /**

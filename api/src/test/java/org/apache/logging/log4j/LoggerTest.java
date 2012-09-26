@@ -67,7 +67,7 @@ public class LoggerTest {
             logger.catching(e);
             assertEquals(1, results.size());
             assertTrue("Incorrect Catching",
-                results.get(0).startsWith(" DEBUG catching java.lang.NullPointerException"));
+                results.get(0).startsWith(" ERROR catching java.lang.NullPointerException"));
         }
     }
 
