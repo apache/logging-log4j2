@@ -89,7 +89,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         byte[] buffer = null;
 
         try {
-            buffer = toByteArray(source.getByteStream());
+            InputStream configStream = source.getByteStream();
+            buffer = toByteArray(configStream);
+            configStream.close();
             source = new InputSource(new ByteArrayInputStream(buffer));
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(source);

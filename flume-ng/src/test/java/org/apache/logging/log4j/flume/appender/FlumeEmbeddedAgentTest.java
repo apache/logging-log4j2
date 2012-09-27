@@ -195,7 +195,7 @@ public class FlumeEmbeddedAgentTest {
             transaction.begin();
 
             Event event = primaryChannel.take();
-            Assert.assertNotNull(event);
+            Assert.assertNotNull("Missing event number " + i + 1, event);
             String body = getBody(event);
             String expected = "Test Multiple " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,

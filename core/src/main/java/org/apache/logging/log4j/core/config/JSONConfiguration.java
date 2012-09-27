@@ -67,7 +67,9 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         byte[] buffer;
 
         try {
-            buffer = toByteArray(source.getByteStream());
+            InputStream configStream = source.getByteStream();
+            buffer = toByteArray(configStream);
+            configStream.close();
             InputStream is = new ByteArrayInputStream(buffer);
             source = new InputSource(is);
             ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
