@@ -38,6 +38,7 @@ public class LogFactoryImpl extends LogFactory {
 
     private ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
+    @Override
     public Log getInstance(String name) throws LogConfigurationException {
         LoggerContext context = PrivateManager.getContext();
         ConcurrentMap<String, Log> loggers = getLoggersMap();
