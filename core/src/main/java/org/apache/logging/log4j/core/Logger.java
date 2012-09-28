@@ -347,7 +347,7 @@ public class Logger extends AbstractLogger {
      * Returns a String representation of this instance in the form {@code "name:level[ in context_name]"}.
      */
     public String toString() {
-        final String nameLevel = name + ":" + getLevel();
+        final String nameLevel = "" + name + ":" + getLevel();
         if (context == null) {
             return nameLevel;
         }
