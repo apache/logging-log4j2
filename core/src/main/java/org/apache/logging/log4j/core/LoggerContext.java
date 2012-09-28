@@ -153,6 +153,15 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
     }
 
+    /**
+     * Gets the name.
+     * 
+     * @return the name.
+     */
+    public String getName() {
+        return name;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -301,4 +310,5 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     private Logger newInstance(LoggerContext ctx, String name) {
         return new Logger(ctx, name);
     }
+
 }
