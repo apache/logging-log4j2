@@ -186,6 +186,7 @@ public final class AsynchAppender extends AppenderBase {
             this.queue = queue;
         }
 
+        @Override
         public void run() {
             while (!shutdown) {
                 Serializable s;

@@ -58,6 +58,7 @@ public final class StructuredDataFilter extends MapFilter {
         return Result.NEUTRAL;
     }
 
+    @Override
     protected Result filter(MapMessage message) {
         if (!(message instanceof StructuredDataMessage)) {
             return super.filter(message);

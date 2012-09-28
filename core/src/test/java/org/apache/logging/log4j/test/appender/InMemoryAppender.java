@@ -32,6 +32,7 @@ public class InMemoryAppender extends OutputStreamAppender {
         super(name, layout, filters, handleException, true, new InMemoryManager(name));
     }
 
+    @Override
     public String toString() {
         return getManager().toString();
     }
@@ -42,6 +43,7 @@ public class InMemoryAppender extends OutputStreamAppender {
             super(new ByteArrayOutputStream(), name);
         }
 
+        @Override
         public String toString() {
             return getOutputStream().toString();
         }

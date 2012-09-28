@@ -54,6 +54,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
      * @param event      event to format.
      * @param toAppendTo string buffer to which class name will be appended.
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
 
         StackTraceElement element = event.getSource();

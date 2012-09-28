@@ -51,6 +51,7 @@ public class CompositeAction extends ActionBase {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         try {
             execute();
@@ -65,6 +66,7 @@ public class CompositeAction extends ActionBase {
      * @return true if all actions were successful.
      * @throws IOException on IO error.
      */
+    @Override
     public boolean execute() throws IOException {
         if (stopOnError) {
             for (Action action : actions) {

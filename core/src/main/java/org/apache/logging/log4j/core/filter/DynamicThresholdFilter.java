@@ -54,14 +54,17 @@ public final class DynamicThresholdFilter extends FilterBase {
         return this.key;
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
         return filter(level);
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
         return filter(level);
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         return filter(level);
     }

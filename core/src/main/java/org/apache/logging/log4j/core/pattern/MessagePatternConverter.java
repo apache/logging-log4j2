@@ -57,6 +57,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Message msg = event.getMessage();
         if (msg != null) {

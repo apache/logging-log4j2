@@ -74,6 +74,7 @@ public class OutputStreamManager extends AbstractManager {
     /**
      * Default hook to write footer during close.
      */
+    @Override
     public void releaseSub() {
         if (footer != null) {
             write(footer);

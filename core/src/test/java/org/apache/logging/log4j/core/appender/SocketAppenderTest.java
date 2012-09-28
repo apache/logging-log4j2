@@ -142,6 +142,7 @@ public class SocketAppenderTest {
             thread.interrupt();
         }
 
+        @Override
         public void run() {
             this.thread = Thread.currentThread();
             byte[] bytes = new byte[4096];
@@ -175,6 +176,7 @@ public class SocketAppenderTest {
             interrupt();
         }
 
+        @Override
         public void run() {
             try {
                 Socket socket = sock.accept();

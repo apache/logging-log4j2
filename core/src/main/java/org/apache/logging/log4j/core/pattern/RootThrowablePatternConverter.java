@@ -56,6 +56,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Throwable throwable = event.getThrown();
         if (throwable != null) {

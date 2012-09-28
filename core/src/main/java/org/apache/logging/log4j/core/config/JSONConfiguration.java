@@ -151,7 +151,8 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         }
     }
 
-     public void setup() {
+     @Override
+    public void setup() {
         Iterator<Map.Entry<String, JsonNode>> iter = root.getFields();
         List<Node> children = rootNode.getChildren();
         while (iter.hasNext()) {

@@ -125,6 +125,7 @@ public class SimplePerfTest {
         private int low = 5;
         private int high = 55;
 
+        @Override
         public int nextInt() {
             high = 36969 * (high & 65535) + (high >> 16);
             low = 18000 * (low & 65535) + (low >> 16);

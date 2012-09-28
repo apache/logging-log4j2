@@ -143,6 +143,7 @@ public abstract class NameAbbreviator {
         /**
          * {@inheritDoc}
          */
+        @Override
         public String abbreviate(final String buf) {
             return buf;
         }
@@ -172,6 +173,7 @@ public abstract class NameAbbreviator {
          * @param buf The String to abbreviate.
          * @return the abbreviated String.
          */
+        @Override
         public String abbreviate(final String buf) {
 
             // We substract 1 from 'len' when assigning to 'end' to avoid out of
@@ -276,6 +278,7 @@ public abstract class NameAbbreviator {
          * @param buf       buffer that abbreviated name is appended.
          * @param nameStart start of name.
          */
+        @Override
         public String abbreviate(final String buf) {
             //
             //  all non-terminal patterns are executed once

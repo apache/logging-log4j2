@@ -59,6 +59,7 @@ public final class UUIDPatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         UUID uuid = isRandom ? UUID.randomUUID() : UUIDUtil.getTimeBasedUUID();
         toAppendTo.append(uuid.toString());

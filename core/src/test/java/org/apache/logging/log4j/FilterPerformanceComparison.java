@@ -151,6 +151,7 @@ public class FilterPerformanceComparison {
             this.index = index;
         }
 
+        @Override
         public void run() {
             results[index] = isLog4j ? log4j2(count) : logback(count);
         }

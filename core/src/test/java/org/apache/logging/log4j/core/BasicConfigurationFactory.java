@@ -30,6 +30,7 @@ import java.net.URI;
  */
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
+    @Override
     public Configuration getConfiguration(String name, URI configLocation) {
         return new BasicConfiguration();
     }

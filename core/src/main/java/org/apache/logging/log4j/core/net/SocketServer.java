@@ -167,6 +167,7 @@ public class SocketServer extends AbstractServer implements Runnable {
             interrupt();
         }
 
+        @Override
         public void run() {
             boolean closed = false;
             try {

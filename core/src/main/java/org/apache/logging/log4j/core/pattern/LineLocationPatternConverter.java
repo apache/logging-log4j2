@@ -52,6 +52,7 @@ public final class LineLocationPatternConverter extends LogEventPatternConverter
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder output) {
         StackTraceElement element = event.getSource();
 

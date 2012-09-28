@@ -65,6 +65,7 @@ public class RollingFileManager extends FileManager {
             bufferedIO), factory);
     }
 
+    @Override
     protected synchronized void write(byte[] bytes, int offset, int length) {
         size += length;
         super.write(bytes, offset, length);
@@ -183,6 +184,7 @@ public class RollingFileManager extends FileManager {
          * @throws java.io.IOException if IO error, a thrown exception will cause the rollover
          *                             to be aborted if possible.
          */
+        @Override
         public boolean execute() throws IOException {
             try {
                 return action.execute();
@@ -194,6 +196,7 @@ public class RollingFileManager extends FileManager {
         /**
          * Cancels the action if not already initialized or waits till completion.
          */
+        @Override
         public void close() {
             action.close();
         }
@@ -203,6 +206,7 @@ public class RollingFileManager extends FileManager {
          *
          * @return true if action is complete.
          */
+        @Override
         public boolean isComplete() {
             return action.isComplete();
         }

@@ -209,6 +209,7 @@ public class SyslogAppenderTest {
             thread.interrupt();
         }
 
+        @Override
         public void run() {
             this.thread = Thread.currentThread();
             byte[] bytes = new byte[4096];
@@ -243,6 +244,7 @@ public class SyslogAppenderTest {
             thread.interrupt();
         }
 
+        @Override
         public void run() {
             this.thread = Thread.currentThread();
             try {

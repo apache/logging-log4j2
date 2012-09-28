@@ -60,6 +60,7 @@ public class OnStartupTriggeringPolicyTest {
             this.timestamp = timestamp;
         }
 
+        @Override
         public long getFileTime() {
             return timestamp;
         }

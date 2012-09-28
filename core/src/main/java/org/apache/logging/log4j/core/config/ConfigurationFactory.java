@@ -332,6 +332,7 @@ public abstract class ConfigurationFactory {
          * @param configLocation The configuration location.
          * @return The Configuration.
          */
+        @Override
         public Configuration getConfiguration(String name, URI configLocation) {
 
             if (configLocation == null) {
@@ -410,10 +411,12 @@ public abstract class ConfigurationFactory {
             return null;
         }
 
+        @Override
         public String[] getSupportedTypes() {
             return null;
         }
 
+        @Override
         public Configuration getConfiguration(InputSource source) {
             return null;
         }

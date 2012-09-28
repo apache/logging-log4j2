@@ -58,7 +58,8 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
   /**
    * {@inheritDoc}
    */
-  public void format(LogEvent event, final StringBuilder toAppendTo) {
+  @Override
+public void format(LogEvent event, final StringBuilder toAppendTo) {
     toAppendTo.append(lineSep);
   }
 }

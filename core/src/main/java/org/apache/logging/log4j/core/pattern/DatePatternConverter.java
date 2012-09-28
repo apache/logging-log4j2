@@ -125,6 +125,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder output) {
         long timestamp = event.getMillis();
 
@@ -149,6 +150,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final Object obj, final StringBuilder output) {
         if (obj instanceof Date) {
             format((Date) obj, output);

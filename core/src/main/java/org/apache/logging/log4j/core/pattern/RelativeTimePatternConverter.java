@@ -55,6 +55,7 @@ public class RelativeTimePatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         long timestamp = event.getMillis();
 

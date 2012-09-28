@@ -36,6 +36,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
      * @param source The InputSource.
      * @return The Configuration.
      */
+    @Override
     public Configuration getConfiguration(InputSource source) {
         return new XMLConfiguration(source, configFile);
     }
@@ -44,6 +45,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
      * Returns the file suffixes for XML files.
      * @return An array of File extensions.
      */
+    @Override
     public String[] getSupportedTypes() {
         return SUFFIXES;
     }

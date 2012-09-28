@@ -66,6 +66,7 @@ public final class FileRenameAction extends ActionBase {
      *
      * @return true if successfully renamed.
      */
+    @Override
     public boolean execute() {
         return execute(source, destination, renameEmptyFiles);
     }

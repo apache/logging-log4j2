@@ -48,14 +48,17 @@ public final class RegexFilter extends FilterBase {
         this.useRawMessage = raw;
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
         return filter(msg);
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
         return filter(msg.toString());
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         String text = useRawMessage ? msg.getMessageFormat() : msg.getFormattedMessage();
         return filter(text);

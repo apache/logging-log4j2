@@ -231,6 +231,7 @@ final class CachedDateFormat extends DateFormat {
      * @param fieldPosition remains untouched.
      * @return the formatted time string.
      */
+    @Override
     public StringBuffer format(Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
         format(date.getTime(), sbuf);
 
@@ -329,6 +330,7 @@ final class CachedDateFormat extends DateFormat {
      *
      * @param timeZone TimeZone new timezone
      */
+    @Override
     public void setTimeZone(final TimeZone timeZone) {
         formatter.setTimeZone(timeZone);
         previousTime = Long.MIN_VALUE;
@@ -343,6 +345,7 @@ final class CachedDateFormat extends DateFormat {
      * @param pos field position, unused.
      * @return parsed date, likely null.
      */
+    @Override
     public Date parse(String s, ParsePosition pos) {
         return formatter.parse(s, pos);
     }
@@ -352,6 +355,7 @@ final class CachedDateFormat extends DateFormat {
      *
      * @return NumberFormat number formatter
      */
+    @Override
     public NumberFormat getNumberFormat() {
         return formatter.getNumberFormat();
     }

@@ -206,6 +206,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         }
     }
 
+    @Override
     public void setup() {
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {

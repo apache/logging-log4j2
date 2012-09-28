@@ -124,6 +124,7 @@ public class SocketServerTest {
             super(onMatch, onMismatch);
         }
 
+        @Override
         public Filter.Result filter(LogEvent event) {
             return event.getThreadName().equals(Thread.currentThread().getName()) ? onMatch : onMismatch;
         }

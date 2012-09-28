@@ -56,6 +56,7 @@ public final class RegexReplacement {
         return pattern.matcher(msg).replaceAll(substitution);
     }
 
+    @Override
     public String toString() {
         return "replace(regex=" + pattern.pattern() + ", replacement=" + substitution + ")";
     }

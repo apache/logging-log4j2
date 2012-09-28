@@ -40,14 +40,17 @@ public final class MarkerFilter extends FilterBase {
         this.name = name;
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
         return filter(marker);
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
         return filter(marker);
     }
 
+    @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         return filter(marker);
     }

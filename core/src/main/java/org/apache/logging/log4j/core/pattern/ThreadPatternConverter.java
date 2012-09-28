@@ -52,6 +52,7 @@ public final class ThreadPatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         toAppendTo.append(event.getThreadName());
     }

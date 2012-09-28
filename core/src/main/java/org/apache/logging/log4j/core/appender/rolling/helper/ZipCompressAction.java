@@ -75,6 +75,7 @@ public final class ZipCompressAction extends ActionBase {
      * @return true if successfully compressed.
      * @throws IOException on IO exception.
      */
+    @Override
     public boolean execute() throws IOException {
         return execute(source, destination, deleteSource);
     }
@@ -124,6 +125,7 @@ public final class ZipCompressAction extends ActionBase {
      *
      * @param ex exception.
      */
+    @Override
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }

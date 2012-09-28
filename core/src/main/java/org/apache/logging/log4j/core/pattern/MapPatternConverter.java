@@ -61,6 +61,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         MapMessage msg;
         if (event.getMessage() instanceof MapMessage) {

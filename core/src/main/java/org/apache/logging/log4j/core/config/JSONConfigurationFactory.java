@@ -60,6 +60,7 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
         return isActive;
     }
 
+    @Override
     public Configuration getConfiguration(InputSource source) {
         if (!isActive) {
             return null;
@@ -67,6 +68,7 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
         return new JSONConfiguration(source, configFile);
     }
 
+    @Override
     public String[] getSupportedTypes() {
         return SUFFIXES;
     }

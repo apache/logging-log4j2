@@ -58,6 +58,7 @@ public class FileManager extends OutputStreamManager {
         return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO), factory);
     }
 
+    @Override
     protected synchronized void write(byte[] bytes, int offset, int length)  {
 
         if (isLocking) {

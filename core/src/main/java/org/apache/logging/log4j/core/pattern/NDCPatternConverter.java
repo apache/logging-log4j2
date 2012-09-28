@@ -51,7 +51,8 @@ public final class NDCPatternConverter extends LogEventPatternConverter {
   /**
    * {@inheritDoc}
    */
-  public void format(final LogEvent event, final StringBuilder toAppendTo) {
+  @Override
+public void format(final LogEvent event, final StringBuilder toAppendTo) {
     toAppendTo.append(event.getContextStack());
   }
 }

@@ -90,6 +90,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         Throwable t = event.getThrown();
 
@@ -119,6 +120,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      *
      * @return true.
      */
+    @Override
     public boolean handlesThrowable() {
         return true;
     }

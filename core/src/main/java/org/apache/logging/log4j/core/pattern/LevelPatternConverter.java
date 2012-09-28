@@ -54,6 +54,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder output) {
         output.append(event.getLevel().toString());
     }
@@ -61,6 +62,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getStyleClass(Object e) {
         if (e instanceof LogEvent) {
             Level level = ((LogEvent) e).getLevel();

@@ -56,6 +56,7 @@ public final class SequenceNumberPatternConverter extends LogEventPatternConvert
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         toAppendTo.append(Long.toString(sequence.incrementAndGet()));
     }

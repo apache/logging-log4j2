@@ -86,6 +86,7 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         StringBuilder buf = new StringBuilder();
         for (PatternFormatter formatter : formatters) {

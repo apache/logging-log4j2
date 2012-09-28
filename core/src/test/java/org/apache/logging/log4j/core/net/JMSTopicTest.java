@@ -128,6 +128,7 @@ public class JMSTopicTest {
             super(onMatch, onMismatch);
         }
 
+        @Override
         public Result filter(LogEvent event) {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             for (StackTraceElement element : stackTrace) {

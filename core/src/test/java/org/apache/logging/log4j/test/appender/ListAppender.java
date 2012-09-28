@@ -120,6 +120,7 @@ public class ListAppender extends AppenderBase {
         }
     }
 
+    @Override
     public void stop() {
         super.stop();
         Layout layout = getLayout();
