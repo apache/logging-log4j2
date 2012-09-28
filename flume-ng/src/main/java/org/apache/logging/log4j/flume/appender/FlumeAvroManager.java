@@ -118,6 +118,7 @@ public class FlumeAvroManager extends FlumeManager {
         return current;
     }
 
+    @Override
     public synchronized void send(FlumeEvent event, int delay, int retries)  {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;

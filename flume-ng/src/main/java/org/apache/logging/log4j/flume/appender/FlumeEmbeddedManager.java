@@ -126,6 +126,7 @@ public class FlumeEmbeddedManager extends FlumeManager {
             new FactoryData(name, agents, properties, batchSize, dataDir));
     }
 
+    @Override
     public void send(FlumeEvent event, int delay, int retries) {
         source.send(event);
     }

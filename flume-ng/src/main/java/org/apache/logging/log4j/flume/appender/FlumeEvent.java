@@ -156,6 +156,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Set the body in the event.
      * @param body The body to add to the event.
      */
+    @Override
     public void setBody(byte[] body) {
         if (body == null || body.length == 0) {
             super.setBody(new byte[0]);
