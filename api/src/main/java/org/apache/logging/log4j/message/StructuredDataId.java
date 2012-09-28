@@ -179,6 +179,7 @@ public class StructuredDataId implements Serializable {
         return enterpriseNumber <= 0;
     }
 
+    @Override
     public String toString() {
         return isReserved() ? name : name + "@" + enterpriseNumber;
     }

@@ -65,6 +65,7 @@ public class ObjectMessage implements Message, Serializable {
         return new Object[]{obj};
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,10 +79,12 @@ public class ObjectMessage implements Message, Serializable {
         return !(obj != null ? !obj.equals(that.obj) : that.obj != null);
     }
 
+    @Override
     public int hashCode() {
         return obj != null ? obj.hashCode() : 0;
     }
 
+    @Override
     public String toString() {
         return "ObjectMessage[obj=" + obj.toString() + "]";
     }

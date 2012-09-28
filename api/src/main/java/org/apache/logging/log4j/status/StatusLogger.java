@@ -240,6 +240,7 @@ public final class StatusLogger extends AbstractLogger {
             this.size = size;
         }
 
+        @Override
         public boolean add(E object) {
             while (messages.size() > size) {
                 messages.poll();

@@ -122,6 +122,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * Return the supported formats.
      * @return An array of the supported format names.
      */
+    @Override
     public String[] getFormats() {
         String[] formats = new String[Format.values().length];
         int i = 0;
@@ -173,6 +174,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * Return the message.
      * @return the message.
      */
+    @Override
     public String getMessageFormat() {
         return message;
     }
@@ -207,6 +209,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @return The formatted String.
      */
 
+    @Override
     public String asString(String format) {
         try {
             return asString(Format.valueOf(format.toUpperCase()), null);
@@ -311,10 +314,12 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     }
 
 
+    @Override
     public MapMessage newInstance(Map<String, String> map) {
         return new StructuredDataMessage(this, map);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -341,6 +346,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = HASHVAL * result + (type != null ? type.hashCode() : 0);

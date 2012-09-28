@@ -65,6 +65,7 @@ public class SimpleMessage implements Message, Serializable {
         return null;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,10 +79,12 @@ public class SimpleMessage implements Message, Serializable {
         return !(message != null ? !message.equals(that.message) : that.message != null);
     }
 
+    @Override
     public int hashCode() {
         return message != null ? message.hashCode() : 0;
     }
 
+    @Override
     public String toString() {
         return "SimpleMessage[message=" + message + "]";
     }

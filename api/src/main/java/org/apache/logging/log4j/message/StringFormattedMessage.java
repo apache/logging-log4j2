@@ -112,6 +112,7 @@ public class StringFormattedMessage implements Message, Serializable {
         }
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -132,6 +133,7 @@ public class StringFormattedMessage implements Message, Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result = messagePattern != null ? messagePattern.hashCode() : 0;
         result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
@@ -139,6 +141,7 @@ public class StringFormattedMessage implements Message, Serializable {
     }
 
 
+    @Override
     public String toString() {
         return "StringFormatMessage[messagePattern=" + messagePattern + ", args=" +
             Arrays.toString(argArray) +  "]";

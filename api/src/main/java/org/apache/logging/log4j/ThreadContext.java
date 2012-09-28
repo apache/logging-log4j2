@@ -46,6 +46,7 @@ public final class ThreadContext {
 
     private static ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {
+            @Override
             protected Map<String, String> childValue(Map<String, String> parentValue) {
                 return parentValue == null ? null : new HashMap<String, String>(parentValue);
             }

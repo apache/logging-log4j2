@@ -277,10 +277,12 @@ public class MapMessage implements MultiformatMessage, Serializable {
         return new MapMessage(map);
     }
 
+    @Override
     public String toString() {
         return asString();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -294,6 +296,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
         return this.data.equals(that.data);
     }
 
+    @Override
     public int hashCode() {
         return data.hashCode();
     }

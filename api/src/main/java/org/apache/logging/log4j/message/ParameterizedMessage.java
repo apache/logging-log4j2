@@ -250,6 +250,7 @@ public class ParameterizedMessage implements Message, Serializable {
         return format(msgPattern, sArgs);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -271,6 +272,7 @@ public class ParameterizedMessage implements Message, Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result = messagePattern != null ? messagePattern.hashCode() : 0;
         result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
@@ -575,6 +577,7 @@ public class ParameterizedMessage implements Message, Serializable {
         return obj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(obj));
     }
 
+    @Override
     public String toString() {
         return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
             Arrays.toString(stringArgs) + ", throwable=" + throwable + "]";

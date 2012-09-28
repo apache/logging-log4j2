@@ -137,6 +137,7 @@ public class Timer implements Serializable
     /**
      * Return the String representation of the timer based upon its current state
      */
+    @Override
     public String toString()
     {
         StringBuilder result = new StringBuilder("Timer ").append(m_name);
@@ -226,6 +227,7 @@ public class Timer implements Serializable
         return result.toString();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Timer)) return false;
@@ -240,6 +242,7 @@ public class Timer implements Serializable
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = (m_name != null ? m_name.hashCode() : 0);
