@@ -189,7 +189,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             return logger;
         }
 
-        logger = (Logger) newInstance(this, name);
+        logger = newInstance(this, name);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
