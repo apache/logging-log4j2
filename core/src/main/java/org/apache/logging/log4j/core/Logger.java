@@ -347,11 +347,11 @@ public class Logger extends AbstractLogger {
      * Returns a Stirng representation of this instance in the form {@code "name:level[ in context_name]"}.
      */
     public String toString() {
-        final String nameLevel = this.name + ":" + this.getLevel();
+        final String nameLevel = name + ":" + getLevel();
         if (context == null) {
             return nameLevel;
         }
-        final String contextName = this.context.getName();
+        final String contextName = context.getName();
         return contextName == null ? nameLevel : nameLevel + " in " + contextName;
     }
 }
