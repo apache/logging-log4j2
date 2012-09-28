@@ -50,7 +50,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private Object externalContext = null;
 
-    private final String contextName;
+    private final String name;
 
     private final URI configLocation;
 
@@ -98,7 +98,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param configLocn The location of the configuration as a URI.
      */
     public LoggerContext(String name, Object externalContext, URI configLocn) {
-        this.contextName = name;
+        this.name = name;
         this.externalContext = externalContext;
         this.configLocation = configLocn;
     }
@@ -111,7 +111,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param configLocn The configuration location.
      */
     public LoggerContext(String name, Object externalContext, String configLocn) {
-        contextName = name;
+        this.name = name;
         this.externalContext = externalContext;
         if (configLocn != null) {
             URI uri;
@@ -253,8 +253,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      *  Reconfigure the context.
      */
     public synchronized void reconfigure() {
-        logger.debug("Reconfiguration started for context " + contextName);
-        Configuration instance = ConfigurationFactory.getInstance().getConfiguration(contextName, configLocation);
+        logger.debug("Reconfiguration started for context " + name);
+        Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
         /*instance.start();
         Configuration old = setConfiguration(instance);
@@ -287,7 +287,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     public synchronized void onChange(Reconfigurable reconfigurable) {
-        logger.debug("Reconfiguration started for context " + contextName);
+        logger.debug("Reconfiguration started for context " + name);
         Configuration config = reconfigurable.reconfigure();
         if (config != null) {
             setConfiguration(config);
