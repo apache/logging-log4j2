@@ -98,7 +98,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param configLocn The location of the configuration as a URI.
      */
     public LoggerContext(String name, Object externalContext, URI configLocn) {
-        contextName = name;
+        this.contextName = name;
         this.externalContext = externalContext;
         this.configLocation = configLocn;
     }
