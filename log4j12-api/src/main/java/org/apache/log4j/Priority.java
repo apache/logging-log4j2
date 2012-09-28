@@ -63,26 +63,31 @@ public class Priority {
     /**
      * @deprecated Use {@link Level#FATAL} instead.
      */
+    @Deprecated
     public static final Priority FATAL = new Level(FATAL_INT, "FATAL", 0);
 
     /**
      * @deprecated Use {@link Level#ERROR} instead.
      */
+    @Deprecated
     public static final Priority ERROR = new Level(ERROR_INT, "ERROR", 3);
 
     /**
      * @deprecated Use {@link Level#WARN} instead.
      */
+    @Deprecated
     public static final Priority WARN = new Level(WARN_INT, "WARN", 4);
 
     /**
      * @deprecated Use {@link Level#INFO} instead.
      */
+    @Deprecated
     public static final Priority INFO = new Level(INFO_INT, "INFO", 6);
 
     /**
      * @deprecated Use {@link Level#DEBUG} instead.
      */
+    @Deprecated
     public static final Priority DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
 
     /*
@@ -120,6 +125,7 @@ public class Priority {
      *
      * @since 1.2
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Priority) {
             Priority r = (Priority) o;
@@ -160,6 +166,7 @@ public class Priority {
      *
      * @deprecated This method will be removed with no replacement.
      */
+    @Deprecated
     public static Priority[] getAllPossiblePriorities() {
         return new Priority[]{Priority.FATAL, Priority.ERROR, Level.WARN,
             Priority.INFO, Priority.DEBUG};
@@ -170,6 +177,7 @@ public class Priority {
      * Returns the string representation of this priority.
      * @return The name of the Priority.
      */
+    @Override
     public final String toString() {
         return levelStr;
     }
@@ -187,6 +195,7 @@ public class Priority {
      * @return The Priority matching the name.
      * @deprecated Please use the {@link Level#toLevel(String)} method instead.
      */
+    @Deprecated
     public static Priority toPriority(String sArg) {
         return Level.toLevel(sArg);
     }
@@ -196,6 +205,7 @@ public class Priority {
      * @return The Priority matching the value.
      * @deprecated Please use the {@link Level#toLevel(int)} method instead.
      */
+    @Deprecated
     public static Priority toPriority(int val) {
         return toPriority(val, Priority.DEBUG);
     }
@@ -206,6 +216,7 @@ public class Priority {
      * @return The Priority matching the value or the default Priority if no match is found.
      * @deprecated Please use the {@link Level#toLevel(int, Level)} method instead.
      */
+    @Deprecated
     public static Priority toPriority(int val, Priority defaultPriority) {
         return Level.toLevel(val, (Level) defaultPriority);
     }
@@ -216,6 +227,7 @@ public class Priority {
      * @return The Priority matching the name or the default Priority if no match is found.
      * @deprecated Please use the {@link Level#toLevel(String, Level)} method instead.
      */
+    @Deprecated
     public static Priority toPriority(String sArg, Priority defaultPriority) {
         return Level.toLevel(sArg, (Level) defaultPriority);
     }

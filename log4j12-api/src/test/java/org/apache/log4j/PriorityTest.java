@@ -98,6 +98,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testFatal() {
         assertTrue(Priority.FATAL instanceof Level);
@@ -108,6 +109,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testERROR() {
         assertTrue(Priority.ERROR instanceof Level);
@@ -118,6 +120,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testWARN() {
         assertTrue(Priority.WARN instanceof Level);
@@ -128,6 +131,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testINFO() {
         assertTrue(Priority.INFO instanceof Level);
@@ -138,6 +142,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testDEBUG() {
         assertTrue(Priority.DEBUG instanceof Level);
@@ -148,6 +153,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testEqualsNull() {
         assertFalse(Priority.DEBUG.equals(null));
@@ -158,6 +164,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testEqualsLevel() {
         //
@@ -171,6 +178,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testGetAllPossiblePriorities() {
         Priority[] priorities = Priority.getAllPossiblePriorities();
@@ -182,6 +190,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testToPriorityString() {
         assertTrue(Priority.toPriority("DEBUG") == Level.DEBUG);
@@ -192,6 +201,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testToPriorityInt() {
         assertTrue(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG);
@@ -202,6 +212,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testToPriorityStringPriority() {
         assertTrue(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG);
@@ -212,6 +223,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testToPriorityIntPriority() {
         assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
@@ -222,6 +234,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testDotlessLowerI() {
         Priority level = Priority.toPriority("\u0131nfo");
@@ -234,6 +247,7 @@ public class PriorityTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testDottedLowerI() {
         Locale defaultLocale = Locale.getDefault();

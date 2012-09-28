@@ -31,10 +31,12 @@ public final class MDC {
 
     private static ThreadLocal<Map<String, Object>> localMap =
         new InheritableThreadLocal<Map<String, Object>>() {
+            @Override
             protected Map<String, Object> initialValue() {
                 return new HashMap<String, Object>();
             }
 
+            @Override
             protected Map<String, Object> childValue(Map<String, Object> parentValue) {
                 return parentValue == null ? new HashMap<String, Object>() : new HashMap<String, Object>(parentValue);
             }

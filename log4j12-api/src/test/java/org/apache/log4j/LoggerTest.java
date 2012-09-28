@@ -474,6 +474,7 @@ public class LoggerTest {
             counter = 0;
         }
 
+        @Override
         public void close() {
         }
 

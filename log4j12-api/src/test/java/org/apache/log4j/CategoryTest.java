@@ -134,6 +134,7 @@ public class CategoryTest {
      *
      * @deprecated
      */
+    @Deprecated
     @Test
     public void testSetPriority() {
         Logger logger = Logger.getLogger("org.example.foo");
