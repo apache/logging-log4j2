@@ -342,4 +342,16 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
     }
+    
+    /**
+     * Returns a Stirng representation of this instance in the form {@code "name:level[ in context_name]"}.
+     */
+    public String toString() {
+        final String nameLevel = this.name + ":" + this.getLevel();
+        if (context == null) {
+            return nameLevel;
+        }
+        final String contextName = this.context.getName();
+        return contextName == null ? nameLevel : nameLevel + " in " + contextName;
+    }
 }
