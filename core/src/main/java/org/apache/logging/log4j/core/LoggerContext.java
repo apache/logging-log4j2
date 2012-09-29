@@ -155,7 +155,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     /**
      * Gets the name.
-     * 
+     *
      * @return the name.
      */
     public String getName() {

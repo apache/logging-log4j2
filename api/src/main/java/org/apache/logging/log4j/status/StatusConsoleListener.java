@@ -58,6 +58,7 @@ public class StatusConsoleListener implements StatusListener {
     /**
      * Creates the StatusConsoleListener using the supplied Level.
      * @param level The Level of status messages that should appear on the console.
+     * @param stream The PrintStream to write to.
      */
     public StatusConsoleListener(Level level, PrintStream stream) {
         this.level = level;

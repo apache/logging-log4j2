@@ -342,9 +342,10 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
     }
-    
+
     /**
      * Returns a String representation of this instance in the form {@code "name:level[ in context_name]"}.
+     * @return A String describing this Logger instance.
      */
     @Override
     public String toString() {
