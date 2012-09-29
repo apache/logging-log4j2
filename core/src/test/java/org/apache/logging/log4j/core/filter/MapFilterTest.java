@@ -17,12 +17,28 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -30,6 +46,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class MapFilterTest {
 
+    @After
+    public void cleanup() {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        ctx.reconfigure();
+        StatusLogger.getLogger().reset();
+    }
 
     @Test
     public void testFilter() {
@@ -42,9 +64,9 @@ public class MapFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, (Throwable)null) == Filter.Result.DENY);
+        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.DENY);
         filter = MapFilter.createFilter(pairs, "or", null, null);
         filter.start();
         msg = new MapMessage();
@@ -52,8 +74,37 @@ public class MapFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.NEUTRAL);
+    }
+
+    @Test
+    public void testConfig() {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-mapfilter.xml");
+        Configuration config = ctx.getConfiguration();
+        Filter filter = config.getFilter();
+        assertNotNull("No MapFilter", filter);
+        assertTrue("Not a MapFilter", filter instanceof  MapFilter);
+        MapFilter mapFilter = (MapFilter) filter;
+        assertFalse("Should not be And filter", mapFilter.isAnd());
+        Map<String, List<String>> map = mapFilter.getMap();
+        assertNotNull("No Map", map == null);
+        assertTrue("No elements in Map", map.size() != 0);
+        assertTrue("Incorrect number of elements in Map", map.size() == 1);
+        assertTrue("Map does not contain key eventId", map.containsKey("eventId"));
+        assertTrue("List does not contain 2 elements", map.get("eventId").size() == 2);
+        Logger logger = LogManager.getLogger(MapFilterTest.class);
+        Map<String, String> eventMap = new HashMap<String, String>();
+        eventMap.put("eventId", "Login");
+        logger.debug(new MapMessage(eventMap));
+        Map<String,Appender> appenders = config.getAppenders();
+        Appender app = appenders.get("LIST");
+        assertNotNull("No List appender", app);
+        List<String> msgs = ((ListAppender) app).getMessages();
+        assertNotNull("No messages", msgs);
+        assertTrue("No messages", msgs.size() > 0);
+
+
     }
 }

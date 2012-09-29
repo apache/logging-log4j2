@@ -28,37 +28,38 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
 @Plugin(name = "ThreadContextMapFilter", type = "Core", elementType = "filter", printObject = true)
-public class ThreadContextMapFilter extends FilterBase {
-    private final Map<String, String> map;
+public class ThreadContextMapFilter extends MapFilter {
 
     private final String key;
     private final String value;
 
-    private final boolean isAnd;
-
     private final boolean useMap;
 
-    public ThreadContextMapFilter(Map<String, String> pairs, boolean oper, Result onMatch, Result onMismatch) {
-        super(onMatch, onMismatch);
+    public ThreadContextMapFilter(Map<String, List<String>> pairs, boolean oper, Result onMatch, Result onMismatch) {
+        super(pairs, oper, onMatch, onMismatch);
         if (pairs.size() == 1) {
-            Iterator<Map.Entry<String, String>> iter = pairs.entrySet().iterator();
-            Map.Entry<String, String> entry = iter.next();
-            this.key = entry.getKey();
-            this.value = entry.getValue();
-            this.map = null;
-            this.isAnd = false;
-            this.useMap = false;
+            Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
+            Map.Entry<String, List<String>> entry = iter.next();
+            if (entry.getValue().size() == 1) {
+                this.key = entry.getKey();
+                this.value = entry.getValue().get(0);
+                this.useMap = false;
+            } else {
+                this.key = null;
+                this.value = null;
+                this.useMap = true;
+            }
         } else {
-            this.map = pairs;
-            this.isAnd = oper;
             this.key = null;
             this.value = null;
             this.useMap = true;
@@ -83,9 +84,14 @@ public class ThreadContextMapFilter extends FilterBase {
     private Result filter() {
         boolean match = false;
         if (useMap) {
-            for (String key : map.keySet()) {
-                match = map.get(key).equals(ThreadContext.get(key));
-                if ((!isAnd && match) || (isAnd && !match)) {
+            for (Map.Entry<String, List<String>> entry : getMap().entrySet()) {
+                String toMatch = ThreadContext.get(entry.getKey());
+                if (toMatch != null) {
+                    match = entry.getValue().contains(toMatch);
+                } else {
+                    match = false;
+                }
+                if ((!isAnd() && match) || (isAnd() && !match)) {
                     break;
                 }
             }
@@ -97,38 +103,7 @@ public class ThreadContextMapFilter extends FilterBase {
 
     @Override
     public Result filter(LogEvent event) {
-        Map<String, String> ctx = event.getContextMap();
-        boolean match = false;
-        for (String key : map.keySet()) {
-            match = map.get(key).equals(ctx.get(key));
-            if ((!isAnd && match) || (isAnd && !match)) {
-                break;
-            }
-        }
-        return match ? onMatch : onMismatch;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("isAnd=").append(isAnd);
-        if (useMap) {
-            if (map.size() > 0) {
-                sb.append(", {");
-               boolean first = true;
-                for (Map.Entry<String, String> entry : map.entrySet()) {
-                    if (!first) {
-                        sb.append(", ");
-                    }
-                    first = false;
-                    sb.append(entry.getKey()).append("=").append(entry.getValue());
-                }
-                sb.append("}");
-          }
-        } else {
-            sb.append(", {").append(key).append("=").append(value).append("}");
-        }
-        return sb.toString();
+        return super.filter(event.getContextMap()) ? onMatch : onMismatch;
     }
 
     @PluginFactory
@@ -140,19 +115,26 @@ public class ThreadContextMapFilter extends FilterBase {
             LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                LOGGER.error("A null key is not valid in ThreadContextMapFilter");
+                LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                LOGGER.error("A null value for key " + key + " is not allowed in ThreadContextMapFilter");
+                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
             }
-            map.put(pair.getKey(), pair.getValue());
+            List<String> list = map.get(pair.getKey());
+            if (list != null) {
+                list.add(value);
+            } else {
+                list = new ArrayList<String>();
+                list.add(value);
+                map.put(pair.getKey(), list);
+            }
         }
         if (map.size() == 0) {
             LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");

@@ -24,11 +24,12 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
-import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +38,7 @@ import java.util.Map;
 @Plugin(name = "StructuredDataFilter", type = "Core", elementType = "filter", printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
-    private StructuredDataFilter(Map<String, String> map, boolean oper, Result onMatch, Result onMismatch) {
+    private StructuredDataFilter(Map<String, List<String>> map, boolean oper, Result onMatch, Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
     }
 
@@ -55,29 +56,17 @@ public final class StructuredDataFilter extends MapFilter {
         if (msg instanceof StructuredDataMessage) {
             return filter((StructuredDataMessage) msg);
         }
-        return Result.NEUTRAL;
+        return super.filter(event);
     }
 
-    @Override
-    protected Result filter(MapMessage message) {
-        if (!(message instanceof StructuredDataMessage)) {
-            return super.filter(message);
-        }
-        StructuredDataMessage msg = (StructuredDataMessage) message;
+    protected Result filter(StructuredDataMessage message) {
         boolean match = false;
-        Map<String, String> map = getMap();
-        for (String key : map.keySet()) {
-            if (key.equalsIgnoreCase("id")) {
-                match = map.get(key).equals(msg.getId().toString());
-            } else if (key.equalsIgnoreCase("id.name")) {
-                match = map.get(key).equals(msg.getId().getName());
-            } else if (key.equalsIgnoreCase("type")) {
-                match = map.get(key).equals(msg.getType());
-            } else if (key.equalsIgnoreCase("message")) {
-                match = map.get(key).equals(msg.getFormattedMessage().toString());
+        for (Map.Entry<String, List<String>> entry : getMap().entrySet()) {
+            String toMatch = getValue(message, entry.getKey());
+            if (toMatch != null) {
+                match = entry.getValue().contains(toMatch);
             } else {
-                String data = msg.getData().get(key).toString();
-                match = map.get(key).equals(data);
+                match = false;
             }
             if ((!isAnd() && match) || (isAnd() && !match)) {
                 break;
@@ -86,23 +75,18 @@ public final class StructuredDataFilter extends MapFilter {
         return match ? onMatch : onMismatch;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("isAnd=").append(isAnd());
-        if (getMap().size() > 0) {
-            sb.append(", {");
-            boolean first = true;
-            for (Map.Entry<String, String> entry : getMap().entrySet()) {
-                if (!first) {
-                    sb.append(", ");
-                }
-                first = false;
-                sb.append(entry.getKey()).append("=").append(entry.getValue());
-            }
-            sb.append("}");
+    private String getValue(StructuredDataMessage data, String key) {
+        if (key.equalsIgnoreCase("id")) {
+            return data.getId().toString();
+        } else if (key.equalsIgnoreCase("id.name")) {
+            return data.getId().getName();
+        } else if (key.equalsIgnoreCase("type")) {
+            return data.getType();
+        } else if (key.equalsIgnoreCase("message")) {
+            return data.getFormattedMessage();
+        } else {
+            return data.getData().get(key);
         }
-        return sb.toString();
     }
 
     /**
@@ -122,19 +106,26 @@ public final class StructuredDataFilter extends MapFilter {
             LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
-                LOGGER.error("A null key is not valid in StructuredDataFilter");
+                LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
             String value = pair.getValue();
             if (value == null) {
-                LOGGER.error("A null value for key " + key + " is not allowed in StructuredDataFilter");
+                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
             }
-            map.put(pair.getKey(), pair.getValue());
+            List<String> list = map.get(pair.getKey());
+            if (list != null) {
+                list.add(value);
+            } else {
+                list = new ArrayList<String>();
+                list.add(value);
+                map.put(pair.getKey(), list);
+            }
         }
         if (map.size() == 0) {
             LOGGER.error("StructuredDataFilter is not configured with any valid key value pairs");

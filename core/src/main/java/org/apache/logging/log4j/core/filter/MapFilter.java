@@ -22,12 +22,15 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,11 +38,11 @@ import java.util.Map;
  */
 @Plugin(name = "MapFilter", type = "Core", elementType = "filter", printObject = true)
 public class MapFilter extends FilterBase {
-    private final Map<String, String> map;
+    private final Map<String, List<String>> map;
 
     private final boolean isAnd;
 
-    protected MapFilter(Map<String, String> map, boolean oper, Result onMatch, Result onMismatch) {
+    protected MapFilter(Map<String, List<String>> map, boolean oper, Result onMatch, Result onMismatch) {
         super(onMatch, onMismatch);
         if (map == null) {
             throw new NullPointerException("key cannot be null");
@@ -51,7 +54,7 @@ public class MapFilter extends FilterBase {
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
         if (msg instanceof MapMessage) {
-            return filter((MapMessage) msg);
+            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
@@ -60,21 +63,25 @@ public class MapFilter extends FilterBase {
     public Result filter(LogEvent event) {
         Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
-            return filter((MapMessage) msg);
+            return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
 
-    protected Result filter(MapMessage msg) {
+    protected boolean filter(Map<String, String> data) {
         boolean match = false;
-        for (String key : map.keySet()) {
-            String data = msg.getData().get(key);
-            match = map.get(key).equals(data);
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            String toMatch = data.get(entry.getKey());
+            if (toMatch != null) {
+                match = entry.getValue().contains(toMatch);
+            } else {
+                match = false;
+            }
             if ((!isAnd && match) || (isAnd && !match)) {
                 break;
             }
         }
-        return match ? onMatch : onMismatch;
+        return match;
     }
 
     @Override
@@ -84,12 +91,14 @@ public class MapFilter extends FilterBase {
         if (map.size() > 0) {
             sb.append(", {");
             boolean first = true;
-            for (Map.Entry<String, String> entry : map.entrySet()) {
+            for (Map.Entry<String, List<String>> entry : map.entrySet()) {
                 if (!first) {
                     sb.append(", ");
                 }
                 first = false;
-                sb.append(entry.getKey()).append("=").append(entry.getValue());
+                List<String> list = entry.getValue();
+                String value = list.size() > 1 ? list.get(0) : list.toString();
+                sb.append(entry.getKey()).append("=").append(value);
             }
             sb.append("}");
         }
@@ -100,20 +109,20 @@ public class MapFilter extends FilterBase {
         return isAnd;
     }
 
-    protected Map<String, String> getMap() {
+    protected Map<String, List<String>> getMap() {
         return map;
     }
 
     @PluginFactory
-    public static MapFilter createFilter(@PluginAttr("pairs") KeyValuePair[] pairs,
-                                                    @PluginAttr("operator") String oper,
-                                                    @PluginAttr("onmatch") String match,
-                                                    @PluginAttr("onmismatch") String mismatch) {
+    public static MapFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
+                                         @PluginAttr("operator") String oper,
+                                         @PluginAttr("onmatch") String match,
+                                         @PluginAttr("onmismatch") String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
         for (KeyValuePair pair : pairs) {
             String key = pair.getKey();
             if (key == null) {
@@ -125,7 +134,14 @@ public class MapFilter extends FilterBase {
                 LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
             }
-            map.put(pair.getKey(), pair.getValue());
+            List<String> list = map.get(pair.getKey());
+            if (list != null) {
+                list.add(value);
+            } else {
+                list = new ArrayList<String>();
+                list.add(value);
+                map.put(pair.getKey(), list);
+            }
         }
         if (map.size() == 0) {
             LOGGER.error("MapFilter is not configured with any valid key value pairs");

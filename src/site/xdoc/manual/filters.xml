@@ -238,7 +238,9 @@
             <tr>
               <td>keyValuePair</td>
               <td>KeyValuePair[]</td>
-              <td>One or more KeyValuePair elements that define the key in the map and the value to match on.</td>
+              <td>One or more KeyValuePair elements that define the key in the map and the value to match on. If the
+              same key is specified more than once then the check for that key will automatically be an "or" since
+              a Map can only contain a single value.</td>
             </tr>
             <tr>
               <td>operator</td>
@@ -474,7 +476,9 @@
               <td>KeyValuePair[]</td>
               <td>One or more KeyValuePair elements that define the key in the map and the value to match on. "id",
                 "id.name", "type", and "message" should be used to match on the StructuredDataId, the name
-                portion of the StructuredDataId, the type, and the formatted message respectively.
+                portion of the StructuredDataId, the type, and the formatted message respectively. If the
+                same key is specified more than once then the check for that key will automatically be an "or" since
+                a Map can only contain a single value.
               </td>
             </tr>
             <tr>
@@ -537,7 +541,9 @@
             <tr>
               <td>keyValuePair</td>
               <td>KeyValuePair[]</td>
-              <td>One or more KeyValuePair elements that define the key in the map and the value to match on.</td>
+              <td>One or more KeyValuePair elements that define the key in the map and the value to match on. If the
+                same key is specified more than once then the check for that key will automatically be an "or" since
+                a Map can only contain a single value.</td>
             </tr>
             <tr>
               <td>operator</td>

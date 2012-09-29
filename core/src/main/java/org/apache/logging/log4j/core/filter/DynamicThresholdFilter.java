@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.HashMap;
@@ -87,6 +88,10 @@ public final class DynamicThresholdFilter extends FilterBase {
 
     }
 
+    public Map<String, Level> getLevelMap() {
+        return levelMap;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -118,15 +123,15 @@ public final class DynamicThresholdFilter extends FilterBase {
      */
     @PluginFactory
     public static DynamicThresholdFilter createFilter(@PluginAttr("key") String key,
-                                                      @PluginElement("pairs") ValueLevelPair[] pairs,
+                                                      @PluginElement("pairs") KeyValuePair[] pairs,
                                                       @PluginAttr("defaultThreshold") String level,
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
         Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
         Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
         Map<String, Level> map = new HashMap<String, Level>();
-        for (ValueLevelPair pair : pairs) {
-            map.put(pair.getKey(), pair.getLevel());
+        for (KeyValuePair pair : pairs) {
+            map.put(pair.getKey(), Level.toLevel(pair.getValue().toUpperCase()));
         }
         Level l = Level.toLevel(level, Level.ERROR);
         return new DynamicThresholdFilter(key, map, l, onMatch, onMismatch);

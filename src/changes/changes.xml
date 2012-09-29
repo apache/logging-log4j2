@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-92" dev="rgoers" type="fix">
+        Converted DynamicThresholdFilter to use KeyValuePair. Fixed bugs in the Map-based filters
+        to allow declaration of multiple values for a key to match the documentation.
+      </action>
       <action issue="LOG4J2-88" dev="rgoers" type="fix">
         Many logging methods in AbstractLogger were set to an incorrect logging level. catching was
         using the THROWING marker and was set to debug instead of error.
