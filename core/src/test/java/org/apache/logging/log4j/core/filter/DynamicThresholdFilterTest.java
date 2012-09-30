@@ -73,7 +73,7 @@ public class DynamicThresholdFilterTest {
 
     @Test
     public void testConfig() {
-        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-dynamicFilter.xml");
+        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-dynamicfilter.xml");
         Configuration config = ctx.getConfiguration();
         Filter filter = config.getFilter();
         assertNotNull("No DynamicThresholdFilter", filter);
