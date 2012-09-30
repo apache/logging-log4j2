@@ -704,6 +704,12 @@
             </tr>
             <caption align="top">Pattern Converters</caption>
           </table>
+          <h4>ANSI Styling on Windows</h4>
+          <p>
+            ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To
+            enable ANSI support simply add the <a href="http://jansi.fusesource.org/">Jansi</a> jar to your
+            application and Log4j will automatically make use of it when writing to the console.
+          </p>
           <h4>Example Patterns</h4>
           <h5>Ansi Styled</h5>
           <p>The log level will be highlighted according to the event's log level. All the content that follows
