@@ -22,9 +22,13 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -86,10 +90,28 @@ public final class ConsoleAppender extends OutputStreamAppender {
 
     private static OutputStreamManager getManager(Target target) {
         String type = target.name();
-        OutputStream os = target == Target.SYSTEM_OUT ? System.out : System.err;
-        OutputStreamManager manager = OutputStreamManager.getManager(target.name(), new FactoryData(os, type), factory
-        );
-        return manager;
+        OutputStream os = getOutputStream(target);
+        return OutputStreamManager.getManager(target.name(), new FactoryData(os, type), factory);
+    }
+
+    private static OutputStream getOutputStream(Target target) {
+        if (!System.getProperty("os.name").startsWith("Windows")) {
+            return target == Target.SYSTEM_OUT ? System.out : System.err;
+        } else {
+            try {
+                ClassLoader loader = Loader.getClassLoader();
+                Class clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
+                Constructor constructor = clazz.getConstructor(OutputStream.class);
+                return (OutputStream) constructor.newInstance(target == Target.SYSTEM_OUT ? System.out : System.err);
+            } catch (ClassNotFoundException cnfe) {
+                LOGGER.debug("Jansi is not installed");
+            } catch (NoSuchMethodException nsme) {
+                LOGGER.warn("WindowsAnsiOutputStream is missing the proper constructor");
+            } catch (Exception ex) {
+                LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
+            }
+            return target == Target.SYSTEM_OUT ? System.out : System.err;
+        }
     }
 
     /**

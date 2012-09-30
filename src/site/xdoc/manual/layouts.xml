@@ -266,6 +266,16 @@
             </tr>
             <tr>
               <td align="center">
+                <b>highlight</b>{pattern}
+              </td>
+              <td>
+                Adds ANSI colors to the result of the enclosed pattern based on the current event's logging level.
+                The result will be in blinking bright red when the level is FATAL, bright red when the level is
+                ERROR, red when the level is WARN, blue when the level is INFO and normal for DEBUG and TRACE levels.
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
                 <b>K</b>{key}<br />
                 <b>map</b>{key}<br />
                 <b>MAP</b>{key}
@@ -398,6 +408,119 @@
               <td>Includes a sequence number that will be incremented in every event. The counter is a
                 static variable so will only be unique within applications that share the same converter Class
                 object.</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>style</b>{pattern}{ANSI style}
+              </td>
+              <td>
+                <p>
+                  Uses ANSI escape sequences to style the result of the enclosed pattern. The style can consist of
+                  a comma separated list of style names from the following table.
+                  <table border="1" width="100%">
+                    <tr>
+                      <th>Style Name</th>
+                      <th>Description</th>
+                    </tr>
+                    <tr>
+                      <td>Normal</td>
+                      <td>Normal display</td>
+                    </tr>
+                    <tr>
+                      <td>Bright</td>
+                      <td>Bold</td>
+                    </tr>
+                    <tr>
+                      <td>Dim</td>
+                      <td>Dimmed or faint characters</td>
+                    </tr>
+                    <tr>
+                      <td>Underline</td>
+                      <td>Underlined characters</td>
+                    </tr>
+                    <tr>
+                      <td>Blink</td>
+                      <td>Blinking characters</td>
+                    </tr>
+                    <tr>
+                      <td>Reverse</td>
+                      <td>Reverse video</td>
+                    </tr>
+                    <tr>
+                      <td>Hidden</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Black or FG_Black</td>
+                      <td>Set foreground color to black</td>
+                    </tr>
+                    <tr>
+                      <td>Red or FG_Red</td>
+                      <td>Set foreground color to red</td>
+                    </tr>
+                    <tr>
+                      <td>Green or FG_Green</td>
+                      <td>Set foreground color to green</td>
+                    </tr>
+                    <tr>
+                      <td>Yellow or FG_Yellow</td>
+                      <td>Set foreground color to yellow</td>
+                    </tr>
+                    <tr>
+                      <td>Blue or FG_Blue</td>
+                      <td>Set foreground color to blue</td>
+                    </tr>
+                    <tr>
+                      <td>Magenta or FG_Magenta</td>
+                      <td>Set foreground color to magenta</td>
+                    </tr>
+                    <tr>
+                      <td>Cyan or FG_Cyan</td>
+                      <td>Set foreground color to cyan</td>
+                    </tr>
+                    <tr>
+                      <td>White or FG_White</td>
+                      <td>Set foreground color to white</td>
+                    </tr>
+                    <tr>
+                      <td>Default or FG_Default</td>
+                      <td>Set foreground color to default (white)</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Black</td>
+                      <td>Set background color to black</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Red</td>
+                      <td>Set background color to red</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Green</td>
+                      <td>Set background color to green</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Yellow</td>
+                      <td>Set background color to yellow</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Blue</td>
+                      <td>Set background color to blue</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Magenta</td>
+                      <td>Set background color to magenta</td>
+                    </tr>
+                    <tr>
+                      <td>BG_Cyan</td>
+                      <td>Set background color to cyan</td>
+                    </tr>
+                    <tr>
+                      <td>BG_White</td>
+                      <td>Set background color to white</td>
+                    </tr>
+                  </table>
+                </p>
+              </td>
             </tr>
             <tr>
               <td align="center">
@@ -581,6 +704,15 @@
             </tr>
             <caption align="top">Pattern Converters</caption>
           </table>
+          <h4>Example Patterns</h4>
+          <h5>Ansi Styled</h5>
+          <p>The log level will be highlighted according to the event's log level. All the content that follows
+            the level will be bright green.</p>
+          <source><![CDATA[
+      <PatternLayout>
+        <pattern>%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n</pattern>
+      </PatternLayout>
+  ]]></source>
         </subsection>
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424Layout">
