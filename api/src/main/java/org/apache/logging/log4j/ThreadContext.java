@@ -39,6 +39,19 @@ public final class ThreadContext {
      */
     public static final Map<String, String> EMPTY_MAP = new ImmutableMap();
 
+
+    private static final String DISABLE_MAP = "disableThreadContextMap";
+
+    private static final String DISABLE_STACK = "disableThreadContextStack";
+
+    private static final String DISABLE_ALL = "disableThreadContext";
+
+    private static boolean all = Boolean.getBoolean(DISABLE_ALL);
+
+    private static boolean useMap = !(Boolean.getBoolean(DISABLE_MAP) || all);
+
+    private static boolean useStack = !(Boolean.getBoolean(DISABLE_STACK) || all);
+
     /**
      * Empty, immutable ContextStack.
      */
@@ -48,7 +61,7 @@ public final class ThreadContext {
         new InheritableThreadLocal<Map<String, String>>() {
             @Override
             protected Map<String, String> childValue(Map<String, String> parentValue) {
-                return parentValue == null ? null : new HashMap<String, String>(parentValue);
+                return parentValue == null || !useMap ? null : new HashMap<String, String>(parentValue);
             }
         };
 
@@ -69,6 +82,9 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void put(String key, String value) {
+        if (!useMap) {
+            return;
+        }
         Map<String, String> map = localMap.get();
         if (map == null) {
             map = new HashMap<String, String>();
@@ -175,7 +191,7 @@ public final class ThreadContext {
      * @param stack The stack to use.
      */
     public static void setStack(Collection<String> stack) {
-        if (stack.size() == 0) {
+        if (stack.size() == 0 || !useStack) {
             return;
         }
         localStack.set(new ThreadContextStack(stack));
@@ -234,6 +250,9 @@ public final class ThreadContext {
      * @param message The new diagnostic context information.
      */
     public static void push(String message) {
+        if (!useStack) {
+            return;
+        }
         ContextStack stack = localStack.get();
         if (stack == null) {
             stack = new ThreadContextStack();
