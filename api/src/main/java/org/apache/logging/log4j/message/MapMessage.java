@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -42,13 +41,13 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
     private static final long serialVersionUID = -5031471831131487120L;
 
-    private final Map<String, String> data;
+    private final SortedMap<String, String> data;
 
     /**
      * Constructor.
      */
     public MapMessage() {
-        data = new HashMap<String, String>();
+        data = new TreeMap<String, String>();
     }
 
     /**
@@ -56,7 +55,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * @param map The Map.
      */
     public MapMessage(Map<String, String> map) {
-        this.data = map;
+        this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<String, String>(map);
     }
 
     public String[] getFormats() {
@@ -192,8 +191,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
     public void asXML(StringBuilder sb) {
         sb.append("<Map>\n");
-        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
-        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
             sb.append("  <Entry key=").append(entry.getKey()).append(">").append(entry.getValue()).append("</Entry>\n");
         }
         sb.append("</Map>");
@@ -232,9 +230,8 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     protected void appendMap(StringBuilder sb) {
-        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
         boolean first = true;
-        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(" ");
             }
@@ -244,10 +241,9 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     protected void asJSON(StringBuilder sb) {
-        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
         boolean first = true;
         sb.append("{");
-        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
@@ -260,10 +256,9 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
 
     protected void asJava(StringBuilder sb) {
-        SortedMap<String, String> sorted = new TreeMap<String, String>(data);
         boolean first = true;
         sb.append("{");
-        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
