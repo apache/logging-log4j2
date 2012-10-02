@@ -20,6 +20,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 /**
  * Outputs the Throwable portion of the LoggingEvent as a full stacktrace
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
@@ -31,6 +35,11 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 @Plugin(name = "ExtendedThrowablePatternConverter", type = "Converter")
 @ConverterKeys({"xEx", "xThrowable", "xException" })
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
+
+    private static final String FILTERS = "filters(";
+
+    private List<String> packages = null;
+
     /**
      * Private constructor.
      *
@@ -38,6 +47,18 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      */
     private ExtendedThrowablePatternConverter(final String[] options) {
         super("ExtendedThrowable", "throwable", options);
+        if (options != null && options.length > 1) {
+            if (options[1].startsWith(FILTERS) && options[1].endsWith(")")) {
+                String filterStr = options[1].substring(FILTERS.length(), options[1].length() - 1);
+                String[] array = filterStr.split(",");
+                if (array.length > 0) {
+                    packages = new ArrayList<String>(array.length);
+                    for (String token : array) {
+                        packages.add(token.trim());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -47,9 +68,24 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static ExtendedThrowablePatternConverter newInstance(
-        final String[] options) {
-        return new ExtendedThrowablePatternConverter(options);
+    public static ExtendedThrowablePatternConverter newInstance(final String[] options) {
+        String type = null;
+        String[] array = options;
+        if (options != null && options.length == 1 && options[0].length() > 0) {
+            String[] opts = options[0].split(",", 2);
+            String first = opts[0].trim();
+            String filter;
+            Scanner scanner = new Scanner(first);
+            if (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || scanner.hasNextInt()) {
+                type = first;
+                filter = opts[1].trim();
+            } else {
+                filter = options[0].trim();
+            }
+            array = new String[] {type, filter};
+        }
+
+        return new ExtendedThrowablePatternConverter(array);
     }
 
     /**
@@ -64,7 +100,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
                 return;
             }
             ThrowableProxy t = (ThrowableProxy) throwable;
-            String trace = t.getExtendedStackTrace();
+            String trace = t.getExtendedStackTrace(packages);
             int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");

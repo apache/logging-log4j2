@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-58" dev="rgoers" type="add">
+        Add support for filtering packages from stack traces.
+      </action>
       <action issue="LOG4J2-84" dev="rgoers" type="add">
         If system property "disableThreadContextStack" is set pushes to the ThreadContext will be ignored. If
         system property "disableThreadContext" is set both puts and pushes will be ignored.

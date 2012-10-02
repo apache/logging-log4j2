@@ -27,8 +27,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or

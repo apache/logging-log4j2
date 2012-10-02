@@ -240,9 +240,9 @@
             </tr>
             <tr>
               <td align="center">
-                <b>ex</b>{depth}<br />
-                <b>exception</b>{depth}<br />
-                <b>throwable</b>{depth}
+                <b>ex</b>{["short"|"full"|depth]}<br />
+                <b>exception</b>{["short"|"full"|depth]}<br />
+                <b>throwable</b>{["short"|"full"|depth]}
               </td>
               <td>
                 <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
@@ -389,14 +389,22 @@
             </tr>
             <tr>
               <td align="center">
-                <b>rEx</b>{depth}<br />
-                <b>rException</b>{depth}<br />
-                <b>rThrowable</b>{depth}
+                <b>rEx</b>["short"|"full"|depth],[filters(packages)}<br />
+                <b>rException</b>["short"|"full"|depth],[filters(packages)}<br />
+                <b>rThrowable</b>["short"|"full"|depth],[filters(packages)}
               </td>
               <td>
                 <p>
                   The same as the %throwable conversion word but the stack trace is printed starting with the
                   first exception that was thrown followed by each subsequent wrapping exception.
+                </p>
+                <p>
+                  The throwable conversion word can be followed by an option in the form
+                  <b>%rEx{short}</b>
+                  which will only output the first line of the Throwable or <b>%rEx{n}</b> where
+                  the first n lines of the stacktrace will be printed. The conversion word can also be
+                  followed by "filters(packages)" where packages is a list of package names that should
+                  be suppressed from stack traces.
                 </p>
               </td>
             </tr>
@@ -580,9 +588,9 @@
             </tr>
             <tr>
               <td align="center">
-                <b>xEx</b>{depth}<br />
-                <b>xException</b>{depth}<br />
-                <b>xThrowable</b>{depth}
+                <b>xEx</b>{["short"|"full"|depth],[filters(packages)}<br />
+                <b>xException</b>["short"|"full"|depth],[filters(packages)}<br />
+                <b>xThrowable</b>["short"|"full"|depth],[filters(packages)}
               </td>
               <td>
                 <p>
@@ -593,6 +601,14 @@
                   that contains the class or the directory the class is located in and the "Implementation-Version"
                   as found in that jar's manifest will be added. If the information is uncertain, then the class
                   packaging data will be preceded by a tilde, i.e. the '~' character.
+                </p>
+                <p>
+                  The throwable conversion word can be followed by an option in the form
+                  <b>%xEx{short}</b>
+                  which will only output the first line of the Throwable or <b>%xEx{n}</b> where
+                  the first n lines of the stacktrace will be printed. The conversion word can also be
+                  followed by "filters(packages)" where packages is a list of package names that should
+                  be suppressed from stack traces.
                 </p>
               </td>
             </tr>
@@ -711,6 +727,32 @@
             application and Log4j will automatically make use of it when writing to the console.
           </p>
           <h4>Example Patterns</h4>
+          <h5>Filtered Throwables</h5>
+          <p>
+            This example shows how to filter out classes from unimportant packages in stack traces.
+          </p>
+          <source><![CDATA[
+  <properties>
+    <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
+  </properties>
+  .
+  .
+      <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
+  ]]></source>
+          <p>
+            The result printed to the console will appear similar to:
+          </p>
+          <source>
+  Exception java.lang.IllegalArgumentException: IllegalArgument
+  at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
+  ... suppressed 26 lines
+  at $Proxy0.invoke(Unknown Source) [?:?]
+  ... suppressed 3 lines
+  Caused by: java.lang.NullPointerException: null pointer
+  at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
+  ... 30 more
+
+          </source>
           <h5>Ansi Styled</h5>
           <p>The log level will be highlighted according to the event's log level. All the content that follows
             the level will be bright green.</p>

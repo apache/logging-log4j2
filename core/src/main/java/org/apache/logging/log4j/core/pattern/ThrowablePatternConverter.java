@@ -63,7 +63,8 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         int count = 0;
         if ((options != null) && (options.length > 0)) {
             option = options[0];
-            if (option.equalsIgnoreCase(SHORT)) {
+            if (option == null) {
+            } else if (option.equalsIgnoreCase(SHORT)) {
                 count = 2;
             } else if (!option.equalsIgnoreCase(FULL)) {
                 count = Integer.parseInt(option);
@@ -82,8 +83,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static ThrowablePatternConverter newInstance(
-        final String[] options) {
+    public static ThrowablePatternConverter newInstance(final String[] options) {
         return new ThrowablePatternConverter("Throwable", "throwable", options);
     }
 

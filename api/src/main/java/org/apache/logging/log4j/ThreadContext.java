@@ -39,6 +39,10 @@ public final class ThreadContext {
      */
     public static final Map<String, String> EMPTY_MAP = new ImmutableMap();
 
+    /**
+     * Empty, immutable ContextStack.
+     */
+    public static final ContextStack EMPTY_STACK = new ImmutableStack();
 
     private static final String DISABLE_MAP = "disableThreadContextMap";
 
@@ -51,11 +55,6 @@ public final class ThreadContext {
     private static boolean useMap = !(Boolean.getBoolean(DISABLE_MAP) || all);
 
     private static boolean useStack = !(Boolean.getBoolean(DISABLE_STACK) || all);
-
-    /**
-     * Empty, immutable ContextStack.
-     */
-    public static final ContextStack EMPTY_STACK = new ImmutableStack();
 
     private static ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {

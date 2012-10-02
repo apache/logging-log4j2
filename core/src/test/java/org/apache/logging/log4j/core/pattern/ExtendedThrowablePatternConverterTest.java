@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -57,5 +58,20 @@ public class ExtendedThrowablePatternConverterTest {
         result = result.replaceAll(" ~?\\[.*\\]", "");
         String expected = sw.toString().replaceAll("\r", "");
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFiltering() {
+        String packages = "filters(org.junit, org.apache.maven, sun.reflect, java.lang.reflect)";
+        String[] options = {packages};
+        ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(options);
+        Throwable cause = new NullPointerException("null pointer");
+        Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+            new SimpleMessage("test exception"), parent);
+        StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        String result = sb.toString();
+        assertTrue("No suppressed lines", result.contains(" suppressed "));
     }
 }

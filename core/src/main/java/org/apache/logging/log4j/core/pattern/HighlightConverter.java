@@ -33,8 +33,6 @@ import java.util.List;
 @ConverterKeys({"highlight" })
 public final class HighlightConverter extends LogEventPatternConverter {
 
-    private List<PatternFormatter> formatters;
-
     private static final EnumMap<Level, String> LEVEL_STYLES = new EnumMap<Level, String>(Level.class);
 
     private static final String[] FATAL = new String[]{"BLINK", "BRIGHT", "RED"};
@@ -43,6 +41,8 @@ public final class HighlightConverter extends LogEventPatternConverter {
     private static final String[] INFO = new String[] {"BLUE"};
     private static final String[] DEBUG = null;
     private static final String[] TRACE = null;
+
+    private List<PatternFormatter> formatters;
 
     static {
         LEVEL_STYLES.put(Level.FATAL, AnsiEscape.createSequence(FATAL));

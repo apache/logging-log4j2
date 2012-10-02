@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -148,6 +149,15 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getRootCauseStackTrace() {
+        return getRootCauseStackTrace(null);
+    }
+
+    /**
+     * Format the Throwable that is the cause of this Throwable.
+     * @param packages The List of packages to be suppressed from the trace.
+     * @return The formatted Throwable that caused this Throwable.
+     */
+    public String getRootCauseStackTrace(List<String> packages) {
         StringBuilder sb = new StringBuilder();
         if (cause != null) {
             formatWrapper(sb, cause);
@@ -155,7 +165,7 @@ public class ThrowableProxy extends Throwable {
         }
         sb.append(throwable.toString());
         sb.append("\n");
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData);
+        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         return sb.toString();
     }
 
@@ -165,13 +175,23 @@ public class ThrowableProxy extends Throwable {
      * @param cause The Throwable to format.
      */
     public void formatWrapper(StringBuilder sb, ThrowableProxy cause) {
+        formatWrapper(sb, cause, null);
+    }
+
+    /**
+     * Formats the specified Throwable.
+     * @param sb StringBuilder to contain the formatted Throwable.
+     * @param cause The Throwable to format.
+     * @param packages The List of packages to be suppressed from the trace.
+     */
+    public void formatWrapper(StringBuilder sb, ThrowableProxy cause, List<String> packages) {
         Throwable caused = cause.getCause();
         if (caused != null) {
             formatWrapper(sb, cause.cause);
             sb.append("Wrapped by: ");
         }
         sb.append(cause).append("\n");
-        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData);
+        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
     }
 
     /**
@@ -179,11 +199,20 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTrace() {
+        return getExtendedStackTrace(null);
+    }
+
+    /**
+     * Format the stack trace including packaging information.
+     * @param packages List of packages to be suppressed from the trace.
+     * @return The formatted stack trace including packaging information.
+     */
+    public String getExtendedStackTrace(List<String> packages) {
         StringBuilder sb = new StringBuilder(throwable.toString());
         sb.append("\n");
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData);
+        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         if (cause != null) {
-            formatCause(sb, cause);
+            formatCause(sb, cause, packages);
         }
         return sb.toString();
     }
@@ -204,26 +233,66 @@ public class ThrowableProxy extends Throwable {
         return sb.toString();
     }
 
-    private void formatCause(StringBuilder sb, ThrowableProxy cause) {
+    private void formatCause(StringBuilder sb, ThrowableProxy cause, List<String> packages) {
         sb.append("Caused by: ").append(cause).append("\n");
-        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData);
+        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
         if (cause.getCause() != null) {
-            formatCause(sb, cause.cause);
+            formatCause(sb, cause.cause, packages);
         }
     }
 
     private void formatElements(StringBuilder sb, int commonCount, StackTraceElement[] causedTrace,
-                                StackTracePackageElement[] packageData) {
-        for (int i = 0; i < packageData.length; ++i) {
-            sb.append("\tat ");
-            sb.append(causedTrace[i]);
-            sb.append(" ");
-            sb.append(packageData[i]);
-            sb.append("\n");
+                                StackTracePackageElement[] packageData, List<String> packages) {
+        if (packages == null || packages.size() == 0) {
+            for (int i = 0; i < packageData.length; ++i) {
+                formatEntry(causedTrace[i], packageData[i], sb);
+            }
+        } else {
+            int count = 0;
+            for (int i = 0; i < packageData.length; ++i) {
+                if (!isSuppressed(causedTrace[i], packages)) {
+                    if (count > 0) {
+                        if (count == 1) {
+                            sb.append("\t....\n");
+                        } else {
+                            sb.append("\t... suppressed ").append(count).append(" lines\n");
+                        }
+                        count = 0;
+                    }
+                    formatEntry(causedTrace[i], packageData[i], sb);
+                } else {
+                    ++count;
+                }
+            }
+            if (count > 0) {
+                if (count == 1) {
+                    sb.append("\t...\n");
+                } else {
+                    sb.append("\t... suppressed ").append(count).append(" lines\n");
+                }
+            }
         }
         if (commonCount != 0) {
             sb.append("\t... ").append(commonCount).append(" more").append("\n");
         }
+    }
+
+    private void formatEntry(StackTraceElement element, StackTracePackageElement packageData, StringBuilder sb) {
+        sb.append("\tat ");
+        sb.append(element);
+        sb.append(" ");
+        sb.append(packageData);
+        sb.append("\n");
+    }
+
+    private boolean isSuppressed(StackTraceElement element, List<String> packages) {
+        String className = element.getClassName();
+        for (String pkg : packages) {
+            if (className.startsWith(pkg)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

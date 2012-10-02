@@ -25,6 +25,9 @@ public enum AnsiEscape {
     SUFFIX("m"),
     SEPARATOR(";"),
 
+    /**
+     * General Attributes.
+     */
     NORMAL("0"),
     BRIGHT("1"),
     DIM("2"),
@@ -33,6 +36,9 @@ public enum AnsiEscape {
     REVERSE("7"),
     HIDDEN("8"),
 
+    /**
+     * Foreground Colors.
+     */
     BLACK("30"),
     FG_BLACK("30"),
     RED("31"),
@@ -52,6 +58,9 @@ public enum AnsiEscape {
     DEFAULT("39"),
     FG_DEFAULT("39"),
 
+    /**
+     * Background Colors.
+     */
     BG_BLACK("40"),
     BG_RED("41"),
     BG_GREEN("42"),
@@ -61,14 +70,14 @@ public enum AnsiEscape {
     BG_CYAN("46"),
     BG_WHITE("47");
 
-    public static String getDefaultStyle() {
-        return PREFIX.getCode() + SUFFIX.getCode();
-    }
-
     private final String code;
 
     private AnsiEscape(String code) {
         this.code = code;
+    }
+
+    public static String getDefaultStyle() {
+        return PREFIX.getCode() + SUFFIX.getCode();
     }
 
     public String getCode() {
