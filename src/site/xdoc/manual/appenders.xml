@@ -1033,8 +1033,33 @@
             <h5>TimeBased Triggering Policy</h5>
               <p>
                 Causes a rollover once the date/time pattern no longer applies to the active file. This policy
-                takes no parameters.
+                accepts an "increment" attribute which indicates how frequently the rollover should occur based on the
+                time pattern and a "modulate" boolean attribute.
               </p>
+                <table border="1" width="100%">
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>interval</td>
+                    <td>integer</td>
+                    <td>How often a rollover should occur based on the most specific time unit in the date pattern.
+                      For example, with a date pattern with hours as the most specific item and and increment of 4 rollovers
+                      would occur every 4 hours.
+                      The default value is 1.</td>
+                  </tr>
+                  <tr>
+                    <td>modulate</td>
+                    <td>boolean</td>
+                    <td>Indicates whether the interval should be adjusted to cause the next rollover to occur on
+                      the interval boundary. For example, if the item is hours, the current hour is 3 am and the
+                      interval is 4 then then the first rollover will occur at 4 am and then next ones will occur at
+                      8 am, noon, 4pm, etc.</td>
+                  </tr>
+                  <caption align="top">TimeBasedTriggeringPolicy Parameters</caption>
+                </table>
           <a name="RolloverStrategies"/>
           <h4>Rollover Strategies</h4>
             <a name="DefaultRolloverStrategy"/>
@@ -1124,6 +1149,34 @@
 </configuration>
   ]]></source>
         </p>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with both the time and size based
+            triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
+            based on the current year and month, and will compress each
+            archive using gzip and will roll every 6 hours when the hour is divisible by 6:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                                    filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
         </subsection>
         <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">

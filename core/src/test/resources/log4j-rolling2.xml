@@ -32,7 +32,7 @@
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
-      <TimeBasedTriggeringPolicy />
+      <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
     </RollingFile>
     <List name="List">
       <filters>

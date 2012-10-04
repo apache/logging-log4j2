@@ -71,21 +71,12 @@ public class PatternProcessor {
     }
 
     /**
-     * Return the next expire time.
-     * @param current The current time.
-     * @return The next expire time.
-     */
-    public long getNextTime(long current) {
-        return getNextTime(current, 1);
-    }
-
-    /**
      * Return the next potential rollover time.
      * @param current The current time.
      * @param increment The increment to the next time.
      * @return the next potential rollover time.
      */
-    public long getNextTime(long current, int increment) {
+    public long getNextTime(long current, int increment, boolean modulus) {
         if (frequency == null) {
             throw new IllegalStateException("Pattern does not contain a date");
         }
@@ -95,39 +86,44 @@ public class PatternProcessor {
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (frequency == RolloverFrequency.ANNUALLY) {
-            cal.add(Calendar.YEAR, increment);
+            increment(cal, Calendar.YEAR, increment, modulus);
             return cal.getTimeInMillis();
         }
         if (frequency == RolloverFrequency.MONTHLY) {
-            cal.add(Calendar.MONTH, increment);
+            increment(cal, Calendar.MONTH, increment, modulus);
             return cal.getTimeInMillis();
         }
         if (frequency == RolloverFrequency.WEEKLY) {
-            cal.set(Calendar.WEEK_OF_YEAR, currentCal.get(Calendar.WEEK_OF_YEAR) + increment);
+            increment(cal, Calendar.WEEK_OF_YEAR, increment, modulus);
             return cal.getTimeInMillis();
         }
         cal.set(Calendar.DAY_OF_YEAR, currentCal.get(Calendar.DAY_OF_YEAR));
         if (frequency == RolloverFrequency.DAILY) {
-            cal.add(Calendar.DAY_OF_YEAR, increment);
+            increment(cal, Calendar.DAY_OF_YEAR, increment, modulus);
             return cal.getTimeInMillis();
         }
         cal.set(Calendar.HOUR, currentCal.get(Calendar.HOUR));
         if (frequency == RolloverFrequency.HOURLY) {
-            cal.add(Calendar.HOUR, increment);
+            increment(cal, Calendar.HOUR, increment, modulus);
             return cal.getTimeInMillis();
         }
         cal.set(Calendar.MINUTE, currentCal.get(Calendar.MINUTE));
         if (frequency == RolloverFrequency.EVERY_MINUTE) {
-            cal.add(Calendar.MINUTE, increment);
+            increment(cal, Calendar.MINUTE, increment, modulus);
             return cal.getTimeInMillis();
         }
         cal.set(Calendar.SECOND, currentCal.get(Calendar.SECOND));
         if (frequency == RolloverFrequency.EVERY_SECOND) {
-            cal.add(Calendar.SECOND, increment);
+            increment(cal, Calendar.SECOND, increment, modulus);
             return cal.getTimeInMillis();
         }
-        cal.set(Calendar.MILLISECOND, currentCal.get(Calendar.MILLISECOND) + increment);
+        increment(cal, Calendar.MILLISECOND, increment, modulus);
         return cal.getTimeInMillis();
+    }
+
+    private void increment(Calendar cal, int type, int increment, boolean modulate) {
+        int interval =  modulate ? increment - (cal.get(type) % increment) : increment;
+        cal.add(type, interval);
     }
 
     /**
