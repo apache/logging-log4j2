@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 
 /**
@@ -93,14 +94,15 @@ public final class ConsoleAppender extends OutputStreamAppender {
     }
 
     private static OutputStream getOutputStream(Target target) {
+        final PrintStream printStream = target == Target.SYSTEM_OUT ? System.out : System.err;
         if (!System.getProperty("os.name").startsWith("Windows")) {
-            return target == Target.SYSTEM_OUT ? System.out : System.err;
+            return printStream;
         } else {
             try {
                 ClassLoader loader = Loader.getClassLoader();
                 Class clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
                 Constructor constructor = clazz.getConstructor(OutputStream.class);
-                return (OutputStream) constructor.newInstance(target == Target.SYSTEM_OUT ? System.out : System.err);
+                return (OutputStream) constructor.newInstance(printStream);
             } catch (ClassNotFoundException cnfe) {
                 LOGGER.debug("Jansi is not installed");
             } catch (NoSuchMethodException nsme) {
@@ -108,7 +110,7 @@ public final class ConsoleAppender extends OutputStreamAppender {
             } catch (Exception ex) {
                 LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
             }
-            return target == Target.SYSTEM_OUT ? System.out : System.err;
+            return printStream;
         }
     }
 
