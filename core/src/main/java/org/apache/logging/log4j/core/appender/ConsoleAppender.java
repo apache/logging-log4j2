@@ -100,8 +100,9 @@ public final class ConsoleAppender extends OutputStreamAppender {
         } else {
             try {
                 ClassLoader loader = Loader.getClassLoader();
-                Class clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
-                Constructor constructor = clazz.getConstructor(OutputStream.class);
+                // We type the parameter as a wildcard to avoid a hard reference to Jansi.
+                Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
+                Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
                 return (OutputStream) constructor.newInstance(printStream);
             } catch (ClassNotFoundException cnfe) {
                 LOGGER.debug("Jansi is not installed");
