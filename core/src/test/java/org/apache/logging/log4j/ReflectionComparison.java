@@ -18,10 +18,14 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import sun.reflect.Reflection;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -36,6 +40,8 @@ public class ReflectionComparison {
     private static Method getCallerClass;
 
     private static final int COUNT = 1000000;
+
+    private static Class[] paramTypes = new Class[] {String.class, Object[].class};
 
     @BeforeClass
     public static void setupCallerCheck() {
@@ -82,6 +88,29 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
+
+    @Test
+    public void createObjects() throws Exception {
+        Timer timer = new Timer("NewObject", COUNT);
+        timer.start();
+        Message msg;
+        for (int i = 0; i < COUNT; ++i) {
+            msg = new StringFormattedMessage("Hello %1", i);
+        }
+        timer.stop();
+        System.out.println(timer.toString());
+        Class<? extends Message> clazz = StringFormattedMessage.class;
+
+        timer = new Timer("ReflectionObject", COUNT);
+        timer.start();
+
+        for (int i = 0; i < COUNT; ++i) {
+            createMessage(clazz, "Hello %1", i);
+        }
+        timer.stop();
+        System.out.println(timer.toString());
+    }
+
     private Class getCallerClass(Object[] array) {
         if (getCallerClass != null) {
             try {
@@ -93,6 +122,11 @@ public class ReflectionComparison {
             }
         }
         return null;
+    }
+
+    private Message createMessage(Class<? extends Message> clazz, String msg, Object... params) throws Exception {
+        Constructor constructor = clazz.getConstructor(paramTypes);
+        return (Message) constructor.newInstance(msg, params);
     }
 
 }
