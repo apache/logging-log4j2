@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="fix">
+        DefaultConfiguration was not starting the Console Appender.
+      </action>
       <action issue="LOG4J2-35" dev="rgoers" type="add">
         Add interval and modulate options to TimeBasedTriggeringPolicy to allow more fine-grained control of
         when file rolling should occur.

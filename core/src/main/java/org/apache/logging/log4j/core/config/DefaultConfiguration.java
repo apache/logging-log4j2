@@ -48,6 +48,7 @@ public class DefaultConfiguration extends BaseConfiguration {
         Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
             null, null, null);
         Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
+        appender.start();
         addAppender(appender);
         LoggerConfig root = getRootLogger();
         root.addAppender(appender, null, null);
