@@ -74,7 +74,7 @@ public enum Level {
     }
 
     /**
-     * Convert the string passed as argument to a level. If the
+     * Converts the string passed as argument to a level. If the
      * conversion fails, then this method returns {@link #DEBUG}.
      *
      * @param sArg The name of the desired Level.
@@ -85,7 +85,7 @@ public enum Level {
     }
 
     /**
-     * Convert the string passed as argument to a level. If the
+     * Converts the string passed as argument to a level. If the
      * conversion fails, then this method returns the value of
      * <code>defaultLevel</code>.
      *
