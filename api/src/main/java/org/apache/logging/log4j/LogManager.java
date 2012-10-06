@@ -62,7 +62,7 @@ public class LogManager {
         ClassLoader cl = findClassLoader();
         List<LoggerContextFactory> factories = new ArrayList<LoggerContextFactory>();
 
-        Enumeration enumResources = null;
+        Enumeration<URL> enumResources = null;
         try {
             enumResources = cl.getResources(LOGGER_RESOURCE);
         } catch (IOException e) {
@@ -72,7 +72,7 @@ public class LogManager {
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
                 Properties props = new Properties();
-                URL url = (URL) enumResources.nextElement();
+                URL url = enumResources.nextElement();
                 try {
                     props.loadFromXML(url.openStream());
                 } catch (IOException ioe) {
@@ -84,7 +84,7 @@ public class LogManager {
                 String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
                 if (className != null) {
                     try {
-                        Class clazz = cl.loadClass(className);
+                        Class<?> clazz = cl.loadClass(className);
                         if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                             factories.add((LoggerContextFactory) clazz.newInstance());
                         } else {
@@ -134,7 +134,7 @@ public class LogManager {
      * @param clazz The Class whose name should be used as the Logger name.
      * @return The Logger.
      */
-    public static Logger getLogger(Class clazz) {
+    public static Logger getLogger(Class<?> clazz) {
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(clazz.getName());
     }
 
@@ -224,9 +224,9 @@ public class LogManager {
         if (System.getSecurityManager() == null) {
             cl = Thread.currentThread().getContextClassLoader();
         } else {
-            cl = (ClassLoader) java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
+            cl = java.security.AccessController.doPrivileged(
+                new java.security.PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
                     }
                 }
