@@ -870,7 +870,6 @@ public interface Logger {
   /**
    * Logs a message with parameters at the <code>FATAL</code> level.
    *
-   *
    * @param message the message to log.
    * @param params parameters to the message.
    *
