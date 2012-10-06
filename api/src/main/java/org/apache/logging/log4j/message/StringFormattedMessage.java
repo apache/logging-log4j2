@@ -62,7 +62,7 @@ public class StringFormattedMessage implements Message, Serializable {
      * Returns the message pattern.
      * @return the message pattern.
      */
-    public String getMessageFormat() {
+    public String getFormat() {
         return messagePattern;
     }
 

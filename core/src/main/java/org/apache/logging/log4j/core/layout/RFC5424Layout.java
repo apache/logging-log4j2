@@ -190,7 +190,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 Map map = data.getData();
                 id = data.getId();
                 formatStructuredElement(id, map, buf, noopChecker);
-                text = data.getMessageFormat();
+                text = data.getFormat();
             } else {
                 text = msg.getFormattedMessage();
             }

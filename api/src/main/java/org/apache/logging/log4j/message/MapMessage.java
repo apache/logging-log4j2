@@ -79,7 +79,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * Return the message.
      * @return the message.
      */
-    public String getMessageFormat() {
+    public String getFormat() {
         return "";
     }
 

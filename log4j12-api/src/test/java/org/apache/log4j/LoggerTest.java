@@ -390,7 +390,7 @@ public class LoggerTest {
         assertEquals(1, msgs.size());
         LogEvent event = (LogEvent) msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
-        assertEquals("Message 1", event.getMessage().getMessageFormat());
+        assertEquals("Message 1", event.getMessage().getFormat());
     }
 
     /**

@@ -53,7 +53,7 @@ public class SimpleMessage implements Message, Serializable {
      * Return the message.
      * @return the message.
      */
-    public String getMessageFormat() {
+    public String getFormat() {
         return message;
     }
 

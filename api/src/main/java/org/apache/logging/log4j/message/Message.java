@@ -56,7 +56,7 @@ public interface Message extends Serializable {
      * method will return. A Formatter is inappropriate as this is very specific to the Message
      * implementation so it isn't clear to me how having a Formatter separate from the Message would be cleaner.
      */
-    String getMessageFormat();
+    String getFormat();
 
     /**
      * Returns parameter values, if any.

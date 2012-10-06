@@ -60,13 +60,13 @@ public final class RegexFilter extends FilterBase {
 
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        String text = useRawMessage ? msg.getMessageFormat() : msg.getFormattedMessage();
+        String text = useRawMessage ? msg.getFormat() : msg.getFormattedMessage();
         return filter(text);
     }
 
     @Override
     public Result filter(LogEvent event) {
-        String text = useRawMessage ? event.getMessage().getMessageFormat() : event.getMessage().getFormattedMessage();
+        String text = useRawMessage ? event.getMessage().getFormat() : event.getMessage().getFormattedMessage();
         return filter(text);
     }
 

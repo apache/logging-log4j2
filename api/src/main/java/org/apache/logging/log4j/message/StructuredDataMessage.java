@@ -175,7 +175,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @return the message.
      */
     @Override
-    public String getMessageFormat() {
+    public String getFormat() {
         return message;
     }
 
@@ -252,7 +252,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         appendMap(sb);
         sb.append("]");
         if (full) {
-            String msg = getMessageFormat();
+            String msg = getFormat();
             if (msg != null) {
                 sb.append(" ").append(msg);
             }

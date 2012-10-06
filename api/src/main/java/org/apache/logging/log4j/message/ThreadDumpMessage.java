@@ -102,7 +102,7 @@ public class ThreadDumpMessage implements Message {
      * Returns the title.
      * @return the title.
      */
-    public String getMessageFormat() {
+    public String getFormat() {
         return title == null ? "" : title;
     }
 

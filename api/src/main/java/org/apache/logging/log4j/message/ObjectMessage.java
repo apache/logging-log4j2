@@ -53,7 +53,7 @@ public class ObjectMessage implements Message, Serializable {
      * Returns the object formatted using its toString method.
      * @return the String representation of the object.
      */
-    public String getMessageFormat() {
+    public String getFormat() {
         return obj.toString();
     }
 
