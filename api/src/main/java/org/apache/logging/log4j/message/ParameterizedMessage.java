@@ -399,7 +399,7 @@ public class ParameterizedMessage implements Message, Serializable {
             return;
         }
 
-        Class oClass = o.getClass();
+        Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             if (oClass == byte[].class) {
                 str.append(Arrays.toString((byte[]) o));
@@ -446,11 +446,11 @@ public class ParameterizedMessage implements Message, Serializable {
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
                 dejaVu.add(id);
-                Map oMap = (Map) o;
+                Map<?, ?> oMap = (Map<?, ?>) o;
                 str.append("{");
                 boolean isFirst = true;
                 for (Object o1 : oMap.entrySet()) {
-                    Map.Entry current = (Map.Entry) o1;
+                    Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
                     if (isFirst) {
                         isFirst = false;
                     } else {
@@ -471,7 +471,7 @@ public class ParameterizedMessage implements Message, Serializable {
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
                 dejaVu.add(id);
-                Collection oCol = (Collection) o;
+                Collection<?> oCol = (Collection<?>) o;
                 str.append("[");
                 boolean isFirst = true;
                 for (Object anOCol : oCol) {
