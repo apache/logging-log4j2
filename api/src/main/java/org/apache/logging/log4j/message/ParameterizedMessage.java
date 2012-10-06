@@ -110,10 +110,9 @@ public class ParameterizedMessage implements Message, Serializable {
      */
     public ParameterizedMessage(String messagePattern, Object[] arguments) {
         this.messagePattern = messagePattern;
-        if (arguments == null) {
-            return;
+        if (arguments != null) {
+            parseArguments(arguments);
         }
-        parseArguments(arguments);
     }
 
     /**
