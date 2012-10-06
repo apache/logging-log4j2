@@ -26,12 +26,12 @@ import org.apache.logging.log4j.message.Message;
 public interface Logger {
 
   /**
-   * Log entry to a method.
+   * Logs entry to a method.
    */
   void entry();
 
   /**
-   * Log entry to a method.
+   * Logs entry to a method.
    * @param params The parameters to the method.
    * @doubt Use of varargs results in array creation which can be a substantial portion of no-op case.
    * LogMF/LogSF provides several overrides to avoid vararg except in edge cases. (RG) LogMF
@@ -42,12 +42,12 @@ public interface Logger {
   void entry(Object... params);
 
   /**
-   * Log exit from a method.
+   * Logs exit from a method.
    */
   void exit();
 
   /**
-   * Log exiting from a method with the result. This may be coded as <br />
+   * Logs exiting from a method with the result. This may be coded as <br />
    *     return logger.exit(myResult);
    * @param <R> The type of the parameter and object being returned.
    * @param result The result being returned from the method call.
@@ -56,7 +56,7 @@ public interface Logger {
   <R> R exit(R result);
 
   /**
-   * Log an exception or error to be thrown. This may be coded as <br />
+   * Logs an exception or error to be thrown. This may be coded as <br />
    *    throw logger.throwing(myException);
    *
    * @param <T> the Throwable type.
@@ -66,7 +66,7 @@ public interface Logger {
   <T extends Throwable> T throwing(T t);
 
   /**
-   * Log an exception or error to be thrown. This may be coded as <br />
+   * Logs an exception or error to be thrown. This may be coded as <br />
    *    throw logger.throwing(debug, myException);
    * @param <T> the Throwable type.
    * @param level The logging Level.
@@ -76,27 +76,27 @@ public interface Logger {
   <T extends Throwable> T throwing(Level level, T t);
 
   /**
-   * Log an exception or error that has been caught.
+   * Logs an exception or error that has been caught.
    * @param t The Throwable.
    */
   void catching(Throwable t);
 
   /**
-   * Log an exception or error that has been caught.
+   * Logs an exception or error that has been caught.
    * @param level The logging Level.
    * @param t The Throwable.
    */
   void catching(Level level, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
    *
    * @param message the message object to log.
    */
   void trace(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -104,7 +104,7 @@ public interface Logger {
   void trace(Marker marker, String message);
 
   /**
-   * Log a message at the <code>TRACE</code> level including the
+   * Logs a message at the <code>TRACE</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -117,7 +117,7 @@ public interface Logger {
   void trace(String message, Throwable t);
 
   /**
-   * Log a message at the <code>TRACE</code> level including the
+   * Logs a message at the <code>TRACE</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -131,14 +131,14 @@ public interface Logger {
   void trace(Marker marker, String message, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
    *
    * @param message the message object to log.
    */
   void trace(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -146,7 +146,7 @@ public interface Logger {
   void trace(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>TRACE</code> level including the
+   * Logs a message at the <code>TRACE</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -159,7 +159,7 @@ public interface Logger {
   void trace(Object message, Throwable t);
 
    /**
-   * Log a message at the <code>TRACE</code> level including the
+   * Logs a message at the <code>TRACE</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -173,14 +173,14 @@ public interface Logger {
   void trace(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>TRACE</code> level.
+   * Logs a message with parameters at the <code>TRACE</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
    */
   void trace(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>TRACE</code> level.
+   * Logs a message with parameters at the <code>TRACE</code> level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message to log.
@@ -189,7 +189,7 @@ public interface Logger {
   void trace(Marker marker, String message, Object... params);
 
   /**
-   * Check whether this Logger is enabled for the TRACE  Level.
+   * Checks whether this Logger is enabled for the TRACE  Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         TRACE, <code>false</code> otherwise.
@@ -197,7 +197,7 @@ public interface Logger {
   boolean isTraceEnabled();
 
   /**
-   * Check whether this Logger is enabled for the TRACE  Level.
+   * Checks whether this Logger is enabled for the TRACE  Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -206,14 +206,14 @@ public interface Logger {
   boolean isTraceEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the TRACE level.
    *
    * @param msg the message string to be logged
    */
   void trace(Message msg);
 
   /**
-   * Log a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the TRACE level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -221,7 +221,7 @@ public interface Logger {
   void trace(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the TRACE level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -229,7 +229,7 @@ public interface Logger {
   void trace(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the TRACE level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -238,14 +238,14 @@ public interface Logger {
   void trace(Marker marker, Message msg, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
    *
    * @param message the message object to log.
    */
   void debug(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -253,7 +253,7 @@ public interface Logger {
   void debug(Marker marker, String message);
 
   /**
-   * Log a message at the <code>DEBUG</code> level including the
+   * Logs a message at the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message to log.
@@ -262,7 +262,7 @@ public interface Logger {
   void debug(String message, Throwable t);
 
   /**
-   * Log a message at the <code>DEBUG</code> level including the
+   * Logs a message at the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -272,14 +272,14 @@ public interface Logger {
   void debug(Marker marker, String message, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
    *
    * @param message the message object to log.
    */
   void debug(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -287,7 +287,7 @@ public interface Logger {
   void debug(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>DEBUG</code> level including the
+   * Logs a message at the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message to log.
@@ -296,7 +296,7 @@ public interface Logger {
   void debug(Object message, Throwable t);
 
   /**
-   * Log a message at the <code>DEBUG</code> level including the
+   * Logs a message at the <code>DEBUG</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -306,14 +306,14 @@ public interface Logger {
   void debug(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>DEBUG</code> level.
+   * Logs a message with parameters at the <code>DEBUG</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
    */
   void debug(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>DEBUG</code> level.
+   * Logs a message with parameters at the <code>DEBUG</code> level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message to log.
@@ -322,7 +322,7 @@ public interface Logger {
   void debug(Marker marker, String message, Object... params);
 
   /**
-   * Check whether this Logger is enabled for the DEBUG Level.
+   * Checks whether this Logger is enabled for the DEBUG Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         DEBUG, <code>false</code> otherwise.
@@ -330,7 +330,7 @@ public interface Logger {
   boolean isDebugEnabled();
 
   /**
-   * Check whether this Logger is enabled for the DEBUG Level.
+   * Checks whether this Logger is enabled for the DEBUG Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -339,14 +339,14 @@ public interface Logger {
   boolean isDebugEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the DEBUG level.
    *
    * @param msg the message string to be logged
    */
   void debug(Message msg);
 
   /**
-   * Log a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the DEBUG level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -354,7 +354,7 @@ public interface Logger {
   void debug(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the DEBUG level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -362,7 +362,7 @@ public interface Logger {
   void debug(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the DEBUG level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -371,14 +371,14 @@ public interface Logger {
   void debug(Marker marker, Message msg, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -386,7 +386,7 @@ public interface Logger {
   void info(Marker marker, String message);
 
   /**
-   * Log a message at the <code>INFO</code> level including the
+   * Logs a message at the <code>INFO</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -395,7 +395,7 @@ public interface Logger {
   void info(String message, Throwable t);
 
   /**
-   * Log a message at the <code>INFO</code> level including the
+   * Logs a message at the <code>INFO</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -405,14 +405,14 @@ public interface Logger {
   void info(Marker marker, String message, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -420,7 +420,7 @@ public interface Logger {
   void info(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>INFO</code> level including the
+   * Logs a message at the <code>INFO</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -429,7 +429,7 @@ public interface Logger {
   void info(Object message, Throwable t);
 
   /**
-   * Log a message at the <code>INFO</code> level including the
+   * Logs a message at the <code>INFO</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -439,7 +439,7 @@ public interface Logger {
   void info(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>INFO</code> level.
+   * Logs a message with parameters at the <code>INFO</code> level.
    *
    * @param message the message to log.
    * @param params parameters to the message.
@@ -452,7 +452,7 @@ public interface Logger {
   void info(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>INFO</code> level.
+   * Logs a message with parameters at the <code>INFO</code> level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message to log.
@@ -465,7 +465,7 @@ public interface Logger {
    */
   void info(Marker marker, String message, Object... params);
   /**
-   * Check whether this Logger is enabled for the INFO Level.
+   * Checks whether this Logger is enabled for the INFO Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         INFO, <code>false</code> otherwise.
@@ -473,7 +473,7 @@ public interface Logger {
   boolean isInfoEnabled();
 
   /**
-   * Check whether this Logger is enabled for the INFO Level.
+   * Checks whether this Logger is enabled for the INFO Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -482,14 +482,14 @@ public interface Logger {
   boolean isInfoEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the TRACE level.
    *
    * @param msg the message string to be logged
    */
   void info(Message msg);
 
   /**
-   * Log a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the INFO level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -497,7 +497,7 @@ public interface Logger {
   void info(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the INFO level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -505,7 +505,7 @@ public interface Logger {
   void info(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the INFO level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -514,14 +514,14 @@ public interface Logger {
   void info(Marker marker, Message msg, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -529,7 +529,7 @@ public interface Logger {
   void warn(Marker marker, String message);
 
   /**
-   * Log a message at the <code>WARN</code> level including the
+   * Logs a message at the <code>WARN</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -538,7 +538,7 @@ public interface Logger {
   void warn(String message, Throwable t);
 
   /**
-   * Log a message at the <code>WARN</code> level including the
+   * Logs a message at the <code>WARN</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -548,14 +548,14 @@ public interface Logger {
   void warn(Marker marker, String message, Throwable t);
 
  /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -563,7 +563,7 @@ public interface Logger {
   void warn(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>WARN</code> level including the
+   * Logs a message at the <code>WARN</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -572,7 +572,7 @@ public interface Logger {
   void warn(Object message, Throwable t);
 
   /**
-   * Log a message at the <code>WARN</code> level including the
+   * Logs a message at the <code>WARN</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -582,7 +582,7 @@ public interface Logger {
   void warn(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>WARN</code> level.
+   * Logs a message with parameters at the <code>WARN</code> level.
    * @param message the message to log.
    * @param params parameters to the message.
    * @doubt Likely to misinterpret existing log4j client code that intended to call
@@ -593,7 +593,7 @@ public interface Logger {
   void warn(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>WARN</code> level.
+   * Logs a message with parameters at the <code>WARN</code> level.
    *
    * @param marker the marker data specific to this log statement.
    * @param message the message to log.
@@ -607,7 +607,7 @@ public interface Logger {
   void warn(Marker marker, String message, Object... params);
 
   /**
-   * Check whether this Logger is enabled for the WARN Level.
+   * Checks whether this Logger is enabled for the WARN Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         WARN, <code>false</code> otherwise.
@@ -615,7 +615,7 @@ public interface Logger {
   boolean isWarnEnabled();
 
   /**
-   * Check whether this Logger is enabled for the WARN Level.
+   * Checks whether this Logger is enabled for the WARN Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -624,14 +624,14 @@ public interface Logger {
   boolean isWarnEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the WARN level.
+   * Logs a message with the specific Marker at the WARN level.
    *
    * @param msg the message string to be logged
    */
   void warn(Message msg);
 
   /**
-   * Log a message with the specific Marker at the WARN level.
+   * Logs a message with the specific Marker at the WARN level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -639,7 +639,7 @@ public interface Logger {
   void warn(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the WARN level.
+   * Logs a message with the specific Marker at the WARN level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -647,7 +647,7 @@ public interface Logger {
   void warn(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the WARN level.
+   * Logs a message with the specific Marker at the WARN level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -656,14 +656,14 @@ public interface Logger {
   void warn(Marker marker, Message msg, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
    *
    * @param message the message object to log.
    */
   void error(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
    *
    * @param marker the marker data specific to this log statement.
    * @param message the message object to log.
@@ -671,7 +671,7 @@ public interface Logger {
   void error(Marker marker, String message);
 
   /**
-   * Log a message at the <code>ERROR</code> level including the
+   * Logs a message at the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -680,7 +680,7 @@ public interface Logger {
   void error(String message, Throwable t);
 
   /**
-   * Log a message at the <code>ERROR</code> level including the
+   * Logs a message at the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement.
@@ -690,14 +690,14 @@ public interface Logger {
   void error(Marker marker, String message, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
    *
    * @param message the message object to log.
    */
   void error(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
    *
    * @param marker the marker data specific to this log statement.
    * @param message the message object to log.
@@ -705,7 +705,7 @@ public interface Logger {
   void error(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>ERROR</code> level including the
+   * Logs a message at the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -714,7 +714,7 @@ public interface Logger {
   void error(Object message, Throwable t);
 
   /**
-   * Log a message at the <code>ERROR</code> level including the
+   * Logs a message at the <code>ERROR</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement.
@@ -724,7 +724,7 @@ public interface Logger {
   void error(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>ERROR</code> level.
+   * Logs a message with parameters at the <code>ERROR</code> level.
    *
    * @param message the message to log.
    * @param params parameters to the message.
@@ -737,7 +737,7 @@ public interface Logger {
   void error(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>ERROR</code> level.
+   * Logs a message with parameters at the <code>ERROR</code> level.
    * @param marker the marker data specific to this log statement.
    * @param message the message to log.
    * @param params parameters to the message.
@@ -750,7 +750,7 @@ public interface Logger {
   void error(Marker marker, String message, Object... params);
 
   /**
-   * Check whether this Logger is enabled for the ERROR Level.
+   * Checks whether this Logger is enabled for the ERROR Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         ERROR, <code>false</code> otherwise.
@@ -758,7 +758,7 @@ public interface Logger {
   boolean isErrorEnabled();
 
   /**
-   * Check whether this Logger is enabled for the ERROR Level.
+   * Checks whether this Logger is enabled for the ERROR Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -767,14 +767,14 @@ public interface Logger {
   boolean isErrorEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the ERROR level.
+   * Logs a message with the specific Marker at the ERROR level.
    *
    * @param msg the message string to be logged
    */
   void error(Message msg);
 
   /**
-   * Log a message with the specific Marker at the ERROR level.
+   * Logs a message with the specific Marker at the ERROR level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -782,7 +782,7 @@ public interface Logger {
   void error(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the ERROR level.
+   * Logs a message with the specific Marker at the ERROR level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -790,7 +790,7 @@ public interface Logger {
   void error(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the ERROR level.
+   * Logs a message with the specific Marker at the ERROR level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -799,14 +799,14 @@ public interface Logger {
   void error(Marker marker, Message msg, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
    *
    * @param message the message object to log.
    */
   void fatal(String message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
    *
    * @param marker The marker data specific to this log statement.
    * @param message the message object to log.
@@ -814,7 +814,7 @@ public interface Logger {
   void fatal(Marker marker, String message);
 
   /**
-   * Log a message at the <code>FATAL</code> level including the
+   * Logs a message at the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -824,7 +824,7 @@ public interface Logger {
 
 
   /**
-   * Log a message at the <code>FATAL</code> level including the
+   * Logs a message at the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker The marker data specific to this log statement.
@@ -834,14 +834,14 @@ public interface Logger {
   void fatal(Marker marker, String message, Throwable t);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
    *
    * @param message the message object to log.
    */
   void fatal(Object message);
 
   /**
-   * Log a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
    *
    * @param marker The marker data specific to this log statement.
    * @param message the message object to log.
@@ -849,7 +849,7 @@ public interface Logger {
   void fatal(Marker marker, Object message);
 
   /**
-   * Log a message at the <code>FATAL</code> level including the
+   * Logs a message at the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -858,7 +858,7 @@ public interface Logger {
   void fatal(Object message, Throwable t);
 
   /**
-   * Log a message at the <code>FATAL</code> level including the
+   * Logs a message at the <code>FATAL</code> level including the
    * stack trace of the {@link Throwable}<code>t</code> passed as parameter.
    *
    * @param marker The marker data specific to this log statement.
@@ -868,7 +868,7 @@ public interface Logger {
   void fatal(Marker marker, Object message, Throwable t);
 
   /**
-   * Log a message with parameters at the <code>FATAL</code> level.
+   * Logs a message with parameters at the <code>FATAL</code> level.
    *
    *
    * @param message the message to log.
@@ -882,7 +882,7 @@ public interface Logger {
   void fatal(String message, Object... params);
 
   /**
-   * Log a message with parameters at the <code>FATAL</code> level.
+   * Logs a message with parameters at the <code>FATAL</code> level.
    *
    * @param marker The marker data specific to this log statement.
    * @param message the message to log.
@@ -896,7 +896,7 @@ public interface Logger {
   void fatal(Marker marker, String message, Object... params);
 
   /**
-   * Check whether this Logger is enabled for the FATAL Level.
+   * Checks whether this Logger is enabled for the FATAL Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         FATAL, <code>false</code> otherwise.
@@ -904,7 +904,7 @@ public interface Logger {
   boolean isFatalEnabled();
 
   /**
-   * Check whether this Logger is enabled for the FATAL Level.
+   * Checks whether this Logger is enabled for the FATAL Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -913,14 +913,14 @@ public interface Logger {
   boolean isFatalEnabled(Marker marker);
 
   /**
-   * Log a message with the specific Marker at the FATAL level.
+   * Logs a message with the specific Marker at the FATAL level.
    *
    * @param msg the message string to be logged
    */
   void fatal(Message msg);
 
   /**
-   * Log a message with the specific Marker at the FATAL level.
+   * Logs a message with the specific Marker at the FATAL level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -928,7 +928,7 @@ public interface Logger {
   void fatal(Message msg, Throwable t);
 
   /**
-   * Log a message with the specific Marker at the FATAL level.
+   * Logs a message with the specific Marker at the FATAL level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -936,7 +936,7 @@ public interface Logger {
   void fatal(Marker marker, Message msg);
 
   /**
-   * Log a message with the specific Marker at the FATAL level.
+   * Logs a message with the specific Marker at the FATAL level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
