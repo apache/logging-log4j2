@@ -25,7 +25,7 @@ package org.apache.logging.log4j;
  * INFO<br>
  * DEBUG<br>
  * TRACE<br>
- * AL    (least specific)<br>
+ * ALL    (least specific)<br>
  *
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
