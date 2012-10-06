@@ -45,6 +45,12 @@
       <email>rgoers@apache.org</email>
       <organization>Intuit Financial Services</organization>
     </developer>
+    <developer>
+      <id>ggregory</id>
+      <name>Gary Greory</name>
+      <email>ggregory@apache.org</email>
+      <organization>Rocket Software</organization>
+    </developer>
   </developers>
   <mailingLists>
     <mailingList>
