@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Test;
 
 /**
@@ -33,6 +36,18 @@ public class CollectionLoggingTest {
     public void testSystemProperties() {
         Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
+        // logger.error(new MapMessage(System.getProperties()));
+    }
+
+    @Test
+    public void testSimpleMap() {
+        Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
+        logger.error(System.getProperties());
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("MyKey1", "MyValue1");
+        map.put("MyKey2", "MyValue2");
+        logger.error(new MapMessage(map));
+        logger.error(map);
     }
 
     @Test
