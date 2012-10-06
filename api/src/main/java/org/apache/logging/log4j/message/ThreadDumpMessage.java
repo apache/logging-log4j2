@@ -54,14 +54,6 @@ public class ThreadDumpMessage implements Message {
     }
 
     /**
-     * Generate a ThreadDumpMessage with no title.
-     */
-    public ThreadDumpMessage() {
-        this(null);
-
-    }
-
-    /**
      * Generate a ThreadDumpMessage with a title.
      * @param title The title.
      */

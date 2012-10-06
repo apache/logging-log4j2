@@ -42,14 +42,6 @@ public class StringFormattedMessage implements Message, Serializable {
     private String[] stringArgs;
     private transient String formattedMessage;
 
-    /**
-     * Create the StringFormattedMessage.
-     */
-    public StringFormattedMessage() {
-        this(null, null, null);
-    }
-
-
     public StringFormattedMessage(String messagePattern, Object... arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -75,15 +67,6 @@ public class StringFormattedMessage implements Message, Serializable {
     }
 
     /**
-     * Set the message pattern.
-     * @param messagePattern The message pattern.
-     */
-    public void setMessageFormat(String messagePattern) {
-        this.messagePattern = messagePattern;
-        this.formattedMessage = null;
-    }
-
-    /**
      * Returns the message parameters.
      * @return the message parameters.
      */
@@ -92,15 +75,6 @@ public class StringFormattedMessage implements Message, Serializable {
             return argArray;
         }
         return stringArgs;
-    }
-
-    /**
-     * Sets the parameters for the message.
-     * @param parameters The parameters.
-     */
-    public void setParameters(Object[] parameters) {
-        this.argArray = parameters;
-        this.formattedMessage = null;
     }
 
     protected String formatMessage(String msgPattern, Object... args) {

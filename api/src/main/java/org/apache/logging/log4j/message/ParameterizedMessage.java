@@ -76,13 +76,6 @@ public class ParameterizedMessage implements Message, Serializable {
     private transient Throwable throwable;
 
     /**
-     * Create the ParameterizedMessage.
-     */
-    public ParameterizedMessage() {
-        this(null, null, null);
-    }
-
-    /**
      * Create the parameterizedMessage.
      * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
      * where parameters should be substituted.
@@ -188,15 +181,6 @@ public class ParameterizedMessage implements Message, Serializable {
     }
 
     /**
-     * Set the message pattern.
-     * @param messagePattern The message pattern.
-     */
-    public void setMessageFormat(String messagePattern) {
-        this.messagePattern = messagePattern;
-        this.formattedMessage = null;
-    }
-
-    /**
      * Returns the message parameters.
      * @return the message parameters.
      */
@@ -205,32 +189,6 @@ public class ParameterizedMessage implements Message, Serializable {
             return argArray;
         }
         return stringArgs;
-    }
-
-    /**
-     * Sets the parameters for the message.
-     * @param parameters The parameters.
-     */
-    public void setParameters(String[] parameters) {
-        this.stringArgs = parameters;
-        this.formattedMessage = null;
-    }
-
-    /**
-     * Sets the parameters for the message.
-     * @param parameters The parameters.
-     */
-    public void setParameters(Object[] parameters) {
-        parseArguments(parameters);
-        this.formattedMessage = null;
-    }
-
-    /**
-     * Set the Throwable for the message.
-     * @param throwable The Throwable.
-     */
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
     }
 
     /**

@@ -47,14 +47,6 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
     private String loggerName = null;
 
-    /**
-     * The basic constructor.
-     */
-    public LocalizedMessage() {
-        super();
-        setup(null, null, null);
-    }
-
     public LocalizedMessage(String messagePattern, String[] stringArgs, Throwable throwable) {
         super(messagePattern, stringArgs, throwable);
         setup(null, null, null);

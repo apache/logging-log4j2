@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta2" date="TBD" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="update">
+        Made ParameterizedMessage, StringFormattedMessage and ThreadDumpMessage immutable. LocalizedMessage is
+        immutable except that it will be updated with the logger name when it is added to the LogEvent.
+      </action>
       <action dev="rgoers" type="fix">
         DefaultConfiguration was not starting the Console Appender.
       </action>
