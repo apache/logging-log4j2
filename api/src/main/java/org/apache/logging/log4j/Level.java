@@ -17,19 +17,21 @@
 package org.apache.logging.log4j;
 
 /**
- * Levels used for identifying the severity of an event. Levels are organized from most specific to least:<br>
- * OFF   (most specific)<br>
- * FATAL<br>
- * ERROR<br>
- * WARN<br>
- * INFO<br>
- * DEBUG<br>
- * TRACE<br>
- * ALL    (least specific)<br>
+ * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
+ * <ul>
+ * <li>{@link #OFF} (most specific)</li>
+ * <li>{@link #FATAL}</li>
+ * <li>{@link #ERROR}</li>
+ * <li>{@link #WARN}</li>
+ * <li>{@link #INFO}</li>
+ * <li>{@link #DEBUG}</li>
+ * <li>{@link #TRACE}</li>
+ * <li>{@link #ALL} (least specific)</li>
+ * </ul>
  *
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
  * that are more specific to pass through the filter.
- * A special level, ALL, is guaranteed to capture all levels when used in logging configurations.
+ * A special level, {@link #ALL}, is guaranteed to capture all levels when used in logging configurations.
  */
 public enum Level {
     /**
