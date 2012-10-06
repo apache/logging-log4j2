@@ -26,7 +26,7 @@
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-api</artifactId>
   <packaging>jar</packaging>
-  <name>Log4J API</name>
+  <name>Apache Log4j API</name>
   <description>The Log4J API</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>

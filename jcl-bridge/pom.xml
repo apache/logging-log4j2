@@ -28,7 +28,7 @@
   <groupId>org.apache.logging.log4j.adapters</groupId>
   <artifactId>log4j-jcl</artifactId>
   <packaging>jar</packaging>
-  <name>Log4J Commons Logging</name>
+  <name>Apache Log4j Commons Logging Bridge</name>
   <description>Log4j 2.0 Commons Logging Adapter</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>

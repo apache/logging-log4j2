@@ -26,7 +26,7 @@
   <groupId>org.apache.logging.log4j.adapters</groupId>
   <artifactId>log4j12-api</artifactId>
   <packaging>jar</packaging>
-  <name>Log4J Compatibility API</name>
+  <name>Apache Log4j 1.x Compatibility API</name>
   <description>The Log4J Compatibility API</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
