@@ -39,7 +39,7 @@ public class ThreadDumpMessage implements Message {
 
     private final String title;
 
-    private String formattedMessage = null;
+    private String formattedMessage;
 
     static {
         Method[] methods = ThreadInfo.class.getMethods();
