@@ -33,7 +33,7 @@ public class ThreadDumpMessage implements Message {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
-    private static ThreadInfoFactory factory;
+    private final static ThreadInfoFactory factory;
 
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
 
