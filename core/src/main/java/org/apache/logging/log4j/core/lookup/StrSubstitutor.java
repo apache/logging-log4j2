@@ -854,7 +854,7 @@ public class StrSubstitutor {
             }
         }
         if (top) {
-            return (altered ? 1 : 0);
+            return altered ? 1 : 0;
         }
         return lengthChange;
     }

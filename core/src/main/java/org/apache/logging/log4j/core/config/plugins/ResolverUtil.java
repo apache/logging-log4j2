@@ -537,7 +537,7 @@ public class ResolverUtil<T> {
         public NameIs(String name) { this.name = "/" + name; }
 
         public boolean matches(URI resource) {
-            return (resource.getPath().endsWith(name));
+            return resource.getPath().endsWith(name);
         }
 
         @Override public String toString() {

@@ -113,7 +113,7 @@ public enum Level {
      * @return True if the passed Level is more specific or the same as this Level.
      */
     public boolean isAtLeastAsSpecificAs(Level level) {
-        return (intLevel <= level.intLevel);
+        return intLevel <= level.intLevel;
     }
 
     /**
@@ -124,7 +124,7 @@ public enum Level {
      * @return True if the passed Level is more specific or the same as this Level.
      */
     public boolean isAtLeastAsSpecificAs(int level) {
-        return (intLevel <= level);
+        return intLevel <= level;
     }
 
     /**
@@ -133,7 +133,7 @@ public enum Level {
      * @return True if the passed Level is more specific or the same as this Level.
      */
     public boolean lessOrEqual(Level level) {
-        return (intLevel <= level.intLevel);
+        return intLevel <= level.intLevel;
     }
 
     /**
@@ -142,7 +142,7 @@ public enum Level {
      * @return True if the passed Level is more specific or the same as this Level.
      */
     public boolean lessOrEqual(int level) {
-        return (intLevel <= level);
+        return intLevel <= level;
     }
 
     /**
