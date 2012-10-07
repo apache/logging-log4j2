@@ -1,9 +1,9 @@
 
-              Apache Log4j 2.0-beta1 RELEASE NOTES
+              Apache Log4j 2.0-beta2 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta1 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta2 release!
 
-Apache Log4j 2.0-beta1 requires a minimum of Java 5 to build and run. Basic compatibility with
+Apache Log4j 2.0-beta2 requires a minimum of Java 5 to build and run. Basic compatibility with
 Log4j 1.x is provided through the log4j12-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
@@ -13,34 +13,37 @@ Bug fixes and enhancements
 Changes in this version include:
 
 New features:
-o Added AsynchAppender. 
+o LOG4J2-35:  Add interval and modulate options to TimeBasedTriggeringPolicy to allow more fine-grained control of
+        when file rolling should occur. 
+o LOG4J2-58:  Add support for filtering packages from stack traces. 
+o LOG4J2-84:  If system property "disableThreadContextStack" is set pushes to the ThreadContext will be ignored. If
+        system property "disableThreadContext" is set both puts and pushes will be ignored. 
+o LOG4J2-83:  If system property "disableThreadContextMap" is set puts to the ThreadContext will be ignored. If
+        system property "disableThreadContext" is set both puts and pushes will be ignored. 
+o Add support for ANSI colors by adding the highlight and style pattern converters. Fix pattern
+        parsing to allow nested patterns. 
+o Allow the status logging to be directed to stderr or to a file. 
+o Add getFormats to MultiformatMessage and allow StructuredDataMessage to format as XML. 
 
 Fixed Bugs:
-o LOG4J-81:  PatternLayout was not honoring format modifiers. 
-o Created web module to allow web applications to include the Log4j context listener in WEB-INF/lib even if
-        Log4j is in the container's class path. Allow locating the LoggerContext to include the ClassLoader. Updated
-        the Loader utility to always choose the child ClassLoader. Verified in Jboss 5 and Tomcat. 
-o LOG4J2-82:  MarkerFilter called MarkerManager.getMarker causing the Marker to be created during the processing of the
-        configuration. This prevents the application from creating the Marker with any parents. MarkerWrapper in
-        SLF4J-impl was getting a ClassCastException in instanceOf because the Marker isn't a MarkerWrapper. 
-o LOG4J2-80:  Allow Log4j 2 to be used as the implementation with SLF4J and SLF4J's jcl-over-slf4j by adding filtering
-        to the log method in SLF4JLogger. Thanks to Oliver Lamy. 
-o LOG4J2-78:  LogFactoryImpl.setAttribute in the Commons Logging bridge got a NullPointerException when passed a null value.
-        It will now remove the attribute. 
-o LOG4J2-77:  RoutingAppender was calling the stop method for each of its referenced Appenders and was calling
-        the stop method of the default Appender a second time. It will now only call the stop method of
-        Appenders it creates. 
-o LOG4J2-76:  RewriteAppender was calling the stop method of the referenced appender causing the referenced appender's
-        manager to have its use count decremented too many times. 
-o LOG4J2-74:  Logger.error(Marker, Message, Throwable) was internally using Level.TRACE. 
-o LOG4J2-75:  Enhanced Log4jContextListener to accept a configuration file location. Modified FileConfigurationMonitor
-        to monitor files configured that way. Fixed other reconfiguration related bugs. Tested in JBoss and
-        Tomcat. 
-o LOG4J2-72:  NullPointerException in RollingFileManager when filePattern does not cause the file to be compressed. 
-o LOG4J2-71:  FileRenameAction did not create the parent directories of the archive files causing the rollover to fail. 
+o DefaultConfiguration was not starting the Console Appender. 
+o LOG4J2-92:  Converted DynamicThresholdFilter to use KeyValuePair. Fixed bugs in the Map-based filters
+        to allow declaration of multiple values for a key to match the documentation. 
+o LOG4J2-88:  Many logging methods in AbstractLogger were set to an incorrect logging level. catching was
+        using the THROWING marker and was set to debug instead of error. 
+o LOG4J2-91:  Log4j 1.2 adapter's Category class was missing 3 log methods. 
+o LOG4J2-84:  If the ThreadContext stack is empty the LogEvent will contain a null value to reduce the overhead of
+        creating log events and in the size of the serialized object. Changed the ThreadContext stack to use
+        a custom stack interface instead of java.util.Stack as that class is overly heavy. This change will
+        cause an API incompatibility. 
+o LOG4J2-83:  If the ThreadContext map is empty the LogEvent will contain a null value to reduce the overhead of creating
+        log events and in the size of the serialized object. 
+o LOG4J2-90:  Add documentation on client vs server mode to performance page. 
+o Move variable substitution from PatternLayout to appropriate converters to improve performance. 
 
 Changes:
-o Update the versions of SLF4J and Logback. 
+o Made ParameterizedMessage, StringFormattedMessage and ThreadDumpMessage immutable. LocalizedMessage is
+        immutable except that it will be updated with the logger name when it is added to the LogEvent. 
 
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
