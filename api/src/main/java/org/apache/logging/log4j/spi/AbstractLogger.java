@@ -392,7 +392,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>DEBUG</code> level including the
+     * Logs a message at the {@link Level#DEBUG DEBUG} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param message the message to log.
@@ -405,7 +405,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>DEBUG</code> level including the
+     * Logs a message at the {@link Level#DEBUG DEBUG} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
@@ -441,7 +441,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>DEBUG</code> level including the
+     * Logs a message at the {@link Level#DEBUG DEBUG} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param message the message to log.
@@ -454,7 +454,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>DEBUG</code> level including the
+     * Logs a message at the {@link Level#DEBUG DEBUG} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
@@ -468,7 +468,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>DEBUG</code> level.
+     * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      *
      * @param message the message to log.
      * @param params  parameters to the message.
@@ -481,7 +481,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>DEBUG</code> level.
+     * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
