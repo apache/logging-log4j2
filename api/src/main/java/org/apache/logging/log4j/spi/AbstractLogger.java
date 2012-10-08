@@ -156,7 +156,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param message the message object to log.
      */
@@ -167,7 +167,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -215,7 +215,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param message the message object to log.
      */
@@ -226,7 +226,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+     * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -369,7 +369,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param message the message object to log.
      */
@@ -380,7 +380,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -418,7 +418,7 @@ public abstract class AbstractLogger implements Logger {
         }
     }
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param message the message object to log.
      */
@@ -429,7 +429,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+     * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -564,7 +564,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param message the message object to log.
      */
@@ -575,7 +575,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -614,7 +614,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param message the message object to log.
      */
@@ -625,7 +625,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+     * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -760,7 +760,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param message the message object to log.
      */
@@ -771,7 +771,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -810,7 +810,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -822,7 +822,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+     * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param message the message object to log.
      */
@@ -956,7 +956,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param message the message object to log.
      */
@@ -967,7 +967,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -1006,7 +1006,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param message the message object to log.
      */
@@ -1017,7 +1017,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+     * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -1153,7 +1153,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param message the message object to log.
      */
@@ -1165,7 +1165,7 @@ public abstract class AbstractLogger implements Logger {
 
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
@@ -1204,7 +1204,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param message the message object to log.
      */
@@ -1215,7 +1215,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+     * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.

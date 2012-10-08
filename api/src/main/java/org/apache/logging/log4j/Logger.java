@@ -89,14 +89,14 @@ public interface Logger {
   void catching(Level level, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link Level#TRACE TRACE} level.
    *
    * @param message the message object to log.
    */
   void trace(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -131,14 +131,14 @@ public interface Logger {
   void trace(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link Level#TRACE TRACE} level.
    *
    * @param message the message object to log.
    */
   void trace(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#TRACE TRACE} level.
+   * Logs a message object with the {@link Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -238,14 +238,14 @@ public interface Logger {
   void trace(Marker marker, Message msg, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link Level#DEBUG DEBUG} level.
    *
    * @param message the message object to log.
    */
   void debug(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -272,14 +272,14 @@ public interface Logger {
   void debug(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link Level#DEBUG DEBUG} level.
    *
    * @param message the message object to log.
    */
   void debug(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#DEBUG DEBUG} level.
+   * Logs a message object with the {@link Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -371,14 +371,14 @@ public interface Logger {
   void debug(Marker marker, Message msg, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -405,14 +405,14 @@ public interface Logger {
   void info(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+   * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -514,14 +514,14 @@ public interface Logger {
   void info(Marker marker, Message msg, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link Level#WARN WARN} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -548,14 +548,14 @@ public interface Logger {
   void warn(Marker marker, String message, Throwable t);
 
  /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link Level#WARN WARN} level.
    *
    * @param message the message object to log.
    */
   void warn(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#WARN WARN} level.
+   * Logs a message object with the {@link Level#WARN WARN} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message object to log.
@@ -656,14 +656,14 @@ public interface Logger {
   void warn(Marker marker, Message msg, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link Level#ERROR ERROR} level.
    *
    * @param message the message object to log.
    */
   void error(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link Level#ERROR ERROR} level.
    *
    * @param marker the marker data specific to this log statement.
    * @param message the message object to log.
@@ -690,14 +690,14 @@ public interface Logger {
   void error(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link Level#ERROR ERROR} level.
    *
    * @param message the message object to log.
    */
   void error(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#ERROR ERROR} level.
+   * Logs a message object with the {@link Level#ERROR ERROR} level.
    *
    * @param marker the marker data specific to this log statement.
    * @param message the message object to log.
@@ -799,14 +799,14 @@ public interface Logger {
   void error(Marker marker, Message msg, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link Level#FATAL FATAL} level.
    *
    * @param message the message object to log.
    */
   void fatal(String message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link Level#FATAL FATAL} level.
    *
    * @param marker The marker data specific to this log statement.
    * @param message the message object to log.
@@ -834,14 +834,14 @@ public interface Logger {
   void fatal(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link Level#FATAL FATAL} level.
    *
    * @param message the message object to log.
    */
   void fatal(Object message);
 
   /**
-   * Logs a message object with the {@link org.apache.logging.log4j.Level#FATAL FATAL} level.
+   * Logs a message object with the {@link Level#FATAL FATAL} level.
    *
    * @param marker The marker data specific to this log statement.
    * @param message the message object to log.
