@@ -104,7 +104,7 @@ public interface Logger {
   void trace(Marker marker, String message);
 
   /**
-   * Logs a message at the <code>TRACE</code> level including the
+   * Logs a message at the {@link Level#TRACE TRACE} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -117,7 +117,7 @@ public interface Logger {
   void trace(String message, Throwable t);
 
   /**
-   * Logs a message at the <code>TRACE</code> level including the
+   * Logs a message at the {@link Level#TRACE TRACE} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -146,7 +146,7 @@ public interface Logger {
   void trace(Marker marker, Object message);
 
   /**
-   * Logs a message at the <code>TRACE</code> level including the
+   * Logs a message at the {@link Level#TRACE TRACE} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -159,7 +159,7 @@ public interface Logger {
   void trace(Object message, Throwable t);
 
    /**
-   * Logs a message at the <code>TRACE</code> level including the
+   * Logs a message at the {@link Level#TRACE TRACE} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    * <p/>
    * <p>
@@ -173,14 +173,14 @@ public interface Logger {
   void trace(Marker marker, Object message, Throwable t);
 
   /**
-   * Logs a message with parameters at the <code>TRACE</code> level.
+   * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
    * @param message the message to log.
    * @param params parameters to the message.
    */
   void trace(String message, Object... params);
 
   /**
-   * Logs a message with parameters at the <code>TRACE</code> level.
+   * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message to log.

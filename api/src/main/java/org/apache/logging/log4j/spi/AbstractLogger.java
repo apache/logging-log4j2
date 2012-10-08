@@ -179,7 +179,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>TRACE</code> level including the
+     * Logs a message at the {@link Level#TRACE TRACE} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      * <p/>
      * <p>
@@ -197,7 +197,7 @@ public abstract class AbstractLogger implements Logger {
 
 
     /**
-     * Logs a message at the <code>TRACE</code> level including the
+     * Logs a message at the {@link Level#TRACE TRACE} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      * <p/>
      * <p>
@@ -238,7 +238,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>TRACE</code> level including the
+     * Logs a message at the {@link Level#TRACE TRACE} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      * <p/>
      * <p>
@@ -255,7 +255,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>TRACE</code> level including the
+     * Logs a message at the {@link Level#TRACE TRACE} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      * <p/>
      * <p>
@@ -273,7 +273,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>TRACE</code> level.
+     * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
      *
      * @param message the message to log.
      * @param params  parameters to the message.
@@ -286,7 +286,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>TRACE</code> level.
+     * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
