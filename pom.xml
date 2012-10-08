@@ -195,7 +195,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-changes-plugin</artifactId>
-          <version>2.6</version>
+          <version>2.8</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -484,7 +484,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-changes-plugin</artifactId>
-            <version>2.7.1</version>
+            <version>2.8</version>
             <configuration>
               <template>announcement.vm</template>
               <templateDirectory>src/changes</templateDirectory>
@@ -499,6 +499,7 @@
               <announceParameters>
                 <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
               </announceParameters>
+              <useJql>true</useJql>
             </configuration>
             <executions>
               <execution>
