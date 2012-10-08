@@ -386,7 +386,7 @@ public interface Logger {
   void info(Marker marker, String message);
 
   /**
-   * Logs a message at the <code>INFO</code> level including the
+   * Logs a message at the {@link Level#INFO INFO} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -395,7 +395,7 @@ public interface Logger {
   void info(String message, Throwable t);
 
   /**
-   * Logs a message at the <code>INFO</code> level including the
+   * Logs a message at the {@link Level#INFO INFO} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -420,7 +420,7 @@ public interface Logger {
   void info(Marker marker, Object message);
 
   /**
-   * Logs a message at the <code>INFO</code> level including the
+   * Logs a message at the {@link Level#INFO INFO} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    *
    * @param message the message object to log.
@@ -429,7 +429,7 @@ public interface Logger {
   void info(Object message, Throwable t);
 
   /**
-   * Logs a message at the <code>INFO</code> level including the
+   * Logs a message at the {@link Level#INFO INFO} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    *
    * @param marker the marker data specific to this log statement
@@ -439,7 +439,7 @@ public interface Logger {
   void info(Marker marker, Object message, Throwable t);
 
   /**
-   * Logs a message with parameters at the <code>INFO</code> level.
+   * Logs a message with parameters at the {@link Level#INFO INFO} level.
    *
    * @param message the message to log.
    * @param params parameters to the message.
@@ -452,7 +452,7 @@ public interface Logger {
   void info(String message, Object... params);
 
   /**
-   * Logs a message with parameters at the <code>INFO</code> level.
+   * Logs a message with parameters at the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param message the message to log.

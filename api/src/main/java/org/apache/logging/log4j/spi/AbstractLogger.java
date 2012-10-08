@@ -587,7 +587,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>INFO</code> level including the
+     * Logs a message at the {@link Level#INFO INFO} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param message the message object to log.
@@ -600,7 +600,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>INFO</code> level including the
+     * Logs a message at the {@link Level#INFO INFO} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
@@ -637,7 +637,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message at the <code>INFO</code> level including the
+     * Logs a message at the {@link Level#INFO INFO} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param message the message object to log.
@@ -651,7 +651,7 @@ public abstract class AbstractLogger implements Logger {
 
 
     /**
-     * Logs a message at the <code>INFO</code> level including the
+     * Logs a message at the {@link Level#INFO INFO} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
@@ -665,7 +665,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>INFO</code> level.
+     * Logs a message with parameters at the {@link Level#INFO INFO} level.
      *
      * @param message the message to log.
      * @param params  parameters to the message.
@@ -678,7 +678,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with parameters at the <code>INFO</code> level.
+     * Logs a message with parameters at the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message to log.
