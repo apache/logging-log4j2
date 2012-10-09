@@ -250,7 +250,8 @@ public class Category {
 
     public void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
         org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        logger.log(null, fqcn, lvl, new ObjectMessage(message), t);
+        Message msg = message instanceof Message ? (ObjectMessage) message : new ObjectMessage(message);
+        logger.log(null, fqcn, lvl, msg, t);
     }
 
     public boolean exists(String name) {

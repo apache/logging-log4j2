@@ -18,9 +18,10 @@
 package org.apache.log4j;
 
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.status.StatusConsoleListener;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -70,8 +71,25 @@ public class CategoryTest {
         category.setAdditivity(false);
         category.getLogger().addAppender(appender);
         category.info("Hello, World");
-        int events = appender.getEvents().size();
+        List<LogEvent> list = appender.getEvents();
+        int events = list.size();
         assertTrue("Number of events should be 1, was " + events, events == 1);
+        LogEvent event = list.get(0);
+        Message msg = event.getMessage();
+        assertNotNull("No message", msg);
+        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        Object[] objects = msg.getParameters();
+        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        appender.clear();
+        category.log(Priority.INFO, "Hello, World");
+        events = list.size();
+        assertTrue("Number of events should be 1, was " + events, events == 1);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull("No message", msg);
+        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        objects = msg.getParameters();
+        assertTrue("Incorrect Object type", objects[0] instanceof String);
         appender.clear();
     }
 

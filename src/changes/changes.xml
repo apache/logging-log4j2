@@ -22,6 +22,12 @@
   </properties>
 
   <body>
+    <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action dev="rgoers" type="fix">
+        Log4j 1.2 Category.forcedLog was wrapping the message with an ObjectMessage even if the parameter was an
+        ObjectMessage.
+      </action>
+    </release>
     <release version="2.0-beta2" date="2012-10-07" description="Bug fixes and enhancements">
       <action dev="rgoers" type="update">
         Made ParameterizedMessage, StringFormattedMessage and ThreadDumpMessage immutable. LocalizedMessage is
