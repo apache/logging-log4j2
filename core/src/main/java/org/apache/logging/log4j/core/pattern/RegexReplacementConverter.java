@@ -35,7 +35,7 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
 
     private final String substitution;
 
-    private List<PatternFormatter> formatters;
+    private final List<PatternFormatter> formatters;
 
     /**
      * Construct the converter.
