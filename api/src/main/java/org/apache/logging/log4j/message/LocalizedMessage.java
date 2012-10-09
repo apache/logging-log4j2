@@ -45,7 +45,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
     private transient StatusLogger logger = StatusLogger.getLogger();
 
-    private String loggerName = null;
+    private String loggerName;
 
     public LocalizedMessage(String messagePattern, String[] stringArgs, Throwable throwable) {
         super(messagePattern, stringArgs, throwable);
