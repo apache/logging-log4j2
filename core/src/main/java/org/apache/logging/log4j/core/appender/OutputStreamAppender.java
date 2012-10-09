@@ -45,9 +45,9 @@ public abstract class OutputStreamAppender extends AbstractAppender {
 
     private volatile OutputStreamManager manager;
 
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private Lock readLock = rwLock.readLock();
-    private Lock writeLock = rwLock.writeLock();
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final Lock readLock = rwLock.readLock();
+    private final Lock writeLock = rwLock.writeLock();
 
     /**
      * Instantiate a WriterAppender and set the output destination to a
