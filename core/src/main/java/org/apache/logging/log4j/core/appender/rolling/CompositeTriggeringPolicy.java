@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "Policies", type = "Core", printObject = true)
 public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
-    private TriggeringPolicy[] policies;
+    private final TriggeringPolicy[] policies;
 
     private CompositeTriggeringPolicy(TriggeringPolicy[] policies) {
         this.policies = policies;
