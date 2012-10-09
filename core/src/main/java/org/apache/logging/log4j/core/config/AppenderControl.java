@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.filter.Filtering;
  */
 public class AppenderControl extends Filterable {
 
-    private ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
+    private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
 
     private final Appender appender;
 
