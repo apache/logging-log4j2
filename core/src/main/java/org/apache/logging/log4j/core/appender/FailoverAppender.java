@@ -48,7 +48,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     private AppenderControl primary;
 
-    private List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
+    private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
     private FailoverAppender(String name, Filter filter, String primary, String[] failovers,
                             Configuration config, boolean handleExceptions) {
