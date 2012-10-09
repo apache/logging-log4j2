@@ -82,7 +82,7 @@ public final class PatternParser {
      */
     private boolean handlesExceptions;
 
-    private Configuration config;
+    private final Configuration config;
 
     private final Map<String, Class<PatternConverter>> converterRules;
 
