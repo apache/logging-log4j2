@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
-import org.apache.logging.log4j.core.appender.rolling.helper.ActionBase;
+import org.apache.logging.log4j.core.appender.rolling.helper.AbstractAction;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -161,7 +161,7 @@ public class RollingFileManager extends FileManager {
     /**
      * Performs actions asynchronously.
      */
-    private static class AsyncAction extends ActionBase {
+    private static class AsyncAction extends AbstractAction {
 
         private final Action action;
         private final RollingFileManager manager;

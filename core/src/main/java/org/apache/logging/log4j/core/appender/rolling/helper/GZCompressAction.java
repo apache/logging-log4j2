@@ -27,7 +27,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Compresses a file using GZ compression.
  */
-public final class GZCompressAction extends ActionBase {
+public final class GZCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8102;
 

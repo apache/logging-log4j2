@@ -28,7 +28,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Compresses a file using Zip compression.
  */
-public final class ZipCompressAction extends ActionBase {
+public final class ZipCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8102;
 

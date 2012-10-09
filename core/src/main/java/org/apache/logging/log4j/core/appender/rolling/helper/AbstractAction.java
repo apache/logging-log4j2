@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Abstract base class for implementations of Action.
  */
-public abstract class ActionBase implements Action {
+public abstract class AbstractAction implements Action {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -43,7 +43,7 @@ public abstract class ActionBase implements Action {
     /**
      * Constructor.
      */
-    protected ActionBase() {
+    protected AbstractAction() {
     }
 
     /**

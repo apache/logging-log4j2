@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * A group of Actions to be executed in sequence.
  */
-public class CompositeAction extends ActionBase {
+public class CompositeAction extends AbstractAction {
     /**
      * Actions to perform.
      */
