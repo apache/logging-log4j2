@@ -96,7 +96,7 @@
     <slf4j.version>1.7.0</slf4j.version>
     <logback.version>1.0.7</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0-beta2</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.0-beta3</Log4jReleaseVersion>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.commons.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
