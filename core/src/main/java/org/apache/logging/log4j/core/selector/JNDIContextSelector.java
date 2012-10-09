@@ -86,9 +86,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class JNDIContextSelector implements NamedContextSelector {
 
-    private static LoggerContext context = new LoggerContext("Default");
+    private static final LoggerContext context = new LoggerContext("Default");
 
-    private static ConcurrentMap<String, LoggerContext> contextMap =
+    private static final ConcurrentMap<String, LoggerContext> contextMap =
         new ConcurrentHashMap<String, LoggerContext>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
