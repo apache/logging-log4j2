@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.Filtering;
 
 /**
- * Wraps appenders with details the appender implementation shouldn't need to know about.
+ * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
  */
 public class AppenderControl extends Filterable {
 
