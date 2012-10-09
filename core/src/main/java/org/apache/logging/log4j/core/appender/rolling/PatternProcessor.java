@@ -184,7 +184,7 @@ public class PatternProcessor {
         return new PatternParser(null, KEY, null);
     }
 
-    private boolean patternContains(String pattern, char[] chars) {
+    private boolean patternContains(String pattern, char... chars) {
         for (char character : chars) {
             if (patternContains(pattern, character)) {
                 return true;
