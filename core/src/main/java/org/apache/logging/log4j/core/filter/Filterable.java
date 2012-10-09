@@ -27,7 +27,7 @@ import java.util.Iterator;
  */
 public class Filterable implements Filtering {
 
-    private volatile Filter filter = null;
+    private volatile Filter filter;
 
     protected Filterable(Filter filter) {
         this.filter = filter;
