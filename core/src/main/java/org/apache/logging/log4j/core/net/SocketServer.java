@@ -55,9 +55,9 @@ public class SocketServer extends AbstractServer implements Runnable {
 
     private boolean isActive = true;
 
-    private ServerSocket server;
+    private final ServerSocket server;
 
-    private ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
+    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
 
     /**
      * Constructor.
