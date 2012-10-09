@@ -78,7 +78,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Conversion pattern.
      */
-    private String conversionPattern;
+    private final String conversionPattern;
 
     /**
      * True if any element in pattern formats information from exceptions.
