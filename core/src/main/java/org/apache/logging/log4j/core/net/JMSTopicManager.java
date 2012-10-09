@@ -34,11 +34,11 @@ import java.io.Serializable;
  */
 public class JMSTopicManager extends AbstractJMSManager {
 
-    private static ManagerFactory factory = new JMSTopicManagerFactory();
+    private static final ManagerFactory factory = new JMSTopicManagerFactory();
 
-    private TopicConnection topicConnection;
-    private TopicSession topicSession;
-    private TopicPublisher topicPublisher;
+    private final TopicConnection topicConnection;
+    private final TopicSession topicSession;
+    private final TopicPublisher topicPublisher;
 
     /**
      * Constructor.
