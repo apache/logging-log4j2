@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class BasicContextSelector implements ContextSelector {
 
-    private static LoggerContext context = new LoggerContext("Default");
+    private static final LoggerContext context = new LoggerContext("Default");
 
     public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
 
