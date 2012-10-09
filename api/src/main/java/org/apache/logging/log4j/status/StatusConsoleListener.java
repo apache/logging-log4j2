@@ -87,7 +87,7 @@ public class StatusConsoleListener implements StatusListener {
      * Adds package name filters to exclude.
      * @param filters An array of package names to exclude.
      */
-    public void setFilters(String[] filters) {
+    public void setFilters(String... filters) {
         this.filters = filters;
     }
 
