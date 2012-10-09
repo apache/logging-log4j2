@@ -21,9 +21,9 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 /**
  *
  */
-public abstract class FlumeManager extends AbstractManager {
+public abstract class AbstractFlumeManager extends AbstractManager {
 
-    public FlumeManager(String name) {
+    public AbstractFlumeManager(String name) {
         super(name);
     }
 

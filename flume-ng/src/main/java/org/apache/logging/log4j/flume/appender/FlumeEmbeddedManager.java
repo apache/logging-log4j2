@@ -31,7 +31,7 @@ import java.util.Properties;
 /**
  *
  */
-public class FlumeEmbeddedManager extends FlumeManager {
+public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static ManagerFactory factory = new FlumeManagerFactory();
 

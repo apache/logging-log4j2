@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
 @Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
 public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
-    private FlumeManager manager;
+    private AbstractFlumeManager manager;
 
     private final String mdcIncludes;
     private final String mdcExcludes;
@@ -54,7 +54,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private FlumeAppender(String name, Filter filter, Layout layout, boolean handleException,
                           String includes, String excludes, String required, String mdcPrefix,
                           String eventPrefix, boolean compress, int delay, int retries,
-                          FlumeEventFactory factory, FlumeManager manager) {
+                          FlumeEventFactory factory, AbstractFlumeManager manager) {
         super(name, filter, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -161,7 +161,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             return null;
         }
 
-        FlumeManager manager;
+        AbstractFlumeManager manager;
 
         if (embed) {
             manager = FlumeEmbeddedManager.getManager(name, agents, properties, batchCount, dataDir);

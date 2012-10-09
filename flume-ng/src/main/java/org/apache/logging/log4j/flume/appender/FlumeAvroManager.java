@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * Manager for FlumeAvroAppenders.
  */
-public class FlumeAvroManager extends FlumeManager {
+public class FlumeAvroManager extends AbstractFlumeManager {
 
     /**
       The default reconnection delay (500 milliseconds or .5 seconds).
