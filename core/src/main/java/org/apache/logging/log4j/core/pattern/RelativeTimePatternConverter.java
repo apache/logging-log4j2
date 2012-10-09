@@ -31,7 +31,7 @@ public class RelativeTimePatternConverter extends LogEventPatternConverter {
      * Cached formatted timestamp.
      */
     private long lastTimestamp = Long.MIN_VALUE;
-    private long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+    private final long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
     private String relative;
 
     /**
