@@ -42,7 +42,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
     private static final String[] DEBUG = null;
     private static final String[] TRACE = null;
 
-    private List<PatternFormatter> formatters;
+    private final List<PatternFormatter> formatters;
 
     static {
         LEVEL_STYLES.put(Level.FATAL, AnsiEscape.createSequence(FATAL));
