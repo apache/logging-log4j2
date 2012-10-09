@@ -40,7 +40,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     private static final int DEFAULT_PORT = 4560;
 
-    private static ManagerFactory factory = new TCPSocketManagerFactory();
+    private static final ManagerFactory factory = new TCPSocketManagerFactory();
 
     private final int reconnectionDelay;
 
