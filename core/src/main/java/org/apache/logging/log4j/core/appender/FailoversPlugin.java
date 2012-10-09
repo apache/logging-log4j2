@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "failovers", type = "Core")
 public final class FailoversPlugin {
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger logger = StatusLogger.getLogger();
 
     /**
      * Prevent instantiation.
