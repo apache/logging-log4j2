@@ -36,7 +36,7 @@ public class AbstractLoggerTest extends AbstractLogger {
 
     private static Throwable t = new UnsupportedOperationException("Test");
 
-    private static Class obj = AbstractLogger.class;
+    private static Class<AbstractLogger> obj = AbstractLogger.class;
 
     private static String pattern = "{}, {}";
     private static String p1 = "Long Beach";
