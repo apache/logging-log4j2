@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -41,7 +42,7 @@ public class ThrowableProxy extends Throwable {
 
     private static PrivateSecurityManager securityManager;
 
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static Method getSuppressed;
     private static Method addSuppressed;
