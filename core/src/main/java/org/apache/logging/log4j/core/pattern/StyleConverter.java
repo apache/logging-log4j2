@@ -30,7 +30,7 @@ import java.util.List;
 @ConverterKeys({"style" })
 public final class StyleConverter extends LogEventPatternConverter {
 
-    private List<PatternFormatter> formatters;
+    private final List<PatternFormatter> formatters;
 
     private final String style;
 
