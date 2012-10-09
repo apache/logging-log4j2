@@ -693,7 +693,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
         return null;
     }
 
-    private void printArray(StringBuilder sb, Object[] array) {
+    private void printArray(StringBuilder sb, Object... array) {
         boolean first = true;
         for (Object obj : array) {
             if (!first) {
