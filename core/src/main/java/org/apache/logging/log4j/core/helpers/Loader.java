@@ -199,19 +199,19 @@ public final class Loader {
 
     /**
      * Load a Class by name.
-     * @param clazz The class name.
+     * @param className The class name.
      * @return The Class.
      * @throws ClassNotFoundException if the Class could not be found.
      */
-    public static Class loadClass(String clazz) throws ClassNotFoundException {
-        // Just call Class.forName(clazz) if we are instructed to ignore the TCL.
+    public static Class loadClass(String className) throws ClassNotFoundException {
+        // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
-            return Class.forName(clazz);
+            return Class.forName(className);
         } else {
             try {
-                return getTCL().loadClass(clazz);
+                return getTCL().loadClass(className);
             } catch (Throwable e) {
-                return Class.forName(clazz);
+                return Class.forName(className);
             }
         }
     }
