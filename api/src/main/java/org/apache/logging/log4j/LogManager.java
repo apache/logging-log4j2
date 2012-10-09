@@ -45,7 +45,7 @@ public class LogManager {
 
     private static LoggerContextFactory factory;
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger logger = StatusLogger.getLogger();
 
     /**
      * Prevent instantiation
