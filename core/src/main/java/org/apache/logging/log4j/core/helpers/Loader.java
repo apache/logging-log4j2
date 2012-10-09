@@ -203,7 +203,7 @@ public final class Loader {
      * @return The Class.
      * @throws ClassNotFoundException if the Class could not be found.
      */
-    public static Class loadClass(String className) throws ClassNotFoundException {
+    public static Class<?> loadClass(String className) throws ClassNotFoundException {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
             return Class.forName(className);
@@ -216,7 +216,7 @@ public final class Loader {
         }
     }
 
-    public static ClassLoader getClassLoader(Class class1, Class class2) {
+    public static ClassLoader getClassLoader(Class<?> class1, Class<?> class2) {
 
         ClassLoader loader1 = null;
         try {
