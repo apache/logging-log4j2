@@ -24,8 +24,8 @@ import java.io.Serializable;
  */
 public class PluginType implements Serializable {
 
-    private Class pluginClass;
-    private String elementName;
+    private final Class pluginClass;
+    private final String elementName;
     private boolean printObject = false;
     private boolean deferChildren = false;
 
