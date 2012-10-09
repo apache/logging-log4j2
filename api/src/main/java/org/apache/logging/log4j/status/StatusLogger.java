@@ -48,15 +48,15 @@ public final class StatusLogger extends AbstractLogger {
 
     // private static final String FQCN = AbstractLogger.class.getName();
 
-    private static StatusLogger statusLogger = new StatusLogger();
+    private static final StatusLogger statusLogger = new StatusLogger();
 
-    private Logger logger = null;
+    private Logger logger;
 
-    private CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
-    private ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
+    private final CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
+    private final ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
-    private Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
-    private ReentrantLock msgLock = new ReentrantLock();
+    private final Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
+    private final ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
     }
