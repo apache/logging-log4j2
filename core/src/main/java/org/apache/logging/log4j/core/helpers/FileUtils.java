@@ -36,7 +36,7 @@ public final class FileUtils {
 
     private static final String JBOSS_FILE = "vfsfile";
 
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger logger = StatusLogger.getLogger();
 
     private FileUtils() {
     }
