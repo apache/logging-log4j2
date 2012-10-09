@@ -103,7 +103,7 @@ public final class OptionConverter {
     }
 
 
-    public static Object instantiateByKey(Properties props, String key, Class superClass,
+    public static Object instantiateByKey(Properties props, String key, Class<?> superClass,
                                    Object defaultValue) {
 
         // Get the value of the property in string form
@@ -230,11 +230,11 @@ public final class OptionConverter {
      * @param defaultValue The object to return in case of non-fulfillment
      * @return The created object.
      */
-    public static Object instantiateByClassName(String className, Class superClass,
+    public static Object instantiateByClassName(String className, Class<?> superClass,
                                          Object defaultValue) {
         if (className != null) {
             try {
-                Class classObj = Loader.loadClass(className);
+                Class<?> classObj = Loader.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
                     LOGGER.error("A \"" + className + "\" object is not assignable to a \"" +
                         superClass.getName() + "\" variable.");
