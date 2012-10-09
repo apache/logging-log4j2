@@ -29,9 +29,9 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
  */
 public class Log4jContextFactory implements LoggerContextFactory {
 
-    private ContextSelector selector;
+    private static final StatusLogger logger = StatusLogger.getLogger();
 
-    private StatusLogger logger = StatusLogger.getLogger();
+    private ContextSelector selector;
 
     /**
      * Constructor that initializes the ContextSelector.
