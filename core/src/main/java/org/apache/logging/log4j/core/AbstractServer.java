@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
  */
 public class AbstractServer {
 
-    private LoggerContext context;
+    private final LoggerContext context;
 
     protected AbstractServer() {
         context = (LoggerContext) LogManager.getContext();
