@@ -132,7 +132,7 @@ public final class PatternParser {
 
         parse(pattern, converters, fields);
 
-        Iterator fieldIter = fields.iterator();
+        Iterator<FormattingInfo> fieldIter = fields.iterator();
 
         for (PatternConverter converter : converters) {
             LogEventPatternConverter pc;
@@ -145,7 +145,7 @@ public final class PatternParser {
 
             FormattingInfo field;
             if (fieldIter.hasNext()) {
-                field = (FormattingInfo) fieldIter.next();
+                field = fieldIter.next();
             } else {
                 field = FormattingInfo.getDefault();
             }
