@@ -71,11 +71,11 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private final List<Status> status = new ArrayList<Status>();
 
-    private Element rootElement = null;
+    private Element rootElement;
 
-    private boolean strict = false;
+    private boolean strict;
 
-    private String schema = null;
+    private String schema;
 
     private Validator validator;
 
