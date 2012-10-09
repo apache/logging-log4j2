@@ -133,17 +133,15 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      */
     protected final void formatFileName(final Object obj, final StringBuilder buf) {
-        Object[] objects = new Object[] {new Date(System.currentTimeMillis()), obj};
-        formatFileName(objects, buf);
+        formatFileName(buf, new Date(System.currentTimeMillis()), obj);
     }
 
     /**
      * Format file name.
-     *
-     * @param objects objects to be evaluated in formatting, may not be null.
      * @param buf string buffer to which formatted file name is appended, may not be null.
+     * @param objects objects to be evaluated in formatting, may not be null.
      */
-    protected final void formatFileName(final Object[] objects, final StringBuilder buf) {
+    protected final void formatFileName(final StringBuilder buf, final Object... objects) {
         for (int i = 0; i < patternConverters.length; i++) {
             int fieldStart = buf.length();
             patternConverters[i].format(objects, buf);

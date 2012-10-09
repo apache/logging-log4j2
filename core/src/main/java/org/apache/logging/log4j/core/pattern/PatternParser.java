@@ -102,7 +102,7 @@ public final class PatternParser {
      * @param converterKey The key to lookup the converters.
      * @param expected The expected base Class of each Converter.
      */
-    public PatternParser(Configuration config, String converterKey, Class expected) {
+    public PatternParser(Configuration config, String converterKey, Class<?> expected) {
         this.config = config;
         PluginManager manager = new PluginManager(converterKey, expected);
         manager.collectPlugins();
@@ -446,13 +446,13 @@ public final class PatternParser {
             return null;
         }
 
-        Class[] parmTypes = newInstanceMethod.getParameterTypes();
+        Class<?>[] parmTypes = newInstanceMethod.getParameterTypes();
         Object [] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
 
         if (parms != null) {
             int i = 0;
             boolean errors = false;
-            for (Class clazz : parmTypes) {
+            for (Class<?> clazz : parmTypes) {
                 if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
                     String[] optionsArray = options.toArray(new String[options.size()]);
                     parms[i] = optionsArray;
