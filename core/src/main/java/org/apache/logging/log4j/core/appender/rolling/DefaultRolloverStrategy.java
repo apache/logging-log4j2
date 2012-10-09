@@ -110,7 +110,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
 
             StringBuilder buf = new StringBuilder();
-            manager.getProcessor().formatFileName(purgeStart, buf);
+            manager.getProcessor().formatFileName(buf, purgeStart);
             String currentFileName = manager.getFileName();
 
             String renameTo = subst.replace(buf);
@@ -147,7 +147,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
         StringBuilder buf = new StringBuilder();
-        manager.getProcessor().formatFileName(lowIndex, buf);
+        manager.getProcessor().formatFileName(buf, lowIndex);
 
         String lowFilename = subst.replace(buf);
 
@@ -192,7 +192,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //   if intermediate index
                 //     add a rename action to the list
                 buf.setLength(0);
-                manager.getProcessor().formatFileName(i + 1, buf);
+                manager.getProcessor().formatFileName(buf, i + 1);
 
                 String highFilename = subst.replace(buf);
                 String renameTo = highFilename;

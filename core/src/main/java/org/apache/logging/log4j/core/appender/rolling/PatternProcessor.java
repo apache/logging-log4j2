@@ -128,11 +128,10 @@ public class PatternProcessor {
 
     /**
      * Format file name.
-     *
-     * @param obj object to be evaluated in formatting, may not be null.
      * @param buf string buffer to which formatted file name is appended, may not be null.
+     * @param obj object to be evaluated in formatting, may not be null.
      */
-    protected final void formatFileName(final Object obj, final StringBuilder buf) {
+    protected final void formatFileName(final StringBuilder buf, final Object obj) {
         formatFileName(buf, new Date(System.currentTimeMillis()), obj);
     }
 
