@@ -38,8 +38,6 @@ public final class FileUtils {
 
     private static Logger logger = StatusLogger.getLogger();
 
-
-
     private FileUtils() {
     }
 
