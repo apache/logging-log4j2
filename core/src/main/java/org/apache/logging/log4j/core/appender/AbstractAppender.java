@@ -41,7 +41,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      */
     private boolean started = false;
 
-    private Layout layout;
+    private final Layout layout;
 
     private final String name;
 
