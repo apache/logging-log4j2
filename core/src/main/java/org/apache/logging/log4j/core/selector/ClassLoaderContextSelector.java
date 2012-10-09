@@ -57,13 +57,11 @@ public class ClassLoaderContextSelector implements ContextSelector {
     private static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> contextMap =
         new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
 
-
     static {
         setupCallerCheck();
     }
 
     public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
-
         if (currentContext) {
             LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -133,7 +131,6 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     public void removeContext(LoggerContext context) {
-
         for (Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : contextMap.entrySet()) {
             LoggerContext ctx = entry.getValue().get().get();
             if (ctx == context) {
