@@ -229,15 +229,27 @@ public class Timer implements Serializable
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Timer)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Timer)) {
+            return false;
+        }
 
         final Timer timer = (Timer) o;
 
-        if (m_elapsedTime != timer.m_elapsedTime) return false;
-        if (m_startTime != timer.m_startTime) return false;
-        if (m_name != null ? !m_name.equals(timer.m_name) : timer.m_name != null) return false;
-        if (m_status != null ? !m_status.equals(timer.m_status) : timer.m_status != null) return false;
+        if (m_elapsedTime != timer.m_elapsedTime) {
+            return false;
+        }
+        if (m_startTime != timer.m_startTime) {
+            return false;
+        }
+        if (m_name != null ? !m_name.equals(timer.m_name) : timer.m_name != null) {
+            return false;
+        }
+        if (m_status != null ? !m_status.equals(timer.m_status) : timer.m_status != null) {
+            return false;
+        }
 
         return true;
     }
