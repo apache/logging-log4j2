@@ -37,7 +37,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private long lastException;
 
-    private Appender appender;
+    private final Appender appender;
 
     public DefaultErrorHandler(Appender appender) {
         this.appender = appender;
