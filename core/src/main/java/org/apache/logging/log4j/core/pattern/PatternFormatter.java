@@ -23,8 +23,8 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  */
 public class PatternFormatter {
-    private LogEventPatternConverter converter;
-    private FormattingInfo field;
+    private final LogEventPatternConverter converter;
+    private final FormattingInfo field;
 
     public PatternFormatter(LogEventPatternConverter converter, FormattingInfo field) {
         this.converter = converter;
