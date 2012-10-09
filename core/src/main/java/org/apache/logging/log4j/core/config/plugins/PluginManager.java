@@ -47,7 +47,7 @@ public class PluginManager {
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> pluginTypeMap =
         new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
 
-    private static CopyOnWriteArrayList<String> packages = new CopyOnWriteArrayList<String>();
+    private static final CopyOnWriteArrayList<String> packages = new CopyOnWriteArrayList<String>();
     private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
     private static final String FILENAME = "Log4j2Plugins.dat";
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
