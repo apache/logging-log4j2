@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Filter that invokes multiple filters.
+ * Composes and invokes one or more filters.
  */
 @Plugin(name = "filters", type = "Core", printObject = true)
 public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
@@ -111,13 +111,16 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Return the result that should be returned when the filter does not match the event.
+     * 
      * @return the Result that should be returned when the filter does not match the event.
      */
     public Result getOnMismatch() {
         return Result.NEUTRAL;
     }
+
     /**
      * Return the result that should be returned when the filter matches the event.
+     * 
      * @return the Result that should be returned when the filter matches the event.
      */
     public Result getOnMatch() {
@@ -126,11 +129,17 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Filter an event.
-     * @param logger The Logger.
-     * @param level The event logging Level.
-     * @param marker The Marker for the event or null.
-     * @param msg String text to filter on.
-     * @param params An array of parameters or null.
+     * 
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            String text to filter on.
+     * @param params
+     *            An array of parameters or null.
      * @return the Result.
      */
     public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
@@ -146,11 +155,17 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Filter an event.
-     * @param logger The Logger.
-     * @param level The event logging Level.
-     * @param marker The Marker for the event or null.
-     * @param msg Any Object.
-     * @param t A Throwable or null.
+     * 
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            Any Object.
+     * @param t
+     *            A Throwable or null.
      * @return the Result.
      */
     public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
@@ -166,11 +181,17 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Filter an event.
-     * @param logger The Logger.
-     * @param level The event logging Level.
-     * @param marker The Marker for the event or null.
-     * @param msg The Message
-     * @param t A Throwable or null.
+     * 
+     * @param logger
+     *            The Logger.
+     * @param level
+     *            The event logging Level.
+     * @param marker
+     *            The Marker for the event or null.
+     * @param msg
+     *            The Message
+     * @param t
+     *            A Throwable or null.
      * @return the Result.
      */
     public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
@@ -186,7 +207,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Filter an event.
-     * @param event The Event to filter on.
+     * 
+     * @param event
+     *            The Event to filter on.
      * @return the Result.
      */
     public Result filter(LogEvent event) {
@@ -219,7 +242,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     /**
      * Create a CompositeFilter.
-     * @param filters An array of Filters to call.
+     * 
+     * @param filters
+     *            An array of Filters to call.
      * @return The CompositeFilter.
      */
     @PluginFactory
