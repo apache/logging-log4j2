@@ -273,10 +273,9 @@ public abstract class NameAbbreviator {
         }
 
         /**
-         * Abbreviate name.
+         * Abbreviates name.
          *
          * @param buf       buffer that abbreviated name is appended.
-         * @param nameStart start of name.
          */
         @Override
         public String abbreviate(final String buf) {
