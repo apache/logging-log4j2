@@ -82,7 +82,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private final boolean includeNewLine;
 
     private long lastTimestamp = -1;
-    private String timestamppStr = null;
+    private String timestamppStr;
 
 
     private RFC5424Layout(Configuration config, Facility facility, String id, int ein, boolean includeMDC,
