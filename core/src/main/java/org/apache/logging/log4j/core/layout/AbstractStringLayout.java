@@ -29,7 +29,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     /**
      * The charset of the formatted message.
      */
-    private Charset charset;
+    private final Charset charset;
 
     private final StringEncoder encoder;
 
