@@ -448,7 +448,7 @@ public class ResolverUtil<T> {
      * that this test will match the parent type itself if it is presented for matching.
      */
     public static class IsA extends ClassTest {
-        private Class parent;
+        private final Class parent;
 
         /**
          * Constructs an IsA test using the supplied Class as the parent class/interface.
@@ -475,7 +475,7 @@ public class ResolverUtil<T> {
      * A Test that checks to see if each class name ends with the provided suffix.
      */
     public static class NameEndsWith extends ClassTest {
-        private String suffix;
+        private final String suffix;
 
         /**
          * Constructs a NameEndsWith test using the supplied suffix.
@@ -503,7 +503,7 @@ public class ResolverUtil<T> {
      * is, then the test returns true, otherwise false.
      */
     public static class AnnotatedWith extends ClassTest {
-        private Class<? extends Annotation> annotation;
+        private final Class<? extends Annotation> annotation;
 
         /**
          * Constructs an AnnotatedWith test for the specified annotation type.
@@ -532,7 +532,7 @@ public class ResolverUtil<T> {
      * A Test that checks to see if the class name matches.
      */
     public static class NameIs extends ResourceTest {
-        private String name;
+        private final String name;
 
         public NameIs(String name) { this.name = "/" + name; }
 
