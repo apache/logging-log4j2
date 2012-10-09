@@ -262,9 +262,9 @@ public final class Loader {
         if (System.getSecurityManager() == null) {
             cl = Thread.currentThread().getContextClassLoader();
         } else {
-            cl = (ClassLoader) java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
+            cl = java.security.AccessController.doPrivileged(
+                new java.security.PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
                     }
                 }
