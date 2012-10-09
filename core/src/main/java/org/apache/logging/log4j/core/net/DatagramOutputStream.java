@@ -43,8 +43,8 @@ public class DatagramOutputStream extends OutputStream {
     private static final int SHIFT_3 = 24;
 
     private DatagramSocket ds;
-    private InetAddress address;
-    private int port;
+    private final InetAddress address;
+    private final int port;
 
     private byte[] data;
 
