@@ -38,7 +38,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
 
     private static final String FILTERS = "filters(";
 
-    private List<String> packages = null;
+    private List<String> packages;
 
     /**
      * Private constructor.
