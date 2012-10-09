@@ -321,9 +321,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
      * Status for recording errors.
      */
     private class Status {
-        private Element element;
-        private String name;
-        private ErrorType errorType;
+        private final Element element;
+        private final String name;
+        private final ErrorType errorType;
 
         public Status(String name, Element element, ErrorType errorType) {
             this.name = name;
