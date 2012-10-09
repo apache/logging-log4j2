@@ -69,7 +69,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private static final int BUF_SIZE = 16384;
 
-    private List<Status> status = new ArrayList<Status>();
+    private final List<Status> status = new ArrayList<Status>();
 
     private Element rootElement = null;
 
@@ -79,9 +79,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private Validator validator;
 
-    private List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<String>();
 
-    private File configFile;
+    private final File configFile;
 
     public XMLConfiguration(InputSource source, File configFile) {
         this.configFile = configFile;
