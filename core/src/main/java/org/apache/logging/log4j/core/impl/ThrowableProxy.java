@@ -65,7 +65,7 @@ public class ThrowableProxy extends Throwable {
     public ThrowableProxy(Throwable throwable) {
         this.throwable = throwable;
         Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
-        Stack<Class> stack = getCurrentStack();
+        Stack<Class<?>> stack = getCurrentStack();
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
@@ -80,7 +80,7 @@ public class ThrowableProxy extends Throwable {
      * @param map The cache containing the packaging data.
      * @param cause The Throwable to wrap.
      */
-    private ThrowableProxy(Throwable parent, Stack<Class> stack, Map<String, CacheEntry> map, Throwable cause) {
+    private ThrowableProxy(Throwable parent, Stack<Class<?>> stack, Map<String, CacheEntry> map, Throwable cause) {
         this.throwable = cause;
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
@@ -301,25 +301,25 @@ public class ThrowableProxy extends Throwable {
      * to be accurate.
      * @return A Deque containing the current stack of Class objects.
      */
-    private Stack<Class> getCurrentStack() {
+    private Stack<Class<?>> getCurrentStack() {
         if (getCallerClass != null) {
-            Stack<Class> classes = new Stack<Class>();
+            Stack<Class<?>> classes = new Stack<Class<?>>();
             int index = 2;
-            Class clazz = getCallerClass(index);
+            Class<?> clazz = getCallerClass(index);
             while (clazz != null) {
                 classes.push(clazz);
                 clazz = getCallerClass(++index);
             }
             return classes;
         } else if (securityManager != null) {
-            Class[] array = securityManager.getClasses();
-            Stack<Class> classes = new Stack<Class>();
-            for (Class clazz : array) {
+            Class<?>[] array = securityManager.getClasses();
+            Stack<Class<?>> classes = new Stack<Class<?>>();
+            for (Class<?> clazz : array) {
                 classes.push(clazz);
             }
             return classes;
         }
-        return new Stack<Class>();
+        return new Stack<Class<?>>();
     }
 
     /**
@@ -330,7 +330,7 @@ public class ThrowableProxy extends Throwable {
      * @param stackTrace The stack trace being resolved.
      * @return The StackTracePackageElement array.
      */
-    private StackTracePackageElement[] resolvePackageData(Stack<Class> stack, Map<String, CacheEntry> map,
+    private StackTracePackageElement[] resolvePackageData(Stack<Class<?>> stack, Map<String, CacheEntry> map,
                                                           StackTraceElement[] rootTrace,
                                                           StackTraceElement[] stackTrace) {
         int stackLength;
@@ -348,7 +348,7 @@ public class ThrowableProxy extends Throwable {
             stackLength = stackTrace.length;
         }
         StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
-        Class clazz = stack.peek();
+        Class<?> clazz = stack.peek();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
             String className = stackTrace[i].getClassName();
@@ -388,7 +388,7 @@ public class ThrowableProxy extends Throwable {
      * @param exact True if the class was obtained via Reflection.getCallerClass.
      * @return The CacheEntry.
      */
-    private CacheEntry resolvePackageElement(Class callerClass, boolean exact) {
+    private CacheEntry resolvePackageElement(Class<?> callerClass, boolean exact) {
         String location = "?";
         String version = "?";
         ClassLoader lastLoader = null;
@@ -430,11 +430,11 @@ public class ThrowableProxy extends Throwable {
      * @param index The index into the stack trace.
      * @return The Class at the specified stack entry.
      */
-    private Class getCallerClass(int index) {
+    private Class<?> getCallerClass(int index) {
         if (getCallerClass != null) {
             try {
                 Object[] params = new Object[]{index};
-                return (Class) getCallerClass.invoke(null, params);
+                return (Class<?>) getCallerClass.invoke(null, params);
             } catch (Exception ex) {
                 // logger.debug("Unable to determine caller class via Sun Reflection", ex);
             }
@@ -448,8 +448,8 @@ public class ThrowableProxy extends Throwable {
      * @param className The name of the Class.
      * @return The Class object for the Class or null if it could not be located.
      */
-    private Class loadClass(ClassLoader lastLoader, String className) {
-        Class clazz;
+    private Class<?> loadClass(ClassLoader lastLoader, String className) {
+        Class<?> clazz;
         if (lastLoader != null) {
             try {
                 clazz = lastLoader.loadClass(className);
@@ -493,7 +493,8 @@ public class ThrowableProxy extends Throwable {
     private static void setupCallerCheck() {
         try {
             ClassLoader loader = Loader.getClassLoader();
-            Class clazz = loader.loadClass("sun.reflect.Reflection");
+            // Use wildcard to avoid compile-time reference.
+            Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
                 int modifier = method.getModifiers();
@@ -561,7 +562,7 @@ public class ThrowableProxy extends Throwable {
      * Security Manager for accessing the call stack.
      */
     private static class PrivateSecurityManager extends SecurityManager {
-        public Class[] getClasses() {
+        public Class<?>[] getClasses() {
             return getClassContext();
         }
     }
