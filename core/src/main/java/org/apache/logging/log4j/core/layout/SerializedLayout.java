@@ -29,7 +29,7 @@ import java.io.OutputStream;
  * Format a LogEvent in its serialized form.
  */
 @Plugin(name = "SerializedLayout", type = "Core", elementType = "layout", printObject = true)
-public final class SerializedLayout extends LayoutBase<LogEvent> {
+public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     private static byte[] header;
 

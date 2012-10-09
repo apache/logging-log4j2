@@ -26,7 +26,7 @@ import java.io.Serializable;
  * Base class for Layouts.
  * @param <T> The Class that the Layout will format the LogEvent into.
  */
-public abstract class LayoutBase<T extends Serializable> implements Layout<T> {
+public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */

@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 /**
  * Base class for Layouts that result in a String.
  */
-public abstract class AbstractStringLayout extends LayoutBase<String> {
+public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     /**
      * The charset of the formatted message.
