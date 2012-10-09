@@ -29,7 +29,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
     private final TriggeringPolicy[] policies;
 
-    private CompositeTriggeringPolicy(TriggeringPolicy[] policies) {
+    private CompositeTriggeringPolicy(TriggeringPolicy... policies) {
         this.policies = policies;
     }
 
