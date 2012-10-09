@@ -46,15 +46,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ClassLoaderContextSelector implements ContextSelector {
 
-    private static AtomicReference<LoggerContext> context = new AtomicReference<LoggerContext>();
+    private static final AtomicReference<LoggerContext> context = new AtomicReference<LoggerContext>();
 
     private static PrivateSecurityManager securityManager;
 
     private static Method getCallerClass;
 
-    private static StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger logger = StatusLogger.getLogger();
 
-    private static ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> contextMap =
+    private static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> contextMap =
         new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
 
 
