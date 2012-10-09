@@ -69,7 +69,7 @@ public class ParameterizedMessage implements Message, Serializable {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    private String messagePattern;
+    private final String messagePattern;
     private String[] stringArgs;
     private transient Object[] argArray;
     private transient String formattedMessage;
