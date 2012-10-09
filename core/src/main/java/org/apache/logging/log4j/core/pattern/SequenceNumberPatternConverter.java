@@ -28,7 +28,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Plugin(name = "SequenceNumberPatternConverter", type = "Converter")
 @ConverterKeys({"sn", "sequenceNumber" })
 public final class SequenceNumberPatternConverter extends LogEventPatternConverter {
-    private static AtomicLong sequence = new AtomicLong();
+    
+    private static final AtomicLong sequence = new AtomicLong();
+    
     /**
      * Singleton.
      */
