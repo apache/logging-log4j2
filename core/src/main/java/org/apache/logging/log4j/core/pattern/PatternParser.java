@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class
@@ -425,24 +426,27 @@ public final class PatternParser {
             return null;
         }
 
+        // Work around the regression bug in Class.getDeclaredMethods() in Oracle Java in version > 1.6.0_17:
+        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6815786
         Method[] methods = converterClass.getDeclaredMethods();
-        Method newInstance = null;
+        Method newInstanceMethod = null;
         for (Method method : methods) {
-            if (method.getName().equals("newInstance")) {
-                if (newInstance == null) {
-                    newInstance = method;
-                } else {
-                    LOGGER.error("Class " + converterClass + " cannot contain multiple newInstance methods");
+            if (Modifier.isStatic(method.getModifiers()) && method.getDeclaringClass().equals(converterClass) &&
+                    method.getName().equals("newInstance")) {
+                if (newInstanceMethod == null) {
+                    newInstanceMethod = method;
+                } else if (method.getReturnType().equals(newInstanceMethod.getReturnType())) {
+                    LOGGER.error("Class " + converterClass + " cannot contain multiple static newInstance methods");
                     return null;
                 }
             }
         }
-        if (newInstance == null) {
-            LOGGER.error("Class " + converterClass + " does not contain a newInstance method");
+        if (newInstanceMethod == null) {
+            LOGGER.error("Class " + converterClass + " does not contain a static newInstance method");
             return null;
         }
 
-        Class[] parmTypes = newInstance.getParameterTypes();
+        Class[] parmTypes = newInstanceMethod.getParameterTypes();
         Object [] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
 
         if (parms != null) {
@@ -455,7 +459,7 @@ public final class PatternParser {
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;
                 } else {
-                    LOGGER.error("Unknown parameter type " + clazz.getName() + " for newInstance method of " +
+                    LOGGER.error("Unknown parameter type " + clazz.getName() + " for static newInstance method of " +
                         converterClass.getName());
                     errors = true;
                 }
@@ -467,7 +471,7 @@ public final class PatternParser {
         }
 
         try {
-            Object newObj = newInstance.invoke(null, parms);
+            Object newObj = newInstanceMethod.invoke(null, parms);
 
             if (newObj instanceof PatternConverter) {
                 currentLiteral.delete(0, currentLiteral.length()
