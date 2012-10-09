@@ -262,7 +262,7 @@ public abstract class NameAbbreviator {
          *
          * @param fragments element abbreviation patterns.
          */
-        public PatternAbbreviator(List fragments) {
+        public PatternAbbreviator(List<PatternAbbreviatorFragment> fragments) {
             if (fragments.size() == 0) {
                 throw new IllegalArgumentException(
                     "fragments must have at least one element");
