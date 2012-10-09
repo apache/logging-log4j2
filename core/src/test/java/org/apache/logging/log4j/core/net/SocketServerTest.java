@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
-import org.apache.logging.log4j.core.filter.FilterBase;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -118,7 +118,7 @@ public class SocketServerTest {
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals("This is a test message"));
     }
 
-    private class ThreadFilter extends FilterBase {
+    private class ThreadFilter extends AbstractFilter {
 
         public ThreadFilter(Result onMatch, Result onMismatch) {
             super(onMatch, onMismatch);

@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  *
  */
 @Plugin(name = "RegexFilter", type = "Core", elementType = "filter", printObject = true)
-public final class RegexFilter extends FilterBase {
+public final class RegexFilter extends AbstractFilter {
 
     private final Pattern pattern;
     private final boolean useRawMessage;

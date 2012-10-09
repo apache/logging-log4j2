@@ -31,7 +31,7 @@ import org.apache.logging.log4j.message.Message;
  *
  */
 @Plugin(name = "MarkerFilter", type = "Core", elementType = "filter", printObject = true)
-public final class MarkerFilter extends FilterBase {
+public final class MarkerFilter extends AbstractFilter {
 
     private final String name;
 

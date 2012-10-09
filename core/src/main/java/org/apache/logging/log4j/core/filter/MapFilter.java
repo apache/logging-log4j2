@@ -37,7 +37,7 @@ import java.util.Map;
  * A Filter that operates on a Map.
  */
 @Plugin(name = "MapFilter", type = "Core", elementType = "filter", printObject = true)
-public class MapFilter extends FilterBase {
+public class MapFilter extends AbstractFilter {
     private final Map<String, List<String>> map;
 
     private final boolean isAnd;

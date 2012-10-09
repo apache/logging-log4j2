@@ -34,7 +34,7 @@ import org.apache.logging.log4j.message.Message;
  * The default Level is ERROR.
  */
 @Plugin(name = "ThresholdFilter", type = "Core", elementType = "filter", printObject = true)
-public final class ThresholdFilter extends FilterBase {
+public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
 

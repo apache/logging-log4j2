@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Plugin(name = "BurstFilter", type = "Core", elementType = "filter", printObject = true)
-public final class BurstFilter extends FilterBase {
+public final class BurstFilter extends AbstractFilter {
 
     private static final long NANOS_IN_SECONDS =  1000000000;
 

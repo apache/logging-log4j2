@@ -31,7 +31,7 @@ import org.apache.logging.log4j.message.Message;
  * which case it will only implement the required method(s). The rest will default to return NEUTRAL.
  *
  */
-public abstract class FilterBase implements Filter, Lifecycle {
+public abstract class AbstractFilter implements Filter, Lifecycle {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -52,7 +52,7 @@ public abstract class FilterBase implements Filter, Lifecycle {
     /**
      * The default constructor.
      */
-    protected FilterBase() {
+    protected AbstractFilter() {
         this(null, null);
     }
 
@@ -61,7 +61,7 @@ public abstract class FilterBase implements Filter, Lifecycle {
      * @param onMatch The result to return when a match occurs.
      * @param onMismatch The result to return when a match dos not occur.
      */
-    protected FilterBase(Result onMatch, Result onMismatch) {
+    protected AbstractFilter(Result onMatch, Result onMismatch) {
         this.onMatch = onMatch == null ? Result.NEUTRAL : onMatch;
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
