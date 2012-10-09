@@ -549,8 +549,8 @@ public class ThrowableProxy extends Throwable {
      * Cached StackTracePackageElement and the ClassLoader.
      */
     private class CacheEntry {
-        private StackTracePackageElement element;
-        private ClassLoader loader;
+        private final StackTracePackageElement element;
+        private final ClassLoader loader;
 
         public CacheEntry(StackTracePackageElement element, ClassLoader loader) {
             this.element = element;
