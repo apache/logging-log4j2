@@ -69,15 +69,12 @@ public final class Loader {
      * @return A URL to the resource.
      */
     public static URL getResource(String resource, ClassLoader defaultLoader) {
-        ClassLoader classLoader;
-        URL url;
-
         try {
-            classLoader = getTCL();
+            ClassLoader classLoader = getTCL();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using context classloader "
                         + classLoader + ".");
-                url = classLoader.getResource(resource);
+                URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
@@ -87,7 +84,7 @@ public final class Loader {
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
-                url = classLoader.getResource(resource);
+                URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
@@ -95,7 +92,7 @@ public final class Loader {
             // We could not find resource. Finally try with the default ClassLoader.
             if (defaultLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
-                url = defaultLoader.getResource(resource);
+                URL url = defaultLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
