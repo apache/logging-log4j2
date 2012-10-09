@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.rewrite;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentMap;
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
 @Plugin(name = "Rewrite", type = "Core", elementType = "appender", printObject = true)
-public final class RewriteAppender extends AppenderBase {
+public final class RewriteAppender extends AbstractAppender {
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;

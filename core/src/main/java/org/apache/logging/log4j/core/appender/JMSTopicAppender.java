@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.net.JMSTopicManager;
  * Appender to write to a JMS Topic.
  */
 @Plugin(name = "JMSTopic", type = "Core", elementType = "appender", printObject = true)
-public final class JMSTopicAppender extends AppenderBase {
+public final class JMSTopicAppender extends AbstractAppender {
 
     private final JMSTopicManager manager;
 

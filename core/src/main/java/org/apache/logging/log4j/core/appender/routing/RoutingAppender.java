@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.routing;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentMap;
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
 @Plugin(name = "Routing", type = "Core", elementType = "appender", printObject = true)
-public final class RoutingAppender extends AppenderBase {
+public final class RoutingAppender extends AbstractAppender {
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
     private final Configuration config;

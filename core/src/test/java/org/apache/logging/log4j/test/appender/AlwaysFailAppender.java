@@ -18,7 +18,7 @@ package org.apache.logging.log4j.test.appender;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  *
  */
 @Plugin(name="AlwaysFail",type="Core",elementType="appender",printObject=true)
-public class AlwaysFailAppender extends AppenderBase {
+public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(String name) {
         super(name, null, null, false);

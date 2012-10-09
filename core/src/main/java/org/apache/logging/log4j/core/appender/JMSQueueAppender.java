@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.net.JMSQueueManager;
  * Appender to write to a JMS Queue.
  */
 @Plugin(name = "JMSQueue", type = "Core", elementType = "appender", printObject = true)
-public final class JMSQueueAppender extends AppenderBase {
+public final class JMSQueueAppender extends AbstractAppender {
 
     private final JMSQueueManager manager;
 

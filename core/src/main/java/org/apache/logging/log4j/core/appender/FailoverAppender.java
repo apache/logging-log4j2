@@ -38,7 +38,7 @@ import java.util.Map;
  * to not suppress exceptions for the FailoverAppender to work.
  */
 @Plugin(name = "Failover", type = "Core", elementType = "appender", printObject = true)
-public final class FailoverAppender extends AppenderBase {
+public final class FailoverAppender extends AbstractAppender {
 
     private final String primaryRef;
 

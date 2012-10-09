@@ -19,7 +19,7 @@ package org.apache.logging.log4j.test.appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -35,7 +35,7 @@ import java.util.List;
  * List could eventually grow to cause an OutOfMemoryError.
  */
 @Plugin(name = "List", type = "Core", elementType = "appender", printObject = true)
-public class ListAppender extends AppenderBase {
+public class ListAppender extends AbstractAppender {
 
     private List<LogEvent> events = new ArrayList<LogEvent>();
 

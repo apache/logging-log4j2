@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Writes the byte output stream. The stream will already have been encoded.
  */
-public abstract class OutputStreamAppender extends AppenderBase {
+public abstract class OutputStreamAppender extends AbstractAppender {
 
     /**
      * Immediate flush means that the underlying writer or output stream

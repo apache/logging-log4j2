@@ -19,7 +19,7 @@ package org.apache.logging.log4j.flume.appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderBase;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
  * An Appender that uses the Avro protocol to route events to Flume.
  */
 @Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
-public final class FlumeAppender extends AppenderBase implements FlumeEventFactory {
+public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
     private FlumeManager manager;
 
