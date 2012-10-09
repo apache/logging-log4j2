@@ -34,7 +34,7 @@ public final class Routes {
     private final String pattern;
     private final Route[] routes;
 
-    private Routes(String pattern, Route[] routes) {
+    private Routes(String pattern, Route... routes) {
         this.pattern = pattern;
         this.routes = routes;
     }
@@ -79,7 +79,7 @@ public final class Routes {
      */
     @PluginFactory
     public static Routes createRoutes(@PluginAttr("pattern") String pattern,
-                                      @PluginElement("routes") Route[] routes) {
+                                      @PluginElement("routes") Route... routes) {
         if (pattern == null) {
             LOGGER.error("A pattern is required");
             return null;
