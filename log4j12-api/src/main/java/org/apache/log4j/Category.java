@@ -250,7 +250,7 @@ public class Category {
 
     public void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
         org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        Message msg = message instanceof Message ? (ObjectMessage) message : new ObjectMessage(message);
+        Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
         logger.log(null, fqcn, lvl, msg, t);
     }
 
