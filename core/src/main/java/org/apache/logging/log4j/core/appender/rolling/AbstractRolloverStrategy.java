@@ -22,7 +22,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  *
  */
-public abstract class RolloverStrategyBase implements RolloverStrategy {
+public abstract class AbstractRolloverStrategy implements RolloverStrategy {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
