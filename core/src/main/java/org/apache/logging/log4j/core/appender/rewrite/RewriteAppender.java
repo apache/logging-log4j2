@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentMap;
 @Plugin(name = "Rewrite", type = "Core", elementType = "appender", printObject = true)
 public final class RewriteAppender extends AbstractAppender {
     private final Configuration config;
-    private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
