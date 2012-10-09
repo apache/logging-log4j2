@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, Lifecycle {
 
-    private static StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger logger = StatusLogger.getLogger();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
@@ -48,7 +48,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      */
     private volatile Configuration config = new DefaultConfiguration();
 
-    private Object externalContext = null;
+    private Object externalContext;
 
     private final String name;
 
@@ -72,7 +72,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private volatile Status status = Status.INITIALIZED;
 
-    private Lock configLock = new ReentrantLock();
+    private final Lock configLock = new ReentrantLock();
 
     /**
      * Constructor taking only a name.
