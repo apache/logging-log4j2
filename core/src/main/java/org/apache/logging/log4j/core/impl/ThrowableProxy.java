@@ -535,7 +535,6 @@ public class ThrowableProxy extends Throwable {
         if (getSuppressed != null && addSuppressed != null) {
             try {
                 Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable, null);
-                int i = 0;
                 for (Throwable t : array) {
                     addSuppressed.invoke(this, new ThrowableProxy(t));
                 }
