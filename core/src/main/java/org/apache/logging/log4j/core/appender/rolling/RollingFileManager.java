@@ -39,7 +39,7 @@ public class RollingFileManager extends FileManager {
 
     private long size;
     private long initialTime;
-    private PatternProcessor processor;
+    private final PatternProcessor processor;
     private final Semaphore semaphore = new Semaphore(1);
 
     protected RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size,
