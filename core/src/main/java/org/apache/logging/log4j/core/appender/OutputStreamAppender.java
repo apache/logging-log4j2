@@ -37,11 +37,8 @@ public abstract class OutputStreamAppender extends AbstractAppender {
      * <code>false</code>, then there is a good chance that the last few
      * logs events are not actually written to persistent media if and
      * when the application crashes.
-     * <p/>
-     * <p>The <code>immediateFlush</code> variable is set to
-     * <code>true</code> by default.
      */
-    protected boolean immediateFlush = true;
+    protected final boolean immediateFlush;
 
     private volatile OutputStreamManager manager;
 
