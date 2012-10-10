@@ -44,7 +44,7 @@ public interface Appender extends Lifecycle {
      * @return the Layout for the Appender or null if none is configured.
      * @issue LOG4J2-36 Refactor into Channel
      */
-    Layout getLayout();
+    Layout<?> getLayout();
 
     /**
      * If set to true any exceptions thrown by the Appender will be logged but not thrown.
