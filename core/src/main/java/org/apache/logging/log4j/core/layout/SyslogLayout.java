@@ -62,7 +62,7 @@ public class SyslogLayout extends AbstractStringLayout {
      * @param event The LogEvent
      * @return the event formatted as a String.
      */
-    public String toSerialized(final LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
 
         buf.append("<");

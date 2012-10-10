@@ -94,7 +94,7 @@ public class XMLLayout extends AbstractStringLayout {
      * @param event The LogEvent.
      * @return The XML representation of the LogEvent.
      */
-    public String toSerialized(final LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.

@@ -74,7 +74,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @param event The Logging Event.
      * @return A String containging the LogEvent as HTML.
      */
-    public String toSerialized(LogEvent event) {
+    public String toSerializable(LogEvent event) {
         StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
         sbuf.append(LINE_SEP).append("<tr>").append(LINE_SEP);

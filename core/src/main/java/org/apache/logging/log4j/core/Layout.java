@@ -43,7 +43,7 @@ public interface Layout<T extends Serializable> {
      * @param event The Logging Event.
      * @return The formatted event.
      */
-    T toSerialized(LogEvent event);
+    T toSerializable(LogEvent event);
 
     /**
      * Returns the header for the layout format.

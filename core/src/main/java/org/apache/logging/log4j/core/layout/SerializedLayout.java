@@ -70,7 +70,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * @param event The Logging Event.
      * @return The LogEvent.
      */
-    public LogEvent toSerialized(final LogEvent event) {
+    public LogEvent toSerializable(final LogEvent event) {
         return event;
     }
 

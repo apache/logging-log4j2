@@ -135,7 +135,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param event logging event to be formatted.
      * @return The event formatted as a String.
      */
-    public String toSerialized(final LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
         for (PatternFormatter formatter : formatters) {
             formatter.format(event, buf);

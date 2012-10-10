@@ -152,7 +152,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param event The LogEvent.
      * @return The RFC 5424 String representation of the LogEvent.
      */
-    public String toSerialized(final LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         Message msg = event.getMessage();
         boolean isStructured = msg instanceof StructuredDataMessage;
         StringBuilder buf = new StringBuilder();
