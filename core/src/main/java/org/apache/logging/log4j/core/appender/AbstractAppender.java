@@ -41,7 +41,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      */
     private boolean started = false;
 
-    private final Layout layout;
+    private final Layout<?> layout;
 
     private final String name;
 
@@ -55,7 +55,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
      */
-    protected AbstractAppender(String name, Filter filter, Layout layout) {
+    protected AbstractAppender(String name, Filter filter, Layout<?> layout) {
         this(name, filter, layout, true);
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * @param handleException If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
-    protected AbstractAppender(String name, Filter filter, Layout layout, boolean handleException) {
+    protected AbstractAppender(String name, Filter filter, Layout<?> layout, boolean handleException) {
         super(filter);
         this.name = name;
         this.layout = layout;
@@ -116,7 +116,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * Returns the Layout for the appender.
      * @return The Layout used to format the event.
      */
-    public Layout getLayout() {
+    public Layout<?> getLayout() {
         return layout;
     }
 
