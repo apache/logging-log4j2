@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * <p>A flexible layout configurable with pattern string. The goal of this class
- * is to {@link #format format} a {@link LogEvent} and return the results.
+ * is to {@link org.apache.logging.log4j.core.Layout#toByteArray format} a {@link LogEvent} and return the results.
  * The format of the result depends on the <em>conversion pattern</em>.
  * <p>
  * <p/>
@@ -131,10 +131,11 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Formats a logging event to a writer.
      *
+     *
      * @param event logging event to be formatted.
      * @return The event formatted as a String.
      */
-    public String formatAs(final LogEvent event) {
+    public String toSerialized(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
         for (PatternFormatter formatter : formatters) {
             formatter.format(event, buf);

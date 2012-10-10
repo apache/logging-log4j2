@@ -58,10 +58,11 @@ public class SyslogLayout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     *
      * @param event The LogEvent
      * @return the event formatted as a String.
      */
-    public String formatAs(final LogEvent event) {
+    public String toSerialized(final LogEvent event) {
         StringBuilder buf = new StringBuilder();
 
         buf.append("<");

@@ -90,10 +90,11 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     *
      * @param event The LogEvent.
      * @return The XML representation of the LogEvent.
      */
-    public String formatAs(final LogEvent event) {
+    public String toSerialized(final LogEvent event) {
         StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.

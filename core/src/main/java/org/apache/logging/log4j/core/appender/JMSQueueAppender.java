@@ -47,7 +47,7 @@ public final class JMSQueueAppender extends AbstractAppender {
      */
     public void append(LogEvent event) {
         try {
-            manager.send(getLayout().formatAs(event));
+            manager.send(getLayout().toSerialized(event));
         } catch (Exception ex) {
             throw new AppenderRuntimeException(ex);
         }

@@ -50,11 +50,12 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     /**
      * Format the Log Event.
+     *
      * @param event The Log Event.
      * @return The formatted event as a byte array.
      */
-    public byte[] format(LogEvent event) {
-        return encoder.getBytes(formatAs(event));
+    public byte[] toByteArray(LogEvent event) {
+        return encoder.getBytes(toSerialized(event));
     }
 
     protected Charset getCharset() {

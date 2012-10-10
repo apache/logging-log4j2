@@ -49,10 +49,11 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     *
      * @param event The LogEvent.
      * @return the formatted LogEvent.
      */
-    public byte[] format(final LogEvent event) {
+    public byte[] toByteArray(final LogEvent event) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
@@ -65,10 +66,11 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     /**
      * Returns the LogEvent.
+     *
      * @param event The Logging Event.
      * @return The LogEvent.
      */
-    public LogEvent formatAs(final LogEvent event) {
+    public LogEvent toSerialized(final LogEvent event) {
         return event;
     }
 

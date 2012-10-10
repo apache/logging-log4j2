@@ -46,7 +46,7 @@ public class ListAppender extends AbstractAppender {
     private final boolean newLine;
 
     private final boolean raw;
-    
+
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
     public ListAppender(String name) {
@@ -73,13 +73,13 @@ public class ListAppender extends AbstractAppender {
             events.add(event);
         } else if (layout instanceof SerializedLayout) {
             byte[] header = layout.getHeader();
-            byte[] content = layout.format(event);
+            byte[] content = layout.toByteArray(event);
             byte[] record = new byte[header.length + content.length];
             System.arraycopy(header, 0, record, 0, header.length);
             System.arraycopy(content, 0, record, header.length, content.length);
             data.add(record);
         } else {
-            write(layout.format(event));
+            write(layout.toByteArray(event));
         }
     }
 

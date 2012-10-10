@@ -109,7 +109,7 @@ public abstract class OutputStreamAppender extends AbstractAppender {
     public void append(LogEvent event) {
         readLock.lock();
         try {
-            manager.write(getLayout().format(event));
+            manager.write(getLayout().toByteArray(event));
             if (this.immediateFlush) {
                 manager.flush();
             }

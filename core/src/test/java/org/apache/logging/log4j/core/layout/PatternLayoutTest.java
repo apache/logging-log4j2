@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Compare;
@@ -32,8 +31,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.FileOutputStream;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -143,7 +140,7 @@ public class PatternLayoutTest {
             null, null);
         LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
             Level.INFO, new SimpleMessage("Hello, world!"), null);
-        byte[] result = layout.format(event);
+        byte[] result = layout.toByteArray(event);
         assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
     }
 }

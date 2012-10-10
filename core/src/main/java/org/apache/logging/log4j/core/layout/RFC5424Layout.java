@@ -148,10 +148,11 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the RFC 5424 Syslog specification.
+     *
      * @param event The LogEvent.
      * @return The RFC 5424 String representation of the LogEvent.
      */
-    public String formatAs(final LogEvent event) {
+    public String toSerialized(final LogEvent event) {
         Message msg = event.getMessage();
         boolean isStructured = msg instanceof StructuredDataMessage;
         StringBuilder buf = new StringBuilder();

@@ -76,7 +76,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
         FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
-        flumeEvent.setBody(getLayout().format(flumeEvent));
+        flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
         manager.send(flumeEvent, reconnectDelay, retries);
     }
 

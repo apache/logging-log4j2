@@ -28,20 +28,22 @@ import java.io.Serializable;
 public interface Layout<T extends Serializable> {
     /**
      * Formats the event suitable for display.
+     *
      * @param event The Logging Event.
      * @return The formatted event.
      * @doubt Likely better to write to a OutputStream instead of return a byte[]. (RG) That limits how the
      * Appender can use the Layout. For example, it might concatenate information in front or behind the
      * data and then write it all to the OutputStream in one call.
      */
-    byte[] format(LogEvent event);
+    byte[] toByteArray(LogEvent event);
 
     /**
      * Formats the event as an Object that can be serialized.
+     *
      * @param event The Logging Event.
      * @return The formatted event.
      */
-    T formatAs(LogEvent event);
+    T toSerialized(LogEvent event);
 
     /**
      * Returns the header for the layout format.
