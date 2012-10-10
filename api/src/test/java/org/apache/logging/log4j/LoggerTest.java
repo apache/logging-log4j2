@@ -131,7 +131,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void LoggerByClass() {
+    public void getLoggerByClass() {
         Logger classLogger = LogManager.getLogger(LoggerTest.class);
         assertNotNull(classLogger);
     }
