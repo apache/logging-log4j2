@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -134,5 +135,28 @@ public class LoggerTest {
     public void getLoggerByClass() {
         Logger classLogger = LogManager.getLogger(LoggerTest.class);
         assertNotNull(classLogger);
+    }
+
+    public void getLoggerByNullClass() {
+        // Returns a SimpleLogger
+        Assert.assertNotNull(LogManager.getLogger((Class<?>) null));
+    }
+
+    public void getLoggerByNullObject() {
+        // Returns a SimpleLogger
+        Assert.assertNotNull(LogManager.getLogger((Object) null));
+    }
+
+    @Test
+    public void getLoggerByNullString() {
+        // Returns a SimpleLogger
+        Assert.assertNotNull(LogManager.getLogger((String) null));
+    }
+
+    @Test
+    public void getLoggerByObject() {
+        Logger classLogger = LogManager.getLogger(this);
+        assertNotNull(classLogger);
+        assertEquals(classLogger, LogManager.getLogger(LoggerTest.class));
     }
 }

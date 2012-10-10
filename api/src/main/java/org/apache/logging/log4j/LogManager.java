@@ -53,7 +53,6 @@ public class LogManager {
     protected LogManager() {
     }
 
-
     /**
      * Scans the classpath to find all logging implementation. Currently, only one will
      * be used but this could be extended to allow multiple implementations to be used.
@@ -125,7 +124,6 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(String name) {
-
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(name);
     }
 
@@ -135,7 +133,16 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(Class<?> clazz) {
-        return factory.getContext(LogManager.class.getName(), null, false).getLogger(clazz.getName());
+        return getLogger(clazz != null ? clazz.getName() : null);
+    }
+
+    /**
+     * Returns a Logger using the fully qualified class name of the value as the Logger name.
+     * @param value The value whose class name should be used as the Logger name.
+     * @return The Logger.
+     */
+    public static Logger getLogger(Object value) {
+        return getLogger(value != null ? value.getClass() : null);
     }
 
     /**
@@ -146,7 +153,6 @@ public class LogManager {
      * @return The Logger.
      */
     protected static Logger getLogger(String fqcn, String name) {
-
         return factory.getContext(fqcn, null, false).getLogger(name);
     }
 
