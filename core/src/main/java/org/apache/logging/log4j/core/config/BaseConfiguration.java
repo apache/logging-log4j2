@@ -720,7 +720,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
             LoggerConfig logger = entry.getValue();
             String name = entry.getKey();
             if (!name.equals("")) {
-                int i = name.lastIndexOf(".");
+                int i = name.lastIndexOf('.');
                 if (i > 0) {
                     name = name.substring(0, i);
                     LoggerConfig parent = getLoggerConfig(name);

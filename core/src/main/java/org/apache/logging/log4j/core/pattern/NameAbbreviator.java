@@ -95,7 +95,7 @@ public abstract class NameAbbreviator {
                 }
 
                 fragments.add(new PatternAbbreviatorFragment(charCount, ellipsis));
-                pos = trimmed.indexOf(".", pos);
+                pos = trimmed.indexOf('.', pos);
 
                 if (pos == -1) {
                     break;
@@ -182,7 +182,7 @@ public abstract class NameAbbreviator {
             int end = buf.length() - 1;
 
             for (int i = count; i > 0; i--) {
-                end = buf.lastIndexOf(".", end - 1);
+                end = buf.lastIndexOf('.', end - 1);
                 if (end == -1) {
                     return buf;
                 }
@@ -228,7 +228,7 @@ public abstract class NameAbbreviator {
          * @return starting index of next element.
          */
         public int abbreviate(final StringBuilder buf, final int startPos) {
-            int nextDot = buf.toString().indexOf(".", startPos);
+            int nextDot = buf.toString().indexOf('.', startPos);
 
             if (nextDot != -1) {
                 if ((nextDot - startPos) > charCount) {

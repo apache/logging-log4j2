@@ -28,7 +28,7 @@ public final class NameUtil {
         if (name.length() == 0) {
             return null;
         }
-        int i = name.lastIndexOf(".");
+        int i = name.lastIndexOf('.');
         return i > 0 ? name.substring(0, i) : "";
     }
 }

@@ -182,7 +182,7 @@ public class Timer implements Serializable
 
             DecimalFormat numFormat = null;
             numFormat = new DecimalFormat("#0");
-            elapsed += numFormat.format(seconds) + ".";
+            elapsed += numFormat.format(seconds) + '.';
             numFormat = new DecimalFormat("000000000");
             elapsed += numFormat.format(nanoseconds) + " seconds";
             result.append(" stopped. Elapsed time: ").append(elapsed);
@@ -214,7 +214,7 @@ public class Timer implements Serializable
                 }
 
                 numFormat = new DecimalFormat("#0");
-                elapsed += numFormat.format(seconds) + ".";
+                elapsed += numFormat.format(seconds) + '.';
                 numFormat = new DecimalFormat("000000000");
                 elapsed += numFormat.format(nanoseconds) + " seconds";
                 result.append(" Average per iteration: ").append(elapsed);

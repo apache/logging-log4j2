@@ -85,7 +85,7 @@ public final class JMSQueueAppender extends AbstractAppender {
                                                   @PluginElement("filter") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
 
-        String name = "JMSQueue" + factoryBindingName + "." + queueBindingName;
+        String name = "JMSQueue" + factoryBindingName + '.' + queueBindingName;
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);

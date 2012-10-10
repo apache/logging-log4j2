@@ -111,7 +111,7 @@ public final class ZipCompressAction extends AbstractAction {
             fis.close();
 
             if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete " + source.toString() + ".");
+                LOGGER.warn("Unable to delete " + source.toString() + '.');
             }
 
             return true;

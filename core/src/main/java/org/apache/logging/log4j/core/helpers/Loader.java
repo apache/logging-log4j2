@@ -73,7 +73,7 @@ public final class Loader {
             ClassLoader classLoader = getTCL();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using context classloader "
-                        + classLoader + ".");
+                        + classLoader + '.');
                 URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
@@ -149,7 +149,7 @@ public final class Loader {
         try {
             classLoader = getTCL();
             if (classLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using context classloader " + classLoader + ".");
+                LOGGER.trace("Trying to find [" + resource + "] using context classloader " + classLoader + '.');
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;

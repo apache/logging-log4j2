@@ -85,7 +85,7 @@ public final class JMSTopicAppender extends AbstractAppender {
                                                   @PluginElement("filters") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
 
-        String name = "JMSTopic" + factoryBindingName + "." + topicBindingName;
+        String name = "JMSTopic" + factoryBindingName + '.' + topicBindingName;
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);

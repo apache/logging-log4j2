@@ -82,7 +82,7 @@ public class JMSQueueManager extends AbstractJMSManager {
             return null;
         }
 
-        String name = "JMSQueue:" + factoryBindingName + "." + queueBindingName;
+        String name = "JMSQueue:" + factoryBindingName + '.' + queueBindingName;
         return (JMSQueueManager) getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password));
     }

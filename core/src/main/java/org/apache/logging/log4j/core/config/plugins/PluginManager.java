@@ -182,7 +182,7 @@ public class PluginManager {
         DecimalFormat numFormat = new DecimalFormat("#0");
         long seconds = elapsed / NANOS_PER_SECOND;
         elapsed %= NANOS_PER_SECOND;
-        sb.append(numFormat.format(seconds)).append(".");
+        sb.append(numFormat.format(seconds)).append('.');
         numFormat = new DecimalFormat("000000000");
         sb.append(numFormat.format(elapsed)).append(" seconds");
         LOGGER.debug(sb.toString());

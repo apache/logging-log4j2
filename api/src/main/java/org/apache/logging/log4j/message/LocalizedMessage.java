@@ -259,7 +259,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
         String substr = key;
         int i;
-        while (rb == null && (i = substr.lastIndexOf(".")) > 0) {
+        while (rb == null && (i = substr.lastIndexOf('.')) > 0) {
             substr = substr.substring(0, i);
             try {
                 if (locale != null) {

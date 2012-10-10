@@ -125,7 +125,7 @@ public class PerformanceComparison {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            log4jlogger.debug("SEE IF THIS IS LOGGED " + j + ".");
+            log4jlogger.debug("SEE IF THIS IS LOGGED " + j + '.');
         }
         return (System.nanoTime() - start) / loop;
     }
@@ -134,7 +134,7 @@ public class PerformanceComparison {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            logbacklogger.debug("SEE IF THIS IS LOGGED " + j + ".");
+            logbacklogger.debug("SEE IF THIS IS LOGGED " + j + '.');
         }
         return (System.nanoTime() - start) / loop;
     }
@@ -144,7 +144,7 @@ public class PerformanceComparison {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            logger.debug("SEE IF THIS IS LOGGED " + j + ".");
+            logger.debug("SEE IF THIS IS LOGGED " + j + '.');
         }
         return (System.nanoTime() - start) / loop;
     }
@@ -154,7 +154,7 @@ public class PerformanceComparison {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            w.write("SEE IF THIS IS LOGGED " + j + ".");
+            w.write("SEE IF THIS IS LOGGED " + j + '.');
         }
         return (System.nanoTime() - start) / loop;
     }
@@ -163,7 +163,7 @@ public class PerformanceComparison {
         Integer j = new Integer(2);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            os.write(getBytes("SEE IF THIS IS LOGGED " + j + "."));
+            os.write(getBytes("SEE IF THIS IS LOGGED " + j + '.'));
         }
         return (System.nanoTime() - start) / loop;
     }
@@ -173,7 +173,7 @@ public class PerformanceComparison {
         ByteBuffer buf = ByteBuffer.allocateDirect(8*1024);
         long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
-            channel.write(getByteBuffer(buf, "SEE IF THIS IS LOGGED " + j + "."));
+            channel.write(getByteBuffer(buf, "SEE IF THIS IS LOGGED " + j + '.'));
         }
         return (System.nanoTime() - start) / loop;
     }

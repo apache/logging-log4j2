@@ -290,7 +290,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
         int millis = cal.get(Calendar.MILLISECOND);
         if (millis != 0) {
-            buf.append(".");
+            buf.append('.');
             pad(millis, THREE_DIGITS, buf);
         }
 

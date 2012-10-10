@@ -288,7 +288,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                         sinks = value.trim().split(" ");
                     }
 
-                    props.put(name + "." + key, value);
+                    props.put(name + '.' + key, value);
                 }
 
                 String sourceChannels = channels;

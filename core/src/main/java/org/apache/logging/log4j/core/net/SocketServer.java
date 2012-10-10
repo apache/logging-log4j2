@@ -69,7 +69,7 @@ public class SocketServer extends AbstractServer implements Runnable {
         if (logger == null) {
             logger = LogManager.getLogger(this);
             // TODO: Consider
-            // logger = LogManager.getLogger(getClass().getName() + "." + port);
+            // logger = LogManager.getLogger(getClass().getName() + '.' + port);
         }
     }
      /**
