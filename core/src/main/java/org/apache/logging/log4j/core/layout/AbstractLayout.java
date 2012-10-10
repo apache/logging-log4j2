@@ -41,7 +41,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
     protected byte[] footer;
 
     /**
-     * Return the header, if one is available.
+     * Returns the header, if one is available.
      * @return A byte array containing the header.
      */
     public byte[] getHeader() {

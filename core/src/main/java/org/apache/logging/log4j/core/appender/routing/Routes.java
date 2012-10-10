@@ -40,7 +40,7 @@ public final class Routes {
     }
 
     /**
-     * Return the pattern.
+     * Returns the pattern.
      * @return the pattern.
      */
     public String getPattern() {
@@ -48,7 +48,7 @@ public final class Routes {
     }
 
     /**
-     * Return the array of Route elements.
+     * Returns the array of Route elements.
      * @return an array of Route elements.
      */
     public Route[] getRoutes() {

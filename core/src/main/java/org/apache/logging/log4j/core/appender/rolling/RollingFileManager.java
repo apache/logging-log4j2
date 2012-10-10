@@ -51,7 +51,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Return a RollingFileManager.
+     * Returns a RollingFileManager.
      * @param fileName The file name.
      * @param pattern The pattern for rolling file.
      * @param append true if the file should be appended to.
@@ -72,7 +72,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Return the current size of the file.
+     * Returns the current size of the file.
      * @return The size of the file in bytes.
      */
     public long getFileSize() {
@@ -80,7 +80,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Return the time the file was created.
+     * Returns the time the file was created.
      * @return The time the file was created.
      */
     public long getFileTime() {
@@ -107,7 +107,7 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Return the pattern processor.
+     * Returns the pattern processor.
      * @return The PatternProcessor.
      */
     public PatternProcessor getProcessor() {

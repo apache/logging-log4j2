@@ -246,7 +246,7 @@ public final class Loader {
     }
 
     /**
-     * Return the ClassLoader to use.
+     * Returns the ClassLoader to use.
      * @return the ClassLoader.
      */
     public static ClassLoader getClassLoader() {

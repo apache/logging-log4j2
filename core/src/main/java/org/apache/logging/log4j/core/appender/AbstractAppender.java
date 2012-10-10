@@ -75,7 +75,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
     }
 
     /**
-     * Return the ErrorHandler, if any.
+     * Returns the ErrorHandler, if any.
      * @return The ErrorHandler.
      */
     public ErrorHandler getHandler() {

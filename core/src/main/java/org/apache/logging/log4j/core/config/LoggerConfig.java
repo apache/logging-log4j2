@@ -103,7 +103,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the name of the LoggerConfig.
+     * Returns the name of the LoggerConfig.
      * @return the name of the LoggerConfig.
      */
     public String getName() {
@@ -119,7 +119,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the parent of this LoggerConfig.
+     * Returns the parent of this LoggerConfig.
      * @return the LoggerConfig that is the parent of this one.
      */
     public LoggerConfig getParent() {
@@ -148,7 +148,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return all Appenders as a Map.
+     * Returns all Appenders as a Map.
      * @return a Map with the Appender name as the key and the Appender as the value.
      */
     public Map<String, Appender> getAppenders() {
@@ -184,7 +184,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the Appender references.
+     * Returns the Appender references.
      * @return a List of all the Appender names attached to this LoggerConfig.
      */
     public List<AppenderRef> getAppenderRefs() {
@@ -200,7 +200,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the logging Level.
+     * Returns the logging Level.
      * @return the logging Level.
      */
     public Level getLevel() {
@@ -208,7 +208,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the LogEventFactory.
+     * Returns the LogEventFactory.
      * @return the LogEventFactory.
      */
     public LogEventFactory getLogEventFactory() {
@@ -224,7 +224,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     }
 
     /**
-     * Return the valid of the additive flag.
+     * Returns the valid of the additive flag.
      * @return true if the LoggerConfig is additive, false otherwise.
      */
     public boolean isAdditive() {

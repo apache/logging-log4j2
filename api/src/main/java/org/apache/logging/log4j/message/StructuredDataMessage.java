@@ -119,7 +119,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     }
 
     /**
-     * Return the supported formats.
+     * Returns the supported formats.
      * @return An array of the supported format names.
      */
     @Override
@@ -133,7 +133,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     }
 
     /**
-     * Return the id.
+     * Returns the id.
      * @return the StructuredDataId.
      */
     public StructuredDataId getId() {
@@ -171,7 +171,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         this.type = type;
     }
     /**
-     * Return the message.
+     * Returns the message.
      * @return the message.
      */
     @Override

@@ -83,7 +83,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     /**
-     * Return the status of the stream.
+     * Returns the status of the stream.
      * @return true if the stream is open, false if it is not.
      */
     public boolean isOpen() {

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Return the event's line location information in a StringBuffer.
+ * Returns the event's line location information in a StringBuffer.
  */
 @Plugin(name = "LineLocationPatternConverter", type = "Converter")
 @ConverterKeys({"L", "line" })

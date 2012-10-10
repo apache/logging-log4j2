@@ -136,7 +136,7 @@ public class Priority {
     }
 
     /**
-     * Return the syslog equivalent of this priority as an integer.
+     * Returns the syslog equivalent of this priority as an integer.
      * @return The equivalent syslog value.
      */
     public
@@ -160,7 +160,7 @@ public class Priority {
     }
 
     /**
-     * Return all possible priorities as an array of Level objects in
+     * Returns all possible priorities as an array of Level objects in
      * descending order.
      * @return An array of all possible Priorities.
      *

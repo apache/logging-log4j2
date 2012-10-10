@@ -42,7 +42,7 @@ public class SimpleMessage implements Message, Serializable {
     }
 
     /**
-     * Return the message.
+     * Returns the message.
      * @return the message.
      */
     public String getFormattedMessage() {
@@ -50,7 +50,7 @@ public class SimpleMessage implements Message, Serializable {
     }
 
     /**
-     * Return the message.
+     * Returns the message.
      * @return the message.
      */
     public String getFormat() {

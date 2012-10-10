@@ -156,7 +156,7 @@ public class StructuredDataId implements Serializable {
     }
 
     /**
-     * Return the StructuredDataId name.
+     * Returns the StructuredDataId name.
      * @return the StructuredDataId name.
      */
     public String getName() {
@@ -164,7 +164,7 @@ public class StructuredDataId implements Serializable {
     }
 
     /**
-     * Return the enterprise number.
+     * Returns the enterprise number.
      * @return the enterprise number.
      */
     public int getEnterpriseNumber() {

@@ -110,7 +110,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
     }
 
     /**
-     * Return the result that should be returned when the filter does not match the event.
+     * Returns the result that should be returned when the filter does not match the event.
      * 
      * @return the Result that should be returned when the filter does not match the event.
      */
@@ -119,7 +119,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
     }
 
     /**
-     * Return the result that should be returned when the filter matches the event.
+     * Returns the result that should be returned when the filter matches the event.
      * 
      * @return the Result that should be returned when the filter matches the event.
      */

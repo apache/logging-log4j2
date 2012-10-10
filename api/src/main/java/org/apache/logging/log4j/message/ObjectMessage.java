@@ -42,7 +42,7 @@ public class ObjectMessage implements Message, Serializable {
     }
 
     /**
-     * Return the formatted object message.
+     * Returns the formatted object message.
      * @return the formatted object message.
      */
     public String getFormattedMessage() {

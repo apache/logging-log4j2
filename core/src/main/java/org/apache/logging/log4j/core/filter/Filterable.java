@@ -37,7 +37,7 @@ public class Filterable implements Filtering {
     }
 
     /**
-     * Return the Filter.
+     * Returns the Filter.
      * @return the Filter.
      */
     public Filter getFilter() {

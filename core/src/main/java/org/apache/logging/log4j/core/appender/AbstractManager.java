@@ -122,7 +122,7 @@ public abstract class AbstractManager {
     }
 
     /**
-     * Return the name of the Manager.
+     * Returns the name of the Manager.
      * @return The name of the Manager.
      */
     public String getName() {

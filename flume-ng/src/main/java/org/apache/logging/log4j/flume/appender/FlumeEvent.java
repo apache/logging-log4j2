@@ -185,7 +185,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the logging Level.
+     * Returns the logging Level.
      * @return the Level.
      */
     public Level getLevel() {
@@ -193,7 +193,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the logger name.
+     * Returns the logger name.
      * @return the logger name.
      */
     public String getLoggerName() {
@@ -201,7 +201,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the StackTraceElement for the caller of the logging API.
+     * Returns the StackTraceElement for the caller of the logging API.
      * @return the StackTraceElement of the caller.
      */
     public StackTraceElement getSource() {
@@ -209,7 +209,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the Message.
+     * Returns the Message.
      * @return the Message.
      */
     public Message getMessage() {
@@ -217,7 +217,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the Marker.
+     * Returns the Marker.
      * @return the Marker.
      */
     public Marker getMarker() {
@@ -225,7 +225,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the name of the Thread.
+     * Returns the name of the Thread.
      * @return the name of the Thread.
      */
     public String getThreadName() {
@@ -233,7 +233,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the event timestamp.
+     * Returns the event timestamp.
      * @return the event timestamp.
      */
     public long getMillis() {
@@ -241,7 +241,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return the Throwable associated with the event, if any.
+     * Returns the Throwable associated with the event, if any.
      * @return the Throwable.
      */
     public Throwable getThrown() {
@@ -249,7 +249,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return a copy of the context Map.
+     * Returns a copy of the context Map.
      * @return a copy of the context Map.
      */
     public Map<String, String> getContextMap() {
@@ -257,7 +257,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     /**
-     * Return a copy of the context stack.
+     * Returns a copy of the context stack.
      * @return a copy of the context stack.
      */
     public ThreadContext.ContextStack getContextStack() {

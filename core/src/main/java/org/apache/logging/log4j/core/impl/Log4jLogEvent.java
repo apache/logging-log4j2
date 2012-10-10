@@ -106,7 +106,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the name of the Logger used to generate the event.
+     * Returns the name of the Logger used to generate the event.
      * @return The Logger name.
      */
     public String getLoggerName() {
@@ -114,7 +114,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the Message associated with the event.
+     * Returns the Message associated with the event.
      * @return The Message.
      */
     public Message getMessage() {
@@ -122,7 +122,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the name of the Thread on which the event was generated.
+     * Returns the name of the Thread on which the event was generated.
      * @return The name of the Thread.
      */
     public String getThreadName() {
@@ -133,7 +133,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the time in milliseconds from the epoch when the event occurred.
+     * Returns the time in milliseconds from the epoch when the event occurred.
      * @return The time the event occurred.
      */
     public long getMillis() {
@@ -141,7 +141,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the Throwable associated with the event, or null.
+     * Returns the Throwable associated with the event, or null.
      * @return The Throwable associated with the event.
      */
     public Throwable getThrown() {
@@ -149,7 +149,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the Marker associated with the event, or null.
+     * Returns the Marker associated with the event, or null.
      * @return the Marker associated with the event.
      */
     public Marker getMarker() {
@@ -181,7 +181,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     /**
-     * Return the StackTraceElement for the caller. This will be the entry that occurs right
+     * Returns the StackTraceElement for the caller. This will be the entry that occurs right
      * before the first occurrence of FQCN as a class name.
      * @return the StackTraceElement for the caller.
      */
@@ -284,7 +284,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         }
 
         /**
-         * Return a Log4jLogEvent using the data in the proxy.
+         * Returns a Log4jLogEvent using the data in the proxy.
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {

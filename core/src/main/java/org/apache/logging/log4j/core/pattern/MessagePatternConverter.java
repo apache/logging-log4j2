@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.Message;
 
 /**
- * Return the event's rendered message in a StringBuffer.
+ * Returns the event's rendered message in a StringBuffer.
  */
 @Plugin(name = "MessagePatternConverter", type = "Converter")
 @ConverterKeys({"m", "msg", "message" })

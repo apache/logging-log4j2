@@ -90,7 +90,7 @@ public abstract class ConfigurationFactory {
     protected File configFile = null;
 
     /**
-     * Return the ConfigurationFactory.
+     * Returns the ConfigurationFactory.
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
@@ -171,7 +171,7 @@ public abstract class ConfigurationFactory {
     public abstract Configuration getConfiguration(InputSource source);
 
     /**
-     * Return the Configuration.
+     * Returns the Configuration.
      * @param name The configuration name.
      * @param configLocation The configuration location.
      * @return The Configuration.

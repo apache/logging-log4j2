@@ -39,7 +39,7 @@ public final class FileAppender extends OutputStreamAppender {
     }
 
     /**
-     * Return the file name this appender is associated with.
+     * Returns the file name this appender is associated with.
      * @return The File name.
      */
     public String getFileName() {

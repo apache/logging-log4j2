@@ -53,7 +53,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
     }
 
     /**
-     * Return the singleton of this class.
+     * Returns the singleton of this class.
      *
      * @return the StaticLoggerBinder singleton
      */
@@ -62,7 +62,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
     }
 
     /**
-     * Return the factory.
+     * Returns the factory.
      * @return the factor.
      */
     public ILoggerFactory getLoggerFactory() {
@@ -70,7 +70,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
     }
 
     /**
-     * Return the class name.
+     * Returns the class name.
      * @return the class name;
      */
     public String getLoggerFactoryClassStr() {

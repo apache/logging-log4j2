@@ -196,7 +196,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
     }
 
     /**
-     * Return the name of the Logger.
+     * Returns the name of the Logger.
      * @return the name of the Logger.
      */
     public String getLoggerName() {
@@ -210,7 +210,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
     }
 
     /**
-     * Return the formatted message after looking up the format in the resource bundle.
+     * Returns the formatted message after looking up the format in the resource bundle.
      * @param messagePattern The key for the resource bundle or the pattern if the bundle doesn't contain the key.
      * @param args The parameters.
      * @return The formatted message String.

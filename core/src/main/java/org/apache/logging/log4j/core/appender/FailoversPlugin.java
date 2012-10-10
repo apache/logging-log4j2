@@ -38,7 +38,7 @@ public final class FailoversPlugin {
     }
 
     /**
-     * Return the appender references.
+     * Returns the appender references.
      * @param refs The references to return.
      * @return The appender references.
      */

@@ -179,7 +179,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * Return the external context.
+     * Returns the external context.
      * @return The external context.
      */
     public Object getExternalContext() {
@@ -213,7 +213,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * Return the current Configuration. The Configuration will be replaced when a reconfigure occurs.
+     * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
      * @return The Configuration.
      */
     public Configuration getConfiguration() {

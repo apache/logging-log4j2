@@ -152,7 +152,7 @@ public final class ThreadContext {
     }
 
     /**
-     * Return true if the Map is empty.
+     * Returns true if the Map is empty.
      * @return true if the Map is empty, false otherwise.
      */
     public static boolean isEmpty() {
@@ -168,7 +168,7 @@ public final class ThreadContext {
     }
 
     /**
-     * Return a copy of this thread's stack.
+     * Returns a copy of this thread's stack.
      * @return A copy of this thread's stack.
      */
     public static ContextStack cloneStack() {
@@ -329,14 +329,14 @@ public final class ThreadContext {
         void clear();
 
         /**
-         * Return the element at the top of the stack.
+         * Returns the element at the top of the stack.
          * @return The element at the top of the stack.
          * @throws java.util.NoSuchElementException if the stack is empty.
          */
         String pop();
 
         /**
-         * Return the element at the top of the stack without removing it or null if the stack is empty.
+         * Returns the element at the top of the stack without removing it or null if the stack is empty.
          * @return the element at the top of the stack or null if the stack is empty.
          */
         String peek();
@@ -348,7 +348,7 @@ public final class ThreadContext {
         void push(String message);
 
         /**
-         * Return the number of elements in the stack.
+         * Returns the number of elements in the stack.
          * @return the number of elements in the stack.
          */
         int getDepth();

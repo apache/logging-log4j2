@@ -125,7 +125,7 @@ public class Timer implements Serializable
     }
 
     /**
-     * Return the name of the last operation performed on this timer (Start, Stop, Pause or
+     * Returns the name of the last operation performed on this timer (Start, Stop, Pause or
      * Resume).
      * @return the string representing the last operation performed.
      */
@@ -135,7 +135,7 @@ public class Timer implements Serializable
     }
 
     /**
-     * Return the String representation of the timer based upon its current state
+     * Returns the String representation of the timer based upon its current state
      */
     @Override
     public String toString()

@@ -65,7 +65,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     }
 
     /**
-     * Return a FlumeEmbeddedManager.
+     * Returns a FlumeEmbeddedManager.
      * @param agents The agents to use.
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.

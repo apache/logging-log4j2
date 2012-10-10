@@ -65,7 +65,7 @@ public final class RollingFileAppender extends OutputStreamAppender {
     }
 
     /**
-     * Return the File name for the Appender.
+     * Returns the File name for the Appender.
      * @return The file name.
      */
     public String getFileName() {

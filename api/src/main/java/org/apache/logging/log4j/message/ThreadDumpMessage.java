@@ -78,7 +78,7 @@ public class ThreadDumpMessage implements Message {
     }
 
     /**
-     * Return the ThreadDump in printable format.
+     * Returns the ThreadDump in printable format.
      * @return the ThreadDump suitable for logging.
      */
     public String getFormattedMessage() {
@@ -143,7 +143,7 @@ public class ThreadDumpMessage implements Message {
         }
 
         /**
-         * Return a ThreadDumpMessage using the data in the proxy.
+         * Returns a ThreadDumpMessage using the data in the proxy.
          * @return a ThreadDumpMessage.
          */
         protected Object readResolve() {

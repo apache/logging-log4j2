@@ -216,7 +216,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     }
 
     /**
-     * Return the name of the configuration.
+     * Returns the name of the configuration.
      * @return the name of the configuration.
      */
     public String getName() {
@@ -240,7 +240,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     }
 
     /**
-     * Return the Appender with the specified name.
+     * Returns the Appender with the specified name.
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
@@ -249,7 +249,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     }
 
     /**
-     * Return a Map containing all the Appenders and their name.
+     * Returns a Map containing all the Appenders and their name.
      * @return A Map containing each Appender's naem and the Appender object.
      */
     public Map<String, Appender> getAppenders() {
@@ -388,7 +388,7 @@ public class BaseConfiguration extends Filterable implements Configuration {
     }
 
     /**
-     * Return a Map of all the LoggerConfigs.
+     * Returns a Map of all the LoggerConfigs.
      * @return a Map with each entry containing the name of the Logger and the LoggerConfig.
      */
     public Map<String, LoggerConfig> getLoggers() {

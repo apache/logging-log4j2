@@ -26,7 +26,7 @@ import java.util.List;
 public interface ContextSelector {
 
     /**
-     * Return the LoggerContext.
+     * Returns the LoggerContext.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
@@ -36,7 +36,7 @@ public interface ContextSelector {
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext);
 
     /**
-     * Return a List of all the available LoggerContexts.
+     * Returns a List of all the available LoggerContexts.
      * @return The List of LoggerContexts.
      */
     List<LoggerContext> getLoggerContexts();

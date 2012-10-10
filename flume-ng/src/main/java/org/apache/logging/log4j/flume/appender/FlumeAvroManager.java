@@ -74,7 +74,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     /**
-     * Return a FlumeAvroManager.
+     * Returns a FlumeAvroManager.
      * @param agents The agents to use.
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.
@@ -102,7 +102,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     /**
-     * Return the agents.
+     * Returns the agents.
      * @return The agent array.
      */
     public Agent[] getAgents() {

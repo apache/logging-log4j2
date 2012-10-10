@@ -44,7 +44,7 @@ public class StackTracePackageElement implements Serializable {
     }
 
     /**
-     * Return the location of the element.
+     * Returns the location of the element.
      * @return The location of the element.
      */
     public String getLocation() {
@@ -52,7 +52,7 @@ public class StackTracePackageElement implements Serializable {
     }
 
     /**
-     * Return the version of the element.
+     * Returns the version of the element.
      * @return the version of the element.
      */
     public String getVersion() {
@@ -60,7 +60,7 @@ public class StackTracePackageElement implements Serializable {
     }
 
     /**
-     * Return the indicator of whether this is an exact match.
+     * Returns the indicator of whether this is an exact match.
      * @return true if the location was determined exactly.
      */
     public boolean isExact() {

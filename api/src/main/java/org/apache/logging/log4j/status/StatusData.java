@@ -55,7 +55,7 @@ public class StatusData {
     }
 
     /**
-     * Return the event's timestamp.
+     * Returns the event's timestamp.
      * @return The event's timestamp.
      */
     public long getTimestamp() {

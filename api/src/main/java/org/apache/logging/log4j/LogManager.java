@@ -48,7 +48,7 @@ public class LogManager {
     private static final Logger logger = StatusLogger.getLogger();
 
     /**
-     * Prevent instantiation
+     * Prevents instantiation
      */
     protected LogManager() {
     }
@@ -111,7 +111,7 @@ public class LogManager {
     }
 
     /**
-     * Return the LoggerContextFactory.
+     * Returns the LoggerContextFactory.
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
@@ -119,7 +119,7 @@ public class LogManager {
     }
 
     /**
-     * Return a Logger with the specified name.
+     * Returns a Logger with the specified name.
      *
      * @param name The logger name.
      * @return The Logger.
@@ -130,7 +130,7 @@ public class LogManager {
     }
 
     /**
-     * Return a Logger using the fully qualified name of the Class as the Logger name.
+     * Returns a Logger using the fully qualified name of the Class as the Logger name.
      * @param clazz The Class whose name should be used as the Logger name.
      * @return The Logger.
      */
@@ -139,7 +139,7 @@ public class LogManager {
     }
 
     /**
-     * Return a Logger with the specified name.
+     * Returns a Logger with the specified name.
      *
      * @param fqcn The fully qualified class name of the class that this method is a member of.
      * @param name The logger name.
@@ -250,7 +250,5 @@ public class LogManager {
         }
         return false;
     }
-
-
 
 }

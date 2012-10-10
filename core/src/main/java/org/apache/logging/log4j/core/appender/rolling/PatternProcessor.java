@@ -71,7 +71,7 @@ public class PatternProcessor {
     }
 
     /**
-     * Return the next potential rollover time.
+     * Returns the next potential rollover time.
      * @param current The current time.
      * @param increment The increment to the next time.
      * @return the next potential rollover time.

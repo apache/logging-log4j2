@@ -67,7 +67,7 @@ public class Logger extends AbstractLogger {
     }
 
     /**
-     * Return the parent of this Logger. If it doesn't already exist return a temporary Logger.
+     * Returns the parent of this Logger. If it doesn't already exist return a temporary Logger.
      * @return The parent Logger.
      */
     public Logger getParent() {
@@ -82,7 +82,7 @@ public class Logger extends AbstractLogger {
     }
 
     /**
-     * Return the LoggerContext this Logger is associated with.
+     * Returns the LoggerContext this Logger is associated with.
      * @return the LoggerContext.
      */
     public LoggerContext getContext() {
@@ -100,7 +100,7 @@ public class Logger extends AbstractLogger {
     }
 
     /**
-     * Return the Level associated with the Logger.
+     * Returns the Level associated with the Logger.
      * @return the Level associate with the Logger.
      */
     public Level getLevel() {

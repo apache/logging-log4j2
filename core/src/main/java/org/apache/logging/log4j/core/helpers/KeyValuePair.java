@@ -40,7 +40,7 @@ public class KeyValuePair {
     }
 
     /**
-     * Return the key.
+     * Returns the key.
      * @return the key.
      */
     public String getKey() {
@@ -48,7 +48,7 @@ public class KeyValuePair {
     }
 
     /**
-     * Return the value.
+     * Returns the value.
      * @return The value.
      */
     public String getValue() {

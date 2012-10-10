@@ -68,7 +68,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     /**
-     * Return the data elements as if they were parameters on the logging event.
+     * Returns the data elements as if they were parameters on the logging event.
      * @return the data elements.
      */
     public Object[] getParameters() {
@@ -76,7 +76,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     /**
-     * Return the message.
+     * Returns the message.
      * @return the message.
      */
     public String getFormat() {
@@ -84,7 +84,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     /**
-     * Return the message data as an unmodifiable Map.
+     * Returns the message data as an unmodifiable Map.
      * @return the message data as an unmodifiable map.
      */
     public Map<String, String> getData() {

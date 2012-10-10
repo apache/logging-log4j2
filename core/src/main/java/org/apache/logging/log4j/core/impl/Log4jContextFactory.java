@@ -54,7 +54,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Return the ContextSelector.
+     * Returns the ContextSelector.
      * @return The ContextSelector.
      */
     public ContextSelector getSelector() {

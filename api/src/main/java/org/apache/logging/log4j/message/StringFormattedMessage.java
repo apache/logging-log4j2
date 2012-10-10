@@ -48,7 +48,7 @@ public class StringFormattedMessage implements Message, Serializable {
     }
 
     /**
-     * Return the formatted message.
+     * Returns the formatted message.
      * @return the formatted message.
      */
     public String getFormattedMessage() {

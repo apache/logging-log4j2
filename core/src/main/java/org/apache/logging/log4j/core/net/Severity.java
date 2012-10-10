@@ -75,7 +75,7 @@ public enum Severity {
     }
 
     /**
-     * Return the Severity for the specified Level.
+     * Returns the Severity for the specified Level.
      * @param level The Level.
      * @return The matching Severity, or DEBUG if there is no match.
      */

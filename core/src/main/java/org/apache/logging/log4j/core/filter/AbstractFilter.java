@@ -89,7 +89,7 @@ public abstract class AbstractFilter implements Filter, Lifecycle {
     }
 
     /**
-     * Return the Result to be returned when a match does not occur.
+     * Returns the Result to be returned when a match does not occur.
      * @return the onMismatch Result.
      */
     public final Result getOnMismatch() {
@@ -97,7 +97,7 @@ public abstract class AbstractFilter implements Filter, Lifecycle {
     }
 
     /**
-     * Return the Result to be returned when a match occurs.
+     * Returns the Result to be returned when a match occurs.
      * @return the onMatch Result.
      */
     public final Result getOnMatch() {

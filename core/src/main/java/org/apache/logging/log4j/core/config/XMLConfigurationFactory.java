@@ -32,7 +32,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     public static final String[] SUFFIXES = new String[] {".xml", "*"};
 
     /**
-     * Return the Configuration.
+     * Returns the Configuration.
      * @param source The InputSource.
      * @return The Configuration.
      */

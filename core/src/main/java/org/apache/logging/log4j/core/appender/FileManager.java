@@ -43,7 +43,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Return the FileManager.
+     * Returns the FileManager.
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should be overwritten.
      * @param locking true if the file should be locked while writing, false otherwise.
@@ -87,7 +87,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Return the name of the File being managed.
+     * Returns the name of the File being managed.
      * @return The name of the File being managed.
      */
     public String getFileName() {
@@ -95,7 +95,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Return the append status.
+     * Returns the append status.
      * @return true if the file will be appended to, false if it is overwritten.
      */
     public boolean isAppend() {
@@ -103,7 +103,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Return the lock status.
+     * Returns the lock status.
      * @return true if the file will be locked when writing, false otherwise.
      */
     public boolean isLocking() {

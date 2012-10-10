@@ -37,7 +37,7 @@ public class Priority {
     }
 
     /**
-     * Return the priority value based on the Facility and Log Level.
+     * Returns the priority value based on the Facility and Log Level.
      * @param facility The Facility.
      * @param level The Level.
      * @return The integer value of the priority.
@@ -47,7 +47,7 @@ public class Priority {
     }
 
     /**
-     * Return the Facility.
+     * Returns the Facility.
      * @return the Facility.
      */
     public Facility getFacility() {
@@ -55,7 +55,7 @@ public class Priority {
     }
 
     /**
-     * Return the Severity.
+     * Returns the Severity.
      * @return the Severity.
      */
     public Severity getSeverity() {
@@ -63,7 +63,7 @@ public class Priority {
     }
 
     /**
-     * Return the value of this Priority.
+     * Returns the value of this Priority.
      * @return the value of this Priority.
      */
     public int getValue() {

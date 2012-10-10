@@ -50,12 +50,12 @@ public interface Filter {
     }
 
     /**
-     * Return the result that should be returned when the filter does not match the event.
+     * Returns the result that should be returned when the filter does not match the event.
      * @return the Result that should be returned when the filter does not match the event.
      */
     Result getOnMismatch();
     /**
-     * Return the result that should be returned when the filter matches the event.
+     * Returns the result that should be returned when the filter matches the event.
      * @return the Result that should be returned when the filter matches the event.
      */
     Result getOnMatch();

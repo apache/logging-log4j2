@@ -42,7 +42,7 @@ public final class Route {
     }
 
     /**
-     * Return the Dynamic Appender Node.
+     * Returns the Dynamic Appender Node.
      * @return The Node.
      */
     public Node getNode() {
@@ -58,7 +58,7 @@ public final class Route {
     }
 
     /**
-     * Return the key for this Route.
+     * Returns the key for this Route.
      * @return the key for this Route.
      */
     public String getKey() {

@@ -99,7 +99,7 @@ public class ResolverUtil<T> {
     }
 
     /**
-     * Return the matching resources.
+     * Returns the matching resources.
      * @return A Set of URIs that match the criteria.
      */
     public Set<URI> getResources() {

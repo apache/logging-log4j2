@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public interface LoggerContext {
 
     /**
-     * Return a Logger.
+     * Returns a Logger.
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.
      */

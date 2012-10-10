@@ -52,7 +52,7 @@ public class AppenderControl extends Filterable {
     }
 
     /**
-     * Return the Appender.
+     * Returns the Appender.
      * @return the Appender.
      */
     public Appender getAppender() {

@@ -31,7 +31,7 @@ import java.util.Map;
 public interface Configuration extends Filtering {
 
     /**
-     * Return the configuration name.
+     * Returns the configuration name.
      * @return the name of the configuration.
      */
     String getName();
@@ -45,7 +45,7 @@ public interface Configuration extends Filtering {
     LoggerConfig getLoggerConfig(String name);
 
     /**
-     * Return a Map containing all the Appenders and their name.
+     * Returns a Map containing all the Appenders and their name.
      * @return A Map containing each Appender's naem and the Appender object.
      */
     Map<String, Appender> getAppenders();

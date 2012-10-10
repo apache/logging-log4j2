@@ -40,7 +40,7 @@ public final class Property {
     }
 
     /**
-     * Return the property name.
+     * Returns the property name.
      * @return the property name.
      */
     public String getName() {
@@ -48,7 +48,7 @@ public final class Property {
     }
 
     /**
-     * Return the property value.
+     * Returns the property value.
      * @return the value of the property.
      */
     public String getValue() {

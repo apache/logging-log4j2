@@ -57,7 +57,7 @@ public class FlumeAvroManager extends AbstractManager {
     }
 
     /**
-     * Return a FlumeAvroManager.
+     * Returns a FlumeAvroManager.
      * @param agents The agents to use.
      * @return A FlumeAvroManager.
      */
@@ -80,7 +80,7 @@ public class FlumeAvroManager extends AbstractManager {
     }
 
     /**
-     * Return the agents.
+     * Returns the agents.
      * @return The agent array.
      */
     public Agent[] getAgents() {
