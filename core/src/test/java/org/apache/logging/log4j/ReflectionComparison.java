@@ -19,7 +19,6 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +28,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
