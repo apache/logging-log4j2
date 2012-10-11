@@ -1105,28 +1105,28 @@ public abstract class AbstractLogger implements Logger {
 
 
     /**
-     * Checks whether this Logger is enabled for the ERROR Level.
+     * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
      * @return boolean - <code>true</code> if this Logger is enabled for level
-     *         ERROR, <code>false</code> otherwise.
+     *         {@link Level#ERROR ERROR}, <code>false</code> otherwise.
      */
     public boolean isErrorEnabled() {
         return isEnabled(Level.ERROR, null, (Object) null, null);
     }
 
     /**
-     * Checks whether this Logger is enabled for the ERROR Level.
+     * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
      * @param marker The marker data.
      * @return boolean - <code>true</code> if this Logger is enabled for level
-     *         ERROR, <code>false</code> otherwise.
+     *         {@link Level#ERROR ERROR}, <code>false</code> otherwise.
      */
     public boolean isErrorEnabled(Marker marker) {
         return isEnabled(Level.ERROR, marker, (Object) null, null);
     }
 
     /**
-     * Logs a message with the specific Marker at the ERROR level.
+     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param msg the message string to be logged
      */
@@ -1137,7 +1137,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with the specific Marker at the ERROR level.
+     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
@@ -1149,7 +1149,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with the specific Marker at the ERROR level.
+     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
@@ -1161,7 +1161,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs a message with the specific Marker at the ERROR level.
+     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
