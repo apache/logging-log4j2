@@ -102,7 +102,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void exit() {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, FQCN, Level.TRACE, exitMsg(null), null);
+            log(EXIT_MARKER, FQCN, Level.TRACE, toExitMsg(null), null);
         }
     }
 
@@ -115,7 +115,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public <R> R exit(R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, FQCN, Level.TRACE, exitMsg(result), null);
+            log(EXIT_MARKER, FQCN, Level.TRACE, toExitMsg(result), null);
         }
         return result;
     }
@@ -1453,7 +1453,7 @@ public abstract class AbstractLogger implements Logger {
         return new SimpleMessage(sb.toString());
     }
 
-    private Message exitMsg(Object result) {
+    private Message toExitMsg(Object result) {
         if (result == null) {
             return new SimpleMessage(" exit");
         }
