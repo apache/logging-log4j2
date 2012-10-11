@@ -162,7 +162,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     /**
-     * Logs an exception or error that has been caught.
+     * Logs a Throwable that has been caught.
      *
      * @param level The logging Level.
      * @param t     The Throwable.
