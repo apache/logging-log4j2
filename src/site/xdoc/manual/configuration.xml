@@ -168,7 +168,7 @@
             Note that status logging is disabled when the default configuration is used.
           </p>
           <p>
-            Perhaps it is desired to eliminate all the TRACE output from everything except com.foo.Bar. Simply
+            Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>. Simply
             changing the log level would not accomplish the task. Instead, the solution is to
             add a new logger definition to the configuration:
           </p>
@@ -177,15 +177,15 @@
       <appender-ref ref="STDOUT">
     </root>]]></source>
           <p>
-            With this configuration all log events from com.foo.Bar will be recorded while only error events will
+            With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error events will
             be recorded from all other components.
           </p>
         </subsection>
         <a name="Additivity"/>
         <subsection name="Additivity">
           <p>
-            In the previous example all the events from com.foo.Bar were still written to the Console. This is
-            because the logger for com.foo.Bar did not have any appenders configured while its parent did. In fact,
+            In the previous example all the events from <code>com.foo.Bar</code> were still written to the Console. This is
+            because the logger for <code>com.foo.Bar</code> did not have any appenders configured while its parent did. In fact,
             the following configuration
           </p>
           <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -212,9 +212,9 @@
   17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
   17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
   17:13:01.540 [main] ERROR MyApp - Didn't do it.</source>
-          <p>Notice that the trace messages from com.foo.Bar appear twice. This is because the appender associated
-            with logger com.foo.Bar is first used, which writes the first instance to the Console. Next, the parent
-            of com.foo.Bar, which in this case is the root logger, is referenced. The event is then passed to its
+          <p>Notice that the trace messages from <code>com.foo.Bar</code> appear twice. This is because the appender associated
+            with logger <code>com.foo.Bar</code> is first used, which writes the first instance to the Console. Next, the parent
+            of <code>com.foo.Bar</code>, which in this case is the root logger, is referenced. The event is then passed to its
             appender, which is also writes to the Console, resulting in the second instance. This is known as
             additivity. While additivity can be quite a convenient feature (as in the first previous example where
             no appender reference needed to be configured), in many cases this behavior is considered undesirable
