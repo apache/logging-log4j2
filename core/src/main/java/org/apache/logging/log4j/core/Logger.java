@@ -43,8 +43,6 @@ public class Logger extends AbstractLogger {
      */
     protected volatile PrivateConfig config;
 
-    private final String name;
-
     private final LoggerContext context;
 
     /**
@@ -53,17 +51,9 @@ public class Logger extends AbstractLogger {
      * @param name The name of the Logger.
      */
     protected Logger(LoggerContext context, String name) {
+        super(name);
         this.context = context;
-        this.name = name;
         config = new PrivateConfig(context.getConfiguration(), this);
-    }
-
-    /**
-     * Returns the name of the Logger.
-     * @return the name of the Logger.
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -76,9 +66,9 @@ public class Logger extends AbstractLogger {
             return null;
         }
         if (context.hasLogger(lc.getName())) {
-            return context.getLogger(name);
+            return context.getLogger(getName());
         }
-        return new Logger(context, name);
+        return new Logger(context, getName());
     }
 
     /**
@@ -113,7 +103,7 @@ public class Logger extends AbstractLogger {
             data = new SimpleMessage("");
         }
         config.config.getConfigurationMonitor().checkConfiguration();
-        config.loggerConfig.log(name, marker, fqcn, level, data, t);
+        config.loggerConfig.log(getName(), marker, fqcn, level, data, t);
     }
 
     @Override
@@ -250,7 +240,7 @@ public class Logger extends AbstractLogger {
 
         public PrivateConfig(Configuration config, Logger logger) {
             this.config = config;
-            this.loggerConfig = config.getLoggerConfig(name);
+            this.loggerConfig = config.getLoggerConfig(getName());
             this.level = this.loggerConfig.getLevel();
             this.intLevel = this.level.intLevel();
             this.logger = logger;
@@ -349,7 +339,7 @@ public class Logger extends AbstractLogger {
      */
     @Override
     public String toString() {
-        final String nameLevel = "" + name + ":" + getLevel();
+        final String nameLevel = "" + getName() + ":" + getLevel();
         if (context == null) {
             return nameLevel;
         }

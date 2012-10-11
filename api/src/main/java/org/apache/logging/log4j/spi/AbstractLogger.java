@@ -58,6 +58,24 @@ public abstract class AbstractLogger implements Logger {
 
     private static final String FQCN = AbstractLogger.class.getName();
 
+    private final String name;
+    
+    /**
+     * Creates a new logger named after the class (or subclass).
+     */
+    public AbstractLogger() {
+        this.name = getClass().getName();
+    }
+
+    /**
+     * Creates a new named logger.
+     * 
+     * @param name the logger name
+     */
+    public AbstractLogger(String name) {
+        this.name = name;
+    }
+    
     /**
      * Logs entry to a method.
      */
@@ -1440,5 +1458,21 @@ public abstract class AbstractLogger implements Logger {
             return new SimpleMessage(" exit");
         }
         return new SimpleMessage(" exit with (" + result + ")");
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.logging.log4j.Logger#getName()
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Returns a String representation of this instance in the form {@code "name"}.
+     * @return A String describing this Logger instance.
+     */
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.message.Message;
  * @doubt See LOG4J2-16.
  */
 public interface Logger {
-
+    
   /**
    * Logs an exception or error that has been caught.
    * @param level The logging Level.
@@ -145,7 +145,7 @@ public interface Logger {
    */
   void debug(String message, Object... params);
 
-   /**
+  /**
    * Logs a message at the {@link Level#DEBUG DEBUG} level including the
    * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
    *
@@ -154,7 +154,7 @@ public interface Logger {
    */
   void debug(String message, Throwable t);
 
-  /**
+   /**
    * Logs entry to a method.
    */
   void entry();
@@ -436,6 +436,13 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void fatal(String message, Throwable t);
+
+  /**
+   * Gets the logger name.
+   * 
+   * @return the logger name.
+   */
+    String getName();
 
   /**
    * Logs a message with the specific Marker at the INFO level.

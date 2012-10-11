@@ -29,10 +29,6 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * The wrapped Logger.
      */
     protected final AbstractLogger logger;
-    /**
-     * The name of the Logger.
-     */
-    protected final String name;
 
     /**
      * Constructor that wraps and existing Logger.
@@ -40,8 +36,8 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param name The name of the Logger.
      */
     public AbstractLoggerWrapper(AbstractLogger logger, String name) {
+        super(name);
         this.logger = logger;
-        this.name = name;
     }
 
     /**
