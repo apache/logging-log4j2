@@ -27,7 +27,6 @@ import java.net.URL;
 /**
  * Load resources (or images) from various sources.
  */
-
 public final class Loader {
 
     private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
