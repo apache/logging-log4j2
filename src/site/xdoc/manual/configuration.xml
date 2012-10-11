@@ -168,7 +168,7 @@
             Note that status logging is disabled when the default configuration is used.
           </p>
           <p>
-            Perhaps it is desired to eliminate all the TRACE output from everything except com.foo.BAR. Simply
+            Perhaps it is desired to eliminate all the TRACE output from everything except com.foo.Bar. Simply
             changing the log level would not accomplish the task. Instead, the solution is to
             add a new logger definition to the configuration:
           </p>
