@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
@@ -177,8 +177,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         Filter filter = ctl.getFilter();
         if (filter != null) {
             ctl.removeFilter(filter);
-            if (filter instanceof Lifecycle) {
-                ((Lifecycle) filter).stop();
+            if (filter instanceof LifeCycle) {
+                ((LifeCycle) filter).stop();
             }
         }
     }

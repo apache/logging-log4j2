@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 /**
  * @issue LOG4J2-36: Appender interface should be refactored
  */
-public interface Appender extends Lifecycle {
+public interface Appender extends LifeCycle {
 
     /**
      * Log in <code>Appender</code> specific way. When appropriate,

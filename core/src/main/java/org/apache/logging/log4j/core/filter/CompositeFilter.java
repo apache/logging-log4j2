@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -37,7 +37,7 @@ import java.util.List;
  * Composes and invokes one or more filters.
  */
 @Plugin(name = "filters", type = "Core", printObject = true)
-public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycle {
+public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycle {
 
     private final List<Filter> filters;
     private final boolean hasFilters;
@@ -89,8 +89,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     public void start() {
         for (Filter filter : filters) {
-            if (filter instanceof Lifecycle) {
-                ((Lifecycle) filter).start();
+            if (filter instanceof LifeCycle) {
+                ((LifeCycle) filter).start();
             }
         }
         isStarted = true;
@@ -98,8 +98,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, Lifecycl
 
     public void stop() {
         for (Filter filter : filters) {
-            if (filter instanceof Lifecycle) {
-                ((Lifecycle) filter).stop();
+            if (filter instanceof LifeCycle) {
+                ((LifeCycle) filter).stop();
             }
         }
         isStarted = false;

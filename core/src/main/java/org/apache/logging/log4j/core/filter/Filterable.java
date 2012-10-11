@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 
 import java.util.Iterator;
@@ -92,8 +92,8 @@ public class Filterable implements Filtering {
      * Make the Filter available for use.
      */
     public void startFilter() {
-       if (filter != null && filter instanceof Lifecycle) {
-           ((Lifecycle) filter).start();
+       if (filter != null && filter instanceof LifeCycle) {
+           ((LifeCycle) filter).start();
        }
     }
 
@@ -101,8 +101,8 @@ public class Filterable implements Filtering {
      * Cleanup the Filter.
      */
     public void stopFilter() {
-       if (filter != null && filter instanceof Lifecycle) {
-           ((Lifecycle) filter).stop();
+       if (filter != null && filter instanceof LifeCycle) {
+           ((LifeCycle) filter).stop();
        }
     }
 

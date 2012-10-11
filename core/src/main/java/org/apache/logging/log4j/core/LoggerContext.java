@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
-public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, Lifecycle {
+public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
 
     private static final StatusLogger logger = StatusLogger.getLogger();
 

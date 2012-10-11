@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Lifecycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.filter.Filterable;
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  * Base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
  */
-public abstract class AbstractAppender extends Filterable implements Appender, Lifecycle {
+public abstract class AbstractAppender extends Filterable implements Appender, LifeCycle {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
