@@ -31,7 +31,9 @@ import org.apache.logging.log4j.message.SimpleMessage;
  */
 public abstract class AbstractLogger implements Logger {
 
+    private static final String THROWING = "throwing";
     private static final String CATCHING = "catching";
+    
     /**
      * Marker for flow tracing.
      */
@@ -130,7 +132,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public <T extends Throwable> T throwing(T t) {
         if (isEnabled(Level.ERROR, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, Level.ERROR, new SimpleMessage("throwing"), t);
+            log(THROWING_MARKER, FQCN, Level.ERROR, new SimpleMessage(THROWING), t);
         }
         return t;
     }
@@ -146,7 +148,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public <T extends Throwable> T throwing(Level level, T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, level, new SimpleMessage("throwing"), t);
+            log(THROWING_MARKER, FQCN, level, new SimpleMessage(THROWING), t);
         }
         return t;
     }
