@@ -39,7 +39,7 @@ public interface Logger {
   void catching(Throwable t);
 
   /**
-   * Logs a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -47,7 +47,7 @@ public interface Logger {
   void debug(Marker marker, Message msg);
 
   /**
-   * Logs a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -101,14 +101,14 @@ public interface Logger {
   void debug(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
    *
    * @param msg the message string to be logged
    */
   void debug(Message msg);
 
   /**
-   * Logs a message with the specific Marker at the DEBUG level.
+   * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -445,7 +445,7 @@ public interface Logger {
     String getName();
 
   /**
-   * Logs a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -453,7 +453,7 @@ public interface Logger {
   void info(Marker marker, Message msg);
 
   /**
-   * Logs a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
    * @param msg    the message string to be logged
@@ -518,7 +518,7 @@ public interface Logger {
   void info(Message msg);
 
   /**
-   * Logs a message with the specific Marker at the INFO level.
+   * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
    * @param msg the message string to be logged
    * @param t   A Throwable or null.
@@ -571,7 +571,7 @@ public interface Logger {
   void info(String message, Throwable t);
 
   /**
-   * Checks whether this Logger is enabled for the DEBUG Level.
+   * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         DEBUG, <code>false</code> otherwise.
@@ -579,7 +579,7 @@ public interface Logger {
   boolean isDebugEnabled();
 
   /**
-   * Checks whether this Logger is enabled for the DEBUG Level.
+   * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
@@ -622,7 +622,7 @@ public interface Logger {
   boolean isFatalEnabled(Marker marker);
 
   /**
-   * Checks whether this Logger is enabled for the INFO Level.
+   * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
    *         INFO, <code>false</code> otherwise.
@@ -630,7 +630,7 @@ public interface Logger {
   boolean isInfoEnabled();
 
   /**
-   * Checks whether this Logger is enabled for the INFO Level.
+   * Checks whether this Logger is enabled for the {@link Level#INFO INFO} Level.
    *
    * @param marker The marker data specific to this log statement.
    * @return boolean - <code>true</code> if this Logger is enabled for level
