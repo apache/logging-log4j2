@@ -27,6 +27,22 @@ import java.io.Serializable;
  */
 public interface Layout<T extends Serializable> {
     /**
+     * Returns the format for the layout format.
+     * @return The footer.
+     * @doubt the concept of header and footer is not universal, should not be on the base interface.
+     * (RG) I agree with this.
+     */
+    byte[] getFooter();
+
+    /**
+     * Returns the header for the layout format.
+     * @return The header.
+     * @doubt the concept of header and footer is not universal, should not be on the base interface.
+     * (RG) I agree with this.
+     */
+    byte[] getHeader();
+
+    /**
      * Formats the event suitable for display.
      *
      * @param event The Logging Event.
@@ -44,22 +60,6 @@ public interface Layout<T extends Serializable> {
      * @return The formatted event.
      */
     T toSerializable(LogEvent event);
-
-    /**
-     * Returns the header for the layout format.
-     * @return The header.
-     * @doubt the concept of header and footer is not universal, should not be on the base interface.
-     * (RG) I agree with this.
-     */
-    byte[] getHeader();
-
-    /**
-     * Returns the format for the layout format.
-     * @return The footer.
-     * @doubt the concept of header and footer is not universal, should not be on the base interface.
-     * (RG) I agree with this.
-     */
-    byte[] getFooter();
 
 
 }
