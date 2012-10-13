@@ -92,12 +92,10 @@ public class SocketServerTest {
     public void testServer() throws Exception {
         Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        CompositeFilter socketFilters = CompositeFilter.createFilters(new Filter[]{socketFilter});
         SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
-            "Test", null, null, null, socketFilters);
+            "Test", null, null, null, socketFilter);
         appender.start();
-        CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
-        ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
+        ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         appender.start();
         PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
         ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
@@ -111,11 +109,14 @@ public class SocketServerTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
+        root.debug("This is test message 2");
         Thread.sleep(100);
         List<LogEvent> events = listApp.getEvents();
         assertNotNull("No event retrieved", events);
         assertTrue("No events retrieved", events.size() > 0);
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals("This is a test message"));
+        assertTrue("Incorrect number of events received", events.size() == 2);
+        assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals("This is test message 2"));
     }
 
     private class ThreadFilter extends AbstractFilter {
