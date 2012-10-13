@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action issue="LOG4J2-94" dev="rgoers" type="fix" due-to="Denis Treskunov">
+        Interpolator was not stripping Lookup key separator when trying to locate the default value for a variable.
+      </action>
       <action dev="rgoers" type="fix">
         Log4j 1.2 Category.forcedLog was wrapping the message with an ObjectMessage even if the parameter was an
         ObjectMessage.
