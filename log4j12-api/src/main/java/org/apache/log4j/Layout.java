@@ -32,7 +32,7 @@ public abstract class Layout {
     /**
      * Implement this method to create your own layout format.
      */
-    abstract public String format(LoggingEvent event);
+    public abstract String format(LoggingEvent event);
 
     /**
      * Returns the content type output by this layout. The base class
@@ -73,6 +73,6 @@ public abstract class Layout {
      *
      * @since 0.8.4
      */
-    abstract public boolean ignoresThrowable();
+    public abstract boolean ignoresThrowable();
 }
 
