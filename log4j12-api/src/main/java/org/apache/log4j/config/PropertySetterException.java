@@ -14,16 +14,35 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.log4j.config;
+
 /**
+ * Thrown when an error is encountered whilst attempting to set a property
+ * using the {@link PropertySetter} utility class.
  *
- * Implement this interface to create new instances of Logger or
- * a sub-class of Logger.
- *
- * <p>See <code>examples/subclass/MyLogger.java</code> for an example.
+ * @since 1.1
  */
-public interface LoggerFactory {
+public class PropertySetterException extends Exception {
+    private static final long serialVersionUID = -1352613734254235861L;
+    protected Throwable rootCause;
 
-  Logger makeNewLoggerInstance(org.apache.logging.log4j.core.LoggerContext context, String name);
+    public PropertySetterException(String msg) {
+        super(msg);
+    }
 
+    public PropertySetterException(Throwable rootCause) {
+        super();
+        this.rootCause = rootCause;
+    }
+
+    /**
+     * Returns descriptive text on the cause of this exception.
+     */
+    public String getMessage() {
+        String msg = super.getMessage();
+        if (msg == null && rootCause != null) {
+            msg = rootCause.getMessage();
+        }
+        return msg;
+    }
 }

@@ -14,32 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.log4j.spi;
 
 /**
- * Provided for compatibility with Log4j 1.x.
+ *  No-op version of Log4j 1.2 LoggingEvent.
  */
-public class BasicConfigurator {
-
-    protected BasicConfigurator() {
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void configure() {
-        LogManager.reconfigure();
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void configure(Appender appender) {
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void resetConfiguration() {
-    }
+public class LoggingEvent {
 }

@@ -14,32 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.log4j.spi;
+
+import org.apache.log4j.Logger;
 
 /**
- * Provided for compatibility with Log4j 1.x.
+ *
+ * Implement this interface to create new instances of Logger or
+ * a sub-class of Logger.
+ *
+ * <p>See <code>examples/subclass/MyLogger.java</code> for an example.
  */
-public class BasicConfigurator {
+public interface LoggerFactory {
 
-    protected BasicConfigurator() {
-    }
+  Logger makeNewLoggerInstance(org.apache.logging.log4j.core.LoggerContext context, String name);
 
-    /**
-     * No-op implementation.
-     */
-    public static void configure() {
-        LogManager.reconfigure();
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void configure(Appender appender) {
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void resetConfiguration() {
-    }
 }

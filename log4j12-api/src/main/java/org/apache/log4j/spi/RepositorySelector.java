@@ -14,32 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.log4j.spi;
+
+import org.apache.log4j.spi.LoggerRepository;
 
 /**
- * Provided for compatibility with Log4j 1.x.
+
+ The <code>LogManager</code> uses one (and only one)
+ <code>RepositorySelector</code> implementation to select the
+ {@link org.apache.log4j.spi.LoggerRepository} for a particular application context.
+
+ <p>It is the responsability of the <code>RepositorySelector</code>
+ implementation to track the application context. Log4j makes no
+ assumptions about the application context or on its management.
+
+ <p>See also {@link org.apache.log4j.LogManager LogManager}.
+
+ @since 1.2
+
  */
-public class BasicConfigurator {
-
-    protected BasicConfigurator() {
-    }
+public interface RepositorySelector {
 
     /**
-     * No-op implementation.
+     Returns a {@link org.apache.log4j.spi.LoggerRepository} depending on the
+     context. Implementors must make sure that a valid (non-null)
+     LoggerRepository is returned.
      */
-    public static void configure() {
-        LogManager.reconfigure();
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void configure(Appender appender) {
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void resetConfiguration() {
-    }
+    public LoggerRepository getLoggerRepository();
 }

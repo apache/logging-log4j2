@@ -14,32 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j;
+package org.apache.log4j.helpers;
+
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
- * Provided for compatibility with Log4j 1.x.
+ * An always-empty Enumerator.
+ *
+ * @since version 1.0
  */
-public class BasicConfigurator {
+public class NullEnumeration implements Enumeration {
+    private static final NullEnumeration instance = new NullEnumeration();
 
-    protected BasicConfigurator() {
+    private NullEnumeration() {
     }
 
-    /**
-     * No-op implementation.
-     */
-    public static void configure() {
-        LogManager.reconfigure();
+    public static NullEnumeration getInstance() {
+        return instance;
     }
 
-    /**
-     * No-op implementation.
-     */
-    public static void configure(Appender appender) {
+    public boolean hasMoreElements() {
+        return false;
     }
 
-    /**
-     * No-op implementation.
-     */
-    public static void resetConfiguration() {
+    public Object nextElement() {
+        throw new NoSuchElementException();
     }
 }

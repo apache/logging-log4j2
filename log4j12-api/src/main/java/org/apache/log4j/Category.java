@@ -16,12 +16,16 @@
  */
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.NullEnumeration;
+import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
@@ -34,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Category {
 
-    private static org.apache.log4j.LoggerFactory loggerFactory = new PrivateFactory();
+    private static LoggerFactory loggerFactory = new PrivateFactory();
 
     private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
         new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
@@ -77,7 +81,7 @@ public class Category {
         return getInstance(context, name, loggerFactory);
     }
 
-    static Category getInstance(LoggerContext context, String name, org.apache.log4j.LoggerFactory factory) {
+    static Category getInstance(LoggerContext context, String name, LoggerFactory factory) {
         ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         Logger logger = loggers.get(name);
         if (logger != null) {
@@ -132,6 +136,19 @@ public class Category {
             }
             return map;
         }
+    }
+
+    /**
+     Returns all the currently defined categories in the default
+     hierarchy as an {@link java.util.Enumeration Enumeration}.
+
+     <p>The root category is <em>not</em> included in the returned
+     {@link Enumeration}.
+
+     @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
+     */
+    public static Enumeration getCurrentCategories() {
+        return LogManager.getCurrentLoggers();
     }
 
     public final Level getEffectiveLevel() {
@@ -248,6 +265,68 @@ public class Category {
         return isEnabledFor(lvl);
     }
 
+    /**
+     * No-op implementation.
+     * @param appender The Appender to add.
+     */
+    public void addAppender(Appender appender) {
+    }
+
+    /**
+     * No-op implementation.
+     * @param event The logging event.
+     */
+    public void callAppenders(LoggingEvent event) {
+    }
+
+    public Enumeration getAllAppenders() {
+        return NullEnumeration.getInstance();
+    }
+
+    /**
+     * No-op implementation.
+     * @param name The name of the Appender.
+     * @return null.
+     */
+    public Appender getAppender(String name) {
+        return null;
+    }
+
+    /**
+     Is the appender passed as parameter attached to this category?
+     @param appender The Appender to add.
+     */
+    public boolean isAttached(Appender appender) {
+        return false;
+    }
+
+    /**
+     * No-op implementation.
+     */
+    public void removeAllAppenders() {
+    }
+
+    /**
+     * No-op implementation.
+     * @param appender The Appender to remove.
+     */
+    public void removeAppender(Appender appender) {
+    }
+
+    /**
+     * No-op implementation.
+     * @param name The Appender to remove.
+     */
+    public void removeAppender(String name) {
+    }
+
+    /**
+     * No-op implementation.
+     */
+    public static void shutdown() {
+    }
+
+
     public void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
         org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
@@ -286,6 +365,26 @@ public class Category {
             }
         }
         return null;
+    }
+
+    /**
+     If <code>assertion</code> parameter is <code>false</code>, then
+     logs <code>msg</code> as an {@link #error(Object) error} statement.
+
+     <p>The <code>assert</code> method has been renamed to
+     <code>assertLog</code> because <code>assert</code> is a language
+     reserved word in JDK 1.4.
+
+     @param assertion The assertion.
+     @param msg The message to print if <code>assertion</code> is
+     false.
+
+     @since 1.2
+     */
+    public void assertLog(boolean assertion, String msg) {
+        if (!assertion) {
+            this.error(msg);
+        }
     }
 
     public void l7dlog(Priority priority, String key, Throwable t) {
@@ -333,7 +432,7 @@ public class Category {
     /**
      * Private logger factory.
      */
-    private static class PrivateFactory implements org.apache.log4j.LoggerFactory {
+    private static class PrivateFactory implements LoggerFactory {
 
         public Logger makeNewLoggerInstance(LoggerContext context, String name) {
             return new Logger(context, name);
