@@ -25,7 +25,9 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,10 +50,11 @@ public class CategoryTest {
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
-    private ListAppender appender = new ListAppender("List");
+    private static ListAppender appender = new ListAppender("List");
 
     @BeforeClass
     public static void setupClass() {
+        appender.start();
         ConfigurationFactory.setConfigurationFactory(cf);
         LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
         ctx.reconfigure();
@@ -60,6 +63,7 @@ public class CategoryTest {
     @AfterClass
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
+        appender.stop();
     }
 
     /**

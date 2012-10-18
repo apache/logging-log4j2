@@ -21,6 +21,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -30,6 +32,10 @@ import static org.junit.Assert.assertNull;
  *
  */
 public class RegexFilterTest {
+    @BeforeClass
+    public static void before() {
+        StatusLogger.getLogger().setLevel(Level.OFF);
+    }
 
     @Test
     public void testThresholds() {

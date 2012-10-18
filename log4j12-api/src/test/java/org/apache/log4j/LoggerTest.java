@@ -127,6 +127,7 @@ public class LoggerTest {
         Logger a = Logger.getLogger("a");
         Logger ab = Logger.getLogger("a.b");
         CountingAppender ca = new CountingAppender();
+        ca.start();
         a.getLogger().addAppender(ca);
 
         assertEquals(ca.counter, 0);
@@ -138,6 +139,8 @@ public class LoggerTest {
         assertEquals(ca.counter, 3);
         ab.error(MSG);
         assertEquals(ca.counter, 4);
+        ca.stop();
+        a.getLogger().removeAppender(ca);
     }
 
     /**
@@ -152,7 +155,9 @@ public class LoggerTest {
         Logger x = Logger.getLogger("x");
 
         CountingAppender ca1 = new CountingAppender();
+        ca1.start();
         CountingAppender ca2 = new CountingAppender();
+        ca2.start();
 
         a.getLogger().addAppender(ca1);
         abc.getLogger().addAppender(ca2);
@@ -171,6 +176,10 @@ public class LoggerTest {
         x.debug(MSG);
         assertEquals(ca1.counter, 2);
         assertEquals(ca2.counter, 1);
+        ca1.stop();
+        ca2.stop();
+        a.getLogger().removeAppender(ca1);
+        abc.getLogger().removeAppender(ca2);
     }
 
     /**
@@ -186,8 +195,11 @@ public class LoggerTest {
         Logger x = Logger.getLogger("x");
 
         CountingAppender caRoot = new CountingAppender();
+        caRoot.start();
         CountingAppender caA = new CountingAppender();
+        caA.start();
         CountingAppender caABC = new CountingAppender();
+        caABC.start();
 
         root.getLogger().addAppender(caRoot);
         a.getLogger().addAppender(caA);
@@ -214,6 +226,12 @@ public class LoggerTest {
         assertEquals(caRoot.counter, 1);
         assertEquals(caA.counter, 1);
         assertEquals(caABC.counter, 1);
+        caRoot.stop();
+        caA.stop();
+        caABC.stop();
+        root.getLogger().removeAppender(caRoot);
+        a.getLogger().removeAppender(caA);
+        abc.getLogger().removeAppender(caABC);
     }
 
     /* Don't support getLoggerRepository
@@ -391,6 +409,8 @@ public class LoggerTest {
         LogEvent event = (LogEvent) msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormat());
+        appender.stop();
+        root.getLogger().removeAppender(appender);
     }
 
     /**
@@ -399,6 +419,7 @@ public class LoggerTest {
     @Test
     public void testTraceWithException() {
         ListAppender appender = new ListAppender("List");
+        appender.start();
         Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
@@ -416,6 +437,8 @@ public class LoggerTest {
         LogEvent event = msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormattedMessage());
+        appender.stop();
+        root.getLogger().removeAppender(appender);
     }
 
     /**
@@ -424,6 +447,7 @@ public class LoggerTest {
     @Test
     public void testIsTraceEnabled() {
         ListAppender appender = new ListAppender("List");
+        appender.start();
         Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
@@ -433,12 +457,15 @@ public class LoggerTest {
 
         assertTrue(tracer.isTraceEnabled());
         assertFalse(root.isTraceEnabled());
+        appender.stop();
+        root.getLogger().removeAppender(appender);
     }
 
     @Test
     public void testLog() {
         PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null);
         ListAppender appender = new ListAppender("List", null, layout, false, false);
+        appender.start();
         Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
@@ -450,6 +477,8 @@ public class LoggerTest {
         assertTrue("Incorrect number of messages", msgs.size() == 3);
         String msg = msgs.get(0);
         assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+        appender.stop();
+        root.getLogger().removeAppender(appender);
     }
 
     private static class MyLogger {

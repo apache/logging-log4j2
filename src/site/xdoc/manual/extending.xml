@@ -34,9 +34,24 @@
               locates a LoggerContextFactory by locating all instances of META-INF/log4j-provider.xml, a
               file that conforms to the java.util.Properties DTD, and then inspecting each to verify that it
               specifies a value for the "Log4jAPIVersion" property that conforms to the version required by the
-              LogManager. If more than one valid implementation is located an exception will be thrown.
+              LogManager. If more than one valid implementation is located the value for "FactoryPriority" will
+              be used to identify the factory with the highest priority.
               Finally, the value of the "LoggerContextFactory" property will be used to locate the
               LoggerContextFactory. In Log4j 2 this is provided by Log4jContextFactory.
+            </p>
+            <p>
+              Applications may change the LoggerContextFactory that will be used by
+              <ol>
+                <li>Implementing a new LoggerContextFactory and creating a log4j-provider.xml to reference it making
+                  sure that it has the highest priority.</li>
+                <li>Create a new log4j-provider.xml and configure it with the desired LoggerContextFactory making
+                  sure that it has the highest priority.</li>
+                <li>Setting the system property "log4j2.LoggerContextFactory" to the name of the LoggerContextFactory
+                  class to use.</li>
+                <li>Setting the property "log4j2.LoggerContextFactory" in a properties file named
+                  "log4j2.LogManager.properties" to the name of the LoggerContextFactory class to use. The properties
+                  file must be on the classpath.</li>
+              </ol>
             </p>
           </subsection>
           <subsection name="ContextSelector">

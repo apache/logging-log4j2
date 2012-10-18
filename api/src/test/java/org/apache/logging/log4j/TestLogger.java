@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  *
  */
-public class SimpleLogger extends AbstractLogger {
+public class TestLogger extends AbstractLogger {
     private List<String> array = new ArrayList<String>();
 
     public List<String> getEntries() {

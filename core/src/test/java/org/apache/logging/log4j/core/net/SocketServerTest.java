@@ -96,7 +96,7 @@ public class SocketServerTest {
             "Test", null, null, null, socketFilter);
         appender.start();
         ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
-        appender.start();
+        listApp.start();
         PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
         ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
         Logger serverLogger = ctx.getLogger(SocketServer.class.getName());

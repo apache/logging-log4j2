@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class EventLoggerTest {
 
-    SimpleLogger logger = (SimpleLogger) LogManager.getLogger("EventLogger");
+    TestLogger logger = (TestLogger) LogManager.getLogger("EventLogger");
     List<String> results = logger.getEntries();
 
     @Before

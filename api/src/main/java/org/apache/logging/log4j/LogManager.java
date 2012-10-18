@@ -16,16 +16,19 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.util.PropsUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * The anchor point for the logging system.
@@ -39,9 +42,12 @@ public class LogManager {
     private static final String LOGGER_RESOURCE = "META-INF/log4j-provider.xml";
     private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
     private static final String API_VERSION = "Log4jAPIVersion";
+    private static final String FACTORY_PRIORITY = "FactoryPriority";
     private static final String[] COMPATIBLE_API_VERSIONS = {
-        "1.99.0"
+        "2.0.0"
     };
+
+    private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
 
     private static LoggerContextFactory factory;
 
@@ -58,54 +64,85 @@ public class LogManager {
      * be used but this could be extended to allow multiple implementations to be used.
      */
     static {
+        PropsUtil managerProps = new PropsUtil("log4j2.LogManager.properties");
+        String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
         ClassLoader cl = findClassLoader();
-        List<LoggerContextFactory> factories = new ArrayList<LoggerContextFactory>();
-
-        Enumeration<URL> enumResources = null;
-        try {
-            enumResources = cl.getResources(LOGGER_RESOURCE);
-        } catch (IOException e) {
-            logger.fatal("Unable to locate " + LOGGER_RESOURCE, e);
+        if (factoryClass != null) {
+            try {
+                Class<?> clazz = cl.loadClass(factoryClass);
+                if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
+                    factory = (LoggerContextFactory) clazz.newInstance();
+                }
+            } catch (ClassNotFoundException cnfe) {
+                logger.error("Unable to locate configured LoggerContextFactory {}", factoryClass);
+            } catch (Exception ex) {
+                logger.error("Unable to create configured LoggerContextFactory {}", factoryClass, ex);
+            }
         }
 
-        if (enumResources != null) {
-            while (enumResources.hasMoreElements()) {
-                Properties props = new Properties();
-                URL url = enumResources.nextElement();
-                try {
-                    props.loadFromXML(url.openStream());
-                } catch (IOException ioe) {
-                    logger.error("Unable to read " + url.toString(), ioe);
-                }
-                if (!validVersion(props.getProperty(API_VERSION))) {
-                    continue;
-                }
-                String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
-                if (className != null) {
+        if (factory == null) {
+            SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
+
+            Enumeration<URL> enumResources = null;
+            try {
+                enumResources = cl.getResources(LOGGER_RESOURCE);
+            } catch (IOException e) {
+                logger.fatal("Unable to locate " + LOGGER_RESOURCE, e);
+            }
+
+            if (enumResources != null) {
+                while (enumResources.hasMoreElements()) {
+                    Properties props = new Properties();
+                    URL url = enumResources.nextElement();
                     try {
-                        Class<?> clazz = cl.loadClass(className);
-                        if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                            factories.add((LoggerContextFactory) clazz.newInstance());
-                        } else {
-                            logger.error(className + " does not implement " + LoggerContextFactory.class.getName());
+                        props.loadFromXML(url.openStream());
+                    } catch (IOException ioe) {
+                        logger.error("Unable to read " + url.toString(), ioe);
+                    }
+                    if (!validVersion(props.getProperty(API_VERSION))) {
+                        continue;
+                    }
+                    String weight = props.getProperty(FACTORY_PRIORITY);
+                    Integer priority = weight == null ? -1 : Integer.valueOf(weight);
+                    String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
+                    if (className != null) {
+                        try {
+                            Class<?> clazz = cl.loadClass(className);
+                            if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
+                                factories.put(priority, (LoggerContextFactory) clazz.newInstance());
+                            } else {
+                                logger.error(className + " does not implement " + LoggerContextFactory.class.getName());
+                            }
+                        } catch (ClassNotFoundException cnfe) {
+                            logger.error("Unable to locate class " + className + " specified in " + url.toString(),
+                                cnfe);
+                        } catch (IllegalAccessException iae) {
+                            logger.error("Unable to create class " + className + " specified in " + url.toString(),
+                                iae);
+                        } catch (Exception e) {
+                            logger.error("Unable to create class " + className + " specified in " + url.toString(), e);
+                            e.printStackTrace();
                         }
-                    } catch (ClassNotFoundException cnfe) {
-                        logger.error("Unable to locate class " + className + " specified in " + url.toString(), cnfe);
-                    } catch (IllegalAccessException iae) {
-                        logger.error("Unable to create class " + className + " specified in " + url.toString(), iae);
-                    } catch (Exception e) {
-                        logger.error("Unable to create class " + className + " specified in " + url.toString(), e);
-                        e.printStackTrace();
                     }
                 }
-            }
-            if (factories.size() != 1) {
-                logger.fatal("Unable to locate a logging implementation");
+                if (factories.size() == 0) {
+                    logger.error("Unable to locate a logging implementation, using SimpleLogger");
+                    factory = new SimpleLoggerContextFactory();
+                } else {
+                    StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
+                    for (Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
+                        sb.append("Factory: ").append(entry.getValue().getClass().getName());
+                        sb.append(", Weighting: ").append(entry.getKey()).append("\n");
+                    }
+                    factory = factories.get(factories.lastKey());
+                    sb.append("Using factory: ").append(factory.getClass().getName());
+                    logger.warn(sb.toString());
+
+                }
             } else {
-                factory = factories.get(0);
+                logger.error("Unable to locate a logging implementation, using SimpleLogger");
+                factory = new SimpleLoggerContextFactory();
             }
-        } else {
-            logger.fatal("Unable to locate a logging implementation");
         }
     }
 
@@ -237,9 +274,6 @@ public class LogManager {
                     }
                 }
             );
-        }
-        if (cl != null && cl.getParent() != null) {
-
         }
         if (cl == null) {
             cl = LogManager.class.getClassLoader();

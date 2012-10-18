@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.status;
 
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PropsUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,7 +52,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final StatusLogger statusLogger = new StatusLogger();
 
-    private Logger logger;
+    private final SimpleLogger logger;
 
     private final CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
     private final ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
@@ -59,6 +61,8 @@ public final class StatusLogger extends AbstractLogger {
     private final ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
+        PropsUtil props = new PropsUtil("log4j2.StatusLogger.properties");
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", props, System.err);
     }
 
     /**
@@ -67,6 +71,10 @@ public final class StatusLogger extends AbstractLogger {
      */
     public static StatusLogger getLogger() {
         return statusLogger;
+    }
+
+    public void setLevel(Level level) {
+        logger.setLevel(level);
     }
 
     /**
@@ -158,8 +166,12 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             msgLock.unlock();
         }
-        for (StatusListener listener : listeners) {
-            listener.log(data);
+        if (listeners.size() > 0) {
+            for (StatusListener listener : listeners) {
+                listener.log(data);
+            }
+        } else {
+            logger.log(marker, fqcn, level, msg, t);
         }
     }
 
@@ -208,7 +220,7 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     protected boolean isEnabled(Level level, Marker marker) {
-        if (logger == null) {
+        if (listeners.size() > 0) {
             return true;
         }
         switch (level) {

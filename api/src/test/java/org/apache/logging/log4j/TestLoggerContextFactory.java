@@ -22,9 +22,9 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 /**
  *
  */
-public class SimpleLoggerContextFactory implements LoggerContextFactory {
+public class TestLoggerContextFactory implements LoggerContextFactory {
 
-    private static LoggerContext ctx = new SimpleLoggerContext();
+    private static LoggerContext ctx = new TestLoggerContext();
 
     public LoggerContext getContext(String FQCN, ClassLoader loader, boolean currentContext) {
         return ctx;

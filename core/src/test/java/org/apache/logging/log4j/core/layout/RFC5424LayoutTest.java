@@ -23,6 +23,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -54,6 +55,7 @@ public class RFC5424LayoutTest {
 
     @BeforeClass
     public static void setupClass() {
+        StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();

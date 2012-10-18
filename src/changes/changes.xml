@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action dev="rgoers" type="fix">
+        Avoid NPE when duplicate LoggerContextFactorys are present. Allow factories to specify a weight to allow
+        real implementations to outrank test implementations. Provide a simple default LoggerContextFactory.
+      </action>
       <action issue="LOG4J2-97" dev="rgoers" type="fix">
         Added several missing classes and methods for Log4j 1.x compatibility.
       </action>

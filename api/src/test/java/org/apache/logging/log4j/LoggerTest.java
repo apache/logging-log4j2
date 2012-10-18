@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class LoggerTest {
 
-    SimpleLogger logger = (SimpleLogger) LogManager.getLogger("LoggerTest");
+    TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
     List<String> results = logger.getEntries();
 
     @Before

@@ -21,8 +21,8 @@ import org.apache.logging.log4j.spi.LoggerContext;
 /**
  *
  */
-public class SimpleLoggerContext implements LoggerContext {
-    private Logger logger = new SimpleLogger();
+public class TestLoggerContext implements LoggerContext {
+    private Logger logger = new TestLogger();
 
     public Logger getLogger(String name) {
         return logger;

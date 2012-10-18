@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -68,6 +69,7 @@ public class FlumeAppenderTest {
 
     @BeforeClass
     public static void setupClass() {
+        StatusLogger.getLogger().setLevel(Level.OFF);
         ctx = (LoggerContext) LogManager.getContext();
     }
 
