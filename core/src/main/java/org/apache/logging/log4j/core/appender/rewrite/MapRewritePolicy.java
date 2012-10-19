@@ -76,7 +76,6 @@ public final class MapRewritePolicy implements RewritePolicy {
                 }
             }
         }
-        newMap.putAll(map);
         MapMessage message = ((MapMessage) msg).newInstance(newMap);
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             message, source.getThrown(), source.getContextMap(), source.getContextStack(), source.getThreadName(),
