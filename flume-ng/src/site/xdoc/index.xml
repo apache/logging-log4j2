@@ -30,7 +30,8 @@
             </p>
           <subsection name="Remote Agent">
             <p>
-
+              Including the Log4j flume-ng jar in your Maven-based project as a dependency should cause all the
+              transitive dependencies necessary for the remote Agent to function to be included.
             </p>
           </subsection>
 

@@ -111,7 +111,7 @@ public class SyslogAppender extends SocketAppender {
                 LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
-        Layout layout = (format.equalsIgnoreCase(RFC5424)) ?
+        Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, appName,  msgId,
                 excludes, includes, required, charset, config) :
             SyslogLayout.createLayout(facility, includeNL, charset);

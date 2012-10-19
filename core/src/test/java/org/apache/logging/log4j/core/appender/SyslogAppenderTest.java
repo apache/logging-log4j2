@@ -121,6 +121,29 @@ public class SyslogAppenderTest {
 
 
     @Test
+    public void testDefaultAppender() throws Exception {
+        SyslogAppender appender = createAppender("tcp", null);
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setAdditive(false);
+        root.setLevel(Level.DEBUG);
+        root.debug("This is a test message");
+        String msg = list.poll(3, TimeUnit.SECONDS);
+        assertNotNull("No event retrieved", msg);
+        assertTrue("Incorrect msg: " + msg, msg.endsWith("This is a test message\n"));
+        assertTrue("Message not delivered via TCP", tcpCount > 0);
+        root.debug("This is test message 2");
+        msg = list.poll(3, TimeUnit.SECONDS);
+        assertNotNull("No event retrieved", msg);
+        assertTrue("Incorrect msg: " + msg, msg.endsWith("This is test message 2\n"));
+        assertTrue("Message not delivered via TCP", tcpCount > 1);
+    }
+
+
+
+    @Test
     public void testTCPStructuredAppender() throws Exception {
         SyslogAppender appender = createAppender("tcp", "RFC5424");
         appender.start();
