@@ -82,7 +82,7 @@
         <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
-        <item name="Flume" href="/manual/appenders.html#FlumeAvroAppender"/>
+        <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JMSQueue" href="/manual/appenders.html#JMSQueueAppender"/>
         <item name="JSMTopic" href="/manual/appenders.html#JMSTopicAppender"/>
         <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>

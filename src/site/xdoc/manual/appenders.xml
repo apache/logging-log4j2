@@ -360,12 +360,6 @@
             and available system for efficiently collecting, aggregating, and moving large amounts of log data
             from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
             them to a Flume agent as serialized Avro events for consumption.</p>
-          <p><i>Note:</i><br/>
-            There are two versions of the Flume Appender in the source control. The first is for "Flume OG", the
-            original version of Flume before it became an Apache project. The second is for "Flume NG", which is
-            maintained by the Apache Flume project. Only the Flume NG appender is included in Log4j 2 releases as
-            Flume OG itself is considered deprecated.
-          </p>
           <p>
             The Flume Appender supports two modes of operation.
             <ol>
