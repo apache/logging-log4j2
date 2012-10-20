@@ -54,7 +54,7 @@ public class HTMLLayoutTest {
     }
 
     private static final String body =
-        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">java.lang.NullPointerException: test";
+        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
 
     /**
@@ -64,7 +64,7 @@ public class HTMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null);
+        HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
         ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -90,10 +90,10 @@ public class HTMLLayoutTest {
         appender.stop();
 
         List<String> list = appender.getMessages();
-
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
         assertTrue("Incorrect body", list.get(61).equals(body));
+
     }
 }

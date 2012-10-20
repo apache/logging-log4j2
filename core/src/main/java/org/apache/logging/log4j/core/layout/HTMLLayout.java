@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This layout outputs events in a HTML table.
@@ -61,11 +62,47 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     private final String contentType;
 
-    private HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset) {
+    private enum FontSize {
+        SMALLER("smaller"), XXSMALL("xx-small"), XSMALL("x-small"), SMALL("small"), MEDIUM("medium"), LARGE("large"),
+        XLARGE("x-large"), XXLARGE("xx-large"),  LARGER("larger");
+
+        private final String size;
+
+        private FontSize(String size) {
+            this.size = size;
+        }
+
+        public String getFontSize() {
+            return size;
+        }
+
+        public static FontSize getFontSize(String size) {
+            for (FontSize fontSize : values()) {
+                if (fontSize.size.equals(size)) {
+                    return fontSize;
+                }
+            }
+            return SMALL;
+        }
+
+        public FontSize larger() {
+            return this.ordinal() < XXLARGE.ordinal() ? FontSize.values()[this.ordinal() + 1] : this;
+        }
+    }
+
+    private final String font;
+    private final String fontSize;
+    private final String headerSize;
+
+    private HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset,
+                       String font, String fontSize, String headerSize) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
         this.contentType = contentType;
+        this.font = font;
+        this.fontSize = fontSize;
+        this.headerSize = headerSize;
     }
 
     /**
@@ -125,14 +162,16 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("</tr>").append(LINE_SEP);
 
         if (event.getContextStack().getDepth() > 0) {
-            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" ");
+            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
+            sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Nested Diagnostic Context\">");
             sbuf.append("NDC: ").append(Transform.escapeTags(event.getContextStack().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 
         if (event.getContextMap().size() > 0) {
-            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : xx-small;\" colspan=\"6\" ");
+            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
+            sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Mapped Diagnostic Context\">");
             sbuf.append("MDC: ").append(Transform.escapeTags(event.getContextMap().toString()));
             sbuf.append("</td></tr>").append(LINE_SEP);
@@ -140,7 +179,8 @@ public final class HTMLLayout extends AbstractStringLayout {
 
         Throwable throwable = event.getThrown();
         if (throwable != null) {
-            sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : xx-small;\" colspan=\"6\">");
+            sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
+            sbuf.append(";\" colspan=\"6\">");
             appendThrowableAsHTML(throwable, sbuf);
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
@@ -198,7 +238,8 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("<title>").append(title).append("</title>").append(LINE_SEP);
         sbuf.append("<style type=\"text/css\">").append(LINE_SEP);
         sbuf.append("<!--").append(LINE_SEP);
-        sbuf.append("body, table {font-family: arial,sans-serif; font-size: x-small;}").append(LINE_SEP);
+        sbuf.append("body, table {font-family:").append(font).append("; font-size: ");
+        sbuf.append(headerSize).append(";}").append(LINE_SEP);
         sbuf.append("th {background: #336699; color: #FFFFFF; text-align: left;}").append(LINE_SEP);
         sbuf.append("-->").append(LINE_SEP);
         sbuf.append("</style>").append(LINE_SEP);
@@ -248,7 +289,9 @@ public final class HTMLLayout extends AbstractStringLayout {
     public static HTMLLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
                                           @PluginAttr("title") String title,
                                           @PluginAttr("contentType") String contentType,
-                                          @PluginAttr("charset") String charset) {
+                                          @PluginAttr("charset") String charset,
+                                          @PluginAttr("fontSize") String fontSize,
+                                          @PluginAttr("fontName") String font) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
@@ -257,6 +300,12 @@ public final class HTMLLayout extends AbstractStringLayout {
                 LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
+        if (font == null) {
+            font = "arial,sans-serif";
+        }
+        FontSize fs = FontSize.getFontSize(fontSize);
+        fontSize = fs.getFontSize();
+        String headerSize = fs.larger().getFontSize();
         boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
         if (title == null) {
             title = DEFAULT_TITLE;
@@ -264,6 +313,6 @@ public final class HTMLLayout extends AbstractStringLayout {
         if (contentType == null) {
             contentType = DEFAULT_CONTENT_TYPE;
         }
-        return new HTMLLayout(info, title, contentType, c);
+        return new HTMLLayout(info, title, contentType, c, font, fontSize, headerSize);
     }
 }
