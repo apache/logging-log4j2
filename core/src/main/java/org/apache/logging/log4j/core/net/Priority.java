@@ -43,7 +43,7 @@ public class Priority {
      * @return The integer value of the priority.
      */
     public static int getPriority(Facility facility, Level level) {
-        return facility.getCode() << 3 + Severity.getSeverity(level).getCode();
+        return (facility.getCode() << 3) + Severity.getSeverity(level).getCode();
     }
 
     /**
