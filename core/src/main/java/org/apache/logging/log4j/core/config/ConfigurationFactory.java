@@ -418,6 +418,26 @@ public abstract class ConfigurationFactory {
 
         @Override
         public Configuration getConfiguration(InputSource source) {
+            if (source != null) {
+                String config = source.getSystemId() != null ? source.getSystemId() : source.getPublicId();
+                for (ConfigurationFactory factory : factories) {
+                    String[] types = factory.getSupportedTypes();
+                    if (types != null) {
+                        for (String type : types) {
+                            if (type.equals("*") || (config != null && config.endsWith(type))) {
+                                Configuration c = factory.getConfiguration(source);
+                                if (c != null) {
+                                    return c;
+                                } else {
+                                    LOGGER.error("Cannot determine the ConfigurationFactory to use for {}", config);
+                                    return null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            LOGGER.error("Cannot process configuration, input source is null");
             return null;
         }
     }

@@ -23,8 +23,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.InputSource;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
@@ -42,6 +45,45 @@ public class TestConfigurator {
     @Test
     public void testFromFile() throws Exception {
         LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
+            CONFIG_NAME.equals(config.getName()));
+        Map<String, Appender> map = config.getAppenders();
+        assertNotNull("No Appenders", map != null && map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
+            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+    }
+
+    @Test
+    public void testFromStream() throws Exception {
+        InputStream is = new FileInputStream("target/test-classes/log4j2-config.xml");
+        InputSource source = new InputSource(is);
+        source.setSystemId("target/test-classes/log4j2-config.xml");
+        LoggerContext ctx = Configurator.initialize(null, source);
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
+            CONFIG_NAME.equals(config.getName()));
+        Map<String, Appender> map = config.getAppenders();
+        assertNotNull("No Appenders", map != null && map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
+            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+    }
+
+    @Test
+    public void testFromStreamNoId() throws Exception {
+        InputStream is = new FileInputStream("target/test-classes/log4j2-config.xml");
+        InputSource source = new InputSource(is);
+        LoggerContext ctx = Configurator.initialize(null, source);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
