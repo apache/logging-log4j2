@@ -45,7 +45,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     private static final int BUF_SIZE = 256;
 
-    private static final String TRACE_PREFIX = "<br>&nbsp;&nbsp;&nbsp;&nbsp;";
+    private static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
@@ -157,7 +157,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         }
 
         sbuf.append("<td title=\"Message\">");
-        sbuf.append(Transform.escapeTags(event.getMessage().getFormattedMessage()));
+        sbuf.append(Transform.escapeTags(event.getMessage().getFormattedMessage()).replaceAll(LINE_SEP, "<br />"));
         sbuf.append("</td>").append(LINE_SEP);
         sbuf.append("</tr>").append(LINE_SEP);
 

@@ -56,6 +56,9 @@ public class HTMLLayoutTest {
     private static final String body =
         "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
+    private static final String multiLine =
+        "<td title=\"Message\">First line<br />Second line</td>";
+
 
     /**
      * Test case for MDC conversion pattern.
@@ -77,6 +80,8 @@ public class HTMLLayoutTest {
 
         root.debug("empty mdc");
 
+        root.debug("First line\nSecond line");
+
         ThreadContext.put("key1", "value1");
         ThreadContext.put("key2", "value2");
 
@@ -93,7 +98,8 @@ public class HTMLLayoutTest {
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        assertTrue("Incorrect body", list.get(61).equals(body));
+        assertTrue("Incorrect multiline", list.get(49).equals(multiLine));
+        assertTrue("Incorrect body", list.get(70).equals(body));
 
     }
 }
