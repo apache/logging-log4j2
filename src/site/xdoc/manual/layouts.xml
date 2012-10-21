@@ -731,28 +731,24 @@
           <p>
             This example shows how to filter out classes from unimportant packages in stack traces.
           </p>
-          <source><![CDATA[
-  <properties>
-    <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
-  </properties>
+          <source><![CDATA[<properties>
+  <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
+</properties>
   .
   .
-      <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
+  <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
   ]]></source>
           <p>
             The result printed to the console will appear similar to:
           </p>
-          <source>
-  Exception java.lang.IllegalArgumentException: IllegalArgument
-  at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
-  ... suppressed 26 lines
-  at $Proxy0.invoke(Unknown Source) [?:?]
-  ... suppressed 3 lines
-  Caused by: java.lang.NullPointerException: null pointer
-  at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
-  ... 30 more
-
-          </source>
+          <source>Exception java.lang.IllegalArgumentException: IllegalArgument
+at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
+... suppressed 26 lines
+at $Proxy0.invoke(Unknown Source) [?:?]
+... suppressed 3 lines
+Caused by: java.lang.NullPointerException: null pointer
+at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
+... 30 more</source>
           <h5>Ansi Styled</h5>
           <p>The log level will be highlighted according to the event's log level. All the content that follows
             the level will be bright green.</p>
@@ -929,7 +925,7 @@
             &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
             *
             &lt;log4j:eventSet version="2.0" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
-            &nbsp;&nbsp;&data;
+            &nbsp;&nbsp;
             &lt;/log4j:eventSet&gt;
           </pre>
           <p>

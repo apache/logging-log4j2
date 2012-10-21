@@ -75,9 +75,13 @@
               Map, and data present in the event. Users can further customize the property providers by
               adding their own <a href="../lookups.html">Lookup</a> Plugin.
             </p>
-
         </section>
 
+        <section name="Documentation">
+          <p>The Log4j 2 User's Guide is available on this <a href="manual/index.html">site</a> or as a downloadable
+            <a href="log4j-users-guide.pdf">PDF</a>
+          </p>.
+        </section>
         <section name="Requirements">
            <p>
              Log4j 2 requires Java 5 but will take advantage of enhancements in Java 6 to improve performance.

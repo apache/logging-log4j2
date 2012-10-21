@@ -109,28 +109,26 @@
           following plugin definition to your project's pom.xml will cause the plugin manager to be called during the
           build. It will store the resulting file in the correct location under the directory specified in the first
           argument after scanning all the components located under the package specified in the second argument.
-          <source><![CDATA[
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.apache.logging.log4j.core.config.plugins.PluginManager</mainClass>
-          <arguments>
-            <argument>${project.build.outputDirectory}</argument>
-            <argument>org.myorg.myproject.log4j</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-  ]]></source>
+          <source><![CDATA[<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>exec-maven-plugin</artifactId>
+  <version>1.2.1</version>
+  <executions>
+    <execution>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>java</goal>
+      </goals>
+    </execution>
+  </executions>
+  <configuration>
+    <mainClass>org.apache.logging.log4j.core.config.plugins.PluginManager</mainClass>
+    <arguments>
+      <argument>${project.build.outputDirectory}</argument>
+      <argument>org.myorg.myproject.log4j</argument>
+    </arguments>
+  </configuration>
+</plugin>]]></source>
         </subsection>
       </section>
     </body>

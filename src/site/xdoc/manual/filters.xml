@@ -98,7 +98,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -129,7 +130,8 @@
 <configuration status="warn" name="MyApp" packages="">
   <filters>
     <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NETURAL"/>
-    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
+    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                            onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
     </DynamicThresholdFilter>
   </filters>
@@ -139,7 +141,8 @@
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -203,11 +206,13 @@
 
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
-    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
+    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                            onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
     </DynamicThresholdFilter>
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -271,7 +276,8 @@
     <KeyValuePari key="eventId" value="Logout"/>
   </MapFilter>
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -294,7 +300,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -322,7 +329,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -383,7 +391,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -443,7 +452,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <RegexFilter regex=".* test .*" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -510,7 +520,8 @@
     <KeyValuePari key="id" value="Logout"/>
   </StructuredDataFilter>
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -569,11 +580,13 @@
 
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
-  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
+  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                          onMatch="ACCEPT" onMismatch="NEUTRAL">
     <KeyValuePair key="User1" value="DEBUG"/>
   </DynamicThresholdFilter>
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -630,7 +643,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -700,7 +714,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <TiemFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>

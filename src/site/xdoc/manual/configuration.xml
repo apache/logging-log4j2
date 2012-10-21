@@ -393,7 +393,8 @@
             Below is a sample configuration using the strict format.
           </p>
           <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" strict="true" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<configuration status="debug" strict="true" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -450,9 +451,11 @@
             plugins while the Console plugin will be assigned a value of STDOUT for its name attribute and the
             ThresholdFilter will be assigned a level of debug.
           </p>
-          <source>{ "configuration": { "status": "error", "name": "RoutingTest", "packages": "org.apache.logging.log4j.test",
+          <source>{ "configuration": { "status": "error", "name": "RoutingTest",
+                     "packages": "org.apache.logging.log4j.test",
       "properties": {
-        "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
       },
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
@@ -480,7 +483,8 @@
       }
     },
     "loggers": {
-      "logger": { "name": "EventLogger", "level": "info", "additivity": "false", "appender-ref": { "ref": "Routing" }},
+      "logger": { "name": "EventLogger", "level": "info", "additivity": "false",
+                  "appender-ref": { "ref": "Routing" }},
       "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
     }
   }
@@ -493,9 +497,11 @@
             that contains the type of the appender. The following example illustrates this as well as how to
             declare multiple loggers as an array.
           </p>
-           <source>{ "configuration": { "status": "debug", "name": "RoutingTest", "packages": "org.apache.logging.log4j.test",
+           <source>{ "configuration": { "status": "debug", "name": "RoutingTest",
+                      "packages": "org.apache.logging.log4j.test",
       "properties": {
-        "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
       },
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
@@ -522,8 +528,10 @@
     },
     "loggers": {
       "logger": [
-        { "name": "EventLogger", "level": "info", "additivity": "false", "appender-ref": { "ref": "Routing" }},
-        { "name": "com.foo.bar", "level": "error", "additivity": "false", "appender-ref": { "ref": "Console" }}
+        { "name": "EventLogger", "level": "info", "additivity": "false",
+          "appender-ref": { "ref": "Routing" }},
+        { "name": "com.foo.bar", "level": "error", "additivity": "false",
+          "appender-ref": { "ref": "Console" }}
       ],
       "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
     }
@@ -604,7 +612,8 @@
             shows how multiple filters can be configured on the ConsoleAppender.
           </p>
           <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<configuration status="debug" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -668,7 +677,8 @@
             shows the filename for the rolling file appender being declared as a property.
           </p>
 <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<configuration status="debug" name="RoutingTest"
+               packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
   </properties>
@@ -800,7 +810,8 @@
             configuration has the status attribute set to debug.
 
 <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
-<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<configuration status="debug" name="RoutingTest"
+               packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
   </properties>

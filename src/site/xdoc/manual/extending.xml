@@ -290,7 +290,8 @@ public final class ThresholdFilter extends FilterBase {
 @Plugin(name = "Stub", type = "Core", elementType = "appender", printObject = true)
 public final class StubAppender extends OutputStreamAppender {
 
-    private StubAppender(String name, Layout layout, Filter filter, StubManager manager, boolean handleExceptions) {
+    private StubAppender(String name, Layout layout, Filter filter, StubManager manager,
+                         boolean handleExceptions) {
     }
 
     @PluginFactory
@@ -336,7 +337,8 @@ public final class StubAppender extends OutputStreamAppender {
 @Plugin(name = "SampleLayout", type = "Core", elementType = "layout", printObject = true)
 public class SampleLayout extends AbstractStringLayout {
 
-    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
+    protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
+                           Charset charset) {
     }
 
     @PluginFactory
@@ -344,12 +346,14 @@ public class SampleLayout extends AbstractStringLayout {
                                             @PluginAttr("properties") String properties,
                                             @PluginAttr("complete") String complete,
                                             @PluginAttr("charset") String charset) {
-        Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+        Charset c = Charset.isSupported("UTF-8") ?
+                    Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
                 c = Charset.forName(charset);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charset + " is not supported for layout, using " +
+                             c.displayName());
             }
         }
         boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);

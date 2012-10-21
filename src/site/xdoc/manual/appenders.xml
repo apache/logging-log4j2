@@ -235,7 +235,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
@@ -684,7 +685,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <JMSQueue name="jmsQueue" queueBindingName="MyQueue" factoryBindingName="MyQueueConnectionFactory"/>
+    <JMSQueue name="jmsQueue" queueBindingName="MyQueue"
+              factoryBindingName="MyQueueConnectionFactory"/>
   </appenders>
   <loggers>
     <root level="error">
@@ -793,7 +795,8 @@
             <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <JMSTopic name="jmsTopic" topicBindingName="MyTopic" factoryBindingName="MyTopicConnectionFactory"/>
+    <JMSTopic name="jmsTopic" topicBindingName="MyTopic"
+              factoryBindingName="MyTopicConnectionFactory"/>
   </appenders>
   <loggers>
     <root level="error">
@@ -1100,7 +1103,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
-                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
@@ -1124,7 +1127,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
-                                    filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
@@ -1153,7 +1156,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
-                                    filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
@@ -1502,8 +1505,10 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
-    <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514" protocol="TCP" appName="MyApp" includeMDC="true"
-            facility="LOCAL0" enterpriseNumber="18060" newLine="true" messageId="Audit" id="App"/>
+    <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
+            protocol="TCP" appName="MyApp" includeMDC="true"
+            facility="LOCAL0" enterpriseNumber="18060" newLine="true"
+            messageId="Audit" id="App"/>
   </appenders>
   <loggers>
     <logger name="com.mycorp" level="error">

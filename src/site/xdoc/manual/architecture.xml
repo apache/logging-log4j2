@@ -399,12 +399,12 @@
         </p>
         <table width="100%">
           <tr>
-            <th style="background-color:cyan; color:black" rowspan="2">Event Level</th>
+            <th style="background-color:cyan; color:black">Event Level</th>
             <th style="background-color:cyan; color:black; border-top: 1px solid #DDDDDD;"
-                align="center" colspan="6">LoggerConfig Level
-            </th>
+                align="center" colspan="6">LoggerConfig Level</th>
           </tr>
           <tr align="left">
+            <th style="background-color:cyan; color:black">&nbsp;</th>
             <th style="background-color:cyan; color:black">TRACE</th>
             <th style="background-color:cyan; color:black">DEBUG</th>
             <th style="background-color:cyan; color:black">INFO</th>
@@ -628,9 +628,7 @@
 
         <p>For example, the PatternLayout with the conversion pattern "%r [%t]
           %-5p %c - %m%n" will output something akin to:<br />
-          <source>
-          176 [main] INFO  org.foo.Bar - Located nearest gas station.
-          </source>
+          <source>176 [main] INFO  org.foo.Bar - Located nearest gas station.</source>
         </p>
 
         <p>The first field is the number of milliseconds elapsed since the
