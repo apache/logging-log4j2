@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action issue="LOG4J2-87" dev="rgoers" type="update">
+        Build pdf of user's guide.
+      </action>
       <action issue="LOG4J2-29" dev="rgoers" type="update">
         Added font and fontSize parameters to HTMLLayout. Replace newlines in message with br tag.
       </action>
