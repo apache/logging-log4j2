@@ -435,7 +435,7 @@ public final class ThreadContext {
     /**
      * An immutable ContextStack.
      */
-    private static class ImmutableStack extends ThreadContextStack {
+    public static class ImmutableStack extends ThreadContextStack {
 
         private static final long serialVersionUID = 5050502L;
 
@@ -464,7 +464,7 @@ public final class ThreadContext {
     /**
      * An immutable Context Map.
      */
-    private static class ImmutableMap extends HashMap<String, String> {
+    public static class ImmutableMap extends HashMap<String, String> {
         private static final long serialVersionUID = 5050503L;
 
         public ImmutableMap() {

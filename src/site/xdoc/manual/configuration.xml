@@ -566,6 +566,14 @@
             the default value of false will be used.
           </p>
           <p>
+            A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added
+            to the properties copied from the ThreadContextMap. These properties can be referenced from Appenders,
+            Filters, Layouts, etc just as if they were part of the ThreadContext Map. The properties can contain
+            variables that will be resolved either when the configuration is parsed or dynamically when each
+            event is logged. See <a href="#PropertySubstitution">Property Substitution</a> for more information on
+            using variables.
+          </p>
+          <p>
             The LoggerConfig may also be configured with one or more appender-ref elements. Each appender
             referenced will become associated with the specified LoggerConfig. If multiple appenders
             are configured on the LoggerConfig each of them be called when processing logging events.
@@ -648,6 +656,7 @@
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <property name="user">${sys:user.name}</property>
       <appender-ref ref="File">
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>

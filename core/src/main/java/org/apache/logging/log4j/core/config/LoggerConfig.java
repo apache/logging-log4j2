@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
@@ -63,6 +64,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
     private LoggerConfig parent;
     private AtomicInteger counter = new AtomicInteger();
     private boolean shutdown = false;
+    private final Map<Property, Boolean> properties;
+    private final Configuration config;
 
 
     /**
@@ -72,6 +75,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.logEventFactory = this;
         this.level = Level.ERROR;
         this.name = "";
+        this.properties = null;
+        this.config = null;
     }
 
     /**
@@ -85,16 +90,28 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         this.name = name;
         this.level = level;
         this.additive = additive;
+        this.properties = null;
+        this.config = null;
     }
 
     protected LoggerConfig(String name, List<AppenderRef> appenders, Filter filter, Level level,
-                           boolean additive) {
+                           boolean additive, Property[] properties, Configuration config) {
         super(filter);
         this.logEventFactory = this;
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
         this.additive = additive;
+        this.config = config;
+        if (properties != null && properties.length > 0) {
+            this.properties = new HashMap<Property, Boolean>(properties.length);
+            for (Property prop : properties) {
+                boolean interpolate = prop.getValue().contains("${");
+                this.properties.put(prop, interpolate);
+            }
+        } else {
+            this.properties = null;
+        }
     }
 
     @Override
@@ -249,7 +266,17 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * @param t A Throwable or null.
      */
     public void log(String loggerName, Marker marker, String fqcn, Level level, Message data, Throwable t) {
-        LogEvent event = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, t);
+        List<Property> props = null;
+        if (properties != null) {
+            props = new ArrayList<Property>(properties.size());
+
+            for (Map.Entry<Property, Boolean> entry : properties.entrySet()) {
+                Property prop = entry.getKey();
+                String value = entry.getValue() ? config.getSubst().replace(prop.getValue()) : prop.getValue();
+                props.add(Property.createProperty(prop.getName(), value));
+            }
+        }
+        LogEvent event = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
         log(event);
     }
 
@@ -319,8 +346,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
      * @return The LogEvent.
      */
     public LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
-                                Throwable t) {
-        return new Log4jLogEvent(loggerName, marker, fqcn, level, data, t);
+                                List<Property> properties, Throwable t) {
+        return new Log4jLogEvent(loggerName, marker, fqcn, level, data, properties, t);
     }
 
     @Override
@@ -342,6 +369,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginAttr("name") String loggerName,
                                             @PluginElement("appender-ref") AppenderRef[] refs,
+                                            @PluginElement("properties") Property[] properties,
+                                            @PluginConfiguration Configuration config,
                                             @PluginElement("filters") Filter filter) {
         if (loggerName == null) {
             LOGGER.error("Loggers cannot be configured without a name");
@@ -359,7 +388,7 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         String name = loggerName.equals("root") ? "" : loggerName;
         boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-        return new LoggerConfig(name, appenderRefs, filter, level, additive);
+        return new LoggerConfig(name, appenderRefs, filter, level, additive, properties, config);
     }
 
     /**
@@ -372,6 +401,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
         public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
                                             @PluginElement("appender-ref") AppenderRef[] refs,
+                                            @PluginElement("properties") Property[] properties,
+                                            @PluginConfiguration Configuration config,
                                             @PluginElement("filters") Filter filter) {
             List<AppenderRef> appenderRefs = Arrays.asList(refs);
             Level level;
@@ -383,7 +414,8 @@ public class LoggerConfig extends Filterable implements LogEventFactory {
             }
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);
 
-            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive);
+            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive, properties,
+                config);
         }
     }
 

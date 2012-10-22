@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -46,6 +48,7 @@ public class RewriteAppenderTest {
     private static final String CONFIG = "log4j-rewrite.xml";
     private static Configuration config;
     private static ListAppender app;
+    private static ListAppender app2;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -56,7 +59,8 @@ public class RewriteAppenderTest {
         for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
-                break;
+            } else if (entry.getKey().equals("List2")) {
+                app2 = (ListAppender) entry.getValue();
             }
         }
     }
@@ -86,5 +90,17 @@ public class RewriteAppenderTest {
         assertTrue("Incorrect number of map entries, expected 3 got " + map.size(), map.size() == 3);
         String value = map.get("Key1");
         assertEquals("Apache", value);
+        app.clear();
+    }
+
+
+    @Test
+    public void testProperties() {
+        Logger logger = LogManager.getLogger(RewriteAppenderTest.class);
+        logger.debug("Test properties rewrite");
+        List<String> list = app2.getMessages();
+        assertNotNull("No events generated", list);
+        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertFalse("Did not resolve user name", list.get(0).contains("{user.dir}"));
     }
 }

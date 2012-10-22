@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.TimestampMessage;
@@ -27,6 +28,8 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,8 +61,22 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param t A Throwable or null.
      */
     public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t) {
+        this(loggerName, marker, fqcn, level, message, null, t);
+    }
+
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A Throwable or null.
+     */
+    public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message,
+                         List<Property> properties, Throwable t) {
         this(loggerName, marker, fqcn, level, message, t,
-            ThreadContext.getContext().size() == 0 ? null : ThreadContext.getImmutableContext(),
+            createMap(properties),
             ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
             null, System.currentTimeMillis());
     }
@@ -95,6 +112,23 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         if (message != null && message instanceof LoggerNameAwareMessage) {
             ((LoggerNameAwareMessage) message).setLoggerName(name);
         }
+    }
+
+    private static Map<String, String> createMap(List<Property> properties) {
+        if (ThreadContext.isEmpty() && (properties == null || properties.size() == 0)) {
+            return null;
+        }
+        if (properties == null || properties.size() == 0) {
+            return ThreadContext.getImmutableContext();
+        }
+        Map<String, String> map = ThreadContext.getContext();
+
+        for (Property prop : properties) {
+            if (!map.containsKey(prop.getName())) {
+                map.put(prop.getName(), prop.getValue());
+            }
+        }
+        return new ThreadContext.ImmutableMap(map);
     }
 
     /**

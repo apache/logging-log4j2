@@ -912,6 +912,51 @@
 </configuration>
   ]]></source>
           </p>
+          <h5>PropertiesRewritePolicy</h5>
+          <p>
+            PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map
+            being logged. The properties will not be added to the actual ThreadContext Map. The property
+            values may contain variables that will be evaluated when the configuration is processed as
+            well as when the event is logged.
+          </p>
+          <table border="1" width="100%">
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>Property[]</td>
+              <td>One of more Property elements to define the keys and values to be added to the ThreadContext Map.</td>
+            </tr>
+          </table>
+          <p>
+            The following configuration shows a RewriteAppender configured to add a product key and its value
+            to the MapMessage.:
+
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Rewrite name="rewrite">
+      <appender-ref ref="STDOUT"/>
+      <PropertiesRewritePolicy>
+        <Property key="user">${sys:user.name}</Property>
+        <Property key="env">${sys:environment}</Property>
+      </PropertiesRewritePolicy>
+    </Rewrite>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Rewrite"/>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
+          </p>
         </subsection>
         <a name="RollingFileAppender"/>
         <subsection name="RollingFileAppender">

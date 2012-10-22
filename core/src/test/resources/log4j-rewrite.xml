@@ -20,10 +20,13 @@
 
   <appenders>
     <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
+      <PatternLayout pattern="%X %m%n"/>
     </Console>
     <List name="List">
       <ThresholdFilter level="debug"/>
+    </List>
+    <List name="List2">
+      <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} os=%X{os} %msg%n" />
     </List>
     <Rewrite name="Rewrite">
       <MapRewritePolicy>
@@ -31,7 +34,13 @@
         <KeyValuePair key="Key3" Value="Log4j"/>
       </MapRewritePolicy>
       <appender-ref ref="List"/>
-
+    </Rewrite>
+    <Rewrite name="Rewrite2">
+      <PropertiesRewritePolicy>
+        <Property name="user">$${sys:user.name}</Property>
+        <Property name="os">${sys:os.name}</Property>
+      </PropertiesRewritePolicy>
+      <appender-ref ref="List2"/>
     </Rewrite>
   </appenders>
 
@@ -40,6 +49,9 @@
       <appender-ref ref="Rewrite"/>
     </logger>
 
+    <logger name="org.apache.logging.log4j" level="trace" additivity="false">
+      <appender-ref ref="Rewrite2"/>
+    </logger>
     <root level="error">
       <appender-ref ref="STDOUT"/>
     </root>
