@@ -118,6 +118,52 @@ public class LoggerTest {
     }
 
     @Test
+    public void isAllEnabled() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.ALL));
+    }
+
+    @Test
+    public void isDebugEnabled() {
+        assertTrue("Incorrect level", logger.isDebugEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG));
+    }
+
+    @Test
+    public void isErrorEnabled() {
+        assertTrue("Incorrect level", logger.isErrorEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.ERROR));
+    }
+
+    @Test
+    public void isFatalEnabled() {
+        assertTrue("Incorrect level", logger.isFatalEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.FATAL));
+    }
+
+    @Test
+    public void isInfoEnabled() {
+        assertTrue("Incorrect level", logger.isInfoEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.INFO));
+    }
+
+    @Test
+    public void isOffEnabled() {
+        assertTrue("Incorrect level", logger.isEnabled(Level.OFF));
+    }
+
+    @Test
+    public void isTraceEnabled() {
+        assertTrue("Incorrect level", logger.isTraceEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.TRACE));
+    }
+
+    @Test
+    public void isWarnEnabled() {
+        assertTrue("Incorrect level", logger.isWarnEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.WARN));
+    }
+
+    @Test
     public void mdc() {
 
         ThreadContext.put("TestYear", new Integer(2010).toString());

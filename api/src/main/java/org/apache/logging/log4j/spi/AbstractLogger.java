@@ -917,6 +917,7 @@ public abstract class AbstractLogger implements Logger {
         return isEnabled(Level.WARN, null, (Object) null, null);
     }
 
+
     /**
      * Checks whether this Logger is enabled for the WARN Level.
      *
@@ -1425,6 +1426,17 @@ public abstract class AbstractLogger implements Logger {
      * @return True if logging is enabled, false otherwise.
      */
     protected abstract boolean isEnabled(Level level, Marker marker, Object data, Throwable t);
+
+    /**
+     * Checks whether this Logger is enabled for the the given Level.
+     * 
+     * @param level
+     *            the level to check
+     * @return boolean - <code>true</code> if this Logger is enabled for level, <code>false</code> otherwise.
+     */
+    public boolean isEnabled(Level level) {
+        return isEnabled(level, null, (Object) null, null);
+    }
 
     /**
      * Determine if logging is enabled.

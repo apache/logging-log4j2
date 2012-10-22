@@ -588,6 +588,15 @@ public interface Logger {
   boolean isDebugEnabled(Marker marker);
 
   /**
+   * Checks whether this Logger is enabled for the the given Level.
+   * 
+   * @param level
+   *            the level to check
+   * @return boolean - <code>true</code> if this Logger is enabled for level, <code>false</code> otherwise.
+   */
+  boolean isEnabled(Level level);
+  
+  /**
    * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
    *
    * @return boolean - <code>true</code> if this Logger is enabled for level
