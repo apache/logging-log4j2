@@ -37,11 +37,6 @@ public class LoggerTest {
     TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
     List<String> results = logger.getEntries();
 
-    @Before
-    public void setup() {
-        results.clear();
-    }
-
     @Test
     public void basicFlow() {
         logger.entry();
@@ -50,14 +45,6 @@ public class LoggerTest {
         assertTrue("Incorrect Entry", results.get(0).startsWith(" TRACE  entry"));
         assertTrue("incorrect Exit", results.get(1).startsWith(" TRACE  exit"));
 
-    }
-
-    @Test
-    public void throwing() {
-        logger.throwing(new IllegalArgumentException("Test Exception"));
-        assertEquals(1, results.size());
-        assertTrue("Incorrect Throwing",
-            results.get(0).startsWith(" ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
     }
 
     @Test
@@ -102,36 +89,6 @@ public class LoggerTest {
     }
 
     @Test
-    public void mdc() {
-
-        ThreadContext.put("TestYear", new Integer(2010).toString());
-        logger.debug("Debug message");
-        ThreadContext.clear();
-        logger.debug("Debug message");
-        assertEquals(2, results.size());
-        assertTrue("Incorrect MDC: " + results.get(0),
-            results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"));
-        assertTrue("MDC not cleared?: " + results.get(1),
-            results.get(1).startsWith(" DEBUG Debug message"));
-    }
-
-    @Test
-    public void structuredData() {
-        ThreadContext.put("loginId", "JohnDoe");
-        ThreadContext.put("ipAddress", "192.168.0.120");
-        ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
-        msg.put("ToAccount", "123456");
-        msg.put("FromAccount", "123457");
-        msg.put("Amount", "200.00");
-        logger.info(MarkerManager.getMarker("EVENT"), msg);
-        ThreadContext.clear();
-        assertEquals(1, results.size());
-        assertTrue("Incorrect structured data: " + results.get(0),results.get(0).startsWith(
-            " INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));
-    }
-
-    @Test
     public void getLoggerByClass() {
         Logger classLogger = LogManager.getLogger(LoggerTest.class);
         assertNotNull(classLogger);
@@ -158,5 +115,48 @@ public class LoggerTest {
         Logger classLogger = LogManager.getLogger(this);
         assertNotNull(classLogger);
         assertEquals(classLogger, LogManager.getLogger(LoggerTest.class));
+    }
+
+    @Test
+    public void mdc() {
+
+        ThreadContext.put("TestYear", new Integer(2010).toString());
+        logger.debug("Debug message");
+        ThreadContext.clear();
+        logger.debug("Debug message");
+        assertEquals(2, results.size());
+        assertTrue("Incorrect MDC: " + results.get(0),
+            results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"));
+        assertTrue("MDC not cleared?: " + results.get(1),
+            results.get(1).startsWith(" DEBUG Debug message"));
+    }
+
+    @Before
+    public void setup() {
+        results.clear();
+    }
+
+    @Test
+    public void structuredData() {
+        ThreadContext.put("loginId", "JohnDoe");
+        ThreadContext.put("ipAddress", "192.168.0.120");
+        ThreadContext.put("locale", Locale.US.getDisplayName());
+        StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
+        msg.put("ToAccount", "123456");
+        msg.put("FromAccount", "123457");
+        msg.put("Amount", "200.00");
+        logger.info(MarkerManager.getMarker("EVENT"), msg);
+        ThreadContext.clear();
+        assertEquals(1, results.size());
+        assertTrue("Incorrect structured data: " + results.get(0),results.get(0).startsWith(
+            " INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));
+    }
+
+    @Test
+    public void throwing() {
+        logger.throwing(new IllegalArgumentException("Test Exception"));
+        assertEquals(1, results.size());
+        assertTrue("Incorrect Throwing",
+            results.get(0).startsWith(" ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
     }
 }
