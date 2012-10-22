@@ -382,7 +382,7 @@ public abstract class StrMatcher {
         }
 
         /**
-         * Always returns <code>false</code>.
+         * Always returns {@code false}.
          *
          * @param buffer  the text content to match against, do not change
          * @param pos  the starting position for the match, valid for buffer

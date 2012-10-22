@@ -368,7 +368,7 @@ public class Category {
     }
 
     /**
-     If <code>assertion</code> parameter is <code>false</code>, then
+     If <code>assertion</code> parameter is {@code false}, then
      logs <code>msg</code> as an {@link #error(Object) error} statement.
 
      <p>The <code>assert</code> method has been renamed to

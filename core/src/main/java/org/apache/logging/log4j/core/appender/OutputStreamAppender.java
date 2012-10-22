@@ -34,7 +34,7 @@ public abstract class OutputStreamAppender extends AbstractAppender {
      * will be flushed at the end of each append operation. Immediate
      * flush is slower but ensures that each append request is actually
      * written. If <code>immediateFlush</code> is set to
-     * <code>false</code>, then there is a good chance that the last few
+     * {@code false}, then there is a good chance that the last few
      * logs events are not actually written to persistent media if and
      * when the application crashes.
      */

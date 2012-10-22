@@ -62,14 +62,14 @@ public abstract class Layout {
     /**
      * If the layout handles the throwable object contained within
      * {@link LoggingEvent}, then the layout should return
-     * <code>false</code>. Otherwise, if the layout ignores throwable
+     * {@code false}. Otherwise, if the layout ignores throwable
      * object, then the layout should return <code>true</code>.
      * If ignoresThrowable is true, the appender is responsible for
      * rendering the throwable.
      * <p/>
      * <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
      * PatternLayout} all return <code>true</code>. The {@link
-     * org.apache.log4j.xml.XMLLayout} returns <code>false</code>.
+     * org.apache.log4j.xml.XMLLayout} returns {@code false}.
      *
      * @since 0.8.4
      */

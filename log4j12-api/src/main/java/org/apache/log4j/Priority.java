@@ -147,7 +147,7 @@ public class Priority {
 
     /**
      * Returns <code>true</code> if this level has a higher or equal
-     * level than the level passed as argument, <code>false</code>
+     * level than the level passed as argument, {@code false}
      * otherwise.
      * <p/>
      * <p>You should think twice before overriding the default
