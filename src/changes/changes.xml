@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action issue="LOG4J2-28" dev="rgoers" type="add">
+        Added PropertiesRewritePolicy and ability to define properties on a Logger.
+      </action>
       <action issue="LOG4J2-87" dev="rgoers" type="update">
         Build pdf of user's guide.
       </action>
