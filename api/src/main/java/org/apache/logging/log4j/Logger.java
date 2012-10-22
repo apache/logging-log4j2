@@ -589,9 +589,10 @@ public interface Logger {
 
   /**
    * Checks whether this Logger is enabled for the the given Level.
-   * 
-   * @param level
-   *            the level to check
+   * <p>
+   * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
+   * </p>
+   * @param level the level to check
    * @return boolean - <code>true</code> if this Logger is enabled for level, <code>false</code> otherwise.
    */
   boolean isEnabled(Level level);
