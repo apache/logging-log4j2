@@ -118,9 +118,9 @@ public final class OptionConverter {
     }
 
     /**
-     * If <code>value</code> is "true", then <code>true</code> is
+     * If <code>value</code> is "true", then {@code true} is
      * returned. If <code>value</code> is "false", then
-     * <code>true</code> is returned. Otherwise, <code>default</code> is
+     * {@code true} is returned. Otherwise, <code>default</code> is
      * returned.
      * <p/>
      * <p>Case of value is unimportant.

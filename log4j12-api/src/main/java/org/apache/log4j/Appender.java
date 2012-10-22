@@ -116,7 +116,7 @@ public interface Appender {
 
     /**
      * Configurators call this method to determine if the appender
-     * requires a layout. If this method returns <code>true</code>,
+     * requires a layout. If this method returns {@code true},
      * meaning that layout is required, then the configurator will
      * configure an layout using the configuration information at its
      * disposal.  If this method returns {@code false}, meaning that
@@ -126,7 +126,7 @@ public interface Appender {
      * <p/>
      * <p>In the rather exceptional case, where the appender
      * implementation admits a layout but can also work without it, then
-     * the appender should return <code>true</code>.
+     * the appender should return {@code true}.
      *
      * @since 0.8.4
      */

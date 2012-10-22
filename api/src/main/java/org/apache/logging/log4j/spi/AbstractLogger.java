@@ -323,7 +323,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the TRACE  Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         TRACE, {@code false} otherwise.
      */
     public boolean isTraceEnabled() {
@@ -334,7 +334,7 @@ public abstract class AbstractLogger implements Logger {
      * Checks whether this Logger is enabled for the TRACE  Level.
      *
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         TRACE, {@code false} otherwise.
      */
     public boolean isTraceEnabled(Marker marker) {
@@ -518,7 +518,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the DEBUG Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         DEBUG, {@code false} otherwise.
      */
     public boolean isDebugEnabled() {
@@ -529,7 +529,7 @@ public abstract class AbstractLogger implements Logger {
      * Checks whether this Logger is enabled for the DEBUG Level.
      *
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         DEBUG, {@code false} otherwise.
      */
     public boolean isDebugEnabled(Marker marker) {
@@ -715,7 +715,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the INFO Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         INFO, {@code false} otherwise.
      */
     public boolean isInfoEnabled() {
@@ -725,7 +725,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the INFO Level.
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         INFO, {@code false} otherwise.
      */
     public boolean isInfoEnabled(Marker marker) {
@@ -910,7 +910,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the WARN Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         WARN, {@code false} otherwise.
      */
     public boolean isWarnEnabled() {
@@ -922,7 +922,7 @@ public abstract class AbstractLogger implements Logger {
      * Checks whether this Logger is enabled for the WARN Level.
      *
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         WARN, {@code false} otherwise.
      */
     public boolean isWarnEnabled(Marker marker) {
@@ -1108,7 +1108,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         {@link Level#ERROR ERROR}, {@code false} otherwise.
      */
     public boolean isErrorEnabled() {
@@ -1119,7 +1119,7 @@ public abstract class AbstractLogger implements Logger {
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
      *
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         {@link Level#ERROR ERROR}, {@code false} otherwise.
      */
     public boolean isErrorEnabled(Marker marker) {
@@ -1305,7 +1305,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Checks whether this Logger is enabled for the FATAL Level.
      *
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         FATAL, {@code false} otherwise.
      */
     public boolean isFatalEnabled() {
@@ -1316,7 +1316,7 @@ public abstract class AbstractLogger implements Logger {
      * Checks whether this Logger is enabled for the FATAL Level.
      *
      * @param marker The marker data.
-     * @return boolean - <code>true</code> if this Logger is enabled for level
+     * @return boolean - {@code true} if this Logger is enabled for level
      *         FATAL, {@code false} otherwise.
      */
     public boolean isFatalEnabled(Marker marker) {
@@ -1433,7 +1433,7 @@ public abstract class AbstractLogger implements Logger {
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
      * </p>
      * @param level the level to check
-     * @return boolean - <code>true</code> if this Logger is enabled for level, {@code false} otherwise.
+     * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
     public boolean isEnabled(Level level) {
         return isEnabled(level, null, (Object) null, null);

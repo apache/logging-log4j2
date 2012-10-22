@@ -146,7 +146,7 @@ public class Priority {
 
 
     /**
-     * Returns <code>true</code> if this level has a higher or equal
+     * Returns {@code true} if this level has a higher or equal
      * level than the level passed as argument, {@code false}
      * otherwise.
      * <p/>
