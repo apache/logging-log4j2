@@ -49,6 +49,8 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
+    private static final String REGEXP = LINE_SEP.equals("\n") ? "\n" : LINE_SEP + "|\n";
+
     private static final String DEFAULT_TITLE = "Log4J Log Messages";
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
@@ -157,7 +159,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         }
 
         sbuf.append("<td title=\"Message\">");
-        sbuf.append(Transform.escapeTags(event.getMessage().getFormattedMessage()).replaceAll(LINE_SEP, "<br />"));
+        sbuf.append(Transform.escapeTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
         sbuf.append("</td>").append(LINE_SEP);
         sbuf.append("</tr>").append(LINE_SEP);
 
