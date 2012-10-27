@@ -39,7 +39,7 @@ public class LogManager {
      */
     public static final String ROOT_LOGGER_NAME = "";
 
-    private static final String LOGGER_RESOURCE = "META-INF/log4j-provider.xml";
+    private static final String LOGGER_RESOURCE = "META-INF/log4j-provider.properties";
     private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String FACTORY_PRIORITY = "FactoryPriority";
@@ -95,7 +95,7 @@ public class LogManager {
                     Properties props = new Properties();
                     URL url = enumResources.nextElement();
                     try {
-                        props.loadFromXML(url.openStream());
+                        props.load(url.openStream());
                     } catch (IOException ioe) {
                         logger.error("Unable to read " + url.toString(), ioe);
                     }

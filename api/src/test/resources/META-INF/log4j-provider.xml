@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-    <entry key="LoggerContextFactory">org.apache.logging.log4j.TestLoggerContextFactory</entry>
-    <entry key="Log4jAPIVersion">2.0.0</entry>
-    <entry key="FactoryPriority">0</entry>
-</properties>

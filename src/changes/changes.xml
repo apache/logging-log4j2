@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action issue="LOG4J2-104" dev="rgoers" type="fix">
+        Convert LogManager binding to use "regular" java properties instead of XML properties to workaround a
+        bug in Oracle's xmlparserv2 jar.
+      </action>
       <action issue="LOG4J2-28" dev="rgoers" type="add">
         Added PropertiesRewritePolicy and ability to define properties on a Logger.
       </action>
