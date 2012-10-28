@@ -103,7 +103,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         this.fqcnOfLogger = fqcn;
         this.level = level;
         this.message = message;
-        this.throwable = t == null ? null : new ThrowableProxy(t);
+        this.throwable = (t == null ? null : (t instanceof ThrowableProxy ? (ThrowableProxy)t : new ThrowableProxy(t)));
         this.mdc = mdc;
         this.ndc = ndc;
         this.timestamp = message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestamp;
