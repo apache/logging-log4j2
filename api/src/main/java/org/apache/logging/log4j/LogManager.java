@@ -64,6 +64,7 @@ public class LogManager {
      * be used but this could be extended to allow multiple implementations to be used.
      */
     static {
+        // Shortcut binding to force a specific logging implementation.
         PropsUtil managerProps = new PropsUtil("log4j2.LogManager.properties");
         String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
         ClassLoader cl = findClassLoader();
