@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+      <action issue="LOG4J2-85" dev="rgoers" type="update">
+        Add ThreadContext.push(String format, Object... args)
+      </action>
       <action issue="LOG4J2-103" dev="rgoers" type="fix" due-to="Das Archive">
         The LogEvent was wrapping a ThrowableProxy with another ThrowableProxy when deserializing.
       </action>

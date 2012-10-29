@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.message.ParameterizedMessage;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -258,6 +260,27 @@ public final class ThreadContext {
             localStack.set(stack);
         }
         stack.push(message);
+    }
+    /**
+     * Push new diagnostic context information for the current thread.
+     * <p/>
+     * <p>The contents of the <code>message</code> and args parameters are
+     * determined solely by the client. The message will be treated as a format String
+     * and tokens will be replaced with the String value of the arguments in accordance
+     * with ParameterizedMessage.
+     *
+     * @param message The new diagnostic context information.
+     */
+    public static void push(String message, Object... args) {
+        if (!useStack) {
+            return;
+        }
+        ContextStack stack = localStack.get();
+        if (stack == null) {
+            stack = new ThreadContextStack();
+            localStack.set(stack);
+        }
+        stack.push(ParameterizedMessage.format(message, args));
     }
 
     /**
