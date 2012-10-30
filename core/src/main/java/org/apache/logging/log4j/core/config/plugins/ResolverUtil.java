@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.config.plugins;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +30,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,6 +78,8 @@ public class ResolverUtil<T> {
     private static final Logger LOG = StatusLogger.getLogger();
 
     private static final String VFSZIP = "vfszip";
+
+    private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
     private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
@@ -254,6 +259,8 @@ public class ResolverUtil<T> {
                     URL newURL = new URL(url.getProtocol(), url.getHost(), path);
                     JarInputStream stream = new JarInputStream(newURL.openStream());
                     loadImplementationsInJar(test, packageName, path, stream);
+                } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
+                    loadImplementationsInBundle(test, packageName);
                 } else {
                     File file = new File(urlPath);
                     if (file.isDirectory()) {
@@ -265,6 +272,14 @@ public class ResolverUtil<T> {
             } catch (IOException ioe) {
                 LOG.warn("could not read entries", ioe);
             }
+        }
+    }
+
+    private void loadImplementationsInBundle(Test test, String packageName) {
+        Collection<String> list = FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class)
+            .listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+        for (String name : list) {
+            addIfMatching(test, name);
         }
     }
 
@@ -383,7 +398,7 @@ public class ResolverUtil<T> {
             }
         } catch (Throwable t) {
             LOG.warn("Could not examine class '" + fqn + "' due to a " +
-                     t.getClass().getName() + " with message: " + t.getMessage());
+                t.getClass().getName() + " with message: " + t.getMessage());
         }
     }
 
