@@ -60,11 +60,11 @@
               <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
                 load the configuration using the <code>ConfigurationFactory</code> that matches the file
                 extension.</li>
-              <li>If no system property is set the JSON ConfigurationFactory will look for log4j-test.json or
-                log4j-test.jsn in the classpath.</li>
+              <li>If no system property is set the JSON ConfigurationFactory will look for log4j2-test.json or
+                log4j2-test.jsn in the classpath.</li>
               <li>If no such file is found the XML ConfigurationFactory will look for log4j2-test.xml in the
                 classpath.</li>
-              <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j.json or log4j.jsn
+              <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j2.json or log4j2.jsn
                 on the classpath.</li>
               <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
                 log4j2.xml on the classpath.</li>
@@ -154,7 +154,7 @@
     </root>
   </loggers>
 </configuration>]]></source>
-            Once the file above is placed into the classpath as log4j.xml you will get results identical to
+            Once the file above is placed into the classpath as log4j2.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
              <source>
   17:13:01.540 [main] TRACE MyApp - Entering application.
@@ -924,8 +924,8 @@
         <p>
           Maven can run unit and functional tests during the build cycle. By default, any files placed in
           <code>src/test/resources</code> are automatically copied to target/test-classes and are included
-          in the classpath during execution of any tests. As such, placing a log4j-test.xml into this directory
-          will cause it to be used instead of a log4j.xml or log4j.json that might be present.  Thus a different
+          in the classpath during execution of any tests. As such, placing a log4j2-test.xml into this directory
+          will cause it to be used instead of a log4j2.xml or log4j2.json that might be present.  Thus a different
           log configuration can be used during testing than what is used in production.
         </p>
         <p>
