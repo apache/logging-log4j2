@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -82,6 +85,62 @@ public enum AnsiEscape {
 
     public String getCode() {
         return code;
+    }
+
+    /**
+     * Creates a Map from a source string. The format is:
+     * 
+     * <pre>
+     * Key1=Value, Key2=Value, ...
+     * </pre>
+     * 
+     * For example:
+     * 
+     * <pre>
+     * ERROR=red bold, WARN=yellow bold, INFO=green, ...
+     * </pre>
+     * 
+     * You can use whitespace around the comma and equal sign. The names in values MUST come from the {@linkplain AnsiEscape} enum, case is
+     * normalized to upper-case internally.
+     * 
+     * @param values
+     *            the source string to parse.
+     * @return a new map
+     */
+    public static Map<String, String> createMap(String values) {
+        return createMap(values.split("\\s*,\\s*"));
+    }
+
+    /**
+     * Creates a Map from a source array. Each array entry must be in the format:
+     * 
+     * <pre>
+     * Key1 = Value
+     * </pre>
+     * 
+     * For example:
+     * 
+     * <pre>
+     * ERROR=red bold
+     * </pre>
+     * 
+     * You can use whitespace around the equal sign and between the value elements. The names in values MUST come from the
+     * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
+     * 
+     * @param values
+     *            the source array to parse.
+     * @return a new map
+     */
+    public static Map<String, String> createMap(String[] values) {
+        Map<String, String> map = new HashMap<String, String>();
+        for (String string : values) {
+            String[] keyValue = string.split("\\s*=\\s*");
+            if (keyValue.length > 1) {
+                final String style = keyValue[1];
+                map.put(keyValue[0], createSequence(style.split("\\s")));
+            }
+        }
+        return map;
     }
 
     public static String createSequence(String[] values) {
