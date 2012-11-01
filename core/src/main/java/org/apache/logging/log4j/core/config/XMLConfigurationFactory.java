@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.xml.sax.InputSource;
 
 /**
- * Factory to coonstruct an XMLConfiguration.
+ * Factory to construct an XMLConfiguration.
  */
 @Plugin(name = "XMLConfigurationFactory", type = "ConfigurationFactory")
 @Order(5)
