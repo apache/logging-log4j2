@@ -7,6 +7,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
+/**
+ * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest of the log entry
+ * (time stamp for example) is in the default color for that console.
+ */
 public class ConsoleAppenderAnsiStyleLayoutMain {
 
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
