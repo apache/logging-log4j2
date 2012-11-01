@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -88,7 +90,7 @@ public enum AnsiEscape {
     }
 
     /**
-     * Creates a Map from a source string. The format is:
+     * Creates a Map from a source array where values are ANSI escape sequences. The format is:
      * 
      * <pre>
      * Key1=Value, Key2=Value, ...
@@ -105,14 +107,16 @@ public enum AnsiEscape {
      * 
      * @param values
      *            the source string to parse.
+     * @param dontEscapeKeys
+     *            do not escape these keys, leave the values as is in the map
      * @return a new map
      */
-    public static Map<String, String> createMap(String values) {
-        return createMap(values.split("\\s*,\\s*"));
+    public static Map<String, String> createMap(String values, String[] dontEscapeKeys) {
+        return createMap(values.split("\\s*,\\s*"), dontEscapeKeys);
     }
 
     /**
-     * Creates a Map from a source array. Each array entry must be in the format:
+     * Creates a Map from a source array where values are ANSI escape sequences. Each array entry must be in the format:
      * 
      * <pre>
      * Key1 = Value
@@ -129,29 +133,42 @@ public enum AnsiEscape {
      * 
      * @param values
      *            the source array to parse.
+     * @param dontEscapeKeys
+     *            do not escape these keys, leave the values as is in the map
      * @return a new map
      */
-    public static Map<String, String> createMap(String[] values) {
+    public static Map<String, String> createMap(String[] values, String[] dontEscapeKeys) {
+        final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : new String[0];
+        Arrays.sort(sortedIgnoreKeys);
         Map<String, String> map = new HashMap<String, String>();
         for (String string : values) {
             String[] keyValue = string.split("\\s*=\\s*");
             if (keyValue.length > 1) {
-                final String style = keyValue[1];
-                map.put(keyValue[0], createSequence(style.split("\\s")));
+                final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
+                final String value = keyValue[1];
+                final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
+                map.put(key, escape ? createSequence(value.split("\\s")) : value);
             }
         }
         return map;
     }
 
-    public static String createSequence(String[] values) {
-        if (values == null) {
+    /**
+     * Creates an ANSI escape sequence from the given {@linkplain AnsiEscape} names.
+     * 
+     * @param names
+     *            {@linkplain AnsiEscape} names.
+     * @return An ANSI escape sequence.
+     */
+    public static String createSequence(String[] names) {
+        if (names == null) {
             return getDefaultStyle();
         }
         StringBuilder sb = new StringBuilder(AnsiEscape.PREFIX.getCode());
         boolean first = true;
-        for (String value : values) {
+        for (String name : names) {
             try {
-                AnsiEscape escape = AnsiEscape.valueOf(value.trim().toUpperCase());
+                AnsiEscape escape = AnsiEscape.valueOf(name.trim().toUpperCase(Locale.ENGLISH));
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
