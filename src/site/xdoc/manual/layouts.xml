@@ -20,6 +20,7 @@
     <properties>
         <title>Log4j 2 Layouts</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="ggregory@apache.org">Gary Gregory</author>
     </properties>
 
     <body>
@@ -266,12 +267,97 @@
             </tr>
             <tr>
               <td align="center">
-                <b>highlight</b>{pattern}
+                <b>highlight</b>{pattern}{style}
               </td>
               <td>
-                Adds ANSI colors to the result of the enclosed pattern based on the current event's logging level.
-                The result will be in blinking bright red when the level is FATAL, bright red when the level is
-                ERROR, red when the level is WARN, blue when the level is INFO and normal for DEBUG and TRACE levels.
+                <p>Adds ANSI colors to the result of the enclosed pattern based on the current event's logging level.
+                </p>
+                <p>The default colors for each level are:
+                 <table border="1" width="100%">
+                   <tr>
+                     <th>Level</th>
+                     <th>ANSI color</th>
+                   </tr>
+                   <tr>
+                     <td>FATAL</td>
+                     <td>Bright red</td>
+                   </tr>
+                   <tr>
+                     <td>ERROR</td>
+                     <td>Bright red</td>
+                   </tr>
+                   <tr>
+                     <td>WARN</td>
+                     <td>Yellow</td>
+                   </tr>
+                   <tr>
+                     <td>INFO</td>
+                     <td>Green</td>
+                   </tr>
+                   <tr>
+                     <td>DEBUG</td>
+                     <td>Cyan</td>
+                   </tr>
+                   <tr>
+                     <td>TRACE</td>
+                     <td>Black (looks dark grey)</td>
+                   </tr>
+                 </table>                 
+                </p>
+                <p>The color names are ANSI names defined in the <a href="../log4j2-core/apidocs/index.html">AnsiEscape</a> class.
+                </p>
+                <p>The default colors can be overridden in the optional style option. For example:
+                 <pre>%highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
+                </p>
+                <p>You can also use the STYLE key to use a predefined group of colors:
+                 <pre>%highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
+                 The style can be one of:
+                 <table border="1" width="100%">
+                   <tr>
+                     <th>Style</th>
+                     <th>Description</th>
+                   </tr>
+                   <tr>
+                     <td>Default</td>
+                     <td>See above</td>
+                   </tr>
+                   <tr>
+                     <td>Logback</td>
+                     <td>
+                       <table border="1" width="100%">
+                         <tr>
+                           <th>Level</th>
+                           <th>ANSI color</th>
+                         </tr>
+                         <tr>
+                           <td>FATAL</td>
+                           <td>Blinking bright red</td>
+                         </tr>
+                         <tr>
+                           <td>ERROR</td>
+                           <td>Bright red</td>
+                         </tr>
+                         <tr>
+                           <td>WARN</td>
+                           <td>Red</td>
+                         </tr>
+                         <tr>
+                           <td>INFO</td>
+                           <td>Blue</td>
+                         </tr>
+                         <tr>
+                           <td>DEBUG</td>
+                           <td>Normal</td>
+                         </tr>
+                         <tr>
+                           <td>TRACE</td>
+                           <td>Normal</td>
+                         </tr>
+                       </table>                                      
+                     </td>
+                   </tr>
+                 </table>                 
+                </p>
               </td>
             </tr>
             <tr>
