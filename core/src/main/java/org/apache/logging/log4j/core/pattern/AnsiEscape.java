@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- *
+ * Converts text into ANSI escape sequences.
  */
 public enum AnsiEscape {
 
