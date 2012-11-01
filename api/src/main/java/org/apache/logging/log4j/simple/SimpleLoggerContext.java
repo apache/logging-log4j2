@@ -23,7 +23,6 @@ import org.apache.logging.log4j.util.PropsUtil;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
