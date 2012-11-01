@@ -23,6 +23,10 @@ import java.util.Map;
 
 /**
  * Converts text into ANSI escape sequences.
+ * <p>
+ * The names for colors and attributes are standard, but the exact shade/hue/value of colors are not, and depend on the device used to
+ * display them.
+ * </p>
  */
 public enum AnsiEscape {
 
