@@ -74,8 +74,6 @@ public final class HighlightConverter extends LogEventPatternConverter {
 
     private static final String STYLE_KEY_LOGBACK = "LOGBACK";
 
-    private static final String STYLE_KEY_LOG4J = "LOG4J";
-
     private static final String STYLE_KEY = "STYLE";
 
     private static final EnumMap<Level, String> DEFAULT_STYLES = new EnumMap<Level, String>(Level.class);
@@ -101,7 +99,6 @@ public final class HighlightConverter extends LogEventPatternConverter {
         LOGBACK_STYLES.put(Level.TRACE, AnsiEscape.createSequence(null));
         // Style map:
         STYLES.put(STYLE_KEY_DEFAULT, DEFAULT_STYLES);
-        STYLES.put(STYLE_KEY_LOG4J, DEFAULT_STYLES);
         STYLES.put(STYLE_KEY_LOGBACK, LOGBACK_STYLES);
     }
 
