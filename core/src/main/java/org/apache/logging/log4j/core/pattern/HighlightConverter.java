@@ -51,22 +51,25 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({ "highlight" })
 public final class HighlightConverter extends LogEventPatternConverter {
 
-    private static final String[] DEFAULT_FATAL = new String[] { "BLINK", "BRIGHT", "RED" };
-    private static final String[] DEFAULT_ERROR = new String[] { "BRIGHT", "RED" };
-    private static final String[] DEFAULT_WARN = new String[] { "RED" };
-    private static final String[] DEFAULT_INFO = new String[] { "BLUE" };
-    private static final String[] DEFAULT_DEBUG = null;
-    private static final String[] DEFAULT_TRACE = null;
-    
-    private static final EnumMap<Level, String> LEVEL_STYLES_DEFAULT = new EnumMap<Level, String>(Level.class);
+    private static final EnumMap<Level, String> DEFAULT_STYLES = new EnumMap<Level, String>(Level.class);
+
+    private static final EnumMap<Level, String> LOGBACK_STYLES = new EnumMap<Level, String>(Level.class);
 
     static {
-        LEVEL_STYLES_DEFAULT.put(Level.FATAL, AnsiEscape.createSequence(DEFAULT_FATAL));
-        LEVEL_STYLES_DEFAULT.put(Level.ERROR, AnsiEscape.createSequence(DEFAULT_ERROR));
-        LEVEL_STYLES_DEFAULT.put(Level.WARN, AnsiEscape.createSequence(DEFAULT_WARN));
-        LEVEL_STYLES_DEFAULT.put(Level.INFO, AnsiEscape.createSequence(DEFAULT_INFO));
-        LEVEL_STYLES_DEFAULT.put(Level.DEBUG, AnsiEscape.createSequence(DEFAULT_DEBUG));
-        LEVEL_STYLES_DEFAULT.put(Level.TRACE, AnsiEscape.createSequence(DEFAULT_TRACE));
+        DEFAULT_STYLES.put(Level.FATAL, AnsiEscape.createSequence(new String[] { "BRIGHT", "RED" }));
+        DEFAULT_STYLES.put(Level.ERROR, AnsiEscape.createSequence(new String[] { "BRIGHT", "RED" }));
+        DEFAULT_STYLES.put(Level.WARN, AnsiEscape.createSequence(new String[] { "YELLOW" }));
+        DEFAULT_STYLES.put(Level.INFO, AnsiEscape.createSequence(new String[] { "GREEN" }));
+        DEFAULT_STYLES.put(Level.DEBUG, AnsiEscape.createSequence(new String[] { "CYAN" }));
+        DEFAULT_STYLES.put(Level.TRACE, AnsiEscape.createSequence(new String[] { "BLACK" }));
+        //
+        LOGBACK_STYLES.put(Level.FATAL, AnsiEscape.createSequence(new String[] { "BLINK", "BRIGHT", "RED" }));
+        LOGBACK_STYLES.put(Level.ERROR, AnsiEscape.createSequence(new String[] { "BRIGHT", "RED" }));
+        LOGBACK_STYLES.put(Level.WARN, AnsiEscape.createSequence(new String[] { "RED" }));
+        LOGBACK_STYLES.put(Level.INFO, AnsiEscape.createSequence(new String[] { "BLUE" }));
+        LOGBACK_STYLES.put(Level.DEBUG, AnsiEscape.createSequence(null));
+        LOGBACK_STYLES.put(Level.TRACE, AnsiEscape.createSequence(null));
+
     }
 
     /**
@@ -92,8 +95,11 @@ public final class HighlightConverter extends LogEventPatternConverter {
      * @return a new map
      */
     private static EnumMap<Level, String> createLevelStyleMap(final String[] options) {
-        Map<String, String> styles = options.length < 2 ? null : AnsiEscape.createMap(options[1]);
-        EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(LEVEL_STYLES_DEFAULT);
+        if (options.length < 2) {
+            return DEFAULT_STYLES;
+        }
+        Map<String, String> styles = AnsiEscape.createMap(options[1]);
+        EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
         for (Map.Entry<String, String> entry : styles.entrySet()) {
             final Level key = Level.valueOf(entry.getKey());
             if (key == null) {
