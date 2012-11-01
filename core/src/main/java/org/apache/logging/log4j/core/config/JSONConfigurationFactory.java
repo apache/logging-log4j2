@@ -61,11 +61,11 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(InputSource source) {
+    public Configuration getConfiguration(ConfigurationSource source) {
         if (!isActive) {
             return null;
         }
-        return new JSONConfiguration(source, configFile);
+        return new JSONConfiguration(source);
     }
 
     @Override

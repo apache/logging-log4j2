@@ -25,15 +25,18 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -49,13 +52,6 @@ public class LoggerTest {
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
     }
 
     @AfterClass
@@ -64,6 +60,20 @@ public class LoggerTest {
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
+
+    @Before
+    public void before() {
+        config = ctx.getConfiguration();
+        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+            if (entry.getKey().equals("List")) {
+                app = (ListAppender) entry.getValue();
+                break;
+            }
+        }
+        assertNotNull("No Appender", app);
+        app.clear();
+    }
+
 
     org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
 
@@ -155,6 +165,21 @@ public class LoggerTest {
         List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
+    }
+
+    @Test
+    public void testReconfiguration() throws Exception {
+        File file = new File("target/test-classes/" + CONFIG);
+        long orig = file.lastModified();
+        long newTime = orig + 10000;
+        file.setLastModified(newTime);
+        Thread.sleep(6000);
+        for (int i = 0; i < 17; ++i) {
+            logger.debug("Reconfigure");
+        }
+        Configuration cfg = ctx.getConfiguration();
+        assertNotNull("No configuration", cfg);
+        assertTrue("Reconfiguration failed", cfg != config);
     }
 }
 

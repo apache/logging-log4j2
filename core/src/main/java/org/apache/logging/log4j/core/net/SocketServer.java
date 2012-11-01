@@ -217,20 +217,18 @@ public class SocketServer extends AbstractServer implements Runnable {
         public Configuration getConfiguration(String name, URI configLocation) {
             if (path != null && path.length() > 0) {
                 File file = null;
-                InputSource source = null;
+                ConfigurationSource source = null;
                 try {
                     file = new File(path);
                     FileInputStream is = new FileInputStream(file);
-                    source = new InputSource(is);
-                    source.setSystemId(path);
+                    source = new ConfigurationSource(is, file);
                 } catch (FileNotFoundException ex) {
                     // Ignore this error
                 }
                 if (source == null) {
                     try {
                         URL url = new URL(path);
-                        source = new InputSource(url.openStream());
-                        source.setSystemId(path);
+                        source = new ConfigurationSource(url.openStream(), path);
                     } catch (MalformedURLException mue) {
                         // Ignore this error
                     } catch (IOException ioe) {
@@ -240,7 +238,7 @@ public class SocketServer extends AbstractServer implements Runnable {
 
                 try {
                     if (source != null) {
-                        return new XMLConfiguration(source, file);
+                        return new XMLConfiguration(source);
                     }
                 } catch (Exception ex) {
                     // Ignore this error.

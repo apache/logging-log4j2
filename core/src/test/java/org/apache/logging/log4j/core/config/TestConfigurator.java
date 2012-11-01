@@ -62,8 +62,8 @@ public class TestConfigurator {
     @Test
     public void testFromStream() throws Exception {
         InputStream is = new FileInputStream("target/test-classes/log4j2-config.xml");
-        InputSource source = new InputSource(is);
-        source.setSystemId("target/test-classes/log4j2-config.xml");
+        ConfigurationFactory.ConfigurationSource source =
+            new ConfigurationFactory.ConfigurationSource(is, "target/test-classes/log4j2-config.xml");
         LoggerContext ctx = Configurator.initialize(null, source);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -82,7 +82,8 @@ public class TestConfigurator {
     @Test
     public void testFromStreamNoId() throws Exception {
         InputStream is = new FileInputStream("target/test-classes/log4j2-config.xml");
-        InputSource source = new InputSource(is);
+        ConfigurationFactory.ConfigurationSource source =
+            new ConfigurationFactory.ConfigurationSource(is);
         LoggerContext ctx = Configurator.initialize(null, source);
         Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();

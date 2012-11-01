@@ -92,11 +92,6 @@ public abstract class ConfigurationFactory {
     private static ConfigurationFactory configFactory = new Factory();
 
     /**
-     * The configuration File.
-     */
-    protected File configFile = null;
-
-    /**
      * Returns the ConfigurationFactory.
      * @return the ConfigurationFactory.
      */
@@ -175,7 +170,7 @@ public abstract class ConfigurationFactory {
         return true;
     }
 
-    public abstract Configuration getConfiguration(InputSource source);
+    public abstract Configuration getConfiguration(ConfigurationSource source);
 
     /**
      * Returns the Configuration.
@@ -188,7 +183,7 @@ public abstract class ConfigurationFactory {
             return null;
         }
         if (configLocation != null) {
-            InputSource source = getInputFromURI(configLocation);
+            ConfigurationSource source = getInputFromURI(configLocation);
             if (source != null) {
                 return getConfiguration(source);
             }
@@ -199,15 +194,13 @@ public abstract class ConfigurationFactory {
     /**
      * Load the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
-     * @return The InputSource for the configuration.
+     * @return The ConfigurationSource for the configuration.
      */
-    protected InputSource getInputFromURI(URI configLocation) {
-        configFile = FileUtils.fileFromURI(configLocation);
+    protected ConfigurationSource getInputFromURI(URI configLocation) {
+        File configFile = FileUtils.fileFromURI(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
-                InputSource source = new InputSource(new FileInputStream(configFile));
-                source.setSystemId(configFile.getAbsolutePath());
-                return source;
+                return new ConfigurationSource(new FileInputStream(configFile), configFile);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configLocation.getPath(), ex);
             }
@@ -215,15 +208,13 @@ public abstract class ConfigurationFactory {
         String scheme = configLocation.getScheme();
         if (scheme == null || scheme.equals("classloader")) {
             ClassLoader loader = this.getClass().getClassLoader();
-            InputSource source = getInputFromResource(configLocation.getPath(), loader);
+            ConfigurationSource source = getInputFromResource(configLocation.getPath(), loader);
             if (source != null) {
                 return source;
             }
         }
         try {
-            InputSource source = new InputSource(configLocation.toURL().openStream());
-            source.setSystemId(configLocation.getPath());
-            return source;
+            return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.getPath());
         } catch (MalformedURLException ex) {
             LOGGER.error("Invalid URL " + configLocation.toString(), ex);
         } catch (IOException ex) {
@@ -240,40 +231,31 @@ public abstract class ConfigurationFactory {
      * @param loader The default ClassLoader to use.
      * @return The InputSource to use to read the configuration.
      */
-    protected InputSource getInputFromString(String config, ClassLoader loader) {
-        InputSource source;
+    protected ConfigurationSource getInputFromString(String config, ClassLoader loader) {
         try {
             URL url = new URL(config);
-            source = new InputSource(url.openStream());
-            if (FileUtils.isFile(url)) {
-                configFile = FileUtils.fileFromURI(url.toURI());
-            }
-            source.setSystemId(config);
-            return source;
+            return new ConfigurationSource(url.openStream(), FileUtils.fileFromURI(url.toURI()));
         } catch (Exception ex) {
-            source = getInputFromResource(config, loader);
+            ConfigurationSource source = getInputFromResource(config, loader);
             if (source == null) {
                 try {
                     File file = new File(config);
-                    FileInputStream is = new FileInputStream(file);
-                    configFile = file;
-                    source = new InputSource(is);
-                    source.setSystemId(config);
+                    return new ConfigurationSource(new FileInputStream(file), file);
                 } catch (FileNotFoundException fnfe) {
                     // Ignore the exception
                 }
             }
+            return source;
         }
-        return source;
     }
 
     /**
      * Retrieve the configuration via the ClassLoader.
      * @param resource The resource to load.
      * @param loader The default ClassLoader to use.
-     * @return The InputSource for the configuration.
+     * @return The ConfigurationSource for the configuration.
      */
-    protected InputSource getInputFromResource(String resource, ClassLoader loader) {
+    protected ConfigurationSource getInputFromResource(String resource, ClassLoader loader) {
         URL url = Loader.getResource(resource, loader);
         if (url == null) {
             return null;
@@ -287,16 +269,15 @@ public abstract class ConfigurationFactory {
         if (is == null) {
             return null;
         }
-        InputSource source = new InputSource(is);
+
         if (FileUtils.isFile(url)) {
             try {
-                configFile = FileUtils.fileFromURI(url.toURI());
+                return new ConfigurationSource(is, FileUtils.fileFromURI((url.toURI())));
             } catch (URISyntaxException ex) {
                 // Just ignore the exception.
             }
         }
-        source.setSystemId(resource);
-        return source;
+        return new ConfigurationSource(is, resource);
     }
 
     /**
@@ -346,7 +327,7 @@ public abstract class ConfigurationFactory {
                 String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
                 if (config != null) {
                     ClassLoader loader = this.getClass().getClassLoader();
-                    InputSource source = getInputFromString(config, loader);
+                    ConfigurationSource source = getInputFromString(config, loader);
                     if (source != null) {
                         for (ConfigurationFactory factory : factories) {
                             String[] types = factory.getSupportedTypes();
@@ -409,7 +390,7 @@ public abstract class ConfigurationFactory {
                     }
                     configName = named ? prefix + name + suffix : prefix + suffix;
 
-                    InputSource source = getInputFromResource(configName, loader);
+                    ConfigurationSource source = getInputFromResource(configName, loader);
                     if (source != null) {
                         return factory.getConfiguration(source);
                     }
@@ -424,9 +405,9 @@ public abstract class ConfigurationFactory {
         }
 
         @Override
-        public Configuration getConfiguration(InputSource source) {
+        public Configuration getConfiguration(ConfigurationSource source) {
             if (source != null) {
-                String config = source.getSystemId() != null ? source.getSystemId() : source.getPublicId();
+                String config = source.getLocation();
                 for (ConfigurationFactory factory : factories) {
                     String[] types = factory.getSupportedTypes();
                     if (types != null) {
@@ -446,6 +427,60 @@ public abstract class ConfigurationFactory {
             }
             LOGGER.error("Cannot process configuration, input source is null");
             return null;
+        }
+    }
+
+    public static class ConfigurationSource {
+
+        private File file;
+
+        private String location;
+
+        private InputStream stream;
+
+        public ConfigurationSource() {
+        }
+
+        public ConfigurationSource(InputStream stream) {
+            this.stream = stream;
+            this .file = null;
+            this.location = null;
+        }
+
+        public ConfigurationSource(InputStream stream, File file) {
+            this.stream = stream;
+            this.file = file;
+            this.location = file.getAbsolutePath();
+        }
+
+        public ConfigurationSource(InputStream stream, String location) {
+            this.stream = stream;
+            this.location = location;
+            this.file = null;
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public void setFile(File file) {
+            this.file = file;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public InputStream getInputStream() {
+            return stream;
+        }
+
+        public void setInputStream(InputStream stream) {
+            this.stream = stream;
         }
     }
 }

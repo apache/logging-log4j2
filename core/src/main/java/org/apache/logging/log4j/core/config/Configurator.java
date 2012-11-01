@@ -75,7 +75,7 @@ public final class Configurator {
      * @param source The InputSource for the configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(ClassLoader loader, InputSource source) {
+    public static LoggerContext initialize(ClassLoader loader, ConfigurationFactory.ConfigurationSource source) {
 
         try {
             LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);

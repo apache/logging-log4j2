@@ -27,7 +27,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,16 +61,15 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
     private File configFile;
 
-    public JSONConfiguration(InputSource source, File configFile) {
-        this.configFile = configFile;
+    public JSONConfiguration(ConfigurationFactory.ConfigurationSource configSource) {
+        this.configFile = configSource.getFile();
         byte[] buffer;
 
         try {
-            InputStream configStream = source.getByteStream();
+            InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
             InputStream is = new ByteArrayInputStream(buffer);
-            source = new InputSource(is);
             ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
             root = mapper.readTree(is);
             if (root.size() == 1) {
@@ -143,10 +141,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 }
             }
             if (getName() == null) {
-                setName(source.getSystemId());
+                setName(configSource.getLocation());
             }
         } catch (Exception ex) {
-            LOGGER.error("Error parsing " + source.getSystemId(), ex);
+            LOGGER.error("Error parsing " + configSource.getLocation(), ex);
             ex.printStackTrace();
         }
     }
@@ -177,9 +175,9 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     public Configuration reconfigure() {
         if (configFile != null) {
             try {
-                InputSource source = new InputSource(new FileInputStream(configFile));
-                source.setSystemId(configFile.getAbsolutePath());
-                return new JSONConfiguration(source, configFile);
+                ConfigurationFactory.ConfigurationSource source =
+                    new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
+                return new JSONConfiguration(source);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }

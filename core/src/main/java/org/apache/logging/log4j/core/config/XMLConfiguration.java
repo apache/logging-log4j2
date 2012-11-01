@@ -83,15 +83,15 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private final File configFile;
 
-    public XMLConfiguration(InputSource source, File configFile) {
-        this.configFile = configFile;
+    public XMLConfiguration(ConfigurationFactory.ConfigurationSource configSource) {
+        this.configFile = configSource.getFile();
         byte[] buffer = null;
 
         try {
-            InputStream configStream = source.getByteStream();
+            InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
-            source = new InputSource(new ByteArrayInputStream(buffer));
+            InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
@@ -165,11 +165,11 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             }
 
         } catch (SAXException domEx) {
-            LOGGER.error("Error parsing " + source.getSystemId(), domEx);
+            LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
         } catch (IOException ioe) {
-            LOGGER.error("Error parsing " + source.getSystemId(), ioe);
+            LOGGER.error("Error parsing " + configSource.getLocation(), ioe);
         } catch (ParserConfigurationException pex) {
-            LOGGER.error("Error parsing " + source.getSystemId(), pex);
+            LOGGER.error("Error parsing " + configSource.getLocation(), pex);
         }
         if (strict && schema != null && buffer != null) {
             InputStream is = null;
@@ -201,7 +201,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         }
 
         if (getName() == null) {
-            setName(source.getSystemId());
+            setName(configSource.getLocation());
         }
     }
 
@@ -220,9 +220,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     public Configuration reconfigure() {
         if (configFile != null) {
             try {
-                InputSource source = new InputSource(new FileInputStream(configFile));
-                source.setSystemId(configFile.getAbsolutePath());
-                return new XMLConfiguration(source, configFile);
+                ConfigurationFactory.ConfigurationSource source =
+                    new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
+                return new XMLConfiguration(source);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }

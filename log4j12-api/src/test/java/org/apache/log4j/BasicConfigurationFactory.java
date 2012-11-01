@@ -36,7 +36,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(InputSource source) {
+    public Configuration getConfiguration(ConfigurationSource source) {
         return new BasicConfiguration();
     }
 
