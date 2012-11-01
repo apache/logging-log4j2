@@ -32,7 +32,7 @@ public final class Configurator {
     }
 
     /**
-     * Initialize the Logging Context.
+     * Initializes the Logging Context.
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
@@ -50,7 +50,7 @@ public final class Configurator {
     }
 
     /**
-     * Initialize the Logging Context.
+     * Initializes the Logging Context.
      * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
@@ -70,7 +70,7 @@ public final class Configurator {
     }
 
     /**
-     * Initialize the Logging Context.
+     * Initializes the Logging Context.
      * @param loader The ClassLoader for the Context (or null).
      * @param source The InputSource for the configuration.
      * @return The LoggerContext.
