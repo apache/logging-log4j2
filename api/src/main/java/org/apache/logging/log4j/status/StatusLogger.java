@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
