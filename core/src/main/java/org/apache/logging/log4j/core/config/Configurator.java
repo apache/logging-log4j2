@@ -88,6 +88,10 @@ public final class Configurator {
         return null;
     }
 
+    /**
+     * Shuts down the given logging context.
+     * @param ctx the logging context to shut down, may be null.
+     */
     public static void shutdown(LoggerContext ctx) {
         if (ctx != null) {
             ctx.setConfiguration(new DefaultConfiguration());
