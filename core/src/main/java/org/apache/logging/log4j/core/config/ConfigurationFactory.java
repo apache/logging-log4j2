@@ -40,19 +40,26 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * ConfigurationFactory allows the configuration implementation to be dynamically chosen in 1
- * of 3 ways:
- * 1. A system property named "log4j.configurationFactory" can be set with the name of the
- * ConfigurationFactory to be used.
- * 2. setConfigurationFactory can be called with the instance of the ConfigurationFactory to
- * be used. This must be called before any other calls to Log4j.
- * 3. A ConfigurationFactory implementation can be added to the classpath and configured as a
- * plugin. The Order annotation should be used to configure the factory to be the first one
- * inspected. See XMLConfigurationFactory for an example.
- *
- * If the ConfigurationFactory that was added returns null on a call to getConfiguration the
- * any other ConfigurationFactories found as plugins will be called in their respective order.
- * DefaultConfiguration is always called last if no configuration has been returned.
+ * ConfigurationFactory allows the configuration implementation to be
+ * dynamically chosen in 1 of 3 ways:
+ * <ol>
+ * <li>A system property named "log4j.configurationFactory" can be set with the
+ * name of the ConfigurationFactory to be used.</li>
+ * <li>
+ * {@linkplain #setConfigurationFactory(ConfigurationFactory)} can be called
+ * with the instance of the ConfigurationFactory to be used. This must be called
+ * before any other calls to Log4j.</li>
+ * <li>
+ * A ConfigurationFactory implementation can be added to the classpath and
+ * configured as a plugin. The Order annotation should be used to configure the
+ * factory to be the first one inspected. See
+ * {@linkplain XMLConfigurationFactory} for an example.</li>
+ * </ol>
+ * 
+ * If the ConfigurationFactory that was added returns null on a call to
+ * getConfiguration the any other ConfigurationFactories found as plugins will
+ * be called in their respective order. DefaultConfiguration is always called
+ * last if no configuration has been returned.
  */
 public abstract class ConfigurationFactory {
     /**
