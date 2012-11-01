@@ -24,7 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Class that can be used to initialize and configure the Logging system.
+ * Initializes and configure the Logging system.
  */
 public final class Configurator {
 
