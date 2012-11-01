@@ -69,7 +69,6 @@ public final class HighlightConverter extends LogEventPatternConverter {
         LOGBACK_STYLES.put(Level.INFO, AnsiEscape.createSequence(new String[] { "BLUE" }));
         LOGBACK_STYLES.put(Level.DEBUG, AnsiEscape.createSequence(null));
         LOGBACK_STYLES.put(Level.TRACE, AnsiEscape.createSequence(null));
-
     }
 
     /**
