@@ -57,9 +57,19 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String ISO8601_FORMAT = "ISO8601";
     
     /**
+     * ISO8601_BASIC string literal.
+     */
+    private static final String ISO8601_BASIC_FORMAT = "ISO8601_BASIC";
+    
+    /**
      * SimpleTimePattern for ISO8601.
      */
     private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+    
+    /**
+     * SimpleTimePattern for ISO8601_BASIC.
+     */
+    private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
     
     /**
      * Date format.
@@ -92,6 +102,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         if (patternOption == null || patternOption.equalsIgnoreCase(ISO8601_FORMAT)) {
             pattern = ISO8601_PATTERN;
+        } else if (patternOption.equalsIgnoreCase(ISO8601_BASIC_FORMAT)) {
+            pattern = ISO8601_BASIC_PATTERN;
         } else if (patternOption.equalsIgnoreCase(ABSOLUTE_FORMAT)) {
             pattern = ABSOLUTE_TIME_PATTERN;
         } else if (patternOption.equalsIgnoreCase(DATE_AND_TIME_FORMAT)) {
