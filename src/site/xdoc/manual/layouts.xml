@@ -368,11 +368,14 @@ WARN  [main]: Message 2</pre>
                     </tr>
                   </tbody>
                 </table>
-                <p>The default colors can be overridden in the optional style option. For example:
-                 <pre>%highlight{%d{ISO8601} [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
+                <p>You can use the default colors with:
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}</pre>
+                </p>
+                <p>You can override the default colors in the optional {style} option. For example:
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
                 </p>
                 <p>You can also use the STYLE key to use a predefined group of colors:
-                 <pre>%highlight{%d{ISO8601} [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
                  The style can be one of:
                  <table border="1" width="100%">
                    <tr>
