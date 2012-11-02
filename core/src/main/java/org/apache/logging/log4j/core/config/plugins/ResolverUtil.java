@@ -384,7 +384,7 @@ public class ResolverUtil<T> {
 
                 Class type = loader.loadClass(externalName);
                 if (test.matches(type)) {
-                    classMatches.add((Class<T>) type);
+                    classMatches.add(type);
                 }
             }
             if (test.doesMatchResource()) {
