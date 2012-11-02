@@ -25,8 +25,7 @@
 
     <body>
       <section name="Layouts">
-        <p>
-          An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be
+        <p>An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be
           consuming the log event. In Log4j 1.x and Logback Layouts were expected to transform an event into a
           String. In Log4j 2 Layouts return a byte array. This allows the result of the Layout to be useful in
           many more types of Appenders. However, this means you need to configure most Layouts with a
@@ -35,8 +34,7 @@
         </p>
         <a name="HTMLLayout"/>
         <subsection name="HTMLLayout">
-          <p>
-            The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
+          <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
           </p>
           <table border="1" width="100%">
             <tr>
@@ -72,26 +70,21 @@
         </subsection>
         <a name="PatternLayout"/>
         <subsection name="PatternLayout">
-          <p>
-            A flexible layout configurable with pattern string. The goal of this class is to format a LogEvent and
+          <p>A flexible layout configurable with pattern string. The goal of this class is to format a LogEvent and
             return the results. The format of the result depends on the <em>conversion pattern</em>.
           </p>
-          <p>
-            The conversion pattern is closely related to the conversion pattern of the printf function in C.
+          <p>The conversion pattern is closely related to the conversion pattern of the printf function in C.
             A conversion pattern is composed of literal text and format control expressions called
             <em>conversion specifiers</em>.
           </p>
-          <p>
-            <i>Note that any literal text may be included in the conversion pattern.</i>
+          <p><i>Note that any literal text may be included in the conversion pattern.</i>
           </p>
-          <p>
-            Each conversion specifier starts with a percent sign (%) and is followed by optional <em>format
+          <p>Each conversion specifier starts with a percent sign (%) and is followed by optional <em>format
             modifiers</em> and a <em>conversion character</em>. The conversion character specifies the type of
             data, e.g. category, priority, date, thread name. The format modifiers control such things as field width,
             padding, left and right justification. The following is a simple example.
           </p>
-          <p>
-            Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume that the log4j environment was set to
+          <p>Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume that the log4j environment was set to
             use a PatternLayout. Then the statements
  <pre>Logger logger = LogManager.getLogger("MyLogger");
 logger.debug("Message 1");
@@ -100,8 +93,7 @@ logger.warn("Message 2");</pre>
  <pre>DEBUG [main]: Message 1
 WARN  [main]: Message 2</pre>
           </p>
-          <p>
-            Note that there is no explicit separator between text and conversion specifiers. The pattern parser
+          <p>Note that there is no explicit separator between text and conversion specifiers. The pattern parser
             knows when it has reached the end of a conversion specifier when it reads a conversion character.
             In the example above the conversion specifier <b>%-5p</b> means the priority of the logging event should
             be left justified to a width of five characters.
@@ -138,8 +130,7 @@ WARN  [main]: Message 2</pre>
             <caption align="top">Pattern Layout Parameters</caption>
           </table>
           <h4>Patterns</h4>
-          <p>
-            The conversions that are provided with Log4j are:
+          <p>The conversions that are provided with Log4j are:
           </p>
           <table border="1" width="100%">
             <tr>
@@ -152,8 +143,7 @@ WARN  [main]: Message 2</pre>
                 <b>logger</b>{precision}
               </td>
               <td>
-                <p>
-                  Used to output the name of the logger that published the logging event. The logger conversion
+                <p>Used to output the name of the logger that published the logging event. The logger conversion
                   specifier can be optionally followed by<em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
@@ -203,8 +193,7 @@ WARN  [main]: Message 2</pre>
                 <b>class</b>{precision}
               </td>
               <td>
-                <p>
-                  Used to output the fully qualified class name of the caller issuing the logging request.
+                <p>Used to output the fully qualified class name of the caller issuing the logging request.
                   This conversion specifier can be optionally followed by<em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
@@ -229,8 +218,7 @@ WARN  [main]: Message 2</pre>
                   and
                   <em>ISO8601_BASIC</em>.
                 </p>
-                <p>
-                  You can also use a set of braces containing a time zone id per
+                <p>You can also use a set of braces containing a time zone id per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
                     java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
                   <table border="1" width="100%">
@@ -296,8 +284,7 @@ WARN  [main]: Message 2</pre>
                 <b>F</b><br />
                 <b>file</b>
               </td>
-              <td>
-                Used to output the file name where the logging request was issued.
+              <td>Used to output the file name where the logging request was issued.
               </td>
             </tr>
             <tr>
@@ -459,11 +446,9 @@ WARN  [main]: Message 2</pre>
                 <b>location</b>
               </td>
               <td>
-                <p>
-                  Used to output location information of the caller which generated the logging event.
+                <p>Used to output location information of the caller which generated the logging event.
                 </p>
-                <p>
-                  The location information depends on the JVM implementation but usually consists of the fully
+                <p>The location information depends on the JVM implementation but usually consists of the fully
                   qualified name of the calling method followed by the callers source the file name and line
                   number between parentheses.
                 </p>
@@ -506,8 +491,7 @@ WARN  [main]: Message 2</pre>
                 <b>n</b>
               </td>
               <td>
-                <p>
-                  Outputs the platform dependent line separator character or characters.
+                <p>Outputs the platform dependent line separator character or characters.
                 </p>
                 <p>This conversion character offers practically the same
                   performance as using non-portable line separator strings such as
@@ -537,13 +521,11 @@ WARN  [main]: Message 2</pre>
                 <b>replace</b>{pattern}{regex}{substitution}
               </td>
               <td>
-                <p>
-                  Replaces occurrences of 'regex', a regular expression, with its replacement 'substitution' in the
+                <p>Replaces occurrences of 'regex', a regular expression, with its replacement 'substitution' in the
                   string resulting from evaluation of the pattern. For example, "%replace(%msg}{\s}{}" will remove
                   all spaces contained in the event message.
                 </p>
-                <p>
-                  The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
+                <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
                   For instance, "%replace{%logger %msg}{\.}{/}" will replace all dots in the logger or the message of
                   the event with a forward slash.
                 </p>
@@ -556,12 +538,10 @@ WARN  [main]: Message 2</pre>
                 <b>rThrowable</b>["short"|"full"|depth],[filters(packages)}
               </td>
               <td>
-                <p>
-                  The same as the %throwable conversion word but the stack trace is printed starting with the
+                <p>The same as the %throwable conversion word but the stack trace is printed starting with the
                   first exception that was thrown followed by each subsequent wrapping exception.
                 </p>
-                <p>
-                  The throwable conversion word can be followed by an option in the form
+                <p>The throwable conversion word can be followed by an option in the form
                   <b>%rEx{short}</b>
                   which will only output the first line of the Throwable or <b>%rEx{n}</b> where
                   the first n lines of the stacktrace will be printed. The conversion word can also be
@@ -584,8 +564,7 @@ WARN  [main]: Message 2</pre>
                 <b>style</b>{pattern}{ANSI style}
               </td>
               <td>
-                <p>
-                  Uses ANSI escape sequences to style the result of the enclosed pattern. The style can consist of
+                <p>Uses ANSI escape sequences to style the result of the enclosed pattern. The style can consist of
                   a comma separated list of style names from the following table.
                   <table border="1" width="100%">
                     <tr>
@@ -755,17 +734,14 @@ WARN  [main]: Message 2</pre>
                 <b>xThrowable</b>["short"|"full"|depth],[filters(packages)}
               </td>
               <td>
-                <p>
-                  The same as the %throwable conversion word but also includes class packaging information.
+                <p>The same as the %throwable conversion word but also includes class packaging information.
                 </p>
-                <p>
-                  At the end of each stack element of the exception, a string containing the name of the jar file
+                <p>At the end of each stack element of the exception, a string containing the name of the jar file
                   that contains the class or the directory the class is located in and the "Implementation-Version"
                   as found in that jar's manifest will be added. If the information is uncertain, then the class
                   packaging data will be preceded by a tilde, i.e. the '~' character.
                 </p>
-                <p>
-                  The throwable conversion word can be followed by an option in the form
+                <p>The throwable conversion word can be followed by an option in the form
                   <b>%xEx{short}</b>
                   which will only output the first line of the Throwable or <b>%xEx{n}</b> where
                   the first n lines of the stacktrace will be printed. The conversion word can also be
@@ -883,15 +859,13 @@ WARN  [main]: Message 2</pre>
             <caption align="top">Pattern Converters</caption>
           </table>
           <h4>ANSI Styling on Windows</h4>
-          <p>
-            ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To
+          <p>ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To
             enable ANSI support simply add the <a href="http://jansi.fusesource.org/">Jansi</a> jar to your
             application and Log4j will automatically make use of it when writing to the console.
           </p>
           <h4>Example Patterns</h4>
           <h5>Filtered Throwables</h5>
-          <p>
-            This example shows how to filter out classes from unimportant packages in stack traces.
+          <p>This example shows how to filter out classes from unimportant packages in stack traces.
           </p>
           <source><![CDATA[<properties>
   <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
@@ -900,8 +874,7 @@ WARN  [main]: Message 2</pre>
   .
   <PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>
   ]]></source>
-          <p>
-            The result printed to the console will appear similar to:
+          <p>The result printed to the console will appear similar to:
           </p>
           <source>Exception java.lang.IllegalArgumentException: IllegalArgument
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
@@ -922,8 +895,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424Layout">
-          <p>
-            As the name implies, the RFC5424Layout formats LogEvents in accordance with
+          <p>As the name implies, the RFC5424Layout formats LogEvents in accordance with
             <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
@@ -1027,15 +999,13 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="SerializedLayout"/>
         <subsection name="SerializedLayout">
-          <p>
-            The SerializedLayout simply serializes the LogEvent into a byte array. This is useful when
+          <p>The SerializedLayout simply serializes the LogEvent into a byte array. This is useful when
             sending messages via JMS or via a Socket connection. The SerializedLayout accepts no parameters.
           </p>
         </subsection>
         <a name="SyslogLayout"/>
         <subsection name="SyslogLayout">
-          <p>
-            The SyslogLayout formats the LogEvent as BSD Syslog records matching the same format used by
+          <p>The SyslogLayout formats the LogEvent as BSD Syslog records matching the same format used by
             Log4j 1.2.
           </p>
            <table border="1" width="100%">
@@ -1069,8 +1039,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         </subsection>
         <a name="XMLLayout"/>
         <subsection name="XMLLayout">
-          <p>
-            The output of the XMLLayout consists of a series of log4j:event
+          <p>The output of the XMLLayout consists of a series of log4j:event
             elements as defined in the <a href="log4j.dtd">log4j.dtd</a>. If configured to do so it will
             output a complete well-formed XML file. The output is designed to be
             included as an
@@ -1086,15 +1055,12 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 &lt;log4j:eventSet version="2.0" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
 &nbsp;&nbsp;
 &lt;/log4j:eventSet&gt;</pre>
-          <p>
-            This approach enforces the independence of the XMLLayout and the appender where it is embedded.
+          <p>This approach enforces the independence of the XMLLayout and the appender where it is embedded.
           </p>
-          <p>
-            The <code>version</code> attribute helps components to correctly intrepret output generated by XMLLayout.
+          <p>The <code>version</code> attribute helps components to correctly intrepret output generated by XMLLayout.
             The value of this attribute should be "2.0".
           </p>
-          <p>
-            Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
+          <p>Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
             non ASCII characters could result in corrupted log files.
           </p>
         </subsection>
