@@ -133,7 +133,7 @@
             <p>The EventLogger class uses a Logger named "EventLogger". EventLogger uses a logging level
               of OFF as the default to indicate that it cannot be filtered. These events can be
               formatted for printing using the
-              <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html">StructuredDataLayout</a>.
+              <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/StructuredDataLayout.html">StructuredDataLayout</a>.
             </p>
           </subsection>
         </section>

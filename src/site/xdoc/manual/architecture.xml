@@ -96,23 +96,23 @@
           that is directly linked to the root LoggerConfig can be obtained as follows:
           <source>Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</source>
           All other Loggers can be retrieved using the
-          <a href="../log4j2-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
           </a>
           static method and passing the name of the desired Logger. Further informaiton on the Logging
-          API can be found at<a href="../log4j2-api/api.html">Log4j 2 API</a>.
+          API can be found at<a href="../log4j-api/api.html">Log4j 2 API</a>.
         </p>
         <h4>LoggerContext</h4>
         <p>
           The
-          <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html">LoggerContext</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html">LoggerContext</a>
           acts as the anchor point for the Logging system. However, it is possible to have multiple active
           LoggerContexts in an application depending on the circumstances.
-          More details on the LoggerContext are at<a href="logsep.html">Log Separation</a>.
+          More details on the LoggerContext are at <a href="logsep.html">Log Separation</a>.
         </p>
         <h4>Configuration</h4>
         <p>Every LoggerContext has an active
-          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html">
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html">
             Configuration</a>.
           The Configuration contains all the Appenders,
           context-wide Filtes, LoggerConfigs and contains the reference to the StrSubstitutor. During
@@ -121,10 +121,10 @@
         </p>
         <h4>Logger</h4>
         <p>As stated previously, Loggers are created by calling
-          <a href="../log4j2-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">LogManager.getLogger</a>.
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">LogManager.getLogger</a>.
           The Logger itself performs no direct actions. It simply has a name and is associated with a LoggerConfig.
           It extends
-          <a href="file:///Users/rgoers/log4j/log4j2-api/apidocs/org/apache/logging/log4j/spi/AbstractLogger.html">
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/spi/AbstractLogger.html">
             AbstractLogger
           </a>
           and implements the required methods. As the configuration is modified Loggers may become associated
@@ -170,7 +170,7 @@
         </p>
         <h4>LoggerConfig</h4>
         <p>
-          <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/config/LoggerConfig.html">LoggerConfig</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/LoggerConfig.html">LoggerConfig</a>
           objects are created when Loggers are declared in the logging configuration.
           The LoggerConfig contains a set of Filters that must allow the LogEvent to pass before it will be
           passed to any Appenders. It contains references to the set of Appenders that should be used to
@@ -182,10 +182,10 @@
           </tr>
         </table>
         <p>LoggerConfigs will be assigned a Log
-          <a href="../log4j2-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of possible
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of possible
           levels includes (TRACE, DEBUG, INFO, WARN, ERROR and FATAL). Note that in Log4j 2, the Level is
           an Enum and cannot be sub-classed. Users who desire more granularity are encouraged to use
-          <a href="../log4j2-api/api.html#Markers">Markers</a>
+          <a href="../log4j-api/api.html#Markers">Markers</a>
           instead.
         </p>
         <p>
@@ -489,7 +489,7 @@
         <h4>Filter</h4>
           <p>In addition to the automatic log Level filtering that takes place as described in the previous
             section, Log4j provides
-            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Filter.html">Filter</a>s that can
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Filter.html">Filter</a>s that can
             be applied before control is passed to any LoggerConfig, after control is passed to a LoggerConfig
             but before calling any Appenders, after control is passed to a LoggerConfig but before calling a
             specific Appender, and on each Appender. In a manner very similar to firewall filters,
@@ -508,12 +508,12 @@
             on their logger is only part of the picture. Log4j allows logging
             requests to print to multiple destinations. In log4j speak, an output
             destination is called an
-            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>.
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>.
             Currently, appenders exist for the console, files, remote socket servers, Apache Flume,
             JMS, and remote UNIX Syslog daemons. More than one Appender can be attached to a Logger.
           </p>
           <p>An Appender can be added to a Logger by calling the
-            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
             method of the current Configuration. If a LoggerConfig matching the name of the Logger does
             not exist, one will be created, the Appender will be attached to it and then all Loggers
             will be notified to update their LoggerConfig references.
@@ -618,10 +618,10 @@
         <h4>Layout</h4>
         <p>More often than not, users wish to customize not only the output destination but also the output format.
           This is accomplished by associating a
-          <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/Layout.html">Layout</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Layout.html">Layout</a>
           with an Appender. The Layout is responsible for formatting the LogEvent according to the user's
           wishes, whereas an appender takes care of sending the formatted output to its destination.
-          The <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>,
+          The <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>,
           part of the standard log4j distribution, lets the user specify the output
           format according to conversion patterns similar to the C language <code>printf</code> function.
         </p>
@@ -648,14 +648,14 @@
 
         <h4>StrSubstitutor and StrLookup</h4>
         <p>The
-          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor.html">
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor.html">
             StrSubstitutor
           </a>
           class and
-          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
           interface were borrowed from Apache Commons Lang and then modified to support evaluating LogEvents. In
           addition the
-          <a href="../log4j/log4j2-core/apidocs/org/apache/logging/log4j/core/lookup/Interpolator.html">Interpolator</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/Interpolator.html">Interpolator</a>
           class was borrowed from Apache Commons Configuration to allow the StrSubstitutor to evaluate variables
           that from multiple StrLookups. It too was modified to support evaluating LogEvents. Together these
           provide a mechanism to allow the configuration to reference variables coming from System Properties,

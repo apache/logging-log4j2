@@ -106,7 +106,7 @@
           </p>
           <p>
             Note that all methods of the
-            <a href="../log4j2-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
             class are static.
           </p>
           <h4>Including the ThreadContext when writing logs</h4>

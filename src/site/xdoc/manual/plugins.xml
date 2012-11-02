@@ -71,7 +71,7 @@
         <subsection name="Converters">
           <p>
             Converters are used by
-            <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
             to render the elements identified by the conversion pattern. Every converter must specify its type as
             "Converter" on the Plugin attribute, have a static newInstance method that accepts an array of Strings as
             its only parameter and returns an instance of the Converter, and must have a ConverterKeys annotation

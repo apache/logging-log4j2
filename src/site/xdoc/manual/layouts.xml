@@ -336,9 +336,9 @@ WARN  [main]: Message 2</pre>
                      <td>TRACE</td>
                      <td>Black (looks dark grey)</td>
                    </tr>
-                 </table>                 
+                 </table>
                 </p>
-                <p>The color names are ANSI names defined in the <a href="../log4j2-core/apidocs/index.html">AnsiEscape</a> class.
+                <p>The color names are ANSI names defined in the <a href="../log4j-core/apidocs/index.html">AnsiEscape</a> class.
                 </p>
                 <p>The color and attribute names and are standard, but the exact shade, hue, or value.
                 </p>
@@ -379,7 +379,7 @@ WARN  [main]: Message 2</pre>
                       <td style="background: white;color:black">White</td>
                     </tr>
                   </tbody>
-                </table>                
+                </table>
                 <p>The default colors can be overridden in the optional style option. For example:
                  <pre>%highlight{%d{ISO8601} [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
                 </p>
@@ -427,10 +427,10 @@ WARN  [main]: Message 2</pre>
                            <td>TRACE</td>
                            <td>Normal</td>
                          </tr>
-                       </table>                                      
+                       </table>
                      </td>
                    </tr>
-                 </table>                 
+                 </table>
                 </p>
               </td>
             </tr>
@@ -441,7 +441,8 @@ WARN  [main]: Message 2</pre>
                 <b>MAP</b>{key}
               </td>
               <td>
-                <p>Used to output the entries in a <a href="../log4j2-api/apidocs/index.html">MapMessage</a>,
+                <p>Used to output the entries in a
+                  <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
                   if one is present in the event. The <b>K</b> conversion character can be followed by the key
                   for the map placed between braces, as in
                   <b>%K{clientNumber}</b> where <code>clientNumber</code> is the key. The value in the Map
@@ -727,7 +728,7 @@ WARN  [main]: Message 2</pre>
                   is output using a format {{key1,val1},{key2,val2}}
                 </p>
                 <p>See the
-                  <a href="../../log4j2-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
+                  <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a>
                   class for more details.
                 </p>
               </td>

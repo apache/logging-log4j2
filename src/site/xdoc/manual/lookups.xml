@@ -27,7 +27,7 @@
         <p>
           Lookups provide a way to add values to the Log4j configuration at arbitrary places. They are
           a particular type of Plugin that implements the
-          <a href="../log4j2-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a> interface.
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a> interface.
           Information on how to use Lookups in configuration files can be found in the
           <a href="./configuration.html#PropertySubstitution">Property Substitution</a> section of the
           <a href="./configuration.html">Configuration</a> page.
@@ -89,7 +89,7 @@
             The first item simply means that the MapLookup is used to substitute properties that are defined
             in the configuration file. These variables are specified without a prefix - e.g. <code>${name}</code>.
             The second usage allows a value from the current
-            <a href="../log4j2-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
             if one is part of the current log event, to be substituted. In the example below the RoutingAppender will
             use a different RollingFileAppender for each unique value of the key named "type" in the MapMessage. Note
             that when used this way a  value for "type" should be declared in the properties declaration to provide
@@ -119,7 +119,7 @@
             StructuredDataMessages. In addition to the Map values it will also return the name portion of the
             id (not including the enterprise number) and the type field. The main difference between the
             example below and the example for MapMessage is that the "type" is an attribute of the
-            <a href="../log4j2-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
             while "type" would have to be an item in the Map in a MapMessage.
           </p>
           <source><![CDATA[    <Routing name="Routing">
