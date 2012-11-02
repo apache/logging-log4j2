@@ -27,7 +27,7 @@ import java.nio.channels.FileLock;
 
 
 /**
- * Class that handles actual File I/O for File Appenders.
+ * Manages actual File I/O for File Appenders.
  */
 public class FileManager extends OutputStreamManager {
 
