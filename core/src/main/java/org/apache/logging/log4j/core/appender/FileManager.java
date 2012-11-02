@@ -114,9 +114,9 @@ public class FileManager extends OutputStreamManager {
      * Factory Data.
      */
     private static class FactoryData {
-        private boolean append;
-        private boolean locking;
-        private boolean bufferedIO;
+        private final boolean append;
+        private final boolean locking;
+        private final boolean bufferedIO;
 
         /**
          * Constructor.
