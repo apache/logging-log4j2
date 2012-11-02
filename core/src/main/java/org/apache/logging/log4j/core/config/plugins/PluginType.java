@@ -22,21 +22,21 @@ import java.io.Serializable;
 /**
  * Plugin Descriptor.
  */
-public class PluginType implements Serializable {
+public class PluginType<T> implements Serializable {
 
-    private final Class pluginClass;
+    private final Class<T> pluginClass;
     private final String elementName;
     private boolean printObject = false;
     private boolean deferChildren = false;
 
-    public PluginType(Class clazz, String name, boolean printObj, boolean deferChildren) {
+    public PluginType(Class<T> clazz, String name, boolean printObj, boolean deferChildren) {
         this.pluginClass = clazz;
         this.elementName = name;
         this.printObject = printObj;
         this.deferChildren = deferChildren;
     }
 
-    public Class getPluginClass() {
+    public Class<T> getPluginClass() {
         return this.pluginClass;
     }
 
