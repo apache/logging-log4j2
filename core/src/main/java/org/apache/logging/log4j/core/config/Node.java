@@ -24,9 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a Configuration element.
+ * A Configuration element.
  */
-
 public class Node {
 
     private Node parent;
