@@ -24,6 +24,8 @@ import java.io.Serializable;
  */
 public class PluginType<T> implements Serializable {
 
+    private static final long serialVersionUID = 4743255148794846612L;
+    
     private final Class<T> pluginClass;
     private final String elementName;
     private boolean printObject = false;
