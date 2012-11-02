@@ -276,7 +276,7 @@ public class ResolverUtil<T> {
     }
 
     private void loadImplementationsInBundle(Test test, String packageName) {
-        BundleWiring wiring = (BundleWiring)FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
+        BundleWiring wiring = FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
         Collection<String> list = wiring.listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
         for (String name : list) {
             addIfMatching(test, name);
