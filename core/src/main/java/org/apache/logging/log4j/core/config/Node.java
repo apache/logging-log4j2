@@ -28,12 +28,12 @@ import java.util.Map;
  */
 public class Node {
 
-    private Node parent;
-    private String name;
+    private final Node parent;
+    private final String name;
     private String value;
-    private PluginType type;
-    private Map<String, String> attributes = new HashMap<String, String>();
-    private List<Node> children = new ArrayList<Node>();
+    private final PluginType type;
+    private final Map<String, String> attributes = new HashMap<String, String>();
+    private final List<Node> children = new ArrayList<Node>();
     private Object object;
 
 
@@ -52,6 +52,9 @@ public class Node {
     }
 
     public Node() {
+        this.parent = null;
+        this.name = null;
+        this.type = null;
     }
 
     public Map<String, String> getAttributes() {
