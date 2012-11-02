@@ -306,6 +306,46 @@
                 </p>
                 <p>The color names are ANSI names defined in the <a href="../log4j2-core/apidocs/index.html">AnsiEscape</a> class.
                 </p>
+                <p>The color and attribute names and are standard, but the exact shade, hue, or value.
+                </p>
+                <table width="100%">
+                  <caption>Color table</caption>
+                  <tbody>
+                    <tr>
+                      <th>Intensity Code</th>
+                      <th>0</th>
+                      <th>1</th>
+                      <th>2</th>
+                      <th>3</th>
+                      <th>4</th>
+                      <th>5</th>
+                      <th>6</th>
+                      <th>7</th>
+                    </tr>
+                    <tr>
+                      <th>Normal</th>
+                      <td style="background: black;color:white">Black</td>
+                      <td style="background: maroon;color:white">Red</td>
+                      <td style="background: green;color:white">Green</td>
+                      <td style="background: olive;color:white">Yellow</td>
+                      <td style="background: navy;color:white">Blue</td>
+                      <td style="background: purple;color:white">Magenta</td>
+                      <td style="background: teal;color:white">Cyan</td>
+                      <td style="background: silver;color:black">White</td>
+                    </tr>
+                    <tr>
+                      <th>Bright</th>
+                      <td style="background: gray;color:white">Black</td>
+                      <td style="background: red;color:black">Red</td>
+                      <td style="background: lime;color:black">Green</td>
+                      <td style="background: yellow;color:black">Yellow</td>
+                      <td style="background: blue;color:white">Blue</td>
+                      <td style="background: fuchsia;color:black">Magenta</td>
+                      <td style="background: cyan;color:black">Cyan</td>
+                      <td style="background: white;color:black">White</td>
+                    </tr>
+                  </tbody>
+                </table>                
                 <p>The default colors can be overridden in the optional style option. For example:
                  <pre>%highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
                 </p>
