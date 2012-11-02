@@ -57,19 +57,6 @@
       </dependency>
     </dependecies>
             ]]></source>
-          <p>
-            As an alternative, users who always want to use the Log4j 2 implementation of the API may simply use
-            the combined jar.
-          </p>
-          <source><![CDATA[
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-combined</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-    </dependecies>
-            ]]></source>
       </subsection>
       <subsection name="Optional Components">
         <p>
@@ -110,7 +97,7 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.logging.log4j.adapters</groupId>
-        <artifactId>slf4j-impl</artifactId>
+        <artifactId>log4j-slf4j-impl</artifactId>
         <version>${Log4jReleaseVersion}</version>
       </dependency>
     </dependecies>
