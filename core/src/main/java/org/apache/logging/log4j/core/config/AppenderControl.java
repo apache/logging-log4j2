@@ -82,7 +82,7 @@ public class AppenderControl extends Filterable {
         try {
             recursive.set(this);
 
-            if (appender instanceof LifeCycle && !appender.isStarted()) {
+            if (!appender.isStarted()) {
                 appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
                 if (!appender.isExceptionSuppressed()) {
