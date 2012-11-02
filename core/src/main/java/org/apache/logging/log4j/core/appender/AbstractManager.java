@@ -36,9 +36,9 @@ public abstract class AbstractManager {
 
     // Need to lock that map instead of using a ConcurrentMap due to stop removing the
     // manager from the map and closing the stream, requiring the whole stop method to be locked.
-    private static Map<String, AbstractManager> map = new HashMap<String, AbstractManager>();
+    private static final Map<String, AbstractManager> map = new HashMap<String, AbstractManager>();
 
-    private static Lock lock = new ReentrantLock();
+    private static final Lock lock = new ReentrantLock();
 
     /**
      * Number of Appenders using this manager.
