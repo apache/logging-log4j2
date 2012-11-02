@@ -45,7 +45,7 @@ public abstract class AbstractManager {
      */
     protected int count;
 
-    private String name;
+    private final String name;
 
     protected AbstractManager(String name) {
         this.name = name;
