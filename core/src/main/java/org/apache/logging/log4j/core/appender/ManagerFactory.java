@@ -17,14 +17,14 @@
 package org.apache.logging.log4j.core.appender;
 
 /**
- * Create a Manager.
+ * Creates Manager objects.
  * @param <F> The Manager type.
  * @param <T> The Factory data type.
  */
 public interface ManagerFactory<F, T> {
 
     /**
-     * Create a Manager.
+     * Creates a Manager.
      * @param name The name of the entity to manage.
      * @param data The data required to create the entity.
      * @return A Manager for the entity.
