@@ -30,20 +30,22 @@ import java.util.TimeZone;
 @Plugin(name = "DatePatternConverter", type = "Converter")
 @ConverterKeys({"d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
+
     /**
      * ABSOLUTE string literal.
      */
     private static final String ABSOLUTE_FORMAT = "ABSOLUTE";
+    
     /**
      * SimpleTimePattern for ABSOLUTE.
      */
     private static final String ABSOLUTE_TIME_PATTERN = "HH:mm:ss,SSS";
 
-
     /**
      * DATE string literal.
      */
     private static final String DATE_AND_TIME_FORMAT = "DATE";
+    
     /**
      * SimpleTimePattern for DATE.
      */
@@ -53,10 +55,12 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * ISO8601 string literal.
      */
     private static final String ISO8601_FORMAT = "ISO8601";
+    
     /**
      * SimpleTimePattern for ISO8601.
      */
     private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+    
     /**
      * Date format.
      */
