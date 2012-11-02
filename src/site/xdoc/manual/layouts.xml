@@ -143,7 +143,7 @@ WARN  [main]: Message 2</pre>
                 <b>logger</b>{precision}
               </td>
               <td>
-                <p>Used to output the name of the logger that published the logging event. The logger conversion
+                <p>Outputs the name of the logger that published the logging event. The logger conversion
                   specifier can be optionally followed by<em>precision specifier</em>, which consists of a
                   decimal integer, or a pattern starting with a decimal integer.
                 </p>
@@ -193,7 +193,7 @@ WARN  [main]: Message 2</pre>
                 <b>class</b>{precision}
               </td>
               <td>
-                <p>Used to output the fully qualified class name of the caller issuing the logging request.
+                <p>Outputs the fully qualified class name of the caller issuing the logging request.
                   This conversion specifier can be optionally followed by<em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
@@ -205,7 +205,7 @@ WARN  [main]: Message 2</pre>
                 <b>date</b>{pattern}
               </td>
               <td>
-                <p>Used to output the date of the logging event. The date conversion specifier may be
+                <p>Outputs the date of the logging event. The date conversion specifier may be
                   followed by a set of braces containing a date and time pattern string per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
                     SimpleDateFormat</a>.
@@ -269,7 +269,7 @@ WARN  [main]: Message 2</pre>
                 <b>throwable</b>{["short"|"full"|depth]}
               </td>
               <td>
-                <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
+                <p>Outputs the Throwable trace that has been bound to the LoggingEvent, by
                   default this will output the full trace as one would normally find by a call to
                   Throwable.printStackTrace().
                   The throwable conversion word can be followed by an option in the form
@@ -284,7 +284,7 @@ WARN  [main]: Message 2</pre>
                 <b>F</b><br />
                 <b>file</b>
               </td>
-              <td>Used to output the file name where the logging request was issued.
+              <td>Outputs the file name where the logging request was issued.
               </td>
             </tr>
             <tr>
@@ -429,7 +429,7 @@ WARN  [main]: Message 2</pre>
                 <b>MAP</b>{key}
               </td>
               <td>
-                <p>Used to output the entries in a
+                <p>Outputs the entries in a
                   <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MapMessage.html">MapMessage</a>,
                   if one is present in the event. The <b>K</b> conversion character can be followed by the key
                   for the map placed between braces, as in
@@ -446,7 +446,7 @@ WARN  [main]: Message 2</pre>
                 <b>location</b>
               </td>
               <td>
-                <p>Used to output location information of the caller which generated the logging event.
+                <p>Outputs location information of the caller which generated the logging event.
                 </p>
                 <p>The location information depends on the JVM implementation but usually consists of the fully
                   qualified name of the calling method followed by the callers source the file name and line
@@ -459,7 +459,7 @@ WARN  [main]: Message 2</pre>
                 <b>L</b><br />
                 <b>line</b>
               </td>
-              <td>Used to output the line number from where the logging request
+              <td>Outputs the line number from where the logging request
                 was issued.
               </td>
             </tr>
@@ -469,7 +469,7 @@ WARN  [main]: Message 2</pre>
                 <b>msg</b><br />
                 <b>message</b>
               </td>
-              <td>Used to output the application supplied message associated with the logging event.
+              <td>Outputs the application supplied message associated with the logging event.
               </td>
             </tr>
             <tr>
@@ -477,7 +477,7 @@ WARN  [main]: Message 2</pre>
                 <b>M</b><br />
                 <b>method</b>
               </td>
-              <td>Used to output the method name where the logging request was issued.
+              <td>Outputs the method name where the logging request was issued.
               </td>
             </tr>
             <tr>
@@ -505,14 +505,14 @@ WARN  [main]: Message 2</pre>
                 <b>p</b><br />
                 <b>level</b>
               </td>
-              <td>Used to output the level of the logging event.</td>
+              <td>Outputs the level of the logging event.</td>
             </tr>
             <tr>
               <td align="center">
                 <b>r</b><br />
                 <b>relative</b>
               </td>
-              <td>Used to output the number of milliseconds elapsed since the JVM was started until the creation
+              <td>Outputs the number of milliseconds elapsed since the JVM was started until the creation
                 of the logging event.
               </td>
             </tr>
@@ -676,14 +676,14 @@ WARN  [main]: Message 2</pre>
                 <b>t</b><br />
                 <b>thread</b>
               </td>
-              <td>Used to output the name of the thread that generated the logging event.</td>
+              <td>Outputs the name of the thread that generated the logging event.</td>
             </tr>
             <tr>
               <td align="center">
                 <b>x</b><br />
                 <b>NDC</b>
               </td>
-              <td>Used to output the Thread Context Stack (also known as the Nested Diagnostic Context or NDC)
+              <td>Outputs the Thread Context Stack (also known as the Nested Diagnostic Context or NDC)
                 associated with the thread that generated the logging event.
               </td>
             </tr>
@@ -694,7 +694,7 @@ WARN  [main]: Message 2</pre>
                 <b>MDC</b>{key}
               </td>
               <td>
-                <p>Used to output the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
+                <p>Outputs the Thread Context Map (also known as the Mapped Diagnostic Context or MDC)
                   associated with the thread that generated the logging event. The
                   <b>X</b>
                   conversion character can be followed by the key for the
