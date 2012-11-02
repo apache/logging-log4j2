@@ -26,10 +26,10 @@
     <body>
       <section name="Layouts">
         <p>
-          Layouts are used by Appenders to format the LogEvent into a form that meets the needs of whoever will be
-          consuming the log events. In Log4j 1.x and Logback Layouts were expected to transform an event into a
+          An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be
+          consuming the log event. In Log4j 1.x and Logback Layouts were expected to transform an event into a
           String. In Log4j 2 Layouts return a byte array. This allows the result of the Layout to be useful in
-          many more types of Appenders. However, this means most Layouts need to be configured with a
+          many more types of Appenders. However, this means you need to configure most Layouts with a
           <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a> to
           insure the byte array contains correct values.
         </p>
