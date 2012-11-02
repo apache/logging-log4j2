@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A Configuration element.
+ * A Configuration node.
  */
 public class Node {
 
