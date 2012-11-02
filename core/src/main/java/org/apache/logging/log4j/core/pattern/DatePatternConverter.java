@@ -37,6 +37,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String ABSOLUTE_FORMAT = "ABSOLUTE";
     
     /**
+     * COMPACT string literal.
+     */
+    private static final String COMPACT_FORMAT = "COMPACT";
+    
+    /**
      * SimpleTimePattern for ABSOLUTE.
      */
     private static final String ABSOLUTE_TIME_PATTERN = "HH:mm:ss,SSS";
@@ -70,6 +75,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * SimpleTimePattern for ISO8601_BASIC.
      */
     private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
+    
+    /**
+     * SimpleTimePattern for COMPACT.
+     */
+    private static final String COMPACT_PATTERN = "yyyyMMddHHmmssSSS";
     
     /**
      * Date format.
@@ -108,6 +118,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             pattern = ABSOLUTE_TIME_PATTERN;
         } else if (patternOption.equalsIgnoreCase(DATE_AND_TIME_FORMAT)) {
             pattern = DATE_AND_TIME_PATTERN;
+        } else if (patternOption.equalsIgnoreCase(COMPACT_FORMAT)) {
+            pattern = COMPACT_PATTERN;
         } else {
             pattern = patternOption;
         }

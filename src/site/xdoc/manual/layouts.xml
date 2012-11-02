@@ -223,6 +223,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>The predefined formats are
                   <em>ABSOLUTE</em>,
+                  <em>COMPACT</em>,
                   <em>DATE</em>,
                   <em>ISO8601</em>,
                   and
@@ -231,11 +232,7 @@ WARN  [main]: Message 2</pre>
                 <p>
                   You can also use a set of braces containing a time zone id per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
-                    java.util.TimeZone.getTimeZone</a>.
-                  For example, <b>%d{HH:mm:ss,SSS}</b>, <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>,
-                  <b>%d{DATE}</b>
-                  or<b>%d{HH:mm:ss}{GMT+0}</b>. If no date format specifier is given then
-                  ISO8601 format is assumed.
+                    java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
                   <table border="1" width="100%">
                     <tr>
                       <th>Pattern</th>
@@ -256,6 +253,10 @@ WARN  [main]: Message 2</pre>
                     <tr>
                       <td>%d{DATE}</td>
                       <td>02 Nov 2012 14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{COMPACT}</td>
+                      <td>20121102143402781</td>
                     </tr>
                     <tr>
                       <td>%d{HH:mm:ss,SSS}</td>
