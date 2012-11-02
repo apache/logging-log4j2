@@ -79,6 +79,8 @@ public enum AnsiEscape {
     BG_CYAN("46"),
     BG_WHITE("47");
 
+    private static final String WHITESPACE_REGEX = "\\s*";
+    
     private final String code;
 
     private AnsiEscape(String code) {
@@ -87,6 +89,10 @@ public enum AnsiEscape {
 
     public static String getDefaultStyle() {
         return PREFIX.getCode() + SUFFIX.getCode();
+    }
+
+    private static String toRegexSeparator(String separator) {
+        return WHITESPACE_REGEX + separator + WHITESPACE_REGEX;
     }
 
     public String getCode() {
@@ -116,7 +122,7 @@ public enum AnsiEscape {
      * @return a new map
      */
     public static Map<String, String> createMap(String values, String[] dontEscapeKeys) {
-        return createMap(values.split("\\s*,\\s*"), dontEscapeKeys);
+        return createMap(values.split(toRegexSeparator(",")), dontEscapeKeys);
     }
 
     /**
@@ -146,7 +152,7 @@ public enum AnsiEscape {
         Arrays.sort(sortedIgnoreKeys);
         Map<String, String> map = new HashMap<String, String>();
         for (String string : values) {
-            String[] keyValue = string.split("\\s*=\\s*");
+            String[] keyValue = string.split(toRegexSeparator("="));
             if (keyValue.length > 1) {
                 final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
                 final String value = keyValue[1];
