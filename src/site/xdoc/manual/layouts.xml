@@ -93,16 +93,12 @@
           <p>
             Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume that the log4j environment was set to
             use a PatternLayout. Then the statements
- <pre>
- Logger logger = LogManager.getLogger("MyLogger");
- logger.debug("Message 1");
- logger.warn("Message 2");
- </pre>
+ <pre>Logger logger = LogManager.getLogger("MyLogger");
+logger.debug("Message 1");
+logger.warn("Message 2");</pre>
             would yield the output
- <pre>
- DEBUG [main]: Message 1
- WARN  [main]: Message 2
- </pre>
+ <pre>DEBUG [main]: Message 1
+WARN  [main]: Message 2</pre>
           </p>
           <p>
             Note that there is no explicit separator between text and conversion specifiers. The pattern parser
@@ -220,22 +216,60 @@
                 <b>date</b>{pattern}
               </td>
               <td>
-                <p>
-                  Used to output the date of the logging event. The date conversion specifier may be
-                  followed by a set of braces containing a date and time pattern strings
+                <p>Used to output the date of the logging event. The date conversion specifier may be
+                  followed by a set of braces containing a date and time pattern string per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
-                    SimpleDateFormat</a>,
+                    SimpleDateFormat</a>.
+                </p>
+                <p>The predefined formats are
                   <em>ABSOLUTE</em>,
-                  <em>DATE</em>
-                  or
-                  <em>ISO8601</em>
-                  and a set of braces containing a time zone id per
+                  <em>DATE</em>,
+                  <em>ISO8601</em>,
+                  and
+                  <em>ISO8601_BASIC</em>.
+                </p>
+                <p>
+                  You can also use a set of braces containing a time zone id per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
                     java.util.TimeZone.getTimeZone</a>.
-                  For example,<b>%d{HH:mm:ss,SSS}</b>,<b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>,
+                  For example, <b>%d{HH:mm:ss,SSS}</b>, <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>,
                   <b>%d{DATE}</b>
                   or<b>%d{HH:mm:ss}{GMT+0}</b>. If no date format specifier is given then
                   ISO8601 format is assumed.
+                  <table border="1" width="100%">
+                    <tr>
+                      <th>Pattern</th>
+                      <th>Example</th>
+                    </tr>
+                    <tr>
+                      <td>%d{ISO8601}</td>
+                      <td>2012-11-02 14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{ISO8601_BASIC}</td>
+                      <td>20121102 143402,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{ABSOLUTE}</td>
+                      <td>14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{DATE}</td>
+                      <td>02 Nov 2012 14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{HH:mm:ss,SSS}</td>
+                      <td>14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{dd MMM yyyy HH:mm:ss,SSS}</td>
+                      <td>02 Nov 2012 14:34:02,781</td>
+                    </tr>
+                    <tr>
+                      <td>%d{HH:mm:ss}{GMT+0}</td>
+                      <td>18:34:02,781</td>
+                    </tr>                    
+                  </table>                 
                 </p>
               </td>
             </tr>
@@ -1035,7 +1069,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         <subsection name="XMLLayout">
           <p>
             The output of the XMLLayout consists of a series of log4j:event
-            elements as defined in the<a href="log4j.dtd">log4j.dtd</a>. If configured to do so it will
+            elements as defined in the <a href="log4j.dtd">log4j.dtd</a>. If configured to do so it will
             output a complete well-formed XML file. The output is designed to be
             included as an
             <em>external entity</em>
@@ -1045,15 +1079,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>For example, if <code>abc</code> is the name of the file where
             the XMLLayout ouput goes, then a well-formed XML file would be:
           </p>
-          <pre>
-            &lt;?xml version="1.0" ?&gt;
-            *
-            &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
-            *
-            &lt;log4j:eventSet version="2.0" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
-            &nbsp;&nbsp;
-            &lt;/log4j:eventSet&gt;
-          </pre>
+          <pre>&lt;?xml version="1.0" ?&gt;
+&lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
+&lt;log4j:eventSet version="2.0" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
+&nbsp;&nbsp;
+&lt;/log4j:eventSet&gt;</pre>
           <p>
             This approach enforces the independence of the XMLLayout and the appender where it is embedded.
           </p>
