@@ -137,10 +137,10 @@ public class PluginManager {
             preLoad = false;
         }
         long start = System.nanoTime();
-        ResolverUtil<?> r = new ResolverUtil();
+        ResolverUtil<?> resolver = new ResolverUtil();
         ClassLoader loader = Loader.getClassLoader();
         if (loader != null) {
-            r.setClassLoader(loader);
+            resolver.setClassLoader(loader);
         }
         if (preLoad) {
             ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(loader);
@@ -163,9 +163,9 @@ public class PluginManager {
         }
         ResolverUtil.Test test = new PluginTest(clazz);
         for (String pkg : packages) {
-            r.findInPackage(test, pkg);
+            resolver.findInPackage(test, pkg);
         }
-        for (Class<?> item : r.getClasses()) {
+        for (Class<?> item : resolver.getClasses()) {
             Plugin p = item.getAnnotation(Plugin.class);
             String pluginType = p.type();
             if (!pluginTypeMap.containsKey(pluginType)) {
