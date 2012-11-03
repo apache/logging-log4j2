@@ -35,7 +35,7 @@ import java.util.concurrent.Semaphore;
  */
 public class RollingFileManager extends FileManager {
 
-    private static ManagerFactory factory = new RollingFileManagerFactory();
+    private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
 
     private long size;
     private long initialTime;
