@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.filter.Filtering;
+import org.apache.logging.log4j.core.filter.Filterable;
 
 /**
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
@@ -90,7 +90,7 @@ public class AppenderControl extends AbstractFilterable {
                 }
             }
 
-            if (appender instanceof Filtering && ((Filtering) appender).isFiltered(event)) {
+            if (appender instanceof Filterable && ((Filterable) appender).isFiltered(event)) {
                 return;
             }
 

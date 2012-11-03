@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Interface implemented by Classes that allow filtering to occur.
  */
-public interface Filtering {
+public interface Filterable {
 
     /**
      * Adds a new Filter. If a Filter already exists it is converted to a CompositeFilter.

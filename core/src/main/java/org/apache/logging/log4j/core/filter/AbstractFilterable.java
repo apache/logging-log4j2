@@ -25,7 +25,7 @@ import java.util.Iterator;
 /**
  * Enhances a Class by allowing it to contain Filters.
  */
-public abstract class AbstractFilterable implements Filtering {
+public abstract class AbstractFilterable implements Filterable {
 
     private volatile Filter filter;
 
