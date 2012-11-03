@@ -31,7 +31,7 @@ import java.nio.channels.FileLock;
  */
 public class FileManager extends OutputStreamManager {
 
-    private static final ManagerFactory factory = new FileManagerFactory();
+    private static final FileManagerFactory factory = new FileManagerFactory();
 
     private final boolean isAppend;
     private final boolean isLocking;

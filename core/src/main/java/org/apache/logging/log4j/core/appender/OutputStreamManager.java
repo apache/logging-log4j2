@@ -43,7 +43,7 @@ public class OutputStreamManager extends AbstractManager {
      * @return An OutputStreamManager.
      */
     public static <T> OutputStreamManager getManager(String name, T data,
-                                                 ManagerFactory<OutputStreamManager, T> factory) {
+                                                 ManagerFactory<? extends OutputStreamManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
 
