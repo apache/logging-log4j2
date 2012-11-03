@@ -39,7 +39,7 @@ public interface Appender extends LifeCycle {
     String getName();
 
     /**
-     * Returns this appenders layout.
+     * Returns this appender's layout.
      *
      * @return the Layout for the Appender or null if none is configured.
      * @issue LOG4J2-36 Refactor into Channel
