@@ -37,11 +37,9 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         this.charset = charset;
         boolean useClass = false;
         try {
-            Class[] types = new Class[] {Charset.class};
-            if (String.class.getMethod("getBytes", types) != null) {
+            if (String.class.getMethod("getBytes", new Class[] {Charset.class}) != null) {
                 useClass = true;
             }
-
         } catch (NoSuchMethodException ex) {
             // Not JDK 6 or greater.
         }
