@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Base class for Appenders. Although Appenders do not have to extend this class, doing so
+ * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
  */
 public abstract class AbstractAppender extends Filterable implements Appender, LifeCycle {

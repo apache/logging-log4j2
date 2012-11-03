@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 
 /**
- * Base class for other pattern converters which can return only parts of their name.
+ * Abstract base class for other pattern converters which can return only parts of their name.
  */
 public abstract class NamePatternConverter extends LogEventPatternConverter {
     /**

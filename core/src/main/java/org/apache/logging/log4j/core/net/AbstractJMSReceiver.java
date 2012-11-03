@@ -28,7 +28,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 /**
- * Base class for receiving LogEvents over JMS. This class expects all messages to be serialized log events.
+ * Abstract base class for receiving LogEvents over JMS. This class expects all messages to be serialized log events.
  */
 public abstract class AbstractJMSReceiver extends AbstractServer implements javax.jms.MessageListener {
 

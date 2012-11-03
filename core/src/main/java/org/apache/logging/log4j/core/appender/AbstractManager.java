@@ -25,7 +25,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Base class used to register managers.
+ * Abstract base class used to register managers.
  */
 public abstract class AbstractManager {
 

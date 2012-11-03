@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 
 /**
- * Base class for managing sockets.
+ * Abstract base class for managing sockets.
  */
 public abstract class AbstractSocketManager extends OutputStreamManager {
 
