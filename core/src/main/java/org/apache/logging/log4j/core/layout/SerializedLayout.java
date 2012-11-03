@@ -94,9 +94,6 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      */
     private class PrivateObjectOutputStream extends ObjectOutputStream {
 
-        public PrivateObjectOutputStream() throws IOException {
-        }
-
         public PrivateObjectOutputStream(OutputStream os) throws IOException {
             super(os);
         }
