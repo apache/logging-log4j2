@@ -47,7 +47,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     }
 
     /**
-     * Format the Log Event.
+     * Formats the Log Event as a byte array.
      *
      * @param event The Log Event.
      * @return The formatted event as a byte array.
