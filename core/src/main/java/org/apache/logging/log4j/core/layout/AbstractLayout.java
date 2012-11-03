@@ -23,7 +23,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import java.io.Serializable;
 
 /**
- * Base class for Layouts.
+ * Abstract base class for Layouts.
  * @param <T> The Class that the Layout will format the LogEvent into.
  */
 public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {

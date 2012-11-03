@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
- * Base class for Layouts that result in a String.
+ * Abstract base class for Layouts that result in a String.
  */
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
