@@ -40,7 +40,7 @@ import java.lang.reflect.Constructor;
  * default. OTOH, a Writer cannot print byte streams.
  */
 @Plugin(name = "Console", type = "Core", elementType = "appender", printObject = true)
-public final class ConsoleAppender extends OutputStreamAppender {
+public final class ConsoleAppender extends AbstractOutputStreamAppender {
 
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 

@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Writes the byte output stream. The stream will already have been encoded.
  */
-public abstract class OutputStreamAppender extends AbstractAppender {
+public abstract class AbstractOutputStreamAppender extends AbstractAppender {
 
     /**
      * Immediate flush means that the underlying writer or output stream
@@ -54,7 +54,7 @@ public abstract class OutputStreamAppender extends AbstractAppender {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected OutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
+    protected AbstractOutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
                                 boolean immediateFlush, OutputStreamManager manager) {
         super(name, filter, layout, handleException);
         if (layout != null) {
@@ -102,7 +102,7 @@ public abstract class OutputStreamAppender extends AbstractAppender {
     /**
      * Actual writing occurs here.
      * <p/>
-     * <p>Most subclasses of <code>OutputStreamAppender</code> will need to
+     * <p>Most subclasses of <code>AbstractOutputStreamAppender</code> will need to
      * override this method.
      * @param event The LogEvent.
      */

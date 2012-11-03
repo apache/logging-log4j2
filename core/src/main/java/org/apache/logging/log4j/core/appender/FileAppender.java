@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * File Appender.
  */
 @Plugin(name = "File", type = "Core", elementType = "appender", printObject = true)
-public final class FileAppender extends OutputStreamAppender {
+public final class FileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
 

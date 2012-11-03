@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.net.TCPSocketManager;
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
 @Plugin(name = "Socket", type = "Core", elementType = "appender", printObject = true)
-public class SocketAppender extends OutputStreamAppender {
+public class SocketAppender extends AbstractOutputStreamAppender {
 
 
     protected SocketAppender(String name, Layout layout, Filter filter, AbstractSocketManager manager,

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * An appender that writes to files andd can roll over at intervals.
  */
 @Plugin(name = "RollingFile", type = "Core", elementType = "appender", printObject = true)
-public final class RollingFileAppender extends OutputStreamAppender {
+public final class RollingFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final String filePattern;
