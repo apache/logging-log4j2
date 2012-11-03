@@ -38,27 +38,29 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
 
     private static final String FILTERS = "filters(";
 
-    private List<String> packages;
+    private final List<String> packages;
 
     /**
      * Private constructor.
      *
      * @param options options, may be null.
      */
-    private ExtendedThrowablePatternConverter(final String[] options) {
+    private ExtendedThrowablePatternConverter(final String[] options) {        
         super("ExtendedThrowable", "throwable", options);
+        List<String> tempPackages = null;
         if (options != null && options.length > 1) {
             if (options[1].startsWith(FILTERS) && options[1].endsWith(")")) {
                 String filterStr = options[1].substring(FILTERS.length(), options[1].length() - 1);
                 String[] array = filterStr.split(",");
                 if (array.length > 0) {
-                    packages = new ArrayList<String>(array.length);
+                    tempPackages = new ArrayList<String>(array.length);
                     for (String token : array) {
-                        packages.add(token.trim());
+                        tempPackages.add(token.trim());
                     }
                 }
             }
         }
+        packages = tempPackages;
     }
 
     /**
