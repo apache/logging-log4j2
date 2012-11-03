@@ -50,10 +50,9 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
         public BasicConfiguration() {
-
             LoggerConfig root = getRootLogger();
-            String l = System.getProperty(DEFAULT_LEVEL);
-            Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.DEBUG;
+            String levelName = System.getProperty(DEFAULT_LEVEL);
+            Level level = (levelName != null && Level.valueOf(levelName) != null) ? Level.valueOf(levelName) : Level.DEBUG;
             root.setLevel(level);
         }
     }
