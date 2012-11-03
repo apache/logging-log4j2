@@ -257,8 +257,8 @@ WARN  [main]: Message 2</pre>
                     <tr>
                       <td>%d{HH:mm:ss}{GMT+0}</td>
                       <td>18:34:02,781</td>
-                    </tr>                    
-                  </table>                 
+                    </tr>
+                  </table>
                 </p>
               </td>
             </tr>
@@ -511,10 +511,12 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>p</b><br />
-                <b>level</b>
+                <b>p{level name mapping}</b><br />
+                <b>level{level name mapping}</b>
               </td>
-              <td>Outputs the level of the logging event.</td>
+              <td>Outputs the level of the logging event. A level name mapping map be provided in the form
+                "level=value, level=value" where level is the name of the Level and value is the value that
+                should be displayed instead of the name of the Level.</td>
             </tr>
             <tr>
               <td align="center">

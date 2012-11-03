@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
+import java.util.EnumMap;
+
 
 /**
  * Returns the event's level in a StringBuffer.
@@ -30,25 +32,52 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final LevelPatternConverter INSTANCE =
-        new LevelPatternConverter();
+    private static final LevelPatternConverter INSTANCE = new LevelPatternConverter(null);
+
+    private final EnumMap<Level, String> levelMap;
 
     /**
      * Private constructor.
      */
-    private LevelPatternConverter() {
+    private LevelPatternConverter(EnumMap<Level, String> map) {
         super("Level", "level");
+        this.levelMap = map;
     }
 
     /**
      * Obtains an instance of pattern converter.
      *
-     * @param options options, may be null.
+     * @param options options, may be null. May contain a list of level names and
+     * The value that should be displayed for the Level.
      * @return instance of pattern converter.
      */
-    public static LevelPatternConverter newInstance(
-        final String[] options) {
-        return INSTANCE;
+    public static LevelPatternConverter newInstance(final String[] options) {
+        if (options == null || options.length == 0) {
+            return INSTANCE;
+        }
+        EnumMap<Level, String> levelMap = new EnumMap<Level, String>(Level.class);
+        String[] definitions = options[0].split(",");
+        for (String def : definitions) {
+            String[] pair = def.split("=");
+            if (pair == null || pair.length != 2) {
+                LOGGER.error("Invalid option {}", def);
+                continue;
+            }
+            Level level = Level.toLevel(pair[0].trim().toUpperCase(), null);
+            if (level == null) {
+                LOGGER.error("Invalid Level {}", pair[0].trim());
+            }
+            levelMap.put(level, pair[1].trim());
+        }
+        if (levelMap.size() == 0) {
+            return INSTANCE;
+        }
+        for (Level level : Level.values()) {
+            if (!levelMap.containsKey(level)) {
+                levelMap.put(level, level.toString());
+            }
+        }
+        return new LevelPatternConverter(levelMap);
     }
 
     /**
@@ -56,7 +85,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        output.append(event.getLevel().toString());
+        output.append(levelMap == null ? event.getLevel().toString() : levelMap.get(event.getLevel()));
     }
 
     /**
