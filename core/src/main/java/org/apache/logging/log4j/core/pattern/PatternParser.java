@@ -210,13 +210,13 @@ public final class PatternParser {
      */
     private static int extractOptions(String pattern, int i, List<String> options) {
         while ((i < pattern.length()) && (pattern.charAt(i) == '{')) {
-            int begin = i;
+            int begin = i++;
             int end;
             int depth = 0;
             do {
                 end = pattern.indexOf('}', i);
                 if (end != -1) {
-                    int next = pattern.indexOf("{", i + 1);
+                    int next = pattern.indexOf("{", i);
                     if (next != -1 && next < end) {
                         i = end + 1;
                         ++depth;

@@ -55,6 +55,8 @@ public class PatternParserTest {
     private String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
+    private static String nestedPattern =
+        "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
@@ -103,9 +105,26 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         String str = buf.toString();
-        String expected = "INFO  [PatternParserTest        :96  ] - Hello, world" + LINE_SEP;
+        String expected = "INFO  [PatternParserTest        :98  ] - Hello, world" + LINE_SEP;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
+    @Test
+    public void testNestedPattern() {
+        List<PatternFormatter> formatters = parser.parse(nestedPattern);
+        assertNotNull(formatters);
+        Throwable t = new Throwable();
+        StackTraceElement[] elements = t.getStackTrace();
+        LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
+            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
+            null, null, "Thread1", elements[0], System.currentTimeMillis());
+        StringBuilder buf = new StringBuilder();
+        for (PatternFormatter formatter : formatters) {
+            formatter.format(event, buf);
+        }
+        String str = buf.toString();
+        String expected = "] INFO : Hello, world\n\u001B[m";
+        assertTrue(" Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+    }
 
 }
