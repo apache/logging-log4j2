@@ -83,7 +83,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
 
         String name = "JMSTopic:" + factoryBindingName + '.' + topicBindingName;
-        return (JMSTopicManager) getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
+        return getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password));
     }
 
