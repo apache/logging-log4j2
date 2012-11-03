@@ -21,13 +21,13 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.filter.Filtering;
 
 /**
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
  */
-public class AppenderControl extends Filterable {
+public class AppenderControl extends AbstractFilterable {
 
     private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
 

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrLookup;
@@ -50,7 +50,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * The Base Configuration. Many configuration implementations will extend this class.
  */
-public class BaseConfiguration extends Filterable implements Configuration {
+public class BaseConfiguration extends AbstractFilterable implements Configuration {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */

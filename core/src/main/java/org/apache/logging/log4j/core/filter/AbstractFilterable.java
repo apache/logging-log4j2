@@ -25,15 +25,15 @@ import java.util.Iterator;
 /**
  * Enhances a Class by allowing it to contain Filters.
  */
-public class Filterable implements Filtering {
+public abstract class AbstractFilterable implements Filtering {
 
     private volatile Filter filter;
 
-    protected Filterable(Filter filter) {
+    protected AbstractFilterable(Filter filter) {
         this.filter = filter;
     }
 
-    protected Filterable() {
+    protected AbstractFilterable() {
     }
 
     /**

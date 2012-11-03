@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Logger object that is created via configuration.
  */
 @Plugin(name = "logger", type = "Core", printObject = true)
-public class LoggerConfig extends Filterable implements LogEventFactory {
+public class LoggerConfig extends AbstractFilterable implements LogEventFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
