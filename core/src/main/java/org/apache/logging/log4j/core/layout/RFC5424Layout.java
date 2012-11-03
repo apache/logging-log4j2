@@ -188,7 +188,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             String text;
             if (isStructured) {
                 StructuredDataMessage data = (StructuredDataMessage) msg;
-                Map map = data.getData();
+                Map<String, String> map = data.getData();
                 id = data.getId();
                 formatStructuredElement(id, map, buf, noopChecker);
                 text = data.getFormat();
