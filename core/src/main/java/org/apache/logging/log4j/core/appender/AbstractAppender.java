@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
@@ -30,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
  */
-public abstract class AbstractAppender extends Filterable implements Appender, LifeCycle {
+public abstract class AbstractAppender<T extends Serializable> extends Filterable implements Appender<T>, LifeCycle {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -41,7 +43,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      */
     private boolean started = false;
 
-    private final Layout<?> layout;
+    private final Layout<T> layout;
 
     private final String name;
 
@@ -55,7 +57,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
      */
-    protected AbstractAppender(String name, Filter filter, Layout<?> layout) {
+    protected AbstractAppender(String name, Filter filter, Layout<T> layout) {
         this(name, filter, layout, true);
     }
 
@@ -67,7 +69,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * @param handleException If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
-    protected AbstractAppender(String name, Filter filter, Layout<?> layout, boolean handleException) {
+    protected AbstractAppender(String name, Filter filter, Layout<T> layout, boolean handleException) {
         super(filter);
         this.name = name;
         this.layout = layout;
@@ -116,7 +118,7 @@ public abstract class AbstractAppender extends Filterable implements Appender, L
      * Returns the Layout for the appender.
      * @return The Layout used to format the event.
      */
-    public Layout<?> getLayout() {
+    public Layout<T> getLayout() {
         return layout;
     }
 

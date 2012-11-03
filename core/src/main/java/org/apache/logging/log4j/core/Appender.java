@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.Serializable;
+
 /**
  * @issue LOG4J2-36: Appender interface should be refactored
  */
-public interface Appender extends LifeCycle {
+public interface Appender<T extends Serializable> extends LifeCycle {
 
     /**
      * Log in <code>Appender</code> specific way. When appropriate,
@@ -44,7 +46,7 @@ public interface Appender extends LifeCycle {
      * @return the Layout for the Appender or null if none is configured.
      * @issue LOG4J2-36 Refactor into Channel
      */
-    Layout<?> getLayout();
+    Layout<T> getLayout();
 
     /**
      * If set to true any exceptions thrown by the Appender will be logged but not thrown.
