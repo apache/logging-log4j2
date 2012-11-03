@@ -34,7 +34,7 @@ import java.io.Serializable;
  */
 public class JMSTopicManager extends AbstractJMSManager {
 
-    private static final ManagerFactory factory = new JMSTopicManagerFactory();
+    private static final JMSTopicManagerFactory factory = new JMSTopicManagerFactory();
 
     private final TopicConnection topicConnection;
     private final TopicSession topicSession;

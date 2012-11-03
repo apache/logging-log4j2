@@ -34,7 +34,7 @@ import java.io.Serializable;
  */
 public class JMSQueueManager extends AbstractJMSManager {
 
-    private static final ManagerFactory factory = new JMSQueueManagerFactory();
+    private static final JMSQueueManagerFactory factory = new JMSQueueManagerFactory();
 
     private final QueueConnection queueConnection;
     private final QueueSession queueSession;

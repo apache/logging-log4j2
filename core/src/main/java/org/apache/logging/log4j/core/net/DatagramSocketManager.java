@@ -25,7 +25,7 @@ import java.io.OutputStream;
  */
 public class DatagramSocketManager extends AbstractSocketManager {
 
-    private static final ManagerFactory factory = new DatagramSocketManagerFactory();
+    private static final DatagramSocketManagerFactory factory = new DatagramSocketManagerFactory();
 
     /**
      * The Constructor.
