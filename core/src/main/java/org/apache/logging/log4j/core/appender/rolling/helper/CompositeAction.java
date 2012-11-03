@@ -41,7 +41,7 @@ public class CompositeAction extends AbstractAction {
      * @param actions     list of actions, may not be null.
      * @param stopOnError if true, stop on the first false return value or exception.
      */
-    public CompositeAction(final List actions,
+    public CompositeAction(final List<Action> actions,
                            final boolean stopOnError) {
         this.actions = new Action[actions.size()];
         actions.toArray(this.actions);
