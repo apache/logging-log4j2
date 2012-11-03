@@ -52,8 +52,8 @@ public class DefaultConfiguration extends BaseConfiguration {
         LoggerConfig root = getRootLogger();
         root.addAppender(appender, null, null);
 
-        String l = System.getProperty(DEFAULT_LEVEL);
-        Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
+        String levelName = System.getProperty(DEFAULT_LEVEL);
+        Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 }
