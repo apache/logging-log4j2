@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Writes the byte output stream. The stream will already have been encoded.
+ * Appends log events as bytes to a byte output stream. The stream will already have been encoded.
  */
 public abstract class AbstractOutputStreamAppender extends AbstractAppender {
 
