@@ -39,7 +39,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
 
     private static final String FILTERS = "filters(";
 
-    private List<String> packages = null;
+    private final List<String> packages;
 
     /**
      * Private constructor.
@@ -48,18 +48,20 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
      */
     private RootThrowablePatternConverter(final String[] options) {
         super("RootThrowable", "throwable", options);
+        List<String> tempPackages = null;
         if (options != null && options.length > 1) {
             if (options[1].startsWith(FILTERS) && options[1].endsWith(")")) {
                 String filterStr = options[1].substring(FILTERS.length(), options[1].length() - 1);
                 String[] array = filterStr.split(",");
                 if (array.length > 0) {
-                    packages = new ArrayList<String>(array.length);
+                    tempPackages = new ArrayList<String>(array.length);
                     for (String token : array) {
-                        packages.add(token.trim());
+                        tempPackages.add(token.trim());
                     }
                 }
             }
         }
+        packages = tempPackages;
     }
 
     /**
