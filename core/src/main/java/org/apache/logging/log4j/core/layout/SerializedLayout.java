@@ -59,7 +59,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
             ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
             oos.writeObject(event);
         } catch (IOException ioe) {
-            LOGGER.error("Serialization of Logging Event failed.", ioe);
+            LOGGER.error("Serialization of LogEvent failed.", ioe);
         }
         return baos.toByteArray();
     }
