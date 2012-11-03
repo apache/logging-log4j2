@@ -57,14 +57,13 @@ public abstract class AbstractManager {
      * @param name The name of the Manager to retrieve.
      * @param factory The Factory to use to create the Manager.
      * @param data An Object that should be passed to the factory when creating the Manager.
-     * @param <T> The Type of the Manager to be created.
+     * @param <M> The Type of the Manager to be created.
      * @return A Manager with the specified name and type.
      */
-    public static <T extends AbstractManager> T getManager(String name, ManagerFactory<T, Object> factory,
-                                                 Object data) {
+    public static <M extends AbstractManager, T> M getManager(String name, ManagerFactory<M, T> factory, T data) {
         lock.lock();
         try {
-            T manager = (T) map.get(name);
+            M manager = (M) map.get(name);
             if (manager == null) {
                 manager = factory.createManager(name, data);
                 if (manager == null) {

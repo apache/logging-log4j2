@@ -42,7 +42,7 @@ import java.lang.reflect.Constructor;
 @Plugin(name = "Console", type = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends OutputStreamAppender {
 
-    private static ManagerFactory factory = new ConsoleManagerFactory();
+    private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
     /**
      * Enumeration of console destinations.
