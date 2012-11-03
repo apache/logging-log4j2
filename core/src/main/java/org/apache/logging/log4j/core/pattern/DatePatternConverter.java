@@ -88,7 +88,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
     private long lastTimestamp;
 
-    private SimpleDateFormat simpleFormat;
+    private final SimpleDateFormat simpleFormat;
 
     /**
      * Private constructor.
@@ -124,20 +124,23 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             pattern = patternOption;
         }
 
+        SimpleDateFormat tempFormat;
+        
         try {
-            simpleFormat = new SimpleDateFormat(pattern);
+            tempFormat = new SimpleDateFormat(pattern);
         } catch (IllegalArgumentException e) {
             LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
 
             // default to the ISO8601 format
-            simpleFormat = new SimpleDateFormat(ISO8601_PATTERN);
+            tempFormat = new SimpleDateFormat(ISO8601_PATTERN);
         }
 
         // if the option list contains a TZ option, then set it.
         if ((options != null) && (options.length > 1)) {
             TimeZone tz = TimeZone.getTimeZone(options[1]);
-            simpleFormat.setTimeZone(tz);
+            tempFormat.setTimeZone(tz);
         }
+        simpleFormat = tempFormat; 
     }
 
     /**
