@@ -164,12 +164,12 @@ public final class OptionConverter {
     /**
      *
      * @param value The size of the file as a String.
-     * @param dEfault The default value.
+     * @param defaultValue The default value.
      * @return The size of the file as a long.
      */
-    public static long toFileSize(String value, long dEfault) {
+    public static long toFileSize(String value, long defaultValue) {
         if (value == null) {
-            return dEfault;
+            return defaultValue;
         }
 
         String s = value.trim().toUpperCase();
@@ -194,7 +194,7 @@ public final class OptionConverter {
                 LOGGER.error("[" + value + "] not in expected format.", e);
             }
         }
-        return dEfault;
+        return defaultValue;
     }
 
     /**
