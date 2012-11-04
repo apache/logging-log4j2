@@ -126,7 +126,7 @@ public class SyslogLayout extends AbstractStringLayout {
             }
         }
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
-        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase()) : Facility.LOCAL0;
+        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase(Locale.ENGLISH)) : Facility.LOCAL0;
         return new SyslogLayout(f, includeNewLine, c);
     }
 }

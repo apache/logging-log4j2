@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -468,7 +469,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
-        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase()) : Facility.LOCAL0;
+        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase(Locale.ENGLISH)) : Facility.LOCAL0;
         int enterpriseNumber = ein == null ? DEFAULT_ENTERPRISE_NUMBER : Integer.parseInt(ein);
         boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
