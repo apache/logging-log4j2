@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.helpers;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -172,7 +173,7 @@ public final class OptionConverter {
             return defaultValue;
         }
 
-        String s = value.trim().toUpperCase();
+        String s = value.trim().toUpperCase(Locale.ENGLISH);
         long multiplier = 1;
         int index;
 
