@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -46,7 +48,17 @@ public interface Filter {
         /**
          * The event should not be processed.
          */
-        DENY
+        DENY;
+        
+        /**
+         * Returns the Result for the given string.
+         * 
+         * @param name The Result enum name, case-insensitive. If null, returns, null
+         * @return a Result enum value
+         */
+        public static Result toResult(String name) {
+            return Result.valueOf(name.toUpperCase(Locale.ENGLISH));
+        }
     }
 
     /**

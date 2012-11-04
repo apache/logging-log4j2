@@ -133,8 +133,8 @@ public final class StructuredDataFilter extends MapFilter {
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? null : Result.toResult(match);
+        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
         return new StructuredDataFilter(map, isAnd, onMatch, onMismatch);
     }
 }

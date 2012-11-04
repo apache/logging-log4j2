@@ -224,8 +224,8 @@ public final class BurstFilter extends AbstractFilter {
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? null : Result.toResult(match);
+        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
         Level lvl = Level.toLevel(level, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {

@@ -86,8 +86,8 @@ public final class ThresholdFilter extends AbstractFilter {
                                                @PluginAttr("onMatch") String match,
                                                @PluginAttr("onMismatch") String mismatch) {
         Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase(Locale.ENGLISH));
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? Result.NEUTRAL : Result.toResult(match);
+        Result onMismatch = mismatch == null ? Result.DENY : Result.toResult(mismatch);
 
         return new ThresholdFilter(level, onMatch, onMismatch);
     }

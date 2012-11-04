@@ -128,8 +128,8 @@ public final class DynamicThresholdFilter extends AbstractFilter {
                                                       @PluginAttr("defaultThreshold") String level,
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? null : Result.toResult(match);
+        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
         Map<String, Level> map = new HashMap<String, Level>();
         for (KeyValuePair pair : pairs) {
             map.put(pair.getKey(), Level.toLevel(pair.getValue().toUpperCase(Locale.ENGLISH)));

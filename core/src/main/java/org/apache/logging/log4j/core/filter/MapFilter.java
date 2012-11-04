@@ -149,8 +149,8 @@ public class MapFilter extends AbstractFilter {
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? null : Result.toResult(match);
+        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
         return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }
