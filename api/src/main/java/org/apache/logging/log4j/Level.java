@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Locale;
+
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
  * <ul>
@@ -89,16 +91,17 @@ public enum Level {
      * conversion fails, then this method returns the value of
      * <code>defaultLevel</code>.
      *
-     * @param sArg The name of the desired Level.
+     * @param name The name of the desired Level.
      * @param defaultLevel The Level to use if the String is invalid.
      * @return The Level associated with the String.
      */
-    public static Level toLevel(String sArg, Level defaultLevel) {
-        if (sArg == null) {
+    public static Level toLevel(final String name, final Level defaultLevel) {
+        if (name == null) {
             return defaultLevel;
         }
+        final String cleanLevel = name.toUpperCase(Locale.ENGLISH);
         for (Level level : values()) {
-            if (level.name().equals(sArg)) {
+            if (level.name().equals(cleanLevel)) {
                 return level;
             }
         }

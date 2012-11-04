@@ -103,7 +103,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
             for (Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(Locale.ENGLISH), null);
+                    status = Level.toLevel(getSubst().replace(entry.getValue()), null);
                     if (status == null) {
                         status = Level.ERROR;
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");

@@ -76,16 +76,16 @@ public final class ThresholdFilter extends AbstractFilter {
 
     /**
      * Create a ThresholdFilter.
-     * @param loggerLevel The log Level.
+     * @param levelName The log Level.
      * @param match The action to take on a match.
      * @param mismatch The action to take on a mismatch.
      * @return The created ThresholdFilter.
      */
     @PluginFactory
-    public static ThresholdFilter createFilter(@PluginAttr("level") String loggerLevel,
+    public static ThresholdFilter createFilter(@PluginAttr("level") String levelName,
                                                @PluginAttr("onMatch") String match,
                                                @PluginAttr("onMismatch") String mismatch) {
-        Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase(Locale.ENGLISH));
+        Level level = Level.toLevel(levelName, Level.ERROR);
         Result onMatch = Result.toResult(match, Result.NEUTRAL);
         Result onMismatch = Result.toResult(mismatch, Result.DENY);
         return new ThresholdFilter(level, onMatch, onMismatch);

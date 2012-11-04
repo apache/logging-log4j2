@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.logging.log4j.message.MapMessage.MapFormat;
+import org.apache.logging.log4j.util.EnglishEnums;
+
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
@@ -213,7 +216,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     @Override
     public String asString(String format) {
         try {
-            return asString(Format.valueOf(format.toUpperCase(Locale.ENGLISH)), null);
+            return asString(EnglishEnums.valueOf(Format.class, format), null);
         } catch (IllegalArgumentException ex) {
             return asString();
         }

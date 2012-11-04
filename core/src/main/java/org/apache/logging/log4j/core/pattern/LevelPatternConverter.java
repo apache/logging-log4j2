@@ -64,7 +64,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
                 LOGGER.error("Invalid option {}", def);
                 continue;
             }
-            Level level = Level.toLevel(pair[0].trim().toUpperCase(Locale.ENGLISH), null);
+            Level level = Level.toLevel(pair[0].trim(), null);
             if (level == null) {
                 LOGGER.error("Invalid Level {}", pair[0].trim());
             }

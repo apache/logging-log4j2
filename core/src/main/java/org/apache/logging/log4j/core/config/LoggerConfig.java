@@ -359,7 +359,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     /**
      * Factory method to create a LoggerConfig.
      * @param additivity True if additive, false otherwise.
-     * @param loggerLevel The Level to be associated with the Logger.
+     * @param levelName The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param refs An array of Appender names.
      * @param filter A Filter.
@@ -367,7 +367,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      */
     @PluginFactory
     public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
-                                            @PluginAttr("level") String loggerLevel,
+                                            @PluginAttr("level") String levelName,
                                             @PluginAttr("name") String loggerName,
                                             @PluginElement("appender-ref") AppenderRef[] refs,
                                             @PluginElement("properties") Property[] properties,
@@ -381,9 +381,9 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
         List<AppenderRef> appenderRefs = Arrays.asList(refs);
         Level level;
         try {
-            level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase(Locale.ENGLISH));
+            level = Level.toLevel(levelName, Level.ERROR);
         } catch (Exception ex) {
-            LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
+            LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", levelName);
             level = Level.ERROR;
         }
         String name = loggerName.equals("root") ? "" : loggerName;
@@ -400,7 +400,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
 
         @PluginFactory
         public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
-                                            @PluginAttr("level") String loggerLevel,
+                                            @PluginAttr("level") String levelName,
                                             @PluginElement("appender-ref") AppenderRef[] refs,
                                             @PluginElement("properties") Property[] properties,
                                             @PluginConfiguration Configuration config,
@@ -408,9 +408,9 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
             List<AppenderRef> appenderRefs = Arrays.asList(refs);
             Level level;
             try {
-                level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase(Locale.ENGLISH));
+                level = Level.toLevel(levelName, Level.ERROR);
             } catch (Exception ex) {
-                LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
+                LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", levelName);
                 level = Level.ERROR;
             }
             boolean additive = additivity == null ? true : Boolean.parseBoolean(additivity);

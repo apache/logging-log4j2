@@ -27,8 +27,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.DatagramSocketManager;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TCPSocketManager;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
@@ -89,7 +91,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
     }
 
     protected static AbstractSocketManager createSocketManager(String protocol, String host, int port, int delay) {
-        Protocol p = Protocol.valueOf(protocol.toUpperCase(Locale.ENGLISH));
+        Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:
                 return TCPSocketManager.getSocketManager(host, port, delay);

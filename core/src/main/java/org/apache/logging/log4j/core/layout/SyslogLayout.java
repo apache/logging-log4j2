@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -126,7 +127,7 @@ public class SyslogLayout extends AbstractStringLayout {
             }
         }
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
-        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase(Locale.ENGLISH)) : Facility.LOCAL0;
+        Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         return new SyslogLayout(f, includeNewLine, c);
     }
 }

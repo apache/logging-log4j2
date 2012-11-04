@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.util.EnglishEnums;
+
 /**
  *  The facility codes used by the Syslog system.
  *
@@ -96,6 +98,27 @@ public enum Facility {
     LOCAL6(22),
     /** Local use 7. */
     LOCAL7(23);
+
+    /**
+     * Returns the Facility for the given string.
+     * 
+     * @param name The Facility enum name, case-insensitive. If null, returns, null
+     * @return a Facility enum value or null if name is null
+     */
+    public static Facility toFacility(String name) {
+        return toFacility(name, null);
+    }
+
+    /**
+     * Returns the Facility for the given string.
+     * 
+     * @param name The Facility enum name, case-insensitive. If null, returns, defaultFacility
+     * @param defaultFacility the Facility to return if name is null
+     * @return a Facility enum value or null if name is null
+     */
+    public static Facility toFacility(String name, Facility defaultFacility) {
+        return EnglishEnums.valueOf(Facility.class, name, defaultFacility);
+    }
 
     private final int code;
 

@@ -21,7 +21,9 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Interface that must be implemented to allow custom event filtering. It is highly recommended that
@@ -68,7 +70,7 @@ public interface Filter {
          * @return a Result enum value or null if name is null
          */
         public static Result toResult(String name, Result defaultResult) {
-            return name == null ? defaultResult : Result.valueOf(name.toUpperCase(Locale.ENGLISH));
+            return EnglishEnums.valueOf(Result.class, name, defaultResult);
         }
 }
 

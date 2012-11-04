@@ -59,13 +59,13 @@ public final class AppenderRef {
     /**
      * Create an Appender reference.
      * @param ref The name of the Appender.
-     * @param level The Level to filter against.
+     * @param levelName The Level to filter against.
      * @param filter The filter(s) to use.
      * @return The name of the Appender.
      */
     @PluginFactory
     public static AppenderRef createAppenderRef(@PluginAttr("ref") String ref,
-                                                @PluginAttr("level") String level,
+                                                @PluginAttr("level") String levelName,
                                                 @PluginElement("filters") Filter filter) {
 
         if (ref == null) {
@@ -74,10 +74,10 @@ public final class AppenderRef {
         }
         Level l = null;
 
-        if (level != null) {
-            l = Level.toLevel(level.toUpperCase(Locale.ENGLISH), null);
+        if (levelName != null) {
+            l = Level.toLevel(levelName, null);
             if (l == null) {
-                LOGGER.error("Invalid level " + level + " on Appender reference " + ref);
+                LOGGER.error("Invalid level " + levelName + " on Appender reference " + ref);
             }
         }
 

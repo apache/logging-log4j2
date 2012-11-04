@@ -132,7 +132,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         Result onMismatch = Result.toResult(mismatch);
         Map<String, Level> map = new HashMap<String, Level>();
         for (KeyValuePair pair : pairs) {
-            map.put(pair.getKey(), Level.toLevel(pair.getValue().toUpperCase(Locale.ENGLISH)));
+            map.put(pair.getKey(), Level.toLevel(pair.getValue()));
         }
         Level l = Level.toLevel(level, Level.ERROR);
         return new DynamicThresholdFilter(key, map, l, onMatch, onMismatch);

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.util.EnglishEnums;
+
 /**
  * Represents a Message that consists of a Map.
  */
@@ -153,7 +155,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
     public String asString(String format) {
         try {
-            return asString(MapFormat.valueOf(format.toUpperCase(Locale.ENGLISH)));
+            return asString(EnglishEnums.valueOf(MapFormat.class, format));
         } catch (IllegalArgumentException ex) {
             return asString();
         }

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -469,7 +470,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
-        Facility f = facility != null ? Facility.valueOf(facility.toUpperCase(Locale.ENGLISH)) : Facility.LOCAL0;
+        Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         int enterpriseNumber = ein == null ? DEFAULT_ENTERPRISE_NUMBER : Integer.parseInt(ein);
         boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
         boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
