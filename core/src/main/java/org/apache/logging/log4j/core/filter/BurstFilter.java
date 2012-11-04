@@ -224,20 +224,14 @@ public final class BurstFilter extends AbstractFilter {
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        Result onMatch = Result.toResult(match, Result.NEUTRAL);
+        Result onMismatch = Result.toResult(mismatch, Result.DENY);
         Level lvl = Level.toLevel(level, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {
             eventRate = DEFAULT_RATE;
         }
         long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
-        if (onMatch == null) {
-            onMatch = Result.NEUTRAL;
-        }
-        if (onMismatch == null) {
-            onMismatch = Result.DENY;
-        }
         return new BurstFilter(lvl, eventRate, max, onMatch, onMismatch);
     }
 }
