@@ -302,7 +302,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
 
     /**
      * Logs an event.
-     * @param event Yhe log event.
+     * @param event The log event.
      */
     public void log(LogEvent event) {
 
