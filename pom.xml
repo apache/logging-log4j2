@@ -112,6 +112,12 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
   </properties>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <url>http://repository.apache.org/snapshots/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencyManagement>
     <dependencies>
       <dependency>
