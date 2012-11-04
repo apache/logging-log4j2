@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -152,7 +153,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
     public String asString(String format) {
         try {
-            return asString(MapFormat.valueOf(format.toUpperCase()));
+            return asString(MapFormat.valueOf(format.toUpperCase(Locale.ENGLISH)));
         } catch (IllegalArgumentException ex) {
             return asString();
         }

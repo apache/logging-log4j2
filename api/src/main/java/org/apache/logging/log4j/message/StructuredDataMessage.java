@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -212,7 +213,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     @Override
     public String asString(String format) {
         try {
-            return asString(Format.valueOf(format.toUpperCase()), null);
+            return asString(Format.valueOf(format.toUpperCase(Locale.ENGLISH)), null);
         } catch (IllegalArgumentException ex) {
             return asString();
         }
