@@ -21,8 +21,6 @@ import org.apache.logging.log4j.core.config.BaseConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.xml.sax.InputSource;
-
 import java.net.URI;
 
 /**
