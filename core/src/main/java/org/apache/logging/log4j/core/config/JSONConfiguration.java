@@ -42,6 +42,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -82,7 +83,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             PrintStream stream = System.out;
             for (Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(), null);
+                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(Locale.ENGLISH), null);
                     if (status == null) {
                         status = Level.ERROR;
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
