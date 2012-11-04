@@ -91,7 +91,7 @@ public enum Level {
      *
      * @param sArg The name of the desired Level.
      * @param defaultLevel The Level to use if the String is invalid.
-     * @return The LEvel associated with the String.
+     * @return The Level associated with the String.
      */
     public static Level toLevel(String sArg, Level defaultLevel) {
         if (sArg == null) {
