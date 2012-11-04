@@ -210,7 +210,7 @@ public final class BurstFilter extends AbstractFilter {
     }
 
     /**
-     * @param level  The logging level.
+     * @param levelName  The logging level.
      * @param rate   The average number of events per second to allow.
      * @param maxBurst  The maximum number of events that can occur before events are filtered for exceeding the
      * average rate. The default is 10 times the rate.
@@ -219,19 +219,19 @@ public final class BurstFilter extends AbstractFilter {
      * @return A BurstFilter.
      */
     @PluginFactory
-    public static BurstFilter createFilter(@PluginAttr("level") String level,
+    public static BurstFilter createFilter(@PluginAttr("level") String levelName,
                                            @PluginAttr("rate") String rate,
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
         Result onMatch = Result.toResult(match, Result.NEUTRAL);
         Result onMismatch = Result.toResult(mismatch, Result.DENY);
-        Level lvl = Level.toLevel(level, Level.WARN);
+        Level level = Level.toLevel(levelName, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {
             eventRate = DEFAULT_RATE;
         }
         long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
-        return new BurstFilter(lvl, eventRate, max, onMatch, onMismatch);
+        return new BurstFilter(level, eventRate, max, onMatch, onMismatch);
     }
 }
