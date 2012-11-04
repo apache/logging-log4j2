@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -127,11 +128,11 @@ public final class DynamicThresholdFilter extends AbstractFilter {
                                                       @PluginAttr("defaultThreshold") String level,
                                                       @PluginAttr("onmatch") String match,
                                                       @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
         Map<String, Level> map = new HashMap<String, Level>();
         for (KeyValuePair pair : pairs) {
-            map.put(pair.getKey(), Level.toLevel(pair.getValue().toUpperCase()));
+            map.put(pair.getKey(), Level.toLevel(pair.getValue().toUpperCase(Locale.ENGLISH)));
         }
         Level l = Level.toLevel(level, Level.ERROR);
         return new DynamicThresholdFilter(key, map, l, onMatch, onMismatch);

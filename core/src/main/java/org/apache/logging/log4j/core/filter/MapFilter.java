@@ -31,6 +31,7 @@ import org.apache.logging.log4j.message.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -148,8 +149,8 @@ public class MapFilter extends AbstractFilter {
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
         return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

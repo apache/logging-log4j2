@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -126,8 +127,8 @@ public final class TimeFilter extends AbstractFilter {
             }
         }
         TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
 
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
     }

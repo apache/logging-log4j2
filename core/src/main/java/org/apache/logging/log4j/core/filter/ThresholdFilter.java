@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -83,9 +85,9 @@ public final class ThresholdFilter extends AbstractFilter {
     public static ThresholdFilter createFilter(@PluginAttr("level") String loggerLevel,
                                                @PluginAttr("onMatch") String match,
                                                @PluginAttr("onMismatch") String mismatch) {
-        Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase());
-        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase());
+        Level level = loggerLevel == null ? Level.ERROR : Level.toLevel(loggerLevel.toUpperCase(Locale.ENGLISH));
+        Result onMatch = match == null ? Result.NEUTRAL : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? Result.DENY : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
 
         return new ThresholdFilter(level, onMatch, onMismatch);
     }

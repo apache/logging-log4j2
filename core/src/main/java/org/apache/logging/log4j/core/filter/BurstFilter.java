@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.DelayQueue;
@@ -223,8 +224,8 @@ public final class BurstFilter extends AbstractFilter {
                                            @PluginAttr("maxBurst") String maxBurst,
                                            @PluginAttr("onmatch") String match,
                                            @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
         Level lvl = Level.toLevel(level, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {

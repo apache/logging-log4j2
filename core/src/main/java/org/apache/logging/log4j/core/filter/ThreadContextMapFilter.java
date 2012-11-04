@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -141,8 +142,8 @@ public class ThreadContextMapFilter extends MapFilter {
             return null;
         }
         boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
         return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

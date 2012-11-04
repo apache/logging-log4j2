@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,8 +113,8 @@ public final class RegexFilter extends AbstractFilter {
             LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
             return null;
         }
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
 
         return new RegexFilter(raw, pattern, onMatch, onMismatch);
     }

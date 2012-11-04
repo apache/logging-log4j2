@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -85,8 +87,8 @@ public final class MarkerFilter extends AbstractFilter {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase());
-        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase());
+        Result onMatch = match == null ? null : Result.valueOf(match.toUpperCase(Locale.ENGLISH));
+        Result onMismatch = mismatch == null ? null : Result.valueOf(mismatch.toUpperCase(Locale.ENGLISH));
 
         return new MarkerFilter(marker, onMatch, onMismatch);
     }
