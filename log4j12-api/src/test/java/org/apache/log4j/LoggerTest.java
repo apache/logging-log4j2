@@ -130,15 +130,15 @@ public class LoggerTest {
         ca.start();
         a.getLogger().addAppender(ca);
 
-        assertEquals(ca.counter, 0);
+        assertEquals(0, ca.counter);
         ab.debug(MSG);
-        assertEquals(ca.counter, 1);
+        assertEquals(1, ca.counter);
         ab.info(MSG);
-        assertEquals(ca.counter, 2);
+        assertEquals(2, ca.counter);
         ab.warn(MSG);
-        assertEquals(ca.counter, 3);
+        assertEquals(3, ca.counter);
         ab.error(MSG);
-        assertEquals(ca.counter, 4);
+        assertEquals(4, ca.counter);
         ca.stop();
         a.getLogger().removeAppender(ca);
     }

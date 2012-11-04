@@ -56,4 +56,8 @@ public class DefaultConfiguration extends BaseConfiguration {
         Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
+
+    @Override
+    protected void doConfigure() {
+    }
 }

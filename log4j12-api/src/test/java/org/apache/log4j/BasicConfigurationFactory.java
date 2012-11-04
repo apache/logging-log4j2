@@ -49,9 +49,14 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
         public BasicConfiguration() {
             LoggerConfig root = getRootLogger();
+            setName("BasicConfiguration");
             String levelName = System.getProperty(DEFAULT_LEVEL);
             Level level = (levelName != null && Level.valueOf(levelName) != null) ? Level.valueOf(levelName) : Level.DEBUG;
             root.setLevel(level);
+        }
+
+        @Override
+        protected void doConfigure() {
         }
     }
 }

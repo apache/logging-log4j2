@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -30,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -182,9 +186,13 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
 
         if (!setLoggers) {
-            LOGGER.warn("No Loggers were configured, using default");
+            LOGGER.warn("No Loggers were configured, using default. Is the Loggers element missing?");
+            setToDefault();
+            return;
         } else if (!setRoot) {
             LOGGER.warn("No Root logger was configured, using default");
+            setToDefault();
+            return;
         }
 
         for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
@@ -201,6 +209,21 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
 
         setParents();
+    }
+
+    private void setToDefault() {
+        setName(DefaultConfiguration.DEFAULT_NAME);
+        Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
+            null, null, null);
+        Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
+        appender.start();
+        addAppender(appender);
+        LoggerConfig root = getRootLogger();
+        root.addAppender(appender, null, null);
+
+        String levelName = System.getProperty(DefaultConfiguration.DEFAULT_LEVEL);
+        Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
+        root.setLevel(level);
     }
 
     protected PluginManager getPluginManager() {
@@ -586,7 +609,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                                 first = false;
                                 Object obj = child.getObject();
                                 if (obj == null) {
-                                    System.out.println("Null object returned for " + child.getName());
+                                    LOGGER.error("Null object returned for " + child.getName() + " in " +
+                                        node.getName());
+                                    continue;
                                 }
                                 if (obj.getClass().isArray()) {
                                     printArray(sb, (Object[]) obj);

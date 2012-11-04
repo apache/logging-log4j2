@@ -103,6 +103,9 @@ public class Node {
 
     @Override
     public String toString() {
+        if (object == null) {
+            return "null";
+        }
         return type.isObjectPrintable() ? object.toString() :
             type.getPluginClass().getName() + " with name " + name;
     }

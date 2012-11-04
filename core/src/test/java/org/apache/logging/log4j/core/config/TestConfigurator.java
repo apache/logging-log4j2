@@ -16,18 +16,25 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+
 import org.junit.Test;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -35,6 +42,8 @@ import static org.junit.Assert.assertNotNull;
 public class TestConfigurator {
 
     private static final String CONFIG_NAME = "ConfigTest";
+
+    private static final String FILESEP = System.getProperty("file.separator");
 
 
     @Test
@@ -154,4 +163,75 @@ public class TestConfigurator {
         assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
             config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
     }
+
+    @Test
+    public void testNoLoggers() throws Exception {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-loggers.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+    }
+
+    @Test
+    public void testBadStatus() throws Exception {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-status.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", "XMLConfigTest".equals(config.getName()));
+        LoggerConfig root = config.getLoggerConfig("");
+        assertNotNull("No Root Logger", root);
+        assertTrue("Expected error level, was " + root.getLevel(), Level.ERROR == root.getLevel());
+    }
+
+    @Test
+    public void testBadFilterParam() throws Exception {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badfilterparam.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", "XMLConfigTest".equals(config.getName()));
+        LoggerConfig lcfg = config.getLoggerConfig("org.apache.logging.log4j.test1");
+        assertNotNull("No Logger", lcfg);
+        Filter filter = lcfg.getFilter();
+        assertNull("Unexpected Filter", filter);
+    }
+
+    @Test
+    public void testNoFilters() throws Exception {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-nofilter.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", "XMLConfigTest".equals(config.getName()));
+        LoggerConfig lcfg = config.getLoggerConfig("org.apache.logging.log4j.test1");
+        assertNotNull("No Logger", lcfg);
+        Filter filter = lcfg.getFilter();
+        assertNotNull("No Filter", filter);
+        assertTrue("Incorrect filter", filter instanceof CompositeFilter);
+        assertFalse("Unexpected filters", ((CompositeFilter) filter).hasFilters());
+    }
+
+    @Test
+    public void testBadLayout() throws Exception {
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badlayout.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", "XMLConfigTest".equals(config.getName()));
+    }
+
+    @Test
+    public void testBadFileName() throws Exception {
+        String value = FILESEP.equals("/") ? "/rootdir/test.log" : "1:/target/bad:file.log";
+        System.setProperty("testfile", value);
+        LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badfilename.xml");
+        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Unexpected configuration", "XMLConfigTest".equals(config.getName()));
+        assertTrue("Create bad appender", config.getAppenders().size() == 2);
+    }
+
 }
