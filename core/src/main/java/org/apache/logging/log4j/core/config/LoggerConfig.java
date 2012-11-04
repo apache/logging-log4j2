@@ -128,7 +128,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Set the parent of this LoggerConfig.
+     * Sets the parent of this LoggerConfig.
      * @param parent the parent LoggerConfig.
      */
     public void setParent(LoggerConfig parent) {
@@ -144,7 +144,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Add an Appender to the LoggerConfig.
+     * Adds an Appender to the LoggerConfig.
      * @param appender The Appender to add.
      * @param level The Level to use.
      * @param filter A Filter for the Appender reference.
@@ -154,7 +154,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Remove the Appender with the specific name.
+     * Removes the Appender with the specific name.
      * @param name The name of the Appender.
      */
     public void removeAppender(String name) {
@@ -177,7 +177,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Remove all Appenders.
+     * Removes all Appenders.
      */
     protected void clearAppenders() {
         waitForCompletion();
@@ -209,7 +209,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Set the logging Level.
+     * Sets the logging Level.
      * @param level The logging Level.
      */
     public void setLevel(Level level) {
@@ -233,7 +233,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Set the LogEventFactory. Usually the LogEventFactory will be this LoggerConfig.
+     * Sets the LogEventFactory. Usually the LogEventFactory will be this LoggerConfig.
      * @param logEventFactory the LogEventFactory.
      */
     public void setLogEventFactory(LogEventFactory logEventFactory) {
@@ -249,7 +249,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Set the additive setting.
+     * Sets the additive setting.
      * @param additive true if thee LoggerConfig should be additive, false otherwise.
      */
     public void setAdditive(boolean additive) {
@@ -257,7 +257,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Log an event.
+     * Logs an event.
      * @param loggerName The name of the Logger.
      * @param marker A Marker or null if none is present.
      * @param fqcn The fully qualified class name of the caller.
@@ -281,7 +281,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Wait for all log events to complete before shutting down this loggerConfig.
+     * Waits for all log events to complete before shutting down this loggerConfig.
      */
     private synchronized void waitForCompletion() {
         if (shutdown) {
@@ -336,7 +336,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     }
 
     /**
-     * Create a log event.
+     * Creates a log event.
      * @param loggerName The name of the Logger.
      * @param marker An optional Marker.
      * @param fqcn The fully qualified class name of the caller.
