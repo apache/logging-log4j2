@@ -32,6 +32,9 @@ import java.util.TimeZone;
  * same value is requested.
  */
 final class CachedDateFormat extends DateFormat {
+
+    private static final long serialVersionUID = -1253877934598423628L;
+
     /**
      * Constant used to represent that there was no change
      * observed when changing the millisecond count.
