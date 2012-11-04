@@ -56,6 +56,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -102,7 +103,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
             for (Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(), null);
+                    status = Level.toLevel(getSubst().replace(entry.getValue()).toUpperCase(Locale.ENGLISH), null);
                     if (status == null) {
                         status = Level.ERROR;
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
