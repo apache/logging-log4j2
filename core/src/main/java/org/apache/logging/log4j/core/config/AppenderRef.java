@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
@@ -73,7 +75,7 @@ public final class AppenderRef {
         Level l = null;
 
         if (level != null) {
-            l = Level.toLevel(level.toUpperCase(), null);
+            l = Level.toLevel(level.toUpperCase(Locale.ENGLISH), null);
             if (l == null) {
                 LOGGER.error("Invalid level " + level + " on Appender reference " + ref);
             }
