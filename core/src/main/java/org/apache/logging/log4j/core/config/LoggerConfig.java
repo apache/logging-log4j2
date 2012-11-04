@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -380,7 +381,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
         List<AppenderRef> appenderRefs = Arrays.asList(refs);
         Level level;
         try {
-            level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase());
+            level = loggerLevel == null ? Level.ERROR : Level.valueOf(loggerLevel.toUpperCase(Locale.ENGLISH));
         } catch (Exception ex) {
             LOGGER.error("Invalid Log level specified: {}. Defaulting to Error", loggerLevel);
             level = Level.ERROR;
