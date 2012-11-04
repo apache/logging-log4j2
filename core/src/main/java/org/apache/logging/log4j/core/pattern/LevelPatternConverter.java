@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 import java.util.EnumMap;
+import java.util.Locale;
 
 
 /**
@@ -63,7 +64,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
                 LOGGER.error("Invalid option {}", def);
                 continue;
             }
-            Level level = Level.toLevel(pair[0].trim().toUpperCase(), null);
+            Level level = Level.toLevel(pair[0].trim().toUpperCase(Locale.ENGLISH), null);
             if (level == null) {
                 LOGGER.error("Invalid Level {}", pair[0].trim());
             }
