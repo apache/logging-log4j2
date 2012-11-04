@@ -113,8 +113,8 @@ public final class RegexFilter extends AbstractFilter {
             LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
             return null;
         }
-        Result onMatch = match == null ? null : Result.toResult(match);
-        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
+        Result onMatch = Result.toResult(match);
+        Result onMismatch = Result.toResult(mismatch);
 
         return new RegexFilter(raw, pattern, onMatch, onMismatch);
     }

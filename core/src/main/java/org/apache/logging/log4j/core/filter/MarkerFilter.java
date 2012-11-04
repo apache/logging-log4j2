@@ -87,8 +87,8 @@ public final class MarkerFilter extends AbstractFilter {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        Result onMatch = match == null ? null : Result.toResult(match);
-        Result onMismatch = mismatch == null ? null : Result.toResult(mismatch);
+        Result onMatch = Result.toResult(match);
+        Result onMismatch = Result.toResult(mismatch);
         return new MarkerFilter(marker, onMatch, onMismatch);
     }
 

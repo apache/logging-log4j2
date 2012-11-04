@@ -127,9 +127,8 @@ public final class TimeFilter extends AbstractFilter {
             }
         }
         TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
-        Result onMatch = match == null ? Result.NEUTRAL : Result.toResult(match);
-        Result onMismatch = mismatch == null ? Result.DENY : Result.toResult(mismatch);
-
+        Result onMatch = Result.toResult(match, Result.NEUTRAL);
+        Result onMismatch = Result.toResult(mismatch, Result.DENY);
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
     }
 

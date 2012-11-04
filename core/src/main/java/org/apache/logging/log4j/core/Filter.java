@@ -54,12 +54,23 @@ public interface Filter {
          * Returns the Result for the given string.
          * 
          * @param name The Result enum name, case-insensitive. If null, returns, null
-         * @return a Result enum value
+         * @return a Result enum value or null if name is null
          */
         public static Result toResult(String name) {
-            return Result.valueOf(name.toUpperCase(Locale.ENGLISH));
+            return toResult(name, null);
         }
-    }
+
+        /**
+         * Returns the Result for the given string.
+         * 
+         * @param name The Result enum name, case-insensitive. If null, returns, defaultResult
+         * @param defaultResult the Result to return if name is null
+         * @return a Result enum value or null if name is null
+         */
+        public static Result toResult(String name, Result defaultResult) {
+            return name == null ? defaultResult : Result.valueOf(name.toUpperCase(Locale.ENGLISH));
+        }
+}
 
     /**
      * Returns the result that should be returned when the filter does not match the event.
