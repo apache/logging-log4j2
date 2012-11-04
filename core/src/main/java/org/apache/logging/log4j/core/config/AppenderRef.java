@@ -72,15 +72,15 @@ public final class AppenderRef {
             LOGGER.error("Appender references must contain a reference");
             return null;
         }
-        Level l = null;
+        Level level = null;
 
         if (levelName != null) {
-            l = Level.toLevel(levelName, null);
-            if (l == null) {
+            level = Level.toLevel(levelName, null);
+            if (level == null) {
                 LOGGER.error("Invalid level " + levelName + " on Appender reference " + ref);
             }
         }
 
-        return new AppenderRef(ref, l, filter);
+        return new AppenderRef(ref, level, filter);
     }
 }
