@@ -17,11 +17,13 @@
 package org.apache.logging.log4j.spi;
 
 /**
- * Interface implemented by factories that create LoggerContext objects.
+ * Implemented by factories that create {@link LoggerContext} objects.
  */
 public interface LoggerContextFactory {
 
     /**
+     * Creates a {@link LoggerContext}.
+     * 
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
