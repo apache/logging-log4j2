@@ -245,6 +245,8 @@ public final class StatusLogger extends AbstractLogger {
      */
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
 
+        private static final long serialVersionUID = -3945953719763255337L;
+        
         private final int size;
 
         public BoundedQueue(int size) {
