@@ -17,18 +17,9 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.core.util.Profiler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
 /**
  *

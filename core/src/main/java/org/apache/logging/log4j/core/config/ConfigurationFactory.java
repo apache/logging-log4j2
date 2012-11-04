@@ -22,8 +22,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.xml.sax.InputSource;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

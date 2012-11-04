@@ -18,8 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.xml.sax.InputSource;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 

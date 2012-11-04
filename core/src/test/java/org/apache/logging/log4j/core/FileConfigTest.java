@@ -17,11 +17,8 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
@@ -30,9 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;

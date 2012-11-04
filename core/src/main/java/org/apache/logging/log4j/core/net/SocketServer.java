@@ -24,8 +24,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.XMLConfiguration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.xml.sax.InputSource;
-
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;

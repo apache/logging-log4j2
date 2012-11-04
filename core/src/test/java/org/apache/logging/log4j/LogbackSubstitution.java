@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
