@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 
 import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -261,9 +262,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                         throw new ConfigurationException(msg);
                     }
 
-                    String upperKey = key.toUpperCase();
+                    String upperKey = key.toUpperCase(Locale.ENGLISH);
 
-                    if (upperKey.startsWith(name.toUpperCase())) {
+                    if (upperKey.startsWith(name.toUpperCase(Locale.ENGLISH))) {
                         String msg = "Specification of the agent name is allowed in Flume Appender configuration: " + key;
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);
