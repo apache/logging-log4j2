@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -87,7 +89,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
     }
 
     protected static AbstractSocketManager createSocketManager(String protocol, String host, int port, int delay) {
-        Protocol p = Protocol.valueOf(protocol.toUpperCase());
+        Protocol p = Protocol.valueOf(protocol.toUpperCase(Locale.ENGLISH));
         switch (p) {
             case TCP:
                 return TCPSocketManager.getSocketManager(host, port, delay);
