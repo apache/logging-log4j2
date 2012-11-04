@@ -115,14 +115,14 @@ public class PatternParserTest {
         Throwable t = new Throwable();
         StackTraceElement[] elements = t.getStackTrace();
         LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
-            Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
-            null, null, "Thread1", elements[0], System.currentTimeMillis());
+                Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null, null, null, "Thread1", elements[0],
+                System.currentTimeMillis());
         StringBuilder buf = new StringBuilder();
         for (PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
         String str = buf.toString();
-        String expected = "] INFO : Hello, world\n\u001B[m";
+        String expected = String.format("] INFO : Hello, world%s\u001B[m", System.getProperty("line.separator"));
         assertTrue(" Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
