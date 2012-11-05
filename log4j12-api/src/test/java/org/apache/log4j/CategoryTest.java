@@ -174,7 +174,8 @@ public class CategoryTest {
         assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
         String msg = msgs.get(0);
         appender.clear();
-        String expected = "ERROR o.a.l.CategoryTest [main] Test Message" + LINE_SEP;
+        String threadName = Thread.currentThread().getName();
+        String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + LINE_SEP;
         assertTrue("Incorrect message \"" + msg + "\"" + " expected \"" + expected +"\"", msg.endsWith(expected));
     }
 
