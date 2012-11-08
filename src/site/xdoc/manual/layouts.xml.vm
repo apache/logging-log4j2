@@ -22,7 +22,14 @@
         <author email="rgoers@apache.org">Ralph Goers</author>
         <author email="ggregory@apache.org">Gary Gregory</author>
     </properties>
-
+  #set($dollar = '$')
+  #if (!$alignedFileName)
+    #set ($isPDF = true)
+    #set ($break = '<br />')
+  #else
+    #set ($isPDF = false)
+    #set ($break = '')
+  #end
     <body>
       <section name="Layouts">
         <p>An Appender uses a Layout to format a LogEvent into a form that meets the needs of whatever will be
@@ -161,27 +168,27 @@ WARN  [main]: Message 2</pre>
                   </tr>
                   <tr>
                     <td>%c{1}</td>
-                    <td>org.apache.commons.Foo</td>
+                    <td>org.apache.${break}commons.Foo</td>
                     <td>Foo</td>
                   </tr>
                   <tr>
                     <td>%c{2}</td>
-                    <td>org.apache.commons.Foo</td>
+                    <td>org.apache.${break}commons.Foo</td>
                     <td>commons.Foo</td>
                   </tr>
                   <tr>
                     <td>%c{1.}</td>
-                    <td>org.apache.commons.Foo</td>
+                    <td>org.apache.${break}commons.Foo</td>
                     <td>o.a.c.Foo</td>
                   </tr>
                   <tr>
                     <td>%c{1.1.~.~}</td>
-                    <td>org.apache.commons.test.Foo</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
                     <td>o.a.~.~.Foo</td>
                   </tr>
                   <tr>
                     <td>%c{.}</td>
-                    <td>org.apache.commons.test.Foo</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
                     <td>....Foo</td>
                   </tr>
                 </table>
@@ -372,18 +379,38 @@ WARN  [main]: Message 2</pre>
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}</pre>
                 </p>
                 <p>You can override the default colors in the optional {style} option. For example:
+ #if ($isPDF)
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}
+   {FATAL=white, ERROR=red, WARN=blue, INFO=black,
+    DEBUG=green, TRACE=blue}</pre>
+ #else
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
+ #end
                 </p>
                 <p>You can highlight only the a portion of the log event:
                  <pre>%d [%t] %highlight{%-5level: %msg%n%throwable}</pre>
                 </p>
                 <p>You can style one part of the message and highlight the rest the log event:
+ #if ($isPDF)
+                 <pre>%style{%d [%t]}{black} %highlight{%-5level:
+                     %msg%n%throwable}</pre>
+ #else
                  <pre>%style{%d [%t]}{black} %highlight{%-5level: %msg%n%throwable}</pre>
+ #end
                 </p>
+                  #if ($isPDF)
+                      <!--PB-->
+                  #end
                 <p>You can also use the STYLE key to use a predefined group of colors:
+ #if ($isPDF)
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}
+   {STYLE=Logback}</pre>
+ #else
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
+ #end
                  The STYLE value can be one of:
                  <table border="1" width="100%">
+                   <?dbfo keep-together="auto" ?>
                    <tr>
                      <th>Style</th>
                      <th>Description</th>
@@ -882,17 +909,30 @@ WARN  [main]: Message 2</pre>
   <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
 </properties>
 ...
-<PatternLayout pattern="%m%xEx{filters(${filters})}%n"/>]]></source>
+<PatternLayout pattern="%m%xEx{filters(${dollar}{filters})}%n"/>]]></source>
           <p>The result printed to the console will appear similar to:
           </p>
+ #if ($isPDF)
+          <source>Exception java.lang.IllegalArgumentException: IllegalArgument
+         at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.
+              testException(ExtendedThrowableTest.java:72) [test-classes/:?]
+         ... suppressed 26 lines
+         at ${dollar}Proxy0.invoke(Unknown Source)} [?:?]
+         ... suppressed 3 lines
+         Caused by: java.lang.NullPointerException: null pointer
+         at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.
+              testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
+         ... 30 more</source>
+ #else
           <source>Exception java.lang.IllegalArgumentException: IllegalArgument
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
 ... suppressed 26 lines
-at $Proxy0.invoke(Unknown Source) [?:?]
+at ${dollar}Proxy0.invoke(Unknown Source)} [?:?]
 ... suppressed 3 lines
 Caused by: java.lang.NullPointerException: null pointer
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
 ... 30 more</source>
+ #end
           <h5>ANSI Styled</h5>
           <p>The log level will be highlighted according to the event's log level. All the content that follows
             the level will be bright green.</p>

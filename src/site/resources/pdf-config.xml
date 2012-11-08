@@ -24,7 +24,17 @@ under the License.
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format">
-
+  <xsl:attribute-set name="layout.master.set.base">
+    <xsl:attribute name="page-width">8.5in</xsl:attribute>
+    <xsl:attribute name="page-height">11.0in</xsl:attribute>
+    <xsl:attribute name="margin-top">0.625in</xsl:attribute>
+    <xsl:attribute name="margin-bottom">0.6in</xsl:attribute>
+    <xsl:attribute name="margin-left">1in</xsl:attribute>
+    <xsl:attribute name="margin-right">1in</xsl:attribute>
+  </xsl:attribute-set>
+  <xsl:template match="processing-instruction('hard-pagebreak')">
+    <fo:block break-after='page'/>
+  </xsl:template>
   <xsl:attribute-set name="body.pre" use-attribute-sets="base.pre.style">
     <xsl:attribute name="font-size">8pt</xsl:attribute>
   </xsl:attribute-set>
