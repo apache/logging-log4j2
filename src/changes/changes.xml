@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="2.0-beta3" date="TBD" description= "Bug fixes and enhancements">
+    <release version="2.0-beta3" date="2012-11-09" description= "Bug fixes and enhancements">
       <action issue="LOG4J2-108" dev="rgoers" type="fix">
         Fix NullPointerException in ClassLoaderContextSelector when no class is returned from
         the SecurityManager.
