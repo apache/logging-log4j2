@@ -114,8 +114,8 @@
   </properties>
   <pluginRepositories>
     <pluginRepository>
-      <id>apache.snapshots</id>
-      <url>http://repository.apache.org/snapshots/</url>
+      <id>apache</id>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
     </pluginRepository>
   </pluginRepositories>
   <dependencyManagement>
@@ -366,7 +366,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pdf-plugin</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
         <executions>
           <execution>
             <id>pdf</id>
