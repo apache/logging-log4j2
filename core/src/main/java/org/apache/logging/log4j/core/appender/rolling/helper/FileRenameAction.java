@@ -29,7 +29,7 @@ import java.nio.channels.FileChannel;
 /**
  * File rename action.
  */
-public final class FileRenameAction extends AbstractAction {
+public class FileRenameAction extends AbstractAction {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
