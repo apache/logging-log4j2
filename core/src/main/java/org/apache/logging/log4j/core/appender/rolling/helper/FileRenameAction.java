@@ -16,22 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-
 /**
  * File rename action.
  */
 public class FileRenameAction extends AbstractAction {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Source.
