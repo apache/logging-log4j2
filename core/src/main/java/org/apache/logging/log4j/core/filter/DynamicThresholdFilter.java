@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
