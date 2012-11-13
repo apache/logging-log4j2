@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -40,7 +39,6 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
