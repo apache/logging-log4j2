@@ -56,9 +56,7 @@ public final class ClassNamePatternConverter extends NamePatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-
         StackTraceElement element = event.getSource();
-
         if (element == null) {
             toAppendTo.append(NA);
         } else {
