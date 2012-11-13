@@ -118,7 +118,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param params An array of parameters or null.
      * @return The Result of filtering.
      */
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
+    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
         return Result.NEUTRAL;
     }
 
