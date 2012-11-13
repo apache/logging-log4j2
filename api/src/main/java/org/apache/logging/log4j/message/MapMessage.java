@@ -18,7 +18,6 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
