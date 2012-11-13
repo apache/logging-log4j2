@@ -422,7 +422,6 @@ public final class PatternParser {
 
         if (converterClass == null) {
             LOGGER.error("Unrecognized format specifier [" + converterId + "]");
-
             return null;
         }
 
