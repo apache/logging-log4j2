@@ -49,7 +49,7 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
+    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
         return filter(msg);
     }
 
