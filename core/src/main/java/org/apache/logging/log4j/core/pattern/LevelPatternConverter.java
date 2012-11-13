@@ -21,8 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 import java.util.EnumMap;
-import java.util.Locale;
-
 
 /**
  * Returns the event's level in a StringBuffer.
