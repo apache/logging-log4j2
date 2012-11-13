@@ -44,7 +44,7 @@ public final class ThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
+    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
         return filter(level);
     }
 
