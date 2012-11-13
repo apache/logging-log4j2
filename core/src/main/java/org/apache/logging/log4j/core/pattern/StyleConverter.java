@@ -69,7 +69,7 @@ public final class StyleConverter extends LogEventPatternConverter {
 
         PatternParser parser = PatternLayout.createPatternParser(config);
         List<PatternFormatter> formatters = parser.parse(options[0]);
-        String style = AnsiEscape.createSequence(options[1].split(","));
+        String style = AnsiEscape.createSequence(options[1].split("\\s*,\\s*"));
         return new StyleConverter(formatters, style);
     }
 
