@@ -17,10 +17,8 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.Map;
 
-import org.apache.logging.log4j.message.MapMessage.MapFormat;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
