@@ -35,7 +35,7 @@ public final class StyleConverter extends LogEventPatternConverter {
     private final String style;
 
     /**
-     * Construct the converter.
+     * Constructs the converter.
      * @param formatters The PatternFormatters to generate the text to manipulate.
      * @param styling The styling that should encapsulate the pattern.
      */
