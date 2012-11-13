@@ -370,7 +370,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
     {
         SortedMap<String, String> sorted = new TreeMap<String, String>(map);
         for (Map.Entry<String, String> entry : sorted.entrySet()) {
-            if (checker.check(entry.getKey())) {
+            if (checker.check(entry.getKey()) && entry.getValue() != null) {
                 sb.append(" ");
                 sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
             }

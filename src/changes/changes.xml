@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-115" dev="rgoers" type="fix">
+        ThreadContext Map elements with null values are now ignored when constructing a Flume event and in the
+        RFC5424 Layout.
+      </action>
       <action issue="LOG4J2-113" dev="rgoers" type="fix">
         StructuredDataFilter createFilter was annotated with PluginAttr instead of PluginElement for the
         KeyValuePairs.

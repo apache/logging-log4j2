@@ -30,11 +30,14 @@ import org.apache.flume.conf.Configurables;
 import org.apache.flume.lifecycle.LifecycleController;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.source.AvroSource;
+import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,6 +53,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -147,6 +151,43 @@ public class FlumeAppenderTest {
 
 	      eventSource.stop();
     }
+
+    @Test
+    public void testStructured() throws InterruptedException, IOException {
+        Agent[] agents = new Agent[] {Agent.createAgent("localhost", testPort)};
+        FlumeAppender avroAppender = FlumeAppender.createAppender(agents, null, "false", null, "100", "3", "avro",
+            "false", null, null, null, null, null, "true", "1", null, null, null);
+        avroAppender.start();
+        Logger eventLogger = (Logger) LogManager.getLogger("EventLogger");
+        Assert.assertNotNull(eventLogger);
+        eventLogger.addAppender(avroAppender);
+        eventLogger.setLevel(Level.ALL);
+
+        StructuredDataMessage msg = new StructuredDataMessage("Transer", "Success", "Audit");
+        msg.put("memo", "This is a memo");
+        msg.put("acct", "12345");
+        msg.put("amount", "100.00");
+        ThreadContext.put("id", UUID.randomUUID().toString());
+        ThreadContext.put("memo", null);
+        ThreadContext.put("test", "123");
+
+        EventLogger.logEvent(msg);
+
+        Transaction transaction = channel.getTransaction();
+        transaction.begin();
+
+        Event event = channel.take();
+        Assert.assertNotNull(event);
+        Assert.assertTrue("Channel contained event, but not expected message",
+            getBody(event).endsWith("Success"));
+        transaction.commit();
+        transaction.close();
+
+        eventSource.stop();
+        eventLogger.removeAppender(avroAppender);
+        avroAppender.stop();
+    }
+
 
 
     @Test
