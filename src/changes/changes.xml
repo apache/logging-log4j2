@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-113" dev="rgoers" type="fix">
+        StructuredDataFilter createFilter was annotated with PluginAttr instead of PluginElement for the
+        KeyValuePairs.
+      </action>
       <action issue="LOG4J2-114" dev="rgoers" type="fix" due-to="Arkin Yetis">
         StructuredDataMessage was validating the length of the values in the event Map instead of the lengths
         of the keys.

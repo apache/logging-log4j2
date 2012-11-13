@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
@@ -98,7 +99,7 @@ public final class StructuredDataFilter extends MapFilter {
      * @return The StructuredDataFilter.
      */
     @PluginFactory
-    public static StructuredDataFilter createFilter(@PluginAttr("pairs") KeyValuePair[] pairs,
+    public static StructuredDataFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
                                                     @PluginAttr("operator") String oper,
                                                     @PluginAttr("onmatch") String match,
                                                     @PluginAttr("onmismatch") String mismatch) {
