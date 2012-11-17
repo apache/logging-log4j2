@@ -42,11 +42,12 @@
             interpolation with Lookups and will then resolve the variable for each event.  Note that
             the pattern "%X{loginId}" would achieve the same result.
           </p>
-          <source><![CDATA[    <File name="Application" fileName="application.log">
-      <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] $${ctx:loginId} %m%n</pattern>
-      </PatternLayout>
-    </File>]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %C{1.} [%t] $${ctx:loginId} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
         </subsection>
         <a name="DateLookup"/>
         <subsection name="DateLookup">
@@ -56,13 +57,13 @@
             <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
             The current date, or the date associated with the current log event will be formatted as specified.
           </p>
-          <source><![CDATA[    <RollingFile name="Rolling-${map:type}" fileName="${filename}"
-                 filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}.%i.log.gz">
-      <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-      </PatternLayout>
-      <SizeBasedTriggeringPolicy size="500" />
-    </RollingFile>]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<RollingFile name="Rolling-${map:type}" fileName="${filename}" filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}.%i.log.gz">
+  <PatternLayout>
+    <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+  </PatternLayout>
+  <SizeBasedTriggeringPolicy size="500" />
+</RollingFile>]]></pre>
         </subsection>
         <a name="EnvironmentLookup"/>
         <subsection name="EnvironmentLookup">
@@ -72,11 +73,12 @@
             from within the logging configuration. The example below includes the name of the currently logged
             in user in the application log.
           </p>
-          <source><![CDATA[    <File name="Application" fileName="application.log">
-      <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] $${env:USER} %m%n</pattern>
-      </PatternLayout>
-    </File>]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %C{1.} [%t] $${env:USER} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
         </subsection>
         <a name="MapLookup"/>
         <subsection name="MapLookup">
@@ -97,20 +99,20 @@
             <a href="./configuration.html#PropertySubstitution">Property Substitution</a> section of the
             <a href="./configuration.html">Configuration</a> page for information on how to set the default values.
           </p>
-          <source><![CDATA[    <Routing name="Routing">
-      <Routes pattern="$${map:type}">
-        <Route>
-          <RollingFile name="Rolling-${map:type}" fileName="${filename}"
-                       filePattern="target/rolling1/test1-${map:type}.%i.log.gz">
-            <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-      </Routes>
-    </Routing>
-          ]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<Routing name="Routing">
+  <Routes pattern="$${map:type}">
+    <Route>
+      <RollingFile name="Rolling-${map:type}" fileName="${filename}"
+                   filePattern="target/rolling1/test1-${map:type}.%i.log.gz">
+        <PatternLayout>
+          <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        </PatternLayout>
+        <SizeBasedTriggeringPolicy size="500" />
+      </RollingFile>
+    </Route>
+  </Routes>
+</Routing>]]></pre>
         </subsection>
         <a name="StructuredDataLookup"/>
         <subsection name="StructuredDataLookup">
@@ -122,20 +124,20 @@
             <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
             while "type" would have to be an item in the Map in a MapMessage.
           </p>
-          <source><![CDATA[    <Routing name="Routing">
-      <Routes pattern="$${sd:type}">
-        <Route>
-          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
-                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
-            <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
-          </RollingFile>
-        </Route>
-      </Routes>
-    </Routing>
-          ]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<Routing name="Routing">
+  <Routes pattern="$${sd:type}">
+    <Route>
+      <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
+                   filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+        <PatternLayout>
+          <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        </PatternLayout>
+        <SizeBasedTriggeringPolicy size="500" />
+      </RollingFile>
+    </Route>
+  </Routes>
+</Routing>]]></pre>
         </subsection>
         <a name="SystemPropertiesLookup"/>
         <subsection name="SystemPropertiesLookup">
@@ -144,9 +146,10 @@
             it is only natural that they should be accessible via a Lookup. As system properties are often
             defined outside the application it would be quite common to see something like:
           </p>
-          <source><![CDATA[  <appenders>
-    <File name="ApplicationLog" fileName="${sys:logPath}/app.log"/>
-  </appenders>]]></source>
+          <pre class="prettyprint linenums"><![CDATA[
+<appenders>
+  <File name="ApplicationLog" fileName="${sys:logPath}/app.log"/>
+</appenders>]]></pre>
         </subsection>
       </section>
     </body>

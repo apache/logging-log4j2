@@ -26,13 +26,12 @@
 		<section name="Building and Installing Log4j 2.x">
 
       <subsection name="Building">
-       <p>
-         Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
-         most current source code can be found at
-         <a href="http://logging.apache.org/log4j/2.x/source-repository.html">Log4j Source Repository]</a>.
-         The source from the latest release may be obtained by downloading it using the instructions at
-         <a href="http://logging.apache.org/log4j/2.x/download.html">Log4j Downloads</a>.
-       </p>
+        <p>
+          Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
+          most current source code can be found at
+          <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be 
+          obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
+        </p>
         <p>
           Log4j 2.x uses Maven 2 or 3 as its build tool. To build Log4j simply run "mvn install" from the root
           directory.
@@ -43,20 +42,20 @@
          To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
          classpath. With Maven add the dependencies listed below to your pom.xml.
        </p>
-        <source><![CDATA[
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-    </dependecies>
-            ]]></source>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependecies>
+]]></pre>
       </subsection>
       <subsection name="Optional Components">
         <p>
@@ -66,42 +65,42 @@
         <p>If there are existing components that are written to use Log4j 1.x and it is desired to have this
            logging routed to Log4j 2 then remove any log4j 1.x dependencies and add the following.
         </p>
-          <source><![CDATA[
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
-        <artifactId>log4j12-api</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-    </dependecies>
-            ]]></source>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j.adapters</groupId>
+    <artifactId>log4j12-api</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependecies>
+]]></pre>
           <h4>Apache Commons Logging</h4>
           <p>Commons Logging is used in many components as a way of letting applications choose the specific
              logging implementation. To route logging from those components into Log4j 2 include the
              following dependency and do not remove the Commons Logging jar.
           </p>
-          <source><![CDATA[
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-    </dependecies>
-            ]]></source>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j.adapters</groupId>
+    <artifactId>log4j-jcl</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependecies>
+]]></pre>
           <h4>SLF4J</h4>
           <p>SLF4J is another popular logging API that may be bound to Log4j 2 by including the following
              dependency along with the SLF4J dependencies.
           </p>
-          <source><![CDATA[
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${Log4jReleaseVersion}</version>
-      </dependency>
-    </dependecies>
-            ]]></source>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j.adapters</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependecies>
+]]></pre>
       </subsection>
 		</section>
 	</body>

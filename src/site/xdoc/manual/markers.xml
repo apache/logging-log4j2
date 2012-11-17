@@ -34,47 +34,48 @@
               being executed, and wishes to be able to log queries separate from updates. One way to accomplish
               this is shown below:
             </p>
-            <source><![CDATA[    import org.apache.logging.log4j.Logger;
-    import org.apache.logging.log4j.LogManager;
-    import java.util.Map;
+        <pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.Map;
 
-    public class MyApp {
+public class MyApp {
 
-        private Logger logger = LogManager.getLogger(MyApp.class.getName());
-        private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-        private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
-        private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
+    private Logger logger = LogManager.getLogger(MyApp.class.getName());
+    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
+    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
+    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
 
-        public String doQuery(String table) {
-            logger.entry(param);
+    public String doQuery(String table) {
+        logger.entry(param);
 
-            logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
+        logger.debug(QUERY_MARKER, "SELECT * FROM {}", table);
 
-            return logger.exit();
-        }
+        return logger.exit();
+    }
 
-        public String doUpdate(String table, Map<String, String> params) {
-            logger.entry(param);
+    public String doUpdate(String table, Map<String, String> params) {
+        logger.entry(param);
 
-            if (logger.isDebugEnabled()) {
-              logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols);
+        if (logger.isDebugEnabled()) {
+          logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols);
 
-            return logger.exit();
-        }
+        return logger.exit();
+    }
 
-        private String formatCols(Map<String, String> cols) {
-            StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for (Map.Entry<String, String> entry : cols.entrySet()) {
-                if (!first) {
-                    sb.append(", ");
-                }
-                sb.append(entry.getKey()).append("=").append(entry.getValue());
-                first = false;
+    private String formatCols(Map<String, String> cols) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : cols.entrySet()) {
+            if (!first) {
+                sb.append(", ");
             }
-            return sb.toString();
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+            first = false;
         }
-    }]]></source>
+        return sb.toString();
+    }
+}]]></pre>
             <p>
               In the example above it is now possible to add MarkerFilters to only allow SQL update operations
               to be logged, all SQL updates to be logged or to log everything in MyApp.

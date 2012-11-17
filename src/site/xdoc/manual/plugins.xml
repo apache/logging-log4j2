@@ -109,7 +109,7 @@
           following plugin definition to your project's pom.xml will cause the plugin manager to be called during the
           build. It will store the resulting file in the correct location under the directory specified in the first
           argument after scanning all the components located under the package specified in the second argument.
-          <source><![CDATA[<plugin>
+          <pre class="prettyprint linenums"><![CDATA[<plugin>
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>exec-maven-plugin</artifactId>
   <version>1.2.1</version>
@@ -128,7 +128,7 @@
       <argument>org.myorg.myproject.log4j</argument>
     </arguments>
   </configuration>
-</plugin>]]></source>
+</plugin>]]></pre>
         </subsection>
       </section>
     </body>

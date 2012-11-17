@@ -54,8 +54,9 @@
           viewed as an auditing tool.</p>
 
           <p>As Brian W. Kernighan and Rob Pike put it in their truly excellent
-          book <i>"The Practice of Programming"</i>
-          <pre>
+          book <i>"The Practice of Programming":</i></p>
+          
+          <div class="well">
             As personal choice, we tend not to use debuggers beyond getting a
             stack trace or the value of a variable or two. One reason is that it
             is easy to get lost in details of complicated data structures and
@@ -67,7 +68,7 @@
             the critical section of code, even assuming we know where that
             is. More important, debugging statements stay with the program;
             debugging sessions are transient.
-          </pre></p>
+          </div>
 
           <p>Logging does have its drawbacks. It can slow down an
           application. If too verbose, it can cause scrolling blindness. To

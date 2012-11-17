@@ -96,7 +96,7 @@
               PluginType of the node and a List of all of its child Nodes. BaseConfiguration will then be
               passed the Node tree and instantiate the configuration objects from that.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "XMLConfigurationFactory", type = "ConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
@@ -122,7 +122,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
     public String[] getSupportedTypes() {
         return SUFFIXES;
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="LoggerConfig">
             <p>
@@ -136,7 +136,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
             <p>
               The following example shows how the root LoggerConfig simply extends a generic LoggerConfig.
             </p>
-            <source><![CDATA[
+            <pre class="prettyprint linenums"><![CDATA[
 @Plugin(name = "root", type = "Core", printObject = true)
 public static class RootLogger extends LoggerConfig {
 
@@ -157,7 +157,7 @@ public static class RootLogger extends LoggerConfig {
 
         return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additive);
     }
-}]]></source>
+}]]></pre>
           </subsection>
           <subsection name="Lookups">
             <p>
@@ -172,7 +172,7 @@ public static class RootLogger extends LoggerConfig {
               use a PluginFactory. Instead, they are required to provide a constructor that accepts no arguments.
               The example below shows a Lookup that will return the value of a System Property.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "sys", type = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
 
@@ -194,7 +194,7 @@ public class SystemPropertiesLookup implements StrLookup {
     public String lookup(LogEvent event, String key) {
         return System.getProperty(key);
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="Filters">
             <p>
@@ -210,7 +210,7 @@ public class SystemPropertiesLookup implements StrLookup {
               The example below shows a Filter used to reject LogEvents based upon their logging level. Notice the
               typical pattern where all the filter methods resolve to a single filter method.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "ThresholdFilter", type = "Core", elementType = "filter", printObject = true)
 public final class ThresholdFilter extends FilterBase {
 
@@ -264,7 +264,7 @@ public final class ThresholdFilter extends FilterBase {
 
         return new ThresholdFilter(level, onMatch, onMismatch);
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="Appenders">
             <p>
@@ -286,7 +286,7 @@ public final class ThresholdFilter extends FilterBase {
               new one. This insures that events are not lost while a reconfiguration is taking place without
               requiring that logging pause while the reconfiguration takes place.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "Stub", type = "Core", elementType = "appender", printObject = true)
 public final class StubAppender extends OutputStreamAppender {
 
@@ -316,7 +316,7 @@ public final class StubAppender extends OutputStreamAppender {
         }
         return new StubAppender(name, layout, filter, manager, handleExceptions);
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="Layouts">
             <p>
@@ -333,7 +333,7 @@ public final class StubAppender extends OutputStreamAppender {
               The plugin also must provide a static method annotated as a PluginFactory and with each of the
               methods parameters annotated with PluginAttr or PluginElement as appropriate.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "SampleLayout", type = "Core", elementType = "layout", printObject = true)
 public class SampleLayout extends AbstractStringLayout {
 
@@ -361,7 +361,7 @@ public class SampleLayout extends AbstractStringLayout {
         boolean comp = complete == null ? false : Boolean.valueOf(complete);
         return new SampleLayout(info, props, comp, c);
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="PatternConverters">
             <p>
@@ -385,7 +385,7 @@ public class SampleLayout extends AbstractStringLayout {
             <p>
               The following shows the skeleton of a Converter plugin.
             </p>
-            <source>
+            <pre class="prettyprint linenums">
 @Plugin(name = "query", type = "Converter")
 @ConverterKeys({"q", "query"})
 public final class QueryConverter extends LogEventPatternConverter {
@@ -396,7 +396,7 @@ public final class QueryConverter extends LogEventPatternConverter {
     public static QueryConverter newInstance(final String[] options) {
       return new QueryConverter(options);
     }
-}</source>
+}</pre>
           </subsection>
           <subsection name="Custom Plugins">
 

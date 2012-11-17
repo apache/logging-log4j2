@@ -51,7 +51,7 @@
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
             the application. The AsynchAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -102,7 +102,7 @@
           <p>
             A typical AsynchAppender configuration might look like:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <File name="MyFile" fileName="logs/app.log">
@@ -119,8 +119,7 @@
       <appender-ref ref="Asynch"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="ConsoleAppender"/>
@@ -129,7 +128,7 @@
             As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
             being the default target. A Layout must be provided to format the LogEvent.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -168,7 +167,7 @@
           <p>
             A typical Console configuration might look like:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
@@ -180,15 +179,14 @@
       <appender-ref ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="FailoverAppender"/>
         <subsection name="FailoverAppender">
           <p>The FailoverAppender wraps a set of appenders. If the primary Appender fails the secondary appenders will be
           tried in order until one succeeds or there are no more secondaries to try.</p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -232,7 +230,7 @@
           <p>
             A Failover configuration might look like:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -256,8 +254,7 @@
       <appender-ref ref="Failover"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="FileAppender"/>
@@ -267,7 +264,7 @@
             FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is
             accessible. For example, two webapps in a servlet container can have their own configuration and safely
             write to the same file if Log4J is in a ClassLoader that is common to both of them.</p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -336,7 +333,7 @@
            <p>
             Here is a sample File configuration:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <File name="MyFile" fileName="logs/app.log">
@@ -350,8 +347,7 @@
       <appender-ref ref="MyFile"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="FlumeAppender"/>
@@ -374,7 +370,7 @@
             addition, configuring agent properties in the appender configuration will also cause the embedded agent
             to be used.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -498,7 +494,7 @@
               A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
               compresses the body, and formats the body using the RFC5424Layout:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Flume name="eventLogger" suppressExceptions="false" compress="true">
@@ -512,15 +508,14 @@
       <appender-ref ref="eventLogger"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
             compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume
             Agent.
           </p>
-          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
@@ -540,14 +535,13 @@
       <appender-ref ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
-   ]]></source>
+</configuration>]]></pre>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent using
             Flume configuration properties, compresses the body, formats the body using RFC5424Layout and passes the
             events to an embedded Flume Agent.
           </p>
-          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="error" name="MyApp" packages="">
   <appenders>
     <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
@@ -585,13 +579,12 @@
       <appender-ref ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
-   ]]></source>
+</configuration>]]></pre>
         </subsection>
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
           <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -682,7 +675,7 @@
            <p>
             Here is a sample JMSQueueAppender configuration:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <JMSQueue name="jmsQueue" queueBindingName="MyQueue"
@@ -693,14 +686,13 @@
       <appender-ref ref="jmsQueue"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="JMSTopicAppender"/>
         <subsection name="JMSTopicAppender">
           <p>The JMSTopicAppender sends the formatted log event to a JMS Topic.</p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -792,7 +784,7 @@
            <p>
             Here is a sample JMSTopicAppender configuration:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <JMSTopic name="jmsTopic" topicBindingName="MyTopic"
@@ -803,8 +795,7 @@
       <appender-ref ref="jmsQueue"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="OutputStreamAppender"/>
@@ -823,7 +814,7 @@
             The RewriteAppender must be configured with a <a href="RewritePolicy">RewritePolicy</a>. The
             RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -870,7 +861,7 @@
                 MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update
                 elements of the Map.
               </p>
-              <table border="1" width="100%">
+              <table>
                 <tr>
                   <th>Parameter Name</th>
                   <th>Type</th>
@@ -891,7 +882,7 @@
              The following configuration shows a RewriteAppender configured to add a product key and its value
              to the MapMessage.:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
@@ -909,8 +900,7 @@
       <appender-ref ref="Rewrite"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
           <h5>PropertiesRewritePolicy</h5>
           <p>
@@ -919,7 +909,7 @@
             values may contain variables that will be evaluated when the configuration is processed as
             well as when the event is logged.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -935,7 +925,7 @@
             The following configuration shows a RewriteAppender configured to add a product key and its value
             to the MapMessage.:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
@@ -954,8 +944,7 @@
       <appender-ref ref="Rewrite"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="RollingFileAppender"/>
@@ -976,7 +965,7 @@
           <p>
             File locking is not supported by the RollingFileAppender.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1078,7 +1067,7 @@
                 accepts an "increment" attribute which indicates how frequently the rollover should occur based on the
                 time pattern and a "modulate" boolean attribute.
               </p>
-                <table border="1" width="100%">
+                <table>
                   <tr>
                     <th>Parameter Name</th>
                     <th>Type</th>
@@ -1119,7 +1108,7 @@
               <p>The Default rollover strategy also accepts a minimum value and a maximum value. When a minimim
                 value other than 1 is specified than files with an index lower than that value will not be
                 deleted when the maximum value is exceeded.</p>
-              <table border="1" width="100%">
+              <table>
                 <tr>
                   <th>Parameter Name</th>
                   <th>Type</th>
@@ -1144,7 +1133,7 @@
             based on the current year and month, and will compress each
             archive using gzip:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -1163,12 +1152,11 @@
       <appender-ref ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
           <p>
             This second example shows a rollover strategy that will keep up to 20 files before removing them.
-          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -1188,8 +1176,7 @@
       <appender-ref ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
         </p>
           <p>
             Below is a sample configuration that uses a RollingFileAppender with both the time and size based
@@ -1197,7 +1184,7 @@
             based on the current year and month, and will compress each
             archive using gzip and will roll every 6 hours when the hour is divisible by 6:
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -1216,8 +1203,7 @@
       <appender-ref ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="RoutingAppender"/>
@@ -1228,7 +1214,7 @@
              Appender can be dynamically created as needed. The RoutingAppender should be configured after any
              Appenders it references to allow it to shut down properly.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1283,7 +1269,7 @@
             the specific event type. Note that the AuditAppender was predefined while the RollingFileAppenders
             are created as needed.
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Flume name="AuditLogger" suppressExceptions="false" compress="true">
@@ -1311,8 +1297,7 @@
       <appender-ref ref="Routing"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
         <a name="SocketAppender"/>
@@ -1323,7 +1308,7 @@
             The default format is to send a Serialized LogEvent. Log4j 2 contains a SocketServer which is capable
             of receiving serialized LogEvents and routing them through the logging system on the server.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1383,7 +1368,7 @@
             <caption align="top">SocketAppender Parameters</caption>
           </table>
 
-          <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Socket name="socket" host="localhost" port="9500">
@@ -1395,8 +1380,7 @@
       <appender-ref ref="socket"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
         </subsection>
         <a name="SyslogAppender"/>
         <subsection name="SyslogAppender">
@@ -1405,7 +1389,7 @@
             specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424
             format. The data can be sent over either TCP or UDP.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1546,7 +1530,7 @@
             A sample syslogAppender configuration that is configured with two SyslogAppenders, one using the BSD
             format and one using RFC 5424.
 
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
@@ -1563,8 +1547,7 @@
       <appender-ref ref="bsd"/>
     </root>
   </loggers>
-</configuration>
-  ]]></source>
+</configuration>]]></pre>
           </p>
         </subsection>
       </section>

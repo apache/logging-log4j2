@@ -26,7 +26,7 @@
     <section name="Architecture">
       <subsection name="Main Components">
         <p>Log4j uses the classes shown in the diagram below.</p>
-        <img src="../images/Log4jClasses.jpg" title="Log4j 2 Class Relationships"
+        <img src="../images/Log4jClasses.jpg" title="Log4j 2 Class Relationships" 
              caption="Log4j 2 Class Relationships"/>
         <p>Applications using the Log4j 2 API will request a Logger with a specific name from the
           LogManager. The LogManager will locate the appropriate LoggerContext and then obtain the Logger from it.
@@ -53,32 +53,17 @@
           they follow the hierarchical naming rule:
         </p>
 
-        <p>
-          <table bgcolor="#EEEE99">
-            <tr>
-              <td>
-                <dl>
-                  <dt>
-                    <b>Named Hierarchy</b>
-                  </dt>
+        <div class="well">
+          <dl>
+            <dt>Named Hierarchy</dt>
+            <dd>
+              A LoggerConfig is said to be an <em>ancestor</em> of another LoggerConfig if its name followed by a dot
+              is a prefix of the <em>descendant</em> logger name. A LoggerConfig is said to be a <em>parent</em> of a 
+              <em>child</em> LoggerConfig if there are no ancestors between itself and the descendant LoggerConfig.
+            </dd>
+          </dl>
+        </div>
 
-                  <dd>A LoggerConfig is said to be an
-                    <em>ancestor</em>
-                    of another
-                    LoggerConfig if its name followed by a dot is a prefix of the
-                    <em>descendant</em>
-                    logger name. A LoggerConfig is said to be a
-                    <em>parent</em>
-                    of a
-                    <em>child</em>
-                    LoggerConfig if there are no
-                    ancestors between itself and the descendant LoggerConfig.
-                  </dd>
-                </dl>
-              </td>
-            </tr>
-          </table>
-        </p>
         <p>For example, the LoggerConfig named
           <code>"com.foo"</code>
           is a parent
@@ -94,7 +79,7 @@
         <p>The root LoggerConfig resides at the top of the LoggerConfig hierarchy. It
           is exceptional in that it always exists and it is part of every hierarchy. A Logger
           that is directly linked to the root LoggerConfig can be obtained as follows:
-          <source>Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</source>
+          <pre class="prettyprint">Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</pre>
           All other Loggers can be retrieved using the
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
@@ -130,22 +115,17 @@
           and implements the required methods. As the configuration is modified Loggers may become associated
           with a different LoggerConfig, thus causing their behavior to be modified.
         </p>
-        <table bgcolor="#EEEE99">
-          <tr>
-            <td>Retrieving Loggers</td>
-          </tr>
-        </table>
-        <p>Calling the
-          <code>getLogger</code>
-          method with the same name will
-          always return a reference to the exact same Logger object.
+        <h5>Retrieving Loggers</h5>
+        <p>
+          Calling the <code>getLogger</code> method with the same name will always return a reference to the exact 
+          same Logger object.
         </p>
 
         <p>For example, in
-          <source>
-            Logger x = Logger.getLogger("wombat");
-            Logger y = Logger.getLogger("wombat");
-          </source>
+<pre class="prettyprint">
+Logger x = Logger.getLogger("wombat");
+Logger y = Logger.getLogger("wombat");
+</pre>
           <code>x</code> and <code>y</code> refer to <em>exactly</em> the same Logger object.
         </p>
 
@@ -176,11 +156,7 @@
           passed to any Appenders. It contains references to the set of Appenders that should be used to
           process the event.
         </p>
-        <table bgcolor="#EEEE99">
-          <tr>
-            <td>Log Levels</td>
-          </tr>
-        </table>
+        <h5>Log Levels</h5>
         <p>LoggerConfigs will be assigned a Log
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of possible
           levels includes (TRACE, DEBUG, INFO, WARN, ERROR and FATAL). Note that in Log4j 2, the Level is
@@ -201,28 +177,28 @@
           is not configured a default Level will be assigned to it.
         </p>
 
-        <table border="1" width="40%">
+        <table style="width: 40%">
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
-            <th>level</th>
+            <th>Level</th>
           </tr>
-          <tr align="left">
+          <tr>
             <td>root</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y.Z</td>
             <td>root</td>
             <td>DEBUG</td>
@@ -234,28 +210,28 @@
           Loggers reference the root LoggerConfig and use its Level.
         </p>
 
-        <table border="1" width="40%">
+        <table style="width: 40%">
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
-            <th>level</th>
+            <th>Level</th>
           </tr>
-          <tr align="left">
+          <tr>
             <td>root</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y</td>
             <td>X.Y</td>
             <td>INFO</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y.Z</td>
             <td>X.Y.Z</td>
             <td>WARN</td>
@@ -267,28 +243,28 @@
           from it.
         </p>
 
-        <table border="1" width="40%">
+        <table style="width: 40%">
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
-            <th>level</th>
+            <th>Level</th>
           </tr>
-          <tr align="left">
+          <tr>
             <td>root</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y.Z</td>
             <td>X.Y.Z</td>
             <td>WARN</td>
@@ -309,28 +285,28 @@
           name has the longest match to the start of the Logger's name.
         </p>
 
-        <table border="1" width="40%">
+        <table style="width: 40%">
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
             <th>level</th>
           </tr>
-          <tr align="left">
+          <tr>
             <td>root</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y.Z</td>
             <td>X</td>
             <td>ERROR</td>
@@ -352,28 +328,28 @@
           longest match to the start of the Logger's name.
         </p>
 
-        <table border="1" width="40%">
+        <table style="width: 40%">
           <tr>
             <th>Logger Name</th>
             <th>Assigned LoggerConfig</th>
             <th>level</th>
           </tr>
-          <tr align="left">
+          <tr>
             <td>root</td>
             <td>root</td>
             <td>DEBUG</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X</td>
             <td>X</td>
             <td>ERROR</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.Y</td>
             <td>X.Y</td>
             <td>INFO</td>
           </tr>
-          <tr align="left">
+          <tr>
             <td>X.YZ</td>
             <td>X</td>
             <td>ERROR</td>
@@ -397,224 +373,216 @@
           with the appopriate LoggerConfig. The intersection identifies whether the LogEvent would
           be allowed to pass for further processing (Yes) or discarded (No).
         </p>
-        <table width="100%">
+        <table>
           <tr>
-            <th style="background-color:cyan; color:black">Event Level</th>
-            <th style="background-color:cyan; color:black; border-top: 1px solid #DDDDDD;"
-                align="center" colspan="6">LoggerConfig Level</th>
+            <th>Event Level</th>
+            <th style="text-align: center" colspan="6">LoggerConfig Level</th>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">&nbsp;</th>
-            <th style="background-color:cyan; color:black">TRACE</th>
-            <th style="background-color:cyan; color:black">DEBUG</th>
-            <th style="background-color:cyan; color:black">INFO</th>
-            <th style="background-color:cyan; color:black">WARN</th>
-            <th style="background-color:cyan; color:black">ERROR</th>
-            <th style="background-color:cyan; color:black">FATAL</th>
+          <tr>
+            <th>&nbsp;</th>
+            <th>TRACE</th>
+            <th>DEBUG</th>
+            <th>INFO</th>
+            <th>WARN</th>
+            <th>ERROR</th>
+            <th>FATAL</th>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">ALL</th>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>ALL</th>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">TRACE</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>TRACE</th>
+            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">DEBUG</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>DEBUG</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">INFO</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>INFO</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">WARN</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:red;font-weight:bold">NO</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>WARN</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">ERROR</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:red;font-weight:bold">NO</td>
+          <tr>
+            <th>ERROR</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">FATAL</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
+          <tr>
+            <th>FATAL</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
           </tr>
-          <tr align="left">
-            <th style="background-color:cyan; color:black">OFF</th>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
-            <td style="color:green;font-weight:bold">YES</td>
+          <tr>
+            <th>OFF</th>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
+            <td class="big-green">YES</td>
           </tr>
         </table>
 
         <h4>Filter</h4>
-          <p>In addition to the automatic log Level filtering that takes place as described in the previous
-            section, Log4j provides
-            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Filter.html">Filter</a>s that can
-            be applied before control is passed to any LoggerConfig, after control is passed to a LoggerConfig
-            but before calling any Appenders, after control is passed to a LoggerConfig but before calling a
-            specific Appender, and on each Appender. In a manner very similar to firewall filters,
-            each Filter can return one of three results, Accept, Deny or Neutral. A response of Accept means
-            that no other Filters should be called and the event should progress. A response of Deny means
-            the event should be immediately ignored and control should be returned to the caller. A response
-            of Neutral indicates the event should be passed to other Filters. If there are no other Fitlers the
-            event will be processed.
-          </p>
-          <p>Although an event may be accepted by a Filter the event still might not be logged. This can happen
-            when the event is accepted by the pre-LoggerConfig Filter but is then denied by a LoggerConfig
-            filter or is denied by all Appenders.
-          </p>
+        <p>In addition to the automatic log Level filtering that takes place as described in the previous
+          section, Log4j provides
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Filter.html">Filter</a>s that can
+          be applied before control is passed to any LoggerConfig, after control is passed to a LoggerConfig
+          but before calling any Appenders, after control is passed to a LoggerConfig but before calling a
+          specific Appender, and on each Appender. In a manner very similar to firewall filters,
+          each Filter can return one of three results, Accept, Deny or Neutral. A response of Accept means
+          that no other Filters should be called and the event should progress. A response of Deny means
+          the event should be immediately ignored and control should be returned to the caller. A response
+          of Neutral indicates the event should be passed to other Filters. If there are no other Fitlers the
+          event will be processed.
+        </p>
+        <p>Although an event may be accepted by a Filter the event still might not be logged. This can happen
+          when the event is accepted by the pre-LoggerConfig Filter but is then denied by a LoggerConfig
+          filter or is denied by all Appenders.
+        </p>
+        
         <h4>Appender</h4>
-          <p>The ability to selectively enable or disable logging requests based
-            on their logger is only part of the picture. Log4j allows logging
-            requests to print to multiple destinations. In log4j speak, an output
-            destination is called an
-            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>.
-            Currently, appenders exist for the console, files, remote socket servers, Apache Flume,
-            JMS, and remote UNIX Syslog daemons. More than one Appender can be attached to a Logger.
-          </p>
-          <p>An Appender can be added to a Logger by calling the
-            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
-            method of the current Configuration. If a LoggerConfig matching the name of the Logger does
-            not exist, one will be created, the Appender will be attached to it and then all Loggers
-            will be notified to update their LoggerConfig references.
-          </p>
-          <p><b>Each enabled logging request for a given logger will be forwarded to all the appenders in
-            that Logger's LoggerConfig as well as the Appenders of the LoggerConfig's parents.</b> In
-            other words, Appenders are inherited additively from the LoggerConfig hierarchy. For example,
-            if a console appender is added to the root logger, then all enabled logging requests will at
-            least print on the console. If in addition a file appender is added to a LoggerConfig, say
-            <em>C</em>, then enabled logging requests for <em>C</em> and <em>C</em>'s children will print
-            in a file <em>and</em> on the console. It is possible to override this default behavior so that
-            Appender accumulation is no longer additive by setting <code>additivity="false"</code> on the
-            Logger declaration in the configuration file.
-          </p>
-          <p>The rules governing appender additivity are summarized below.</p>
+        
+        <p>The ability to selectively enable or disable logging requests based
+          on their logger is only part of the picture. Log4j allows logging
+          requests to print to multiple destinations. In log4j speak, an output
+          destination is called an
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>.
+          Currently, appenders exist for the console, files, remote socket servers, Apache Flume,
+          JMS, and remote UNIX Syslog daemons. More than one Appender can be attached to a Logger.
+        </p>
+        <p>An Appender can be added to a Logger by calling the
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>
+          method of the current Configuration. If a LoggerConfig matching the name of the Logger does
+          not exist, one will be created, the Appender will be attached to it and then all Loggers
+          will be notified to update their LoggerConfig references.
+        </p>
+        <p><b>Each enabled logging request for a given logger will be forwarded to all the appenders in
+          that Logger's LoggerConfig as well as the Appenders of the LoggerConfig's parents.</b> In
+          other words, Appenders are inherited additively from the LoggerConfig hierarchy. For example,
+          if a console appender is added to the root logger, then all enabled logging requests will at
+          least print on the console. If in addition a file appender is added to a LoggerConfig, say
+          <em>C</em>, then enabled logging requests for <em>C</em> and <em>C</em>'s children will print
+          in a file <em>and</em> on the console. It is possible to override this default behavior so that
+          Appender accumulation is no longer additive by setting <code>additivity="false"</code> on the
+          Logger declaration in the configuration file.
+        </p>
+        <p>The rules governing appender additivity are summarized below.</p>
 
-          <p>
-            <a name="additivity"/>
-            <table bgcolor="#EEEE99">
-              <tr>
-                <td>
-                  <dl>
-	                  <dt><b>Appender Additivity</b></dt>
+        <div class="well">
+          <dl>
+	        <dt><b>Appender Additivity</b></dt>
+	          <dd>
+                <p>
+                  The output of a log statement of Logger <i>L</i> will go to all the Appenders in the LoggerConfig 
+                  associated with <i>L</i> and the ancestors of that LoggerConfig. This is the meaning of the term 
+                  "appender additivity".
+                </p>
+	            <p>
+                  However, if an ancestor of the LoggerConfig associated with Logger <i>L</i>, say <i>P</i>, has the 
+                  additivity flag set to <code>false</code>, then <i>L</i>'s output will be directed to all the 
+                  appenders in <i>L</i>'s LoggerConfig and it's ancestors up to and including <i>P</i> but not the 
+                  Appenders in any of the ancestors of <i>P</i>.
+                </p>
+	            <p>Loggers have their additivity flag set to <code>true</code> by default.</p>
+            </dd>
+          </dl>
+        </div>
 
-	                  <dd>
-                      <p>The output of a log statement of Logger <i>L</i> will
-	                      go to all the Appenders in the LoggerConfig associated with <i>L</i>
-                        and the ancestors of that LoggerConfig. This is the meaning of the term "appender additivity".
-                      </p>
+        <p>The table below shows an example:</p>
 
-	                    <p>However, if an ancestor of the LoggerConfig associated with Logger <i>L</i>, say <i>P</i>,
-	                      has the additivity flag set to <code>false</code>, then <i>L</i>'s output will be
-                        directed to all the appenders in <i>L</i>'s LoggerConfig and it's ancestors up to
-                        and including <i>P</i> but not the Appenders in any of the ancestors of <i>P</i>.
-                      </p>
-
-	                    <p>Loggers have their additivity flag set to <code>true</code> by default.</p>
-                    </dd>
-                  </dl>
-                </td>
-              </tr>
-            </table>
-          </p>
-
-          <p>The table below shows an example:</p>
-
-          <p>
-            <table align="center" border="3" cellpadding="10">
-              <tr rowspan="2">
-                <th>Logger<br />Name </th>
-                <th>Added<br/>Appenders</th>
-                <th>Additivity<br/>Flag</th>
-                <th>Output Targets</th>
-                <th>Comment</th>
-              </tr>
-              <tr>
-                <td>root</td>
-                <td>A1</td>
-                <td>not applicable</td>
-                <td>A1</td>
-                <td>The root logger has no parent so additivity does not apply to it.</td>
-              </tr>
-              <tr>
-                <td>x</td>
-                <td>A-x1, A-x2</td>
-                <td>true </td>
-                <td>A1, A-x1, A-x2</td>
-                <td>Appenders of "x" and root.</td>
-              </tr>
-              <tr>
-                <td>x.y</td>
-                <td>none</td>
-                <td>true </td>
-                <td>A1, A-x1, A-x2</td>
-                <td>Appenders of "x" and root. It would not be typical to configure a Logger with no Appenders.</td>
-              </tr>
-              <tr>
-                <td>x.y.z</td>
-                <td>A-xyz1</td>
-                <td>true </td>
-                <td>A1, A-x1, A-x2, A-xyz1</td>
-                <td>Appenders in "x.y.z", "x" and root.</td>
-              </tr>
-              <tr>
-                <td>security</td>
-                <td>A-sec</td>
-                <td><font color="blue">false</font></td>
-                <td>A-sec</td>
-                <td>No appender accumulation since the additivity flag is set to <code>false</code>.</td>
-              </tr>
-              <tr>
-                <td>security.access</td>
-                <td>none</td>
-                <td>true</td>
-                <td>A-sec</td>
-                <td>Only appenders of "security" because the additivity flag in "security" is
-                  set to <code>false</code>.
-                </td>
-              </tr>
-            </table>
-          </p>
+        <table>
+          <tr rowspan="2">
+            <th>Logger<br />Name </th>
+            <th>Added<br/>Appenders</th>
+            <th>Additivity<br/>Flag</th>
+            <th>Output Targets</th>
+            <th>Comment</th>
+          </tr>
+          <tr>
+            <td>root</td>
+            <td>A1</td>
+            <td>not applicable</td>
+            <td>A1</td>
+            <td>The root logger has no parent so additivity does not apply to it.</td>
+          </tr>
+          <tr>
+            <td>x</td>
+            <td>A-x1, A-x2</td>
+            <td>true </td>
+            <td>A1, A-x1, A-x2</td>
+            <td>Appenders of "x" and root.</td>
+          </tr>
+          <tr>
+            <td>x.y</td>
+            <td>none</td>
+            <td>true </td>
+            <td>A1, A-x1, A-x2</td>
+            <td>Appenders of "x" and root. It would not be typical to configure a Logger with no Appenders.</td>
+          </tr>
+          <tr>
+            <td>x.y.z</td>
+            <td>A-xyz1</td>
+            <td>true </td>
+            <td>A1, A-x1, A-x2, A-xyz1</td>
+            <td>Appenders in "x.y.z", "x" and root.</td>
+          </tr>
+          <tr>
+            <td>security</td>
+            <td>A-sec</td>
+            <td><font color="blue">false</font></td>
+            <td>A-sec</td>
+            <td>No appender accumulation since the additivity flag is set to <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td>security.access</td>
+            <td>none</td>
+            <td>true</td>
+            <td>A-sec</td>
+            <td>Only appenders of "security" because the additivity flag in "security" is
+              set to <code>false</code>.
+            </td>
+          </tr>
+        </table>
+            
         <h4>Layout</h4>
         <p>More often than not, users wish to customize not only the output destination but also the output format.
           This is accomplished by associating a
@@ -628,7 +596,7 @@
 
         <p>For example, the PatternLayout with the conversion pattern "%r [%t]
           %-5p %c - %m%n" will output something akin to:<br />
-          <source>176 [main] INFO  org.foo.Bar - Located nearest gas station.</source>
+          <pre>176 [main] INFO  org.foo.Bar - Located nearest gas station.</pre>
         </p>
 
         <p>The first field is the number of milliseconds elapsed since the

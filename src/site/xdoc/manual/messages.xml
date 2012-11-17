@@ -43,16 +43,12 @@
           would like to add an informational message that returns "User John Doe has logged in using id jdoe". The
           way this could be accomplished is by doing:
         </p>
-        <pre>
-          logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());
-        </pre>
+        <pre class="prettyprint">logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());</pre>
         <p>
           While there is nothing inherently wrong with this, as the complexity of the objects and desired output
           increases this technique becomes harder to use. As an alternative, using Messages allows:
         </p>
-        <pre>
-          logger.info(new LoggedInMessage(map, user));
-        </pre>
+        <pre class="prettyprint">logger.info(new LoggedInMessage(map, user));</pre>
         <p>
           In this alternative the formatting is delegated to the LoggedInMessage object's getFormattedMessage
           method.
@@ -70,97 +66,97 @@
           Borrowing from the earlier example illustrating Markers to identify SQL statements being logged, Messages
           can also be leveraged. First, the Message is defined.
         </p>
-        <source><![CDATA[
+        <pre class="prettyprint linenums"><![CDATA[
+public class SQLMessage implements Message {
+  public enum SQLType {
+      UPDATE,
+      QUERY
+  };
 
-  public class SQLMessage implements Message {
-      public enum SQLType {
-          UPDATE,
-          QUERY
-      };
+  prviate final SQLType type;
+  private final String table;
+  private final Map<String, String> cols;
 
-      prviate final SQLType type;
-      private final String table;
-      private final Map<String, String> cols;
+  public SQLMessage(SQLType type, String table) {
+      this(type, table, null);
+  }
 
-      public SQLMessage(SQLType type, String table) {
-          this(type, table, null);
+  public SQLMessage(SQLType type, String table, Map<String, String> cols) {
+      this.type = type;
+      this.table = table;
+      this.cols = cols;
+  }
+
+  public String getFormattedMessage() {
+      switch (type) {
+          case UPDATE:
+            return createUpdateString();
+            break;
+          case QUERY:
+            return createQueryString();
+            break;
+          default;
       }
+  }
 
-      public SQLMessage(SQLType type, String table, Map<String, String> cols) {
-          this.type = type;
-          this.table = table;
-          this.cols = cols;
-      }
+  public String getMessageFormat() {
+      return type + " " + table;
+  }
 
-      public String getFormattedMessage() {
-          switch (type) {
-              case UPDATE:
-                return createUpdateString();
-                break;
-              case QUERY:
-                return createQueryString();
-                break;
-              default;
+  public Object getParameters() {
+      return cols;
+  }
+
+  private String createUpdateString() {
+  }
+
+  private String createQueryString() {
+  }
+
+  private String formatCols(Map<String, String> cols) {
+      StringBuilder sb = new StringBuilder();
+      boolean first = true;
+      for (Map.Entry<String, String> entry : cols.entrySet()) {
+          if (!first) {
+              sb.append(", ");
           }
+          sb.append(entry.getKey()).append("=").append(entry.getValue());
+          first = false;
       }
-
-      public String getMessageFormat() {
-          return type + " " + table;
-      }
-
-      public Object getParameters() {
-          return cols;
-      }
-
-      private String createUpdateString() {
-      }
-
-      private String createQueryString() {
-      }
-
-      private String formatCols(Map<String, String> cols) {
-          StringBuilder sb = new StringBuilder();
-          boolean first = true;
-          for (Map.Entry<String, String> entry : cols.entrySet()) {
-              if (!first) {
-                  sb.append(", ");
-              }
-              sb.append(entry.getKey()).append("=").append(entry.getValue());
-              first = false;
-          }
-          return sb.toString();
-      }
-  }]]></source>
+      return sb.toString();
+  }
+}]]></pre>
       <p>
         Next we can use the message in our application.
       </p>
-        <source><![CDATA[    import org.apache.logging.log4j.Logger;
-    import org.apache.logging.log4j.LogManager;
-    import java.util.Map;
+        <pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.Map;
 
-    public class MyApp {
+public class MyApp {
 
-        private Logger logger = LogManager.getLogger(MyApp.class.getName());
-        private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
-        private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
-        private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
+    private Logger logger = LogManager.getLogger(MyApp.class.getName());
+    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
+    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
+    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
 
-        public String doQuery(String table) {
-            logger.entry(param);
+    public String doQuery(String table) {
+        logger.entry(param);
 
-            logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table);
+        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table);
 
-            return logger.exit();
-        }
+        return logger.exit();
+    }
 
-        public String doUpdate(String table, Map<String, String> params) {
-            logger.entry(param);
+    public String doUpdate(String table, Map<String, String> params) {
+        logger.entry(param);
 
-            logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas);
+        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas);
 
-            return logger.exit();
-        }
-    }]]></source>
+        return logger.exit();
+    }
+}]]></pre>
         <p>
           Notice that in contrast to the prior version of this example, the logger.debug in doUpdate no longer
           needs to be wrapped in an isDebugEnabled call as creation of the SQLMessage is on the same order of

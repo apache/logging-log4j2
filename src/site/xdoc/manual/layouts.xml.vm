@@ -43,7 +43,7 @@
         <subsection name="HTMLLayout">
           <p>The HTMLLayout generates an HTML page and adds each LogEvent to a row in a table.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -106,7 +106,7 @@ WARN  [main]: Message 2</pre>
             be left justified to a width of five characters.
           </p>
 
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -139,7 +139,7 @@ WARN  [main]: Message 2</pre>
           <h4>Patterns</h4>
           <p>The conversions that are provided with Log4j are:
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Conversion Pattern</th>
               <th>Description</th>
@@ -160,7 +160,7 @@ WARN  [main]: Message 2</pre>
                   precision integer is less than one the right-most token will still be printed in full.
                   By default the logger name is printed in full.
                 </p>
-                <table border="1" width="100%">
+                <table>
                   <tr>
                     <th>Conversion Pattern</th>
                     <th>Logger Name</th>
@@ -228,7 +228,7 @@ WARN  [main]: Message 2</pre>
                 <p>You can also use a set of braces containing a time zone id per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
                     java.util.TimeZone.getTimeZone</a>. If no date format specifier is given then ISO8601 format is assumed.
-                  <table border="1" width="100%">
+                  <table>
                     <tr>
                       <th>Pattern</th>
                       <th>Example</th>
@@ -302,7 +302,7 @@ WARN  [main]: Message 2</pre>
                 <p>Adds ANSI colors to the result of the enclosed pattern based on the current event's logging level.
                 </p>
                 <p>The default colors for each level are:
-                 <table border="1" width="100%">
+                 <table>
                    <tr>
                      <th>Level</th>
                      <th>ANSI color</th>
@@ -337,7 +337,7 @@ WARN  [main]: Message 2</pre>
                 </p>
                 <p>The color and attribute names and are standard, but the exact shade, hue, or value.
                 </p>
-                <table width="100%">
+                <table>
                   <caption>Color table</caption>
                   <tbody>
                     <tr>
@@ -409,7 +409,7 @@ WARN  [main]: Message 2</pre>
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{STYLE=Logback}</pre>
  #end
                  The STYLE value can be one of:
-                 <table border="1" width="100%">
+                 <table>
                    <?dbfo keep-together="auto" ?>
                    <tr>
                      <th>Style</th>
@@ -422,7 +422,7 @@ WARN  [main]: Message 2</pre>
                    <tr>
                      <td>Logback</td>
                      <td>
-                       <table border="1" width="100%">
+                       <table>
                          <tr>
                            <th>Level</th>
                            <th>ANSI color</th>
@@ -604,7 +604,7 @@ WARN  [main]: Message 2</pre>
               <td>
                 <p>Uses ANSI escape sequences to style the result of the enclosed pattern. The style can consist of
                   a comma separated list of style names from the following table.
-                  <table border="1" width="100%">
+                  <table>
                     <tr>
                       <th>Style Name</th>
                       <th>Description</th>
@@ -837,7 +837,7 @@ WARN  [main]: Message 2</pre>
           <p>Below are various format modifier examples for the category
             conversion specifier.
           </p>
-          <table BORDER="1" CELLPADDING="8">
+          <table>
             <tr>
               <th>Format modifier</th>
               <th>left justify</th>
@@ -905,15 +905,15 @@ WARN  [main]: Message 2</pre>
           <h5>Filtered Throwables</h5>
           <p>This example shows how to filter out classes from unimportant packages in stack traces.
           </p>
-          <source><![CDATA[<properties>
+          <pre class="prettyprint linenums"><![CDATA[<properties>
   <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
 </properties>
 ...
-<PatternLayout pattern="%m%xEx{filters(${dollar}{filters})}%n"/>]]></source>
+<PatternLayout pattern="%m%xEx{filters(${dollar}{filters})}%n"/>]]></pre>
           <p>The result printed to the console will appear similar to:
           </p>
  #if ($isPDF)
-          <source>Exception java.lang.IllegalArgumentException: IllegalArgument
+          <pre>Exception java.lang.IllegalArgumentException: IllegalArgument
          at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.
               testException(ExtendedThrowableTest.java:72) [test-classes/:?]
          ... suppressed 26 lines
@@ -922,23 +922,23 @@ WARN  [main]: Message 2</pre>
          Caused by: java.lang.NullPointerException: null pointer
          at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.
               testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
-         ... 30 more</source>
+         ... 30 more</pre>
  #else
-          <source>Exception java.lang.IllegalArgumentException: IllegalArgument
+          <pre class="prettyprint linenums">Exception java.lang.IllegalArgumentException: IllegalArgument
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:72) [test-classes/:?]
 ... suppressed 26 lines
 at ${dollar}Proxy0.invoke(Unknown Source)} [?:?]
 ... suppressed 3 lines
 Caused by: java.lang.NullPointerException: null pointer
 at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(ExtendedThrowableTest.java:71) ~[test-classes/:?]
-... 30 more</source>
+... 30 more</pre>
  #end
           <h5>ANSI Styled</h5>
           <p>The log level will be highlighted according to the event's log level. All the content that follows
             the level will be bright green.</p>
-          <source><![CDATA[<PatternLayout>
+          <pre class="prettyprint linenums"><![CDATA[<PatternLayout>
   <pattern>%d %highlight{%p} %style{%C{1.} [%t] %m}{bold,green}%n</pattern>
-</PatternLayout>]]></source>
+</PatternLayout>]]></pre>
         </subsection>
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424Layout">
@@ -947,7 +947,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
           </p>
-          <table border="1" width="100%">
+          <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1055,7 +1055,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>The SyslogLayout formats the LogEvent as BSD Syslog records matching the same format used by
             Log4j 1.2.
           </p>
-           <table border="1" width="100%">
+           <table>
             <tr>
               <th>Parameter Name</th>
               <th>Type</th>
@@ -1097,11 +1097,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>For example, if <code>abc</code> is the name of the file where
             the XMLLayout ouput goes, then a well-formed XML file would be:
           </p>
-          <source>&lt;?xml version="1.0" ?&gt;
+          <pre class="prettyprint linenums">&lt;?xml version="1.0" ?&gt;
 &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
 &lt;log4j:eventSet version="2.0" xmlns:log4j="http://logging.apache.org/log4j/"&gt;
 &nbsp;&nbsp;
-&lt;/log4j:eventSet&gt;</source>
+&lt;/log4j:eventSet&gt;</pre>
           <p>This approach enforces the independence of the XMLLayout and the appender where it is embedded.
           </p>
           <p>The <code>version</code> attribute helps components to correctly intrepret output generated by XMLLayout.

@@ -65,35 +65,35 @@
            <p>To uniquely stamp each request using the Thread Context Stack, the user pushes contextual information
              on to the Stack.
            </p>
-            <pre>
-    ThreadContext.push(UUID.randomUUID().toString()); // Add the fishtag;
+            <pre class="prettyprint linenums">
+ThreadContext.push(UUID.randomUUID().toString()); // Add the fishtag;
 
-    logger.debug("Message 1");
-    .
-    .
-    .
-    logger.debug("Message 2");
-    .
-    .
-    ThreadContext.pop();</pre>
+logger.debug("Message 1");
+.
+.
+.
+logger.debug("Message 2");
+.
+.
+ThreadContext.pop();</pre>
           <p>
             The alternative to the Thread Context Stack is the Thread Context Map. In this case, attributes
             associated with the request being processed are adding at the beginning and removed at the end
             as follows:
           </p>
-          <pre>
-    ThreadContext.put("id", UUID.randomUUID().toString(); // Add the fishtag;
-    ThreadContext.put("ipAddress", request.getRemoteAddr());
-    ThreadContext.put("loginId", session.getAttribute("loginId"));
-    ThreadContext.put("hostName", request.getServerName());
-    .
-    logger.debug("Message 1");
-    .
-    .
-    logger.debug("Message 2");
-    .
-    .
-    ThreadContext.clear();</pre>
+          <pre class="prettyprint linenums">
+ThreadContext.put("id", UUID.randomUUID().toString(); // Add the fishtag;
+ThreadContext.put("ipAddress", request.getRemoteAddr());
+ThreadContext.put("loginId", session.getAttribute("loginId"));
+ThreadContext.put("hostName", request.getServerName());
+.
+logger.debug("Message 1");
+.
+.
+logger.debug("Message 2");
+.
+.
+ThreadContext.clear();</pre>
           <p>The Stack and the Map are managed per thread and is based on
             <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>.
             Thus, in many cases the contents of the Stack and Map will be passed to child threads. However, as

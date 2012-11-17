@@ -39,97 +39,99 @@
               recorded occurs a StructuredDataMessage should be created and populated.
               Then call EventLogger.logEvent(msg) where msg is a reference to the StructuredDataMessage.</p>
 
-            <source>    import org.apache.logging.log4j.ThreadContext;
-    import org.apache.commons.lang.time.DateUtils;
+            <pre class="prettyprint linenums">
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.commons.lang.time.DateUtils;
 
-    import javax.servlet.Filter;
-    import javax.servlet.FilterConfig;
-    import javax.servlet.ServletException;
-    import javax.servlet.ServletRequest;
-    import javax.servlet.ServletResponse;
-    import javax.servlet.FilterChain;
-    import javax.servlet.http.HttpSession;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.Cookie;
-    import javax.servlet.http.HttpServletResponse;
-    import java.io.IOException;
-    import java.util.TimeZone;
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.TimeZone;
 
-    public class RequestFilter implements Filter {
-        private FilterConfig filterConfig;
-        private static String TZ_NAME = "timezoneOffset";
+public class RequestFilter implements Filter {
+    private FilterConfig filterConfig;
+    private static String TZ_NAME = "timezoneOffset";
 
-        public void init(FilterConfig filterConfig) throws ServletException {
-            this.filterConfig = filterConfig;
-        }
+    public void init(FilterConfig filterConfig) throws ServletException {
+        this.filterConfig = filterConfig;
+    }
 
-        /**
-         * Sample filter that populates the MDC on every request.
-         */
-        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-                throws IOException, ServletException {
-            HttpServletRequest request = (HttpServletRequest)servletRequest;
-            HttpServletResponse response = (HttpServletResponse)servletResponse;
-            ThreadContext.put("ipAddress", request.getRemoteAddr());
-            HttpSession session = request.getSession(false);
-            TimeZone timeZone = null;
-            if (session != null) {
-                // Something should set this after authentication completes
-                String loginId = (String)session.getAttribute("LoginId");
-                if (loginId != null) {
-                    ThreadContext.put("loginId", loginId);
-                }
-                // This assumes there is some javascript on the user's page to create the cookie.
-                if (session.getAttribute(TZ_NAME) == null) {
-                    if (request.getCookies() != null) {
-                        for (Cookie cookie : request.getCookies()) {
-                            if (TZ_NAME.equals(cookie.getName())) {
-                                int tzOffsetMinutes = Integer.parseInt(cookie.getValue());
-                                timeZone = TimeZone.getTimeZone("GMT");
-                                timeZone.setRawOffset((int)(tzOffsetMinutes * DateUtils.MILLIS_PER_MINUTE));
-                                request.getSession().setAttribute(TZ_NAME, tzOffsetMinutes);
-                                cookie.setMaxAge(0);
-                                response.addCookie(cookie);
-                            }
+    /**
+     * Sample filter that populates the MDC on every request.
+     */
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest)servletRequest;
+        HttpServletResponse response = (HttpServletResponse)servletResponse;
+        ThreadContext.put("ipAddress", request.getRemoteAddr());
+        HttpSession session = request.getSession(false);
+        TimeZone timeZone = null;
+        if (session != null) {
+            // Something should set this after authentication completes
+            String loginId = (String)session.getAttribute("LoginId");
+            if (loginId != null) {
+                ThreadContext.put("loginId", loginId);
+            }
+            // This assumes there is some javascript on the user's page to create the cookie.
+            if (session.getAttribute(TZ_NAME) == null) {
+                if (request.getCookies() != null) {
+                    for (Cookie cookie : request.getCookies()) {
+                        if (TZ_NAME.equals(cookie.getName())) {
+                            int tzOffsetMinutes = Integer.parseInt(cookie.getValue());
+                            timeZone = TimeZone.getTimeZone("GMT");
+                            timeZone.setRawOffset((int)(tzOffsetMinutes * DateUtils.MILLIS_PER_MINUTE));
+                            request.getSession().setAttribute(TZ_NAME, tzOffsetMinutes);
+                            cookie.setMaxAge(0);
+                            response.addCookie(cookie);
                         }
                     }
                 }
             }
-            ThreadContext.put("hostname", servletRequest.getServerName());
-            ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
-            Threadcontext.put("locale", servletRequest.getLocale().getDisplayName());
-            if (timeZone == null) {
-                timeZone = TimeZone.getDefault();
-            }
-            ThreadContext.put("timezone", timeZone.getDisplayName());
-            filterChain.doFilter(servletRequest, servletResponse);
-            ThreadContext.clear();
         }
+        ThreadContext.put("hostname", servletRequest.getServerName());
+        ThreadContext.put("productName", filterConfig.getInitParameter("ProductName"));
+        Threadcontext.put("locale", servletRequest.getLocale().getDisplayName());
+        if (timeZone == null) {
+            timeZone = TimeZone.getDefault();
+        }
+        ThreadContext.put("timezone", timeZone.getDisplayName());
+        filterChain.doFilter(servletRequest, servletResponse);
+        ThreadContext.clear();
+    }
 
-        public void destroy() {
-        }
-    }</source>
+    public void destroy() {
+    }
+}</pre>
             <p>Sample class that uses EventLogger.</p>
-            <source>    import org.apache.logging.log4j.StructuredDataMessage;
-    import org.apache.logging.log4j.EventLogger;
+            <pre class="prettyprint linenums">
+import org.apache.logging.log4j.StructuredDataMessage;
+import org.apache.logging.log4j.EventLogger;
 
-    import java.util.Date;
-    import java.util.UUID;
+import java.util.Date;
+import java.util.UUID;
 
-    public class MyApp {
+public class MyApp {
 
-        public String doFundsTransfer(Account toAccount, Account fromAccount, long amount) {
-            toAccount.deposit(amount);
-            fromAccount.withdraw(amount);
-            String confirm = UUID.randomUUID().toString();
-            StructuredDataMessage msg = new StructureDataMessage(confirm, null, "transfer");
-            msg.put("toAccount", toAccount);
-            msg.put("fromAccount", fromAccount);
-            msg.put("amount", amount);
-            EventLogger.logEvent(data);
-            return confirm;
-        }
-    }</source>
+    public String doFundsTransfer(Account toAccount, Account fromAccount, long amount) {
+        toAccount.deposit(amount);
+        fromAccount.withdraw(amount);
+        String confirm = UUID.randomUUID().toString();
+        StructuredDataMessage msg = new StructureDataMessage(confirm, null, "transfer");
+        msg.put("toAccount", toAccount);
+        msg.put("fromAccount", fromAccount);
+        msg.put("amount", amount);
+        EventLogger.logEvent(data);
+        return confirm;
+    }
+}</pre>
             <p>The EventLogger class uses a Logger named "EventLogger". EventLogger uses a logging level
               of OFF as the default to indicate that it cannot be filtered. These events can be
               formatted for printing using the
