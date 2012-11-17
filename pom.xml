@@ -272,12 +272,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/site/css</outputDirectory>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${log4jParentDir}/src/site/resources/css</directory>
+                  <directory>${log4jParentDir}/src/site/resources</directory>
                   <includes>
-                    <include>**/site.css</include>
+                    <include>**/*</include>
                   </includes>
                 </resource>
               </resources>

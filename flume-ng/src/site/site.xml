@@ -16,14 +16,6 @@
 
 -->
 <project name="Flume NG Appender">
-  <bannerLeft>
-    <name>Logging Services</name>
-    <src>../images/ls-logo.jpg</src>
-    <href>../index.html</href>
-  </bannerLeft>
-  <bannerRight>
-    <src>../images/logo.jpg</src>
-  </bannerRight>
   <body>
     <links>
       <item name="Apache" href="http://www.apache.org/" />
@@ -31,8 +23,5 @@
       <item name="Log4j" href="../index.html"/>
     </links>
     <menu ref="reports"/>
-    <footer><div class="row span16">Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the
-      Apache Logging project logo are trademarks of The Apache Software Foundation.</div>
-    </footer>
   </body>
 </project>
