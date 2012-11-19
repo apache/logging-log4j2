@@ -39,18 +39,13 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final String filePattern;
-    private final TriggeringPolicy policy;
-    private final RolloverStrategy strategy;
 
-    private RollingFileAppender(String name, Layout layout, TriggeringPolicy policy, RolloverStrategy strategy,
-                               Filter filter, RollingFileManager manager, String fileName, String filePattern,
-                               boolean handleException, boolean immediateFlush) {
+
+    private RollingFileAppender(String name, Layout layout, Filter filter, RollingFileManager manager, String fileName,
+                                String filePattern, boolean handleException, boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = fileName;
         this.filePattern = filePattern;
-        this.policy = policy;
-        this.strategy = strategy;
-        policy.initialize(manager);
     }
 
     /**
@@ -60,7 +55,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
      */
     @Override
     public void append(LogEvent event) {
-        ((RollingFileManager) getManager()).checkRollover(event, policy, strategy);
+        ((RollingFileManager) getManager()).checkRollover(event);
         super.append(event);
     }
 
@@ -138,10 +133,11 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
         }
 
         if (strategy == null) {
-            strategy = DefaultRolloverStrategy.createStrategy(null, null, config);
+            strategy = DefaultRolloverStrategy.createStrategy(null, null, "true", config);
         }
 
-        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered);
+        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered,
+            policy, strategy);
         if (manager == null) {
             return null;
         }
@@ -150,7 +146,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
             layout = PatternLayout.createLayout(null, null, null, null);
         }
 
-        return new RollingFileAppender(name, layout, policy, strategy, filter, manager, fileName, filePattern,
+        return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
             handleExceptions, isFlush);
     }
 }

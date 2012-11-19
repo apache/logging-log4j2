@@ -29,22 +29,26 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
- * according to a fixed window algorithm as described below.
+ * When rolling over, <code>DefaultRolloverStrategy</code> renames files
+ * according to an algorithm as described below.
  * <p/>
- * <p>The <b>ActiveFileName</b> property, which is required, represents the name
- * of the file where current logging output will be written.
- * The <b>FileNamePattern</b>  option represents the file name pattern for the
- * archived (rolled over) log files. If present, the <b>FileNamePattern</b>
- * option must include an integer token, that is the string "%i" somewhere
- * within the pattern.
- * <p/>
- * <p>Let <em>max</em> and <em>min</em> represent the values of respectively
+ * <p>The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When
+ * the file name pattern contains a date format then the rollover time interval will be used to calculate the
+ * time to use in the file pattern. When the file pattern contains an integer replacement token one of the
+ * counting techniques will be used.</p>
+ * <p>When the ascending attribute is set to true (the default) then the counter will be incremented and the
+ * current log file will be renamed to include the counter value. If the counter hits the maximum value then
+ * the oldest file, which will have the smallest counter, will be deleted, all other files will be renamed to
+ * have their counter decremented and then the current file will be renamed to have the maximum counter value.
+ * Note that with this counting strategy specifying a large maximum value may entirely avoid renaming files.</p>
+ * <p>When the ascending attribute is false, then the "normal" fixed-window strategy will be used.</p>
+ * Let <em>max</em> and <em>min</em> represent the values of respectively
  * the <b>MaxIndex</b> and <b>MinIndex</b> options. Let "foo.log" be the value
  * of the <b>ActiveFile</b> option and "foo.%i.log" the value of
  * <b>FileNamePattern</b>. Then, when rolling over, the file
@@ -58,9 +62,7 @@ import java.util.List;
  * <code>foo.log</code> will be created.
  * <p/>
  * <p>Given that this rollover algorithm requires as many file renaming
- * operations as the window size, large window sizes are discouraged. The
- * current implementation will automatically reduce the window size to 12 when
- * larger values are specified by the user.
+ * operations as the window size, large window sizes are discouraged.
  */
 @Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
@@ -82,6 +84,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     private final int minIndex;
 
+    private final boolean useMax;
+
     private final StrSubstitutor subst;
 
     /**
@@ -89,10 +93,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param min The minimum index.
      * @param max The maximum index.
      */
-    protected DefaultRolloverStrategy(int min, int max, StrSubstitutor subst) {
+    protected DefaultRolloverStrategy(int min, int max, boolean useMax, StrSubstitutor subst) {
         minIndex = min;
         maxIndex = max;
         this.subst = subst;
+        this.useMax = useMax;
     }
 
     /**
@@ -103,14 +108,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
         if (maxIndex >= 0) {
-            int purgeStart = minIndex;
+            int fileIndex;
 
-            if (!purge(purgeStart, maxIndex, manager)) {
+            if ((fileIndex = purge(minIndex, maxIndex, manager)) < 0) {
                 return null;
             }
 
             StringBuilder buf = new StringBuilder();
-            manager.getProcessor().formatFileName(buf, purgeStart);
+            manager.getProcessor().formatFileName(buf, fileIndex);
             String currentFileName = manager.getFileName();
 
             String renameTo = subst.replace(buf);
@@ -134,15 +139,21 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return null;
     }
 
+    private int purge(final int lowIndex, final int highIndex, RollingFileManager manager) {
+        return useMax ? purgeAscending(lowIndex, highIndex, manager) :
+            purgeDescending(lowIndex, highIndex, manager);
+    }
+
     /**
-     * Purge and rename old log files in preparation for rollover
+     * Purge and rename old log files in preparation for rollover. The newest file will have the smallest index, the
+     * oldest will have the highest.
      *
      * @param lowIndex  low index
      * @param highIndex high index.  Log file associated with high index will be deleted if needed.
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
-    private boolean purge(final int lowIndex, final int highIndex, RollingFileManager manager) {
+    private int purgeDescending(final int lowIndex, final int highIndex, RollingFileManager manager) {
         int suffixLength = 0;
 
         List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
@@ -182,7 +193,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //        if that fails then abandon purge
                 if (i == highIndex) {
                     if (!toRename.delete()) {
-                        return false;
+                        return -1;
                     }
 
                     break;
@@ -216,15 +227,123 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
             try {
                 if (!action.execute()) {
-                    return false;
+                    return -1;
                 }
             } catch (Exception ex) {
                 LOGGER.warn("Exception during purge in RollingFileAppender", ex);
-                return false;
+                return -1;
             }
         }
 
-        return true;
+        return lowIndex;
+    }
+
+    /**
+     * Purge and rename old log files in preparation for rollover. The oldest file will have the smallest index,
+     * the newest the highest.
+     *
+     * @param lowIndex  low index
+     * @param highIndex high index.  Log file associated with high index will be deleted if needed.
+     * @param manager The RollingFileManager
+     * @return true if purge was successful and rollover should be attempted.
+     */
+    private int purgeAscending(final int lowIndex, final int highIndex, RollingFileManager manager) {
+        int suffixLength = 0;
+
+        List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
+        StringBuilder buf = new StringBuilder();
+        manager.getProcessor().formatFileName(buf, highIndex);
+
+        String highFilename = subst.replace(buf);
+
+        if (highFilename.endsWith(".gz")) {
+            suffixLength = 3;
+        } else if (highFilename.endsWith(".zip")) {
+            suffixLength = 4;
+        }
+
+        int maxIndex = 0;
+
+        for (int i = highIndex; i >= lowIndex; i--) {
+            File toRename = new File(highFilename);
+            if (i == highIndex && toRename.exists()) {
+                maxIndex = highIndex;
+            } else if (maxIndex == 0 && toRename.exists()) {
+                maxIndex = i + 1;
+                break;
+            }
+
+            boolean isBase = false;
+
+            if (suffixLength > 0) {
+                File toRenameBase =
+                    new File(highFilename.substring(0, highFilename.length() - suffixLength));
+
+                if (toRename.exists()) {
+                    if (toRenameBase.exists()) {
+                        toRenameBase.delete();
+                    }
+                } else {
+                    toRename = toRenameBase;
+                    isBase = true;
+                }
+            }
+
+            if (toRename.exists()) {
+                //
+                //    if at lower index and then all slots full
+                //        attempt to delete last file
+                //        if that fails then abandon purge
+                if (i == lowIndex) {
+                    if (!toRename.delete()) {
+                        return -1;
+                    }
+
+                    break;
+                }
+
+                //
+                //   if intermediate index
+                //     add a rename action to the list
+                buf.setLength(0);
+                manager.getProcessor().formatFileName(buf, i - 1);
+
+                String lowFilename = subst.replace(buf);
+                String renameTo = lowFilename;
+
+                if (isBase) {
+                    renameTo = lowFilename.substring(0, lowFilename.length() - suffixLength);
+                }
+
+                renames.add(new FileRenameAction(toRename, new File(renameTo), true));
+                highFilename = lowFilename;
+            } else {
+                buf.setLength(0);
+                manager.getProcessor().formatFileName(buf, i - 1);
+
+                highFilename = subst.replace(buf);
+            }
+        }
+        if (maxIndex == 0) {
+            maxIndex = lowIndex;
+        }
+
+        //
+        //   work renames backwards
+        //
+        for (int i = renames.size() - 1; i >= 0; i--) {
+            Action action = renames.get(i);
+
+            try {
+                if (!action.execute()) {
+                    return -1;
+                }
+            } catch (Exception ex) {
+                LOGGER.warn("Exception during purge in RollingFileAppender", ex);
+                return -1;
+            }
+        }
+        return maxIndex;
     }
 
     @Override
@@ -242,8 +361,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     @PluginFactory
     public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
                                                          @PluginAttr("min") String min,
+                                                         @PluginAttr("fileIndex") String fileIndex,
                                                          @PluginConfiguration Configuration config) {
-
+        boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
         int minIndex;
         if (min != null) {
             minIndex = Integer.parseInt(min);
@@ -264,7 +384,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         } else {
             maxIndex = DEFAULT_WINDOW_SIZE;
         }
-        return new DefaultRolloverStrategy(minIndex, maxIndex, config.getSubst());
+        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, config.getSubst());
     }
 
 }

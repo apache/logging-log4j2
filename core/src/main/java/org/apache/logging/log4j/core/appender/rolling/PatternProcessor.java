@@ -46,6 +46,9 @@ public class PatternProcessor {
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
 
+    private long prevFileTime = 0;
+    private long nextFileTime = 0;
+
     private RolloverFrequency frequency = null;
 
     /**
@@ -74,9 +77,12 @@ public class PatternProcessor {
      * Returns the next potential rollover time.
      * @param current The current time.
      * @param increment The increment to the next time.
-     * @return the next potential rollover time.
+     * @return the next potential rollover time and the timestamp for the target file.
      */
     public long getNextTime(long current, int increment, boolean modulus) {
+        prevFileTime = nextFileTime;
+        long nextTime;
+
         if (frequency == null) {
             throw new IllegalStateException("Pattern does not contain a date");
         }
@@ -87,38 +93,62 @@ public class PatternProcessor {
         cal.set(Calendar.MILLISECOND, 0);
         if (frequency == RolloverFrequency.ANNUALLY) {
             increment(cal, Calendar.YEAR, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.YEAR, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         if (frequency == RolloverFrequency.MONTHLY) {
             increment(cal, Calendar.MONTH, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.MONTH, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         if (frequency == RolloverFrequency.WEEKLY) {
             increment(cal, Calendar.WEEK_OF_YEAR, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.WEEK_OF_YEAR, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         cal.set(Calendar.DAY_OF_YEAR, currentCal.get(Calendar.DAY_OF_YEAR));
         if (frequency == RolloverFrequency.DAILY) {
             increment(cal, Calendar.DAY_OF_YEAR, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         cal.set(Calendar.HOUR, currentCal.get(Calendar.HOUR));
         if (frequency == RolloverFrequency.HOURLY) {
             increment(cal, Calendar.HOUR, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.HOUR, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         cal.set(Calendar.MINUTE, currentCal.get(Calendar.MINUTE));
         if (frequency == RolloverFrequency.EVERY_MINUTE) {
             increment(cal, Calendar.MINUTE, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.MINUTE, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         cal.set(Calendar.SECOND, currentCal.get(Calendar.SECOND));
         if (frequency == RolloverFrequency.EVERY_SECOND) {
             increment(cal, Calendar.SECOND, increment, modulus);
-            return cal.getTimeInMillis();
+            nextTime = cal.getTimeInMillis();
+            cal.add(Calendar.SECOND, -1);
+            nextFileTime = cal.getTimeInMillis();
+            return nextTime;
         }
         increment(cal, Calendar.MILLISECOND, increment, modulus);
-        return cal.getTimeInMillis();
+        nextTime = cal.getTimeInMillis();
+        cal.add(Calendar.MILLISECOND, -1);
+        nextFileTime = cal.getTimeInMillis();
+        return nextTime;
     }
 
     private void increment(Calendar cal, int type, int increment, boolean modulate) {
@@ -131,8 +161,9 @@ public class PatternProcessor {
      * @param buf string buffer to which formatted file name is appended, may not be null.
      * @param obj object to be evaluated in formatting, may not be null.
      */
-    protected final void formatFileName(final StringBuilder buf, final Object obj) {
-        formatFileName(buf, new Date(System.currentTimeMillis()), obj);
+    public final void formatFileName(final StringBuilder buf, final Object obj) {
+        long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
+        formatFileName(buf, new Date(time), obj);
     }
 
     /**

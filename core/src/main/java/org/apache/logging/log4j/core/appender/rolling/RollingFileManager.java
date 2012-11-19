@@ -41,13 +41,18 @@ public class RollingFileManager extends FileManager {
     private long initialTime;
     private final PatternProcessor processor;
     private final Semaphore semaphore = new Semaphore(1);
+    private final TriggeringPolicy policy;
+    private final RolloverStrategy strategy;
 
     protected RollingFileManager(String fileName, String pattern, OutputStream os, boolean append, long size,
-                                 long time) {
+                                 long time, TriggeringPolicy policy, RolloverStrategy strategy) {
         super(fileName, os, append, false);
         this.size = size;
         this.initialTime = time;
+        this.policy = policy;
+        this.strategy = strategy;
         processor = new PatternProcessor(pattern);
+        policy.initialize(this);
     }
 
     /**
@@ -59,10 +64,11 @@ public class RollingFileManager extends FileManager {
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(String fileName, String pattern, boolean append,
-                                                    boolean bufferedIO) {
+                                                    boolean bufferedIO, TriggeringPolicy policy,
+                                                    RolloverStrategy strategy) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
-            bufferedIO), factory);
+            bufferedIO, policy, strategy), factory);
     }
 
     @Override
@@ -90,10 +96,8 @@ public class RollingFileManager extends FileManager {
     /**
      * Determine if a rollover should occur.
      * @param event The LogEvent.
-     * @param policy The TriggeringPolicy.
-     * @param strategy The RolloverStrategy.
      */
-    public synchronized void checkRollover(LogEvent event, TriggeringPolicy policy, RolloverStrategy strategy) {
+    public synchronized void checkRollover(LogEvent event) {
         if (policy.isTriggeringEvent(event) && rollover(strategy)) {
             try {
                 size = 0;
@@ -219,6 +223,8 @@ public class RollingFileManager extends FileManager {
         private String pattern;
         private boolean append;
         private boolean bufferedIO;
+        private TriggeringPolicy policy;
+        private RolloverStrategy strategy;
 
         /**
          * Create the data for the factory.
@@ -226,10 +232,13 @@ public class RollingFileManager extends FileManager {
          * @param append The append flag.
          * @param bufferedIO The bufferedIO flag.
          */
-        public FactoryData(String pattern, boolean append, boolean bufferedIO) {
+        public FactoryData(String pattern, boolean append, boolean bufferedIO, TriggeringPolicy policy,
+                           RolloverStrategy strategy) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
+            this.policy = policy;
+            this.strategy = strategy;
         }
     }
 
@@ -265,7 +274,8 @@ public class RollingFileManager extends FileManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new RollingFileManager(name, data.pattern, os, data.append, size, time);
+                return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
+                    data.strategy);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

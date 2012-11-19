@@ -1105,14 +1105,112 @@
                 compression scheme that matches the suffix. The pattern may also contain lookup references that
                 can be resolved at runtime such as is shown in the example below.
               </p>
-              <p>The Default rollover strategy also accepts a minimum value and a maximum value. When a minimim
-                value other than 1 is specified than files with an index lower than that value will not be
-                deleted when the maximum value is exceeded.</p>
+              <p>The default rollover strategy supports two variations for incrementing the counter. The first is
+                the "fixed window" strategy. To illustrate how it works, suppose that the min attribute is set to 1,
+                the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".
+              </p>
+
+              <table>
+                <tr>
+                  <th>Number of rollovers</th>
+                  <th>Active output target</th>
+                  <th>Archived log files</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>foo.log</td>
+                  <td>-</td>
+                  <td>All logging is going to the initial file.</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log</td>
+                  <td>During the first rollover foo.log is renamed to foo-1.log. A new foo.log file is created and
+                  starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log</td>
+                  <td>During the second rollover foo-1.log is renamed to foo-2.log and foo.log is renamed to
+                    foo-1.log. A new foo.log file is created and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>During the third rollover foo-2.log is renamed to foo-3.log, foo-1.log is renamed to foo-2.log and
+                    foo.log is renamed to foo-1.log. A new foo.log file is created and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>In the fourth and subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to foo-3.log,
+                    foo-1.log is renamed to foo-2.log and foo.log is renamed to foo-1.log. A new foo.log file is
+                    created and starts being written to.</td>
+                </tr>
+              </table>
+              <p>By way of contrast, when the the fileIndex attribute is set to "max" but all the other settings
+                are the same the following actions will be performed.
+              </p>
+              <table>
+                <tr>
+                  <th>Number of rollovers</th>
+                  <th>Active output target</th>
+                  <th>Archived log files</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>foo.log</td>
+                  <td>-</td>
+                  <td>All logging is going to the initial file.</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log</td>
+                  <td>During the first rollover foo.log is renamed to foo-1.log. A new foo.log file is created and
+                    starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log</td>
+                  <td>During the second rollover foo.log is renamed to foo-2.log. A new foo.log file is created
+                    and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>During the third rollover foo.log is renamed to foo-3.log. A new foo.log file is created and
+                    starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>In the fourth and subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to foo-1.log,
+                    foo-3.log is renamed to foo-2.log and foo.log is renamed to foo-3.log. A new foo.log file is
+                    created and starts being written to.</td>
+                </tr>
+              </table>
               <table>
                 <tr>
                   <th>Parameter Name</th>
                   <th>Type</th>
                   <th>Description</th>
+                </tr>
+                <tr>
+                  <td>fileIndex</td>
+                  <td>String</td>
+                  <td>If set to "max" (the default), files with a higher index will be newer than files with a
+                    smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy
+                    described above.</td>
                 </tr>
                 <tr>
                   <td>min</td>
@@ -1127,6 +1225,7 @@
                 </tr>
                 <caption align="top">DefaultRolloverStrategy Parameters</caption>
               </table>
+
           <p>
             Below is a sample configuration that uses a RollingFileAppender with both the time and size based
             triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
