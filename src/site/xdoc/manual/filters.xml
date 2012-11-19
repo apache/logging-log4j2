@@ -571,10 +571,10 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
-  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                          onMatch="ACCEPT" onMismatch="NEUTRAL">
+  <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="User1" value="DEBUG"/>
-  </DynamicThresholdFilter>
+    <KeyValuePair key="User2" value="WARN"/>
+  </ThreadContextMapFilter>
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -591,6 +591,32 @@
     </root>
   </loggers>
 </configuration>]]></pre>
+          </p>
+          <p>
+            The ThreadContextMapFilter can also be applied to a logger for filtering:
+            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+      <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
+        <KeyValuePair key="foo" value="bar"/>
+        <KeyValuePair key="User2" value="WARN"/>
+      </ThreadContextMapFilter>
+    </root>
+  </loggers>
+</configuration>
+  ]]></source>
           </p>
         </subsection>
         <a name="ThresholdFilter"/>

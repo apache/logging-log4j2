@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-123" dev="rgoers" type="fix" due-to="Olivier Lamy">
+        The example for ThreadContextMapFilter was incorrect.
+      </action>
       <action issue="LOG4J2-116" dev="rgoers" type="fix">
         File renaming was using the wrong date value. Enhanced DefaultRolloverStrategy to store newest files in
         highest index as well as lowest.
