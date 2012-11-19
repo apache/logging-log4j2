@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-120" dev="rgoers" type="fix">
+        TCPSocketManager would fail if the initial connection could not be established.
+      </action>
+      <action issue="LOG4J2-119" dev="rgoers" type="fix">
+        A broken socket connection would cause the TCPSocketManager to continuously reconnect.
+      </action>
       <action issue="LOG4J2-123" dev="rgoers" type="fix" due-to="Olivier Lamy">
         The example for ThreadContextMapFilter was incorrect.
       </action>

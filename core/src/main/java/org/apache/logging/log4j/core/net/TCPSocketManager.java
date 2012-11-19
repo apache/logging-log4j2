@@ -20,12 +20,15 @@ import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Manager of TCP Socket connections.
@@ -66,6 +69,12 @@ public class TCPSocketManager extends AbstractSocketManager {
         this.reconnectionDelay = delay;
         this.socket = sock;
         retry = delay > 0;
+        if (sock == null) {
+            connector = new Reconnector(this);
+            connector.setDaemon(true);
+            connector.setPriority(Thread.MIN_PRIORITY);
+            connector.start();
+        }
     }
 
     /**
@@ -90,6 +99,15 @@ public class TCPSocketManager extends AbstractSocketManager {
 
     @Override
     protected synchronized void write(byte[] bytes, int offset, int length)  {
+        if (socket == null) {
+            if (connector != null) {
+                connector.latch();
+            }
+            if (socket == null) {
+                String msg = "Error writing to " + getName() + " socket not available";
+                throw new AppenderRuntimeException(msg);
+            }
+        }
         try {
             getOutputStream().write(bytes, offset, length);
             socket.setSendBufferSize(length);
@@ -122,10 +140,20 @@ public class TCPSocketManager extends AbstractSocketManager {
 
         private boolean shutdown = false;
 
+        public CountDownLatch latch = new CountDownLatch(1);
+
         private final Object owner;
 
         public Reconnector(OutputStreamManager owner) {
             this.owner = owner;
+        }
+
+        public void latch()  {
+            try {
+                latch.await();
+            } catch (InterruptedException ex) {
+                // Ignore the exception.
+            }
         }
 
         public void shutdown() {
@@ -149,6 +177,7 @@ public class TCPSocketManager extends AbstractSocketManager {
                         setOutputStream(newOS);
                         socket = sock;
                         connector = null;
+                        shutdown = true;
                     }
                     LOGGER.debug("Connection to " + host + ":" + port + " reestablished.");
                 } catch (InterruptedException ie) {
@@ -157,6 +186,8 @@ public class TCPSocketManager extends AbstractSocketManager {
                     LOGGER.debug(host + ":" + port + " refused connection");
                 } catch (IOException ioe) {
                     LOGGER.debug("Unable to reconnect to " + host + ":" + port);
+                } finally {
+                    latch.countDown();
                 }
             }
         }
@@ -183,17 +214,27 @@ public class TCPSocketManager extends AbstractSocketManager {
     private static class TCPSocketManagerFactory implements ManagerFactory<TCPSocketManager, FactoryData> {
 
         public TCPSocketManager createManager(String name, FactoryData data) {
+
+            InetAddress address;
+            OutputStream os = null;
             try {
-                InetAddress address = InetAddress.getByName(data.host);
-                Socket socket = new Socket(data.host, data.port);
-                OutputStream os = socket.getOutputStream();
-                return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay);
+                address = InetAddress.getByName(data.host);
             } catch (UnknownHostException ex) {
                 LOGGER.error("Could not find address of " + data.host, ex);
+                return null;
+            }
+            try {
+                Socket socket = new Socket(data.host, data.port);
+                os = socket.getOutputStream();
+                return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay);
             } catch (IOException ex) {
                 LOGGER.error("TCPSocketManager (" + name + ") " + ex);
+                os = new ByteArrayOutputStream();
             }
-            return null;
+            if (data.delay == 0) {
+                return null;
+            }
+            return new TCPSocketManager(name, os, null, address, data.host, data.port, data.delay);
         }
     }
 }
