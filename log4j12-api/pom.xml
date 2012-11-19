@@ -24,7 +24,7 @@
     <relativePath>../</relativePath>
   </parent>
   <groupId>org.apache.logging.log4j.adapters</groupId>
-  <artifactId>log4j12-api</artifactId>
+  <artifactId>log4j-1.2-api</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j 1.x Compatibility API</name>
   <description>The Log4J Compatibility API</description>

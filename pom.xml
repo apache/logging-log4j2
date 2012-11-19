@@ -98,7 +98,7 @@
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-beta3</Log4jReleaseVersion>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
-    <osgi.symbolicName>org.apache.commons.${project.artifactId}</osgi.symbolicName>
+    <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
     <osgi.import>*</osgi.import>
     <osgi.dynamicImport />
@@ -175,7 +175,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j.adapters</groupId>
-        <artifactId>log4j12-api</artifactId>
+        <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>
  	    <dependency>
