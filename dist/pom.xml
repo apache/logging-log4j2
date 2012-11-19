@@ -111,18 +111,18 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.adapters</groupId>
-      <artifactId>log4j12-api</artifactId>
+      <artifactId>log4j-1.2-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.adapters</groupId>
-      <artifactId>log4j12-api</artifactId>
+      <artifactId>log4j-1.2-api</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.adapters</groupId>
-      <artifactId>log4j12-api</artifactId>
+      <artifactId>log4j-1.2-api</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
