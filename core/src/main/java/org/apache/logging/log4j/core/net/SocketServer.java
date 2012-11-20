@@ -125,6 +125,7 @@ public class SocketServer extends AbstractServer implements Runnable {
             try {
                 // Accept incoming connections.
                 Socket clientSocket = server.accept();
+                clientSocket.setSoLinger(true, 0);
 
                 // accept() will block until a client connects to the server.
                 // If execution reaches this point, then it means that a client

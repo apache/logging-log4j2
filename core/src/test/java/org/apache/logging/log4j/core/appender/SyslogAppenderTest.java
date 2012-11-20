@@ -267,10 +267,11 @@ public class SyslogAppenderTest {
         @Override
         public void run() {
             this.thread = Thread.currentThread();
-            try {
-                byte[] buffer = new byte[4096];
-                while (!shutdown) {
+            while (!shutdown) {
+                try {
+                    byte[] buffer = new byte[4096];
                     Socket socket = sock.accept();
+                    socket.setSoLinger(true, 0);
                     StringBuilder sb = new StringBuilder();
                     if (socket != null) {
                         InputStream in = socket.getInputStream();
@@ -290,12 +291,13 @@ public class SyslogAppenderTest {
 
                         socket.close();
                     }
-                }
-            } catch (Exception ex) {
-                if (!shutdown) {
-                    throw new RuntimeException(ex);
+                } catch (Exception ex) {
+                    if (!shutdown) {
+                        System.out.println("Caught exception: " + ex.getMessage());
+                    }
                 }
             }
+
         }
     }
 

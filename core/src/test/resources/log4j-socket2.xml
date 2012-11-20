@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug" name="MyApp">
+  <appenders>
+    <Socket name="socket" host="localhost" port="5514" protocol="TCP" suppressExceptions="false"
+        reconnectionDelay="0">
+      <PatternLayout pattern="%msg%n"/>
+    </Socket>
+  </appenders>
+  <loggers>
+    <root level="debug">
+      <appender-ref ref="socket"/>
+    </root>
+  </loggers>
+</configuration>
