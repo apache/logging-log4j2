@@ -30,7 +30,6 @@
       <item name="Log4j 1.x Migration" href="manual/migration.html"/>
 
       <item name="API" href="/manual/api.html" collapse="true">
-        <item name="Overview" href="manual/api.html#Overview"/>
         <item name="Flow Tracing" href="manual/flowtracing.html"/>
         <item name="Markers" href="manual/markers.html"/>
         <item name="Event Logging" href="/manual/eventlogging.html"/>
