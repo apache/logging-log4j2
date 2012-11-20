@@ -96,7 +96,7 @@ public class JMSTopicTest {
         Filter clientFilter = new MessageFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         CompositeFilter clientFilters = CompositeFilter.createFilters(new Filter[]{clientFilter});
-        JMSTopicAppender appender = JMSTopicAppender.createAppender(null, null, null, null, null, FACTORY_NAME,
+        JMSTopicAppender appender = JMSTopicAppender.createAppender("Test", null, null, null, null, null, FACTORY_NAME,
                 TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
         CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});

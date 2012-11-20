@@ -55,6 +55,7 @@ public final class JMSQueueAppender extends AbstractAppender {
 
     /**
      * Create a JMSQueueAppender.
+     * @param name The name of the Appender.
      * @param factoryName The fully qualified class name of the InitialContextFactory.
      * @param providerURL The URL of the provider to use.
      * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
@@ -72,7 +73,8 @@ public final class JMSQueueAppender extends AbstractAppender {
      * @return The JMSQueueAppender.
      */
     @PluginFactory
-    public static JMSQueueAppender createAppender(@PluginAttr("factoryName") String factoryName,
+    public static JMSQueueAppender createAppender(@PluginAttr("name") String name,
+                                                  @PluginAttr("factoryName") String factoryName,
                                                   @PluginAttr("providerURL") String providerURL,
                                                   @PluginAttr("urlPkgPrefixes") String urlPkgPrefixes,
                                                   @PluginAttr("securityPrincipalName") String securityPrincipalName,
@@ -84,8 +86,10 @@ public final class JMSQueueAppender extends AbstractAppender {
                                                   @PluginElement("layout") Layout layout,
                                                   @PluginElement("filter") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
-
-        String name = "JMSQueue" + factoryBindingName + '.' + queueBindingName;
+        if (name == null) {
+            LOGGER.error("No name provided for JMSQueueAppender");
+            return null;
+        }
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);

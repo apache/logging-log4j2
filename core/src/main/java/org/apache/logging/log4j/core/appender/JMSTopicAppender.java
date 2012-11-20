@@ -55,6 +55,7 @@ public final class JMSTopicAppender extends AbstractAppender {
 
     /**
      * Create a JMSTopicAppender.
+     * @param name The name of the Appender.
      * @param factoryName The fully qualified class name of the InitialContextFactory.
      * @param providerURL The URL of the provider to use.
      * @param urlPkgPrefixes A colon-separated list of package prefixes for the class name of the factory class that
@@ -72,7 +73,8 @@ public final class JMSTopicAppender extends AbstractAppender {
      * @return The JMSTopicAppender.
      */
     @PluginFactory
-    public static JMSTopicAppender createAppender(@PluginAttr("factoryName") String factoryName,
+    public static JMSTopicAppender createAppender(@PluginAttr("name") String name,
+                                                  @PluginAttr("factoryName") String factoryName,
                                                   @PluginAttr("providerURL") String providerURL,
                                                   @PluginAttr("urlPkgPrefixes") String urlPkgPrefixes,
                                                   @PluginAttr("securityPrincipalName") String securityPrincipalName,
@@ -85,7 +87,10 @@ public final class JMSTopicAppender extends AbstractAppender {
                                                   @PluginElement("filters") Filter filter,
                                                   @PluginAttr("suppressExceptions") String suppress) {
 
-        String name = "JMSTopic" + factoryBindingName + '.' + topicBindingName;
+        if (name == null) {
+            LOGGER.error("No name provided for JMSQueueAppender");
+            return null;
+        }
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
