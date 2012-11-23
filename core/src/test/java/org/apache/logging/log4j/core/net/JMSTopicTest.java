@@ -103,7 +103,7 @@ public class JMSTopicTest {
         ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
-        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
+        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
         Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
         serverLogger.addAppender(console);

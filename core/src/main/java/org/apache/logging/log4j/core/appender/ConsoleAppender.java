@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -74,6 +75,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
                                                  @PluginElement("filters") Filter filter,
                                                  @PluginAttr("target") String t,
                                                  @PluginAttr("name") String name,
+                                                 @PluginAttr("follow") String follow,
                                                  @PluginAttr("suppressExceptions") String suppress) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
@@ -82,20 +84,23 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         if (layout == null) {
             layout = PatternLayout.createLayout(null, null, null, null);
         }
+        boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
         boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, filter, getManager(target), handleExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(isFollow, target), handleExceptions);
     }
 
-    private static OutputStreamManager getManager(Target target) {
+    private static OutputStreamManager getManager(boolean follow, Target target) {
         String type = target.name();
-        OutputStream os = getOutputStream(target);
+        OutputStream os = getOutputStream(follow, target);
         return OutputStreamManager.getManager(target.name(), new FactoryData(os, type), factory);
     }
 
-    private static OutputStream getOutputStream(Target target) {
-        final PrintStream printStream = target == Target.SYSTEM_OUT ? System.out : System.err;
-        if (!System.getProperty("os.name").startsWith("Windows")) {
+    private static OutputStream getOutputStream(boolean follow, Target target) {
+        final PrintStream printStream = target == Target.SYSTEM_OUT ?
+            follow ? new PrintStream(new SystemOutStream()) : System.out :
+            follow ? new PrintStream(new SystemErrStream()) : System.err;
+        if (!System.getProperty("os.name").startsWith("Windows") || Boolean.getBoolean("log4j.skipJansi")) {
             return printStream;
         } else {
             try {
@@ -112,6 +117,76 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
                 LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
             }
             return printStream;
+        }
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the
+     * current System.err.
+     *
+     */
+    private static class SystemErrStream extends OutputStream {
+        public SystemErrStream() {
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public void flush() {
+            System.err.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.err.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.err.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) {
+            System.err.write(b);
+        }
+    }
+
+    /**
+     * An implementation of OutputStream that redirects to the
+     * current System.out.
+     *
+     */
+    private static class SystemOutStream extends OutputStream {
+        public SystemOutStream() {
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public void flush() {
+            System.out.flush();
+        }
+
+        @Override
+        public void write(final byte[] b) throws IOException {
+            System.out.write(b);
+        }
+
+        @Override
+        public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+            System.out.write(b, off, len);
+        }
+
+        @Override
+        public void write(final int b) throws IOException {
+            System.out.write(b);
         }
     }
 

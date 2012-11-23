@@ -147,6 +147,12 @@
               of "%m%n" will be used.</td>
             </tr>
             <tr>
+              <td>follow</td>
+              <td>boolean</td>
+              <td>Identifies whether the appender honors reassignments of System.out or System.err
+                via System.setOut or System.setErr made after configuration.</td>
+            </tr>
+            <tr>
               <td>name</td>
               <td>String</td>
               <td>The name of the Appender.</td>

@@ -215,7 +215,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         setName(DefaultConfiguration.DEFAULT_NAME);
         Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
             null, null, null);
-        Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true");
+        Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         appender.start();
         addAppender(appender);
         LoggerConfig root = getRootLogger();
