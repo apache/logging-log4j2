@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-127" dev="rgoers" type="fix">
+        AbstractLogger methods were not passing Markers to the isEnabled methods.
+      </action>
       <action dev="rgoers" type="add">
         Added Flume Appender samples.
       </action>

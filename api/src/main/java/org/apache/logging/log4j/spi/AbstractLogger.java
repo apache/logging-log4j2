@@ -33,7 +33,7 @@ public abstract class AbstractLogger implements Logger {
 
     private static final String THROWING = "throwing";
     private static final String CATCHING = "catching";
-    
+
     /**
      * Marker for flow tracing.
      */
@@ -62,7 +62,7 @@ public abstract class AbstractLogger implements Logger {
     private static final String FQCN = AbstractLogger.class.getName();
 
     private final String name;
-    
+
     /**
      * Creates a new logger named after the class (or subclass).
      */
@@ -72,13 +72,13 @@ public abstract class AbstractLogger implements Logger {
 
     /**
      * Creates a new named logger.
-     * 
+     *
      * @param name the logger name
      */
     public AbstractLogger(String name) {
         this.name = name;
     }
-    
+
     /**
      * Logs entry to a method.
      */
@@ -762,7 +762,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      */
     public void info(Marker marker, Message msg) {
-        if (isEnabled(Level.INFO, null, msg, null)) {
+        if (isEnabled(Level.INFO, marker, msg, null)) {
             log(marker, FQCN, Level.INFO, msg, null);
         }
     }
@@ -959,7 +959,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      */
     public void warn(Marker marker, Message msg) {
-        if (isEnabled(Level.WARN, null, msg, null)) {
+        if (isEnabled(Level.WARN, marker, msg, null)) {
             log(marker, FQCN, Level.WARN, msg, null);
         }
     }
@@ -1156,7 +1156,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      */
     public void error(Marker marker, Message msg) {
-        if (isEnabled(Level.ERROR, null, msg, null)) {
+        if (isEnabled(Level.ERROR, marker, msg, null)) {
             log(null, FQCN, Level.ERROR, msg, null);
         }
     }
@@ -1353,7 +1353,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      */
     public void fatal(Marker marker, Message msg) {
-        if (isEnabled(Level.FATAL, null, msg, null)) {
+        if (isEnabled(Level.FATAL, marker, msg, null)) {
             log(null, FQCN, Level.FATAL, msg, null);
         }
     }
@@ -1482,7 +1482,7 @@ public abstract class AbstractLogger implements Logger {
     public String getName() {
         return name;
     }
-    
+
     /**
      * Returns a String representation of this instance in the form {@code "name"}.
      * @return A String describing this Logger instance.
