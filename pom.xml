@@ -587,5 +587,36 @@
         <module>dist</module>
       </modules>
     </profile>
+    <profile>
+      <id>rat</id>
+      <build>
+        <plugins>
+          <!-- RAT report -->
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <version>0.8</version>
+            <configuration>
+              <excludes>
+                <exclude>dist/target/**/*</exclude>
+                <exclude>src/main/resources/META-INF/services/**/*</exclude>
+                <exclude>.idea/**/*</exclude>
+                <exclude>src/test/resources/**/*</exclude>
+                <exclude>src/site/resources/**/*</exclude>
+                <exclude>src/site/site.vm</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
