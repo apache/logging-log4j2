@@ -46,10 +46,12 @@
     <dependency>
       <groupId>org.apache.logging.log4j.adapters</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.adapters</groupId>
       <artifactId>log4j-1.2-api</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -59,8 +61,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flume</groupId>
+      <artifactId>flume-ng-sdk</artifactId>
+      <version>${flumeVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-core</artifactId>
       <version>${flumeVersion}</version>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -76,6 +84,7 @@
       <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-node</artifactId>
       <version>${flumeVersion}</version>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>

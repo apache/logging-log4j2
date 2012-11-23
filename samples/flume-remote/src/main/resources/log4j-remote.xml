@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration status="debug" name="Flume" verbose="false" monitorInterval="30">
+	<MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL" />
+	<appenders>
+
+		<Flume name="flume" suppressExceptions="false" mdcPrefix="ReqCtx_" compress="false">
+			<Agent host="localhost" port="8800" />
+			<RFC5424Layout enterpriseNumber="12293" includeMDC="true" mdcId="RequestContext" appName="GL" />
+		</Flume>
+		<Console name="console">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36}:%L %M - %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" fileName="${sys:log.dir}/app.log"
+			filePattern="${sys:log.dir}/app-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<pattern>%d %p %C{1.} [%t] %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+		</RollingFile>
+	</appenders>
+	<loggers>
+		<logger name="EventLogger" level="WARN" additivity="false">
+			<appender-ref ref="flume" />
+		</logger>
+		<root level="debug">
+			<appender-ref ref="RollingFile" />
+		</root>
+	</loggers>
+</configuration>

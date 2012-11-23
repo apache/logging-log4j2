@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -14,8 +15,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -101,8 +101,8 @@
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
     <osgi.import>*</osgi.import>
-    <osgi.dynamicImport />
-    <osgi.private />
+    <osgi.dynamicImport/>
+    <osgi.private/>
     <pmd.plugin.version>2.7.1</pmd.plugin.version>
     <changes.plugin.version>2.8</changes.plugin.version>
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
@@ -111,7 +111,7 @@
     <maven.compile.source>1.5</maven.compile.source>
     <maven.compile.target>1.5</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
-    <projectDir />
+    <projectDir/>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -483,6 +483,7 @@
     <module>jcl-bridge</module>
     <module>flume-ng</module>
     <module>web</module>
+    <module>samples</module>
   </modules>
   <profiles>
     <profile>
