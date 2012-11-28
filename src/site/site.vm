@@ -11,12 +11,12 @@
 		$href.toLowerCase().startsWith("ftp:/") || $href.toLowerCase().startsWith("mailto:/") ||
 		$href.toLowerCase().startsWith("file:/") || ($href.toLowerCase().indexOf("://") != -1) )
 		#set ( $linkClass = ' class="external" target="_blank"' )
-		
+
 		#if ( $linkTarget )
 		#else
 			#set ( $linkTarget = "_blank" )
 		#end
-		
+
 	#else
 		#set ( $linkClass = "" )
 	#end
@@ -117,7 +117,7 @@
 		#set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
 		#set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
 		#set ( $activeClass = "" )
-		#if ( $alignedFileName == $currentItemHref) 
+		#if ( $alignedFileName == $currentItemHref)
 			#set ( $activeClass = ' class="active"' )
 		#end
 		<li$activeClass>
@@ -391,7 +391,7 @@
 	#if( $accountId && $accountId != "" )
 		<!-- Google Analytics -->
 		<script type="text/javascript">
-		
+
 			var _gaq = _gaq || [];
 			_gaq.push(['_setAccount', '$accountId']);
 			_gaq.push (['_gat._anonymizeIp']);
@@ -436,7 +436,7 @@
 		<img class="logo-left" src="$relativePath/images/ls-logo.jpg" alt="Apache logging services logo" />
 		<img class="logo-right" src="$relativePath/images/logo.jpg" alt="Apache log4j logo" />
 		<div class="clear"></div>
-		
+
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container-fluid">
