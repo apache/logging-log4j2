@@ -31,7 +31,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
- *
+ * Use this class to analyze performance between Log4J and other logging frameworks.
+ * 
+ * @version $Id: $
  */
 public class PerformanceComparison {
 
