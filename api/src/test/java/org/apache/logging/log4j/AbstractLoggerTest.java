@@ -66,6 +66,7 @@ public class AbstractLoggerTest extends AbstractLogger {
         new LogEvent(null, simple, t),
         new LogEvent(marker, simple, null),
         new LogEvent(marker, simple, t),
+        new LogEvent(marker, simple, null),
 
     };
 
@@ -107,6 +108,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         trace(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         trace(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        trace(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -147,6 +150,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         debug(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         debug(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        debug(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -187,6 +192,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         info(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         info(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        info(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -227,6 +234,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         warn(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         warn(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        warn(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -267,6 +276,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         error(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         error(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        error(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -307,6 +318,8 @@ public class AbstractLoggerTest extends AbstractLogger {
         fatal(MarkerManager.getMarker("TEST"), simple, null);
         currentEvent = events[13];
         fatal(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        fatal(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Override

@@ -1157,7 +1157,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void error(Marker marker, Message msg) {
         if (isEnabled(Level.ERROR, marker, msg, null)) {
-            log(null, FQCN, Level.ERROR, msg, null);
+            log(marker, FQCN, Level.ERROR, msg, null);
         }
     }
 
@@ -1354,7 +1354,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public void fatal(Marker marker, Message msg) {
         if (isEnabled(Level.FATAL, marker, msg, null)) {
-            log(null, FQCN, Level.FATAL, msg, null);
+            log(marker, FQCN, Level.FATAL, msg, null);
         }
     }
 
