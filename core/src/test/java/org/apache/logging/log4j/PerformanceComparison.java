@@ -33,7 +33,7 @@ import java.nio.channels.FileChannel;
 /**
  * Use this class to analyze performance between Log4J and other logging frameworks.
  * 
- * @version $Id: $
+ * @version $Id$
  */
 public class PerformanceComparison {
 
