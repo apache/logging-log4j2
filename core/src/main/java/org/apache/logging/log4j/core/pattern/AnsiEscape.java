@@ -170,7 +170,7 @@ public enum AnsiEscape {
      *            {@linkplain AnsiEscape} names.
      * @return An ANSI escape sequence.
      */
-    public static String createSequence(String[] names) {
+    public static String createSequence(String... names) {
         if (names == null) {
             return getDefaultStyle();
         }
