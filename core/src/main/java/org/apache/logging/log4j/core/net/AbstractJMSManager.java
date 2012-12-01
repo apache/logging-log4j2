@@ -75,7 +75,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
         try {
             return ctx.lookup(name);
         } catch (NameNotFoundException e) {
-            LOGGER.error("Could not find name [" + name + "].");
+            LOGGER.warn("Could not find name [" + name + "].");
             throw e;
         }
     }

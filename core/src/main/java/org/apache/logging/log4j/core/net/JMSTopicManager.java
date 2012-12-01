@@ -36,22 +36,31 @@ public class JMSTopicManager extends AbstractJMSManager {
 
     private static final JMSTopicManagerFactory factory = new JMSTopicManagerFactory();
 
-    private final TopicConnection topicConnection;
-    private final TopicSession topicSession;
-    private final TopicPublisher topicPublisher;
-
+    private TopicInfo info;
+    private final String factoryBindingName;
+    private final String topicBindingName;
+    private final String userName;
+    private final String password;
+    private final Context context;
     /**
      * Constructor.
      * @param name The unique name of the connection.
-     * @param conn The TopicConnection.
-     * @param sess The TopicSession.
-     * @param pub The TopicPublisher.
+     * @param context The context.
+     * @param factoryBindingName The factory binding name.
+     * @param topicBindingName The queue binding name.
+     * @param userName The user name.
+     * @param password The credentials for the user.
+     * @param info The Queue connection info.
      */
-    public JMSTopicManager(String name, TopicConnection conn, TopicSession sess, TopicPublisher pub) {
+    protected JMSTopicManager(String name, Context context, String factoryBindingName, String topicBindingName,
+                              String userName, String password, TopicInfo info) {
         super(name);
-        this.topicConnection = conn;
-        this.topicSession = sess;
-        this.topicPublisher = pub;
+        this.context = context;
+        this.factoryBindingName = factoryBindingName;
+        this.topicBindingName = topicBindingName;
+        this.userName = userName;
+        this.password = password;
+        this.info = info;
     }
 
     /**
@@ -90,17 +99,18 @@ public class JMSTopicManager extends AbstractJMSManager {
 
     @Override
     public void send(Serializable object) throws Exception {
-        super.send(object, topicSession, topicPublisher);
+        if (info == null) {
+            info = connect(context, factoryBindingName, topicBindingName, userName, password, false);
+        }
+        super.send(object, info.session, info.publisher);
     }
 
     @Override
     public void releaseSub() {
         try {
-            if (topicSession != null) {
-                topicSession.close();
-            }
-            if (topicConnection != null) {
-                topicConnection.close();
+            if (info != null) {
+                info.session.close();
+                info.conn.close();
             }
         } catch (JMSException ex) {
             LOGGER.error("Error closing " + getName(), ex);
@@ -136,31 +146,64 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
+    private static TopicInfo connect(Context context, String factoryBindingName, String queueBindingName,
+                                     String userName, String password, boolean suppress) throws Exception {
+        try {
+            TopicConnectionFactory factory = (TopicConnectionFactory) lookup(context, factoryBindingName);
+            TopicConnection conn;
+            if (userName != null) {
+                conn = factory.createTopicConnection(userName, password);
+            } else {
+                conn = factory.createTopicConnection();
+            }
+            TopicSession sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic topic = (Topic) lookup(context, queueBindingName);
+            TopicPublisher publisher = sess.createPublisher(topic);
+            conn.start();
+            return new TopicInfo(conn, sess, publisher);
+        } catch (NamingException ex) {
+            LOGGER.warn("Unable to locate connection factory " + factoryBindingName, ex);
+            if (!suppress) {
+                throw ex;
+            }
+        } catch (JMSException ex) {
+            LOGGER.warn("Unable to create connection to queue " + queueBindingName, ex);
+            if (!suppress) {
+                throw ex;
+            }
+        }
+        return null;
+    }
+
+    private static class TopicInfo {
+        private final TopicConnection conn;
+        private final TopicSession session;
+        private final TopicPublisher publisher;
+
+        public TopicInfo(TopicConnection conn, TopicSession session, TopicPublisher publisher) {
+            this.conn = conn;
+            this.session = session;
+            this.publisher = publisher;
+        }
+    }
+
     /**
-     * Factory to create a JMSTopicManager.
+     * Factory to create the JMSQueueManager.
      */
     private static class JMSTopicManagerFactory implements ManagerFactory<JMSTopicManager, FactoryData> {
 
         public JMSTopicManager createManager(String name, FactoryData data) {
             try {
                 Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,
-                                            data.securityPrincipalName, data.securityCredentials);
-                TopicConnectionFactory factory = (TopicConnectionFactory) lookup(ctx, data.factoryBindingName);
-                TopicConnection conn;
-                if (data.userName != null) {
-                    conn = factory.createTopicConnection(data.userName, data.password);
-                } else {
-                    conn = factory.createTopicConnection();
-                }
-                TopicSession sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-                Topic topic = (Topic) lookup(ctx, data.topicBindingName);
-                TopicPublisher pub = sess.createPublisher(topic);
-                conn.start();
-                return new JMSTopicManager(name, conn, sess, pub);
+                    data.securityPrincipalName, data.securityCredentials);
+                TopicInfo info = connect(ctx, data.factoryBindingName, data.topicBindingName, data.userName,
+                    data.password, true);
+                return new JMSTopicManager(name, ctx, data.factoryBindingName, data.topicBindingName,
+                    data.userName, data.password, info);
             } catch (NamingException ex) {
-                LOGGER.error("Bad Name " + data.topicBindingName, ex);
-            } catch (JMSException jmsex) {
-                LOGGER.error("Unable to create publisher ", jmsex);
+                LOGGER.error("Unable to locate resource", ex);
+            } catch (Exception ex) {
+                LOGGER.error("Unable to connect", ex);
             }
 
             return null;

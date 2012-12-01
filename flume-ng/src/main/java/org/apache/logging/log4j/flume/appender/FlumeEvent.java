@@ -30,6 +30,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +87,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             String[] array = includes.split(",");
             if (array.length > 0) {
                 for (String str : array) {
+                    str = str.trim();
                     if (mdc.containsKey(str)) {
                         ctx.put(str, mdc.get(str));
                     }
@@ -94,7 +96,10 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         } else if (excludes != null) {
             String[] array = excludes.split(",");
             if (array.length > 0) {
-                List<String> list = Arrays.asList(array);
+                List<String> list = new ArrayList<String>(array.length);
+                for (String value : array) {
+                    list.add(value.trim());
+                }
                 for (Map.Entry<String, String> entry : mdc.entrySet()) {
                     if (!list.contains(entry.getKey())) {
                         ctx.put(entry.getKey(), entry.getValue());
@@ -109,6 +114,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
             String[] array = required.split(",");
             if (array.length > 0) {
                 for (String str : array) {
+                    str = str.trim();
                     if (!mdc.containsKey(str)) {
                         throw new LoggingException("Required key " + str + " is missing from the MDC");
                     }

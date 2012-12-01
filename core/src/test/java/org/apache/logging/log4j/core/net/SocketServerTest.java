@@ -55,12 +55,12 @@ public class SocketServerTest {
     private static SocketServer tcp;
     private static Thread thread;
 
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
     Logger root = ctx.getLogger("SocketServerTest");
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext()).reconfigure();
+        ((LoggerContext) LogManager.getContext(false)).reconfigure();
         tcp = new SocketServer(PORTNUM);
         thread = new Thread(tcp);
         thread.start();

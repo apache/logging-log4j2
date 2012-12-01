@@ -65,10 +65,8 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
         Map<String, String> props = new HashMap<String, String>(source.getContextMap());
         for (Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             Property prop = entry.getKey();
-            if (!props.containsKey(prop.getName())) {
-                props.put(prop.getName(), entry.getValue() ?
-                    config.getSubst().replace(prop.getValue()) : prop.getValue());
-            }
+            props.put(prop.getName(), entry.getValue() ?
+                config.getSubst().replace(prop.getValue()) : prop.getValue());
         }
 
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),

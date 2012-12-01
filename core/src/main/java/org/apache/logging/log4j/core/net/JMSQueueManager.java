@@ -36,22 +36,32 @@ public class JMSQueueManager extends AbstractJMSManager {
 
     private static final JMSQueueManagerFactory factory = new JMSQueueManagerFactory();
 
-    private final QueueConnection queueConnection;
-    private final QueueSession queueSession;
-    private final QueueSender queueSender;
+    private QueueInfo info;
+    private final String factoryBindingName;
+    private final String queueBindingName;
+    private final String userName;
+    private final String password;
+    private final Context context;
 
     /**
      * The Constructor.
      * @param name The unique name of the connection.
-     * @param conn The QueueConnection.
-     * @param sess The QueueSession.
-     * @param sender The QueueSender.
+     * @param context The context.
+     * @param factoryBindingName The factory binding name.
+     * @param queueBindingName The queue binding name.
+     * @param userName The user name.
+     * @param password The credentials for the user.
+     * @param info The Queue connection info.
      */
-    protected JMSQueueManager(String name, QueueConnection conn, QueueSession sess, QueueSender sender) {
+    protected JMSQueueManager(String name, Context context, String factoryBindingName, String queueBindingName,
+                              String userName, String password, QueueInfo info) {
         super(name);
-        this.queueConnection = conn;
-        this.queueSession = sess;
-        this.queueSender = sender;
+        this.context = context;
+        this.factoryBindingName = factoryBindingName;
+        this.queueBindingName = queueBindingName;
+        this.userName = userName;
+        this.password = password;
+        this.info = info;
     }
 
     /**
@@ -88,21 +98,24 @@ public class JMSQueueManager extends AbstractJMSManager {
     }
 
     @Override
-    public void send(Serializable object) throws Exception {
-        super.send(object, queueSession, queueSender);
+    public synchronized void send(Serializable object) throws Exception {
+        if (info == null) {
+            info = connect(context, factoryBindingName, queueBindingName, userName, password, false);
+        }
+        super.send(object, info.session, info.sender);
     }
 
     @Override
     public void releaseSub() {
         try {
-            if (queueSession != null) {
-                queueSession.close();
-            }
-            if (queueConnection != null) {
-                queueConnection.close();
+            if (info != null) {
+                info.session.close();
+                info.conn.close();
             }
         } catch (JMSException ex) {
             LOGGER.error("Error closing " + getName(), ex);
+        } finally {
+            info = null;
         }
     }
 
@@ -135,6 +148,47 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
     }
 
+    private static QueueInfo connect(Context context, String factoryBindingName, String queueBindingName,
+                                     String userName, String password, boolean suppress) throws Exception {
+        try {
+            QueueConnectionFactory factory = (QueueConnectionFactory) lookup(context, factoryBindingName);
+            QueueConnection conn;
+            if (userName != null) {
+                conn = factory.createQueueConnection(userName, password);
+            } else {
+                conn = factory.createQueueConnection();
+            }
+            QueueSession sess = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = (Queue) lookup(context, queueBindingName);
+            QueueSender sender = sess.createSender(queue);
+            conn.start();
+            return new QueueInfo(conn, sess, sender);
+        } catch (NamingException ex) {
+            LOGGER.warn("Unable to locate connection factory " + factoryBindingName, ex);
+            if (!suppress) {
+                throw ex;
+            }
+        } catch (JMSException ex) {
+            LOGGER.warn("Unable to create connection to queue " + queueBindingName, ex);
+            if (!suppress) {
+                throw ex;
+            }
+        }
+        return null;
+    }
+
+    private static class QueueInfo {
+        private final QueueConnection conn;
+        private final QueueSession session;
+        private final QueueSender sender;
+
+        public QueueInfo(QueueConnection conn, QueueSession session, QueueSender sender) {
+            this.conn = conn;
+            this.session = session;
+            this.sender = sender;
+        }
+    }
+
     /**
      * Factory to create the JMSQueueManager.
      */
@@ -144,23 +198,14 @@ public class JMSQueueManager extends AbstractJMSManager {
             try {
                 Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,
                                             data.securityPrincipalName, data.securityCredentials);
-                QueueConnectionFactory factory = (QueueConnectionFactory) lookup(ctx, data.factoryBindingName);
-                QueueConnection conn;
-                if (data.userName != null) {
-                    conn = factory.createQueueConnection(data.userName, data.password);
-                } else {
-                    conn = factory.createQueueConnection();
-                }
-                QueueSession sess = conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue queue = (Queue) lookup(ctx, data.queueBindingName);
-                QueueSender sender = sess.createSender(queue);
-                conn.start();
-                return new JMSQueueManager(name, conn, sess, sender);
-
+                QueueInfo info = connect(ctx, data.factoryBindingName, data.queueBindingName, data.userName,
+                    data.password, true);
+                return new JMSQueueManager(name, ctx, data.factoryBindingName, data.queueBindingName,
+                    data.userName, data.password, info);
             } catch (NamingException ex) {
                 LOGGER.error("Unable to locate resource", ex);
-            } catch (JMSException jmsex) {
-                LOGGER.error("Unable to establish connection", jmsex);
+            } catch (Exception ex) {
+                LOGGER.error("Unable to connect", ex);
             }
 
             return null;

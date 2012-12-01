@@ -26,7 +26,7 @@ public class AbstractServer {
     private final LoggerContext context;
 
     protected AbstractServer() {
-        context = (LoggerContext) LogManager.getContext();
+        context = (LoggerContext) LogManager.getContext(false);
     }
 
     protected void log(LogEvent event) {
