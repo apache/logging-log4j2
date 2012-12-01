@@ -57,6 +57,16 @@ public class Node {
         this.type = null;
     }
 
+    public Node(Node node) {
+        this.parent = node.parent;
+        this.name = node.name;
+        this.type = node.type;
+        this.attributes.putAll(node.getAttributes());
+        this.value = node.getValue();
+        this.children.addAll(node.getChildren());
+        this.object = node.object;
+    }
+
     public Map<String, String> getAttributes() {
         return attributes;
     }

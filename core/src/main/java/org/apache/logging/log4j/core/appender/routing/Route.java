@@ -71,8 +71,10 @@ public final class Route {
         sb.append("type=");
         if (appenderRef != null) {
             sb.append("static Reference=").append(appenderRef);
+        } else if (node != null) {
+            sb.append("dynamic - type=").append(node.getName());
         } else {
-            sb.append("dynamic");
+            sb.append("invalid Route");
         }
         if (key != null) {
             sb.append(" key='").append(key).append("'");

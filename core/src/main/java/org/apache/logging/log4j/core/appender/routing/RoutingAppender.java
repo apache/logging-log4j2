@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentMap;
 public final class RoutingAppender extends AbstractAppender {
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;
+    private final Route defaultRoute;
     private final Configuration config;
     private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
@@ -56,25 +57,29 @@ public final class RoutingAppender extends AbstractAppender {
         this.routes = routes;
         this.config = config;
         this.rewritePolicy = rewritePolicy;
+        Route defRoute = null;
+        for (Route route : routes.getRoutes()) {
+            if (route.getKey() == null) {
+                if (defRoute == null) {
+                    defRoute = route;
+                } else {
+                    error("Multiple default routes. Route " + route.toString() + " will be ignored");
+                }
+            }
+        }
+        defaultRoute = defRoute;
     }
 
     @Override
     public void start() {
         Map<String, Appender> map = config.getAppenders();
+        // Register all the static routes.
         for (Route route : routes.getRoutes()) {
             if (route.getAppenderRef() != null) {
                 Appender appender = map.get(route.getAppenderRef());
                 if (appender != null) {
-                    String key = route.getKey() == null ? DEFAULT_KEY : route.getKey();
-                    if (appenders.containsKey(key)) {
-                        if (DEFAULT_KEY.equals(key)) {
-                            LOGGER.error("Multiple default routes. Only the first will be used");
-                        } else {
-                            LOGGER.error("Duplicate route " + key + " is ignored");
-                        }
-                    } else {
-                        appenders.put(key, new AppenderControl(appender, null, null));
-                    }
+                    String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
+                    appenders.put(key, new AppenderControl(appender, null, null));
                 } else {
                     LOGGER.error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
                 }
@@ -89,7 +94,7 @@ public final class RoutingAppender extends AbstractAppender {
         Map<String, Appender> map = config.getAppenders();
         for (Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
             String name = entry.getValue().getAppender().getName();
-            if (!DEFAULT_KEY.equals(entry.getKey()) && !map.containsKey(name)) {
+            if (!map.containsKey(name)) {
                 entry.getValue().getAppender().stop();
             }
         }
@@ -108,7 +113,6 @@ public final class RoutingAppender extends AbstractAppender {
 
     private synchronized AppenderControl getControl(String key, LogEvent event) {
         AppenderControl control = appenders.get(key);
-        boolean defaultRoute = false;
         if (control != null) {
             return control;
         }
@@ -120,17 +124,7 @@ public final class RoutingAppender extends AbstractAppender {
             }
         }
         if (route == null) {
-            control = appenders.get(DEFAULT_KEY);
-            if (control != null) {
-                return control;
-            }
-            for (Route r : routes.getRoutes()) {
-                if (r.getAppenderRef() == null && r.getKey() == null) {
-                    route = r;
-                    defaultRoute = true;
-                    break;
-                }
-            }
+            route = defaultRoute;
         }
         if (route != null) {
             Appender app = createAppender(route, event);
@@ -139,9 +133,6 @@ public final class RoutingAppender extends AbstractAppender {
             }
             control = new AppenderControl(app, null, null);
             appenders.put(key, control);
-            if (defaultRoute) {
-                appenders.put(DEFAULT_KEY, control);
-            }
         }
 
         return control;
@@ -151,11 +142,12 @@ public final class RoutingAppender extends AbstractAppender {
         Node routeNode = route.getNode();
         for (Node node : routeNode.getChildren()) {
             if (node.getType().getElementName().equals("appender")) {
-                config.createConfiguration(node, event);
-                if (node.getObject() instanceof Appender) {
-                    Appender app = (Appender) node.getObject();
+                Node appNode = new Node(node);
+                config.createConfiguration(appNode, event);
+                if (appNode.getObject() instanceof Appender) {
+                    Appender app = (Appender) appNode.getObject();
                     app.start();
-                    return (Appender) node.getObject();
+                    return app;
                 }
                 LOGGER.error("Unable to create Appender of type " + node.getName());
                 return null;

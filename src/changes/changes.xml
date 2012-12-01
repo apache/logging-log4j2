@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-129" dev="rgoers" type="fix">
+        RoutingAppender was only creating a single appender for the default Route.
+      </action>
       <action issue="LOG4J2-126" dev="rgoers" type="fix">
         Allow JMS appenders to recover if the queue or topic is unavailable.
       </action>

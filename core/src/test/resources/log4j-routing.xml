@@ -18,7 +18,7 @@
 -->
 <configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
   <properties>
-    <property name="filename">target/rolling1/rollingtest-$${sd:type}.log</property>
+    <property name="filename">target/routing1/routingtest-$${sd:type}.log</property>
   </properties>
   <ThresholdFilter level="debug"/>
 
@@ -32,8 +32,8 @@
     <Routing name="Routing">
       <Routes pattern="$${sd:type}">
         <Route>
-          <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
-                       filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
+          <RollingFile name="Routing-${sd:type}" fileName="${filename}"
+                       filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
             <PatternLayout>
               <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>

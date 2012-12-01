@@ -77,9 +77,13 @@ public class RoutingAppenderTest {
         List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
-        msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
+        msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
-        File file = new File("target/rolling1/rollingtest-Unknown.log");
-        assertTrue("File was not created", file.exists());
+        File file = new File("target/routing1/routingtest-Alert.log");
+        assertTrue("Alert file was not created", file.exists());
+        msg = new StructuredDataMessage("Test", "This is a test", "Activity");
+        EventLogger.logEvent(msg);
+        file = new File("target/routing1/routingtest-Activity.log");
+        assertTrue("Activity file was not created", file.exists());
     }
 }
