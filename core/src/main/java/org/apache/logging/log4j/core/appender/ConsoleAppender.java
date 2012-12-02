@@ -93,7 +93,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
     private static OutputStreamManager getManager(boolean follow, Target target) {
         String type = target.name();
         OutputStream os = getOutputStream(follow, target);
-        return OutputStreamManager.getManager(target.name(), new FactoryData(os, type), factory);
+        return OutputStreamManager.getManager(target.name() + "." + follow, new FactoryData(os, type), factory);
     }
 
     private static OutputStream getOutputStream(boolean follow, Target target) {
