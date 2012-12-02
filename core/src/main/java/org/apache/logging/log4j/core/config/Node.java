@@ -63,7 +63,9 @@ public class Node {
         this.type = node.type;
         this.attributes.putAll(node.getAttributes());
         this.value = node.getValue();
-        this.children.addAll(node.getChildren());
+        for (Node child : node.getChildren()) {
+            this.children.add(new Node(child));
+        }
         this.object = node.object;
     }
 
