@@ -159,7 +159,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void catching(Throwable t) {
-        if (isEnabled(Level.DEBUG, CATCHING_MARKER, (Object) null, null)) {
+        if (isEnabled(Level.ERROR, CATCHING_MARKER, (Object) null, null)) {
             log(CATCHING_MARKER, FQCN, Level.ERROR, new SimpleMessage(CATCHING), t);
         }
     }
