@@ -1512,4 +1512,13 @@ public abstract class AbstractLogger implements Logger {
     public String toString() {
         return name;
     }
+
+    /**
+     * Gets the message factory.
+     * 
+     * @return the message factory.
+     */
+    public MessageFactory getMessageFactory() {
+        return messageFactory;
+    }
 }
