@@ -74,7 +74,7 @@ public abstract class AbstractLogger implements Logger {
      */
     public AbstractLogger() {
         this.name = getClass().getName();
-        this.messageFactory = new ParameterizedMessageFactory();
+        this.messageFactory = createDefaultMessageFactory();
     }
 
     /**
@@ -84,17 +84,22 @@ public abstract class AbstractLogger implements Logger {
      */
     public AbstractLogger(String name) {
         this.name = name;
-        this.messageFactory = new ParameterizedMessageFactory();
+        this.messageFactory = createDefaultMessageFactory();
     }
 
     /**
      * Creates a new named logger.
      *
      * @param name the logger name
+     * @param messageFactory the message factory, if null then use the default message factory.
      */
     public AbstractLogger(String name, MessageFactory messageFactory) {
         this.name = name;
-        this.messageFactory = messageFactory;
+        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
+    }
+
+    private MessageFactory createDefaultMessageFactory() {
+        return new ParameterizedMessageFactory();
     }
 
     /**
