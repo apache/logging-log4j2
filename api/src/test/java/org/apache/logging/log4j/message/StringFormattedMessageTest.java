@@ -48,7 +48,7 @@ public class StringFormattedMessageTest {
     @Test
     public void testNoArgs() {
         String testMsg = "Test message %1s";
-        StringFormattedMessage msg = new StringFormattedMessage(testMsg, null);
+        StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         String expected = "Test message null";
         assertEquals(expected, result);
