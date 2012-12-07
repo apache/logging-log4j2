@@ -26,7 +26,7 @@ public class TestLoggerContextFactory implements LoggerContextFactory {
 
     private static LoggerContext context = new TestLoggerContext();
 
-    public LoggerContext getContext(String FQCN, ClassLoader loader, boolean currentContext) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
         return context;
     }
 }
