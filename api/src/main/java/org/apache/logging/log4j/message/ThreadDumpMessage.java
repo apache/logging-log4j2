@@ -189,4 +189,13 @@ public class ThreadDumpMessage implements Message {
             return threads;
         }
     }
+
+    /**
+     * Always returns null.
+     * 
+     * @return null
+     */
+    public Throwable getThrowable() {
+        return null;
+    }
 }

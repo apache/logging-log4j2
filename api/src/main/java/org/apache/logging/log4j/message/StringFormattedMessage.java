@@ -145,4 +145,13 @@ public class StringFormattedMessage implements Message, Serializable {
             stringArgs[i] = in.readUTF();
         }
     }
+
+    /**
+     * Always returns null.
+     * 
+     * @return null
+     */
+    public Throwable getThrowable() {
+        return null;
+    }
 }

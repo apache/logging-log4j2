@@ -102,4 +102,13 @@ public class ObjectMessage implements Message, Serializable {
         in.defaultReadObject();
         obj = in.readObject();
     }
+
+    /**
+     * Gets the message if it is a throwable.
+     * 
+     * @return the message if it is a throwable.
+     */
+    public Throwable getThrowable() {
+        return obj instanceof Throwable ? (Throwable) obj : null;
+    }
 }

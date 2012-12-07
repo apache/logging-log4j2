@@ -297,4 +297,13 @@ public class MapMessage implements MultiformatMessage, Serializable {
     public int hashCode() {
         return data.hashCode();
     }
+
+    /**
+     * Always returns null.
+     * 
+     * @return null
+     */
+    public Throwable getThrowable() {
+        return null;
+    }
 }

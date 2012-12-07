@@ -88,4 +88,13 @@ public class SimpleMessage implements Message, Serializable {
     public String toString() {
         return "SimpleMessage[message=" + message + "]";
     }
+
+    /**
+     * Always returns null.
+     * 
+     * @return null
+     */
+    public Throwable getThrowable() {
+        return null;
+    }
 }

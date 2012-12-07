@@ -36,8 +36,9 @@ import java.io.Serializable;
  * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
  */
 public interface Message extends Serializable {
+    
     /**
-     * Returns the Message formatted as a String. Each Message implementation determines the
+     * Gets the Message formatted as a String. Each Message implementation determines the
      * appropriate way to format the data encapsulated in the Message. Messages that provide
      * more than one way of formatting the Message will implement MultiformatMessage.
      *
@@ -46,7 +47,7 @@ public interface Message extends Serializable {
     String getFormattedMessage();
 
     /**
-     * Returns the format portion of the Message.
+     * Gets the format portion of the Message.
      *
      * @return The message format. Some implementations, such as ParameterizedMessage, will use this as
      * the message "pattern". Other Messages may simply return an empty String.
@@ -59,9 +60,16 @@ public interface Message extends Serializable {
     String getFormat();
 
     /**
-     * Returns parameter values, if any.
+     * Gets parameter values, if any.
      *
      * @return An array of parameter values or null.
      */
     Object[] getParameters();
+
+    /**
+     * Gets the throwable, if any.
+     * 
+     * @return the throwable or null.
+     */
+    Throwable getThrowable();
 }
