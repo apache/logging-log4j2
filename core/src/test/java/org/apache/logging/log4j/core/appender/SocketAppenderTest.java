@@ -57,8 +57,8 @@ public class SocketAppenderTest {
     private static TCPSocketServer tcp;
     private static UDPSocketServer udp;
 
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    Logger root = ctx.getLogger("SocketAppenderTest");
+    LoggerContext context = (LoggerContext) LogManager.getContext();
+    Logger root = context.getLogger("SocketAppenderTest");
 
     private static int tcpCount = 0;
     private static int udpCount = 0;
