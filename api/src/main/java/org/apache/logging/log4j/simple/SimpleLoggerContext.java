@@ -99,9 +99,8 @@ public class SimpleLoggerContext implements LoggerContext {
             return loggers.get(name);
         }
 
-        loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
+        return loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
             showContextMap, dateTimeFormat, props, stream));
-        return loggers.get(name);
     }
 
     public boolean hasLogger(String name) {
