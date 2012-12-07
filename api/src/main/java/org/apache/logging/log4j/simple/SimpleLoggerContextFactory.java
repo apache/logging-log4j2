@@ -24,9 +24,9 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
  */
 public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
-    private static LoggerContext ctx = new SimpleLoggerContext();
+    private static LoggerContext context = new SimpleLoggerContext();
 
     public LoggerContext getContext(String FQCN, ClassLoader loader, boolean currentContext) {
-        return ctx;
+        return context;
     }
 }
