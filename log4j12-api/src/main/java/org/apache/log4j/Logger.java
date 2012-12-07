@@ -39,7 +39,7 @@ public class Logger extends Category {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    public static Logger getLogger(Class clazz) {
+    public static Logger getLogger(Class<?> clazz) {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), clazz);
     }
 
