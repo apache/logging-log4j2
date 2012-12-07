@@ -24,6 +24,12 @@ import org.apache.logging.log4j.Logger;
 public interface LoggerContext {
 
     /**
+     * An anchor for some other context, such as a ServletContext.
+     * @return The external context.
+     */
+    Object getExternalContext();
+
+    /**
      * Returns a Logger.
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.
@@ -36,10 +42,4 @@ public interface LoggerContext {
      * @return true if the Logger exists, false otherwise.
      */
     boolean hasLogger(String name);
-
-    /**
-     * An anchor for some other context, such as a ServletContext.
-     * @return The external context.
-     */
-    Object getExternalContext();
 }
