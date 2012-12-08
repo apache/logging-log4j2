@@ -26,6 +26,6 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 public class Log4JLog extends AbstractLoggerWrapper implements Log {
 
     public Log4JLog(AbstractLogger logger, String name) {
-        super(logger, name);
+        super(logger, name, null);
     }
 }

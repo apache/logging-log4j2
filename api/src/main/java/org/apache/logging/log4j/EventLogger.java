@@ -39,7 +39,7 @@ public final class EventLogger {
         if (!(l instanceof AbstractLogger)) {
             throw new LoggingException("Logger returned must be based on AbstractLogger");
         }
-        logger = new AbstractLoggerWrapper((AbstractLogger) l, "EventLogger");
+        logger = new AbstractLoggerWrapper((AbstractLogger) l, "EventLogger", null);
     }
 
 

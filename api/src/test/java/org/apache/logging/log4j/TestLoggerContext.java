@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
@@ -26,6 +27,10 @@ public class TestLoggerContext implements LoggerContext {
 
     public Logger getLogger(String name) {
         return logger;
+    }
+
+    public Logger getLogger(String name, MessageFactory messageFactory) {
+        return new TestLogger(name, messageFactory);
     }
 
     public boolean hasLogger(String name) {

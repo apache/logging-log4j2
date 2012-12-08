@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.util.PropsUtil;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -29,6 +23,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropsUtil;
 
 /**
  * The anchor point for the logging system.
@@ -166,6 +167,17 @@ public class LogManager {
     }
 
     /**
+     * Returns a Logger with the specified name.
+     *
+     * @param name The logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @return The Logger.
+     */
+    public static Logger getLogger(String name, MessageFactory messageFactory) {
+        return factory.getContext(LogManager.class.getName(), null, false).getLogger(name, messageFactory);
+    }
+
+    /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
      * @param clazz The Class whose name should be used as the Logger name.
      * @return The Logger.
@@ -175,12 +187,32 @@ public class LogManager {
     }
 
     /**
+     * Returns a Logger using the fully qualified name of the Class as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @return The Logger.
+     */
+    public static Logger getLogger(Class<?> clazz, MessageFactory messageFactory) {
+        return getLogger(clazz != null ? clazz.getName() : null, messageFactory);
+    }
+
+    /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
      * @param value The value whose class name should be used as the Logger name.
      * @return The Logger.
      */
     public static Logger getLogger(Object value) {
         return getLogger(value != null ? value.getClass() : null);
+    }
+
+    /**
+     * Returns a Logger using the fully qualified class name of the value as the Logger name.
+     * @param value The value whose class name should be used as the Logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @return The Logger.
+     */
+    public static Logger getLogger(Object value, MessageFactory messageFactory) {
+        return getLogger(value != null ? value.getClass() : null, messageFactory);
     }
 
     /**

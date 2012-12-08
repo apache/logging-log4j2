@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * This is the central interface in the log4j package. Most logging
@@ -959,4 +960,11 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void warn(String message, Throwable t);
+  
+  /**
+   * Gets the message factory.
+   * 
+   * @return the message factory.
+   */
+  MessageFactory getMessageFactory();
 }

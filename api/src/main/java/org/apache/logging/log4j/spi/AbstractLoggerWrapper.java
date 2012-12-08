@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.
@@ -34,9 +35,10 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * Constructor that wraps and existing Logger.
      * @param logger The Logger to wrap.
      * @param name The name of the Logger.
+     * @param messageFactory TODO
      */
-    public AbstractLoggerWrapper(AbstractLogger logger, String name) {
-        super(name);
+    public AbstractLoggerWrapper(AbstractLogger logger, String name, MessageFactory messageFactory) {
+        super(name, messageFactory);
         this.logger = logger;
     }
 

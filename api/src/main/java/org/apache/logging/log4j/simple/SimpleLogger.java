@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.simple;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropsUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.PropsUtil;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
@@ -56,8 +57,8 @@ public class SimpleLogger extends AbstractLogger {
 
     public SimpleLogger(String name, Level defaultLevel, boolean showLogName, boolean showShortLogName,
                         boolean showDateTime, boolean showContextMap, String dateTimeFormat,
-                        PropsUtil props, PrintStream stream) {
-        super(name);
+                        MessageFactory messageFactory, PropsUtil props, PrintStream stream) {
+        super(name, messageFactory);
         String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);
         if (showShortLogName) {

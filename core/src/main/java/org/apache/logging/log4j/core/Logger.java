@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
@@ -48,10 +49,11 @@ public class Logger extends AbstractLogger {
     /**
      * The constructor.
      * @param context The LoggerContext this Logger is associated with.
+     * @param messageFactory The message factory.
      * @param name The name of the Logger.
      */
-    protected Logger(LoggerContext context, String name) {
-        super(name);
+    protected Logger(LoggerContext context, String name, MessageFactory messageFactory) {
+        super(name, messageFactory);
         this.context = context;
         config = new PrivateConfig(context.getConfiguration(), this);
     }
@@ -66,9 +68,9 @@ public class Logger extends AbstractLogger {
             return null;
         }
         if (context.hasLogger(lc.getName())) {
-            return context.getLogger(getName());
+            return context.getLogger(getName(), getMessageFactory());
         }
-        return new Logger(context, getName());
+        return new Logger(context, getName(), this.getMessageFactory());
     }
 
     /**

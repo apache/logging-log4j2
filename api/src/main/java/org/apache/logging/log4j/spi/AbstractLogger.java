@@ -23,6 +23,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -30,7 +31,13 @@ import org.apache.logging.log4j.message.MessageFactory;
  */
 public abstract class AbstractLogger implements Logger {
 
+    /**
+     * The default MessageFactory class.
+     */
+    public static Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = ParameterizedMessageFactory.class;
+    
     private static final String THROWING = "throwing";
+    
     private static final String CATCHING = "catching";
 
     /**
@@ -70,6 +77,33 @@ public abstract class AbstractLogger implements Logger {
     private final MessageFactory messageFactory;
 
     /**
+     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
+     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
+     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
+     * 
+     * @param logger
+     *            The logger to check
+     * @param messageFactory
+     *            The message factory to check.
+     */
+    public static void checkMessageFactory(final Logger logger, MessageFactory messageFactory) {
+        final String name = logger.getName();
+        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
+            StatusLogger
+                    .getLogger()
+                    .warn("The Logger {} was created with the message factory {} and is now requested with the message factory {}, which may create log events with unexpected formatting.",
+                            name, loggerMessageFactory, messageFactory);
+        } else if (messageFactory == null
+                && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
+            StatusLogger
+                    .getLogger()
+                    .warn("The Logger {} was created with the message factory {} and is now requested with a null message factory (defaults to {}), which may create log events with unexpected formatting.",
+                            name, loggerMessageFactory, messageFactory);
+        }
+    }
+
+    /**
      * Creates a new logger named after the class (or subclass).
      */
     public AbstractLogger() {
@@ -99,7 +133,13 @@ public abstract class AbstractLogger implements Logger {
     }
 
     private MessageFactory createDefaultMessageFactory() {
-        return new ParameterizedMessageFactory();
+        try {
+            return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -1521,4 +1561,5 @@ public abstract class AbstractLogger implements Logger {
     public MessageFactory getMessageFactory() {
         return messageFactory;
     }
+
 }

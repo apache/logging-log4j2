@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.simple;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.PropsUtil;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.PropsUtil;
 
 /**
  *
@@ -46,9 +48,9 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
-    /** Include the short name ( last component ) of the logger in the log
-     *  message. Defaults to true - otherwise we'll be lost in a flood of
-     *  messages without knowing who sends them.
+    /**
+     * Include the short name ( last component ) of the logger in the log message. Defaults to true - otherwise we'll be
+     * lost in a flood of messages without knowing who sends them.
      */
     private final boolean showShortName;
     /** Include the current time in the log message */
@@ -73,7 +75,7 @@ public class SimpleLoggerContext implements LoggerContext {
         defaultLevel = Level.toLevel(lvl, Level.ERROR);
 
         dateTimeFormat = showDateTime ? props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat",
-            DEFAULT_DATE_TIME_FORMAT) : null;
+                DEFAULT_DATE_TIME_FORMAT) : null;
 
         String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", "system.err");
         PrintStream ps;
@@ -95,12 +97,18 @@ public class SimpleLoggerContext implements LoggerContext {
     private ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
     public Logger getLogger(String name) {
+        return getLogger(name, null);
+    }
+
+    public Logger getLogger(String name, MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
-            return loggers.get(name);
+            final Logger logger = loggers.get(name);
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
+            return logger;
         }
 
         loggers.putIfAbsent(name, new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
-            showContextMap, dateTimeFormat, props, stream));
+                showContextMap, dateTimeFormat, messageFactory, props, stream));
         return loggers.get(name);
     }
 

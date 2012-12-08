@@ -61,7 +61,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private StatusLogger() {
         PropsUtil props = new PropsUtil("log4j2.StatusLogger.properties");
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", props, System.err);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, props, System.err);
     }
 
     /**

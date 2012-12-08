@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.ByteArrayOutputStream;
@@ -29,10 +30,23 @@ import java.util.Map;
  *
  */
 public class TestLogger extends AbstractLogger {
-    private List<String> array = new ArrayList<String>();
+    
+    public TestLogger() {
+        super();
+    }
+
+    public TestLogger(String name, MessageFactory messageFactory) {
+        super(name, messageFactory);
+    }
+
+    public TestLogger(String name) {
+        super(name);
+    }
+
+    private List<String> list = new ArrayList<String>();
 
     public List<String> getEntries() {
-        return array;
+        return list;
     }
 
     @Override
@@ -61,7 +75,7 @@ public class TestLogger extends AbstractLogger {
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
         }
-        array.add(sb.toString());
+        list.add(sb.toString());
         //System.out.println(sb.toString());
     }
 

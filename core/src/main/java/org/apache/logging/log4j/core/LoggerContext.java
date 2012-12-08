@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.File;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationListener;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -192,13 +194,23 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @return The Logger.
      */
     public Logger getLogger(String name) {
+        return getLogger(name, null);
+    }
 
+    /**
+     * Obtain a Logger from the Context.
+     * @param name The name of the Logger to return.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @return The Logger.
+     */
+    public Logger getLogger(String name, MessageFactory messageFactory) {
         Logger logger = loggers.get(name);
         if (logger != null) {
+            AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 
-        logger = newInstance(this, name);
+        logger = newInstance(this, name, messageFactory);
         Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
@@ -307,8 +319,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
 
-    private Logger newInstance(LoggerContext ctx, String name) {
-        return new Logger(ctx, name);
+    private Logger newInstance(LoggerContext ctx, String name, MessageFactory messageFactory) {
+        return new Logger(ctx, name, messageFactory);
     }
 
 }
