@@ -25,7 +25,7 @@
     <body>
       <section name="Appenders">
         <p>
-          Appenders are the component responsible for delivering LogEvents to their destination. Every Appender must
+          Appenders are responsible for delivering LogEvents to their destination. Every Appender must
           implement the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
           interface. Most Appenders will extend
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AppenderBase.html">AppenderBase</a>
