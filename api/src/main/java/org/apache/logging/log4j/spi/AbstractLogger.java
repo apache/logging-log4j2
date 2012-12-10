@@ -99,7 +99,7 @@ public abstract class AbstractLogger implements Logger {
             StatusLogger
                     .getLogger()
                     .warn("The Logger {} was created with the message factory {} and is now requested with a null message factory (defaults to {}), which may create log events with unexpected formatting.",
-                            name, loggerMessageFactory, messageFactory);
+                            name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
         }
     }
 

@@ -16,18 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Date;
@@ -35,8 +26,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -121,6 +125,33 @@ public class LoggerTest {
         List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
+    }
+
+    @Test
+    public void getLogger_String_MessageFactoryMismatch() {
+        Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch", new StringFormatterMessageFactory(), new ParameterizedMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        List<LogEvent> events = app.getEvents();
+        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);        
+        assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
+    }
+
+    @Test
+    public void getLogger_String_MessageFactoryMismatchNull() {
+        Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", new StringFormatterMessageFactory(), null);
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        List<LogEvent> events = app.getEvents();
+        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);        
+        assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
+    }
+
+    private Logger testMessageFactoryMismatch(String name, MessageFactory messageFactory1, MessageFactory messageFactory2) {
+        Logger testLogger = (Logger) LogManager.getLogger(name, messageFactory1);
+        assertNotNull(testLogger);
+        assertEquals(messageFactory1, testLogger.getMessageFactory());
+        Logger testLogger2 = (Logger) LogManager.getLogger(name, messageFactory2);
+        assertEquals(messageFactory1, testLogger2.getMessageFactory());
+        return testLogger;
     }
 
     @Test
