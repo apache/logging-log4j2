@@ -28,7 +28,7 @@
           Appenders are responsible for delivering LogEvents to their destination. Every Appender must
           implement the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
           interface. Most Appenders will extend
-          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AppenderBase.html">AppenderBase</a>
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AbstractAppender.html">AbstractAppender</a>
           which adds <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
           and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/filter/Filterable.html">Filterable</a>
           support. Lifecycle allows components to finish initialization after configuration has completed and to
