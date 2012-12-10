@@ -707,6 +707,15 @@ WARN  [main]: Message 2</pre>
                     </tr>
                   </table>
                 </p>
+				<p>For example:
+                  <pre>%style{%d{ISO8601}}{black} %style{[%t]}{blue} %style{%-5level:}{yellow} %style{%msg%n%throwable}{green}</pre>
+                </p>
+				<p>You can also combine styles:
+                  <pre>%d %highlight{%p} %style{%logger}{bright,cyan} %C{1.} %msg%n</pre>
+                </p>
+				<p>You can also use <code>%</code> with a color like <code>%black</code>, <code>%blue</code>, <code>%cyan</code>, and so on. For example:
+                  <pre>%black{%d{ISO8601}} %blue{[%t]} %yellow{%-5level:} %green{%msg%n%throwable}</pre>
+				</p>
               </td>
             </tr>
             <tr>
