@@ -280,7 +280,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         String n = name.length() == 0 ? "root" : name;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
-        sb.append(" Message").append(message.getFormattedMessage());
+        sb.append(" Message=").append(message.getFormattedMessage());
         return sb.toString();
     }
 

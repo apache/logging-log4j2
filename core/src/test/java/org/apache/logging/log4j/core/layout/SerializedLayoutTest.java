@@ -61,10 +61,10 @@ public class SerializedLayoutTest {
         "<log4j:message><![CDATA[empty mdc]]></log4j:message>\r";
 
     private static final String[] expected = {
-        "Logger=root Level=DEBUG Messagestarting mdc pattern test",
-        "Logger=root Level=DEBUG Messageempty mdc",
-        "Logger=root Level=DEBUG Messagefilled mdc",
-        "Logger=root Level=ERROR Messagefinished mdc pattern test"
+        "Logger=root Level=DEBUG Message=starting mdc pattern test",
+        "Logger=root Level=DEBUG Message=empty mdc",
+        "Logger=root Level=DEBUG Message=filled mdc",
+        "Logger=root Level=ERROR Message=finished mdc pattern test"
     };
 
 
