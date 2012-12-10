@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-133" dev="ggregory" type="add">
+        Allow custom message creation via a message factory.
+      </action>
       <action issue="LOG4J2-132" dev="ggregory" type="fix">
         AbstractLogger.catching(Throwable) checks for DEBUG level but logs at ERROR level.
       </action>
