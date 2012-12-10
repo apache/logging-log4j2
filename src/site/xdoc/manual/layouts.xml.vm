@@ -218,12 +218,12 @@ WARN  [main]: Message 2</pre>
                     SimpleDateFormat</a>.
                 </p>
                 <p>The predefined formats are
-                  <em>ABSOLUTE</em>,
-                  <em>COMPACT</em>,
-                  <em>DATE</em>,
-                  <em>ISO8601</em>,
+                  <code>ABSOLUTE</code>,
+                  <code>COMPACT</code>,
+                  <code>DATE</code>,
+                  <code>ISO8601</code>,
                   and
-                  <em>ISO8601_BASIC</em>.
+                  <code>ISO8601_BASIC</code>.
                 </p>
                 <p>You can also use a set of braces containing a time zone id per
                   <a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">
