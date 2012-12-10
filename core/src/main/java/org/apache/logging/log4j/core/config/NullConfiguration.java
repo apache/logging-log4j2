@@ -28,7 +28,7 @@ public class NullConfiguration extends BaseConfiguration {
     public NullConfiguration() {
 
         setName(NULL_NAME);
-        LoggerConfig root = getRootLogger();
+        final LoggerConfig root = getRootLogger();
         root.setLevel(Level.OFF);
     }
 }

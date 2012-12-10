@@ -40,7 +40,7 @@ public class XMLConfigurationPropsTest {
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -48,9 +48,9 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testNoProps() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
-        Configuration config = ctx.getConfiguration();
+        final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
     }
 
@@ -59,9 +59,9 @@ public class XMLConfigurationPropsTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("log4j.level", "debug");
         try {
-            LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
             ctx.reconfigure();
-            Configuration config = ctx.getConfiguration();
+            final Configuration config = ctx.getConfiguration();
             assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
         } finally {
             System.clearProperty("log4j.level");
@@ -75,9 +75,9 @@ public class XMLConfigurationPropsTest {
         System.setProperty("log4j.level", "debug");
         System.setProperty("log.level", "debug");
         try {
-            LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
             ctx.reconfigure();
-            Configuration config = ctx.getConfiguration();
+            final Configuration config = ctx.getConfiguration();
             assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
         } finally {
             System.clearProperty("log4j.level");

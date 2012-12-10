@@ -34,7 +34,7 @@ public final class UUIDPatternConverter extends LogEventPatternConverter {
     /**
      * Private constructor.
      */
-    private UUIDPatternConverter(boolean isRandom) {
+    private UUIDPatternConverter(final boolean isRandom) {
         super("u", "uuid");
         this.isRandom = isRandom;
     }
@@ -61,7 +61,7 @@ public final class UUIDPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        UUID uuid = isRandom ? UUID.randomUUID() : UUIDUtil.getTimeBasedUUID();
+        final UUID uuid = isRandom ? UUID.randomUUID() : UUIDUtil.getTimeBasedUUID();
         toAppendTo.append(uuid.toString());
     }
 }

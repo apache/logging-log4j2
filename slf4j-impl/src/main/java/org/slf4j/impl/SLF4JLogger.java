@@ -43,40 +43,40 @@ public class SLF4JLogger implements LocationAwareLogger {
     private final AbstractLoggerWrapper logger;
     private final String name;
 
-    public SLF4JLogger(AbstractLogger logger, String name) {
-        Logger l = LogManager.getLogger(name);
+    public SLF4JLogger(final AbstractLogger logger, final String name) {
+        final Logger l = LogManager.getLogger(name);
         this.logger = new AbstractLoggerWrapper(logger, name, null);
         eventLogger = "EventLogger".equals(name);
         this.name = name;
     }
 
-    public void trace(String format) {
+    public void trace(final String format) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new SimpleMessage(format), null);
         }
     }
 
-    public void trace(String format, Object o) {
+    public void trace(final String format, final Object o) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new ParameterizedMessage(format, o), null);
         }
     }
 
-    public void trace(String format, Object arg1, Object arg2) {
+    public void trace(final String format, final Object arg1, final Object arg2) {
         if (logger.isTraceEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
             logger.log(null, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
-    public void trace(String format, Object[] args) {
+    public void trace(final String format, final Object[] args) {
         if (logger.isTraceEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, args);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
-    public void trace(String format, Throwable t) {
+    public void trace(final String format, final Throwable t) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new SimpleMessage(format), t);
         }
@@ -86,71 +86,71 @@ public class SLF4JLogger implements LocationAwareLogger {
         return logger.isTraceEnabled();
     }
 
-    public boolean isTraceEnabled(Marker marker) {
+    public boolean isTraceEnabled(final Marker marker) {
         return logger.isTraceEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
-    public void trace(Marker marker, String s) {
+    public void trace(final Marker marker, final String s) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE, new SimpleMessage(s), null);
         }
     }
 
-    public void trace(Marker marker, String s, Object o) {
+    public void trace(final Marker marker, final String s, final Object o) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE,
                 new ParameterizedMessage(s, o), null);
         }
     }
 
-    public void trace(Marker marker, String s, Object o, Object o1) {
+    public void trace(final Marker marker, final String s, final Object o, final Object o1) {
         if (isTraceEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
-    public void trace(Marker marker, String s, Object[] objects) {
+    public void trace(final Marker marker, final String s, final Object[] objects) {
         if (isTraceEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, objects);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
-    public void trace(Marker marker, String s, Throwable throwable) {
+    public void trace(final Marker marker, final String s, final Throwable throwable) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE,
                 new SimpleMessage(s), throwable);
         }
     }
 
-    public void debug(String format) {
+    public void debug(final String format) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new SimpleMessage(format), null);
         }
     }
 
-    public void debug(String format, Object o) {
+    public void debug(final String format, final Object o) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new ParameterizedMessage(format, o), null);
         }
     }
 
-    public void debug(String format, Object arg1, Object arg2) {
+    public void debug(final String format, final Object arg1, final Object arg2) {
         if (logger.isDebugEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
             logger.log(null, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
-    public void debug(String format, Object[] args) {
+    public void debug(final String format, final Object[] args) {
         if (logger.isDebugEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, args);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
-    public void debug(String format, Throwable t) {
+    public void debug(final String format, final Throwable t) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new SimpleMessage(format), t);
         }
@@ -160,71 +160,71 @@ public class SLF4JLogger implements LocationAwareLogger {
         return logger.isDebugEnabled();
     }
 
-    public boolean isDebugEnabled(Marker marker) {
+    public boolean isDebugEnabled(final Marker marker) {
         return logger.isDebugEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
-    public void debug(Marker marker, String s) {
+    public void debug(final Marker marker, final String s) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG, new SimpleMessage(s), null);
         }
     }
 
-    public void debug(Marker marker, String s, Object o) {
+    public void debug(final Marker marker, final String s, final Object o) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG,
                 new ParameterizedMessage(s, o), null);
         }
     }
 
-    public void debug(Marker marker, String s, Object o, Object o1) {
+    public void debug(final Marker marker, final String s, final Object o, final Object o1) {
         if (isDebugEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
-    public void debug(Marker marker, String s, Object[] objects) {
+    public void debug(final Marker marker, final String s, final Object[] objects) {
         if (isDebugEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, objects);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
-    public void debug(Marker marker, String s, Throwable throwable) {
+    public void debug(final Marker marker, final String s, final Throwable throwable) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG,
                 new SimpleMessage(s), throwable);
         }
     }
 
-    public void info(String format) {
+    public void info(final String format) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new SimpleMessage(format), null);
         }
     }
 
-    public void info(String format, Object o) {
+    public void info(final String format, final Object o) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new ParameterizedMessage(format, o), null);
         }
     }
 
-    public void info(String format, Object arg1, Object arg2) {
+    public void info(final String format, final Object arg1, final Object arg2) {
         if (logger.isInfoEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
             logger.log(null, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
-    public void info(String format, Object[] args) {
+    public void info(final String format, final Object[] args) {
         if (logger.isInfoEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, args);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
-    public void info(String format, Throwable t) {
+    public void info(final String format, final Throwable t) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new SimpleMessage(format), t);
         }
@@ -234,71 +234,71 @@ public class SLF4JLogger implements LocationAwareLogger {
         return logger.isInfoEnabled();
     }
 
-    public boolean isInfoEnabled(Marker marker) {
+    public boolean isInfoEnabled(final Marker marker) {
         return logger.isInfoEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
-    public void info(Marker marker, String s) {
+    public void info(final Marker marker, final String s) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO, new SimpleMessage(s), null);
         }
     }
 
-    public void info(Marker marker, String s, Object o) {
+    public void info(final Marker marker, final String s, final Object o) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO,
                 new ParameterizedMessage(s, o), null);
         }
     }
 
-    public void info(Marker marker, String s, Object o, Object o1) {
+    public void info(final Marker marker, final String s, final Object o, final Object o1) {
         if (isInfoEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
-    public void info(Marker marker, String s, Object[] objects) {
+    public void info(final Marker marker, final String s, final Object[] objects) {
         if (isInfoEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, objects);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
-    public void info(Marker marker, String s, Throwable throwable) {
+    public void info(final Marker marker, final String s, final Throwable throwable) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO,
                 new SimpleMessage(s), throwable);
         }
     }
 
-    public void warn(String format) {
+    public void warn(final String format) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new SimpleMessage(format), null);
         }
     }
 
-    public void warn(String format, Object o) {
+    public void warn(final String format, final Object o) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new ParameterizedMessage(format, o), null);
         }
     }
 
-    public void warn(String format, Object arg1, Object arg2) {
+    public void warn(final String format, final Object arg1, final Object arg2) {
         if (logger.isWarnEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
             logger.log(null, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
-    public void warn(String format, Object[] args) {
+    public void warn(final String format, final Object[] args) {
         if (logger.isWarnEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, args);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
-    public void warn(String format, Throwable t) {
+    public void warn(final String format, final Throwable t) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new SimpleMessage(format), t);
         }
@@ -308,71 +308,71 @@ public class SLF4JLogger implements LocationAwareLogger {
         return logger.isWarnEnabled();
     }
 
-    public boolean isWarnEnabled(Marker marker) {
+    public boolean isWarnEnabled(final Marker marker) {
         return logger.isWarnEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
-    public void warn(Marker marker, String s) {
+    public void warn(final Marker marker, final String s) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN, new SimpleMessage(s), null);
         }
     }
 
-    public void warn(Marker marker, String s, Object o) {
+    public void warn(final Marker marker, final String s, final Object o) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN,
                 new ParameterizedMessage(s, o), null);
         }
     }
 
-    public void warn(Marker marker, String s, Object o, Object o1) {
+    public void warn(final Marker marker, final String s, final Object o, final Object o1) {
         if (isWarnEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
-    public void warn(Marker marker, String s, Object[] objects) {
+    public void warn(final Marker marker, final String s, final Object[] objects) {
         if (isWarnEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, objects);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
-    public void warn(Marker marker, String s, Throwable throwable) {
+    public void warn(final Marker marker, final String s, final Throwable throwable) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN,
                 new SimpleMessage(s), throwable);
         }
     }
 
-    public void error(String format) {
+    public void error(final String format) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new SimpleMessage(format), null);
         }
     }
 
-    public void error(String format, Object o) {
+    public void error(final String format, final Object o) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new ParameterizedMessage(format, o), null);
         }
     }
 
-    public void error(String format, Object arg1, Object arg2) {
+    public void error(final String format, final Object arg1, final Object arg2) {
         if (logger.isErrorEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
             logger.log(null, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
-    public void error(String format, Object[] args) {
+    public void error(final String format, final Object[] args) {
         if (logger.isErrorEnabled()) {
-            ParameterizedMessage msg = new ParameterizedMessage(format, args);
+            final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
-    public void error(String format, Throwable t) {
+    public void error(final String format, final Throwable t) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new SimpleMessage(format), t);
         }
@@ -382,38 +382,38 @@ public class SLF4JLogger implements LocationAwareLogger {
         return logger.isErrorEnabled();
     }
 
-    public boolean isErrorEnabled(Marker marker) {
+    public boolean isErrorEnabled(final Marker marker) {
         return logger.isErrorEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
-    public void error(Marker marker, String s) {
+    public void error(final Marker marker, final String s) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR, new SimpleMessage(s), null);
         }
     }
 
-    public void error(Marker marker, String s, Object o) {
+    public void error(final Marker marker, final String s, final Object o) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR,
                 new ParameterizedMessage(s, o), null);
         }
     }
 
-    public void error(Marker marker, String s, Object o, Object o1) {
+    public void error(final Marker marker, final String s, final Object o, final Object o1) {
         if (isErrorEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
-    public void error(Marker marker, String s, Object[] objects) {
+    public void error(final Marker marker, final String s, final Object[] objects) {
         if (isErrorEnabled(marker)) {
-            ParameterizedMessage msg = new ParameterizedMessage(s, objects);
+            final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
-    public void error(Marker marker, String s, Throwable throwable) {
+    public void error(final Marker marker, final String s, final Throwable throwable) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR,
                 new SimpleMessage(s), throwable);
@@ -421,25 +421,25 @@ public class SLF4JLogger implements LocationAwareLogger {
     }
 
 
-    public void log(Marker marker, String fqcn, int i, String s1, Object[] objects, Throwable throwable) {
+    public void log(final Marker marker, final String fqcn, final int i, final String s1, final Object[] objects, Throwable throwable) {
         if (!logger.isEnabled(getLevel(i), (org.apache.logging.log4j.Marker) marker, s1)) {
             return;
         }
         Message msg;
         if (eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
             try {
-                EventData data = (objects != null && objects[0] instanceof EventData) ? (EventData) objects[0] :
+                final EventData data = (objects != null && objects[0] instanceof EventData) ? (EventData) objects[0] :
                     new EventData(s1);
                 msg = new StructuredDataMessage(data.getEventId(), data.getMessage(), data.getEventType());
-                for (Map.Entry entry : data.getEventMap().entrySet()) {
-                    String key = entry.getKey().toString();
+                for (final Map.Entry entry : data.getEventMap().entrySet()) {
+                    final String key = entry.getKey().toString();
                     if (EventData.EVENT_TYPE.equals(key) || EventData.EVENT_ID.equals(key) ||
                         EventData.EVENT_MESSAGE.equals(key)) {
                         continue;
                     }
                     ((StructuredDataMessage) msg).put(entry.getKey().toString(), entry.getValue().toString());
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 msg = new ParameterizedMessage(s1, objects, throwable);
             }
 
@@ -458,7 +458,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         return name;
     }
 
-    private Level getLevel(int i) {
+    private Level getLevel(final int i) {
 
         switch (i) {
             case TRACE_INT :

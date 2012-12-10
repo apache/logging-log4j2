@@ -29,7 +29,7 @@ import java.net.URI;
 public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
-    public Configuration getConfiguration(String name, URI configLocation) {
+    public Configuration getConfiguration(final String name, final URI configLocation) {
         return new BasicConfiguration();
     }
 
@@ -39,7 +39,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         return null;
     }
 
@@ -49,9 +49,9 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
         public BasicConfiguration() {
 
-            LoggerConfig root = getRootLogger();
-            String l = System.getProperty(DEFAULT_LEVEL);
-            Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
+            final LoggerConfig root = getRootLogger();
+            final String l = System.getProperty(DEFAULT_LEVEL);
+            final Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
             root.setLevel(level);
         }
     }

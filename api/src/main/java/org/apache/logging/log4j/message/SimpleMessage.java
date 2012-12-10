@@ -37,7 +37,7 @@ public class SimpleMessage implements Message, Serializable {
      * Constructor that includes the message.
      * @param message The String message.
      */
-    public SimpleMessage(String message) {
+    public SimpleMessage(final String message) {
         this.message = message;
     }
 
@@ -66,7 +66,7 @@ public class SimpleMessage implements Message, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -74,7 +74,7 @@ public class SimpleMessage implements Message, Serializable {
             return false;
         }
 
-        SimpleMessage that = (SimpleMessage) o;
+        final SimpleMessage that = (SimpleMessage) o;
 
         return !(message != null ? !message.equals(that.message) : that.message != null);
     }

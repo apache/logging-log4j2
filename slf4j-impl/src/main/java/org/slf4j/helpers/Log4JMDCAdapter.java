@@ -26,15 +26,15 @@ import java.util.Map;
  */
 public class Log4JMDCAdapter implements MDCAdapter {
 
-    public void put(String key, String val) {
+    public void put(final String key, final String val) {
         ThreadContext.put(key, val);
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         return ThreadContext.get(key);
     }
 
-    public void remove(String key) {
+    public void remove(final String key) {
         ThreadContext.remove(key);
     }
 
@@ -46,9 +46,9 @@ public class Log4JMDCAdapter implements MDCAdapter {
         return ThreadContext.getContext();
     }
 
-    public void setContextMap(Map map) {
+    public void setContextMap(final Map map) {
         ThreadContext.clear();
-        for (Map.Entry<String, String> entry : ((Map<String, String>) map).entrySet()) {
+        for (final Map.Entry<String, String> entry : ((Map<String, String>) map).entrySet()) {
             ThreadContext.put(entry.getKey(), entry.getValue());
         }
     }

@@ -81,7 +81,7 @@ public class XMLLayout extends AbstractStringLayout {
     private final boolean properties;
     private final boolean complete;
 
-    protected XMLLayout(boolean locationInfo, boolean properties, boolean complete, Charset charset) {
+    protected XMLLayout(final boolean locationInfo, final boolean properties, final boolean complete, final Charset charset) {
         super(charset);
         this.locationInfo = locationInfo;
         this.properties = properties;
@@ -95,7 +95,7 @@ public class XMLLayout extends AbstractStringLayout {
      * @return The XML representation of the LogEvent.
      */
     public String toSerializable(final LogEvent event) {
-        StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
+        final StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.
 
@@ -113,12 +113,12 @@ public class XMLLayout extends AbstractStringLayout {
         buf.append(Transform.escapeTags(event.getThreadName()));
         buf.append("\">\r\n");
 
-        Message msg = event.getMessage();
+        final Message msg = event.getMessage();
         if (msg != null) {
             boolean xmlSupported = false;
             if (msg instanceof MultiformatMessage) {
-                String[] formats = ((MultiformatMessage) msg).getFormats();
-                for (String format : formats) {
+                final String[] formats = ((MultiformatMessage) msg).getFormats();
+                for (final String format : formats) {
                     if (format.equalsIgnoreCase("XML")) {
                         xmlSupported = true;
                     }
@@ -143,11 +143,11 @@ public class XMLLayout extends AbstractStringLayout {
             buf.append("]]></log4j:NDC>\r\n");
         }
 
-        Throwable throwable = event.getThrown();
+        final Throwable throwable = event.getThrown();
         if (throwable != null) {
-            List<String> s = getThrowableString(throwable);
+            final List<String> s = getThrowableString(throwable);
             buf.append("<log4j:throwable><![CDATA[");
-            for (String str : s) {
+            for (final String str : s) {
                 Transform.appendEscapingCDATA(buf, str);
                 buf.append("\r\n");
             }
@@ -155,7 +155,7 @@ public class XMLLayout extends AbstractStringLayout {
         }
 
         if (locationInfo) {
-            StackTraceElement element = event.getSource();
+            final StackTraceElement element = event.getSource();
             buf.append("<log4j:locationInfo class=\"");
             buf.append(Transform.escapeTags(element.getClassName()));
             buf.append("\" method=\"");
@@ -169,7 +169,7 @@ public class XMLLayout extends AbstractStringLayout {
 
         if (properties && event.getContextMap().size() > 0) {
             buf.append("<log4j:properties>\r\n");
-            for (Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
+            for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
                 buf.append("<log4j:data name=\"");
                 buf.append(Transform.escapeTags(entry.getKey()));
                 buf.append("\" value=\"");
@@ -193,7 +193,7 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             return null;
         }
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
         sbuf.append("<log4j:eventSet xmlns:log4j=\"http://logging.apache.org/log4j/\">\r\n");
         return sbuf.toString().getBytes(getCharset());
@@ -209,29 +209,29 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             return null;
         }
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append("</log4j:eventSet>\r\n");
         return sbuf.toString().getBytes(getCharset());
     }
 
-    List<String> getThrowableString(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
+    List<String> getThrowableString(final Throwable throwable) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
         try {
             throwable.printStackTrace(pw);
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             // Ignore any exceptions.
         }
         pw.flush();
-        LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
-        ArrayList<String> lines = new ArrayList<String>();
+        final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
+        final ArrayList<String> lines = new ArrayList<String>();
         try {
           String line = reader.readLine();
           while (line != null) {
             lines.add(line);
             line = reader.readLine();
           }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             if (ex instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -249,10 +249,10 @@ public class XMLLayout extends AbstractStringLayout {
      * @return An XML Layout.
      */
     @PluginFactory
-    public static XMLLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
-                                         @PluginAttr("properties") String properties,
-                                         @PluginAttr("complete") String complete,
-                                         @PluginAttr("charset") String charset) {
+    public static XMLLayout createLayout(@PluginAttr("locationInfo") final String locationInfo,
+                                         @PluginAttr("properties") final String properties,
+                                         @PluginAttr("complete") final String complete,
+                                         @PluginAttr("charset") final String charset) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
@@ -261,9 +261,9 @@ public class XMLLayout extends AbstractStringLayout {
                 LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
-        boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
-        boolean props = properties == null ? false : Boolean.valueOf(properties);
-        boolean comp = complete == null ? false : Boolean.valueOf(complete);
+        final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
+        final boolean props = properties == null ? false : Boolean.valueOf(properties);
+        final boolean comp = complete == null ? false : Boolean.valueOf(complete);
         return new XMLLayout(info, props, comp, c);
     }
 }

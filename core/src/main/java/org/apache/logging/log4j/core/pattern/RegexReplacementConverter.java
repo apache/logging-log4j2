@@ -43,8 +43,8 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      * @param pattern The regular expression Pattern.
      * @param substitution The substitution string.
      */
-    private RegexReplacementConverter(List<PatternFormatter> formatters,
-                                      Pattern pattern, String substitution) {
+    private RegexReplacementConverter(final List<PatternFormatter> formatters,
+                                      final Pattern pattern, final String substitution) {
         super("replace", "replace");
         this.pattern = pattern;
         this.substitution = substitution;
@@ -59,7 +59,7 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static RegexReplacementConverter newInstance(Configuration config, final String[] options) {
+    public static RegexReplacementConverter newInstance(final Configuration config, final String[] options) {
         if (options.length != 3) {
             LOGGER.error("Incorrect number of options on replace. Expected 3 received " + options.length);
             return null;
@@ -76,9 +76,9 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
             LOGGER.error("No substitution supplied on replace");
             return null;
         }
-        Pattern p = Pattern.compile(options[1]);
-        PatternParser parser = PatternLayout.createPatternParser(config);
-        List<PatternFormatter> formatters = parser.parse(options[0]);
+        final Pattern p = Pattern.compile(options[1]);
+        final PatternParser parser = PatternLayout.createPatternParser(config);
+        final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new RegexReplacementConverter(formatters, p, options[2]);
     }
 
@@ -88,8 +88,8 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
         toAppendTo.append(pattern.matcher(buf.toString()).replaceAll(substitution));

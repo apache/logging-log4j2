@@ -35,9 +35,9 @@ public class ThreadedPerfTest {
 
     @Test
     public void debugDisabled() {
-        Timer timer = new Timer("DebugDisabled", LOOP_CNT * THREADS);
-        Runnable runnable = new DebugDisabledRunnable();
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS);
+        final Timer timer = new Timer("DebugDisabled", LOOP_CNT * THREADS);
+        final Runnable runnable = new DebugDisabledRunnable();
+        final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
         timer.start();
         for (int i=0; i < THREADS; ++i) {
             pool.execute(runnable);
@@ -49,9 +49,9 @@ public class ThreadedPerfTest {
 
     @Test
     public void debugLogger() {
-        Timer timer = new Timer("DebugLogger", LOOP_CNT * THREADS);
-        Runnable runnable = new DebugLoggerRunnable();
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS);
+        final Timer timer = new Timer("DebugLogger", LOOP_CNT * THREADS);
+        final Runnable runnable = new DebugLoggerRunnable();
+        final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
         timer.start();
         for (int i=0; i < THREADS; ++i) {
             pool.execute(runnable);

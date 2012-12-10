@@ -42,7 +42,7 @@ public class NoopThreadContextTest {
     @Test
     public void testNoop() {
         ThreadContext.put("Test", "Test");
-        String value = ThreadContext.get("Test");
+        final String value = ThreadContext.get("Test");
         assertNull("value was saved", value);
     }
 

@@ -60,7 +60,7 @@ public class LoggerTest {
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration config = ctx.getConfiguration();
+        final Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
@@ -99,7 +99,7 @@ public class LoggerTest {
     public void catching() {
         try {
             throw new NullPointerException();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             xlogger.catching(e);
             verify("List", "o.a.l.s.LoggerTest catching MDC{}" + LINE_SEP);
         }
@@ -142,7 +142,7 @@ public class LoggerTest {
 
     @Test
     public void testRootLogger() {
-        Logger l = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final Logger l = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         assertNotNull("No Root Logger", l);
         assertEquals(Logger.ROOT_LOGGER_NAME, l.getName());
     }
@@ -160,7 +160,7 @@ public class LoggerTest {
         MDC.put("loginId", "JohnDoe");
         MDC.put("ipAddress", "192.168.0.120");
         MDC.put("locale", Locale.US.getDisplayName());
-        EventData data = new EventData();
+        final EventData data = new EventData();
         data.setEventType("Transfer");
         data.setEventId("Audit@18060");
         data.setMessage("Transfer Complete");
@@ -172,15 +172,15 @@ public class LoggerTest {
         verify("EventLogger", "o.a.l.s.LoggerTest Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete" + LINE_SEP);
     }
 
-    private void verify(String name, String expected) {
+    private void verify(final String name, final String expected) {
         //LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Map<String, Appender> list = ctx.getConfiguration().getAppenders();
-        Appender listApp = list.get(name);
+        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        final Appender listApp = list.get(name);
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        List<String> events = ((ListAppender) listApp).getMessages();
+        final List<String> events = ((ListAppender) listApp).getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
-        String actual = events.get(0);
+        final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         ((ListAppender) listApp).clear();
     }
@@ -188,10 +188,10 @@ public class LoggerTest {
     @Before
     public void cleanup()
     {
-        Map<String, Appender> list = ctx.getConfiguration().getAppenders();
-        Appender listApp = list.get("List");
+        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        final Appender listApp = list.get("List");
         ((ListAppender) listApp).clear();
-        Appender eventApp = list.get("EventLogger");
+        final Appender eventApp = list.get("EventLogger");
         ((ListAppender) eventApp).clear();
     }
 }

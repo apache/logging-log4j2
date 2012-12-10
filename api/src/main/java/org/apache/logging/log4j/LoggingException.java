@@ -31,7 +31,7 @@ public class LoggingException extends RuntimeException {
      * Constructs a LoggingException with a message.
      * @param msg The message.
      */
-    public LoggingException(String msg) {
+    public LoggingException(final String msg) {
         super(msg);
     }
 
@@ -40,7 +40,7 @@ public class LoggingException extends RuntimeException {
      * @param msg The message.
      * @param ex The chained Exception.
      */
-    public LoggingException(String msg, Exception ex) {
+    public LoggingException(final String msg, final Exception ex) {
         super(msg, ex);
     }
 
@@ -48,7 +48,7 @@ public class LoggingException extends RuntimeException {
      * Constructs a Logging Exception with a chained Exception and no message.
      * @param ex The chained Exception.
      */
-    public LoggingException(Exception ex) {
+    public LoggingException(final Exception ex) {
         super(ex);
     }
 }

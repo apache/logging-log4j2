@@ -82,13 +82,13 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param stringArgs The arguments for substitution.
      * @param throwable A Throwable.
      */
-    public ParameterizedMessage(String messagePattern, String[] stringArgs, Throwable throwable) {
+    public ParameterizedMessage(final String messagePattern, final String[] stringArgs, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.stringArgs = stringArgs;
         this.throwable = throwable;
     }
 
-    public ParameterizedMessage(String messagePattern, Object[] arguments, Throwable throwable) {
+    public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.throwable = throwable;
         if (arguments != null) {
@@ -108,7 +108,7 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
      */
-    public ParameterizedMessage(String messagePattern, Object[] arguments) {
+    public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
         this.messagePattern = messagePattern;
         if (arguments != null) {
             parseArguments(arguments);
@@ -120,7 +120,7 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param messagePattern The message pattern.
      * @param arg The parameter.
      */
-    public ParameterizedMessage(String messagePattern, Object arg) {
+    public ParameterizedMessage(final String messagePattern, final Object arg) {
         this(messagePattern, new Object[]{arg});
     }
 
@@ -130,12 +130,12 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param arg1 The first parameter.
      * @param arg2 The second parameter.
      */
-    public ParameterizedMessage(String messagePattern, Object arg1, Object arg2) {
+    public ParameterizedMessage(final String messagePattern, final Object arg1, final Object arg2) {
         this(messagePattern, new Object[]{arg1, arg2});
     }
 
-    private void parseArguments(Object[] arguments) {
-        int argsCount = countArgumentPlaceholders(messagePattern);
+    private void parseArguments(final Object[] arguments) {
+        final int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;
         if (argsCount < arguments.length) {
             if (throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
@@ -203,12 +203,12 @@ public class ParameterizedMessage implements Message, Serializable {
         return throwable;
     }
 
-    protected String formatMessage(String msgPattern, String[] sArgs) {
+    protected String formatMessage(final String msgPattern, final String[] sArgs) {
         return format(msgPattern, sArgs);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -216,7 +216,7 @@ public class ParameterizedMessage implements Message, Serializable {
             return false;
         }
 
-        ParameterizedMessage that = (ParameterizedMessage) o;
+        final ParameterizedMessage that = (ParameterizedMessage) o;
 
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
@@ -243,16 +243,16 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param arguments      the arguments to be used to replace placeholders.
      * @return the formatted message.
      */
-    public static String format(String messagePattern, Object[] arguments) {
+    public static String format(final String messagePattern, final Object[] arguments) {
         if (messagePattern == null || arguments == null || arguments.length == 0) {
             return messagePattern;
         }
 
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         int escapeCounter = 0;
         int currentArgument = 0;
         for (int i = 0; i < messagePattern.length(); i++) {
-            char curChar = messagePattern.charAt(i);
+            final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
                 escapeCounter++;
             } else {
@@ -260,7 +260,7 @@ public class ParameterizedMessage implements Message, Serializable {
                     if (i < messagePattern.length() - 1) {
                         if (messagePattern.charAt(i + 1) == DELIM_STOP) {
                             // write escaped escape chars
-                            int escapedEscapes = escapeCounter / 2;
+                            final int escapedEscapes = escapeCounter / 2;
                             for (int j = 0; j < escapedEscapes; j++) {
                                 result.append(ESCAPE_CHAR);
                             }
@@ -305,12 +305,12 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param messagePattern the message pattern to be analyzed.
      * @return the number of unescaped placeholders.
      */
-    public static int countArgumentPlaceholders(String messagePattern) {
+    public static int countArgumentPlaceholders(final String messagePattern) {
         if (messagePattern == null) {
             return 0;
         }
 
-        int delim = messagePattern.indexOf(DELIM_START);
+        final int delim = messagePattern.indexOf(DELIM_START);
 
         if (delim == -1) {
             // special case, no placeholders at all.
@@ -319,7 +319,7 @@ public class ParameterizedMessage implements Message, Serializable {
         int result = 0;
         boolean isEscaped = false;
         for (int i = 0; i < messagePattern.length(); i++) {
-            char curChar = messagePattern.charAt(i);
+            final char curChar = messagePattern.charAt(i);
             if (curChar == ESCAPE_CHAR) {
                 isEscaped = !isEscaped;
             } else if (curChar == DELIM_START) {
@@ -355,15 +355,15 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param o The object.
      * @return The String representation.
      */
-    public static String deepToString(Object o) {
+    public static String deepToString(final Object o) {
         if (o == null) {
             return null;
         }
         if (o instanceof String) {
             return (String) o;
         }
-        StringBuilder str = new StringBuilder();
-        Set<String> dejaVu = new HashSet<String>(); // that's actually a neat name ;)
+        final StringBuilder str = new StringBuilder();
+        final Set<String> dejaVu = new HashSet<String>(); // that's actually a neat name ;)
         recursiveDeepToString(o, str, dejaVu);
         return str.toString();
     }
@@ -389,7 +389,7 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param str    the StringBuilder that o will be appended to
      * @param dejaVu a list of container identities that were already used.
      */
-    private static void recursiveDeepToString(Object o, StringBuilder str, Set<String> dejaVu) {
+    private static void recursiveDeepToString(final Object o, final StringBuilder str, final Set<String> dejaVu) {
         if (o == null) {
             str.append("null");
             return;
@@ -399,7 +399,7 @@ public class ParameterizedMessage implements Message, Serializable {
             return;
         }
 
-        Class<?> oClass = o.getClass();
+        final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             if (oClass == byte[].class) {
                 str.append(Arrays.toString((byte[]) o));
@@ -419,15 +419,15 @@ public class ParameterizedMessage implements Message, Serializable {
                 str.append(Arrays.toString((char[]) o));
             } else {
                 // special handling of container Object[]
-                String id = identityToString(o);
+                final String id = identityToString(o);
                 if (dejaVu.contains(id)) {
                     str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
                 } else {
                     dejaVu.add(id);
-                    Object[] oArray = (Object[]) o;
+                    final Object[] oArray = (Object[]) o;
                     str.append("[");
                     boolean first = true;
-                    for (Object current : oArray) {
+                    for (final Object current : oArray) {
                         if (first) {
                             first = false;
                         } else {
@@ -441,23 +441,23 @@ public class ParameterizedMessage implements Message, Serializable {
             }
         } else if (o instanceof Map) {
             // special handling of container Map
-            String id = identityToString(o);
+            final String id = identityToString(o);
             if (dejaVu.contains(id)) {
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
                 dejaVu.add(id);
-                Map<?, ?> oMap = (Map<?, ?>) o;
+                final Map<?, ?> oMap = (Map<?, ?>) o;
                 str.append("{");
                 boolean isFirst = true;
-                for (Object o1 : oMap.entrySet()) {
-                    Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
+                for (final Object o1 : oMap.entrySet()) {
+                    final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
                     if (isFirst) {
                         isFirst = false;
                     } else {
                         str.append(", ");
                     }
-                    Object key = current.getKey();
-                    Object value = current.getValue();
+                    final Object key = current.getKey();
+                    final Object value = current.getValue();
                     recursiveDeepToString(key, str, new HashSet<String>(dejaVu));
                     str.append("=");
                     recursiveDeepToString(value, str, new HashSet<String>(dejaVu));
@@ -466,15 +466,15 @@ public class ParameterizedMessage implements Message, Serializable {
             }
         } else if (o instanceof Collection) {
             // special handling of container Collection
-            String id = identityToString(o);
+            final String id = identityToString(o);
             if (dejaVu.contains(id)) {
                 str.append(RECURSION_PREFIX).append(id).append(RECURSION_SUFFIX);
             } else {
                 dejaVu.add(id);
-                Collection<?> oCol = (Collection<?>) o;
+                final Collection<?> oCol = (Collection<?>) o;
                 str.append("[");
                 boolean isFirst = true;
-                for (Object anOCol : oCol) {
+                for (final Object anOCol : oCol) {
                     if (isFirst) {
                         isFirst = false;
                     } else {
@@ -485,20 +485,20 @@ public class ParameterizedMessage implements Message, Serializable {
                 str.append("]");
             }
         } else if (o instanceof Date) {
-            Date date = (Date) o;
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            final Date date = (Date) o;
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             // I'll leave it like this for the moment... this could probably be optimized using ThreadLocal...
             str.append(format.format(date));
         } else {
             // it's just some other Object, we can only use toString().
             try {
                 str.append(o.toString());
-            } catch (Throwable t) {
+            } catch (final Throwable t) {
                 str.append(ERROR_PREFIX);
                 str.append(identityToString(o));
                 str.append(ERROR_SEPARATOR);
-                String msg = t.getMessage();
-                String className = t.getClass().getName();
+                final String msg = t.getMessage();
+                final String className = t.getClass().getName();
                 str.append(className);
                 if (!className.equals(msg)) {
                     str.append(ERROR_MSG_SEPARATOR);
@@ -527,7 +527,7 @@ public class ParameterizedMessage implements Message, Serializable {
      * @param obj the Object that is to be converted into an identity string.
      * @return the identity string as also defined in Object.toString()
      */
-    public static String identityToString(Object obj) {
+    public static String identityToString(final Object obj) {
         if (obj == null) {
             return null;
         }

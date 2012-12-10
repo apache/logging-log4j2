@@ -50,7 +50,7 @@ public class SyslogLayout extends AbstractStringLayout {
     private final String localHostname = getLocalHostname();
 
 
-    protected SyslogLayout(Facility facility, boolean includeNL, Charset c) {
+    protected SyslogLayout(final Facility facility, final boolean includeNL, final Charset c) {
         super(c);
         this.facility = facility;
         this.includeNewLine = includeNL;
@@ -63,7 +63,7 @@ public class SyslogLayout extends AbstractStringLayout {
      * @return the event formatted as a String.
      */
     public String toSerializable(final LogEvent event) {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
         buf.append("<");
         buf.append(Priority.getPriority(facility, event.getLevel()));
@@ -88,16 +88,16 @@ public class SyslogLayout extends AbstractStringLayout {
      */
     private String getLocalHostname() {
         try {
-            InetAddress addr = InetAddress.getLocalHost();
+            final InetAddress addr = InetAddress.getLocalHost();
             return addr.getHostName();
-        } catch (UnknownHostException uhe) {
+        } catch (final UnknownHostException uhe) {
             LOGGER.error("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
         }
     }
 
-    private synchronized void addDate(final long timestamp, StringBuilder buf) {
-        int index = buf.length() + 4;
+    private synchronized void addDate(final long timestamp, final StringBuilder buf) {
+        final int index = buf.length() + 4;
         buf.append(dateFormat.format(new Date(timestamp)));
         //  RFC 3164 says leading space, not leading zero on days 1-9
         if (buf.charAt(index) == '0') {
@@ -113,9 +113,9 @@ public class SyslogLayout extends AbstractStringLayout {
      * @return A SyslogLayout.
      */
     @PluginFactory
-    public static SyslogLayout createLayout(@PluginAttr("facility") String facility,
-                                            @PluginAttr("newLine") String includeNL,
-                                            @PluginAttr("charset") String charset) {
+    public static SyslogLayout createLayout(@PluginAttr("facility") final String facility,
+                                            @PluginAttr("newLine") final String includeNL,
+                                            @PluginAttr("charset") final String charset) {
 
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
@@ -125,8 +125,8 @@ public class SyslogLayout extends AbstractStringLayout {
                 LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
-        boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
-        Facility f = Facility.toFacility(facility, Facility.LOCAL0);
+        final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
+        final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         return new SyslogLayout(f, includeNewLine, c);
     }
 }

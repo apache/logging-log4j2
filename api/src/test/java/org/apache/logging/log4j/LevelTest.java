@@ -28,14 +28,14 @@ public class LevelTest {
 
     @Test
     public void testGoodLevels() {
-        Level level = Level.toLevel("INFO");
+        final Level level = Level.toLevel("INFO");
         assertNotNull(level);
         assertEquals(Level.INFO, level);
     }
 
     @Test
     public void testDefault() {
-        Level level = Level.toLevel("Information", Level.ERROR);
+        final Level level = Level.toLevel("Information", Level.ERROR);
         assertNotNull(level);
         assertEquals(Level.ERROR, level);
     }

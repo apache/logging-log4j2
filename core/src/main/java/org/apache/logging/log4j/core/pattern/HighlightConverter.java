@@ -128,9 +128,9 @@ public final class HighlightConverter extends LogEventPatternConverter {
         if (options.length < 2) {
             return DEFAULT_STYLES;
         }
-        Map<String, String> styles = AnsiEscape.createMap(options[1], new String[] { STYLE_KEY });
-        EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
-        for (Map.Entry<String, String> entry : styles.entrySet()) {
+        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[] { STYLE_KEY });
+        final EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
+        for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
             final String value = entry.getValue();
             if (STYLE_KEY.equalsIgnoreCase(key)) {
@@ -161,7 +161,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
      *            pattern options, may be null. If first element is "short", only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static HighlightConverter newInstance(Configuration config, final String[] options) {
+    public static HighlightConverter newInstance(final Configuration config, final String[] options) {
         if (options.length < 1) {
             LOGGER.error("Incorrect number of options on style. Expected at least 1, received " + options.length);
             return null;
@@ -170,8 +170,8 @@ public final class HighlightConverter extends LogEventPatternConverter {
             LOGGER.error("No pattern supplied on style");
             return null;
         }
-        PatternParser parser = PatternLayout.createPatternParser(config);
-        List<PatternFormatter> formatters = parser.parse(options[0]);
+        final PatternParser parser = PatternLayout.createPatternParser(config);
+        final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new HighlightConverter(formatters, createLevelStyleMap(options));
     }
 
@@ -185,7 +185,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
      * @param formatters
      *            The PatternFormatters to generate the text to manipulate.
      */
-    private HighlightConverter(List<PatternFormatter> formatters, EnumMap<Level, String> levelStyles) {
+    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
         super("style", "style");
         this.formatters = formatters;
         this.levelStyles = levelStyles;
@@ -196,8 +196,8 @@ public final class HighlightConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
 

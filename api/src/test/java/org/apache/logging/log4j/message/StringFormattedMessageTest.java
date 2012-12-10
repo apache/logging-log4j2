@@ -47,12 +47,12 @@ public class StringFormattedMessageTest {
 
     @Test
     public void testNoArgs() {
-        String testMsg = "Test message %1s";
+        final String testMsg = "Test message %1s";
         StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        String expected = "Test message null";
+        final String expected = "Test message null";
         assertEquals(expected, result);
-        Object[] array = null;
+        final Object[] array = null;
         msg = new StringFormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         assertEquals(expected, result);
@@ -60,20 +60,20 @@ public class StringFormattedMessageTest {
 
     @Test
     public void testOneArg() {
-        String testMsg = "Test message %1s";
-        StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
-        String result = msg.getFormattedMessage();
-        String expected = "Test message Apache";
+        final String testMsg = "Test message %1s";
+        final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache";
         assertEquals(expected, result);
     }
 
     @Test
     public void testStringPerf() {
-        String testMsg = "Test message %1s %2s";
-        Timer timer = new Timer("StringFormat", LOOP_CNT);
+        final String testMsg = "Test message %1s %2s";
+        final Timer timer = new Timer("StringFormat", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache", "Log4j");
+            final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();
@@ -83,11 +83,11 @@ public class StringFormattedMessageTest {
 
     @Test
     public void testParameterizedPerf() {
-        String testMsg = "Test message {} {}";
-        Timer timer = new Timer("Parameterized", LOOP_CNT);
+        final String testMsg = "Test message {} {}";
+        final Timer timer = new Timer("Parameterized", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            ParameterizedMessage msg = new ParameterizedMessage(testMsg, "Apache", "Log4j");
+            final ParameterizedMessage msg = new ParameterizedMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();

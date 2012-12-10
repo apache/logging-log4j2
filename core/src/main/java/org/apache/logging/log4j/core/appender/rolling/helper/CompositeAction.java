@@ -55,7 +55,7 @@ public class CompositeAction extends AbstractAction {
     public void run() {
         try {
             execute();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.warn("Exception during file rollover.", ex);
         }
     }
@@ -69,7 +69,7 @@ public class CompositeAction extends AbstractAction {
     @Override
     public boolean execute() throws IOException {
         if (stopOnError) {
-            for (Action action : actions) {
+            for (final Action action : actions) {
                 if (!action.execute()) {
                     return false;
                 }
@@ -80,10 +80,10 @@ public class CompositeAction extends AbstractAction {
             boolean status = true;
             IOException exception = null;
 
-            for (Action action : actions) {
+            for (final Action action : actions) {
                 try {
                     status &= action.execute();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     status = false;
 
                     if (exception == null) {

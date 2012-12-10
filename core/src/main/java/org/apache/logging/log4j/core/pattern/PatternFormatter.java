@@ -26,13 +26,13 @@ public class PatternFormatter {
     private final LogEventPatternConverter converter;
     private final FormattingInfo field;
 
-    public PatternFormatter(LogEventPatternConverter converter, FormattingInfo field) {
+    public PatternFormatter(final LogEventPatternConverter converter, final FormattingInfo field) {
         this.converter = converter;
         this.field = field;
     }
 
-    public void format(LogEvent event, StringBuilder buf) {
-        int startField = buf.length();
+    public void format(final LogEvent event, final StringBuilder buf) {
+        final int startField = buf.length();
         converter.format(event, buf);
         field.format(startField, buf);
     }

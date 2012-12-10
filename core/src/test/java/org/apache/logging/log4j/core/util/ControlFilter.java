@@ -24,12 +24,12 @@ public class ControlFilter implements Filter {
   Perl5Util util = new Perl5Util();
   String[] allowedPatterns;
 
-  public ControlFilter(String[] allowedPatterns) {
+  public ControlFilter(final String[] allowedPatterns) {
     this.allowedPatterns = allowedPatterns;
   }
 
-  public String filter(String in) throws UnexpectedFormatException {
-    int len = allowedPatterns.length;
+  public String filter(final String in) throws UnexpectedFormatException {
+    final int len = allowedPatterns.length;
 
     for (int i = 0; i < len; i++) {
       //System.out.println("["+allowedPatterns[i]+"]");

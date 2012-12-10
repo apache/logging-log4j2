@@ -56,7 +56,7 @@ public class RewriteAppenderTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("List2")) {
@@ -74,21 +74,21 @@ public class RewriteAppenderTest {
 
     @Test
     public void rewriteTest() {
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
+        final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         msg.put("Key1", "Value1");
         msg.put("Key2", "Value2");
         EventLogger.logEvent(msg);
-        List<LogEvent> list = app.getEvents();
+        final List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
-        LogEvent event = list.get(0);
-        Message m = event.getMessage();
+        final LogEvent event = list.get(0);
+        final Message m = event.getMessage();
         assertTrue("Message is not a MapMessage", m instanceof MapMessage);
-        MapMessage message = (MapMessage) m;
-        Map<String, String> map = message.getData();
+        final MapMessage message = (MapMessage) m;
+        final Map<String, String> map = message.getData();
         assertNotNull("No Map", map);
         assertTrue("Incorrect number of map entries, expected 3 got " + map.size(), map.size() == 3);
-        String value = map.get("Key1");
+        final String value = map.get("Key1");
         assertEquals("Apache", value);
         app.clear();
     }
@@ -96,9 +96,9 @@ public class RewriteAppenderTest {
 
     @Test
     public void testProperties() {
-        Logger logger = LogManager.getLogger(RewriteAppenderTest.class);
+        final Logger logger = LogManager.getLogger(RewriteAppenderTest.class);
         logger.debug("Test properties rewrite");
-        List<String> list = app2.getMessages();
+        final List<String> list = app2.getMessages();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         assertFalse("Did not resolve user name", list.get(0).contains("{user.dir}"));

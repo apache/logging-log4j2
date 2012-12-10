@@ -46,11 +46,11 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
 
     private final Configuration config;
 
-    private PropertiesRewritePolicy(Configuration config, List<Property> props) {
+    private PropertiesRewritePolicy(final Configuration config, final List<Property> props) {
         this.config = config;
         this.properties = new HashMap<Property, Boolean>(props.size());
-        for (Property prop : props) {
-            boolean interpolate = prop.getValue().contains("${");
+        for (final Property prop : props) {
+            final boolean interpolate = prop.getValue().contains("${");
             properties.put(prop, interpolate);
         }
     }
@@ -61,10 +61,10 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
      */
-    public LogEvent rewrite(LogEvent source) {
-        Map<String, String> props = new HashMap<String, String>(source.getContextMap());
-        for (Map.Entry<Property, Boolean> entry : properties.entrySet()) {
-            Property prop = entry.getKey();
+    public LogEvent rewrite(final LogEvent source) {
+        final Map<String, String> props = new HashMap<String, String>(source.getContextMap());
+        for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
+            final Property prop = entry.getKey();
             props.put(prop.getName(), entry.getValue() ?
                 config.getSubst().replace(prop.getValue()) : prop.getValue());
         }
@@ -76,14 +76,14 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(" {");
         boolean first = true;
-        for (Map.Entry<Property, Boolean> entry : properties.entrySet()) {
+        for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
-            Property prop = entry.getKey();
+            final Property prop = entry.getKey();
             sb.append(prop.getName()).append("=").append(prop.getValue());
             first = false;
         }
@@ -98,13 +98,13 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      * @return The PropertiesRewritePolicy.
      */
     @PluginFactory
-    public static PropertiesRewritePolicy createPolicy(@PluginConfiguration Configuration config,
-                                                @PluginElement("properties") Property[] props) {
+    public static PropertiesRewritePolicy createPolicy(@PluginConfiguration final Configuration config,
+                                                @PluginElement("properties") final Property[] props) {
         if (props == null || props.length == 0) {
             LOGGER.error("Properties must be specified for the PropertiesRewritePolicy");
             return null;
         }
-        List<Property> properties = Arrays.asList(props);
+        final List<Property> properties = Arrays.asList(props);
         return new PropertiesRewritePolicy(config, properties);
     }
 }

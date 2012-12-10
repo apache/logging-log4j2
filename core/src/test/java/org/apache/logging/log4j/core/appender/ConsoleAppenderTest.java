@@ -41,7 +41,7 @@ public class ConsoleAppenderTest {
 
     private static final String LINE_SEP = System.getProperty("line.separator");
 
-    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     @BeforeClass
     public static void before() {
@@ -55,18 +55,18 @@ public class ConsoleAppenderTest {
 
     @Test
     public void testFollow() {
-        PrintStream ps = System.out;
-        Layout layout = PatternLayout.createLayout(null, null, null, null);
-        ConsoleAppender app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true", "false");
+        final PrintStream ps = System.out;
+        final Layout layout = PatternLayout.createLayout(null, null, null, null);
+        final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true", "false");
         app.start();
-        LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
+        final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
             new SimpleMessage("Test"), null);
 
         assertTrue("Appender did not start", app.isStarted());
         System.setOut(new PrintStream(baos));
         app.append(event);
         System.setOut(ps);
-        String msg = baos.toString();
+        final String msg = baos.toString();
         assertNotNull("No message", msg);
         assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + LINE_SEP));
         app.stop();

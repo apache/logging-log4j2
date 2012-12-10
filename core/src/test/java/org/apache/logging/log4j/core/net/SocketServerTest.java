@@ -72,16 +72,16 @@ public class SocketServerTest {
         tcp.shutdown();
         try {
             thread.join();
-        } catch (InterruptedException iex) {
+        } catch (final InterruptedException iex) {
 
         }
     }
 
     @After
     public void teardown() {
-        Map<String,Appender> map = root.getAppenders();
-        for (Map.Entry<String, Appender> entry : map.entrySet()) {
-            Appender app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -89,16 +89,16 @@ public class SocketServerTest {
 
     @Test
     public void testServer() throws Exception {
-        Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
-        Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
+        final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
+        final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
             "Test", null, null, null, socketFilter);
         appender.start();
-        ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
+        final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         listApp.start();
-        PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
-        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
-        Logger serverLogger = ctx.getLogger(SocketServer.class.getName());
+        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
+        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Logger serverLogger = ctx.getLogger(SocketServer.class.getName());
         serverLogger.addAppender(console);
         serverLogger.setAdditive(false);
 
@@ -110,7 +110,7 @@ public class SocketServerTest {
         root.debug("This is a test message");
         root.debug("This is test message 2");
         Thread.sleep(100);
-        List<LogEvent> events = listApp.getEvents();
+        final List<LogEvent> events = listApp.getEvents();
         assertNotNull("No event retrieved", events);
         assertTrue("No events retrieved", events.size() > 0);
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals("This is a test message"));
@@ -120,12 +120,12 @@ public class SocketServerTest {
 
     private class ThreadFilter extends AbstractFilter {
 
-        public ThreadFilter(Result onMatch, Result onMismatch) {
+        public ThreadFilter(final Result onMatch, final Result onMismatch) {
             super(onMatch, onMismatch);
         }
 
         @Override
-        public Filter.Result filter(LogEvent event) {
+        public Filter.Result filter(final LogEvent event) {
             return event.getThreadName().equals(Thread.currentThread().getName()) ? onMatch : onMismatch;
         }
     }

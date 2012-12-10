@@ -34,10 +34,10 @@ public class TimeFilterTest {
 
     @Test
     public void testTime() {
-        TimeFilter filter = TimeFilter.createFilter("02:00:00", "03:00:00", "America/LosAngeles", null, null);
+        final TimeFilter filter = TimeFilter.createFilter("02:00:00", "03:00:00", "America/LosAngeles", null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/LosAngeles"));
+        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/LosAngeles"));
         cal.set(Calendar.HOUR_OF_DAY, 02);
         long tod = cal.getTimeInMillis();
         LogEvent event = new Log4jLogEvent(null, null, null, null, null, null, null, null, null, null, tod);

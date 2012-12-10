@@ -44,7 +44,7 @@ public class HTMLLayoutTest {
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -67,8 +67,8 @@ public class HTMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
-        ListAppender appender = new ListAppender("List", null, layout, true, false);
+        final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -94,7 +94,7 @@ public class HTMLLayoutTest {
 
         appender.stop();
 
-        List<String> list = appender.getMessages();
+        final List<String> list = appender.getMessages();
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));

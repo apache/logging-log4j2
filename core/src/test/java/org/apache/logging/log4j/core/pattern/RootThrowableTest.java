@@ -47,7 +47,7 @@ public class RootThrowableTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
             }
@@ -65,10 +65,10 @@ public class RootThrowableTest {
 
     @Test
     public void testException() {
-        Throwable cause = new NullPointerException("null pointer");
-        Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
-        List<String> msgs = app.getMessages();
+        final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
         assertTrue("No suppressed lines", msgs.get(0).contains("suppressed"));

@@ -28,13 +28,13 @@ public class Transformer {
 
   public
   static
-  void transform(String in, String out, Filter[] filters) throws FileNotFoundException,
+  void transform(final String in, final String out, final Filter[] filters) throws FileNotFoundException,
                                                                  IOException,
                                                                  UnexpectedFormatException {
 
     String line;
-    BufferedReader input = new BufferedReader(new FileReader(in));
-    PrintStream output = new PrintStream(new FileOutputStream(out, false));
+    final BufferedReader input = new BufferedReader(new FileReader(in));
+    final PrintStream output = new PrintStream(new FileOutputStream(out, false));
 
     try {
       // Initialization of input and output omitted
@@ -57,13 +57,13 @@ public class Transformer {
 
   public
   static
-  void transform(String in, String out, Filter filter) throws FileNotFoundException,
+  void transform(final String in, final String out, final Filter filter) throws FileNotFoundException,
                                                               IOException,
                                                               UnexpectedFormatException {
 
     String line;
-    BufferedReader input = new BufferedReader(new FileReader(in));
-    PrintStream output = new PrintStream(new FileOutputStream(out));
+    final BufferedReader input = new BufferedReader(new FileReader(in));
+    final PrintStream output = new PrintStream(new FileOutputStream(out));
 
     try {
       // Initialization of input and output omitted

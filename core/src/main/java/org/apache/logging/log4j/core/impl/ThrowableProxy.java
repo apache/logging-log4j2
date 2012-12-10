@@ -63,10 +63,10 @@ public class ThrowableProxy extends Throwable {
      * Construct the wrapper for the Throwable that includes packaging data.
      * @param throwable The Throwable to wrap.
      */
-    public ThrowableProxy(Throwable throwable) {
+    public ThrowableProxy(final Throwable throwable) {
         this.throwable = throwable;
-        Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
-        Stack<Class<?>> stack = getCurrentStack();
+        final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
+        final Stack<Class<?>> stack = getCurrentStack();
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
@@ -81,7 +81,7 @@ public class ThrowableProxy extends Throwable {
      * @param map The cache containing the packaging data.
      * @param cause The Throwable to wrap.
      */
-    private ThrowableProxy(Throwable parent, Stack<Class<?>> stack, Map<String, CacheEntry> map, Throwable cause) {
+    private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map, final Throwable cause) {
         this.throwable = cause;
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.cause = (throwable.getCause() == null) ? null :
@@ -91,7 +91,7 @@ public class ThrowableProxy extends Throwable {
 
 
     @Override
-    public void setStackTrace(StackTraceElement[] stackTraceElements) {
+    public void setStackTrace(final StackTraceElement[] stackTraceElements) {
         throw new UnsupportedOperationException("Cannot set the stack trace on a ThrowableProxy");
     }
 
@@ -111,7 +111,7 @@ public class ThrowableProxy extends Throwable {
     }
 
     @Override
-    public Throwable initCause(Throwable throwable) {
+    public Throwable initCause(final Throwable throwable) {
         throw new IllegalStateException("Cannot set the cause on a ThrowableProxy");
     }
 
@@ -126,12 +126,12 @@ public class ThrowableProxy extends Throwable {
     }
 
     @Override
-    public void printStackTrace(PrintStream printStream) {
+    public void printStackTrace(final PrintStream printStream) {
         throwable.printStackTrace(printStream);
     }
 
     @Override
-    public void printStackTrace(PrintWriter printWriter) {
+    public void printStackTrace(final PrintWriter printWriter) {
         throwable.printStackTrace(printWriter);
     }
 
@@ -158,8 +158,8 @@ public class ThrowableProxy extends Throwable {
      * @param packages The List of packages to be suppressed from the trace.
      * @return The formatted Throwable that caused this Throwable.
      */
-    public String getRootCauseStackTrace(List<String> packages) {
-        StringBuilder sb = new StringBuilder();
+    public String getRootCauseStackTrace(final List<String> packages) {
+        final StringBuilder sb = new StringBuilder();
         if (cause != null) {
             formatWrapper(sb, cause);
             sb.append("Wrapped by: ");
@@ -175,7 +175,7 @@ public class ThrowableProxy extends Throwable {
      * @param sb StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
      */
-    public void formatWrapper(StringBuilder sb, ThrowableProxy cause) {
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause) {
         formatWrapper(sb, cause, null);
     }
 
@@ -185,8 +185,8 @@ public class ThrowableProxy extends Throwable {
      * @param cause The Throwable to format.
      * @param packages The List of packages to be suppressed from the trace.
      */
-    public void formatWrapper(StringBuilder sb, ThrowableProxy cause, List<String> packages) {
-        Throwable caused = cause.getCause();
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
+        final Throwable caused = cause.getCause();
         if (caused != null) {
             formatWrapper(sb, cause.cause);
             sb.append("Wrapped by: ");
@@ -208,8 +208,8 @@ public class ThrowableProxy extends Throwable {
      * @param packages List of packages to be suppressed from the trace.
      * @return The formatted stack trace including packaging information.
      */
-    public String getExtendedStackTrace(List<String> packages) {
-        StringBuilder sb = new StringBuilder(throwable.toString());
+    public String getExtendedStackTrace(final List<String> packages) {
+        final StringBuilder sb = new StringBuilder(throwable.toString());
         sb.append("\n");
         formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         if (cause != null) {
@@ -223,18 +223,18 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted suppressed Throwables.
      */
     public String getSuppressedStackTrace() {
-        ThrowableProxy[] suppressed = getSuppressedProxies();
+        final ThrowableProxy[] suppressed = getSuppressedProxies();
         if (suppressed == null || suppressed.length == 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder("Suppressed Stack Trace Elements:\n");
-        for (ThrowableProxy proxy : suppressed) {
+        final StringBuilder sb = new StringBuilder("Suppressed Stack Trace Elements:\n");
+        for (final ThrowableProxy proxy : suppressed) {
             sb.append(proxy.getExtendedStackTrace());
         }
         return sb.toString();
     }
 
-    private void formatCause(StringBuilder sb, ThrowableProxy cause, List<String> packages) {
+    private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         sb.append("Caused by: ").append(cause).append("\n");
         formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
         if (cause.getCause() != null) {
@@ -242,8 +242,8 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
-    private void formatElements(StringBuilder sb, int commonCount, StackTraceElement[] causedTrace,
-                                StackTracePackageElement[] packageData, List<String> packages) {
+    private void formatElements(final StringBuilder sb, final int commonCount, final StackTraceElement[] causedTrace,
+                                final StackTracePackageElement[] packageData, final List<String> packages) {
         if (packages == null || packages.size() == 0) {
             for (int i = 0; i < packageData.length; ++i) {
                 formatEntry(causedTrace[i], packageData[i], sb);
@@ -278,7 +278,7 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
-    private void formatEntry(StackTraceElement element, StackTracePackageElement packageData, StringBuilder sb) {
+    private void formatEntry(final StackTraceElement element, final StackTracePackageElement packageData, final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(element);
         sb.append(" ");
@@ -286,9 +286,9 @@ public class ThrowableProxy extends Throwable {
         sb.append("\n");
     }
 
-    private boolean isSuppressed(StackTraceElement element, List<String> packages) {
-        String className = element.getClassName();
-        for (String pkg : packages) {
+    private boolean isSuppressed(final StackTraceElement element, final List<String> packages) {
+        final String className = element.getClassName();
+        for (final String pkg : packages) {
             if (className.startsWith(pkg)) {
                 return true;
             }
@@ -304,7 +304,7 @@ public class ThrowableProxy extends Throwable {
      */
     private Stack<Class<?>> getCurrentStack() {
         if (getCallerClass != null) {
-            Stack<Class<?>> classes = new Stack<Class<?>>();
+            final Stack<Class<?>> classes = new Stack<Class<?>>();
             int index = 2;
             Class<?> clazz = getCallerClass(index);
             while (clazz != null) {
@@ -313,9 +313,9 @@ public class ThrowableProxy extends Throwable {
             }
             return classes;
         } else if (securityManager != null) {
-            Class<?>[] array = securityManager.getClasses();
-            Stack<Class<?>> classes = new Stack<Class<?>>();
-            for (Class<?> clazz : array) {
+            final Class<?>[] array = securityManager.getClasses();
+            final Stack<Class<?>> classes = new Stack<Class<?>>();
+            for (final Class<?> clazz : array) {
                 classes.push(clazz);
             }
             return classes;
@@ -331,9 +331,9 @@ public class ThrowableProxy extends Throwable {
      * @param stackTrace The stack trace being resolved.
      * @return The StackTracePackageElement array.
      */
-    private StackTracePackageElement[] resolvePackageData(Stack<Class<?>> stack, Map<String, CacheEntry> map,
-                                                          StackTraceElement[] rootTrace,
-                                                          StackTraceElement[] stackTrace) {
+    private StackTracePackageElement[] resolvePackageData(final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
+                                                          final StackTraceElement[] rootTrace,
+                                                          final StackTraceElement[] stackTrace) {
         int stackLength;
         if (rootTrace != null) {
             int rootIndex = rootTrace.length - 1;
@@ -348,29 +348,29 @@ public class ThrowableProxy extends Throwable {
             commonElementCount = 0;
             stackLength = stackTrace.length;
         }
-        StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
+        final StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
         Class<?> clazz = stack.peek();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
-            String className = stackTrace[i].getClassName();
+            final String className = stackTrace[i].getClassName();
             // The stack returned from getCurrentStack will be missing entries for  java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
             // present as those methods have returned.
             if (className.equals(clazz.getName())) {
-                CacheEntry entry = resolvePackageElement(clazz, true);
+                final CacheEntry entry = resolvePackageElement(clazz, true);
                 packageArray[i] = entry.element;
                 lastLoader = entry.loader;
                 stack.pop();
                 clazz = stack.peek();
             } else {
                 if (map.containsKey(className)) {
-                    CacheEntry entry = map.get(className);
+                    final CacheEntry entry = map.get(className);
                     packageArray[i] = entry.element;
                     if (entry.loader != null) {
                         lastLoader = entry.loader;
                     }
                 } else {
-                    CacheEntry entry = resolvePackageElement(loadClass(lastLoader, className), false);
+                    final CacheEntry entry = resolvePackageElement(loadClass(lastLoader, className), false);
                     packageArray[i] = entry.element;
                     map.put(className, entry);
                     if (entry.loader != null) {
@@ -389,17 +389,17 @@ public class ThrowableProxy extends Throwable {
      * @param exact True if the class was obtained via Reflection.getCallerClass.
      * @return The CacheEntry.
      */
-    private CacheEntry resolvePackageElement(Class<?> callerClass, boolean exact) {
+    private CacheEntry resolvePackageElement(final Class<?> callerClass, final boolean exact) {
         String location = "?";
         String version = "?";
         ClassLoader lastLoader = null;
         if (callerClass != null) {
             try {
-                CodeSource source = callerClass.getProtectionDomain().getCodeSource();
+                final CodeSource source = callerClass.getProtectionDomain().getCodeSource();
                 if (source != null) {
-                    URL locationURL = source.getLocation();
+                    final URL locationURL = source.getLocation();
                     if (locationURL != null) {
-                        String str = locationURL.toString().replace('\\', '/');
+                        final String str = locationURL.toString().replace('\\', '/');
                         int index = str.lastIndexOf("/");
                         if (index >= 0 && index == str.length() - 1) {
                             index = str.lastIndexOf("/", index - 1);
@@ -409,12 +409,12 @@ public class ThrowableProxy extends Throwable {
                         }
                     }
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Ignore the exception.
             }
-            Package pkg = callerClass.getPackage();
+            final Package pkg = callerClass.getPackage();
             if (pkg != null) {
-                String ver = pkg.getImplementationVersion();
+                final String ver = pkg.getImplementationVersion();
                 if (ver != null) {
                     version = ver;
                 }
@@ -431,12 +431,12 @@ public class ThrowableProxy extends Throwable {
      * @param index The index into the stack trace.
      * @return The Class at the specified stack entry.
      */
-    private Class<?> getCallerClass(int index) {
+    private Class<?> getCallerClass(final int index) {
         if (getCallerClass != null) {
             try {
-                Object[] params = new Object[]{index};
+                final Object[] params = new Object[]{index};
                 return (Class<?>) getCallerClass.invoke(null, params);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // logger.debug("Unable to determine caller class via Sun Reflection", ex);
             }
         }
@@ -449,7 +449,7 @@ public class ThrowableProxy extends Throwable {
      * @param className The name of the Class.
      * @return The Class object for the Class or null if it could not be located.
      */
-    private Class<?> loadClass(ClassLoader lastLoader, String className) {
+    private Class<?> loadClass(final ClassLoader lastLoader, final String className) {
         Class<?> clazz;
         if (lastLoader != null) {
             try {
@@ -457,19 +457,19 @@ public class ThrowableProxy extends Throwable {
                 if (clazz != null) {
                     return clazz;
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Ignore exception.
             }
         }
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             try {
                 clazz = Class.forName(className);
-            } catch (ClassNotFoundException e1) {
+            } catch (final ClassNotFoundException e1) {
                 try {
                     clazz = getClass().getClassLoader().loadClass(className);
-                } catch (ClassNotFoundException e2) {
+                } catch (final ClassNotFoundException e2) {
                     return null;
                 }
             }
@@ -478,8 +478,8 @@ public class ThrowableProxy extends Throwable {
     }
 
     private static void versionCheck() {
-        Method[] methods = Throwable.class.getMethods();
-        for (Method method : methods) {
+        final Method[] methods = Throwable.class.getMethods();
+        for (final Method method : methods) {
             if (method.getName().equals("getSuppressed")) {
                 getSuppressed = method;
             } else if (method.getName().equals("addSuppressed")) {
@@ -493,30 +493,30 @@ public class ThrowableProxy extends Throwable {
      */
     private static void setupCallerCheck() {
         try {
-            ClassLoader loader = Loader.getClassLoader();
+            final ClassLoader loader = Loader.getClassLoader();
             // Use wildcard to avoid compile-time reference.
-            Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                int modifier = method.getModifiers();
+            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
+            final Method[] methods = clazz.getMethods();
+            for (final Method method : methods) {
+                final int modifier = method.getModifiers();
                 if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
                     getCallerClass = method;
                     return;
                 }
             }
-        } catch (ClassNotFoundException cnfe) {
+        } catch (final ClassNotFoundException cnfe) {
             LOGGER.debug("sun.reflect.Reflection is not installed");
         }
 
         try {
-            PrivateSecurityManager mgr = new PrivateSecurityManager();
+            final PrivateSecurityManager mgr = new PrivateSecurityManager();
             if (mgr.getClasses() != null) {
                 securityManager = mgr;
             } else {
                 // This shouldn't happen.
                 LOGGER.error("Unable to obtain call stack from security manager");
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.debug("Unable to install security manager", ex);
         }
     }
@@ -525,21 +525,21 @@ public class ThrowableProxy extends Throwable {
         if (getSuppressed != null) {
             try {
                 return (ThrowableProxy[]) getSuppressed.invoke(this, null);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 return null;
             }
         }
         return null;
     }
 
-    private void setSuppressed(Throwable throwable) {
+    private void setSuppressed(final Throwable throwable) {
         if (getSuppressed != null && addSuppressed != null) {
             try {
-                Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable, null);
-                for (Throwable t : array) {
+                final Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable, null);
+                for (final Throwable t : array) {
                     addSuppressed.invoke(this, new ThrowableProxy(t));
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 //
             }
         }
@@ -552,7 +552,7 @@ public class ThrowableProxy extends Throwable {
         private final StackTracePackageElement element;
         private final ClassLoader loader;
 
-        public CacheEntry(StackTracePackageElement element, ClassLoader loader) {
+        public CacheEntry(final StackTracePackageElement element, final ClassLoader loader) {
             this.element = element;
             this.loader = loader;
         }

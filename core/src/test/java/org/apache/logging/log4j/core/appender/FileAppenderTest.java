@@ -81,9 +81,9 @@ public class FileAppenderTest {
 
     @Test
     public void testMultipleAppenders() throws Exception {
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS);
-        int count = 10;
-        Runnable runnable = new FileWriterRunnable(false, count);
+        final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
+        final int count = 10;
+        final Runnable runnable = new FileWriterRunnable(false, count);
         for (int i=0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
@@ -95,9 +95,9 @@ public class FileAppenderTest {
 
     @Test
     public void testMultipleLockedAppenders() throws Exception {
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS);
-        int count = 10;
-        Runnable runnable = new FileWriterRunnable(true, count);
+        final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
+        final int count = 10;
+        final Runnable runnable = new FileWriterRunnable(true, count);
         for (int i=0; i < THREADS; ++i) {
             pool.execute(runnable);
         }
@@ -110,11 +110,11 @@ public class FileAppenderTest {
     //@Test
     public void testMultipleVMs() throws Exception {
 
-        String classPath = System.getProperty("java.class.path");
-        Integer count = 10;
-        int processes = 3;
-        Process[] process = new Process[processes];
-        ProcessBuilder[] builders = new ProcessBuilder[processes];
+        final String classPath = System.getProperty("java.class.path");
+        final Integer count = 10;
+        final int processes = 3;
+        final Process[] process = new Process[processes];
+        final ProcessBuilder[] builders = new ProcessBuilder[processes];
         for (int index=0; index < processes; ++index) {
             builders[index] = new ProcessBuilder("java","-cp", classPath, ProcessTest.class.getName(),
                 "Process " + index, count.toString(), "true");
@@ -123,11 +123,11 @@ public class FileAppenderTest {
             process[index] = builders[index].start();
         }
         for (int index=0; index < processes; ++index) {
-            Process p = process[index];
+            final Process p = process[index];
             //System.out.println("Process " + index + " exited with " + p.waitFor());
-            InputStream is = p.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
+            final InputStream is = p.getInputStream();
+            final InputStreamReader isr = new InputStreamReader(is);
+            final BufferedReader br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
@@ -138,20 +138,20 @@ public class FileAppenderTest {
         verifyFile(count * processes);
     }
 
-    private static void writer(boolean lock, int count, String name) throws Exception {
-        Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null);
-        FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
+    private static void writer(final boolean lock, final int count, final String name) throws Exception {
+        final Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null);
+        final FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
             "false", "false", layout, null);
-        Thread t = Thread.currentThread();
+        final Thread t = Thread.currentThread();
         app.start();
         assertTrue("Appender did not start", app.isStarted());
         for (int i=0; i < count; ++i) {
-            LogEvent event = new Log4jLogEvent("TestLogger", null, FileAppenderTest.class.getName(), Level.INFO,
+            final LogEvent event = new Log4jLogEvent("TestLogger", null, FileAppenderTest.class.getName(), Level.INFO,
                 new SimpleMessage("Test"), null, null, null, name, null, System.currentTimeMillis());
             try {
                 app.append(event);
                 t.sleep(25);  // Give up control long enough for another thread/process to occasionally do something.
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 throw ex;
             }
         }
@@ -159,19 +159,19 @@ public class FileAppenderTest {
         assertFalse("Appender did not stop", app.isStarted());
     }
 
-    private void verifyFile(int count) throws Exception {
+    private void verifyFile(final int count) throws Exception {
         //String expected = "[\\w]* \\[\\s*\\] INFO TestLogger - Test$";
-        String expected = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
-        Pattern pattern = Pattern.compile(expected);
-        FileInputStream fis = new FileInputStream(FILENAME);
-        DataInputStream is = new DataInputStream(new BufferedInputStream(fis));
+        final String expected = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
+        final Pattern pattern = Pattern.compile(expected);
+        final FileInputStream fis = new FileInputStream(FILENAME);
+        final DataInputStream is = new DataInputStream(new BufferedInputStream(fis));
         int counter = 0;
         String str = "";
         while (is.available() != 0) {
             str = is.readLine();
             //System.out.println(str);
             ++counter;
-            Matcher matcher = pattern.matcher(str);
+            final Matcher matcher = pattern.matcher(str);
             assertTrue("Bad data: " + str, matcher.matches());
         }
         fis.close();
@@ -182,7 +182,7 @@ public class FileAppenderTest {
 
 
     private static void deleteFile() {
-        File file = new File(FILENAME);
+        final File file = new File(FILENAME);
         if (file.exists()) {
             assertTrue(file.delete());
         }
@@ -192,17 +192,17 @@ public class FileAppenderTest {
         private final boolean lock;
         private final int count;
 
-        public FileWriterRunnable(boolean lock, int count)  {
+        public FileWriterRunnable(final boolean lock, final int count)  {
             this.lock = lock;
             this.count = count;
         }
         public void run() {
-            Thread thread = Thread.currentThread();
+            final Thread thread = Thread.currentThread();
 
             try {
                 writer(lock, count, thread.getName());
 
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -210,21 +210,21 @@ public class FileAppenderTest {
 
     public static class ProcessTest {
 
-        public static void main(String[] args) {
+        public static void main(final String[] args) {
 
             if (args.length != 3) {
                 System.out.println("Required arguments 'id', 'count' and 'lock' not provided");
                 System.exit(-1);
             }
-            String id = args[0];
+            final String id = args[0];
 
-            int count = Integer.parseInt(args[1]);
+            final int count = Integer.parseInt(args[1]);
 
             if (count <= 0) {
                 System.out.println("Invalid count value: " + args[1]);
                 System.exit(-1);
             }
-            boolean lock = Boolean.parseBoolean(args[2]);
+            final boolean lock = Boolean.parseBoolean(args[2]);
 
             //System.out.println("Got arguments " + id + ", " + count + ", " + lock);
 
@@ -232,7 +232,7 @@ public class FileAppenderTest {
                 writer(lock, count, id);
                 //thread.sleep(50);
 
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 throw new RuntimeException(ex);
             }
 

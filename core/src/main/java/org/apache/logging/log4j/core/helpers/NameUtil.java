@@ -24,11 +24,11 @@ public final class NameUtil {
     private NameUtil() {
     }
 
-    public static String getSubName(String name) {
+    public static String getSubName(final String name) {
         if (name.length() == 0) {
             return null;
         }
-        int i = name.lastIndexOf('.');
+        final int i = name.lastIndexOf('.');
         return i > 0 ? name.substring(0, i) : "";
     }
 }

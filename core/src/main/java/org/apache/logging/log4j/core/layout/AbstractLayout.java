@@ -52,7 +52,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Set the header.
      * @param header The header.
      */
-    public void setHeader(byte[] header) {
+    public void setHeader(final byte[] header) {
         this.header = header;
     }
 
@@ -68,7 +68,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Set the footer.
      * @param footer The footer.
      */
-    public void setFooter(byte[] footer) {
+    public void setFooter(final byte[] footer) {
         this.footer = footer;
     }
 }

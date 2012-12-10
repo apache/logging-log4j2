@@ -55,19 +55,19 @@ public class PatternProcessor {
      * Constructor.
      * @param pattern The file pattern.
      */
-    public PatternProcessor(String pattern) {
-        PatternParser parser = createPatternParser();
-        List<PatternConverter> converters = new ArrayList<PatternConverter>();
-        List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
+    public PatternProcessor(final String pattern) {
+        final PatternParser parser = createPatternParser();
+        final List<PatternConverter> converters = new ArrayList<PatternConverter>();
+        final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
         parser.parse(pattern, converters, fields);
-        FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
+        final FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
         patternFields = fields.toArray(infoArray);
-        ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
+        final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
 
-        for (ArrayPatternConverter converter : patternConverters) {
+        for (final ArrayPatternConverter converter : patternConverters) {
             if (converter instanceof DatePatternConverter) {
-                DatePatternConverter dateConverter = (DatePatternConverter) converter;
+                final DatePatternConverter dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
             }
         }
@@ -79,16 +79,16 @@ public class PatternProcessor {
      * @param increment The increment to the next time.
      * @return the next potential rollover time and the timestamp for the target file.
      */
-    public long getNextTime(long current, int increment, boolean modulus) {
+    public long getNextTime(final long current, final int increment, final boolean modulus) {
         prevFileTime = nextFileTime;
         long nextTime;
 
         if (frequency == null) {
             throw new IllegalStateException("Pattern does not contain a date");
         }
-        Calendar currentCal = Calendar.getInstance();
+        final Calendar currentCal = Calendar.getInstance();
         currentCal.setTimeInMillis(current);
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (frequency == RolloverFrequency.ANNUALLY) {
@@ -151,8 +151,8 @@ public class PatternProcessor {
         return nextTime;
     }
 
-    private void increment(Calendar cal, int type, int increment, boolean modulate) {
-        int interval =  modulate ? increment - (cal.get(type) % increment) : increment;
+    private void increment(final Calendar cal, final int type, final int increment, final boolean modulate) {
+        final int interval =  modulate ? increment - (cal.get(type) % increment) : increment;
         cal.add(type, interval);
     }
 
@@ -162,7 +162,7 @@ public class PatternProcessor {
      * @param obj object to be evaluated in formatting, may not be null.
      */
     public final void formatFileName(final StringBuilder buf, final Object obj) {
-        long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
+        final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
         formatFileName(buf, new Date(time), obj);
     }
 
@@ -173,7 +173,7 @@ public class PatternProcessor {
      */
     protected final void formatFileName(final StringBuilder buf, final Object... objects) {
         for (int i = 0; i < patternConverters.length; i++) {
-            int fieldStart = buf.length();
+            final int fieldStart = buf.length();
             patternConverters[i].format(buf, objects);
 
             if (patternFields[i] != null) {
@@ -182,7 +182,7 @@ public class PatternProcessor {
         }
     }
 
-    private RolloverFrequency calculateFrequency(String pattern) {
+    private RolloverFrequency calculateFrequency(final String pattern) {
         if (patternContains(pattern, MILLIS_CHAR)) {
             return RolloverFrequency.EVERY_MILLISECOND;
         }
@@ -215,8 +215,8 @@ public class PatternProcessor {
         return new PatternParser(null, KEY, null);
     }
 
-    private boolean patternContains(String pattern, char... chars) {
-        for (char character : chars) {
+    private boolean patternContains(final String pattern, final char... chars) {
+        for (final char character : chars) {
             if (patternContains(pattern, character)) {
                 return true;
             }
@@ -224,7 +224,7 @@ public class PatternProcessor {
         return false;
     }
 
-    private boolean patternContains(String pattern, char character) {
+    private boolean patternContains(final String pattern, final char character) {
         return pattern.indexOf(character) >= 0;
     }
 }

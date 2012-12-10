@@ -44,7 +44,7 @@ public class DynamicThresholdFilterTest {
 
     @After
     public void cleanup() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -53,9 +53,9 @@ public class DynamicThresholdFilterTest {
     public void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "apache");
-        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("testuser", "DEBUG"),
+        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("testuser", "DEBUG"),
                                                     new KeyValuePair("JohnDoe", "warn")};
-        DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, "ERROR", null, null);
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, "ERROR", null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
@@ -72,16 +72,16 @@ public class DynamicThresholdFilterTest {
 
     @Test
     public void testConfig() {
-        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-dynamicfilter.xml");
-        Configuration config = ctx.getConfiguration();
-        Filter filter = config.getFilter();
+        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-dynamicfilter.xml");
+        final Configuration config = ctx.getConfiguration();
+        final Filter filter = config.getFilter();
         assertNotNull("No DynamicThresholdFilter", filter);
         assertTrue("Not a DynamicThresholdFilter", filter instanceof DynamicThresholdFilter);
-        DynamicThresholdFilter dynamic = (DynamicThresholdFilter) filter;
-        String key = dynamic.getKey();
+        final DynamicThresholdFilter dynamic = (DynamicThresholdFilter) filter;
+        final String key = dynamic.getKey();
         assertNotNull("Key is null", key);
         assertTrue("Incorrect key value", key.equals("loginId"));
-        Map<String, Level> map = dynamic.getLevelMap();
+        final Map<String, Level> map = dynamic.getLevelMap();
         assertNotNull("Map is null", map);
         assertTrue("Incorrect number of map elements", map.size() == 1);
     }

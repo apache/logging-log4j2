@@ -32,12 +32,12 @@ public class Profiler {
             profilingModes = Class.forName("com.yourkit.api.ProfilingModes");
             try {
                 profiler = controllerClazz.newInstance();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
                 System.out.println("Profiler was active, but failed due: " + e.getMessage());
             }
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             // Ignore
         }
 
@@ -51,14 +51,14 @@ public class Profiler {
 
         if (profiler != null) {
             try {
-                Field f = profilingModes.getDeclaredField("CPU_SAMPLING");
-                Object[] args = new Object[2];
+                final Field f = profilingModes.getDeclaredField("CPU_SAMPLING");
+                final Object[] args = new Object[2];
                 args[0] = f.getLong(profilingModes);
                 args[1] = "";
-                Class[] parms = new Class[] {long.class, String.class};
+                final Class[] parms = new Class[] {long.class, String.class};
                 controllerClazz.getMethod("startCPUProfiling", parms).invoke(profiler, args);
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 e.printStackTrace();
                 System.out.println("Profiler was active, but failed due: " + e.getMessage());
             }
@@ -68,14 +68,14 @@ public class Profiler {
     public static void stop() {
         if (profiler != null) {
             try {
-                Field f = profilingModes.getDeclaredField("SNAPSHOT_WITHOUT_HEAP");
-                Object[] args = new Object[1];
+                final Field f = profilingModes.getDeclaredField("SNAPSHOT_WITHOUT_HEAP");
+                final Object[] args = new Object[1];
                 args[0] = f.getLong(profilingModes);
-                Class[] parms = new Class[] {long.class};
+                final Class[] parms = new Class[] {long.class};
                 profiler.getClass().getMethod("captureSnapshot", parms).invoke(profiler, args);
                 profiler.getClass().getMethod("stopCPUProfiling").invoke(profiler);
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 e.printStackTrace();
                 System.out.println("Profiler was active, but failed due: " + e.getMessage());
             }

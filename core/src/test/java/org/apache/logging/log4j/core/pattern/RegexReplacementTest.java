@@ -53,7 +53,7 @@ public class RegexReplacementTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
             }
@@ -94,7 +94,7 @@ public class RegexReplacementTest {
      @Test
     public void testConverter() {
         logger2.error(this.getClass().getName());
-        List<String> msgs = app2.getMessages();
+        final List<String> msgs = app2.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
          assertTrue("Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));

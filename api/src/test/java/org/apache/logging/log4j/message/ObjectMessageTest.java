@@ -27,16 +27,16 @@ public class ObjectMessageTest {
 
     @Test
     public void testNull() {
-        ObjectMessage msg = new ObjectMessage(null);
-        String result = msg.getFormattedMessage();
+        final ObjectMessage msg = new ObjectMessage(null);
+        final String result = msg.getFormattedMessage();
         assertEquals("null", result);
     }
 
     @Test
     public void testNotNull() {
-        String testMsg = "Test message {}";
-        ObjectMessage msg = new ObjectMessage(testMsg);
-        String result = msg.getFormattedMessage();
+        final String testMsg = "Test message {}";
+        final ObjectMessage msg = new ObjectMessage(testMsg);
+        final String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
     }
 }

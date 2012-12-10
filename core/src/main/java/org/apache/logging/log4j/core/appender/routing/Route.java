@@ -35,7 +35,7 @@ public final class Route {
     private final String appenderRef;
     private final String key;
 
-    private Route(Node node, String appenderRef, String key) {
+    private Route(final Node node, final String appenderRef, final String key) {
         this.node = node;
         this.appenderRef = appenderRef;
         this.key = key;
@@ -67,7 +67,7 @@ public final class Route {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Route(");
+        final StringBuilder sb = new StringBuilder("Route(");
         sb.append("type=");
         if (appenderRef != null) {
             sb.append("static Reference=").append(appenderRef);
@@ -93,11 +93,11 @@ public final class Route {
      * @return A Route.
      */
     @PluginFactory
-    public static Route createRoute(@PluginAttr("ref") String appenderRef,
-                                    @PluginAttr("key") String key,
-                                    @PluginNode Node node) {
+    public static Route createRoute(@PluginAttr("ref") final String appenderRef,
+                                    @PluginAttr("key") final String key,
+                                    @PluginNode final Node node) {
         if (node != null && node.hasChildren()) {
-            for (Node child : node.getChildren()) {
+            for (final Node child : node.getChildren()) {
 
             }
             if (appenderRef != null) {

@@ -71,7 +71,7 @@ public class JMSQueueAppenderTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
-        StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
+        final StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
         StatusLogger.getLogger().registerListener(l);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
@@ -88,9 +88,9 @@ public class JMSQueueAppenderTest {
 
     @Test
     public void testConfiguration() throws Exception {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration config = ctx.getConfiguration();
-        Map<String, Appender> appenders = config.getAppenders();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration config = ctx.getConfiguration();
+        final Map<String, Appender> appenders = config.getAppenders();
         assertTrue(appenders.containsKey("JMSQueue"));
     }
 }

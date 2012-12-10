@@ -64,7 +64,7 @@ public class PluginManager {
      * Constructor that takes only a type name.
      * @param type The type name.
      */
-    public PluginManager(String type) {
+    public PluginManager(final String type) {
         this.type = type;
         this.clazz = null;
     }
@@ -74,20 +74,20 @@ public class PluginManager {
      * @param type The type that must be matched.
      * @param clazz The Class each match must be an instance of.
      */
-    public PluginManager(String type, Class clazz) {
+    public PluginManager(final String type, final Class clazz) {
         this.type = type;
         this.clazz = clazz;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args == null || args.length < 1) {
             System.err.println("A target directory must be specified");
             System.exit(-1);
         }
         rootDir = args[0].endsWith("/") || args[0].endsWith("\\") ? args[0] : args[0] + "/";
 
-        PluginManager manager = new PluginManager("Core");
-        String packages = args.length == 2 ? args[1] : null;
+        final PluginManager manager = new PluginManager("Core");
+        final String packages = args.length == 2 ? args[1] : null;
 
         manager.collectPlugins(false, packages);
         encode(pluginTypeMap);
@@ -97,7 +97,7 @@ public class PluginManager {
      * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
      * @param p The package name.
      */
-    public static void addPackage(String p) {
+    public static void addPackage(final String p) {
         packages.addIfAbsent(p);
     }
 
@@ -106,7 +106,7 @@ public class PluginManager {
      * @param name The name of the plugin.
      * @return The plugin's type.
      */
-    public PluginType getPluginType(String name) {
+    public PluginType getPluginType(final String name) {
         return plugins.get(name.toLowerCase());
     }
 
@@ -131,19 +131,19 @@ public class PluginManager {
      * @param pkgs A comma separated list of package names to scan for plugins. If
      * null the default Log4j package name will be used.
      */
-    public void collectPlugins(boolean preLoad, String pkgs) {
+    public void collectPlugins(boolean preLoad, final String pkgs) {
         if (pluginTypeMap.containsKey(type)) {
             plugins = pluginTypeMap.get(type);
             preLoad = false;
         }
-        long start = System.nanoTime();
-        ResolverUtil<?> resolver = new ResolverUtil();
-        ClassLoader loader = Loader.getClassLoader();
+        final long start = System.nanoTime();
+        final ResolverUtil<?> resolver = new ResolverUtil();
+        final ClassLoader loader = Loader.getClassLoader();
         if (loader != null) {
             resolver.setClassLoader(loader);
         }
         if (preLoad) {
-            ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(loader);
+            final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(loader);
             if (map != null) {
                 pluginTypeMap = map;
                 plugins = map.get(type);
@@ -155,32 +155,32 @@ public class PluginManager {
             if (pkgs == null) {
                 packages.add(LOG4J_PACKAGES);
             } else {
-                String[] names = pkgs.split(",");
-                for (String name : names) {
+                final String[] names = pkgs.split(",");
+                for (final String name : names) {
                     packages.add(name);
                 }
             }
         }
-        ResolverUtil.Test test = new PluginTest(clazz);
-        for (String pkg : packages) {
+        final ResolverUtil.Test test = new PluginTest(clazz);
+        for (final String pkg : packages) {
             resolver.findInPackage(test, pkg);
         }
-        for (Class<?> item : resolver.getClasses()) {
-            Plugin p = item.getAnnotation(Plugin.class);
-            String pluginType = p.type();
+        for (final Class<?> item : resolver.getClasses()) {
+            final Plugin p = item.getAnnotation(Plugin.class);
+            final String pluginType = p.type();
             if (!pluginTypeMap.containsKey(pluginType)) {
                 pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType>());
             }
-            Map<String, PluginType> map = pluginTypeMap.get(pluginType);
-            String type = p.elementType().equals(Plugin.EMPTY) ? p.name() : p.elementType();
+            final Map<String, PluginType> map = pluginTypeMap.get(pluginType);
+            final String type = p.elementType().equals(Plugin.EMPTY) ? p.name() : p.elementType();
             map.put(p.name().toLowerCase(), new PluginType(item, type, p.printObject(), p.deferChildren()));
         }
         long elapsed = System.nanoTime() - start;
         plugins = pluginTypeMap.get(type);
-        StringBuilder sb = new StringBuilder("Generated plugins");
+        final StringBuilder sb = new StringBuilder("Generated plugins");
         sb.append(" in ");
         DecimalFormat numFormat = new DecimalFormat("#0");
-        long seconds = elapsed / NANOS_PER_SECOND;
+        final long seconds = elapsed / NANOS_PER_SECOND;
         elapsed %= NANOS_PER_SECOND;
         sb.append(numFormat.format(seconds)).append('.');
         numFormat = new DecimalFormat("000000000");
@@ -188,44 +188,44 @@ public class PluginManager {
         LOGGER.debug(sb.toString());
     }
 
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(ClassLoader loader) {
+    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(final ClassLoader loader) {
         Enumeration<URL> resources;
         try {
             resources = loader.getResources(PATH + FILENAME);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
         }
-        ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
+        final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
             new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
         while (resources.hasMoreElements()) {
             try {
-                URL url = resources.nextElement();
+                final URL url = resources.nextElement();
                 LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
-                InputStream is = url.openStream();
-                BufferedInputStream bis = new BufferedInputStream(is);
-                DataInputStream dis = new DataInputStream(bis);
-                int count = dis.readInt();
+                final InputStream is = url.openStream();
+                final BufferedInputStream bis = new BufferedInputStream(is);
+                final DataInputStream dis = new DataInputStream(bis);
+                final int count = dis.readInt();
                 for (int j = 0; j < count; ++j) {
-                    String type = dis.readUTF();
-                    int entries = dis.readInt();
+                    final String type = dis.readUTF();
+                    final int entries = dis.readInt();
                     ConcurrentMap<String, PluginType> types = map.get(type);
                     if (types == null) {
                         types = new ConcurrentHashMap<String, PluginType>(count);
                     }
                     for (int i = 0; i < entries; ++i) {
-                        String key = dis.readUTF();
-                        String className = dis.readUTF();
-                        String name = dis.readUTF();
-                        boolean printable = dis.readBoolean();
-                        boolean defer = dis.readBoolean();
-                        Class clazz = Class.forName(className);
+                        final String key = dis.readUTF();
+                        final String className = dis.readUTF();
+                        final String name = dis.readUTF();
+                        final boolean printable = dis.readBoolean();
+                        final boolean defer = dis.readBoolean();
+                        final Class clazz = Class.forName(className);
                         types.put(key, new PluginType(clazz, name, printable, defer));
                     }
                     map.putIfAbsent(type, types);
                 }
                 dis.close();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to preload plugins", ex);
                 return null;
             }
@@ -233,21 +233,21 @@ public class PluginManager {
         return map.size() == 0 ? null : map;
     }
 
-    private static void encode(ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
-        String fileName = rootDir + PATH + FILENAME;
+    private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
+        final String fileName = rootDir + PATH + FILENAME;
         try {
-            File file = new File(rootDir + PATH);
+            final File file = new File(rootDir + PATH);
             file.mkdirs();
-            FileOutputStream fos = new FileOutputStream(fileName);
-            BufferedOutputStream bos = new BufferedOutputStream(fos);
-            DataOutputStream dos = new DataOutputStream(bos);
+            final FileOutputStream fos = new FileOutputStream(fileName);
+            final BufferedOutputStream bos = new BufferedOutputStream(fos);
+            final DataOutputStream dos = new DataOutputStream(bos);
             dos.writeInt(map.size());
-            for (Map.Entry<String, ConcurrentMap<String, PluginType>> outer : map.entrySet()) {
+            for (final Map.Entry<String, ConcurrentMap<String, PluginType>> outer : map.entrySet()) {
                 dos.writeUTF(outer.getKey());
                 dos.writeInt(outer.getValue().size());
-                for (Map.Entry<String, PluginType> entry : outer.getValue().entrySet()) {
+                for (final Map.Entry<String, PluginType> entry : outer.getValue().entrySet()) {
                     dos.writeUTF(entry.getKey());
-                    PluginType pt = entry.getValue();
+                    final PluginType pt = entry.getValue();
                     dos.writeUTF(pt.getPluginClass().getName());
                     dos.writeUTF(pt.getElementName());
                     dos.writeBoolean(pt.isObjectPrintable());
@@ -255,7 +255,7 @@ public class PluginManager {
                 }
             }
             dos.close();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -271,7 +271,7 @@ public class PluginManager {
          * Constructs an AnnotatedWith test for the specified annotation type.
          * @param isA The class to compare against.
          */
-        public PluginTest(Class isA) {
+        public PluginTest(final Class isA) {
             this.isA = isA;
         }
 
@@ -280,14 +280,14 @@ public class PluginManager {
          * @param type The type to check for.
          * @return true if the Class is of the specified type.
          */
-        public boolean matches(Class type) {
+        public boolean matches(final Class type) {
             return type != null && type.isAnnotationPresent(Plugin.class) &&
                 (isA == null || isA.isAssignableFrom(type));
         }
 
         @Override
         public String toString() {
-            StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
+            final StringBuilder msg = new StringBuilder("annotated with @" + Plugin.class.getSimpleName());
             if (isA != null) {
                 msg.append(" is assignable to " + isA.getSimpleName());
             }

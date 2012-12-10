@@ -48,7 +48,7 @@ public class SerializedLayoutTest {
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -75,8 +75,8 @@ public class SerializedLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        SerializedLayout layout = SerializedLayout.createLayout();
-        ListAppender appender = new ListAppender("List", null, layout, false, true);
+        final SerializedLayout layout = SerializedLayout.createLayout();
+        final ListAppender appender = new ListAppender("List", null, layout, false, true);
         appender.start();
 
         // set appender on root and set level to debug
@@ -100,16 +100,16 @@ public class SerializedLayoutTest {
 
         appender.stop();
 
-        List<byte[]> data = appender.getData();
+        final List<byte[]> data = appender.getData();
         assertTrue(data.size() > 0);
         int i = 0;
-        for (byte[] item : data) {
-            ByteArrayInputStream bais = new ByteArrayInputStream(item);
-            ObjectInputStream ois = new ObjectInputStream(bais);
+        for (final byte[] item : data) {
+            final ByteArrayInputStream bais = new ByteArrayInputStream(item);
+            final ObjectInputStream ois = new ObjectInputStream(bais);
             LogEvent event;
             try {
                 event = (LogEvent) ois.readObject();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 System.err.println("Exception processing item " + i);
                 throw ioe;
             }

@@ -36,12 +36,12 @@ public final class Configurator {
      * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(String name, ClassLoader loader, String configLocation) {
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation) {
 
         try {
-            URI uri = configLocation == null ? null : new URI(configLocation);
+            final URI uri = configLocation == null ? null : new URI(configLocation);
             return initialize(name, loader, uri);
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             ex.printStackTrace();
         }
         return null;
@@ -54,14 +54,14 @@ public final class Configurator {
      * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(String name, ClassLoader loader, URI configLocation) {
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation) {
 
         try {
-            LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
-            Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
+            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
             ctx.setConfiguration(config);
             return ctx;
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
         return null;
@@ -73,14 +73,14 @@ public final class Configurator {
      * @param source The InputSource for the configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(ClassLoader loader, ConfigurationFactory.ConfigurationSource source) {
+    public static LoggerContext initialize(final ClassLoader loader, final ConfigurationFactory.ConfigurationSource source) {
 
         try {
-            LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
-            Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
+            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
             ctx.setConfiguration(config);
             return ctx;
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
         return null;
@@ -90,7 +90,7 @@ public final class Configurator {
      * Shuts down the given logging context.
      * @param ctx the logging context to shut down, may be null.
      */
-    public static void shutdown(LoggerContext ctx) {
+    public static void shutdown(final LoggerContext ctx) {
         if (ctx != null) {
             ctx.setConfiguration(new DefaultConfiguration());
         }

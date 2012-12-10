@@ -25,7 +25,7 @@ public class Loggers {
     private final ConcurrentMap<String, LoggerConfig> map;
     private final LoggerConfig root;
 
-    public Loggers(ConcurrentMap<String, LoggerConfig> map, LoggerConfig root) {
+    public Loggers(final ConcurrentMap<String, LoggerConfig> map, final LoggerConfig root) {
         this.map = map;
         this.root = root;
     }

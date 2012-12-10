@@ -41,15 +41,15 @@ public class Log4JLoggerFactory implements ILoggerFactory {
     private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
         new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
-    public Logger getLogger(String name) {
-        LoggerContext context = getContext();
-        ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
+    public Logger getLogger(final String name) {
+        final LoggerContext context = getContext();
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
 
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        org.apache.logging.log4j.Logger logger = context.getLogger(key);
+        final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
+        final org.apache.logging.log4j.Logger logger = context.getLogger(key);
         if (logger instanceof AbstractLogger) {
             loggers.putIfAbsent(name, new SLF4JLogger((AbstractLogger) logger, name));
             return loggers.get(name);
@@ -57,7 +57,7 @@ public class Log4JLoggerFactory implements ILoggerFactory {
         throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
     }
 
-    private ConcurrentMap<String, Logger> getLoggersMap(LoggerContext context) {
+    private ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
         synchronized (contextMap) {
             ConcurrentMap<String, Logger> map = contextMap.get(context);
             if (map == null) {
@@ -68,11 +68,11 @@ public class Log4JLoggerFactory implements ILoggerFactory {
         }
     }
     private LoggerContext getContext() {
-        Throwable t = new Throwable();
+        final Throwable t = new Throwable();
         boolean next = false;
         boolean pkg = false;
         String fqcn = LoggerFactory.class.getName();
-        for (StackTraceElement element : t.getStackTrace()) {
+        for (final StackTraceElement element : t.getStackTrace()) {
             if (FQCN.equals(element.getClassName())) {
                 next = true;
                 continue;
@@ -99,11 +99,11 @@ public class Log4JLoggerFactory implements ILoggerFactory {
             return getContext(FQCN, false);
         }
 
-        public static LoggerContext getContext(String fqcn) {
+        public static LoggerContext getContext(final String fqcn) {
             return getContext(fqcn, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(String name) {
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
     }

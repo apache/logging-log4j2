@@ -37,7 +37,7 @@ public class FlumeNode implements LifecycleAware {
     private final LifecycleSupervisor supervisor;
     private final NodeConfiguration conf;
 
-    public FlumeNode(NodeManager manager, NodeConfiguration conf) {
+    public FlumeNode(final NodeManager manager, final NodeConfiguration conf) {
         this.nodeManager = manager;
         this.conf =conf;
         supervisor = new LifecycleSupervisor();

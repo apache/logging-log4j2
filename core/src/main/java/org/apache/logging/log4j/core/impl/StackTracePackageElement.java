@@ -37,7 +37,7 @@ public class StackTracePackageElement implements Serializable {
      * @param version The version of the component.
      * @param exact if true this is an exact package element.
      */
-    public StackTracePackageElement(String location, String version, boolean exact) {
+    public StackTracePackageElement(final String location, final String version, final boolean exact) {
         this.location = location;
         this.version = version;
         this.isExact = exact;
@@ -69,7 +69,7 @@ public class StackTracePackageElement implements Serializable {
 
     @Override
     public String toString() {
-        String exact = isExact ? "" : "~";
+        final String exact = isExact ? "" : "~";
         return exact + "[" + location + ":" + version + "]";
     }
 }

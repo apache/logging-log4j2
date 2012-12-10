@@ -22,15 +22,15 @@ package org.apache.logging.slf4j;
  */
 public class SLF4JLoggingException extends RuntimeException {
 
-    public SLF4JLoggingException(String msg) {
+    public SLF4JLoggingException(final String msg) {
         super(msg);
     }
 
-    public SLF4JLoggingException(String msg, Exception ex) {
+    public SLF4JLoggingException(final String msg, final Exception ex) {
         super(msg, ex);
     }
 
-    public SLF4JLoggingException(Exception ex) {
+    public SLF4JLoggingException(final Exception ex) {
         super(ex);
     }
 }

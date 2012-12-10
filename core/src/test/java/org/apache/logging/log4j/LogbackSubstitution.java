@@ -29,7 +29,7 @@ public class LogbackSubstitution {
 
     private static final String LOGBACK_CONF = "logback.configurationFile";
     private static final String LOGBACK_CONFIG = "logback-subst.xml";
-    private XLogger xLogger = XLoggerFactory.getXLogger(LogbackSubstitution.class);
+    private final XLogger xLogger = XLoggerFactory.getXLogger(LogbackSubstitution.class);
 
 
 

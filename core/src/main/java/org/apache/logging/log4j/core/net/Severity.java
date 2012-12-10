@@ -53,7 +53,7 @@ public enum Severity {
 
     private final int code;
 
-    private Severity(int code) {
+    private Severity(final int code) {
         this.code = code;
     }
 
@@ -70,7 +70,7 @@ public enum Severity {
      * @param name the name to match.
      * @return true if the name matches, false otherwise.
      */
-    public boolean isEqual(String name) {
+    public boolean isEqual(final String name) {
         return this.name().equalsIgnoreCase(name);
     }
 
@@ -79,7 +79,7 @@ public enum Severity {
      * @param level The Level.
      * @return The matching Severity, or DEBUG if there is no match.
      */
-    public static Severity getSeverity(Level level) {
+    public static Severity getSeverity(final Level level) {
         switch (level) {
             case ALL:
                 return DEBUG;

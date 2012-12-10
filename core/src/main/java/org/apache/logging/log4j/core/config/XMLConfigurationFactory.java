@@ -36,7 +36,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
      * @return The Configuration.
      */
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         return new XMLConfiguration(source);
     }
 

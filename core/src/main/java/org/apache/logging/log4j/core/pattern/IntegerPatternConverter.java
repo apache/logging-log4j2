@@ -51,8 +51,8 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
         return INSTANCE;
     }
 
-    public void format(final StringBuilder toAppendTo, Object... objects) {
-        for (Object obj : objects) {
+    public void format(final StringBuilder toAppendTo, final Object... objects) {
+        for (final Object obj : objects) {
             if (obj instanceof Integer) {
                 format(obj, toAppendTo);
                 break;
@@ -63,7 +63,7 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
     /**
      * {@inheritDoc}
      */
-    public void format(Object obj, final StringBuilder toAppendTo) {
+    public void format(final Object obj, final StringBuilder toAppendTo) {
         if (obj instanceof Integer) {
             toAppendTo.append(obj.toString());
         }

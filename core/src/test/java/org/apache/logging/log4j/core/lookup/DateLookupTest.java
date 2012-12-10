@@ -36,9 +36,9 @@ public class DateLookupTest {
 
     @Test
     public void testLookup() {
-        StrLookup lookup = new DateLookup();
-        LogEvent event = new MyLogEvent();
-        String value = lookup.lookup(event, "MM/dd/yyyy");
+        final StrLookup lookup = new DateLookup();
+        final LogEvent event = new MyLogEvent();
+        final String value = lookup.lookup(event, "MM/dd/yyyy");
         assertNotNull(value);
         assertEquals("12/30/2011", value);
     }
@@ -69,7 +69,7 @@ public class DateLookupTest {
         }
 
         public long getMillis() {
-            Calendar cal = Calendar.getInstance();
+            final Calendar cal = Calendar.getInstance();
             cal.set(2011, 11, 30, 10, 56, 35);
             return cal.getTimeInMillis();
         }

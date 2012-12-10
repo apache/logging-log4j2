@@ -42,7 +42,7 @@ public class MapFilter extends AbstractFilter {
 
     private final boolean isAnd;
 
-    protected MapFilter(Map<String, List<String>> map, boolean oper, Result onMatch, Result onMismatch) {
+    protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         if (map == null) {
             throw new NullPointerException("key cannot be null");
@@ -52,7 +52,7 @@ public class MapFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         if (msg instanceof MapMessage) {
             return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
         }
@@ -60,18 +60,18 @@ public class MapFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
-        Message msg = event.getMessage();
+    public Result filter(final LogEvent event) {
+        final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
             return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
     }
 
-    protected boolean filter(Map<String, String> data) {
+    protected boolean filter(final Map<String, String> data) {
         boolean match = false;
-        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            String toMatch = data.get(entry.getKey());
+        for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
+            final String toMatch = data.get(entry.getKey());
             if (toMatch != null) {
                 match = entry.getValue().contains(toMatch);
             } else {
@@ -86,18 +86,18 @@ public class MapFilter extends AbstractFilter {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("isAnd=").append(isAnd);
         if (map.size() > 0) {
             sb.append(", {");
             boolean first = true;
-            for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
                 if (!first) {
                     sb.append(", ");
                 }
                 first = false;
-                List<String> list = entry.getValue();
-                String value = list.size() > 1 ? list.get(0) : list.toString();
+                final List<String> list = entry.getValue();
+                final String value = list.size() > 1 ? list.get(0) : list.toString();
                 sb.append(entry.getKey()).append("=").append(value);
             }
             sb.append("}");
@@ -114,22 +114,22 @@ public class MapFilter extends AbstractFilter {
     }
 
     @PluginFactory
-    public static MapFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
-                                         @PluginAttr("operator") String oper,
-                                         @PluginAttr("onmatch") String match,
-                                         @PluginAttr("onmismatch") String mismatch) {
+    public static MapFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+                                         @PluginAttr("operator") final String oper,
+                                         @PluginAttr("onmatch") final String match,
+                                         @PluginAttr("onmismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
         }
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
-        for (KeyValuePair pair : pairs) {
-            String key = pair.getKey();
+        final Map<String, List<String>> map = new HashMap<String, List<String>>();
+        for (final KeyValuePair pair : pairs) {
+            final String key = pair.getKey();
             if (key == null) {
                 LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
-            String value = pair.getValue();
+            final String value = pair.getValue();
             if (value == null) {
                 LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
@@ -147,9 +147,9 @@ public class MapFilter extends AbstractFilter {
             LOGGER.error("MapFilter is not configured with any valid key value pairs");
             return null;
         }
-        boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
         return new MapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

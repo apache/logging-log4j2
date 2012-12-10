@@ -28,7 +28,7 @@ public class PriorityTest {
 
     @Test
     public void testP1() {
-        int p = Priority.getPriority(Facility.AUTH, Level.INFO);
+        final int p = Priority.getPriority(Facility.AUTH, Level.INFO);
         assertTrue("Expected priority value is 38, got "+ p, p == 38);
     }
 }

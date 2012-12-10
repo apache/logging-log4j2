@@ -42,9 +42,9 @@ public class SimpleLoggerContext implements LoggerContext {
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
 
     /** Properties loaded from simplelog.properties */
-    private Properties simpleLogProps = new Properties();
+    private final Properties simpleLogProps = new Properties();
 
-    private PropsUtil props;
+    private final PropsUtil props;
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
@@ -71,13 +71,13 @@ public class SimpleLoggerContext implements LoggerContext {
         showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);
         showShortName = props.getBooleanProperty(SYSTEM_PREFIX + "showShortLogname", true);
         showDateTime = props.getBooleanProperty(SYSTEM_PREFIX + "showdatetime", false);
-        String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
+        final String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
         defaultLevel = Level.toLevel(lvl, Level.ERROR);
 
         dateTimeFormat = showDateTime ? props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat",
                 DEFAULT_DATE_TIME_FORMAT) : null;
 
-        String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", "system.err");
+        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", "system.err");
         PrintStream ps;
         if ("system.err".equalsIgnoreCase(fileName)) {
             ps = System.err;
@@ -85,22 +85,22 @@ public class SimpleLoggerContext implements LoggerContext {
             ps = System.out;
         } else {
             try {
-                FileOutputStream os = new FileOutputStream(fileName);
+                final FileOutputStream os = new FileOutputStream(fileName);
                 ps = new PrintStream(os);
-            } catch (FileNotFoundException fnfe) {
+            } catch (final FileNotFoundException fnfe) {
                 ps = System.err;
             }
         }
         this.stream = ps;
     }
 
-    private ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
-    public Logger getLogger(String name) {
+    public Logger getLogger(final String name) {
         return getLogger(name, null);
     }
 
-    public Logger getLogger(String name, MessageFactory messageFactory) {
+    public Logger getLogger(final String name, final MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
             final Logger logger = loggers.get(name);
             AbstractLogger.checkMessageFactory(logger, messageFactory);
@@ -112,7 +112,7 @@ public class SimpleLoggerContext implements LoggerContext {
         return loggers.get(name);
     }
 
-    public boolean hasLogger(String name) {
+    public boolean hasLogger(final String name) {
         return false;
     }
 

@@ -51,13 +51,13 @@ public class JSONRoutingAppender2Test {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
             }
         }
-        File file = new File("target/rolling1/rollingtest-Unknown.log");
+        final File file = new File("target/rolling1/rollingtest-Unknown.log");
         file.delete();
     }
 
@@ -66,7 +66,7 @@ public class JSONRoutingAppender2Test {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
-        File file = new File("target/rolling1/rollingtest-Unknown.log");
+        final File file = new File("target/rolling1/rollingtest-Unknown.log");
         file.delete();
     }
 
@@ -74,12 +74,12 @@ public class JSONRoutingAppender2Test {
     public void routingTest() {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        List<LogEvent> list = app.getEvents();
+        final List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
-        File file = new File("target/rolling1/rollingtest-Unknown.log");
+        final File file = new File("target/rolling1/rollingtest-Unknown.log");
         assertTrue("File was not created", file.exists());
     }
 }

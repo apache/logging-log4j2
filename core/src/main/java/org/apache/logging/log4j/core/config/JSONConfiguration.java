@@ -54,34 +54,34 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
     private static final int BUF_SIZE = 16384;
 
-    private List<Status> status = new ArrayList<Status>();
+    private final List<Status> status = new ArrayList<Status>();
 
     private JsonNode root;
 
-    private List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<String>();
 
-    private File configFile;
+    private final File configFile;
 
-    public JSONConfiguration(ConfigurationFactory.ConfigurationSource configSource) {
+    public JSONConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
         this.configFile = configSource.getFile();
         byte[] buffer;
 
         try {
-            InputStream configStream = configSource.getInputStream();
+            final InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
-            InputStream is = new ByteArrayInputStream(buffer);
-            ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+            final InputStream is = new ByteArrayInputStream(buffer);
+            final ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
             root = mapper.readTree(is);
             if (root.size() == 1) {
-                Iterator<JsonNode> i = root.getElements();
+                final Iterator<JsonNode> i = root.getElements();
                 root = i.next();
             }
             processAttributes(rootNode, root);
             Level status = Level.OFF;
             boolean verbose = false;
             PrintStream stream = System.out;
-            for (Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
+            for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
                     status = Level.toLevel(getSubst().replace(entry.getValue()), null);
                     if (status == null) {
@@ -89,15 +89,15 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
                     }
                 } else if ("dest".equalsIgnoreCase(entry.getKey())) {
-                    String dest = entry.getValue();
+                    final String dest = entry.getValue();
                     if (dest != null) {
                         if (dest.equalsIgnoreCase("err")) {
                             stream = System.err;
                         } else {
                             try {
-                                File destFile = FileUtils.fileFromURI(new URI(dest));
+                                final File destFile = FileUtils.fileFromURI(new URI(dest));
                                 stream = new PrintStream(new FileOutputStream(destFile));
-                            } catch (URISyntaxException use) {
+                            } catch (final URISyntaxException use) {
                                 System.err.println("Unable to write to " + dest + ". Writing to stdout");
                             }
                         }
@@ -105,24 +105,24 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(entry.getKey())) {
-                    String[] packages = getSubst().replace(entry.getValue()).split(",");
-                    for (String p : packages) {
+                    final String[] packages = getSubst().replace(entry.getValue()).split(",");
+                    for (final String p : packages) {
                         PluginManager.addPackage(p);
                     }
                 } else if ("name".equalsIgnoreCase(entry.getKey())) {
                     setName(getSubst().replace(entry.getValue()));
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
-                    int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
+                    final int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 }
             }
 
-            Iterator<StatusListener> statusIter = ((StatusLogger) LOGGER).getListeners();
+            final Iterator<StatusListener> statusIter = ((StatusLogger) LOGGER).getListeners();
             boolean found = false;
             while (statusIter.hasNext()) {
-                StatusListener listener = statusIter.next();
+                final StatusListener listener = statusIter.next();
                 if (listener instanceof StatusConsoleListener) {
                     found = true;
                     ((StatusConsoleListener) listener).setLevel(status);
@@ -132,19 +132,19 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 }
             }
             if (!found && status != Level.OFF) {
-                StatusConsoleListener listener = new StatusConsoleListener(status, stream);
+                final StatusConsoleListener listener = new StatusConsoleListener(status, stream);
                 if (!verbose) {
                     listener.setFilters(VERBOSE_CLASSES);
                 }
                 ((StatusLogger) LOGGER).registerListener(listener);
-                for (String msg : messages) {
+                for (final String msg : messages) {
                     LOGGER.error(msg);
                 }
             }
             if (getName() == null) {
                 setName(configSource.getLocation());
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Error parsing " + configSource.getLocation(), ex);
             ex.printStackTrace();
         }
@@ -152,11 +152,11 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
      @Override
     public void setup() {
-        Iterator<Map.Entry<String, JsonNode>> iter = root.getFields();
-        List<Node> children = rootNode.getChildren();
+        final Iterator<Map.Entry<String, JsonNode>> iter = root.getFields();
+        final List<Node> children = rootNode.getChildren();
         while (iter.hasNext()) {
-            Map.Entry<String, JsonNode> entry = iter.next();
-            JsonNode n = entry.getValue();
+            final Map.Entry<String, JsonNode> entry = iter.next();
+            final JsonNode n = entry.getValue();
             if (n.isObject()) {
                 LOGGER.debug("Processing node for object " + entry.getKey());
                 children.add(constructNode(entry.getKey(), rootNode, n));
@@ -166,7 +166,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         }
         LOGGER.debug("Completed parsing configuration");
         if (status.size() > 0) {
-            for (Status s : status) {
+            for (final Status s : status) {
                 LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
             return;
@@ -176,25 +176,25 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     public Configuration reconfigure() {
         if (configFile != null) {
             try {
-                ConfigurationFactory.ConfigurationSource source =
+                final ConfigurationFactory.ConfigurationSource source =
                     new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
                 return new JSONConfiguration(source);
-            } catch (FileNotFoundException ex) {
+            } catch (final FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }
         }
         return null;
     }
 
-    private Node constructNode(String name, Node parent, JsonNode jsonNode) {
-        PluginType type = getPluginManager().getPluginType(name);
-        Node node = new Node(parent, name, type);
+    private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
+        final PluginType type = getPluginManager().getPluginType(name);
+        final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
-        Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.getFields();
-        List<Node> children = node.getChildren();
+        final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.getFields();
+        final List<Node> children = node.getChildren();
         while (iter.hasNext()) {
-            Map.Entry<String, JsonNode> entry = iter.next();
-            JsonNode n = entry.getValue();
+            final Map.Entry<String, JsonNode> entry = iter.next();
+            final JsonNode n = entry.getValue();
             if (n.isArray() || n.isObject()) {
                 if (type == null) {
                     status.add(new Status(name, n, ErrorType.CLASS_NOT_FOUND));
@@ -202,19 +202,19 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 if (n.isArray()) {
                     LOGGER.debug("Processing node for array " + entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
-                        String pluginType = getType(n.get(i), entry.getKey());
-                        PluginType entryType = getPluginManager().getPluginType(pluginType);
-                        Node item = new Node(node, entry.getKey(), entryType);
+                        final String pluginType = getType(n.get(i), entry.getKey());
+                        final PluginType entryType = getPluginManager().getPluginType(pluginType);
+                        final Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {
                             LOGGER.debug("Processing " + entry.getKey() + "[" + i + "]");
                         } else {
                             LOGGER.debug("Processing " + pluginType + " " + entry.getKey() + "[" + i + "]");
                         }
-                        Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).getFields();
-                        List<Node> itemChildren = item.getChildren();
+                        final Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).getFields();
+                        final List<Node> itemChildren = item.getChildren();
                         while (itemIter.hasNext()) {
-                            Map.Entry<String, JsonNode> itemEntry = itemIter.next();
+                            final Map.Entry<String, JsonNode> itemEntry = itemIter.next();
                             if (itemEntry.getValue().isObject()) {
                                 LOGGER.debug("Processing node for object " + itemEntry.getKey());
                                 itemChildren.add(constructNode(itemEntry.getKey(), item, itemEntry.getValue()));
@@ -236,18 +236,18 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             t = type.getElementName() + ":" + type.getPluginClass();
         }
 
-        String p = node.getParent() == null ? "null" : node.getParent().getName() == null ?
+        final String p = node.getParent() == null ? "null" : node.getParent().getName() == null ?
             "root" : node.getParent().getName();
         LOGGER.debug("Returning " + node.getName() + " with parent " + p + " of type " +  t);
         return node;
     }
 
-    private String getType(JsonNode node, String name) {
-        Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+    private String getType(final JsonNode node, final String name) {
+        final Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
         while (iter.hasNext()) {
-            Map.Entry<String, JsonNode> entry = iter.next();
+            final Map.Entry<String, JsonNode> entry = iter.next();
             if (entry.getKey().equalsIgnoreCase("type")) {
-                JsonNode n = entry.getValue();
+                final JsonNode n = entry.getValue();
                 if (n.isValueNode()) {
                     return n.asText();
                 }
@@ -256,13 +256,13 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         return name;
     }
 
-    private void processAttributes(Node parent, JsonNode node) {
-        Map<String, String> attrs = parent.getAttributes();
-        Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+    private void processAttributes(final Node parent, final JsonNode node) {
+        final Map<String, String> attrs = parent.getAttributes();
+        final Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
         while (iter.hasNext()) {
-            Map.Entry<String, JsonNode> entry = iter.next();
+            final Map.Entry<String, JsonNode> entry = iter.next();
             if (!entry.getKey().equalsIgnoreCase("type")) {
-                JsonNode n = entry.getValue();
+                final JsonNode n = entry.getValue();
                 if (n.isValueNode()) {
                     attrs.put(entry.getKey(), n.asText());
                 }
@@ -270,11 +270,11 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         }
     }
 
-    protected byte[] toByteArray(InputStream is) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    protected byte[] toByteArray(final InputStream is) throws IOException {
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
-        byte[] data = new byte[BUF_SIZE];
+        final byte[] data = new byte[BUF_SIZE];
 
         while ((nRead = is.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, nRead);
@@ -294,11 +294,11 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
      * Status for recording errors.
      */
     private class Status {
-        private JsonNode node;
-        private String name;
-        private ErrorType errorType;
+        private final JsonNode node;
+        private final String name;
+        private final ErrorType errorType;
 
-        public Status(String name, JsonNode node, ErrorType errorType) {
+        public Status(final String name, final JsonNode node, final ErrorType errorType) {
             this.name = name;
             this.node = node;
             this.errorType = errorType;

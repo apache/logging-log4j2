@@ -29,8 +29,8 @@ public class AbstractServer {
         context = (LoggerContext) LogManager.getContext(false);
     }
 
-    protected void log(LogEvent event) {
-        Logger logger = context.getLogger(event.getLoggerName());
+    protected void log(final LogEvent event) {
+        final Logger logger = context.getLogger(event.getLoggerName());
         if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
             logger.config.logEvent(event);
         }

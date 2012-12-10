@@ -34,7 +34,7 @@ public class ThreadContextMapFilterTest {
     public void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "Apache");
-        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
+        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
                                                     new KeyValuePair("organization", "Apache")};
         ThreadContextMapFilter filter = ThreadContextMapFilter.createFilter(pairs, "and", null, null);
         filter.start();

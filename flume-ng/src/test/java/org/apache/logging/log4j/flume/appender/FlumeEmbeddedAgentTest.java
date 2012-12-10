@@ -84,8 +84,8 @@ public class FlumeEmbeddedAgentTest {
 
     @Before
     public void setUp() throws Exception {
-        File file = new File("target/file-channel");
-        boolean result = deleteFiles(file);
+        final File file = new File("target/file-channel");
+        final boolean result = deleteFiles(file);
         primarySource = new AvroSource();
         primarySource.setName("Primary");
         altSource = new AvroSource();
@@ -114,16 +114,16 @@ public class FlumeEmbeddedAgentTest {
         context.put("bind", "localhost");
         Configurables.configure(altSource, context);
 
-        List<Channel> channels = new ArrayList<Channel>();
+        final List<Channel> channels = new ArrayList<Channel>();
         channels.add(primaryChannel);
 
-        ChannelSelector primaryCS = new ReplicatingChannelSelector();
+        final ChannelSelector primaryCS = new ReplicatingChannelSelector();
         primaryCS.setChannels(channels);
 
-        List<Channel> altChannels = new ArrayList<Channel>();
+        final List<Channel> altChannels = new ArrayList<Channel>();
         altChannels.add(alternateChannel);
 
-        ChannelSelector alternateCS = new ReplicatingChannelSelector();
+        final ChannelSelector alternateCS = new ReplicatingChannelSelector();
         alternateCS.setChannels(altChannels);
 
         primarySource.setChannelProcessor(new ChannelProcessor(primaryCS));
@@ -150,14 +150,14 @@ public class FlumeEmbeddedAgentTest {
             LifecycleController.waitForOneOf(primarySource, LifecycleState.STOP_OR_ERROR));
         Assert.assertEquals("Server is stopped", LifecycleState.STOP,
             primarySource.getLifecycleState());
-        File file = new File("target/file-channel");
-        boolean result = deleteFiles(file);
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        Set<ObjectName> names = server.queryNames(new ObjectName("org.apache.flume.*:*"), null);
-        for (ObjectName name : names) {
+        final File file = new File("target/file-channel");
+        final boolean result = deleteFiles(file);
+        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        final Set<ObjectName> names = server.queryNames(new ObjectName("org.apache.flume.*:*"), null);
+        for (final ObjectName name : names) {
             try {
                 server.unregisterMBean(name);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 System.out.println("Unable to unregister " + name.toString());
             }
         }
@@ -166,15 +166,15 @@ public class FlumeEmbeddedAgentTest {
     @Test
     public void testLog4Event() throws InterruptedException, IOException {
 
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
+        final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
 
-        Transaction transaction = primaryChannel.getTransaction();
+        final Transaction transaction = primaryChannel.getTransaction();
         transaction.begin();
 
-        Event event = primaryChannel.take();
+        final Event event = primaryChannel.take();
         Assert.assertNotNull(event);
-        String body = getBody(event);
+        final String body = getBody(event);
         Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("Test Log4j"));
         transaction.commit();
@@ -187,17 +187,17 @@ public class FlumeEmbeddedAgentTest {
     public void testMultiple() throws InterruptedException, IOException {
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
+            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = primaryChannel.getTransaction();
+            final Transaction transaction = primaryChannel.getTransaction();
             transaction.begin();
 
-            Event event = primaryChannel.take();
+            final Event event = primaryChannel.take();
             Assert.assertNotNull("Missing event number " + i + 1, event);
-            String body = getBody(event);
-            String expected = "Test Multiple " + i;
+            final String body = getBody(event);
+            final String expected = "Test Multiple " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
                 body.endsWith(expected));
             transaction.commit();
@@ -210,20 +210,20 @@ public class FlumeEmbeddedAgentTest {
 
     @Test
     public void testFailover() throws InterruptedException, IOException {
-        Logger logger = LogManager.getLogger("testFailover");
+        final Logger logger = LogManager.getLogger("testFailover");
         logger.debug("Starting testFailover");
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
+            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = primaryChannel.getTransaction();
+            final Transaction transaction = primaryChannel.getTransaction();
             transaction.begin();
 
-            Event event = primaryChannel.take();
+            final Event event = primaryChannel.take();
             Assert.assertNotNull(event);
-            String body = getBody(event);
-            String expected = "Test Primary " + i;
+            final String body = getBody(event);
+            final String expected = "Test Primary " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
                 body.endsWith(expected));
             transaction.commit();
@@ -236,17 +236,17 @@ public class FlumeEmbeddedAgentTest {
 
 
         for (int i = 0; i < 10; ++i) {
-            StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
+            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            Transaction transaction = alternateChannel.getTransaction();
+            final Transaction transaction = alternateChannel.getTransaction();
             transaction.begin();
 
-            Event event = alternateChannel.take();
+            final Event event = alternateChannel.take();
             Assert.assertNotNull(event);
-            String body = getBody(event);
-            String expected = "Test Alternate " + i;
+            final String body = getBody(event);
+            final String expected = "Test Alternate " + i;
             /* When running in Gump Flume consistently returns the last event from the primary channel after
                the failover, which fails this test */
             Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
@@ -257,9 +257,9 @@ public class FlumeEmbeddedAgentTest {
     }
 
 
-    private String getBody(Event event) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
+    private String getBody(final Event event) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
         int n = 0;
         while (-1 != (n = is.read())) {
             baos.write(n);
@@ -268,12 +268,12 @@ public class FlumeEmbeddedAgentTest {
 
     }
 
-    private boolean deleteFiles(File file) {
+    private boolean deleteFiles(final File file) {
         boolean result = true;
         if (file.isDirectory()) {
 
-            File[] files = file.listFiles();
-            for (File child : files) {
+            final File[] files = file.listFiles();
+            for (final File child : files) {
                 result &= deleteFiles(child);
             }
 

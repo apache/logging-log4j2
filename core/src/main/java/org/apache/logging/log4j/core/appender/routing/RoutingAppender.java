@@ -48,17 +48,17 @@ public final class RoutingAppender extends AbstractAppender {
     private final Routes routes;
     private final Route defaultRoute;
     private final Configuration config;
-    private ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
 
-    private RoutingAppender(String name, Filter filter, boolean handleException, Routes routes,
-                            RewritePolicy rewritePolicy, Configuration config) {
+    private RoutingAppender(final String name, final Filter filter, final boolean handleException, final Routes routes,
+                            final RewritePolicy rewritePolicy, final Configuration config) {
         super(name, filter, null, handleException);
         this.routes = routes;
         this.config = config;
         this.rewritePolicy = rewritePolicy;
         Route defRoute = null;
-        for (Route route : routes.getRoutes()) {
+        for (final Route route : routes.getRoutes()) {
             if (route.getKey() == null) {
                 if (defRoute == null) {
                     defRoute = route;
@@ -72,13 +72,13 @@ public final class RoutingAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         // Register all the static routes.
-        for (Route route : routes.getRoutes()) {
+        for (final Route route : routes.getRoutes()) {
             if (route.getAppenderRef() != null) {
-                Appender appender = map.get(route.getAppenderRef());
+                final Appender appender = map.get(route.getAppenderRef());
                 if (appender != null) {
-                    String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
+                    final String key = route == defaultRoute ? DEFAULT_KEY : route.getKey();
                     appenders.put(key, new AppenderControl(appender, null, null));
                 } else {
                     LOGGER.error("Appender " + route.getAppenderRef() + " cannot be located. Route ignored");
@@ -91,9 +91,9 @@ public final class RoutingAppender extends AbstractAppender {
     @Override
     public void stop() {
         super.stop();
-        Map<String, Appender> map = config.getAppenders();
-        for (Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
-            String name = entry.getValue().getAppender().getName();
+        final Map<String, Appender> map = config.getAppenders();
+        for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
+            final String name = entry.getValue().getAppender().getName();
             if (!map.containsKey(name)) {
                 entry.getValue().getAppender().stop();
             }
@@ -104,20 +104,20 @@ public final class RoutingAppender extends AbstractAppender {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
         }
-        String key = config.getSubst().replace(event, routes.getPattern());
-        AppenderControl control = getControl(key, event);
+        final String key = config.getSubst().replace(event, routes.getPattern());
+        final AppenderControl control = getControl(key, event);
         if (control != null) {
             control.callAppender(event);
         }
     }
 
-    private synchronized AppenderControl getControl(String key, LogEvent event) {
+    private synchronized AppenderControl getControl(final String key, final LogEvent event) {
         AppenderControl control = appenders.get(key);
         if (control != null) {
             return control;
         }
         Route route = null;
-        for (Route r : routes.getRoutes()) {
+        for (final Route r : routes.getRoutes()) {
             if (r.getAppenderRef() == null && key.equals(r.getKey())) {
                 route = r;
                 break;
@@ -127,7 +127,7 @@ public final class RoutingAppender extends AbstractAppender {
             route = defaultRoute;
         }
         if (route != null) {
-            Appender app = createAppender(route, event);
+            final Appender app = createAppender(route, event);
             if (app == null) {
                 return null;
             }
@@ -138,14 +138,14 @@ public final class RoutingAppender extends AbstractAppender {
         return control;
     }
 
-    private Appender createAppender(Route route, LogEvent event) {
-        Node routeNode = route.getNode();
-        for (Node node : routeNode.getChildren()) {
+    private Appender createAppender(final Route route, final LogEvent event) {
+        final Node routeNode = route.getNode();
+        for (final Node node : routeNode.getChildren()) {
             if (node.getType().getElementName().equals("appender")) {
-                Node appNode = new Node(node);
+                final Node appNode = new Node(node);
                 config.createConfiguration(appNode, event);
                 if (appNode.getObject() instanceof Appender) {
-                    Appender app = (Appender) appNode.getObject();
+                    final Appender app = (Appender) appNode.getObject();
                     app.start();
                     return app;
                 }
@@ -169,14 +169,14 @@ public final class RoutingAppender extends AbstractAppender {
      * @return The RoutingAppender
      */
     @PluginFactory
-    public static RoutingAppender createAppender(@PluginAttr("name") String name,
-                                          @PluginAttr("suppressExceptions") String suppress,
-                                          @PluginElement("routes") Routes routes,
-                                          @PluginConfiguration Configuration config,
-                                          @PluginElement("rewritePolicy") RewritePolicy rewritePolicy,
-                                          @PluginElement("filters") Filter filter) {
+    public static RoutingAppender createAppender(@PluginAttr("name") final String name,
+                                          @PluginAttr("suppressExceptions") final String suppress,
+                                          @PluginElement("routes") final Routes routes,
+                                          @PluginConfiguration final Configuration config,
+                                          @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
+                                          @PluginElement("filters") final Filter filter) {
 
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
             LOGGER.error("No name provided for RoutingAppender");

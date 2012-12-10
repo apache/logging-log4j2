@@ -35,32 +35,32 @@ public final class MarkerFilter extends AbstractFilter {
 
     private final String name;
 
-    private MarkerFilter(String name, Result onMatch, Result onMismatch) {
+    private MarkerFilter(final String name, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.name = name;
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(marker);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(marker);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter(marker);
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return filter(event.getMarker());
     }
 
-    private Result filter(Marker marker) {
+    private Result filter(final Marker marker) {
         return marker != null && marker.isInstanceOf(name) ? onMatch : onMismatch;
     }
 
@@ -77,16 +77,16 @@ public final class MarkerFilter extends AbstractFilter {
      * @return A MarkerFilter.
      */
     @PluginFactory
-    public static MarkerFilter createFilter(@PluginAttr("marker") String marker,
-                                            @PluginAttr("onMatch") String match,
-                                            @PluginAttr("onMismatch") String mismatch) {
+    public static MarkerFilter createFilter(@PluginAttr("marker") final String marker,
+                                            @PluginAttr("onMatch") final String match,
+                                            @PluginAttr("onMismatch") final String mismatch) {
 
         if (marker == null) {
             LOGGER.error("A marker must be provided for MarkerFilter");
             return null;
         }
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
         return new MarkerFilter(marker, onMatch, onMismatch);
     }
 

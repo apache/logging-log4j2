@@ -54,7 +54,7 @@ public final class FileLocationPatternConverter extends LogEventPatternConverter
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        StackTraceElement element = event.getSource();
+        final StackTraceElement element = event.getSource();
 
         if (element != null) {
             output.append(element.getFileName());

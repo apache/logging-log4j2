@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 public class ThreadedTest {
     private static final String DIR = "target/threaded";
     private static final String CONFIG = "log4j-threaded.xml";
-    private Logger logger = LogManager.getLogger(ThreadedTest.class.getName());
+    private final Logger logger = LogManager.getLogger(ThreadedTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 25;
     private static final int THREADS = 4;
@@ -46,23 +46,23 @@ public class ThreadedTest {
     public static void setupClass() {
         deleteDir();
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
         deleteDir();
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
 
     @Test
     public void testDeadlock() throws Exception {
-        ExecutorService pool = Executors.newFixedThreadPool(THREADS * 2);
-        State state = new State();
+        final ExecutorService pool = Executors.newFixedThreadPool(THREADS * 2);
+        final State state = new State();
         for (int count=0; count < THREADS; ++count) {
             pool.execute(new LoggingRunnable(state));
             pool.execute(new StateSettingRunnable(state));
@@ -73,9 +73,9 @@ public class ThreadedTest {
     }
 
     public class LoggingRunnable implements Runnable {
-        private State state;
+        private final State state;
 
-        public LoggingRunnable(State state) {
+        public LoggingRunnable(final State state) {
             this.state = state;
         }
         public void run() {
@@ -85,9 +85,9 @@ public class ThreadedTest {
         }
     }
     public class StateSettingRunnable implements Runnable {
-        private State state;
+        private final State state;
 
-        public StateSettingRunnable(State state) {
+        public StateSettingRunnable(final State state) {
             this.state = state;
         }
         public void run() {
@@ -99,10 +99,10 @@ public class ThreadedTest {
     }
 
     private static void deleteDir() {
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         if (dir.exists()) {
-            File[] files = dir.listFiles();
-            for (File file : files) {
+            final File[] files = dir.listFiles();
+            for (final File file : files) {
                 file.delete();
             }
             dir.delete();

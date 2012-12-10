@@ -36,7 +36,7 @@ public final class Loader {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
-        String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
+        final String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
         if (ignoreTCLProp != null) {
             ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);
         }
@@ -67,13 +67,13 @@ public final class Loader {
      * @param defaultLoader The default ClassLoader.
      * @return A URL to the resource.
      */
-    public static URL getResource(String resource, ClassLoader defaultLoader) {
+    public static URL getResource(final String resource, final ClassLoader defaultLoader) {
         try {
             ClassLoader classLoader = getTCL();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using context classloader "
                         + classLoader + '.');
-                URL url = classLoader.getResource(resource);
+                final URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
@@ -83,7 +83,7 @@ public final class Loader {
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
-                URL url = classLoader.getResource(resource);
+                final URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
@@ -91,20 +91,20 @@ public final class Loader {
             // We could not find resource. Finally try with the default ClassLoader.
             if (defaultLoader != null) {
                 LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
-                URL url = defaultLoader.getResource(resource);
+                final URL url = defaultLoader.getResource(resource);
                 if (url != null) {
                     return url;
                 }
             }
-        } catch (IllegalAccessException t) {
+        } catch (final IllegalAccessException t) {
             LOGGER.warn(TSTR, t);
-        } catch (InvocationTargetException t) {
+        } catch (final InvocationTargetException t) {
             if (t.getTargetException() instanceof InterruptedException
                 || t.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             LOGGER.warn(TSTR, t);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
             //    since not declared, must be error or RuntimeError.
@@ -141,7 +141,7 @@ public final class Loader {
      * @param defaultLoader The default ClassLoader.
      * @return An InputStream to read the resouce.
      */
-    public static InputStream getResourceAsStream(String resource, ClassLoader defaultLoader) {
+    public static InputStream getResourceAsStream(final String resource, final ClassLoader defaultLoader) {
         ClassLoader classLoader;
         InputStream is;
 
@@ -173,15 +173,15 @@ public final class Loader {
                     return is;
                 }
             }
-        } catch (IllegalAccessException t) {
+        } catch (final IllegalAccessException t) {
             LOGGER.warn(TSTR, t);
-        } catch (InvocationTargetException t) {
+        } catch (final InvocationTargetException t) {
             if (t.getTargetException() instanceof InterruptedException
                 || t.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             LOGGER.warn(TSTR, t);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
             //    since not declared, must be error or RuntimeError.
@@ -202,29 +202,29 @@ public final class Loader {
      * @return The Class.
      * @throws ClassNotFoundException if the Class could not be found.
      */
-    public static Class<?> loadClass(String className) throws ClassNotFoundException {
+    public static Class<?> loadClass(final String className) throws ClassNotFoundException {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
             return Class.forName(className);
         } else {
             try {
                 return getTCL().loadClass(className);
-            } catch (Throwable e) {
+            } catch (final Throwable e) {
                 return Class.forName(className);
             }
         }
     }
 
-    public static ClassLoader getClassLoader(Class<?> class1, Class<?> class2) {
+    public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
 
         ClassLoader loader1 = null;
         try {
             loader1 = getTCL();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
         }
-        ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
-        ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
+        final ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
+        final ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
 
         if (isChild(loader1, loader2)) {
             return isChild(loader1, loader3) ? loader1 : loader3;
@@ -233,7 +233,7 @@ public final class Loader {
         }
     }
 
-    private static boolean isChild(ClassLoader loader1, ClassLoader loader2) {
+    private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
         if (loader1 != null && loader2 != null) {
             ClassLoader parent = loader1.getParent();
             while (parent != null && parent != loader2) {

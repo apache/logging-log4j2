@@ -50,7 +50,7 @@ public class StrictXMLConfigTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
@@ -71,7 +71,7 @@ public class StrictXMLConfigTest {
     public void basicFlow() {
         logger.entry();
         logger.exit();
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
         app.clear();
     }
@@ -80,7 +80,7 @@ public class StrictXMLConfigTest {
     public void simpleFlow() {
         logger.entry(CONFIG);
         logger.exit(0);
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
         app.clear();
     }
@@ -88,7 +88,7 @@ public class StrictXMLConfigTest {
     @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }
@@ -97,10 +97,10 @@ public class StrictXMLConfigTest {
     public void catching() {
         try {
             throw new NullPointerException();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.catching(e);
         }
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }
@@ -108,7 +108,7 @@ public class StrictXMLConfigTest {
     @Test
     public void debug() {
         logger.debug("Debug message");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }
@@ -116,7 +116,7 @@ public class StrictXMLConfigTest {
     @Test
     public void debugObject() {
         logger.debug(new Date());
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }
@@ -124,7 +124,7 @@ public class StrictXMLConfigTest {
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }
@@ -136,7 +136,7 @@ public class StrictXMLConfigTest {
         logger.debug("Debug message");
         ThreadContext.clear();
         logger.debug("Debug message");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 2, actual " + events.size(), events.size() == 2);
         app.clear();
     }
@@ -146,13 +146,13 @@ public class StrictXMLConfigTest {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
+        final StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         logger.info(MarkerManager.getMarker("EVENT"), msg);
         ThreadContext.clear();
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
     }

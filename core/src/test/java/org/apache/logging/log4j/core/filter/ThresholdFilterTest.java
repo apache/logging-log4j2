@@ -32,7 +32,7 @@ public class ThresholdFilterTest {
 
     @Test
     public void testThresholds() {
-        ThresholdFilter filter = ThresholdFilter.createFilter("ERROR", null, null);
+        final ThresholdFilter filter = ThresholdFilter.createFilter("ERROR", null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.DENY);

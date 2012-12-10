@@ -35,7 +35,7 @@ public class JunitTestRunnerFilter implements Filter {
   /**
    * Filter out stack trace lines coming from the various JUnit TestRunners.
    */
-  public String filter(String in) {
+  public String filter(final String in) {
     if (in == null) {
       return null;
     }

@@ -84,24 +84,24 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private final File configFile;
 
-    public XMLConfiguration(ConfigurationFactory.ConfigurationSource configSource) {
+    public XMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
         this.configFile = configSource.getFile();
         byte[] buffer = null;
 
         try {
-            InputStream configStream = configSource.getInputStream();
+            final InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
-            InputSource source = new InputSource(new ByteArrayInputStream(buffer));
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(source);
+            final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
+            final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            final Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
-            Map<String, String> attrs = processAttributes(rootNode, rootElement);
+            final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             Level status = Level.OFF;
             boolean verbose = false;
             PrintStream stream = System.out;
 
-            for (Map.Entry<String, String> entry : attrs.entrySet()) {
+            for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
                     status = Level.toLevel(getSubst().replace(entry.getValue()), null);
                     if (status == null) {
@@ -109,15 +109,15 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
                     }
                 } else if ("dest".equalsIgnoreCase(entry.getKey())) {
-                    String dest = entry.getValue();
+                    final String dest = entry.getValue();
                     if (dest != null) {
                         if (dest.equalsIgnoreCase("err")) {
                             stream = System.err;
                         } else {
                             try {
-                                File destFile = FileUtils.fileFromURI(new URI(dest));
+                                final File destFile = FileUtils.fileFromURI(new URI(dest));
                                 stream = new PrintStream(new FileOutputStream(destFile));
-                            } catch (URISyntaxException use) {
+                            } catch (final URISyntaxException use) {
                                 System.err.println("Unable to write to " + dest + ". Writing to stdout");
                             }
                         }
@@ -125,8 +125,8 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(getSubst().replace(entry.getKey()))) {
-                    String[] packages = entry.getValue().split(",");
-                    for (String p : packages) {
+                    final String[] packages = entry.getValue().split(",");
+                    for (final String p : packages) {
                         PluginManager.addPackage(p);
                     }
                 } else if ("name".equalsIgnoreCase(entry.getKey())) {
@@ -136,16 +136,16 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                 } else if ("schema".equalsIgnoreCase(entry.getKey())) {
                     schema = getSubst().replace(entry.getValue());
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
-                    int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
+                    final int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 }
             }
-            Iterator<StatusListener> iter = ((StatusLogger) LOGGER).getListeners();
+            final Iterator<StatusListener> iter = ((StatusLogger) LOGGER).getListeners();
             boolean found = false;
             while (iter.hasNext()) {
-                StatusListener listener = iter.next();
+                final StatusListener listener = iter.next();
                 if (listener instanceof StatusConsoleListener) {
                     found = true;
                     ((StatusConsoleListener) listener).setLevel(status);
@@ -155,46 +155,46 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                 }
             }
             if (!found && status != Level.OFF) {
-                StatusConsoleListener listener = new StatusConsoleListener(status, stream);
+                final StatusConsoleListener listener = new StatusConsoleListener(status, stream);
                 if (!verbose) {
                     listener.setFilters(VERBOSE_CLASSES);
                 }
                 ((StatusLogger) LOGGER).registerListener(listener);
-                for (String msg : messages) {
+                for (final String msg : messages) {
                     LOGGER.error(msg);
                 }
             }
 
-        } catch (SAXException domEx) {
+        } catch (final SAXException domEx) {
             LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.error("Error parsing " + configSource.getLocation(), ioe);
-        } catch (ParserConfigurationException pex) {
+        } catch (final ParserConfigurationException pex) {
             LOGGER.error("Error parsing " + configSource.getLocation(), pex);
         }
         if (strict && schema != null && buffer != null) {
             InputStream is = null;
             try {
                 is = getClass().getClassLoader().getResourceAsStream(schema);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Unable to access schema " + schema);
             }
             if (is != null) {
-                Source src = new StreamSource(is, LOG4J_XSD);
-                SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                final Source src = new StreamSource(is, LOG4J_XSD);
+                final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
                 Schema schema = null;
                 try {
                     schema = factory.newSchema(src);
-                } catch (SAXException ex) {
+                } catch (final SAXException ex) {
                     LOGGER.error("Error parsing Log4j schema", ex);
                 }
                 if (schema != null) {
                     validator = schema.newValidator();
                     try {
                         validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
-                    } catch (IOException ioe) {
+                    } catch (final IOException ioe) {
                         LOGGER.error("Error reading configuration for validation", ioe);
-                    } catch (SAXException ex) {
+                    } catch (final SAXException ex) {
                         LOGGER.error("Error validating configuration", ex);
                     }
                 }
@@ -210,7 +210,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     public void setup() {
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
-            for (Status s : status) {
+            for (final Status s : status) {
                 LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
             return;
@@ -221,31 +221,31 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     public Configuration reconfigure() {
         if (configFile != null) {
             try {
-                ConfigurationFactory.ConfigurationSource source =
+                final ConfigurationFactory.ConfigurationSource source =
                     new ConfigurationFactory.ConfigurationSource(new FileInputStream(configFile), configFile);
                 return new XMLConfiguration(source);
-            } catch (FileNotFoundException ex) {
+            } catch (final FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configFile, ex);
             }
         }
         return null;
     }
 
-    private void constructHierarchy(Node node, Element element) {
+    private void constructHierarchy(final Node node, final Element element) {
         processAttributes(node, element);
-        StringBuffer buffer = new StringBuffer();
-        NodeList list = element.getChildNodes();
-        List<Node> children = node.getChildren();
+        final StringBuffer buffer = new StringBuffer();
+        final NodeList list = element.getChildNodes();
+        final List<Node> children = node.getChildren();
         for (int i = 0; i < list.getLength(); i++) {
-            org.w3c.dom.Node w3cNode = list.item(i);
+            final org.w3c.dom.Node w3cNode = list.item(i);
             if (w3cNode instanceof Element) {
-                Element child = (Element) w3cNode;
-                String name = getType(child);
-                PluginType type = getPluginManager().getPluginType(name);
-                Node childNode = new Node(node, name, type);
+                final Element child = (Element) w3cNode;
+                final String name = getType(child);
+                final PluginType type = getPluginManager().getPluginType(name);
+                final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {
-                    String value = childNode.getValue();
+                    final String value = childNode.getValue();
                     if (!childNode.hasChildren() && value != null) {
                         node.getAttributes().put(name, value);
                     } else {
@@ -255,26 +255,26 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                     children.add(childNode);
                 }
             } else if (w3cNode instanceof Text) {
-                Text data = (Text) w3cNode;
+                final Text data = (Text) w3cNode;
                 buffer.append(data.getData());
             }
         }
 
-        String text = buffer.toString().trim();
+        final String text = buffer.toString().trim();
         if (text.length() > 0 || (!node.hasChildren() && !node.isRoot())) {
             node.setValue(text);
         }
     }
 
-    private String getType(Element element) {
+    private String getType(final Element element) {
         if (strict) {
-            NamedNodeMap attrs = element.getAttributes();
+            final NamedNodeMap attrs = element.getAttributes();
             for (int i = 0; i < attrs.getLength(); ++i) {
-                org.w3c.dom.Node w3cNode = attrs.item(i);
+                final org.w3c.dom.Node w3cNode = attrs.item(i);
                 if (w3cNode instanceof Attr) {
-                    Attr attr = (Attr) w3cNode;
+                    final Attr attr = (Attr) w3cNode;
                     if (attr.getName().equalsIgnoreCase("type")) {
-                        String type = attr.getValue();
+                        final String type = attr.getValue();
                         attrs.removeNamedItem(attr.getName());
                         return type;
                     }
@@ -284,11 +284,11 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         return element.getTagName();
     }
 
-    private byte[] toByteArray(InputStream is) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    private byte[] toByteArray(final InputStream is) throws IOException {
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
-        byte[] data = new byte[BUF_SIZE];
+        final byte[] data = new byte[BUF_SIZE];
 
         while ((nRead = is.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, nRead);
@@ -297,14 +297,14 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         return buffer.toByteArray();
     }
 
-    private Map<String, String> processAttributes(Node node, Element element) {
-        NamedNodeMap attrs = element.getAttributes();
-        Map<String, String> attributes = node.getAttributes();
+    private Map<String, String> processAttributes(final Node node, final Element element) {
+        final NamedNodeMap attrs = element.getAttributes();
+        final Map<String, String> attributes = node.getAttributes();
 
         for (int i = 0; i < attrs.getLength(); ++i) {
-            org.w3c.dom.Node w3cNode = attrs.item(i);
+            final org.w3c.dom.Node w3cNode = attrs.item(i);
             if (w3cNode instanceof Attr) {
-                Attr attr = (Attr) w3cNode;
+                final Attr attr = (Attr) w3cNode;
                 attributes.put(attr.getName(), attr.getValue());
             }
         }
@@ -326,7 +326,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         private final String name;
         private final ErrorType errorType;
 
-        public Status(String name, Element element, ErrorType errorType) {
+        public Status(final String name, final Element element, final ErrorType errorType) {
             this.name = name;
             this.element = element;
             this.errorType = errorType;

@@ -29,16 +29,16 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name="AlwaysFail",type="Core",elementType="appender",printObject=true)
 public class AlwaysFailAppender extends AbstractAppender {
 
-    private AlwaysFailAppender(String name) {
+    private AlwaysFailAppender(final String name) {
         super(name, null, null, false);
     }
 
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         throw new LoggingException("Always fail");
     }
 
     @PluginFactory
-    public static AlwaysFailAppender createAppender(@PluginAttr("name") String name) {
+    public static AlwaysFailAppender createAppender(@PluginAttr("name") final String name) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;

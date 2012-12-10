@@ -49,7 +49,7 @@ public class BurstFilterTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("ListAppender")) {
                 app = (ListAppender) entry.getValue();
                 filter = (BurstFilter) app.getFilter();
@@ -58,7 +58,7 @@ public class BurstFilterTest {
         }
     }
 
-    private Logger logger = LogManager.getLogger(BurstFilterTest.class.getName());
+    private final Logger logger = LogManager.getLogger(BurstFilterTest.class.getName());
 
     /**
      * Test BurstFilter by surpassing maximum number of log messages allowed by filter and
@@ -70,7 +70,7 @@ public class BurstFilterTest {
         assertNotNull("No ListAppender", app);
         assertNotNull("No BurstFilter", filter);
         // exceed the burst limit and make sure no more than 100 errors get logged
-        long start = System.nanoTime();
+        final long start = System.nanoTime();
         for (int i = 0; i < 110; i++) {
             if (i % 10 == 0) {
                 Thread.sleep(200);

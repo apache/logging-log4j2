@@ -44,16 +44,16 @@ public class DefaultConfiguration extends BaseConfiguration {
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
-        Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
+        final Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
             null, null, null);
-        Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         appender.start();
         addAppender(appender);
-        LoggerConfig root = getRootLogger();
+        final LoggerConfig root = getRootLogger();
         root.addAppender(appender, null, null);
 
-        String levelName = System.getProperty(DEFAULT_LEVEL);
-        Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
+        final String levelName = System.getProperty(DEFAULT_LEVEL);
+        final Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 

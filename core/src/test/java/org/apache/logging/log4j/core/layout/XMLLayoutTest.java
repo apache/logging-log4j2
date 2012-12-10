@@ -44,7 +44,7 @@ public class XMLLayoutTest {
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -64,8 +64,8 @@ public class XMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null);
-        ListAppender appender = new ListAppender("List", null, layout, true, false);
+        final XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -89,7 +89,7 @@ public class XMLLayoutTest {
 
         appender.stop();
 
-        List<String> list = appender.getMessages();
+        final List<String> list = appender.getMessages();
 
         assertTrue("Incorrect number of lines. Require at least 50 " + list.size(), list.size() > 50);
         assertTrue("Incorrect header", list.get(0).equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));

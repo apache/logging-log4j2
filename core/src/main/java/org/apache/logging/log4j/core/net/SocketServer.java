@@ -62,7 +62,7 @@ public class SocketServer extends AbstractServer implements Runnable {
      * @param port to listen on.
      * @throws IOException If an error occurs.
      */
-    public SocketServer(int port) throws IOException {
+    public SocketServer(final int port) throws IOException {
         server = new ServerSocket(port);
         if (logger == null) {
             logger = LogManager.getLogger(this);
@@ -75,13 +75,13 @@ public class SocketServer extends AbstractServer implements Runnable {
      * @param args The command line arguments.
      * @throws Exception if an error occurs.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
             System.err.println("Incorrect number of arguments");
             printUsage();
             return;
         }
-        int port = Integer.parseInt(args[0]);
+        final int port = Integer.parseInt(args[0]);
         if (port <= 0 || port >= MAX_PORT) {
             System.err.println("Invalid port number");
             printUsage();
@@ -91,12 +91,12 @@ public class SocketServer extends AbstractServer implements Runnable {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
         logger = LogManager.getLogger(SocketServer.class.getName());
-        SocketServer sserver = new SocketServer(port);
-        Thread server = new Thread(sserver);
+        final SocketServer sserver = new SocketServer(port);
+        final Thread server = new Thread(sserver);
         server.start();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            String line = reader.readLine();
+            final String line = reader.readLine();
             if (line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
                 sserver.shutdown();
                 server.join();
@@ -124,27 +124,27 @@ public class SocketServer extends AbstractServer implements Runnable {
         while (isActive) {
             try {
                 // Accept incoming connections.
-                Socket clientSocket = server.accept();
+                final Socket clientSocket = server.accept();
                 clientSocket.setSoLinger(true, 0);
 
                 // accept() will block until a client connects to the server.
                 // If execution reaches this point, then it means that a client
                 // socket has been accepted.
 
-                SocketHandler handler = new SocketHandler(clientSocket);
+                final SocketHandler handler = new SocketHandler(clientSocket);
                 handlers.put(handler.getId(), handler);
                 handler.start();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
                 ioe.printStackTrace();
             }
         }
-        for (Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
-            SocketHandler handler = entry.getValue();
+        for (final Map.Entry<Long, SocketHandler> entry : handlers.entrySet()) {
+            final SocketHandler handler = entry.getValue();
             handler.shutdown();
             try {
                 handler.join();
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 // Ignore the exception
             }
         }
@@ -158,7 +158,7 @@ public class SocketServer extends AbstractServer implements Runnable {
 
         private boolean shutdown = false;
 
-        public SocketHandler(Socket socket) throws IOException {
+        public SocketHandler(final Socket socket) throws IOException {
 
             ois = new ObjectInputStream(socket.getInputStream());
         }
@@ -174,24 +174,24 @@ public class SocketServer extends AbstractServer implements Runnable {
             try {
                 try {
                     while (!shutdown) {
-                        LogEvent event = (LogEvent) ois.readObject();
+                        final LogEvent event = (LogEvent) ois.readObject();
                         if (event != null) {
                             log(event);
                         }
                     }
-                } catch (EOFException eof) {
+                } catch (final EOFException eof) {
                     closed = true;
-                } catch (OptionalDataException opt) {
+                } catch (final OptionalDataException opt) {
                     logger.error("OptionalDataException eof=" + opt.eof + " length=" + opt.length, opt);
-                } catch (ClassNotFoundException cnfe) {
+                } catch (final ClassNotFoundException cnfe) {
                     logger.error("Unable to locate LogEvent class", cnfe);
-                } catch (IOException ioe) {
+                } catch (final IOException ioe) {
                     logger.error("IOException encountered while reading from socket", ioe);
                 }
                 if (!closed) {
                     try {
                         ois.close();
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         // Ignore the exception;
                     }
                 }
@@ -208,29 +208,29 @@ public class SocketServer extends AbstractServer implements Runnable {
 
         private final String path;
 
-        public ServerConfigurationFactory(String path) {
+        public ServerConfigurationFactory(final String path) {
             this.path = path;
         }
 
         @Override
-        public Configuration getConfiguration(String name, URI configLocation) {
+        public Configuration getConfiguration(final String name, final URI configLocation) {
             if (path != null && path.length() > 0) {
                 File file = null;
                 ConfigurationSource source = null;
                 try {
                     file = new File(path);
-                    FileInputStream is = new FileInputStream(file);
+                    final FileInputStream is = new FileInputStream(file);
                     source = new ConfigurationSource(is, file);
-                } catch (FileNotFoundException ex) {
+                } catch (final FileNotFoundException ex) {
                     // Ignore this error
                 }
                 if (source == null) {
                     try {
-                        URL url = new URL(path);
+                        final URL url = new URL(path);
                         source = new ConfigurationSource(url.openStream(), path);
-                    } catch (MalformedURLException mue) {
+                    } catch (final MalformedURLException mue) {
                         // Ignore this error
-                    } catch (IOException ioe) {
+                    } catch (final IOException ioe) {
                         // Ignore this error
                     }
                 }
@@ -239,7 +239,7 @@ public class SocketServer extends AbstractServer implements Runnable {
                     if (source != null) {
                         return new XMLConfiguration(source);
                     }
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     // Ignore this error.
                 }
                 System.err.println("Unable to process configuration at " + path + ", using default.");

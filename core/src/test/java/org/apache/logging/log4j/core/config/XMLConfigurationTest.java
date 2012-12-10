@@ -50,10 +50,10 @@ public class XMLConfigurationTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
-            String name = ((XMLConfiguration) config).getName();
+            final String name = ((XMLConfiguration) config).getName();
             if (name == null || !name.equals("XMLConfigTest")) {
                 ctx.reconfigure();
             }
@@ -65,46 +65,46 @@ public class XMLConfigurationTest {
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
 
     @Test
     public void testLogger() {
-        Logger logger = LogManager.getLogger("org.apache.logging.log4j.test1.Test");
+        final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test1.Test");
         assertTrue(logger instanceof org.apache.logging.log4j.core.Logger);
-        org.apache.logging.log4j.core.Logger l = (org.apache.logging.log4j.core.Logger) logger;
+        final org.apache.logging.log4j.core.Logger l = (org.apache.logging.log4j.core.Logger) logger;
         assertEquals(Level.DEBUG, l.getLevel());
-        int filterCount = l.filterCount();
+        final int filterCount = l.filterCount();
         assertTrue("number of filters - " + filterCount, filterCount == 1);
-        Iterator<Filter> iter = l.getFilters();
-        Filter filter = iter.next();
+        final Iterator<Filter> iter = l.getFilters();
+        final Filter filter = iter.next();
         assertTrue(filter instanceof ThreadContextMapFilter);
-        Map<String, Appender> appenders = l.getAppenders();
+        final Map<String, Appender> appenders = l.getAppenders();
         assertNotNull(appenders);
         assertTrue("number of appenders = " + appenders.size(), appenders.size() == 1);
-        Appender a = appenders.get("STDOUT");
+        final Appender a = appenders.get("STDOUT");
         assertNotNull(a);
         assertEquals(a.getName(), "STDOUT");
     }
 
     public void testConfiguredAppenders() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration c = ctx.getConfiguration();
-        Map<String, Appender> apps = c.getAppenders();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration c = ctx.getConfiguration();
+        final Map<String, Appender> apps = c.getAppenders();
         assertNotNull(apps);
         assertEquals(apps.size(), 3);
     }
 
     @Test
     public void logToFile() throws Exception {
-        FileOutputStream fos = new FileOutputStream(LOGFILE, false);
+        final FileOutputStream fos = new FileOutputStream(LOGFILE, false);
         fos.flush();
         fos.close();
-        Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
+        final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
         logger.debug("This is a test");
-        DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(LOGFILE)));
+        final DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(LOGFILE)));
         int count = 0;
         String str = "";
         while (is.available() != 0) {

@@ -54,7 +54,7 @@ public class SyslogLayoutTest {
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -73,9 +73,9 @@ public class SyslogLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        SyslogLayout layout = SyslogLayout.createLayout("Local0", "true", null);
+        final SyslogLayout layout = SyslogLayout.createLayout("Local0", "true", null);
         //ConsoleAppender appender = new ConsoleAppender("Console", layout);
-        ListAppender appender = new ListAppender("List", null, layout, true, false);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -95,7 +95,7 @@ public class SyslogLayoutTest {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+        final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
@@ -105,7 +105,7 @@ public class SyslogLayoutTest {
 
         appender.stop();
 
-        List<String> list = appender.getMessages();
+        final List<String> list = appender.getMessages();
 
         assertTrue("Expected line 1 to end with: " + line1 + " Actual " + list.get(0), list.get(0).endsWith(line1));
         assertTrue("Expected line 2 to end with: " + line2 + " Actual " + list.get(1), list.get(1).endsWith(line2));

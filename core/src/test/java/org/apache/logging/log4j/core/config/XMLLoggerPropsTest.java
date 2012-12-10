@@ -48,7 +48,7 @@ public class XMLLoggerPropsTest {
         System.setProperty("test", "test");
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
@@ -73,7 +73,7 @@ public class XMLLoggerPropsTest {
             logger.debug("Test with props");
             logger = LogManager.getLogger("tiny.bubbles");
             logger.debug("Test on root");
-            List<String> events = app.getMessages();
+            final List<String> events = app.getMessages();
             assertTrue("No events", events.size() > 0);
             assertTrue("Incorrect number of events", events.size() == 2);
             assertTrue("Incorrect value", events.get(0).contains("test=test"));

@@ -36,7 +36,7 @@ public class FileManager extends OutputStreamManager {
     private final boolean isAppend;
     private final boolean isLocking;
 
-    protected FileManager(String fileName, OutputStream os, boolean append, boolean locking) {
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking) {
         super(os, fileName);
         this.isAppend = append;
         this.isLocking = locking;
@@ -50,7 +50,7 @@ public class FileManager extends OutputStreamManager {
      * @param bufferedIO true if the contents should be buffered as they are written.
      * @return A FileManager for the File.
      */
-    public static FileManager getFileManager(String fileName, boolean append, boolean locking, boolean bufferedIO) {
+    public static FileManager getFileManager(final String fileName, final boolean append, boolean locking, final boolean bufferedIO) {
 
         if (locking && bufferedIO) {
             locking = false;
@@ -59,10 +59,10 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(byte[] bytes, int offset, int length)  {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
 
         if (isLocking) {
-            FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
+            final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
             try {
                 /* Lock the whole file. This could be optimized to only lock from the current file
                    position. Note that locking may be advisory on some systems and mandatory on others,
@@ -71,13 +71,13 @@ public class FileManager extends OutputStreamManager {
                    file is already locked by another FileChannel in the same JVM. Hopefully, that will
                    be avoided since every file should have a single file manager - unless two different
                    files strings are configured that somehow map to the same file.*/
-                FileLock lock = channel.lock(0, Long.MAX_VALUE, false);
+                final FileLock lock = channel.lock(0, Long.MAX_VALUE, false);
                 try {
                     super.write(bytes, offset, length);
                 } finally {
                     lock.release();
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 throw new AppenderRuntimeException("Unable to obtain lock on " + getName(), ex);
             }
 
@@ -124,7 +124,7 @@ public class FileManager extends OutputStreamManager {
          * @param locking Locking status.
          * @param bufferedIO Buffering flag.
          */
-        public FactoryData(boolean append, boolean locking, boolean bufferedIO) {
+        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
@@ -142,8 +142,8 @@ public class FileManager extends OutputStreamManager {
          * @param data The FactoryData
          * @return The FileManager for the File.
          */
-        public FileManager createManager(String name, FactoryData data) {
-            File file = new File(name);
+        public FileManager createManager(final String name, final FactoryData data) {
+            final File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
@@ -156,7 +156,7 @@ public class FileManager extends OutputStreamManager {
                     os = new BufferedOutputStream(os);
                 }
                 return new FileManager(name, os, data.append, data.locking);
-            } catch (FileNotFoundException ex) {
+            } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }
             return null;

@@ -38,14 +38,14 @@ public class OutputStreamAppenderTest {
 
     @Test
     public void testAppender() {
-        Layout layout = PatternLayout.createLayout(null, null, null, null);
-        InMemoryAppender app = new InMemoryAppender("test", layout, null, false);
-        LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(), Level.INFO,
+        final Layout layout = PatternLayout.createLayout(null, null, null, null);
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false);
+        final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(), Level.INFO,
             new SimpleMessage("Test"), null);
         app.start();
         assertTrue("Appender did not start", app.isStarted());
         app.append(event);
-        String msg = app.toString();
+        final String msg = app.toString();
         assertNotNull("No message", msg);
         assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + LINE_SEP));
         app.stop();

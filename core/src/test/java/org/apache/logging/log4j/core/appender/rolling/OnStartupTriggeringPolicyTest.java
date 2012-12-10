@@ -34,9 +34,9 @@ public class OnStartupTriggeringPolicyTest {
     @Test
     public void testPolicy() {
         OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy();
-        MyRollingManager manager = new MyRollingManager(policy, null);
+        final MyRollingManager manager = new MyRollingManager(policy, null);
         manager.setFileTime(System.currentTimeMillis() - 36000000);
-        LogEvent event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
+        final LogEvent event = new Log4jLogEvent(null, null, null, Level.ERROR, new SimpleMessage("Test"), null);
         assertTrue("Expected trigger to succeed", policy.isTriggeringEvent(event));
         assertTrue("Expected trigger not to fire", !policy.isTriggeringEvent(event));
         policy = OnStartupTriggeringPolicy.createPolicy();
@@ -50,12 +50,12 @@ public class OnStartupTriggeringPolicyTest {
 
         private long timestamp;
 
-        public MyRollingManager(TriggeringPolicy policy, RolloverStrategy strategy) {
+        public MyRollingManager(final TriggeringPolicy policy, final RolloverStrategy strategy) {
             super("testfile", "target/rolling1/test1-%i.log.gz", new ByteArrayOutputStream(),
                 false, 0, System.currentTimeMillis(), policy, strategy);
         }
 
-        public void setFileTime(long timestamp) {
+        public void setFileTime(final long timestamp) {
             this.timestamp = timestamp;
         }
 

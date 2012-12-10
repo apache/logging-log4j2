@@ -111,7 +111,7 @@ final class CachedDateFormat extends DateFormat {
     /**
      * Cache of previous conversion.
      */
-    private StringBuffer cache = new StringBuffer(BUF_SIZE);
+    private final StringBuffer cache = new StringBuffer(BUF_SIZE);
 
     /**
      * Maximum validity period for the cache.
@@ -176,7 +176,7 @@ final class CachedDateFormat extends DateFormat {
             slotBegin -= MILLIS_IN_SECONDS;
         }
 
-        int millis = (int) (time - slotBegin);
+        final int millis = (int) (time - slotBegin);
 
         int magic = MAGIC1;
         String magicString = MAGICSTRING1;
@@ -186,7 +186,7 @@ final class CachedDateFormat extends DateFormat {
             magicString = MAGICSTRING2;
         }
 
-        String plusMagic = formatter.format(new Date(slotBegin + magic));
+        final String plusMagic = formatter.format(new Date(slotBegin + magic));
 
         /**
          *   If the string lengths differ then
@@ -200,10 +200,10 @@ final class CachedDateFormat extends DateFormat {
                 if (formatted.charAt(i) != plusMagic.charAt(i)) {
                     //
                     //   determine the expected digits for the base time
-                    StringBuffer formattedMillis = new StringBuffer("ABC");
+                    final StringBuffer formattedMillis = new StringBuffer("ABC");
                     millisecondFormat(millis, formattedMillis, 0);
 
-                    String plusZero = formatter.format(new Date(slotBegin));
+                    final String plusZero = formatter.format(new Date(slotBegin));
 
                     //   If the next 3 characters match the magic
                     //      string and the expected string
@@ -235,7 +235,7 @@ final class CachedDateFormat extends DateFormat {
      * @return the formatted time string.
      */
     @Override
-    public StringBuffer format(Date date, StringBuffer sbuf, FieldPosition fieldPosition) {
+    public StringBuffer format(final Date date, final StringBuffer sbuf, final FieldPosition fieldPosition) {
         format(date.getTime(), sbuf);
 
         return sbuf;
@@ -248,7 +248,7 @@ final class CachedDateFormat extends DateFormat {
      * @param buf the string buffer to write to.
      * @return the formatted time string.
      */
-    public StringBuffer format(long now, StringBuffer buf) {
+    public StringBuffer format(final long now, final StringBuffer buf) {
         //
         // If the current requested time is identical to the previously
         //     requested time, then append the cache contents.
@@ -349,7 +349,7 @@ final class CachedDateFormat extends DateFormat {
      * @return parsed date, likely null.
      */
     @Override
-    public Date parse(String s, ParsePosition pos) {
+    public Date parse(final String s, final ParsePosition pos) {
         return formatter.parse(s, pos);
     }
 
@@ -377,7 +377,7 @@ final class CachedDateFormat extends DateFormat {
         //      (for example, "HH:mm:ss,SSS SSS"), then set the expiration to
         //      one millisecond which should only perform duplicate request caching.
         //
-        int firstS = pattern.indexOf('S');
+        final int firstS = pattern.indexOf('S');
 
         if ((firstS >= 0) && (firstS != pattern.lastIndexOf("SSS"))) {
             return 1;

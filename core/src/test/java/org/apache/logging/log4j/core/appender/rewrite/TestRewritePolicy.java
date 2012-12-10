@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 @Plugin(name = "TestRewritePolicy", type = "Core", elementType = "rewritePolicy", printObject = true)
 public class TestRewritePolicy implements RewritePolicy {
 
-    public LogEvent rewrite(LogEvent source) {
+    public LogEvent rewrite(final LogEvent source) {
 
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             source.getMessage(), source.getThrown(), source.getContextMap(), source.getContextStack(),

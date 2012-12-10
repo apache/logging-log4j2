@@ -70,7 +70,7 @@ public abstract class Filter {
     /**
      * Set the next filter pointer.
      */
-    public void setNext(Filter next) {
+    public void setNext(final Filter next) {
         this.next = next;
     }
 

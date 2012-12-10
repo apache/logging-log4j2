@@ -23,8 +23,8 @@ public class AbsoluteTimeFilter implements Filter {
     
     private final Perl5Util util = new Perl5Util();
 
-    public String filter(String in) {
-        String pat = "/" + Filter.ABSOLUTE_TIME_PAT + "/";
+    public String filter(final String in) {
+        final String pat = "/" + Filter.ABSOLUTE_TIME_PAT + "/";
 
         if (util.match(pat, in)) {
             return util.substitute("s/" + Filter.ABSOLUTE_TIME_PAT + "//", in);

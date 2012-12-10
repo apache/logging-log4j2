@@ -33,7 +33,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     private RollingFileManager manager;
 
-    private TimeBasedTriggeringPolicy(int interval, boolean modulate) {
+    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate) {
         this.interval = interval;
         this.modulate = modulate;
     }
@@ -42,7 +42,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * Initialize the policy.
      * @param manager The RollingFileManager.
      */
-    public void initialize(RollingFileManager manager) {
+    public void initialize(final RollingFileManager manager) {
         this.manager = manager;
         nextRollover = manager.getProcessor().getNextTime(manager.getFileTime(), interval, modulate);
     }
@@ -52,11 +52,11 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * @param event   A reference to the currently event.
      * @return true if a rollover should occur.
      */
-    public boolean isTriggeringEvent(LogEvent event) {
+    public boolean isTriggeringEvent(final LogEvent event) {
         if (manager.getFileSize() == 0) {
             return false;
         }
-        long now = System.currentTimeMillis();
+        final long now = System.currentTimeMillis();
         if (now > nextRollover) {
             nextRollover = manager.getProcessor().getNextTime(now, interval, modulate);
             return true;
@@ -74,10 +74,10 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * @return a TimeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static TimeBasedTriggeringPolicy createPolicy(@PluginAttr("interval") String interval,
-                                                         @PluginAttr("modulate") String modulate) {
-        int increment = interval == null ? 1 : Integer.parseInt(interval);
-        boolean mod = modulate == null ? false : Boolean.parseBoolean(modulate);
+    public static TimeBasedTriggeringPolicy createPolicy(@PluginAttr("interval") final String interval,
+                                                         @PluginAttr("modulate") final String modulate) {
+        final int increment = interval == null ? 1 : Integer.parseInt(interval);
+        final boolean mod = modulate == null ? false : Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);
     }
 }

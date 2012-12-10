@@ -49,7 +49,7 @@ public class FileRenameAction extends AbstractAction {
      * @param dst              new file name.
      * @param renameEmptyFiles if true, rename file even if empty, otherwise delete empty files.
      */
-    public FileRenameAction(final File src, final File dst, boolean renameEmptyFiles) {
+    public FileRenameAction(final File src, final File dst, final boolean renameEmptyFiles) {
         source = src;
         destination = dst;
         this.renameEmptyFiles = renameEmptyFiles;
@@ -73,9 +73,9 @@ public class FileRenameAction extends AbstractAction {
      * @param renameEmptyFiles if true, rename file even if empty, otherwise delete empty files.
      * @return true if successfully renamed.
      */
-    public static boolean execute(final File source, final File destination, boolean renameEmptyFiles) {
+    public static boolean execute(final File source, final File destination, final boolean renameEmptyFiles) {
         if (renameEmptyFiles || (source.length() > 0)) {
-            File parent = destination.getParentFile();
+            final File parent = destination.getParentFile();
             if (!parent.exists()) {
                 if (!parent.mkdirs()) {
                     LOGGER.error("Unable to create directory {}", parent.getAbsolutePath());
@@ -87,17 +87,17 @@ public class FileRenameAction extends AbstractAction {
                     try {
                         copyFile(source, destination);
                         return source.delete();
-                    } catch (IOException iex) {
+                    } catch (final IOException iex) {
                         LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
                             destination.getAbsolutePath(), iex.getMessage());
                     }
                 }
                 return true;
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 try {
                     copyFile(source, destination);
                     return source.delete();
-                } catch (IOException iex) {
+                } catch (final IOException iex) {
                     LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
                         destination.getAbsolutePath(), iex.getMessage());
                 }

@@ -46,14 +46,14 @@ public class MapFilterTest {
 
     @After
     public void cleanup() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
 
     @Test
     public void testFilter() {
-        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("FromAccount", "211000"),
+        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("FromAccount", "211000"),
                                                     new KeyValuePair("ToAccount", "123456")};
         MapFilter filter = MapFilter.createFilter(pairs, "and", null, null);
         filter.start();
@@ -79,27 +79,27 @@ public class MapFilterTest {
 
     @Test
     public void testConfig() {
-        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-mapfilter.xml");
-        Configuration config = ctx.getConfiguration();
-        Filter filter = config.getFilter();
+        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-mapfilter.xml");
+        final Configuration config = ctx.getConfiguration();
+        final Filter filter = config.getFilter();
         assertNotNull("No MapFilter", filter);
         assertTrue("Not a MapFilter", filter instanceof  MapFilter);
-        MapFilter mapFilter = (MapFilter) filter;
+        final MapFilter mapFilter = (MapFilter) filter;
         assertFalse("Should not be And filter", mapFilter.isAnd());
-        Map<String, List<String>> map = mapFilter.getMap();
+        final Map<String, List<String>> map = mapFilter.getMap();
         assertNotNull("No Map", map == null);
         assertTrue("No elements in Map", map.size() != 0);
         assertTrue("Incorrect number of elements in Map", map.size() == 1);
         assertTrue("Map does not contain key eventId", map.containsKey("eventId"));
         assertTrue("List does not contain 2 elements", map.get("eventId").size() == 2);
-        Logger logger = LogManager.getLogger(MapFilterTest.class);
-        Map<String, String> eventMap = new HashMap<String, String>();
+        final Logger logger = LogManager.getLogger(MapFilterTest.class);
+        final Map<String, String> eventMap = new HashMap<String, String>();
         eventMap.put("eventId", "Login");
         logger.debug(new MapMessage(eventMap));
-        Map<String,Appender> appenders = config.getAppenders();
-        Appender app = appenders.get("LIST");
+        final Map<String,Appender> appenders = config.getAppenders();
+        final Appender app = appenders.get("LIST");
         assertNotNull("No List appender", app);
-        List<String> msgs = ((ListAppender) app).getMessages();
+        final List<String> msgs = ((ListAppender) app).getMessages();
         assertNotNull("No messages", msgs);
         assertTrue("No messages", msgs.size() > 0);
 

@@ -44,7 +44,7 @@ public class SystemPropertiesLookupTest {
 
     @Test
     public void testLookup() {
-        StrLookup lookup = new SystemPropertiesLookup();
+        final StrLookup lookup = new SystemPropertiesLookup();
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");

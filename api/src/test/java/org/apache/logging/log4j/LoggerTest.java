@@ -61,7 +61,7 @@ public class LoggerTest {
     public void catching() {
         try {
             throw new NullPointerException();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.catching(e);
             assertEquals(1, results.size());
             assertTrue("Incorrect Catching",
@@ -100,7 +100,7 @@ public class LoggerTest {
 
     @Test
     public void getLoggerByClass() {
-        Logger classLogger = LogManager.getLogger(LoggerTest.class);
+        final Logger classLogger = LogManager.getLogger(LoggerTest.class);
         assertNotNull(classLogger);
     }
 
@@ -109,7 +109,7 @@ public class LoggerTest {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -123,7 +123,7 @@ public class LoggerTest {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -137,7 +137,7 @@ public class LoggerTest {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger(TestStringFormatterMessageFactory.class,
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestStringFormatterMessageFactory.class,
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -151,7 +151,7 @@ public class LoggerTest {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestStringFormatterMessageFactory(),
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestStringFormatterMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -163,7 +163,7 @@ public class LoggerTest {
     @Test
     public void getLogger_String_ParameterizedMessageFactory() {
         final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory",
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -175,7 +175,7 @@ public class LoggerTest {
     @Test
     public void getLogger_String_StringFormatterMessageFactory() {
         final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -187,11 +187,11 @@ public class LoggerTest {
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
         final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
-        TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
-        TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
+        final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 new ParameterizedMessageFactory());
         //TODO: How to test?
         //This test context always creates new loggers, other test context impls I tried fail other tests.
@@ -219,7 +219,7 @@ public class LoggerTest {
 
     @Test
     public void getLoggerByObject() {
-        Logger classLogger = LogManager.getLogger(this);
+        final Logger classLogger = LogManager.getLogger(this);
         assertNotNull(classLogger);
         assertEquals(classLogger, LogManager.getLogger(LoggerTest.class));
     }
@@ -294,7 +294,7 @@ public class LoggerTest {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
+        final StructuredDataMessage msg = new StructuredDataMessage("Audit@18060", "Transfer Complete", "Transfer");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");

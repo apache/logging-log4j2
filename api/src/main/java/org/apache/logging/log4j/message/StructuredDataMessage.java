@@ -65,7 +65,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @param data The StructuredData map.
      */
     public StructuredDataMessage(final String id, final String msg, final String type,
-                                 Map<String, String> data) {
+                                 final Map<String, String> data) {
         super(data);
         this.id = new StructuredDataId(id, null, null);
         this.message = msg;
@@ -92,7 +92,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @param data The StructuredData map.
      */
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
-                                 Map<String, String> data) {
+                                 final Map<String, String> data) {
         super(data);
         this.id = id;
         this.message = msg;
@@ -105,7 +105,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @param msg The StructuredDataMessage.
      * @param map The StructuredData map.
      */
-    private StructuredDataMessage(StructuredDataMessage msg, Map<String, String> map) {
+    private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map) {
         super(map);
         this.id = msg.id;
         this.message = msg.message;
@@ -126,9 +126,9 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      */
     @Override
     public String[] getFormats() {
-        String[] formats = new String[Format.values().length];
+        final String[] formats = new String[Format.values().length];
         int i = 0;
-        for (Format format : Format.values()) {
+        for (final Format format : Format.values()) {
             formats[i++] = format.name();
         }
         return formats;
@@ -146,7 +146,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * Set the id from a String.
      * @param id The String id.
      */
-    protected void setId(String id) {
+    protected void setId(final String id) {
         this.id = new StructuredDataId(id, null, null);
     }
 
@@ -154,7 +154,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * Set the id.
      * @param id The StructuredDataId.
      */
-    protected void setId(StructuredDataId id) {
+    protected void setId(final StructuredDataId id) {
         this.id = id;
     }
 
@@ -166,7 +166,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         return type;
     }
 
-    protected void setType(String type) {
+    protected void setType(final String type) {
         if (type.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data type exceeds maximum length of 32 characters: " + type);
         }
@@ -181,13 +181,13 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         return message;
     }
 
-    protected void setMessageFormat(String msg) {
+    protected void setMessageFormat(final String msg) {
         this.message = msg;
     }
 
 
     @Override
-    protected void validate(String key, String value) {
+    protected void validate(final String key, final String value) {
         if (key.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key +
                 " value: " + value);
@@ -212,10 +212,10 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      */
 
     @Override
-    public String asString(String format) {
+    public String asString(final String format) {
         try {
             return asString(EnglishEnums.valueOf(Format.class, format), null);
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             return asString();
         }
     }
@@ -229,11 +229,11 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      *                         will be used.
      * @return The formatted String.
      */
-    public final String asString(Format format, StructuredDataId structuredDataId) {
-        StringBuilder sb = new StringBuilder();
-        boolean full = Format.FULL.equals(format);
+    public final String asString(final Format format, final StructuredDataId structuredDataId) {
+        final StringBuilder sb = new StringBuilder();
+        final boolean full = Format.FULL.equals(format);
         if (full) {
-            String type = getType();
+            final String type = getType();
             if (type == null) {
                 return sb.toString();
             }
@@ -254,7 +254,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
         appendMap(sb);
         sb.append("]");
         if (full) {
-            String msg = getFormat();
+            final String msg = getFormat();
             if (msg != null) {
                 sb.append(" ").append(msg);
             }
@@ -281,9 +281,9 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
      * @return the formatted message.
      */
     @Override
-    public String getFormattedMessage(String[] formats) {
+    public String getFormattedMessage(final String[] formats) {
         if (formats != null && formats.length > 0) {
-            for (String format : formats) {
+            for (final String format : formats) {
                 if (Format.XML.name().equalsIgnoreCase(format)) {
                     return asXML();
                 } else if (Format.FULL.name().equalsIgnoreCase(format)) {
@@ -297,8 +297,8 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
     }
 
     private String asXML() {
-        StringBuilder sb = new StringBuilder();
-        StructuredDataId id = getId();
+        final StringBuilder sb = new StringBuilder();
+        final StructuredDataId id = getId();
         if (id == null || id.getName() == null || type == null) {
             return sb.toString();
         }
@@ -317,12 +317,12 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
 
 
     @Override
-    public MapMessage newInstance(Map<String, String> map) {
+    public MapMessage newInstance(final Map<String, String> map) {
         return new StructuredDataMessage(this, map);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -330,7 +330,7 @@ public class StructuredDataMessage extends MapMessage implements MultiformatMess
             return false;
         }
 
-        StructuredDataMessage that = (StructuredDataMessage) o;
+        final StructuredDataMessage that = (StructuredDataMessage) o;
 
         if (!super.equals(o)) {
             return false;

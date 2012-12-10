@@ -70,11 +70,11 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @param eventPrefix The value to prefix to event keys.
      * @param compress If true the event body should be compressed.
      */
-    public FlumeEvent(LogEvent event, String includes, String excludes, String required,
-                      String mdcPrefix, String eventPrefix, boolean compress) {
+    public FlumeEvent(final LogEvent event, final String includes, final String excludes, final String required,
+                      String mdcPrefix, String eventPrefix, final boolean compress) {
         this.event = event;
         this.compress = compress;
-        Map<String, String> headers = getHeaders();
+        final Map<String, String> headers = getHeaders();
         headers.put(TIMESTAMP, Long.toString(event.getMillis()));
         if (mdcPrefix == null) {
             mdcPrefix = DEFAULT_MDC_PREFIX;
@@ -82,9 +82,9 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         if (eventPrefix == null) {
             eventPrefix = DEFAULT_EVENT_PREFIX;
         }
-        Map<String, String> mdc = event.getContextMap();
+        final Map<String, String> mdc = event.getContextMap();
         if (includes != null) {
-            String[] array = includes.split(",");
+            final String[] array = includes.split(",");
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
@@ -94,13 +94,13 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         } else if (excludes != null) {
-            String[] array = excludes.split(",");
+            final String[] array = excludes.split(",");
             if (array.length > 0) {
-                List<String> list = new ArrayList<String>(array.length);
-                for (String value : array) {
+                final List<String> list = new ArrayList<String>(array.length);
+                for (final String value : array) {
                     list.add(value.trim());
                 }
-                for (Map.Entry<String, String> entry : mdc.entrySet()) {
+                for (final Map.Entry<String, String> entry : mdc.entrySet()) {
                     if (!list.contains(entry.getKey())) {
                         ctx.put(entry.getKey(), entry.getValue());
                     }
@@ -111,7 +111,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
 
         if (required != null) {
-            String[] array = required.split(",");
+            final String[] array = required.split(",");
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
@@ -121,7 +121,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         }
-        Message message = event.getMessage();
+        final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
@@ -134,28 +134,28 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         addGuid(headers);
     }
 
-    protected void addStructuredData(String prefix, Map<String, String> fields, StructuredDataMessage msg) {
+    protected void addStructuredData(final String prefix, final Map<String, String> fields, final StructuredDataMessage msg) {
         fields.put(prefix + EVENT_TYPE, msg.getType());
-        StructuredDataId id = msg.getId();
+        final StructuredDataId id = msg.getId();
         fields.put(prefix + EVENT_ID, id.getName());
     }
 
-    protected void addMapData(String prefix, Map<String, String> fields, MapMessage msg) {
-        Map<String, String> data = msg.getData();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+    protected void addMapData(final String prefix, final Map<String, String> fields, final MapMessage msg) {
+        final Map<String, String> data = msg.getData();
+        for (final Map.Entry<String, String> entry : data.entrySet()) {
             fields.put(prefix + entry.getKey(), entry.getValue());
         }
     }
 
-    protected void addContextData(String prefix, Map<String, String> fields, Map<String, String> context) {
-        for (Map.Entry<String, String> entry : context.entrySet()) {
+    protected void addContextData(final String prefix, final Map<String, String> fields, final Map<String, String> context) {
+        for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 fields.put(prefix + entry.getKey(), entry.getValue());
             }
         }
     }
 
-    protected void addGuid(Map<String, String> fields) {
+    protected void addGuid(final Map<String, String> fields) {
         fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString());
     }
 
@@ -164,18 +164,18 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * @param body The body to add to the event.
      */
     @Override
-    public void setBody(byte[] body) {
+    public void setBody(final byte[] body) {
         if (body == null || body.length == 0) {
             super.setBody(new byte[0]);
             return;
         }
         if (compress) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-                GZIPOutputStream os = new GZIPOutputStream(baos);
+                final GZIPOutputStream os = new GZIPOutputStream(baos);
                 os.write(body);
                 os.close();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 throw new LoggingException("Unable to compress message", ioe);
             }
             super.setBody(baos.toByteArray());

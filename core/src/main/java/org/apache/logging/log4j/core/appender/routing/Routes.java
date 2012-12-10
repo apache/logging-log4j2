@@ -34,7 +34,7 @@ public final class Routes {
     private final String pattern;
     private final Route[] routes;
 
-    private Routes(String pattern, Route... routes) {
+    private Routes(final String pattern, final Route... routes) {
         this.pattern = pattern;
         this.routes = routes;
     }
@@ -57,9 +57,9 @@ public final class Routes {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("{");
+        final StringBuilder sb = new StringBuilder("{");
         boolean first = true;
-        for (Route route : routes) {
+        for (final Route route : routes) {
             if ((!first)) {
                 sb.append(",");
             }
@@ -78,8 +78,8 @@ public final class Routes {
      * @return The Routes container.
      */
     @PluginFactory
-    public static Routes createRoutes(@PluginAttr("pattern") String pattern,
-                                      @PluginElement("routes") Route... routes) {
+    public static Routes createRoutes(@PluginAttr("pattern") final String pattern,
+                                      @PluginElement("routes") final Route... routes) {
         if (pattern == null) {
             LOGGER.error("A pattern is required");
             return null;

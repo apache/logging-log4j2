@@ -45,7 +45,7 @@ public final class MapRewritePolicy implements RewritePolicy {
 
     private final Mode mode;
 
-    private MapRewritePolicy(Map<String, String> map, Mode mode) {
+    private MapRewritePolicy(final Map<String, String> map, final Mode mode) {
         this.map = map;
         this.mode = mode;
     }
@@ -56,27 +56,27 @@ public final class MapRewritePolicy implements RewritePolicy {
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
      */
-    public LogEvent rewrite(LogEvent source) {
-        Message msg = source.getMessage();
+    public LogEvent rewrite(final LogEvent source) {
+        final Message msg = source.getMessage();
         if (msg == null || !(msg instanceof MapMessage)) {
             return source;
         }
 
-        Map<String, String> newMap = new HashMap<String, String>(((MapMessage) msg).getData());
+        final Map<String, String> newMap = new HashMap<String, String>(((MapMessage) msg).getData());
         switch (mode) {
             case Add: {
                 newMap.putAll(map);
                 break;
             }
             default: {
-                for (Map.Entry<String, String> entry : map.entrySet()) {
+                for (final Map.Entry<String, String> entry : map.entrySet()) {
                     if (newMap.containsKey(entry.getKey())) {
                         newMap.put(entry.getKey(), entry.getValue());
                     }
                 }
             }
         }
-        MapMessage message = ((MapMessage) msg).newInstance(newMap);
+        final MapMessage message = ((MapMessage) msg).newInstance(newMap);
         return new Log4jLogEvent(source.getLoggerName(), source.getMarker(), source.getFQCN(), source.getLevel(),
             message, source.getThrown(), source.getContextMap(), source.getContextStack(), source.getThreadName(),
             source.getSource(), source.getMillis());
@@ -99,11 +99,11 @@ public final class MapRewritePolicy implements RewritePolicy {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("mode=").append(mode);
         sb.append(" {");
         boolean first = true;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
@@ -121,8 +121,8 @@ public final class MapRewritePolicy implements RewritePolicy {
      * @return The MapRewritePolicy.
      */
     @PluginFactory
-    public static MapRewritePolicy createPolicy(@PluginAttr("mode") String mode,
-                                                @PluginElement("KeyValuePair") KeyValuePair[] pairs) {
+    public static MapRewritePolicy createPolicy(@PluginAttr("mode") final String mode,
+                                                @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
         Mode op;
         if (mode == null) {
             op = Mode.Add;
@@ -137,14 +137,14 @@ public final class MapRewritePolicy implements RewritePolicy {
             LOGGER.error("keys and values must be specified for the MapRewritePolicy");
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
-        for (KeyValuePair pair : pairs) {
-            String key = pair.getKey();
+        final Map<String, String> map = new HashMap<String, String>();
+        for (final KeyValuePair pair : pairs) {
+            final String key = pair.getKey();
             if (key == null) {
                 LOGGER.error("A null key is not valid in MapRewritePolicy");
                 continue;
             }
-            String value = pair.getValue();
+            final String value = pair.getValue();
             if (value == null) {
                 LOGGER.error("A null value for key " + key + " is not allowed in MapRewritePolicy");
                 continue;

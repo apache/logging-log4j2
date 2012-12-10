@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.util;
 
 public class UnexpectedFormatException extends Exception {
 
-  public UnexpectedFormatException(String msg) {
+  public UnexpectedFormatException(final String msg) {
     super(msg);
   }
 }

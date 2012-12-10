@@ -24,11 +24,11 @@ import java.text.DecimalFormat;
  */
 public class Timer implements Serializable
 {
-    private String m_name;              // The timer's name
+    private final String m_name;              // The timer's name
     private String m_status;            // The timer's status
     private long m_startTime;           // The start time
     private long m_elapsedTime;         // The elapsed time
-    private int m_iterations;
+    private final int m_iterations;
     private static long NANO_PER_SECOND = 1000000000L;
     private static long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
@@ -38,7 +38,7 @@ public class Timer implements Serializable
      * Constructor.
      * @param name the timer name.
      */
-    public Timer(String name)
+    public Timer(final String name)
     {
         this(name, 0);
     }
@@ -48,7 +48,7 @@ public class Timer implements Serializable
      *
      * @param name the timer name.
      */
-    public Timer(String name, int iterations)
+    public Timer(final String name, final int iterations)
     {
         m_name = name;
         m_startTime = 0;
@@ -140,7 +140,7 @@ public class Timer implements Serializable
     @Override
     public String toString()
     {
-        StringBuilder result = new StringBuilder("Timer ").append(m_name);
+        final StringBuilder result = new StringBuilder("Timer ").append(m_name);
         if (m_status.equals("Start"))
         {
             result.append(" started");
@@ -228,7 +228,7 @@ public class Timer implements Serializable
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Timer)) return false;
 

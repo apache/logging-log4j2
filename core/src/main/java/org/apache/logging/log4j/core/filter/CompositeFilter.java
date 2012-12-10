@@ -49,7 +49,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         this.hasFilters = false;
     }
 
-    private CompositeFilter(List<Filter> filters) {
+    private CompositeFilter(final List<Filter> filters) {
         if (filters == null) {
             this.filters = Collections.unmodifiableList(new ArrayList<Filter>());
             this.hasFilters = false;
@@ -59,14 +59,14 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         this.hasFilters = this.filters.size() > 0;
     }
 
-    public CompositeFilter addFilter(Filter filter) {
-        List<Filter> filters = new ArrayList<Filter>(this.filters);
+    public CompositeFilter addFilter(final Filter filter) {
+        final List<Filter> filters = new ArrayList<Filter>(this.filters);
         filters.add(filter);
         return new CompositeFilter(Collections.unmodifiableList(filters));
     }
 
-    public CompositeFilter removeFilter(Filter filter) {
-        List<Filter> filters = new ArrayList<Filter>(this.filters);
+    public CompositeFilter removeFilter(final Filter filter) {
+        final List<Filter> filters = new ArrayList<Filter>(this.filters);
         filters.remove(filter);
         return new CompositeFilter(Collections.unmodifiableList(filters));
     }
@@ -88,7 +88,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
     }
 
     public void start() {
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             if (filter instanceof LifeCycle) {
                 ((LifeCycle) filter).start();
             }
@@ -97,7 +97,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
     }
 
     public void stop() {
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             if (filter instanceof LifeCycle) {
                 ((LifeCycle) filter).stop();
             }
@@ -142,9 +142,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            An array of parameters or null.
      * @return the Result.
      */
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         Result result = Result.NEUTRAL;
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, params);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
@@ -168,9 +168,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         Result result = Result.NEUTRAL;
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, t);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
@@ -194,9 +194,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         Result result = Result.NEUTRAL;
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, t);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
@@ -212,9 +212,9 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            The Event to filter on.
      * @return the Result.
      */
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         Result result = Result.NEUTRAL;
-        for (Filter filter : filters) {
+        for (final Filter filter : filters) {
             result = filter.filter(event);
             if (result == Result.ACCEPT || result == Result.DENY) {
                 return result;
@@ -225,8 +225,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Filter filter : filters) {
+        final StringBuilder sb = new StringBuilder();
+        for (final Filter filter : filters) {
             if (sb.length() == 0) {
                 sb.append("{");
             } else {
@@ -248,8 +248,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      * @return The CompositeFilter.
      */
     @PluginFactory
-    public static CompositeFilter createFilters(@PluginElement("filters") Filter[] filters) {
-        List<Filter> f = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);
+    public static CompositeFilter createFilters(@PluginElement("filters") final Filter[] filters) {
+        final List<Filter> f = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);
         return new CompositeFilter(f);
     }
 

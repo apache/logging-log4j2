@@ -37,11 +37,11 @@ import java.util.List;
 @Plugin(name = "List", type = "Core", elementType = "appender", printObject = true)
 public class ListAppender extends AbstractAppender {
 
-    private List<LogEvent> events = new ArrayList<LogEvent>();
+    private final List<LogEvent> events = new ArrayList<LogEvent>();
 
-    private List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<String>();
 
-    private List<byte[]> data = new ArrayList<byte[]>();
+    private final List<byte[]> data = new ArrayList<byte[]>();
 
     private final boolean newLine;
 
@@ -49,32 +49,32 @@ public class ListAppender extends AbstractAppender {
 
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
-    public ListAppender(String name) {
+    public ListAppender(final String name) {
         super(name, null, null);
         newLine = false;
         raw = false;
     }
 
-    public ListAppender(String name, Filter filter, Layout layout, boolean newline, boolean raw) {
+    public ListAppender(final String name, final Filter filter, final Layout layout, final boolean newline, final boolean raw) {
         super(name, filter, layout);
         this.newLine = newline;
         this.raw = raw;
         if (layout != null && !(layout instanceof SerializedLayout)) {
-            byte[] bytes = layout.getHeader();
+            final byte[] bytes = layout.getHeader();
             if (bytes != null) {
                 write(bytes);
             }
         }
     }
 
-    public synchronized void append(LogEvent event) {
-        Layout layout = getLayout();
+    public synchronized void append(final LogEvent event) {
+        final Layout layout = getLayout();
         if (layout == null) {
             events.add(event);
         } else if (layout instanceof SerializedLayout) {
-            byte[] header = layout.getHeader();
-            byte[] content = layout.toByteArray(event);
-            byte[] record = new byte[header.length + content.length];
+            final byte[] header = layout.getHeader();
+            final byte[] content = layout.toByteArray(event);
+            final byte[] record = new byte[header.length + content.length];
             System.arraycopy(header, 0, record, 0, header.length);
             System.arraycopy(content, 0, record, header.length, content.length);
             data.add(record);
@@ -83,18 +83,18 @@ public class ListAppender extends AbstractAppender {
         }
     }
 
-    private void write(byte[] bytes) {
+    private void write(final byte[] bytes) {
         if (raw) {
             data.add(bytes);
             return;
         }
-        String str = new String(bytes);
+        final String str = new String(bytes);
         if (newLine) {
             int index = 0;
             while (index < str.length()) {
                 int end;
-                int wend = str.indexOf(WINDOWS_LINE_SEP, index);
-                int lend = str.indexOf("\n", index);
+                final int wend = str.indexOf(WINDOWS_LINE_SEP, index);
+                final int lend = str.indexOf("\n", index);
                 int length;
                 if (wend >= 0 && wend < lend) {
                     end = wend;
@@ -123,9 +123,9 @@ public class ListAppender extends AbstractAppender {
     @Override
     public void stop() {
         super.stop();
-        Layout layout = getLayout();
+        final Layout layout = getLayout();
         if (layout != null) {
-            byte[] bytes = layout.getFooter();
+            final byte[] bytes = layout.getFooter();
             if (bytes != null) {
                 write(bytes);
             }
@@ -151,19 +151,19 @@ public class ListAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static ListAppender createAppender(@PluginAttr("name") String name,
-                                              @PluginAttr("entryPerNewLine") String newLine,
-                                              @PluginAttr("raw") String raw,
-                                              @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filter filter) {
+    public static ListAppender createAppender(@PluginAttr("name") final String name,
+                                              @PluginAttr("entryPerNewLine") final String newLine,
+                                              @PluginAttr("raw") final String raw,
+                                              @PluginElement("layout") final Layout layout,
+                                              @PluginElement("filters") final Filter filter) {
 
         if (name == null) {
             LOGGER.error("No name provided for ListAppender");
             return null;
         }
 
-        boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
-        boolean r = (raw == null) ? false : Boolean.parseBoolean(raw);
+        final boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
+        final boolean r = (raw == null) ? false : Boolean.parseBoolean(raw);
 
         return new ListAppender(name, filter, layout, nl, r);
     }

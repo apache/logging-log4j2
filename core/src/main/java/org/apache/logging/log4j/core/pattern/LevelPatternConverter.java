@@ -38,7 +38,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
     /**
      * Private constructor.
      */
-    private LevelPatternConverter(EnumMap<Level, String> map) {
+    private LevelPatternConverter(final EnumMap<Level, String> map) {
         super("Level", "level");
         this.levelMap = map;
     }
@@ -54,15 +54,15 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         if (options == null || options.length == 0) {
             return INSTANCE;
         }
-        EnumMap<Level, String> levelMap = new EnumMap<Level, String>(Level.class);
-        String[] definitions = options[0].split(",");
-        for (String def : definitions) {
-            String[] pair = def.split("=");
+        final EnumMap<Level, String> levelMap = new EnumMap<Level, String>(Level.class);
+        final String[] definitions = options[0].split(",");
+        for (final String def : definitions) {
+            final String[] pair = def.split("=");
             if (pair == null || pair.length != 2) {
                 LOGGER.error("Invalid option {}", def);
                 continue;
             }
-            Level level = Level.toLevel(pair[0].trim(), null);
+            final Level level = Level.toLevel(pair[0].trim(), null);
             if (level == null) {
                 LOGGER.error("Invalid Level {}", pair[0].trim());
             }
@@ -71,7 +71,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         if (levelMap.size() == 0) {
             return INSTANCE;
         }
-        for (Level level : Level.values()) {
+        for (final Level level : Level.values()) {
             if (!levelMap.containsKey(level)) {
                 levelMap.put(level, level.toString());
             }
@@ -91,9 +91,9 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
      * {@inheritDoc}
      */
     @Override
-    public String getStyleClass(Object e) {
+    public String getStyleClass(final Object e) {
         if (e instanceof LogEvent) {
-            Level level = ((LogEvent) e).getLevel();
+            final Level level = ((LogEvent) e).getLevel();
 
             switch (level) {
                 case TRACE:

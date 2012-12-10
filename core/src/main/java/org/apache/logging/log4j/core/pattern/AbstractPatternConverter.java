@@ -67,7 +67,7 @@ public abstract class AbstractPatternConverter implements PatternConverter {
      * @param e null values are accepted
      * @return the name of the conversion pattern
      */
-    public String getStyleClass(Object e) {
+    public String getStyleClass(final Object e) {
         return style;
     }
 }

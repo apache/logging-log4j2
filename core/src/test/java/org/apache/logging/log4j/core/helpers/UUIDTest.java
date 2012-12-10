@@ -34,17 +34,17 @@ public class UUIDTest {
 
     @Test
     public void testTimeBaseUUID() {
-        UUID uuid = UUIDUtil.getTimeBasedUUID();
-        UUID uuid2 = UUIDUtil.getTimeBasedUUID();
-        long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
-        long time = uuid.timestamp();
+        final UUID uuid = UUIDUtil.getTimeBasedUUID();
+        final UUID uuid2 = UUIDUtil.getTimeBasedUUID();
+        final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
+        final long time = uuid.timestamp();
         assertTrue("Incorrect time", current + 10000 - time > 0);
-        UUID[] uuids = new UUID[COUNT];
-        long start = System.nanoTime();
+        final UUID[] uuids = new UUID[COUNT];
+        final long start = System.nanoTime();
         for (int i=0; i < COUNT; ++i) {
             uuids[i] = UUIDUtil.getTimeBasedUUID();
         }
-        long elapsed = System.nanoTime() - start;
+        final long elapsed = System.nanoTime() - start;
         System.out.println("Elapsed for " + COUNT + " UUIDS = " + elapsed + " Average = " + elapsed / COUNT + " ns");
         int errors = 0;
         for (int i=0; i < COUNT; ++i) {
@@ -56,19 +56,19 @@ public class UUIDTest {
             }
         }
         assertTrue(errors + " duplicate UUIDS", errors == 0);
-        int variant = uuid.variant();
+        final int variant = uuid.variant();
         assertTrue("Incorrect variant. Expected 2 got " + variant, variant == 2);
-        int version = uuid.version();
+        final int version = uuid.version();
         assertTrue("Incorrect version. Expected 1 got " + version, version == 1);
-        long node = uuid.node();
+        final long node = uuid.node();
         assertTrue("Invalid node", node != 0);
     }
 
     @Test
     public void testThreads() throws Exception {
-        Thread[] threads = new Thread[THREADS];
-        UUID[] uuids = new UUID[COUNT * THREADS];
-        long[] elapsed = new long[THREADS];
+        final Thread[] threads = new Thread[THREADS];
+        final UUID[] uuids = new UUID[COUNT * THREADS];
+        final long[] elapsed = new long[THREADS];
         for (int i=0; i < THREADS; ++i) {
             threads[i] = new Worker(uuids, elapsed, i, COUNT);
         }
@@ -98,12 +98,12 @@ public class UUIDTest {
 
     private class Worker extends Thread {
 
-        private UUID[] uuids;
-        private long[] elapsed;
-        private int index;
-        private int count;
+        private final UUID[] uuids;
+        private final long[] elapsed;
+        private final int index;
+        private final int count;
 
-        public Worker(UUID[] uuids, long[] elapsed, int index, int count) {
+        public Worker(final UUID[] uuids, final long[] elapsed, final int index, final int count) {
             this.uuids = uuids;
             this.index = index;
             this.count = count;
@@ -112,8 +112,8 @@ public class UUIDTest {
 
         @Override
         public void run() {
-            int pos = index * count;
-            long start = System.nanoTime();
+            final int pos = index * count;
+            final long start = System.nanoTime();
             for (int i=pos; i < pos + count; ++i) {
                 uuids[i] = UUIDUtil.getTimeBasedUUID();
             }

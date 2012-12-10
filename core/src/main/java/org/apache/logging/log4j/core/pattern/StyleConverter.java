@@ -39,7 +39,7 @@ public final class StyleConverter extends LogEventPatternConverter {
      * @param formatters The PatternFormatters to generate the text to manipulate.
      * @param styling The styling that should encapsulate the pattern.
      */
-    private StyleConverter(List<PatternFormatter> formatters, String styling) {
+    private StyleConverter(final List<PatternFormatter> formatters, final String styling) {
         super("style", "style");
         this.formatters = formatters;
         this.style = styling;
@@ -53,7 +53,7 @@ public final class StyleConverter extends LogEventPatternConverter {
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
      */
-    public static StyleConverter newInstance(Configuration config, final String[] options) {
+    public static StyleConverter newInstance(final Configuration config, final String[] options) {
         if (options.length < 1) {
             LOGGER.error("Incorrect number of options on style. Expected at least 1, received " + options.length);
             return null;
@@ -67,9 +67,9 @@ public final class StyleConverter extends LogEventPatternConverter {
             return null;
         }
 
-        PatternParser parser = PatternLayout.createPatternParser(config);
-        List<PatternFormatter> formatters = parser.parse(options[0]);
-        String style = AnsiEscape.createSequence(options[1].split("\\s*,\\s*"));
+        final PatternParser parser = PatternLayout.createPatternParser(config);
+        final List<PatternFormatter> formatters = parser.parse(options[0]);
+        final String style = AnsiEscape.createSequence(options[1].split("\\s*,\\s*"));
         return new StyleConverter(formatters, style);
     }
 
@@ -79,8 +79,8 @@ public final class StyleConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
 

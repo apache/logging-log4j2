@@ -69,7 +69,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
         } else {
             return;
         }
-        Map<String, String> map = msg.getData();
+        final Map<String, String> map = msg.getData();
         // if there is no additional options, we output every single
         // Key/Value pair for the Map in a similar format to Hashtable.toString()
         if (key == null) {
@@ -77,9 +77,9 @@ public final class MapPatternConverter extends LogEventPatternConverter {
                 toAppendTo.append("{}");
                 return;
             }
-            StringBuilder sb = new StringBuilder("{");
-            Set<String> keys = new TreeSet<String>(map.keySet());
-            for (String key : keys) {
+            final StringBuilder sb = new StringBuilder("{");
+            final Set<String> keys = new TreeSet<String>(map.keySet());
+            for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");
                 }
@@ -90,7 +90,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
             toAppendTo.append(sb);
         } else {
             // otherwise they just want a single key output
-            String val = map.get(key);
+            final String val = map.get(key);
 
             if (val != null) {
                 toAppendTo.append(val);

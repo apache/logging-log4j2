@@ -42,45 +42,45 @@ public final class RegexFilter extends AbstractFilter {
     private final Pattern pattern;
     private final boolean useRawMessage;
 
-    private RegexFilter(boolean raw, Pattern pattern, Result onMatch, Result onMismatch) {
+    private RegexFilter(final boolean raw, final Pattern pattern, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.pattern = pattern;
         this.useRawMessage = raw;
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(msg);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(msg.toString());
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        String text = useRawMessage ? msg.getFormat() : msg.getFormattedMessage();
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+        final String text = useRawMessage ? msg.getFormat() : msg.getFormattedMessage();
         return filter(text);
     }
 
     @Override
-    public Result filter(LogEvent event) {
-        String text = useRawMessage ? event.getMessage().getFormat() : event.getMessage().getFormattedMessage();
+    public Result filter(final LogEvent event) {
+        final String text = useRawMessage ? event.getMessage().getFormat() : event.getMessage().getFormattedMessage();
         return filter(text);
     }
 
-    private Result filter(String msg) {
+    private Result filter(final String msg) {
         if (msg == null) {
             return onMismatch;
         }
-        Matcher m = pattern.matcher(msg);
+        final Matcher m = pattern.matcher(msg);
         return m.matches() ? onMatch : onMismatch;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("useRaw=").append(useRawMessage);
         sb.append(", pattern=").append(pattern.toString());
         return sb.toString();
@@ -95,25 +95,25 @@ public final class RegexFilter extends AbstractFilter {
      * @return The RegexFilter.
      */
     @PluginFactory
-    public static RegexFilter createFilter(@PluginAttr("regex") String regex,
-                                           @PluginAttr("useRawMsg") String useRawMsg,
-                                            @PluginAttr("onMatch") String match,
-                                            @PluginAttr("onMismatch") String mismatch) {
+    public static RegexFilter createFilter(@PluginAttr("regex") final String regex,
+                                           @PluginAttr("useRawMsg") final String useRawMsg,
+                                            @PluginAttr("onMatch") final String match,
+                                            @PluginAttr("onMismatch") final String mismatch) {
 
         if (regex == null) {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        boolean raw = useRawMsg == null ? false : Boolean.parseBoolean(useRawMsg);
+        final boolean raw = useRawMsg == null ? false : Boolean.parseBoolean(useRawMsg);
         Pattern pattern;
         try {
             pattern = Pattern.compile(regex);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("RegexFilter caught exception compiling pattern: " + regex + " cause: " + ex.getMessage());
             return null;
         }
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
 
         return new RegexFilter(raw, pattern, onMatch, onMismatch);
     }

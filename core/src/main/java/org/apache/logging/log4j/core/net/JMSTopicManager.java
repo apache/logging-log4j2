@@ -52,8 +52,8 @@ public class JMSTopicManager extends AbstractJMSManager {
      * @param password The credentials for the user.
      * @param info The Queue connection info.
      */
-    protected JMSTopicManager(String name, Context context, String factoryBindingName, String topicBindingName,
-                              String userName, String password, TopicInfo info) {
+    protected JMSTopicManager(final String name, final Context context, final String factoryBindingName, final String topicBindingName,
+                              final String userName, final String password, final TopicInfo info) {
         super(name);
         this.context = context;
         this.factoryBindingName = factoryBindingName;
@@ -77,10 +77,10 @@ public class JMSTopicManager extends AbstractJMSManager {
      * @param password The password to use to create the Topic Connection.
      * @return A JMSTopicManager.
      */
-    public static JMSTopicManager getJMSTopicManager(String factoryName, String providerURL, String urlPkgPrefixes,
-                                                     String securityPrincipalName, String securityCredentials,
-                                                     String factoryBindingName, String topicBindingName,
-                                                     String userName, String password) {
+    public static JMSTopicManager getJMSTopicManager(final String factoryName, final String providerURL, final String urlPkgPrefixes,
+                                                     final String securityPrincipalName, final String securityCredentials,
+                                                     final String factoryBindingName, final String topicBindingName,
+                                                     final String userName, final String password) {
 
         if (factoryBindingName == null) {
             LOGGER.error("No factory name provided for JMSTopicManager");
@@ -91,14 +91,14 @@ public class JMSTopicManager extends AbstractJMSManager {
             return null;
         }
 
-        String name = "JMSTopic:" + factoryBindingName + '.' + topicBindingName;
+        final String name = "JMSTopic:" + factoryBindingName + '.' + topicBindingName;
         return getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password));
     }
 
 
     @Override
-    public void send(Serializable object) throws Exception {
+    public void send(final Serializable object) throws Exception {
         if (info == null) {
             info = connect(context, factoryBindingName, topicBindingName, userName, password, false);
         }
@@ -112,7 +112,7 @@ public class JMSTopicManager extends AbstractJMSManager {
                 info.session.close();
                 info.conn.close();
             }
-        } catch (JMSException ex) {
+        } catch (final JMSException ex) {
             LOGGER.error("Error closing " + getName(), ex);
         }
     }
@@ -121,19 +121,19 @@ public class JMSTopicManager extends AbstractJMSManager {
      * Data for the factory.
      */
     private static class FactoryData {
-        private String factoryName;
-        private String providerURL;
-        private String urlPkgPrefixes;
-        private String securityPrincipalName;
-        private String securityCredentials;
-        private String factoryBindingName;
-        private String topicBindingName;
-        private String userName;
-        private String password;
+        private final String factoryName;
+        private final String providerURL;
+        private final String urlPkgPrefixes;
+        private final String securityPrincipalName;
+        private final String securityCredentials;
+        private final String factoryBindingName;
+        private final String topicBindingName;
+        private final String userName;
+        private final String password;
 
-        public FactoryData(String factoryName, String providerURL, String urlPkgPrefixes, String securityPrincipalName,
-                           String securityCredentials, String factoryBindingName, String topicBindingName,
-                           String userName, String password) {
+        public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes, final String securityPrincipalName,
+                           final String securityCredentials, final String factoryBindingName, final String topicBindingName,
+                           final String userName, final String password) {
             this.factoryName = factoryName;
             this.providerURL = providerURL;
             this.urlPkgPrefixes = urlPkgPrefixes;
@@ -146,27 +146,27 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
-    private static TopicInfo connect(Context context, String factoryBindingName, String queueBindingName,
-                                     String userName, String password, boolean suppress) throws Exception {
+    private static TopicInfo connect(final Context context, final String factoryBindingName, final String queueBindingName,
+                                     final String userName, final String password, final boolean suppress) throws Exception {
         try {
-            TopicConnectionFactory factory = (TopicConnectionFactory) lookup(context, factoryBindingName);
+            final TopicConnectionFactory factory = (TopicConnectionFactory) lookup(context, factoryBindingName);
             TopicConnection conn;
             if (userName != null) {
                 conn = factory.createTopicConnection(userName, password);
             } else {
                 conn = factory.createTopicConnection();
             }
-            TopicSession sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic topic = (Topic) lookup(context, queueBindingName);
-            TopicPublisher publisher = sess.createPublisher(topic);
+            final TopicSession sess = conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Topic topic = (Topic) lookup(context, queueBindingName);
+            final TopicPublisher publisher = sess.createPublisher(topic);
             conn.start();
             return new TopicInfo(conn, sess, publisher);
-        } catch (NamingException ex) {
+        } catch (final NamingException ex) {
             LOGGER.warn("Unable to locate connection factory " + factoryBindingName, ex);
             if (!suppress) {
                 throw ex;
             }
-        } catch (JMSException ex) {
+        } catch (final JMSException ex) {
             LOGGER.warn("Unable to create connection to queue " + queueBindingName, ex);
             if (!suppress) {
                 throw ex;
@@ -180,7 +180,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         private final TopicSession session;
         private final TopicPublisher publisher;
 
-        public TopicInfo(TopicConnection conn, TopicSession session, TopicPublisher publisher) {
+        public TopicInfo(final TopicConnection conn, final TopicSession session, final TopicPublisher publisher) {
             this.conn = conn;
             this.session = session;
             this.publisher = publisher;
@@ -192,17 +192,17 @@ public class JMSTopicManager extends AbstractJMSManager {
      */
     private static class JMSTopicManagerFactory implements ManagerFactory<JMSTopicManager, FactoryData> {
 
-        public JMSTopicManager createManager(String name, FactoryData data) {
+        public JMSTopicManager createManager(final String name, final FactoryData data) {
             try {
-                Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,
+                final Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,
                     data.securityPrincipalName, data.securityCredentials);
-                TopicInfo info = connect(ctx, data.factoryBindingName, data.topicBindingName, data.userName,
+                final TopicInfo info = connect(ctx, data.factoryBindingName, data.topicBindingName, data.userName,
                     data.password, true);
                 return new JMSTopicManager(name, ctx, data.factoryBindingName, data.topicBindingName,
                     data.userName, data.password, info);
-            } catch (NamingException ex) {
+            } catch (final NamingException ex) {
                 LOGGER.error("Unable to locate resource", ex);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Unable to connect", ex);
             }
 

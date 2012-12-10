@@ -31,7 +31,7 @@ public class PluginType<T> implements Serializable {
     private boolean printObject = false;
     private boolean deferChildren = false;
 
-    public PluginType(Class<T> clazz, String name, boolean printObj, boolean deferChildren) {
+    public PluginType(final Class<T> clazz, final String name, final boolean printObj, final boolean deferChildren) {
         this.pluginClass = clazz;
         this.elementName = name;
         this.printObject = printObj;

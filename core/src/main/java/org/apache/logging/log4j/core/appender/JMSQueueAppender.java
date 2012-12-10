@@ -34,8 +34,8 @@ public final class JMSQueueAppender extends AbstractAppender {
 
     private final JMSQueueManager manager;
 
-    private JMSQueueAppender(String name, Filter filter, Layout layout, JMSQueueManager manager,
-                            boolean handleExceptions) {
+    private JMSQueueAppender(final String name, final Filter filter, final Layout layout, final JMSQueueManager manager,
+                            final boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
     }
@@ -45,10 +45,10 @@ public final class JMSQueueAppender extends AbstractAppender {
      * <p/>
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         try {
             manager.send(getLayout().toSerializable(event));
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             throw new AppenderRuntimeException(ex);
         }
     }
@@ -73,25 +73,25 @@ public final class JMSQueueAppender extends AbstractAppender {
      * @return The JMSQueueAppender.
      */
     @PluginFactory
-    public static JMSQueueAppender createAppender(@PluginAttr("name") String name,
-                                                  @PluginAttr("factoryName") String factoryName,
-                                                  @PluginAttr("providerURL") String providerURL,
-                                                  @PluginAttr("urlPkgPrefixes") String urlPkgPrefixes,
-                                                  @PluginAttr("securityPrincipalName") String securityPrincipalName,
-                                                  @PluginAttr("securityCredentials") String securityCredentials,
-                                                  @PluginAttr("factoryBindingName") String factoryBindingName,
-                                                  @PluginAttr("queueBindingName") String queueBindingName,
-                                                  @PluginAttr("userName") String userName,
-                                                  @PluginAttr("password") String password,
+    public static JMSQueueAppender createAppender(@PluginAttr("name") final String name,
+                                                  @PluginAttr("factoryName") final String factoryName,
+                                                  @PluginAttr("providerURL") final String providerURL,
+                                                  @PluginAttr("urlPkgPrefixes") final String urlPkgPrefixes,
+                                                  @PluginAttr("securityPrincipalName") final String securityPrincipalName,
+                                                  @PluginAttr("securityCredentials") final String securityCredentials,
+                                                  @PluginAttr("factoryBindingName") final String factoryBindingName,
+                                                  @PluginAttr("queueBindingName") final String queueBindingName,
+                                                  @PluginAttr("userName") final String userName,
+                                                  @PluginAttr("password") final String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filter") Filter filter,
-                                                  @PluginAttr("suppressExceptions") String suppress) {
+                                                  @PluginElement("filter") final Filter filter,
+                                                  @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
             return null;

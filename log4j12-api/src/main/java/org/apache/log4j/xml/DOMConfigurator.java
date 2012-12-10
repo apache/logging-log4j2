@@ -31,36 +31,36 @@ import java.util.Properties;
  */
 public class DOMConfigurator {
 
-    public static void configure(Element element) {
+    public static void configure(final Element element) {
     }
 
-    public static void configureAndWatch(String configFilename) {
+    public static void configureAndWatch(final String configFilename) {
     }
 
-    public static void configureAndWatch(String configFilename, long delay) {
+    public static void configureAndWatch(final String configFilename, final long delay) {
     }
 
-    public void doConfigure(final String filename, LoggerRepository repository) {
+    public void doConfigure(final String filename, final LoggerRepository repository) {
     }
 
-    public void doConfigure(final URL url, LoggerRepository repository) {
+    public void doConfigure(final URL url, final LoggerRepository repository) {
     }
 
-    public void doConfigure(final InputStream inputStream, LoggerRepository repository)
+    public void doConfigure(final InputStream inputStream, final LoggerRepository repository)
         throws FactoryConfigurationError {
     }
 
-    public void doConfigure(final Reader reader, LoggerRepository repository)
+    public void doConfigure(final Reader reader, final LoggerRepository repository)
         throws FactoryConfigurationError {
     }
 
-    public void doConfigure(Element element, LoggerRepository repository) {
+    public void doConfigure(final Element element, final LoggerRepository repository) {
     }
 
-    public static void configure(String filename) throws FactoryConfigurationError {
+    public static void configure(final String filename) throws FactoryConfigurationError {
     }
 
-    public static void configure(URL url) throws FactoryConfigurationError {
+    public static void configure(final URL url) throws FactoryConfigurationError {
     }
 
     public static String subst(final String value, final Properties props) {

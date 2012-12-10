@@ -55,8 +55,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         SYSTEM_ERR
     }
 
-    private ConsoleAppender(String name, Layout layout, Filter filter, OutputStreamManager manager,
-                           boolean handleExceptions) {
+    private ConsoleAppender(final String name, final Layout layout, final Filter filter, final OutputStreamManager manager,
+                           final boolean handleExceptions) {
         super(name, layout, filter, handleExceptions, true, manager);
     }
 
@@ -72,11 +72,11 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
      */
     @PluginFactory
     public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
-                                                 @PluginElement("filters") Filter filter,
-                                                 @PluginAttr("target") String t,
-                                                 @PluginAttr("name") String name,
-                                                 @PluginAttr("follow") String follow,
-                                                 @PluginAttr("suppressExceptions") String suppress) {
+                                                 @PluginElement("filters") final Filter filter,
+                                                 @PluginAttr("target") final String t,
+                                                 @PluginAttr("name") final String name,
+                                                 @PluginAttr("follow") final String follow,
+                                                 @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -84,19 +84,19 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         if (layout == null) {
             layout = PatternLayout.createLayout(null, null, null, null);
         }
-        boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
+        final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
         return new ConsoleAppender(name, layout, filter, getManager(isFollow, target), handleExceptions);
     }
 
-    private static OutputStreamManager getManager(boolean follow, Target target) {
-        String type = target.name();
-        OutputStream os = getOutputStream(follow, target);
+    private static OutputStreamManager getManager(final boolean follow, final Target target) {
+        final String type = target.name();
+        final OutputStream os = getOutputStream(follow, target);
         return OutputStreamManager.getManager(target.name() + "." + follow, new FactoryData(os, type), factory);
     }
 
-    private static OutputStream getOutputStream(boolean follow, Target target) {
+    private static OutputStream getOutputStream(final boolean follow, final Target target) {
         final PrintStream printStream = target == Target.SYSTEM_OUT ?
             follow ? new PrintStream(new SystemOutStream()) : System.out :
             follow ? new PrintStream(new SystemErrStream()) : System.err;
@@ -104,16 +104,16 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
             return printStream;
         } else {
             try {
-                ClassLoader loader = Loader.getClassLoader();
+                final ClassLoader loader = Loader.getClassLoader();
                 // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-                Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
-                Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
+                final Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
+                final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
                 return (OutputStream) constructor.newInstance(printStream);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (final ClassNotFoundException cnfe) {
                 LOGGER.debug("Jansi is not installed");
-            } catch (NoSuchMethodException nsme) {
+            } catch (final NoSuchMethodException nsme) {
                 LOGGER.warn("WindowsAnsiOutputStream is missing the proper constructor");
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
             }
             return printStream;
@@ -194,15 +194,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
      * Data to pass to factory method.
      */
     private static class FactoryData {
-        private OutputStream os;
-        private String type;
+        private final OutputStream os;
+        private final String type;
 
         /**
          * Constructor.
          * @param os The OutputStream.
          * @param type The name of the target.
          */
-        public FactoryData(OutputStream os, String type) {
+        public FactoryData(final OutputStream os, final String type) {
             this.os = os;
             this.type = type;
         }
@@ -219,7 +219,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
          * @param data The data required to create the entity.
          * @return The OutputStreamManager
          */
-        public OutputStreamManager createManager(String name, FactoryData data) {
+        public OutputStreamManager createManager(final String name, final FactoryData data) {
             return new OutputStreamManager(data.os, data.type);
         }
     }

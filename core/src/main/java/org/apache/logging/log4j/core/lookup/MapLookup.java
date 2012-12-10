@@ -38,7 +38,7 @@ public class MapLookup<V> implements StrLookup<V> {
      *
      * @param map the map of keys to values, may be null
      */
-    public MapLookup(Map<String, V> map) {
+    public MapLookup(final Map<String, V> map) {
         this.map = map;
     }
 
@@ -58,23 +58,23 @@ public class MapLookup<V> implements StrLookup<V> {
      * @param key the key to be looked up, may be null
      * @return the matching value, null if no match
      */
-    public String lookup(String key) {
+    public String lookup(final String key) {
         if (map == null) {
             return null;
         }
-        Object obj = map.get(key);
+        final Object obj = map.get(key);
         if (obj == null) {
             return null;
         }
         return obj.toString();
     }
 
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (map == null && !(event.getMessage() instanceof MapMessage)) {
             return null;
         }
         if (map != null && map.containsKey(key)) {
-            Object obj = map.get(key);
+            final Object obj = map.get(key);
             if (obj != null) {
                 return obj.toString();
             }

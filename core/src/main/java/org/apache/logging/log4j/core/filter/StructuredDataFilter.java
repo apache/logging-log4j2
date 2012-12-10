@@ -39,12 +39,12 @@ import java.util.Map;
 @Plugin(name = "StructuredDataFilter", type = "Core", elementType = "filter", printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
-    private StructuredDataFilter(Map<String, List<String>> map, boolean oper, Result onMatch, Result onMismatch) {
+    private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         if (msg instanceof StructuredDataMessage) {
             return filter((StructuredDataMessage) msg);
         }
@@ -52,18 +52,18 @@ public final class StructuredDataFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
-        Message msg = event.getMessage();
+    public Result filter(final LogEvent event) {
+        final Message msg = event.getMessage();
         if (msg instanceof StructuredDataMessage) {
             return filter((StructuredDataMessage) msg);
         }
         return super.filter(event);
     }
 
-    protected Result filter(StructuredDataMessage message) {
+    protected Result filter(final StructuredDataMessage message) {
         boolean match = false;
-        for (Map.Entry<String, List<String>> entry : getMap().entrySet()) {
-            String toMatch = getValue(message, entry.getKey());
+        for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
+            final String toMatch = getValue(message, entry.getKey());
             if (toMatch != null) {
                 match = entry.getValue().contains(toMatch);
             } else {
@@ -76,7 +76,7 @@ public final class StructuredDataFilter extends MapFilter {
         return match ? onMatch : onMismatch;
     }
 
-    private String getValue(StructuredDataMessage data, String key) {
+    private String getValue(final StructuredDataMessage data, final String key) {
         if (key.equalsIgnoreCase("id")) {
             return data.getId().toString();
         } else if (key.equalsIgnoreCase("id.name")) {
@@ -99,22 +99,22 @@ public final class StructuredDataFilter extends MapFilter {
      * @return The StructuredDataFilter.
      */
     @PluginFactory
-    public static StructuredDataFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
-                                                    @PluginAttr("operator") String oper,
-                                                    @PluginAttr("onmatch") String match,
-                                                    @PluginAttr("onmismatch") String mismatch) {
+    public static StructuredDataFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+                                                    @PluginAttr("operator") final String oper,
+                                                    @PluginAttr("onmatch") final String match,
+                                                    @PluginAttr("onmismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
         }
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
-        for (KeyValuePair pair : pairs) {
-            String key = pair.getKey();
+        final Map<String, List<String>> map = new HashMap<String, List<String>>();
+        for (final KeyValuePair pair : pairs) {
+            final String key = pair.getKey();
             if (key == null) {
                 LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
-            String value = pair.getValue();
+            final String value = pair.getValue();
             if (value == null) {
                 LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
@@ -132,9 +132,9 @@ public final class StructuredDataFilter extends MapFilter {
             LOGGER.error("StructuredDataFilter is not configured with any valid key value pairs");
             return null;
         }
-        boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
         return new StructuredDataFilter(map, isAnd, onMatch, onMismatch);
     }
 }

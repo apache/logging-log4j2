@@ -33,13 +33,13 @@ public class LevelPatternConverterTest {
 
     @Test
     public void testLevel() {
-        Message msg = new SimpleMessage("Hello");
+        final Message msg = new SimpleMessage("Hello");
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
         assertEquals(Level.DEBUG.toString(), sb.toString());
-        String[] opts = new String[] {"WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info"};
+        final String[] opts = new String[] {"WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info"};
         converter = LevelPatternConverter.newInstance(opts);
         sb.setLength(0);
         converter.format(event, sb);

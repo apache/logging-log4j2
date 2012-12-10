@@ -30,9 +30,9 @@ public class ThreadDumpMessageTest {
 
     @Test
     public void testMessage() {
-        ThreadDumpMessage msg = new ThreadDumpMessage("Testing");
+        final ThreadDumpMessage msg = new ThreadDumpMessage("Testing");
 
-        String message = msg.getFormattedMessage();
+        final String message = msg.getFormattedMessage();
         //System.out.print(message);
         assertTrue("No header", message.contains("Testing"));
         assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
@@ -42,13 +42,13 @@ public class ThreadDumpMessageTest {
 
     @Test
     public void testMessageWithLocks() throws Exception {
-        ReentrantLock lock = new ReentrantLock();
+        final ReentrantLock lock = new ReentrantLock();
         lock.lock();
-        Thread thread1 = new Thread1(lock);
+        final Thread thread1 = new Thread1(lock);
         thread1.start();
         ThreadDumpMessage msg;
         synchronized(this) {
-            Thread thread2 = new Thread2(this);
+            final Thread thread2 = new Thread2(this);
             thread2.start();
             try {
                 Thread.sleep(200);
@@ -58,7 +58,7 @@ public class ThreadDumpMessageTest {
             }
         }
 
-        String message = msg.getFormattedMessage();
+        final String message = msg.getFormattedMessage();
         //System.out.print(message);
         assertTrue("No header", message.contains("Testing"));
         assertTrue("No RUNNABLE", message.contains("RUNNABLE"));
@@ -69,15 +69,15 @@ public class ThreadDumpMessageTest {
 
     @Test
     public void testToString() {
-        ThreadDumpMessage msg = new ThreadDumpMessage("Test");
-        String expected = "ThreadDumpMessage[Title=\"Test\"]";
+        final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
+        final String expected = "ThreadDumpMessage[Title=\"Test\"]";
         assertEquals(expected, msg.toString());
     }
 
     private class Thread1 extends Thread {
-        private ReentrantLock lock;
+        private final ReentrantLock lock;
 
-        public Thread1(ReentrantLock lock) {
+        public Thread1(final ReentrantLock lock) {
             this.lock = lock;
         }
 
@@ -89,9 +89,9 @@ public class ThreadDumpMessageTest {
     }
 
     private class Thread2 extends Thread {
-        private Object obj;
+        private final Object obj;
 
-        public Thread2(Object obj) {
+        public Thread2(final Object obj) {
             this.obj = obj;
         }
 

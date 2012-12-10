@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
  */
 public abstract class AbstractFlumeManager extends AbstractManager {
 
-    public AbstractFlumeManager(String name) {
+    public AbstractFlumeManager(final String name) {
         super(name);
     }
 

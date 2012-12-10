@@ -29,11 +29,11 @@ class ExtendedThreadInformation implements ThreadInformation {
     private final ThreadInfo info;
 
 
-    public ExtendedThreadInformation(ThreadInfo thread) {
+    public ExtendedThreadInformation(final ThreadInfo thread) {
         this.info = thread;
     }
 
-    public void printThreadInfo(StringBuilder sb) {
+    public void printThreadInfo(final StringBuilder sb) {
         sb.append("\"").append(info.getThreadName()).append("\"");
         sb.append(" Id=").append(info.getThreadId()).append(" ");
         formatState(sb, info);
@@ -46,13 +46,13 @@ class ExtendedThreadInformation implements ThreadInformation {
         sb.append('\n');
     }
 
-    public void printStack(StringBuilder sb, StackTraceElement[] stack) {
+    public void printStack(final StringBuilder sb, final StackTraceElement[] stack) {
         int i = 0;
-        for (StackTraceElement element : stack) {
+        for (final StackTraceElement element : stack) {
             sb.append("\tat ").append(element.toString());
             sb.append('\n');
             if (i == 0 && info.getLockInfo() != null) {
-                Thread.State ts = info.getThreadState();
+                final Thread.State ts = info.getThreadState();
                 switch (ts) {
                     case BLOCKED:
                         sb.append("\t-  blocked on ");
@@ -73,7 +73,7 @@ class ExtendedThreadInformation implements ThreadInformation {
                 }
             }
 
-            for (MonitorInfo mi : info.getLockedMonitors()) {
+            for (final MonitorInfo mi : info.getLockedMonitors()) {
                 if (mi.getLockedStackDepth() == i) {
                     sb.append("\t-  locked ");
                     formatLock(sb, mi);
@@ -83,10 +83,10 @@ class ExtendedThreadInformation implements ThreadInformation {
             ++i;
         }
 
-        LockInfo[] locks = info.getLockedSynchronizers();
+        final LockInfo[] locks = info.getLockedSynchronizers();
         if (locks.length > 0) {
             sb.append("\n\tNumber of locked synchronizers = ").append(locks.length).append('\n');
-            for (LockInfo li : locks) {
+            for (final LockInfo li : locks) {
                 sb.append("\t- ");
                 formatLock(sb, li);
                 sb.append('\n');
@@ -94,13 +94,13 @@ class ExtendedThreadInformation implements ThreadInformation {
         }
     }
 
-    private void formatLock(StringBuilder sb, LockInfo lock) {
+    private void formatLock(final StringBuilder sb, final LockInfo lock) {
         sb.append("<").append(lock.getIdentityHashCode()).append("> (a ");
         sb.append(lock.getClassName()).append(")");
     }
 
-    private void formatState(StringBuilder sb, ThreadInfo info) {
-        Thread.State state = info.getThreadState();
+    private void formatState(final StringBuilder sb, final ThreadInfo info) {
+        final Thread.State state = info.getThreadState();
         sb.append(state);
         switch (state) {
             case BLOCKED: {
@@ -109,9 +109,9 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case WAITING: {
-                StackTraceElement element = info.getStackTrace()[0];
-                String className = element.getClassName();
-                String method = element.getMethodName();
+                final StackTraceElement element = info.getStackTrace()[0];
+                final String className = element.getClassName();
+                final String method = element.getMethodName();
                 if (className.equals("java.lang.Object") && method.equals("wait")) {
                     sb.append(" (on object monitor");
                     if (info.getLockOwnerName() != null) {
@@ -132,9 +132,9 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case TIMED_WAITING: {
-                StackTraceElement element = info.getStackTrace()[0];
-                String className = element.getClassName();
-                String method = element.getMethodName();
+                final StackTraceElement element = info.getStackTrace()[0];
+                final String className = element.getClassName();
+                final String method = element.getMethodName();
                 if (className.equals("java.lang.Object") && method.equals("wait")) {
                     sb.append(" (on object monitor");
                     if (info.getLockOwnerName() != null) {

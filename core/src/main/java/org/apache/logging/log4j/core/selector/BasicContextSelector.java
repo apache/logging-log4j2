@@ -30,22 +30,22 @@ public class BasicContextSelector implements ContextSelector {
 
     private static final LoggerContext context = new LoggerContext("Default");
 
-    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
 
-        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : context;
     }
 
-    public LoggerContext locateContext(String name, String configLocation) {
+    public LoggerContext locateContext(final String name, final String configLocation) {
         return context;
     }
 
-    public void removeContext(LoggerContext context) {
+    public void removeContext(final LoggerContext context) {
 
     }
 
     public List<LoggerContext> getLoggerContexts() {
-        List<LoggerContext> list = new ArrayList<LoggerContext>();
+        final List<LoggerContext> list = new ArrayList<LoggerContext>();
         list.add(context);
         return Collections.unmodifiableList(list);
     }

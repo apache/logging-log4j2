@@ -65,65 +65,65 @@ public final class UUIDUtil {
     static {
         byte[] mac = null;
         try {
-            InetAddress address = InetAddress.getLocalHost();
+            final InetAddress address = InetAddress.getLocalHost();
             try {
                 NetworkInterface ni = NetworkInterface.getByInetAddress(address);
                 if (ni != null && !ni.isLoopback() && ni.isUp()) {
-                    Method method = ni.getClass().getMethod("getHardwareAddress");
+                    final Method method = ni.getClass().getMethod("getHardwareAddress");
                     if (method != null) {
                         mac = (byte[]) method.invoke(ni);
                     }
                 }
 
                 if (mac == null) {
-                    Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
+                    final Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
                     while (enumeration.hasMoreElements() && mac == null) {
                         ni = enumeration.nextElement();
                         if (ni != null && ni.isUp() && !ni.isLoopback()) {
-                            Method method = ni.getClass().getMethod("getHardwareAddress");
+                            final Method method = ni.getClass().getMethod("getHardwareAddress");
                             if (method != null) {
                                 mac = (byte[]) method.invoke(ni);
                             }
                         }
                     }
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
                 // Ignore exception
             }
             if (mac == null || mac.length == 0) {
                 mac = address.getAddress();
             }
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             // Ignore exception
         }
-        Random randomGenerator = new SecureRandom();
+        final Random randomGenerator = new SecureRandom();
         if (mac == null || mac.length == 0) {
             mac = new byte[6];
             randomGenerator.nextBytes(mac);
         }
-        int length = mac.length >= 6 ? 6 : mac.length;
-        int index = mac.length >= 6 ? mac.length - 6 : 0;
-        byte[] node = new byte[NODE_SIZE];
+        final int length = mac.length >= 6 ? 6 : mac.length;
+        final int index = mac.length >= 6 ? mac.length - 6 : 0;
+        final byte[] node = new byte[NODE_SIZE];
         node[0] = VARIANT;
         node[1] = 0;
         for (int i = 2; i < NODE_SIZE; ++i) {
             node[i] = 0;
         }
         System.arraycopy(mac, index, node, index + 2, length);
-        ByteBuffer buf = ByteBuffer.wrap(node);
+        final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = uuidSequence;
-        Runtime runtime = Runtime.getRuntime();
+        final Runtime runtime = Runtime.getRuntime();
         synchronized (runtime) {
             String assigned = System.getProperty(ASSIGNED_SEQUENCES);
             long[] sequences;
             if (assigned == null) {
                 sequences = new long[0];
             } else {
-                String[] array = assigned.split(",");
+                final String[] array = assigned.split(",");
                 sequences = new long[array.length];
                 int i = 0;
-                for (String value : array) {
+                for (final String value : array) {
                     sequences[i] = Long.parseLong(value);
                     ++i;
                 }
@@ -135,7 +135,7 @@ public final class UUIDUtil {
             boolean duplicate;
             do {
                 duplicate = false;
-                for (long sequence : sequences) {
+                for (final long sequence : sequences) {
                     if (sequence == rand) {
                         duplicate = true;
                     }
@@ -174,12 +174,12 @@ public final class UUIDUtil {
      */
     public static UUID getTimeBasedUUID() {
 
-        long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
+        final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
             (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
-        long timeLow = (time & LOW_MASK) << SHIFT_4;
-        long timeMid = (time & MID_MASK) >> SHIFT_2;
-        long timeHi = (time & HIGH_MASK) >> SHIFT_6;
-        long most = timeLow | timeMid | TYPE1 | timeHi;
+        final long timeLow = (time & LOW_MASK) << SHIFT_4;
+        final long timeMid = (time & MID_MASK) >> SHIFT_2;
+        final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
+        final long most = timeLow | timeMid | TYPE1 | timeHi;
         return new UUID(most, least);
     }
 }

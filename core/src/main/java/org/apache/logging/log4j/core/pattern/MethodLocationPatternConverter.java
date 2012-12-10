@@ -54,7 +54,7 @@ public final class MethodLocationPatternConverter extends LogEventPatternConvert
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StackTraceElement element = event.getSource();
+        final StackTraceElement element = event.getSource();
 
         if (element != null) {
             toAppendTo.append(element.getMethodName());

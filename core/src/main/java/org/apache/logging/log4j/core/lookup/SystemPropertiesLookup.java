@@ -30,7 +30,7 @@ public class SystemPropertiesLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value for the key.
      */
-    public String lookup(String key) {
+    public String lookup(final String key) {
         return System.getProperty(key);
     }
 
@@ -40,7 +40,7 @@ public class SystemPropertiesLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value associated with the key.
      */
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         return System.getProperty(key);
     }
 }

@@ -29,7 +29,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
     private final TriggeringPolicy[] policies;
 
-    private CompositeTriggeringPolicy(TriggeringPolicy... policies) {
+    private CompositeTriggeringPolicy(final TriggeringPolicy... policies) {
         this.policies = policies;
     }
 
@@ -37,8 +37,8 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * Initializes the policy.
      * @param manager The RollingFileManager.
      */
-    public void initialize(RollingFileManager manager) {
-        for (TriggeringPolicy policy : policies) {
+    public void initialize(final RollingFileManager manager) {
+        for (final TriggeringPolicy policy : policies) {
             policy.initialize(manager);
         }
     }
@@ -48,8 +48,8 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * @param event A reference to the currently event.
      * @return true if a rollover should occur, false otherwise.
      */
-    public boolean isTriggeringEvent(LogEvent event) {
-        for (TriggeringPolicy policy : policies) {
+    public boolean isTriggeringEvent(final LogEvent event) {
+        for (final TriggeringPolicy policy : policies) {
             if (policy.isTriggeringEvent(event)) {
                 return true;
             }
@@ -59,9 +59,9 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("CompositeTriggeringPolicy{");
+        final StringBuilder sb = new StringBuilder("CompositeTriggeringPolicy{");
         boolean first = true;
-        for (TriggeringPolicy policy : policies) {
+        for (final TriggeringPolicy policy : policies) {
             if (!first) {
                 sb.append(", ");
             }
@@ -78,7 +78,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * @return A CompositeTriggeringPolicy.
      */
     @PluginFactory
-    public static CompositeTriggeringPolicy createPolicy(@PluginElement("policies") TriggeringPolicy... policies) {
+    public static CompositeTriggeringPolicy createPolicy(@PluginElement("policies") final TriggeringPolicy... policies) {
         return new CompositeTriggeringPolicy(policies);
     }
 }

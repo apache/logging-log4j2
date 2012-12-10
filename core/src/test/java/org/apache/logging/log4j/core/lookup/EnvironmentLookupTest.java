@@ -29,7 +29,7 @@ public class EnvironmentLookupTest {
 
     @Test
     public void testLookup() {
-        StrLookup lookup = new EnvironmentLookup();
+        final StrLookup lookup = new EnvironmentLookup();
         String value = lookup.lookup("PATH");
         assertNotNull(value);
         value = lookup.lookup("BadKey");

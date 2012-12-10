@@ -27,9 +27,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Log4JMarkerFactory implements IMarkerFactory {
 
-    private ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
+    private final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
-    public Marker getMarker(String name) {
+    public Marker getMarker(final String name) {
         if (name == null) {
             throw new IllegalArgumentException("Marker name must not be null");
         }
@@ -40,15 +40,15 @@ public class Log4JMarkerFactory implements IMarkerFactory {
         return marker;
     }
 
-    public boolean exists(String name) {
+    public boolean exists(final String name) {
         return markerMap.containsKey(name);
     }
 
-    public boolean detachMarker(String name) {
+    public boolean detachMarker(final String name) {
         return false;
     }
 
-    public Marker getDetachedMarker(String name) {
+    public Marker getDetachedMarker(final String name) {
         return new MarkerWrapper(name);
     }
 }

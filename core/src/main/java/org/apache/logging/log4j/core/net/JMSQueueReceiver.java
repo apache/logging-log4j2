@@ -42,23 +42,23 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
      * @param username The userid to connect to the queue.
      * @param password The password to connect to the queue.
      */
-    public JMSQueueReceiver(String qcfBindingName, String queueBindingName, String username, String password) {
+    public JMSQueueReceiver(final String qcfBindingName, final String queueBindingName, final String username, final String password) {
 
         try {
-            Context ctx = new InitialContext();
+            final Context ctx = new InitialContext();
             QueueConnectionFactory queueConnectionFactory;
             queueConnectionFactory = (QueueConnectionFactory) lookup(ctx, qcfBindingName);
-            QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
+            final QueueConnection queueConnection = queueConnectionFactory.createQueueConnection(username, password);
             queueConnection.start();
-            QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue queue = (Queue) ctx.lookup(queueBindingName);
-            QueueReceiver queueReceiver = queueSession.createReceiver(queue);
+            final QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Queue queue = (Queue) ctx.lookup(queueBindingName);
+            final QueueReceiver queueReceiver = queueSession.createReceiver(queue);
             queueReceiver.setMessageListener(this);
-        } catch (JMSException e) {
+        } catch (final JMSException e) {
             logger.error("Could not read JMS message.", e);
-        } catch (NamingException e) {
+        } catch (final NamingException e) {
             logger.error("Could not read JMS message.", e);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             logger.error("Could not read JMS message.", e);
         }
     }
@@ -68,23 +68,23 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
      * @param args The command line arguments.
      * @throws Exception if an error occurs.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
         }
 
-        String qcfBindingName = args[0];
-        String queueBindingName = args[1];
-        String username = args[2];
-        String password = args[3];
+        final String qcfBindingName = args[0];
+        final String queueBindingName = args[1];
+        final String username = args[2];
+        final String password = args[3];
 
         new JMSQueueReceiver(qcfBindingName, queueBindingName, username, password);
 
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         // Loop until the word "exit" is typed
         System.out.println("Type \"exit\" to quit JMSQueueReceiver.");
         while (true) {
-            String s = stdin.readLine();
+            final String s = stdin.readLine();
             if (s.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting. Kill the application if it does not exit "
                     + "due to daemon threads.");
@@ -94,7 +94,7 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
     }
 
 
-    private static void usage(String msg) {
+    private static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + JMSQueueReceiver.class.getName()
             + " QueueConnectionFactoryBindingName QueueBindingName username password");

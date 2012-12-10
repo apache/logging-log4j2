@@ -66,62 +66,62 @@ public class LogManager {
      */
     static {
         // Shortcut binding to force a specific logging implementation.
-        PropsUtil managerProps = new PropsUtil("log4j2.LogManager.properties");
-        String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
-        ClassLoader cl = findClassLoader();
+        final PropsUtil managerProps = new PropsUtil("log4j2.LogManager.properties");
+        final String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
+        final ClassLoader cl = findClassLoader();
         if (factoryClass != null) {
             try {
-                Class<?> clazz = cl.loadClass(factoryClass);
+                final Class<?> clazz = cl.loadClass(factoryClass);
                 if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                     factory = (LoggerContextFactory) clazz.newInstance();
                 }
-            } catch (ClassNotFoundException cnfe) {
+            } catch (final ClassNotFoundException cnfe) {
                 logger.error("Unable to locate configured LoggerContextFactory {}", factoryClass);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 logger.error("Unable to create configured LoggerContextFactory {}", factoryClass, ex);
             }
         }
 
         if (factory == null) {
-            SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
+            final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
 
             Enumeration<URL> enumResources = null;
             try {
                 enumResources = cl.getResources(LOGGER_RESOURCE);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 logger.fatal("Unable to locate " + LOGGER_RESOURCE, e);
             }
 
             if (enumResources != null) {
                 while (enumResources.hasMoreElements()) {
-                    Properties props = new Properties();
-                    URL url = enumResources.nextElement();
+                    final Properties props = new Properties();
+                    final URL url = enumResources.nextElement();
                     try {
                         props.load(url.openStream());
-                    } catch (IOException ioe) {
+                    } catch (final IOException ioe) {
                         logger.error("Unable to read " + url.toString(), ioe);
                     }
                     if (!validVersion(props.getProperty(API_VERSION))) {
                         continue;
                     }
-                    String weight = props.getProperty(FACTORY_PRIORITY);
-                    Integer priority = weight == null ? -1 : Integer.valueOf(weight);
-                    String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
+                    final String weight = props.getProperty(FACTORY_PRIORITY);
+                    final Integer priority = weight == null ? -1 : Integer.valueOf(weight);
+                    final String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
                     if (className != null) {
                         try {
-                            Class<?> clazz = cl.loadClass(className);
+                            final Class<?> clazz = cl.loadClass(className);
                             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                                 factories.put(priority, (LoggerContextFactory) clazz.newInstance());
                             } else {
                                 logger.error(className + " does not implement " + LoggerContextFactory.class.getName());
                             }
-                        } catch (ClassNotFoundException cnfe) {
+                        } catch (final ClassNotFoundException cnfe) {
                             logger.error("Unable to locate class " + className + " specified in " + url.toString(),
                                 cnfe);
-                        } catch (IllegalAccessException iae) {
+                        } catch (final IllegalAccessException iae) {
                             logger.error("Unable to create class " + className + " specified in " + url.toString(),
                                 iae);
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             logger.error("Unable to create class " + className + " specified in " + url.toString(), e);
                             e.printStackTrace();
                         }
@@ -131,8 +131,8 @@ public class LogManager {
                     logger.error("Unable to locate a logging implementation, using SimpleLogger");
                     factory = new SimpleLoggerContextFactory();
                 } else {
-                    StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
-                    for (Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
+                    final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
+                    for (final Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
                         sb.append("Factory: ").append(entry.getValue().getClass().getName());
                         sb.append(", Weighting: ").append(entry.getKey()).append("\n");
                     }
@@ -162,7 +162,7 @@ public class LogManager {
      * @param name The logger name.
      * @return The Logger.
      */
-    public static Logger getLogger(String name) {
+    public static Logger getLogger(final String name) {
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(name);
     }
 
@@ -173,7 +173,7 @@ public class LogManager {
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
      * @return The Logger.
      */
-    public static Logger getLogger(String name, MessageFactory messageFactory) {
+    public static Logger getLogger(final String name, final MessageFactory messageFactory) {
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(name, messageFactory);
     }
 
@@ -182,7 +182,7 @@ public class LogManager {
      * @param clazz The Class whose name should be used as the Logger name.
      * @return The Logger.
      */
-    public static Logger getLogger(Class<?> clazz) {
+    public static Logger getLogger(final Class<?> clazz) {
         return getLogger(clazz != null ? clazz.getName() : null);
     }
 
@@ -192,7 +192,7 @@ public class LogManager {
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
      * @return The Logger.
      */
-    public static Logger getLogger(Class<?> clazz, MessageFactory messageFactory) {
+    public static Logger getLogger(final Class<?> clazz, final MessageFactory messageFactory) {
         return getLogger(clazz != null ? clazz.getName() : null, messageFactory);
     }
 
@@ -201,7 +201,7 @@ public class LogManager {
      * @param value The value whose class name should be used as the Logger name.
      * @return The Logger.
      */
-    public static Logger getLogger(Object value) {
+    public static Logger getLogger(final Object value) {
         return getLogger(value != null ? value.getClass() : null);
     }
 
@@ -211,7 +211,7 @@ public class LogManager {
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
      * @return The Logger.
      */
-    public static Logger getLogger(Object value, MessageFactory messageFactory) {
+    public static Logger getLogger(final Object value, final MessageFactory messageFactory) {
         return getLogger(value != null ? value.getClass() : null, messageFactory);
     }
 
@@ -222,7 +222,7 @@ public class LogManager {
      * @param name The logger name.
      * @return The Logger.
      */
-    protected static Logger getLogger(String fqcn, String name) {
+    protected static Logger getLogger(final String fqcn, final String name) {
         return factory.getContext(fqcn, null, false).getLogger(name);
     }
 
@@ -246,7 +246,7 @@ public class LogManager {
      * returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    public static LoggerContext getContext(boolean currentContext) {
+    public static LoggerContext getContext(final boolean currentContext) {
         return factory.getContext(LogManager.class.getName(), null, currentContext);
     }
 
@@ -261,7 +261,7 @@ public class LogManager {
      * returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    public static LoggerContext getContext(ClassLoader loader, boolean currentContext) {
+    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext) {
         return factory.getContext(LogManager.class.getName(), loader, currentContext);
     }
 
@@ -275,7 +275,7 @@ public class LogManager {
      * returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    protected static LoggerContext getContext(String fqcn, boolean currentContext) {
+    protected static LoggerContext getContext(final String fqcn, final boolean currentContext) {
         return factory.getContext(fqcn, null, currentContext);
     }
 
@@ -291,7 +291,7 @@ public class LogManager {
      * returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    protected static LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return factory.getContext(fqcn, loader, currentContext);
     }
 
@@ -315,8 +315,8 @@ public class LogManager {
         return cl;
     }
 
-    private static boolean validVersion(String version) {
-        for (String v : COMPATIBLE_API_VERSIONS) {
+    private static boolean validVersion(final String version) {
+        for (final String v : COMPATIBLE_API_VERSIONS) {
             if (version.startsWith(v)) {
                 return true;
             }

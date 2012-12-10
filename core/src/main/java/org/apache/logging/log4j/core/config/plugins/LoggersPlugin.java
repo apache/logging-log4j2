@@ -37,11 +37,11 @@ public final class LoggersPlugin {
      * @return A Loggers object.
      */
     @PluginFactory
-    public static Loggers createLoggers(@PluginElement("loggers") LoggerConfig[] loggers) {
-        ConcurrentMap<String, LoggerConfig> loggerMap = new ConcurrentHashMap<String, LoggerConfig>();
+    public static Loggers createLoggers(@PluginElement("loggers") final LoggerConfig[] loggers) {
+        final ConcurrentMap<String, LoggerConfig> loggerMap = new ConcurrentHashMap<String, LoggerConfig>();
         LoggerConfig root = null;
 
-        for (LoggerConfig logger : loggers) {
+        for (final LoggerConfig logger : loggers) {
             if (logger != null) {
                 if (logger.getName().length() == 0) {
                     root = logger;

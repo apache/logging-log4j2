@@ -87,15 +87,15 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
 
-    private StrLookup tempLookup = new Interpolator();
+    private final StrLookup tempLookup = new Interpolator();
 
-    private StrSubstitutor subst = new StrSubstitutor(tempLookup);
+    private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
 
     private LoggerConfig root = new LoggerConfig();
 
-    private boolean started = false;
+    private final boolean started = false;
 
-    private ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
+    private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
 
     /**
      * Constructor.
@@ -112,10 +112,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         pluginManager.collectPlugins();
         setup();
         doConfigure();
-        for (LoggerConfig logger : loggers.values()) {
+        for (final LoggerConfig logger : loggers.values()) {
             logger.startFilter();
         }
-        for (Appender appender : appenders.values()) {
+        for (final Appender appender : appenders.values()) {
             appender.start();
         }
 
@@ -126,12 +126,12 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Tear down the configuration.
      */
     public void stop() {
-        for (LoggerConfig logger : loggers.values()) {
+        for (final LoggerConfig logger : loggers.values()) {
             logger.clearAppenders();
             logger.stopFilter();
         }
         // Stop the appenders in reverse order in case they still have activity.
-        Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
+        final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
         for (int i = array.length - 1; i > 0; --i) {
             array[i].stop();
         }
@@ -141,18 +141,18 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected void setup() {
     }
 
-    public Object getComponent(String name) {
+    public Object getComponent(final String name) {
         return componentMap.get(name);
     }
 
-    public void addComponent(String name, Object obj) {
+    public void addComponent(final String name, final Object obj) {
         componentMap.putIfAbsent(name, obj);
     }
 
     protected void doConfigure() {
         boolean setRoot = false;
         boolean setLoggers = false;
-        for (Node child : rootNode.getChildren()) {
+        for (final Node child : rootNode.getChildren()) {
             createConfiguration(child, null);
             if (child.getObject() == null) {
                 continue;
@@ -172,7 +172,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             } else if (child.getObject() instanceof Filter) {
                 addFilter((Filter) child.getObject());
             } else if (child.getName().equalsIgnoreCase("loggers")) {
-                Loggers l = (Loggers) child.getObject();
+                final Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
                 setLoggers = true;
                 if (l.getRoot() != null) {
@@ -195,10 +195,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             return;
         }
 
-        for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
-            LoggerConfig l = entry.getValue();
-            for (AppenderRef ref : l.getAppenderRefs()) {
-                Appender app = appenders.get(ref.getRef());
+        for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
+            final LoggerConfig l = entry.getValue();
+            for (final AppenderRef ref : l.getAppenderRefs()) {
+                final Appender app = appenders.get(ref.getRef());
                 if (app != null) {
                     l.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
@@ -213,16 +213,16 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private void setToDefault() {
         setName(DefaultConfiguration.DEFAULT_NAME);
-        Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
+        final Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
             null, null, null);
-        Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         appender.start();
         addAppender(appender);
-        LoggerConfig root = getRootLogger();
+        final LoggerConfig root = getRootLogger();
         root.addAppender(appender, null, null);
 
-        String levelName = System.getProperty(DefaultConfiguration.DEFAULT_LEVEL);
-        Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
+        final String levelName = System.getProperty(DefaultConfiguration.DEFAULT_LEVEL);
+        final Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 
@@ -234,7 +234,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Set the name of the configuration.
      * @param name The name.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -250,7 +250,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Add a listener for changes on the configuration.
      * @param listener The ConfigurationListener to add.
      */
-    public void addListener(ConfigurationListener listener) {
+    public void addListener(final ConfigurationListener listener) {
         listeners.add(listener);
     }
 
@@ -258,7 +258,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Remove a ConfigurationListener.
      * @param listener The ConfigurationListener to remove.
      */
-    public void removeListener(ConfigurationListener listener) {
+    public void removeListener(final ConfigurationListener listener) {
         listeners.remove(listener);
     }
 
@@ -267,7 +267,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
-    public Appender getAppender(String name) {
+    public Appender getAppender(final String name) {
         return appenders.get(name);
     }
 
@@ -283,7 +283,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Adds an Appender to the configuration.
      * @param appender The Appender to add.
      */
-    public void addAppender(Appender appender) {
+    public void addAppender(final Appender appender) {
         appenders.put(appender.getName(), appender);
     }
 
@@ -304,14 +304,14 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
-    public synchronized void addLoggerAppender(org.apache.logging.log4j.core.Logger logger, Appender appender) {
-        String name = logger.getName();
+    public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger, final Appender appender) {
+        final String name = logger.getName();
         appenders.putIfAbsent(name, appender);
-        LoggerConfig lc = getLoggerConfig(name);
+        final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
             lc.addAppender(appender, null, null);
         } else {
-            LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -328,14 +328,14 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Fo;ter will be associated with.
      * @param filter The Filter.
      */
-    public synchronized void addLoggerFilter(org.apache.logging.log4j.core.Logger logger, Filter filter) {
-        String name = logger.getName();
-        LoggerConfig lc = getLoggerConfig(name);
+    public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
+        final String name = logger.getName();
+        final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
 
             lc.addFilter(filter);
         } else {
-            LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), lc.isAdditive());
             nlc.addFilter(filter);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
@@ -352,13 +352,13 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
-    public synchronized void setLoggerAdditive(org.apache.logging.log4j.core.Logger logger, boolean additive) {
-        String name = logger.getName();
-        LoggerConfig lc = getLoggerConfig(name);
+    public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+        final String name = logger.getName();
+        final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
             lc.setAdditive(additive);
         } else {
-            LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
+            final LoggerConfig nlc = new LoggerConfig(name, lc.getLevel(), additive);
             nlc.setParent(lc);
             loggers.putIfAbsent(name, nlc);
             setParents();
@@ -372,11 +372,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * case an Appender with the same name is being added during the removal.
      * @param name the name of the appender to remove.
      */
-    public synchronized void removeAppender(String name) {
-        for (LoggerConfig logger : loggers.values()) {
+    public synchronized void removeAppender(final String name) {
+        for (final LoggerConfig logger : loggers.values()) {
             logger.removeAppender(name);
         }
-        Appender app = appenders.remove(name);
+        final Appender app = appenders.remove(name);
 
         if (app != null) {
             app.stop();
@@ -389,7 +389,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The Logger name.
      * @return The located LoggerConfig.
      */
-    public LoggerConfig getLoggerConfig(String name) {
+    public LoggerConfig getLoggerConfig(final String name) {
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
@@ -423,7 +423,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The Logger name.
      * @return The LoggerConfig or null if no match was found.
      */
-    public LoggerConfig getLogger(String name) {
+    public LoggerConfig getLogger(final String name) {
         return loggers.get(name);
     }
 
@@ -434,9 +434,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The name of the Logger.
      * @param loggerConfig The LoggerConfig.
      */
-    public void addLogger(String name, LoggerConfig loggerConfig) {
+    public void addLogger(final String name, final LoggerConfig loggerConfig) {
         if (started) {
-            String msg = "Cannot add logger " + name + " to an active configuration";
+            final String msg = "Cannot add logger " + name + " to an active configuration";
             LOGGER.warn(msg);
             throw new IllegalStateException(msg);
         }
@@ -450,9 +450,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      *
      * @param name The name of the Logger.
      */
-    public void removeLogger(String name) {
+    public void removeLogger(final String name) {
         if (started) {
-            String msg = "Cannot remove logger " + name + " in an active configuration";
+            final String msg = "Cannot remove logger " + name + " in an active configuration";
             LOGGER.warn(msg);
             throw new IllegalStateException(msg);
         }
@@ -460,12 +460,12 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         setParents();
     }
 
-    public void createConfiguration(Node node, LogEvent event) {
-        PluginType type = node.getType();
+    public void createConfiguration(final Node node, final LogEvent event) {
+        final PluginType type = node.getType();
         if (type != null && type.isDeferChildren()) {
             node.setObject(createPluginObject(type, node, event));
         } else {
-            for (Node child : node.getChildren()) {
+            for (final Node child : node.getChildren()) {
                 createConfiguration(child, event);
             }
 
@@ -494,18 +494,18 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     * @return the instantiate method or null if there is none by that
     * description.
     */
-    private Object createPluginObject(PluginType type, Node node, LogEvent event)
+    private Object createPluginObject(final PluginType type, final Node node, final LogEvent event)
     {
-        Class clazz = type.getPluginClass();
+        final Class clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
-                Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
-                for (Node child : node.getChildren()) {
+                final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
+                for (final Node child : node.getChildren()) {
                     map.put(child.getName(), child.getObject());
                 }
                 return map;
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to create Map for " + type.getElementName() + " of class " +
                     clazz);
             }
@@ -513,12 +513,12 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
         if (List.class.isAssignableFrom(clazz)) {
             try {
-                List<Object> list = (List<Object>) clazz.newInstance();
-                for (Node child : node.getChildren()) {
+                final List<Object> list = (List<Object>) clazz.newInstance();
+                for (final Node child : node.getChildren()) {
                     list.add(child.getObject());
                 }
                 return list;
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to create List for " + type.getElementName() + " of class " +
                     clazz);
             }
@@ -526,7 +526,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
         Method factoryMethod = null;
 
-        for (Method method : clazz.getMethods()) {
+        for (final Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(PluginFactory.class)) {
                 factoryMethod = method;
                 break;
@@ -536,18 +536,18 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             return null;
         }
 
-        Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
-        Class[] parmClasses = factoryMethod.getParameterTypes();
+        final Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
+        final Class[] parmClasses = factoryMethod.getParameterTypes();
         if (parmArray.length != parmClasses.length) {
             LOGGER.error("Number of parameter annotations does not equal the number of paramters");
         }
-        Object[] parms = new Object[parmClasses.length];
+        final Object[] parms = new Object[parmClasses.length];
 
         int index = 0;
-        Map<String, String> attrs = node.getAttributes();
-        List<Node> children = node.getChildren();
-        StringBuilder sb = new StringBuilder();
-        List<Node> used = new ArrayList<Node>();
+        final Map<String, String> attrs = node.getAttributes();
+        final List<Node> children = node.getChildren();
+        final StringBuilder sb = new StringBuilder();
+        final List<Node> used = new ArrayList<Node>();
 
         /*
          * For each parameter:
@@ -559,8 +559,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
          *     Store the array into the parameter array.
          *   If not an array, store the object in the child node into the parameter array.
          */
-        for (Annotation[] parmTypes : parmArray) {
-            for (Annotation a : parmTypes) {
+        for (final Annotation[] parmTypes : parmArray) {
+            for (final Annotation a : parmTypes) {
                 if (sb.length() == 0) {
                     sb.append(" with params(");
                 } else {
@@ -577,29 +577,29 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         sb.append("Configuration");
                     }
                 } else if (a instanceof PluginValue) {
-                    String name = ((PluginValue) a).value();
+                    final String name = ((PluginValue) a).value();
                     String v = node.getValue();
                     if (v == null) {
                         v = getAttrValue("value", attrs);
                     }
-                    String value = subst.replace(event, v);
+                    final String value = subst.replace(event, v);
                     sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginAttr) {
-                    String name = ((PluginAttr) a).value();
-                    String value = subst.replace(event, getAttrValue(name, attrs));
+                    final String name = ((PluginAttr) a).value();
+                    final String value = subst.replace(event, getAttrValue(name, attrs));
                     sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
-                    PluginElement elem = (PluginElement) a;
-                    String name = elem.value();
+                    final PluginElement elem = (PluginElement) a;
+                    final String name = elem.value();
                     if (parmClasses[index].isArray()) {
-                        Class parmClass = parmClasses[index].getComponentType();
-                        List<Object> list = new ArrayList<Object>();
+                        final Class parmClass = parmClasses[index].getComponentType();
+                        final List<Object> list = new ArrayList<Object>();
                         sb.append(name).append("={");
                         boolean first = true;
-                        for (Node child : children) {
-                            PluginType childType = child.getType();
+                        for (final Node child : children) {
+                            final PluginType childType = child.getType();
                             if (elem.value().equalsIgnoreCase(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 used.add(child);
@@ -607,7 +607,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                                     sb.append(", ");
                                 }
                                 first = false;
-                                Object obj = child.getObject();
+                                final Object obj = child.getObject();
                                 if (obj == null) {
                                     LOGGER.error("Null object returned for " + child.getName() + " in " +
                                         node.getName());
@@ -632,18 +632,18 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                                 " for attribute " + name);
                             break;
                         }
-                        Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
+                        final Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
                         int i = 0;
-                        for (Object obj : list) {
+                        for (final Object obj : list) {
                             array[i] = obj;
                             ++i;
                         }
                         parms[index] = array;
                     } else {
-                        Class parmClass = parmClasses[index];
+                        final Class parmClass = parmClasses[index];
                         boolean present = false;
-                        for (Node child : children) {
-                            PluginType childType = child.getType();
+                        for (final Node child : children) {
+                            final PluginType childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 sb.append(child.getName()).append("(").append(child.toString()).append(")");
@@ -666,8 +666,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
 
         if (attrs.size() > 0) {
-            StringBuilder eb = new StringBuilder();
-            for (String key : attrs.keySet()) {
+            final StringBuilder eb = new StringBuilder();
+            for (final String key : attrs.keySet()) {
                 if (eb.length() == 0) {
                     eb.append(node.getName());
                     eb.append(" contains ");
@@ -688,18 +688,18 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
 
         if (!type.isDeferChildren() && used.size() != children.size()) {
-            for (Node child : children) {
+            for (final Node child : children) {
                 if (used.contains(child)) {
                     continue;
                 }
-                String nodeType = node.getType().getElementName();
-                String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + " " + node.getName();
+                final String nodeType = node.getType().getElementName();
+                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + " " + node.getName();
                 LOGGER.error(start + " has no parameter that matches element " + child.getName());
             }
         }
 
         try {
-            int mod = factoryMethod.getModifiers();
+            final int mod = factoryMethod.getModifiers();
             if (!Modifier.isStatic(mod)) {
                 LOGGER.error(factoryMethod.getName() + " method is not static on class " +
                     clazz.getName() + " for element " + node.getName());
@@ -711,16 +711,16 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 return factoryMethod.invoke(null, parms);
             //}
             //return factoryMethod.invoke(null, node);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Unable to invoke method " + factoryMethod.getName() + " in class " +
                 clazz.getName() + " for element " + node.getName(), e);
         }
         return null;
     }
 
-    private void printArray(StringBuilder sb, Object... array) {
+    private void printArray(final StringBuilder sb, final Object... array) {
         boolean first = true;
-        for (Object obj : array) {
+        for (final Object obj : array) {
             if (!first) {
                 sb.append(", ");
             }
@@ -729,10 +729,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
     }
 
-    private String getAttrValue(String name, Map<String, String> attrs) {
-        for (String key : attrs.keySet()) {
+    private String getAttrValue(final String name, final Map<String, String> attrs) {
+        for (final String key : attrs.keySet()) {
             if (key.equalsIgnoreCase(name)) {
-                String attr = attrs.get(key);
+                final String attr = attrs.get(key);
                 attrs.remove(key);
                 return attr;
             }
@@ -741,11 +741,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     private void setParents() {
-         for (Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
-            LoggerConfig logger = entry.getValue();
+         for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
+            final LoggerConfig logger = entry.getValue();
             String name = entry.getKey();
             if (!name.equals("")) {
-                int i = name.lastIndexOf('.');
+                final int i = name.lastIndexOf('.');
                 if (i > 0) {
                     name = name.substring(0, i);
                     LoggerConfig parent = getLoggerConfig(name);

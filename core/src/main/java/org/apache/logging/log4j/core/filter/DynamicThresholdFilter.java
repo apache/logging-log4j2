@@ -38,10 +38,10 @@ import java.util.Map;
 public final class DynamicThresholdFilter extends AbstractFilter {
     private Map<String, Level> levelMap = new HashMap<String, Level>();
     private Level defaultThreshold = Level.ERROR;
-    private String key;
+    private final String key;
 
-    private DynamicThresholdFilter(String key, Map<String, Level> pairs, Level defaultLevel,
-                                   Result onMatch, Result onMismatch) {
+    private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
+                                   final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         if (key == null) {
             throw new NullPointerException("key cannot be null");
@@ -56,27 +56,27 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return filter(event.getLevel());
     }
 
-    private Result filter(Level level) {
-        Object value = ThreadContext.get(key);
+    private Result filter(final Level level) {
+        final Object value = ThreadContext.get(key);
         if (value != null) {
             Level ctxLevel = levelMap.get(value);
             if (ctxLevel == null) {
@@ -94,13 +94,13 @@ public final class DynamicThresholdFilter extends AbstractFilter {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("key=").append(key);
         sb.append(", default=").append(defaultThreshold);
         if (levelMap.size() > 0) {
             sb.append("{");
             boolean first = true;
-            for (Map.Entry<String, Level> entry : levelMap.entrySet()) {
+            for (final Map.Entry<String, Level> entry : levelMap.entrySet()) {
                 if (!first) {
                     sb.append(", ");
                     first = false;
@@ -122,18 +122,18 @@ public final class DynamicThresholdFilter extends AbstractFilter {
      * @return The DynamicThresholdFilter.
      */
     @PluginFactory
-    public static DynamicThresholdFilter createFilter(@PluginAttr("key") String key,
-                                                      @PluginElement("pairs") KeyValuePair[] pairs,
-                                                      @PluginAttr("defaultThreshold") String levelName,
-                                                      @PluginAttr("onmatch") String match,
-                                                      @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
-        Map<String, Level> map = new HashMap<String, Level>();
-        for (KeyValuePair pair : pairs) {
+    public static DynamicThresholdFilter createFilter(@PluginAttr("key") final String key,
+                                                      @PluginElement("pairs") final KeyValuePair[] pairs,
+                                                      @PluginAttr("defaultThreshold") final String levelName,
+                                                      @PluginAttr("onmatch") final String match,
+                                                      @PluginAttr("onmismatch") final String mismatch) {
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
+        final Map<String, Level> map = new HashMap<String, Level>();
+        for (final KeyValuePair pair : pairs) {
             map.put(pair.getKey(), Level.toLevel(pair.getValue()));
         }
-        Level level = Level.toLevel(levelName, Level.ERROR);
+        final Level level = Level.toLevel(levelName, Level.ERROR);
         return new DynamicThresholdFilter(key, map, level, onMatch, onMismatch);
     }
 }

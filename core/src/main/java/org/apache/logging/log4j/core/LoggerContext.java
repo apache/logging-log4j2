@@ -80,7 +80,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Constructor taking only a name.
      * @param name The context name.
      */
-    public LoggerContext(String name) {
+    public LoggerContext(final String name) {
         this(name, null, (URI) null);
     }
 
@@ -89,7 +89,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param name The context name.
      * @param externalContext The external context.
      */
-    public LoggerContext(String name, Object externalContext) {
+    public LoggerContext(final String name, final Object externalContext) {
         this(name, externalContext, (URI) null);
     }
 
@@ -99,7 +99,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param externalContext The external context.
      * @param configLocn The location of the configuration as a URI.
      */
-    public LoggerContext(String name, Object externalContext, URI configLocn) {
+    public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this.name = name;
         this.externalContext = externalContext;
         this.configLocation = configLocn;
@@ -112,14 +112,14 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param externalContext The external context.
      * @param configLocn The configuration location.
      */
-    public LoggerContext(String name, Object externalContext, String configLocn) {
+    public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this.name = name;
         this.externalContext = externalContext;
         if (configLocn != null) {
             URI uri;
             try {
                 uri = new File(configLocn).toURI();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 uri = null;
             }
             configLocation = uri;
@@ -176,7 +176,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Set the external context.
      * @param context The external context.
      */
-    public void setExternalContext(Object context) {
+    public void setExternalContext(final Object context) {
         this.externalContext = context;
     }
 
@@ -193,7 +193,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param name The name of the Logger to return.
      * @return The Logger.
      */
-    public Logger getLogger(String name) {
+    public Logger getLogger(final String name) {
         return getLogger(name, null);
     }
 
@@ -203,7 +203,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
      * @return The Logger.
      */
-    public Logger getLogger(String name, MessageFactory messageFactory) {
+    public Logger getLogger(final String name, final MessageFactory messageFactory) {
         Logger logger = loggers.get(name);
         if (logger != null) {
             AbstractLogger.checkMessageFactory(logger, messageFactory);
@@ -211,7 +211,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
 
         logger = newInstance(this, name, messageFactory);
-        Logger prev = loggers.putIfAbsent(name, logger);
+        final Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
 
@@ -220,7 +220,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param name The Logger name to search for.
      * @return True if the Logger exists, false otherwise.
      */
-    public boolean hasLogger(String name) {
+    public boolean hasLogger(final String name) {
         return loggers.containsKey(name);
     }
 
@@ -237,7 +237,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * when a reconfigure occurs.
      * @param filter The Filter to add.
      */
-    public void addFilter(Filter filter) {
+    public void addFilter(final Filter filter) {
         config.addFilter(filter);
     }
 
@@ -245,7 +245,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Removes a Filter from the current Configuration.
      * @param filter The Filter to remove.
      */
-    public void removeFiler(Filter filter) {
+    public void removeFiler(final Filter filter) {
         config.removeFilter(filter);
     }
 
@@ -254,11 +254,11 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    public synchronized Configuration setConfiguration(Configuration config) {
+    public synchronized Configuration setConfiguration(final Configuration config) {
         if (config == null) {
             throw new NullPointerException("No Configuration was provided");
         }
-        Configuration prev = this.config;
+        final Configuration prev = this.config;
         config.addListener(this);
         config.start();
         this.config = config;
@@ -275,7 +275,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      */
     public synchronized void reconfigure() {
         logger.debug("Reconfiguration started for context " + name);
-        Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
         /*instance.start();
         Configuration old = setConfiguration(instance);
@@ -297,8 +297,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Cause all Logger to be updated against the specified Configuration.
      * @param config The Configuration.
      */
-    public void updateLoggers(Configuration config) {
-        for (Logger logger : loggers.values()) {
+    public void updateLoggers(final Configuration config) {
+        for (final Logger logger : loggers.values()) {
             logger.updateConfiguration(config);
         }
     }
@@ -307,9 +307,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Cause a reconfiguration to take place when the underlying configuration file changes.
      * @param reconfigurable The Configuration that can be reconfigured.
      */
-    public synchronized void onChange(Reconfigurable reconfigurable) {
+    public synchronized void onChange(final Reconfigurable reconfigurable) {
         logger.debug("Reconfiguration started for context " + name);
-        Configuration config = reconfigurable.reconfigure();
+        final Configuration config = reconfigurable.reconfigure();
         if (config != null) {
             setConfiguration(config);
             logger.debug("Reconfiguration completed");
@@ -319,7 +319,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
 
-    private Logger newInstance(LoggerContext ctx, String name, MessageFactory messageFactory) {
+    private Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
     }
 

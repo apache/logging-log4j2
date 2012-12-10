@@ -48,10 +48,10 @@ public class StrSubstitutorTest {
 
     @Test
     public void testLookup() {
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put(TESTKEY, TESTVAL);
-        StrLookup lookup = new Interpolator(new MapLookup<String>(map));
-        StrSubstitutor subst = new StrSubstitutor(lookup);
+        final StrLookup lookup = new Interpolator(new MapLookup<String>(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = subst.replace("${TestKey}-${ctx:TestKey}-${sys:TestKey}");
         assertEquals("TestValue-TestValue-TestValue", value);

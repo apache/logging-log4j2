@@ -50,7 +50,7 @@ public final class MarkerPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Marker marker = event.getMarker();
+        final Marker marker = event.getMarker();
         if (marker != null) {
             toAppendTo.append(marker.toString());
         }

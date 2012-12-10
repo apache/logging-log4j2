@@ -112,7 +112,7 @@ public class Priority {
      * @param levelStr The level name.
      * @param syslogEquivalent The equivalent syslog value.
      */
-    protected Priority(int level, String levelStr, int syslogEquivalent) {
+    protected Priority(final int level, final String levelStr, final int syslogEquivalent) {
         this.level = level;
         this.levelStr = levelStr;
         this.syslogEquivalent = syslogEquivalent;
@@ -126,9 +126,9 @@ public class Priority {
      * @since 1.2
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o instanceof Priority) {
-            Priority r = (Priority) o;
+            final Priority r = (Priority) o;
             return this.level == r.level;
         } else {
             return false;
@@ -155,7 +155,7 @@ public class Priority {
      * @param r The Priority to check.
      * @return true if the current level is greater or equal to the specified Priority.
      */
-    public boolean isGreaterOrEqual(Priority r) {
+    public boolean isGreaterOrEqual(final Priority r) {
         return level >= r.level;
     }
 
@@ -196,7 +196,7 @@ public class Priority {
      * @deprecated Please use the {@link Level#toLevel(String)} method instead.
      */
     @Deprecated
-    public static Priority toPriority(String sArg) {
+    public static Priority toPriority(final String sArg) {
         return Level.toLevel(sArg);
     }
 
@@ -206,7 +206,7 @@ public class Priority {
      * @deprecated Please use the {@link Level#toLevel(int)} method instead.
      */
     @Deprecated
-    public static Priority toPriority(int val) {
+    public static Priority toPriority(final int val) {
         return toPriority(val, Priority.DEBUG);
     }
 
@@ -217,7 +217,7 @@ public class Priority {
      * @deprecated Please use the {@link Level#toLevel(int, Level)} method instead.
      */
     @Deprecated
-    public static Priority toPriority(int val, Priority defaultPriority) {
+    public static Priority toPriority(final int val, final Priority defaultPriority) {
         return Level.toLevel(val, (Level) defaultPriority);
     }
 
@@ -228,7 +228,7 @@ public class Priority {
      * @deprecated Please use the {@link Level#toLevel(String, Level)} method instead.
      */
     @Deprecated
-    public static Priority toPriority(String sArg, Priority defaultPriority) {
+    public static Priority toPriority(final String sArg, final Priority defaultPriority) {
         return Level.toLevel(sArg, (Level) defaultPriority);
     }
 }

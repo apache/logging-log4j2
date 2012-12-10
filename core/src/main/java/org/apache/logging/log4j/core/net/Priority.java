@@ -31,7 +31,7 @@ public class Priority {
      * @param facility The Facility.
      * @param severity The Severity.
      */
-    public Priority(Facility facility, Severity severity) {
+    public Priority(final Facility facility, final Severity severity) {
         this.facility = facility;
         this.severity = severity;
     }
@@ -42,7 +42,7 @@ public class Priority {
      * @param level The Level.
      * @return The integer value of the priority.
      */
-    public static int getPriority(Facility facility, Level level) {
+    public static int getPriority(final Facility facility, final Level level) {
         return (facility.getCode() << 3) + Severity.getSeverity(level).getCode();
     }
 

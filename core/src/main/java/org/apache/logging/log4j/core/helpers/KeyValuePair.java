@@ -34,7 +34,7 @@ public class KeyValuePair {
      * @param key The key.
      * @param value The value.
      */
-    public KeyValuePair(String key, String value) {
+    public KeyValuePair(final String key, final String value) {
         this.key = key;
         this.value = value;
     }
@@ -67,8 +67,8 @@ public class KeyValuePair {
      * @return A KeyValuePair.
      */
     @PluginFactory
-    public static KeyValuePair createPair(@PluginAttr("key") String key,
-                                          @PluginAttr("value")  String value) {
+    public static KeyValuePair createPair(@PluginAttr("key") final String key,
+                                          @PluginAttr("value") final  String value) {
 
         return new KeyValuePair(key, value);
     }

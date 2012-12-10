@@ -33,14 +33,14 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     private final StringEncoder encoder;
 
-    protected AbstractStringLayout(Charset charset) {
+    protected AbstractStringLayout(final Charset charset) {
         this.charset = charset;
         boolean useClass = false;
         try {
             if (String.class.getMethod("getBytes", new Class[] {Charset.class}) != null) {
                 useClass = true;
             }
-        } catch (NoSuchMethodException ex) {
+        } catch (final NoSuchMethodException ex) {
             // Not JDK 6 or greater.
         }
         encoder = useClass ? new ClassEncoder() : new NameEncoder();
@@ -52,7 +52,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * @param event The Log Event.
      * @return The formatted event as a byte array.
      */
-    public byte[] toByteArray(LogEvent event) {
+    public byte[] toByteArray(final LogEvent event) {
         return encoder.getBytes(toSerializable(event));
     }
 
@@ -72,7 +72,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * JDK 6 or greater.
      */
     private class ClassEncoder implements StringEncoder {
-        public byte[] getBytes(String str) {
+        public byte[] getBytes(final String str) {
             return str.getBytes(charset);
         }
     }
@@ -81,10 +81,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * JDK 5.
      */
     private class NameEncoder implements StringEncoder {
-        public byte[] getBytes(String str) {
+        public byte[] getBytes(final String str) {
             try {
                 return str.getBytes(charset.name());
-            } catch (UnsupportedEncodingException ex) {
+            } catch (final UnsupportedEncodingException ex) {
                 // This shouldn't ever happen since an invalid Charset would never have been created.
                 return str.getBytes();
             }

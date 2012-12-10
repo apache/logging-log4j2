@@ -39,14 +39,14 @@ public class RootThrowablePatternConverterTest {
 
     @Test
     public void testFull() {
-        RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null);
-        Throwable cause = new NullPointerException("null pointer");
-        Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
             new SimpleMessage("test exception"), parent);
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        String result = sb.toString();
+        final String result = sb.toString();
         //System.out.print(result);
         assertTrue("Missing Exception",
             result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));

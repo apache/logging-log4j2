@@ -58,7 +58,7 @@ public interface Filter {
          * @param name The Result enum name, case-insensitive. If null, returns, null
          * @return a Result enum value or null if name is null
          */
-        public static Result toResult(String name) {
+        public static Result toResult(final String name) {
             return toResult(name, null);
         }
 
@@ -69,7 +69,7 @@ public interface Filter {
          * @param defaultResult the Result to return if name is null
          * @return a Result enum value or null if name is null
          */
-        public static Result toResult(String name, Result defaultResult) {
+        public static Result toResult(final String name, final Result defaultResult) {
             return EnglishEnums.valueOf(Result.class, name, defaultResult);
         }
 }

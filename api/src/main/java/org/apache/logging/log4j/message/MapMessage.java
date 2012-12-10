@@ -56,14 +56,14 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * Constructor based on an existing Map.
      * @param map The Map.
      */
-    public MapMessage(Map<String, String> map) {
+    public MapMessage(final Map<String, String> map) {
         this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<String, String>(map);
     }
 
     public String[] getFormats() {
-        String[] formats = new String[MapFormat.values().length];
+        final String[] formats = new String[MapFormat.values().length];
         int i = 0;
-        for (MapFormat format : MapFormat.values()) {
+        for (final MapFormat format : MapFormat.values()) {
             formats[i++] = format.name();
         }
         return formats;
@@ -105,7 +105,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * @param key The name of the data item.
      * @param value The value of the data item.
      */
-    public void put(String key, String value) {
+    public void put(final String key, final String value) {
         if (value == null) {
             throw new IllegalArgumentException("No value provided for key " + key);
         }
@@ -113,7 +113,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
         data.put(key, value);
     }
 
-    protected void validate(String key, String value) {
+    protected void validate(final String key, final String value) {
 
     }
 
@@ -121,7 +121,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * Add all the elements from the specified Map.
      * @param map The Map to add.
      */
-    public void putAll(Map<String, String> map) {
+    public void putAll(final Map<String, String> map) {
         data.putAll(map);
     }
 
@@ -130,7 +130,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * @param key The name of the element.
      * @return The value of the element or null if the key is not present.
      */
-    public String get(String key) {
+    public String get(final String key) {
         return data.get(key);
     }
 
@@ -139,7 +139,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * @param key The name of the element.
      * @return The previous value of the element.
      */
-    public String remove(String key) {
+    public String remove(final String key) {
         return data.remove(key);
     }
 
@@ -152,10 +152,10 @@ public class MapMessage implements MultiformatMessage, Serializable {
         return asString((MapFormat) null);
     }
 
-    public String asString(String format) {
+    public String asString(final String format) {
         try {
             return asString(EnglishEnums.valueOf(MapFormat.class, format));
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             return asString();
         }
     }
@@ -165,8 +165,8 @@ public class MapMessage implements MultiformatMessage, Serializable {
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
      */
-    private String asString(MapFormat format) {
-        StringBuilder sb = new StringBuilder();
+    private String asString(final MapFormat format) {
+        final StringBuilder sb = new StringBuilder();
         if (format == null) {
             appendMap(sb);
         } else {
@@ -191,9 +191,9 @@ public class MapMessage implements MultiformatMessage, Serializable {
         return sb.toString();
     }
 
-    public void asXML(StringBuilder sb) {
+    public void asXML(final StringBuilder sb) {
         sb.append("<Map>\n");
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (final Map.Entry<String, String> entry : data.entrySet()) {
             sb.append("  <Entry key=").append(entry.getKey()).append(">").append(entry.getValue()).append("</Entry>\n");
         }
         sb.append("</Map>");
@@ -215,12 +215,12 @@ public class MapMessage implements MultiformatMessage, Serializable {
      *
      * @return The formatted message.
      */
-    public String getFormattedMessage(String[] formats) {
+    public String getFormattedMessage(final String[] formats) {
         if (formats == null || formats.length == 0) {
             return asString();
         } else {
-            for (String format : formats) {
-                for (MapFormat f : MapFormat.values()) {
+            for (final String format : formats) {
+                for (final MapFormat f : MapFormat.values()) {
                     if (f.name().equalsIgnoreCase(format)) {
                         return asString(f);
                     }
@@ -231,9 +231,9 @@ public class MapMessage implements MultiformatMessage, Serializable {
 
     }
 
-    protected void appendMap(StringBuilder sb) {
+    protected void appendMap(final StringBuilder sb) {
         boolean first = true;
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(" ");
             }
@@ -242,10 +242,10 @@ public class MapMessage implements MultiformatMessage, Serializable {
         }
     }
 
-    protected void asJSON(StringBuilder sb) {
+    protected void asJSON(final StringBuilder sb) {
         boolean first = true;
         sb.append("{");
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
@@ -257,10 +257,10 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
 
-    protected void asJava(StringBuilder sb) {
+    protected void asJava(final StringBuilder sb) {
         boolean first = true;
         sb.append("{");
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (final Map.Entry<String, String> entry : data.entrySet()) {
             if (!first) {
                 sb.append(", ");
             }
@@ -270,7 +270,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
         sb.append("}");
     }
 
-    public MapMessage newInstance(Map<String, String> map) {
+    public MapMessage newInstance(final Map<String, String> map) {
         return new MapMessage(map);
     }
 
@@ -280,7 +280,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -288,7 +288,7 @@ public class MapMessage implements MultiformatMessage, Serializable {
             return false;
         }
 
-        MapMessage that = (MapMessage) o;
+        final MapMessage that = (MapMessage) o;
 
         return this.data.equals(that.data);
     }

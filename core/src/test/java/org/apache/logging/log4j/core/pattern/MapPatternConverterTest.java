@@ -33,15 +33,15 @@ public class MapPatternConverterTest {
     @Test
     public void testConverter() {
 
-        MapMessage msg = new MapMessage();
+        final MapMessage msg = new MapMessage();
         msg.put("subject", "I");
         msg.put("verb", "love");
         msg.put("object", "Log4j");
-        MapPatternConverter converter = MapPatternConverter.newInstance(null);
-        LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
-        StringBuilder sb = new StringBuilder();
+        final MapPatternConverter converter = MapPatternConverter.newInstance(null);
+        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        String str = sb.toString();
+        final String str = sb.toString();
         String expected = "subject=I";
         assertTrue("Missing or incorrect subject. Expected " + expected + ", actual " + str, str.contains(expected));
         expected = "verb=love";
@@ -53,16 +53,16 @@ public class MapPatternConverterTest {
     @Test
     public void testConverterWithKey() {
 
-        MapMessage msg = new MapMessage();
+        final MapMessage msg = new MapMessage();
         msg.put("subject", "I");
         msg.put("verb", "love");
         msg.put("object", "Log4j");
-        MapPatternConverter converter = MapPatternConverter.newInstance(new String[] {"object"});
-        LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
-        StringBuilder sb = new StringBuilder();
+        final MapPatternConverter converter = MapPatternConverter.newInstance(new String[] {"object"});
+        final LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        String str = sb.toString();
-        String expected = "Log4j";
+        final String str = sb.toString();
+        final String expected = "Log4j";
         assertEquals(expected, str);
     }
 }

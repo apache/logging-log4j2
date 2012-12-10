@@ -26,8 +26,8 @@ import org.junit.Test;
  */
 public class FilterPerformanceComparison {
 
-    private Logger logger = LogManager.getLogger(FilterPerformanceComparison.class.getName());
-    private org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(FilterPerformanceComparison.class);
+    private final Logger logger = LogManager.getLogger(FilterPerformanceComparison.class.getName());
+    private final org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(FilterPerformanceComparison.class);
 
 
     // How many times should we try to log:
@@ -58,9 +58,9 @@ public class FilterPerformanceComparison {
         log4j2(WARMUP);
 
         System.out.println("Starting Log4j 2.0");
-        long result3 = log4j2(COUNT);
+        final long result3 = log4j2(COUNT);
         System.out.println("Starting Logback");
-        long result2 = logback(COUNT);
+        final long result2 = logback(COUNT);
 
         System.out.println("###############################################");
         System.out.println("Logback: " + result2);
@@ -71,12 +71,12 @@ public class FilterPerformanceComparison {
     @Test
     public void testThreads() throws Exception {
         System.out.println("Testing multithreading");
-        int threadedCount = COUNT; // THREADED_COUNT * threadCount < COUNT ? COUNT / threadCount : THREADED_COUNT;
-        int[] threadCounts = new int[] {1, 2, 5, 10, 20, 50};
-        for (int threadCount : threadCounts) {
+        final int threadedCount = COUNT; // THREADED_COUNT * threadCount < COUNT ? COUNT / threadCount : THREADED_COUNT;
+        final int[] threadCounts = new int[] {1, 2, 5, 10, 20, 50};
+        for (final int threadCount : threadCounts) {
             System.out.println("Testing " + threadCount + " threads");
-            Worker[] workers = new Worker[threadCount];
-            long[] results = new long[threadCount];
+            final Worker[] workers = new Worker[threadCount];
+            final long[] results = new long[threadCount];
             for (int i=0; i < threadCount; ++i) {
                 workers[i] = new Worker(true, threadedCount, results, i);
             }
@@ -88,7 +88,7 @@ public class FilterPerformanceComparison {
                 workers[i].join();
                 total += results[i];
             }
-            long result3 = total / threadCount;
+            final long result3 = total / threadCount;
             total = 0;
             for (int i=0; i < threadCount; ++i) {
                 workers[i] = new Worker(false, threadedCount, results, i);
@@ -100,7 +100,7 @@ public class FilterPerformanceComparison {
                 workers[i].join();
                 total += results[i];
             }
-            long result2 = total / threadCount;
+            final long result2 = total / threadCount;
             System.out.println("###############################################");
             System.out.println("Logback: " + result2);
             System.out.println("Log4j 2.0: " + result3 );
@@ -109,9 +109,9 @@ public class FilterPerformanceComparison {
 
     }
 
-    private long logback(int loop) {
-        Integer j = new Integer(2);
-        long start = System.nanoTime();
+    private long logback(final int loop) {
+        final Integer j = new Integer(2);
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
         }
@@ -119,9 +119,9 @@ public class FilterPerformanceComparison {
     }
 
 
-    private long log4j2(int loop) {
-        Integer j = new Integer(2);
-        long start = System.nanoTime();
+    private long log4j2(final int loop) {
+        final Integer j = new Integer(2);
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             logger.debug("SEE IF THIS IS LOGGED {}.", j);
         }
@@ -130,12 +130,12 @@ public class FilterPerformanceComparison {
 
     private class Worker extends Thread {
 
-        private boolean isLog4j;
-        private int count;
-        private long[] results;
-        private int index;
+        private final boolean isLog4j;
+        private final int count;
+        private final long[] results;
+        private final int index;
 
-        public Worker(boolean isLog4j, int count, long[] results, int index) {
+        public Worker(final boolean isLog4j, final int count, final long[] results, final int index) {
             this.isLog4j = isLog4j;
             this.count = count;
             this.results = results;

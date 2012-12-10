@@ -54,8 +54,8 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(String name, Layout layout, Filter filter, boolean handleException,
-                                boolean immediateFlush, OutputStreamManager manager) {
+    protected AbstractOutputStreamAppender(final String name, final Layout layout, final Filter filter, final boolean handleException,
+                                final boolean immediateFlush, final OutputStreamManager manager) {
         super(name, filter, layout, handleException);
         if (layout != null) {
             manager.setHeader(layout.getHeader());
@@ -69,11 +69,11 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
         return manager;
     }
 
-    protected void replaceManager(OutputStreamManager newManager) {
+    protected void replaceManager(final OutputStreamManager newManager) {
 
         writeLock.lock();
         try {
-            OutputStreamManager old = manager;
+            final OutputStreamManager old = manager;
             manager = newManager;
             old.release();
         } finally {
@@ -106,14 +106,14 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      * override this method.
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         readLock.lock();
         try {
             manager.write(getLayout().toByteArray(event));
             if (this.immediateFlush) {
                 manager.flush();
             }
-        } catch (AppenderRuntimeException ex) {
+        } catch (final AppenderRuntimeException ex) {
             error("Unable to write to stream " + manager.getName() + " for appender " + getName());
             throw ex;
         } finally {

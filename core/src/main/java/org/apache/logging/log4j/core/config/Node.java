@@ -45,7 +45,7 @@ public class Node {
      * @param name the node's name.
      * @param type The Plugin Type associated with the node.
      */
-    public Node(Node parent, String name, PluginType type) {
+    public Node(final Node parent, final String name, final PluginType type) {
         this.parent = parent;
         this.name = name;
         this.type = type;
@@ -57,13 +57,13 @@ public class Node {
         this.type = null;
     }
 
-    public Node(Node node) {
+    public Node(final Node node) {
         this.parent = node.parent;
         this.name = node.name;
         this.type = node.type;
         this.attributes.putAll(node.getAttributes());
         this.value = node.getValue();
-        for (Node child : node.getChildren()) {
+        for (final Node child : node.getChildren()) {
             this.children.add(new Node(child));
         }
         this.object = node.object;
@@ -85,7 +85,7 @@ public class Node {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -101,7 +101,7 @@ public class Node {
         return parent == null;
     }
 
-    public void setObject(Object obj) {
+    public void setObject(final Object obj) {
         object = obj;
     }
 

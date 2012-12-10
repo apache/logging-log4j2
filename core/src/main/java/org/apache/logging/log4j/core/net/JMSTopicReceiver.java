@@ -42,22 +42,22 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
      * @param username The userid to connect to the topic.
      * @param password The password to connect to the topic.
      */
-    public JMSTopicReceiver(String tcfBindingName, String topicBindingName, String username, String password) {
+    public JMSTopicReceiver(final String tcfBindingName, final String topicBindingName, final String username, final String password) {
         try {
-            Context ctx = new InitialContext();
+            final Context ctx = new InitialContext();
             TopicConnectionFactory topicConnectionFactory;
             topicConnectionFactory = (TopicConnectionFactory) lookup(ctx, tcfBindingName);
-            TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(username, password);
+            final TopicConnection topicConnection = topicConnectionFactory.createTopicConnection(username, password);
             topicConnection.start();
-            TopicSession topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic topic = (Topic) ctx.lookup(topicBindingName);
-            TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
+            final TopicSession topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+            final Topic topic = (Topic) ctx.lookup(topicBindingName);
+            final TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
             topicSubscriber.setMessageListener(this);
-        } catch (JMSException e) {
+        } catch (final JMSException e) {
             logger.error("Could not read JMS message.", e);
-        } catch (NamingException e) {
+        } catch (final NamingException e) {
             logger.error("Could not read JMS message.", e);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             logger.error("Could not read JMS message.", e);
         }
     }
@@ -67,23 +67,23 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
      * @param args The command line arguments.
      * @throws Exception if an error occurs.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length != 4) {
             usage("Wrong number of arguments.");
         }
 
-        String tcfBindingName = args[0];
-        String topicBindingName = args[1];
-        String username = args[2];
-        String password = args[3];
+        final String tcfBindingName = args[0];
+        final String topicBindingName = args[1];
+        final String username = args[2];
+        final String password = args[3];
 
         new JMSTopicReceiver(tcfBindingName, topicBindingName, username, password);
 
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         // Loop until the word "exit" is typed
         System.out.println("Type \"exit\" to quit JMSTopicReceiver.");
         while (true) {
-            String s = stdin.readLine();
+            final String s = stdin.readLine();
             if (s.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting. Kill the application if it does not exit "
                     + "due to daemon threads.");
@@ -92,7 +92,7 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
         }
     }
 
-    private static void usage(String msg) {
+    private static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + JMSTopicReceiver.class.getName()
             + " TopicConnectionFactoryBindingName TopicBindingName username password");

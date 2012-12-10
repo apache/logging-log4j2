@@ -43,15 +43,15 @@ public class RollingAppenderTimeAndSizeTest {
     public static void setupClass() {
         deleteDir();
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
         //deleteDir();
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -64,12 +64,12 @@ public class RollingAppenderTimeAndSizeTest {
             }
             logger.debug("This is test message number " + i);
         }
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-        File[] files = dir.listFiles();
+        final File[] files = dir.listFiles();
         assertTrue("No files created", files.length > 0);
         boolean found = false;
-        for (File file : files) {
+        for (final File file : files) {
             if (file.getName().endsWith(".gz")) {
                 found = true;
             }
@@ -78,10 +78,10 @@ public class RollingAppenderTimeAndSizeTest {
     }
 
     private static void deleteDir() {
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         if (dir.exists()) {
-            File[] files = dir.listFiles();
-            for (File file : files) {
+            final File[] files = dir.listFiles();
+            for (final File file : files) {
                 file.delete();
             }
             dir.delete();

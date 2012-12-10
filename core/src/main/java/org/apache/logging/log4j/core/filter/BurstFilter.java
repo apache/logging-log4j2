@@ -77,7 +77,7 @@ public final class BurstFilter extends AbstractFilter {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
-    private BurstFilter(Level level, float rate, long maxBurst, Result onMatch, Result onMismatch) {
+    private BurstFilter(final Level level, final float rate, final long maxBurst, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
         this.burstInterval = (long) (NANOS_IN_SECONDS * (maxBurst / rate));
@@ -87,22 +87,22 @@ public final class BurstFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return filter(event.getLevel());
     }
 
@@ -113,7 +113,7 @@ public final class BurstFilter extends AbstractFilter {
      * @param level The log level.
      * @return The onMatch value if the filter passes, onMismatch otherwise.
      */
-    private Result filter(Level level) {
+    private Result filter(final Level level) {
         if (this.level.isAtLeastAsSpecificAs(level)) {
             LogDelay delay = history.poll();
             while (delay != null) {
@@ -144,9 +144,9 @@ public final class BurstFilter extends AbstractFilter {
      * Clear the history. Used for unit testing.
      */
     public void clear() {
-        Iterator<LogDelay> iter = history.iterator();
+        final Iterator<LogDelay> iter = history.iterator();
         while (iter.hasNext()) {
-            LogDelay delay = iter.next();
+            final LogDelay delay = iter.next();
             history.remove(delay);
             available.add(delay);
         }
@@ -167,15 +167,15 @@ public final class BurstFilter extends AbstractFilter {
         public LogDelay() {
         }
 
-        public void setDelay(long delay) {
+        public void setDelay(final long delay) {
             this.expireTime = delay + System.nanoTime();
         }
 
-        public long getDelay(TimeUnit timeUnit) {
+        public long getDelay(final TimeUnit timeUnit) {
             return timeUnit.convert(expireTime - System.nanoTime(), TimeUnit.NANOSECONDS);
         }
 
-        public int compareTo(Delayed delayed) {
+        public int compareTo(final Delayed delayed) {
             if (this.expireTime < ((LogDelay) delayed).expireTime) {
                 return -1;
             } else if (this.expireTime > ((LogDelay) delayed).expireTime) {
@@ -185,7 +185,7 @@ public final class BurstFilter extends AbstractFilter {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             }
@@ -193,7 +193,7 @@ public final class BurstFilter extends AbstractFilter {
                 return false;
             }
 
-            LogDelay logDelay = (LogDelay) o;
+            final LogDelay logDelay = (LogDelay) o;
 
             if (expireTime != logDelay.expireTime) {
                 return false;
@@ -218,19 +218,19 @@ public final class BurstFilter extends AbstractFilter {
      * @return A BurstFilter.
      */
     @PluginFactory
-    public static BurstFilter createFilter(@PluginAttr("level") String levelName,
-                                           @PluginAttr("rate") String rate,
-                                           @PluginAttr("maxBurst") String maxBurst,
-                                           @PluginAttr("onmatch") String match,
-                                           @PluginAttr("onmismatch") String mismatch) {
-        Result onMatch = Result.toResult(match, Result.NEUTRAL);
-        Result onMismatch = Result.toResult(mismatch, Result.DENY);
-        Level level = Level.toLevel(levelName, Level.WARN);
+    public static BurstFilter createFilter(@PluginAttr("level") final String levelName,
+                                           @PluginAttr("rate") final String rate,
+                                           @PluginAttr("maxBurst") final String maxBurst,
+                                           @PluginAttr("onmatch") final String match,
+                                           @PluginAttr("onmismatch") final String mismatch) {
+        final Result onMatch = Result.toResult(match, Result.NEUTRAL);
+        final Result onMismatch = Result.toResult(mismatch, Result.DENY);
+        final Level level = Level.toLevel(levelName, Level.WARN);
         float eventRate = rate == null ? DEFAULT_RATE : Float.parseFloat(rate);
         if (eventRate <= 0) {
             eventRate = DEFAULT_RATE;
         }
-        long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
+        final long max = maxBurst == null ? (long) (eventRate * DEFAULT_RATE_MULTIPLE) : Long.parseLong(maxBurst);
         return new BurstFilter(level, eventRate, max, onMatch, onMismatch);
     }
 }

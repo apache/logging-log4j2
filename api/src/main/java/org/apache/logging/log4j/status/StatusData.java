@@ -46,7 +46,7 @@ public class StatusData {
      * @param msg The message String.
      * @param t The Error or Exception that occurred.
      */
-    public StatusData(StackTraceElement caller, Level level, Message msg, Throwable t) {
+    public StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;
         this.level = level;
@@ -99,14 +99,14 @@ public class StatusData {
      * @return The formatted status data as a String.
      */
     public String getFormattedStatus() {
-        StringBuilder sb = new StringBuilder();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+        final StringBuilder sb = new StringBuilder();
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
         sb.append(format.format(new Date(timestamp)));
         sb.append(" ");
         sb.append(level.toString());
         sb.append(" ");
         sb.append(msg.getFormattedMessage());
-        Object[] params = msg.getParameters();
+        final Object[] params = msg.getParameters();
         Throwable t;
         if (throwable == null && params != null && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
@@ -115,7 +115,7 @@ public class StatusData {
         }
         if (t != null) {
             sb.append(" ");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
         }

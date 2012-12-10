@@ -47,37 +47,37 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
 
     private String loggerName;
 
-    public LocalizedMessage(String messagePattern, String[] stringArgs, Throwable throwable) {
+    public LocalizedMessage(final String messagePattern, final String[] stringArgs, final Throwable throwable) {
         super(messagePattern, stringArgs, throwable);
         setup(null, null, null);
     }
 
 
-    public LocalizedMessage(String bundleId, String key, String[] stringArgs,
-                            Throwable throwable) {
+    public LocalizedMessage(final String bundleId, final String key, final String[] stringArgs,
+                            final Throwable throwable) {
         super(key, stringArgs, throwable);
         setup(bundleId, null, null);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, String key, String[] stringArgs,
-                            Throwable throwable) {
+    public LocalizedMessage(final ResourceBundle bundle, final String key, final String[] stringArgs,
+                            final Throwable throwable) {
         super(key, stringArgs, throwable);
         setup(null, bundle, null);
     }
 
-    public LocalizedMessage(String bundleId, Locale locale, String key, String[] stringArgs,
-                            Throwable throwable) {
+    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final String[] stringArgs,
+                            final Throwable throwable) {
         super(key, stringArgs, throwable);
         setup(bundleId, null, locale);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, Locale locale, String key, String[] stringArgs,
-                            Throwable throwable) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final String[] stringArgs,
+                            final Throwable throwable) {
         super(key, stringArgs, throwable);
         setup(null, bundle, locale);
     }
 
-    public LocalizedMessage(Locale locale, String key, String[] stringArgs, Throwable throwable) {
+    public LocalizedMessage(final Locale locale, final String key, final String[] stringArgs, final Throwable throwable) {
         super(key, stringArgs, throwable);
         setup(null, null, locale);
     }
@@ -96,93 +96,93 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
      */
-    public LocalizedMessage(String messagePattern, Object[] arguments) {
+    public LocalizedMessage(final String messagePattern, final Object[] arguments) {
         super(messagePattern, arguments);
         setup(null, null, null);
     }
 
-    public LocalizedMessage(String bundleId, String key, Object[] arguments) {
+    public LocalizedMessage(final String bundleId, final String key, final Object[] arguments) {
         super(key, arguments);
         setup(bundleId, null, null);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, String key, Object[] arguments) {
+    public LocalizedMessage(final ResourceBundle bundle, final String key, final Object[] arguments) {
         super(key, arguments);
         setup(null, bundle, null);
     }
 
-    public LocalizedMessage(String bundleId, Locale locale, String key, Object[] arguments) {
+    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object[] arguments) {
         super(key, arguments);
         setup(bundleId, null, locale);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, Locale locale, String key, Object[] arguments) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
         super(key, arguments);
         setup(null, bundle, locale);
     }
 
-    public LocalizedMessage(Locale locale, String key, Object[] arguments) {
+    public LocalizedMessage(final Locale locale, final String key, final Object[] arguments) {
         super(key, arguments);
         setup(null, null, locale);
     }
 
-    public LocalizedMessage(String messagePattern, Object arg) {
+    public LocalizedMessage(final String messagePattern, final Object arg) {
         super(messagePattern, arg);
         setup(null, null, null);
     }
 
-    public LocalizedMessage(String bundleId, String key, Object arg) {
+    public LocalizedMessage(final String bundleId, final String key, final Object arg) {
         super(key, arg);
         setup(bundleId, null, null);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, String key, Object arg) {
+    public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg) {
         super(key, arg);
         setup(null, bundle, null);
     }
 
-    public LocalizedMessage(String bundleId, Locale locale, String key, Object arg) {
+    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object arg) {
         super(key, arg);
         setup(bundleId, null, locale);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, Locale locale, String key, Object arg) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
         super(key, arg);
         setup(null, bundle, locale);
     }
 
-    public LocalizedMessage(Locale locale, String key, Object arg) {
+    public LocalizedMessage(final Locale locale, final String key, final Object arg) {
         super(key, arg);
         setup(null, null, locale);
     }
 
-    public LocalizedMessage(String messagePattern, Object arg1, Object arg2) {
+    public LocalizedMessage(final String messagePattern, final Object arg1, final Object arg2) {
         super(messagePattern, arg1, arg2);
         setup(null, null, null);
     }
 
-    public LocalizedMessage(String bundleId, String key, Object arg1, Object arg2) {
+    public LocalizedMessage(final String bundleId, final String key, final Object arg1, final Object arg2) {
         super(key, arg1, arg2);
         setup(bundleId, null, null);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, String key, Object arg1, Object arg2) {
+    public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
         super(key, arg1, arg2);
         setup(null, bundle, null);
     }
 
-    public LocalizedMessage(String bundleId, Locale locale, String key, Object arg1, Object arg2) {
+    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object arg1, final Object arg2) {
         super(key, arg1, arg2);
         setup(bundleId, null, locale);
     }
 
-    public LocalizedMessage(ResourceBundle bundle, Locale locale, String key, Object arg1,
-                            Object arg2) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
+                            final Object arg2) {
         super(key, arg1, arg2);
         setup(null, bundle, locale);
     }
 
-    public LocalizedMessage(Locale locale, String key, Object arg1, Object arg2) {
+    public LocalizedMessage(final Locale locale, final String key, final Object arg1, final Object arg2) {
         super(key, arg1, arg2);
         setup(null, null, locale);
     }
@@ -191,7 +191,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
      * Set the name of the Logger.
      * @param name The name of the Logger.
      */
-    public void setLoggerName(String name) {
+    public void setLoggerName(final String name) {
         this.loggerName = name;
     }
 
@@ -203,7 +203,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
         return this.loggerName;
     }
 
-    private void setup(String bundleId, ResourceBundle bundle, Locale locale) {
+    private void setup(final String bundleId, final ResourceBundle bundle, final Locale locale) {
         this.bundleId = bundleId;
         this.bundle = bundle;
         this.locale = locale;
@@ -216,7 +216,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
      * @return The formatted message String.
      */
     @Override
-    public String formatMessage(String messagePattern, String[] args) {
+    public String formatMessage(final String messagePattern, final String[] args) {
         ResourceBundle bundle = this.bundle;
         if (bundle == null) {
             if (bundleId != null) {
@@ -225,7 +225,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
                 bundle = getBundle(loggerName, locale, true);
             }
         }
-        String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?
+        final String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?
             messagePattern : bundle.getString(messagePattern);
         return format(msgPattern, args);
     }
@@ -238,7 +238,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
      * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getBundle(String key, Locale locale, boolean loop) {
+    protected ResourceBundle getBundle(final String key, final Locale locale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (key == null) {
@@ -250,7 +250,7 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
             } else {
                 rb = ResourceBundle.getBundle(key);
             }
-        } catch (MissingResourceException ex) {
+        } catch (final MissingResourceException ex) {
             if (!loop) {
                 logger.debug("Unable to locate ResourceBundle " + key);
                 return null;
@@ -267,14 +267,14 @@ public class LocalizedMessage extends ParameterizedMessage implements LoggerName
                 } else {
                     rb = ResourceBundle.getBundle(substr);
                 }
-            } catch (MissingResourceException ex) {
+            } catch (final MissingResourceException ex) {
                 logger.debug("Unable to locate ResourceBundle " + substr);
             }
         }
         return rb;
     }
 
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
         bundle = null;
         logger = StatusLogger.getLogger();

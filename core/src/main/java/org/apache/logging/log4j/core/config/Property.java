@@ -31,10 +31,10 @@ public final class Property {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private String name;
-    private String value;
+    private final String name;
+    private final String value;
 
-    private Property(String name, String value) {
+    private Property(final String name, final String value) {
         this.name = name;
         this.value = value;
     }
@@ -62,8 +62,8 @@ public final class Property {
      * @return A Property.
      */
     @PluginFactory
-    public static Property createProperty(@PluginAttr("name") String key,
-                                          @PluginValue("value") String value) {
+    public static Property createProperty(@PluginAttr("name") final String key,
+                                          @PluginValue("value") final String value) {
         if (key == null) {
             LOGGER.error("Property key cannot be null");
         }

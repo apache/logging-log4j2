@@ -29,7 +29,7 @@ public class OutputStreamManager extends AbstractManager {
 
     private byte[] footer = null;
 
-    protected OutputStreamManager(OutputStream os, String streamName) {
+    protected OutputStreamManager(final OutputStream os, final String streamName) {
         super(streamName);
         this.os = os;
     }
@@ -42,8 +42,8 @@ public class OutputStreamManager extends AbstractManager {
      * @param factory The factory to use to create the Manager.
      * @return An OutputStreamManager.
      */
-    public static <T> OutputStreamManager getManager(String name, T data,
-                                                 ManagerFactory<? extends OutputStreamManager, T> factory) {
+    public static <T> OutputStreamManager getManager(final String name, final T data,
+                                                 final ManagerFactory<? extends OutputStreamManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
 
@@ -51,11 +51,11 @@ public class OutputStreamManager extends AbstractManager {
      * Set the header to write when the stream is opened.
      * @param header The header.
      */
-    public synchronized void setHeader(byte[] header) {
+    public synchronized void setHeader(final byte[] header) {
         if (header != null) {
             try {
                 this.os.write(header, 0, header.length);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.error("Unable to write header", ioe);
             }
         }
@@ -65,7 +65,7 @@ public class OutputStreamManager extends AbstractManager {
      * Set the footer to write when the stream is closed.
      * @param footer The footer.
      */
-    public synchronized void setFooter(byte[] footer) {
+    public synchronized void setFooter(final byte[] footer) {
         if (footer != null) {
             this.footer = footer;
         }
@@ -94,7 +94,7 @@ public class OutputStreamManager extends AbstractManager {
         return os;
     }
 
-    protected void setOutputStream(OutputStream os) {
+    protected void setOutputStream(final OutputStream os) {
         this.os = os;
     }
 
@@ -106,12 +106,12 @@ public class OutputStreamManager extends AbstractManager {
      * @param length The number of bytes to write.
      * @throws AppenderRuntimeException if an error occurs.
      */
-    protected synchronized void write(byte[] bytes, int offset, int length)  {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
         //System.out.println("write " + count);
         try {
             os.write(bytes, offset, length);
-        } catch (IOException ex) {
-            String msg = "Error writing to stream " + getName();
+        } catch (final IOException ex) {
+            final String msg = "Error writing to stream " + getName();
             throw new AppenderRuntimeException(msg, ex);
         }
     }
@@ -122,7 +122,7 @@ public class OutputStreamManager extends AbstractManager {
      * @param bytes The serialized Log event.
      * @throws AppenderRuntimeException if an error occurs.
      */
-    protected void write(byte[] bytes)  {
+    protected void write(final byte[] bytes)  {
         write(bytes, 0, bytes.length);
     }
 
@@ -132,7 +132,7 @@ public class OutputStreamManager extends AbstractManager {
         }
         try {
             os.close();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.error("Unable to close stream " + getName() + ". " + ex);
         }
     }
@@ -143,8 +143,8 @@ public class OutputStreamManager extends AbstractManager {
     public void flush() {
         try {
             os.flush();
-        } catch (IOException ex) {
-            String msg = "Error flushing stream " + getName();
+        } catch (final IOException ex) {
+            final String msg = "Error flushing stream " + getName();
             throw new AppenderRuntimeException(msg, ex);
         }
     }

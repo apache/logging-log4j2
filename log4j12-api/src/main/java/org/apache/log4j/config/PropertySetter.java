@@ -31,7 +31,7 @@ public class PropertySetter {
      *
      * @param obj  the object for which to set properties
      */
-    public PropertySetter(Object obj) {
+    public PropertySetter(final Object obj) {
     }
 
     /**
@@ -43,14 +43,14 @@ public class PropertySetter {
      @param properties A java.util.Properties containing keys and values.
      @param prefix Only keys having the specified prefix will be set.
      */
-    public static void setProperties(Object obj, Properties properties, String prefix) {
+    public static void setProperties(final Object obj, final Properties properties, final String prefix) {
     }
 
 
     /**
      * Set the properites for the object that match the <code>prefix</code> passed as parameter.
      */
-    public void setProperties(Properties properties, String prefix) {
+    public void setProperties(final Properties properties, final String prefix) {
     }
 
     /**
@@ -68,7 +68,7 @@ public class PropertySetter {
      @param name    name of the property
      @param value   String value of the property
      */
-    public void setProperty(String name, String value) {
+    public void setProperty(final String name, final String value) {
     }
 
     /**
@@ -79,7 +79,7 @@ public class PropertySetter {
      @param name The named of the property to set.
      @param value The value of the property.
      */
-    public void setProperty(PropertyDescriptor prop, String name, String value)
+    public void setProperty(final PropertyDescriptor prop, final String name, final String value)
         throws PropertySetterException {
     }
 

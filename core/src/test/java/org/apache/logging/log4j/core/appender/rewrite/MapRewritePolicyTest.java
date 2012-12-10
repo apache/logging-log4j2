@@ -61,7 +61,7 @@ public class MapRewritePolicyTest {
 
 	@Test
 	public void addTest() {
-		MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy("Add", rewrite);
+		final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy("Add", rewrite);
 		LogEvent rewritten = addPolicy.rewrite(logEvent0);
 		compareLogEvents(logEvent0, rewritten);
 		Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
@@ -81,7 +81,7 @@ public class MapRewritePolicyTest {
 
 	@Test
 	public void updateTest() {
-		MapRewritePolicy updatePolicy = MapRewritePolicy.createPolicy("Update", rewrite);
+		final MapRewritePolicy updatePolicy = MapRewritePolicy.createPolicy("Update", rewrite);
 		LogEvent rewritten = updatePolicy.rewrite(logEvent0);
 		compareLogEvents(logEvent0, rewritten);
 		Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
@@ -101,7 +101,7 @@ public class MapRewritePolicyTest {
 
 	@Test
 	public void defaultIsAdd() {
-		MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy(null, rewrite);
+		final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy(null, rewrite);
 		LogEvent rewritten = addPolicy.rewrite(logEvent0);
 		compareLogEvents(logEvent0, rewritten);
 		Assert.assertEquals("Simple log message changed", logEvent0.getMessage(), rewritten.getMessage());
@@ -119,20 +119,20 @@ public class MapRewritePolicyTest {
 		checkAdded(((MapMessage)rewritten.getMessage()).getData());
 	}
 
-	private void checkAdded(Map<String, String> addedMap) {
+	private void checkAdded(final Map<String, String> addedMap) {
 		Assert.assertEquals("unwanted entry change", "one", addedMap.get("test1"));
 		Assert.assertEquals("existing entry not updated", "2", addedMap.get("test2"));
 		Assert.assertEquals("new entry not added", "three", addedMap.get("test3"));
 		Assert.assertEquals("wrong size", 3, addedMap.size());
 	}
 
-	private void checkUpdated(Map<String, String> updatedMap) {
+	private void checkUpdated(final Map<String, String> updatedMap) {
 		Assert.assertEquals("unwanted entry change", "one", updatedMap.get("test1"));
 		Assert.assertEquals("existing entry not updated", "2", updatedMap.get("test2"));
 		Assert.assertEquals("wrong size", 2, updatedMap.size());
 	}
 
-	private void compareLogEvents(LogEvent orig, LogEvent changed) {
+	private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
 		// Ensure that everything but the Mapped Data is still the same
 		Assert.assertEquals("LoggerName changed", orig.getLoggerName(), changed.getLoggerName());
 		Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());

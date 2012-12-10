@@ -36,7 +36,7 @@ public final class MarkerManager {
      * @param name The name of the Marker.
      * @return The Marker with the specified name.
      */
-    public static Marker getMarker(String name) {
+    public static Marker getMarker(final String name) {
         markerMap.putIfAbsent(name, new Log4JMarker(name));
         return markerMap.get(name);
     }
@@ -48,8 +48,8 @@ public final class MarkerManager {
      * @return The Marker with the specified name.
      * @throws IllegalArgumentException if the parent Marker does not exist.
      */
-    public static Marker getMarker(String name, String parent) {
-        Marker parentMarker = markerMap.get(parent);
+    public static Marker getMarker(final String name, final String parent) {
+        final Marker parentMarker = markerMap.get(parent);
         if (parentMarker == null) {
             throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
         }
@@ -62,7 +62,7 @@ public final class MarkerManager {
      * @param parent The parent Marker.
      * @return The Marker with the specified name.
      */
-    public static Marker getMarker(String name, Marker parent) {
+    public static Marker getMarker(final String name, final Marker parent) {
         markerMap.putIfAbsent(name, new Log4JMarker(name, parent));
         return markerMap.get(name);
     }
@@ -77,12 +77,12 @@ public final class MarkerManager {
         private final String name;
         private final Marker parent;
 
-        public Log4JMarker(String name) {
+        public Log4JMarker(final String name) {
             this.name = name;
             this.parent = null;
         }
 
-        public Log4JMarker(String name, Marker parent) {
+        public Log4JMarker(final String name, final Marker parent) {
             this.name = name;
             this.parent = parent;
         }
@@ -95,7 +95,7 @@ public final class MarkerManager {
             return this.parent;
         }
 
-        public boolean isInstanceOf(Marker m) {
+        public boolean isInstanceOf(final Marker m) {
             if (m == null) {
                 throw new IllegalArgumentException("A marker parameter is required");
             }
@@ -109,7 +109,7 @@ public final class MarkerManager {
             return false;
         }
 
-        public boolean isInstanceOf(String name) {
+        public boolean isInstanceOf(final String name) {
             if (name == null) {
                 throw new IllegalArgumentException("A marker name is required");
             }
@@ -124,7 +124,7 @@ public final class MarkerManager {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             }
@@ -132,7 +132,7 @@ public final class MarkerManager {
                 return false;
             }
 
-            Marker marker = (Marker) o;
+            final Marker marker = (Marker) o;
 
             if (name != null ? !name.equals(marker.getName()) : marker.getName() != null) {
                 return false;
@@ -148,7 +148,7 @@ public final class MarkerManager {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(name);
+            final StringBuilder sb = new StringBuilder(name);
             if (parent != null) {
                 Marker m = parent;
                 sb.append("[ ");

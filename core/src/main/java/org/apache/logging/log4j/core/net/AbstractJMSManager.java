@@ -40,7 +40,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * The Constructor.
      * @param name The name of the Appender.
      */
-    public AbstractJMSManager(String name) {
+    public AbstractJMSManager(final String name) {
         super(name);
     }
 
@@ -55,11 +55,11 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @return the InitialContext.
      * @throws NamingException if a naming error occurs.
      */
-    protected static Context createContext(String factoryName, String providerURL, String urlPkgPrefixes,
-                                           String securityPrincipalName, String securityCredentials)
+    protected static Context createContext(final String factoryName, final String providerURL, final String urlPkgPrefixes,
+                                           final String securityPrincipalName, final String securityCredentials)
         throws NamingException {
 
-        Properties props = getEnvironment(factoryName, providerURL, urlPkgPrefixes, securityPrincipalName,
+        final Properties props = getEnvironment(factoryName, providerURL, urlPkgPrefixes, securityPrincipalName,
                                           securityCredentials);
         return new InitialContext(props);
     }
@@ -71,10 +71,10 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @return The object to be located.
      * @throws NamingException If an error occurs locating the name.
      */
-    protected static Object lookup(Context ctx, String name) throws NamingException {
+    protected static Object lookup(final Context ctx, final String name) throws NamingException {
         try {
             return ctx.lookup(name);
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             LOGGER.warn("Could not find name [" + name + "].");
             throw e;
         }
@@ -90,9 +90,9 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @param securityCredentials The security credentials of the Principal.
      * @return The Properties.
      */
-    protected static Properties getEnvironment(String factoryName, String providerURL, String urlPkgPrefixes,
-                                               String securityPrincipalName, String securityCredentials) {
-        Properties props = new Properties();
+    protected static Properties getEnvironment(final String factoryName, final String providerURL, final String urlPkgPrefixes,
+                                               final String securityPrincipalName, final String securityCredentials) {
+        final Properties props = new Properties();
         if (factoryName != null) {
             props.put(Context.INITIAL_CONTEXT_FACTORY, factoryName);
             if (providerURL != null) {
@@ -132,7 +132,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @param producer The MessageProducer.
      * @throws Exception if an error occurs.
      */
-    public synchronized void send(Serializable object, Session session, MessageProducer producer) throws Exception {
+    public synchronized void send(final Serializable object, final Session session, final MessageProducer producer) throws Exception {
         try {
             Message msg;
             if (object instanceof String) {
@@ -143,7 +143,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
                 ((ObjectMessage) msg).setObject(object);
             }
             producer.send(msg);
-        } catch (JMSException ex) {
+        } catch (final JMSException ex) {
             LOGGER.error("Could not publish message via JMS " + getName());
             throw ex;
         }

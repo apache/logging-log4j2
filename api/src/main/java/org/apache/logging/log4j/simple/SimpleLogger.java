@@ -46,23 +46,23 @@ public class SimpleLogger extends AbstractLogger {
 
     private Level level;
 
-    private boolean showDateTime;
+    private final boolean showDateTime;
 
-    private boolean showContextMap;
+    private final boolean showContextMap;
 
     private PrintStream stream;
 
     private String logName;
 
 
-    public SimpleLogger(String name, Level defaultLevel, boolean showLogName, boolean showShortLogName,
-                        boolean showDateTime, boolean showContextMap, String dateTimeFormat,
-                        MessageFactory messageFactory, PropsUtil props, PrintStream stream) {
+    public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName, final boolean showShortLogName,
+                        final boolean showDateTime, final boolean showContextMap, final String dateTimeFormat,
+                        final MessageFactory messageFactory, final PropsUtil props, final PrintStream stream) {
         super(name, messageFactory);
-        String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
+        final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);
         if (showShortLogName) {
-            int index = name.lastIndexOf(".");
+            final int index = name.lastIndexOf(".");
             if (index > 0 && index < name.length()) {
                 this.logName = name.substring(index + 1);
             } else {
@@ -78,29 +78,29 @@ public class SimpleLogger extends AbstractLogger {
         if (showDateTime) {
             try {
                 this.dateFormatter = new SimpleDateFormat(dateTimeFormat);
-            } catch(IllegalArgumentException e) {
+            } catch(final IllegalArgumentException e) {
                 // If the format pattern is invalid - use the default format
                 this.dateFormatter = new SimpleDateFormat(SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT);
             }
         }
     }
 
-    public void setStream(PrintStream stream) {
+    public void setStream(final PrintStream stream) {
         this.stream = stream;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(final Level level) {
         if (level != null) {
             this.level = level;
         }
     }
 
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message msg, Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
+    public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable throwable) {
+        final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
         if(showDateTime) {
-            Date now = new Date();
+            final Date now = new Date();
             String dateText;
             synchronized(dateFormatter) {
                 dateText = dateFormatter.format(now);
@@ -117,14 +117,14 @@ public class SimpleLogger extends AbstractLogger {
         }
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
-            Map<String, String> mdc = ThreadContext.getContext();
+            final Map<String, String> mdc = ThreadContext.getContext();
             if (mdc.size() > 0) {
                 sb.append(" ");
                 sb.append(mdc.toString());
                 sb.append(" ");
             }
         }
-        Object[] params = msg.getParameters();
+        final Object[] params = msg.getParameters();
         Throwable t;
         if (throwable == null && params != null && params[params.length -1] instanceof Throwable ) {
             t = (Throwable) params[params.length - 1];
@@ -133,7 +133,7 @@ public class SimpleLogger extends AbstractLogger {
         }
         if (t != null) {
             sb.append(" ");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
         }
@@ -141,28 +141,28 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg) {
         return this.level.intLevel() >= level.intLevel();
     }
 
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object... p1) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
         return this.level.intLevel() >= level.intLevel();
     }
 

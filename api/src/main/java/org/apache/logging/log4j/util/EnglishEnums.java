@@ -38,7 +38,7 @@ public class EnglishEnums {
      *            The enum name, case-insensitive. If null, returns {@code defaultValue}
      * @return an enum value or null if {@code name} is null
      */
-    public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
+    public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return valueOf(enumType, name, null);
     }
 
@@ -55,7 +55,7 @@ public class EnglishEnums {
      *            the enum value to return if {@code name} is null
      * @return an enum value or {@code defaultValue} if {@code name} is null
      */
-    public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name, T defaultValue) {
+    public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name, final T defaultValue) {
         return name == null ? defaultValue : Enum.valueOf(enumType, name.toUpperCase(Locale.ENGLISH));
     }
 

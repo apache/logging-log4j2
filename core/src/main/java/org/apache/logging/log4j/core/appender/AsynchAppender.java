@@ -56,9 +56,9 @@ public final class AsynchAppender extends AbstractAppender {
     private AppenderControl errorAppender = null;
     private AsynchThread thread = null;
 
-    private AsynchAppender(String name, Filter filter, AppenderRef[] appenderRefs, String errorRef,
-                           int queueSize, boolean blocking,
-                           boolean handleExceptions, Configuration config) {
+    private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs, final String errorRef,
+                           final int queueSize, final boolean blocking,
+                           final boolean handleExceptions, final Configuration config) {
         super(name, filter, null, handleExceptions);
         this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
         this.blocking = blocking;
@@ -69,9 +69,9 @@ public final class AsynchAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        Map<String, Appender> map = config.getAppenders();
-        List<AppenderControl> appenders = new ArrayList<AppenderControl>();
-        for (AppenderRef appenderRef : appenderRefs) {
+        final Map<String, Appender> map = config.getAppenders();
+        final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
+        for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {
                 appenders.add(new AppenderControl(map.get(appenderRef.getRef()), null, null));
             } else {
@@ -101,7 +101,7 @@ public final class AsynchAppender extends AbstractAppender {
         thread.shutdown();
         try {
             thread.join();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.warn("Interrupted while stopping AsynchAppender {}", getName());
         }
     }
@@ -111,7 +111,7 @@ public final class AsynchAppender extends AbstractAppender {
      * <p/>
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         if (!isStarted()) {
             throw new IllegalStateException("AsynchAppender " + getName() + " is not active");
         }
@@ -120,7 +120,7 @@ public final class AsynchAppender extends AbstractAppender {
                 try {
                     queue.add(Log4jLogEvent.serialize((Log4jLogEvent) event));
                     return;
-                } catch (IllegalStateException ex) {
+                } catch (final IllegalStateException ex) {
                     error("Appender " + getName() + " is unable to write primary appenders. queue is full");
                 }
             }
@@ -147,14 +147,14 @@ public final class AsynchAppender extends AbstractAppender {
      * @return The AsynchAppender.
      */
     @PluginFactory
-    public static AsynchAppender createAppender(@PluginElement("appender-ref") AppenderRef[] appenderRefs,
-                                                @PluginAttr("error-ref") String errorRef,
-                                                @PluginAttr("blocking") String blocking,
-                                                @PluginAttr("bufferSize") String size,
-                                                @PluginAttr("name") String name,
-                                                @PluginElement("filter") Filter filter,
-                                                @PluginConfiguration Configuration config,
-                                                @PluginAttr("suppressExceptions") String suppress) {
+    public static AsynchAppender createAppender(@PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+                                                @PluginAttr("error-ref") final String errorRef,
+                                                @PluginAttr("blocking") final String blocking,
+                                                @PluginAttr("bufferSize") final String size,
+                                                @PluginAttr("name") final String name,
+                                                @PluginElement("filter") final Filter filter,
+                                                @PluginConfiguration final Configuration config,
+                                                @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
             LOGGER.error("No name provided for AsynchAppender");
             return null;
@@ -163,10 +163,10 @@ public final class AsynchAppender extends AbstractAppender {
             LOGGER.error("No appender references provided to AsynchAppender {}", name);
         }
 
-        boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
-        int queueSize = size == null ? DEFAULT_QUEUE_SIZE : Integer.parseInt(size);
+        final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
+        final int queueSize = size == null ? DEFAULT_QUEUE_SIZE : Integer.parseInt(size);
 
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         return new AsynchAppender(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions,
                                   config);
@@ -181,7 +181,7 @@ public final class AsynchAppender extends AbstractAppender {
         private final List<AppenderControl> appenders;
         private final BlockingQueue<Serializable> queue;
 
-        public AsynchThread(List<AppenderControl> appenders, BlockingQueue<Serializable> queue) {
+        public AsynchThread(final List<AppenderControl> appenders, final BlockingQueue<Serializable> queue) {
             this.appenders = appenders;
             this.queue = queue;
         }
@@ -196,24 +196,24 @@ public final class AsynchAppender extends AbstractAppender {
                         shutdown = true;
                         continue;
                     }
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     // No good reason for this.
                     continue;
                 }
-                Log4jLogEvent event = Log4jLogEvent.deserialize(s);
+                final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                 boolean success = false;
-                for (AppenderControl control : appenders) {
+                for (final AppenderControl control : appenders) {
                     try {
                         control.callAppender(event);
                         success = true;
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         // If no appender is successful the error appender will get it.
                     }
                 }
                 if (!success && errorAppender != null) {
                     try {
                         errorAppender.callAppender(event);
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         // Silently accept the error.
                     }
                 }
@@ -221,11 +221,11 @@ public final class AsynchAppender extends AbstractAppender {
             // Process any remaining items in the queue.
             while (!queue.isEmpty()) {
                 try {
-                    Log4jLogEvent event = Log4jLogEvent.deserialize(queue.take());
-                    for (AppenderControl control : appenders) {
+                    final Log4jLogEvent event = Log4jLogEvent.deserialize(queue.take());
+                    for (final AppenderControl control : appenders) {
                         control.callAppender(event);
                     }
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     // May have been interrupted to shut down.
                 }
             }

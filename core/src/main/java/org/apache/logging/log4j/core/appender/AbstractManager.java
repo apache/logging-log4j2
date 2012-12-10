@@ -47,7 +47,7 @@ public abstract class AbstractManager {
 
     private final String name;
 
-    protected AbstractManager(String name) {
+    protected AbstractManager(final String name) {
         this.name = name;
         LOGGER.debug("Starting {} {}", this.getClass().getSimpleName(), name);
     }
@@ -60,7 +60,7 @@ public abstract class AbstractManager {
      * @param <M> The Type of the Manager to be created.
      * @return A Manager with the specified name and type.
      */
-    public static <M extends AbstractManager, T> M getManager(String name, ManagerFactory<M, T> factory, T data) {
+    public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory, final T data) {
         lock.lock();
         try {
             M manager = (M) map.get(name);
@@ -83,7 +83,7 @@ public abstract class AbstractManager {
      * @param name The name of the Manager.
      * @return True if the Manager exists, false otherwise.
      */
-    public static boolean hasManager(String name) {
+    public static boolean hasManager(final String name) {
         lock.lock();
         try {
             return map.containsKey(name);

@@ -33,7 +33,7 @@ public class Compare {
     private static final InputStream open(
         final Class testClass,
         final String fileName) throws IOException {
-        String resourceName = fileName;
+        final String resourceName = fileName;
         /* if (fileName.startsWith("witness/")) {
            resourceName = fileName.substring(fileName.lastIndexOf('/') + 1);
        } */
@@ -42,7 +42,7 @@ public class Compare {
             is = testClass.getClassLoader().getResourceAsStream(resourceName);
         }
         if (is == null) {
-            File file = new File(fileName);
+            final File file = new File(fileName);
             if (file.exists()) {
                 is = new FileInputStream(file);
             } else {
@@ -53,12 +53,12 @@ public class Compare {
         return is;
     }
 
-    public static boolean compare(Class testClass,
+    public static boolean compare(final Class testClass,
                                   final String file1,
                                   final String file2)
         throws IOException {
-        BufferedReader in1 = new BufferedReader(new FileReader(file1));
-        BufferedReader in2 = new BufferedReader(new InputStreamReader(
+        final BufferedReader in1 = new BufferedReader(new FileReader(file1));
+        final BufferedReader in2 = new BufferedReader(new InputStreamReader(
             open(testClass, file2)));
         try {
             return compare(testClass, file1, file2, in1, in2);
@@ -69,7 +69,7 @@ public class Compare {
     }
 
     public static boolean compare(
-        Class testClass, String file1, String file2, BufferedReader in1, BufferedReader in2) throws IOException {
+        final Class testClass, final String file1, final String file2, final BufferedReader in1, final BufferedReader in2) throws IOException {
 
         String s1;
         int lineCounter = 0;
@@ -77,7 +77,7 @@ public class Compare {
         while ((s1 = in1.readLine()) != null) {
             lineCounter++;
 
-            String s2 = in2.readLine();
+            final String s2 = in2.readLine();
 
             if (!s1.equals(s2)) {
                 System.out.println(
@@ -108,10 +108,10 @@ public class Compare {
     /**
      * Prints file on the console.
      */
-    private static void outputFile(Class testClass, String file)
+    private static void outputFile(final Class testClass, final String file)
         throws IOException {
-        InputStream is = open(testClass, file);
-        BufferedReader in1 = new BufferedReader(new InputStreamReader(is));
+        final InputStream is = open(testClass, file);
+        final BufferedReader in1 = new BufferedReader(new InputStreamReader(is));
 
         String s1;
         int lineCounter = 0;

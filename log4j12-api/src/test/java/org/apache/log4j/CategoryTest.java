@@ -53,7 +53,7 @@ public class CategoryTest {
     public static void setupClass() {
         appender.start();
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -68,11 +68,11 @@ public class CategoryTest {
      */
     @Test
     public void testForcedLog() {
-        MockCategory category = new MockCategory("org.example.foo");
+        final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
         category.getLogger().addAppender(appender);
         category.info("Hello, World");
-        List<LogEvent> list = appender.getEvents();
+        final List<LogEvent> list = appender.getEvents();
         int events = list.size();
         assertTrue("Number of events should be 1, was " + events, events == 1);
         LogEvent event = list.get(0);
@@ -101,7 +101,7 @@ public class CategoryTest {
      */
     @Test
     public void testGetChainedPriorityReturnType() throws Exception {
-        Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
+        final Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
         assertTrue(method.getReturnType() == Priority.class);
     }
 
@@ -110,9 +110,9 @@ public class CategoryTest {
      */
     @Test
     public void testL7dlog() {
-        Logger logger = Logger.getLogger("org.example.foo");
+        final Logger logger = Logger.getLogger("org.example.foo");
         logger.setLevel(Level.ERROR);
-        Priority debug = Level.DEBUG;
+        final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", null);
         assertTrue(appender.getEvents().size() == 0);
     }
@@ -122,9 +122,9 @@ public class CategoryTest {
      */
     @Test
     public void testL7dlog4Param() {
-        Logger logger = Logger.getLogger("org.example.foo");
+        final Logger logger = Logger.getLogger("org.example.foo");
         logger.setLevel(Level.ERROR);
-        Priority debug = Level.DEBUG;
+        final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
         assertTrue(appender.getEvents().size() == 0);
     }
@@ -137,11 +137,11 @@ public class CategoryTest {
         // create the logger using LogManager
         org.apache.logging.log4j.LogManager.getLogger("existingLogger");
         // Logger will be the one created above
-        Logger logger = Logger.getLogger("existingLogger");
-        Logger l2 = LogManager.getLogger("existingLogger");
+        final Logger logger = Logger.getLogger("existingLogger");
+        final Logger l2 = LogManager.getLogger("existingLogger");
         assertEquals(logger, l2);
         logger.setLevel(Level.ERROR);
-        Priority debug = Level.DEBUG;
+        final Priority debug = Level.DEBUG;
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
@@ -156,26 +156,26 @@ public class CategoryTest {
     @Deprecated
     @Test
     public void testSetPriority() {
-        Logger logger = Logger.getLogger("org.example.foo");
-        Priority debug = Level.DEBUG;
+        final Logger logger = Logger.getLogger("org.example.foo");
+        final Priority debug = Level.DEBUG;
         logger.setPriority(debug);
     }
 
     @Test
     public void testClassName() {
-        Category category = Category.getInstance("TestCategory");
-        Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
-        ListAppender appender = new ListAppender("List2", null, layout, false, false);
+        final Category category = Category.getInstance("TestCategory");
+        final Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
+        final ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
         category.getLogger().addAppender(appender);
         category.error("Test Message");
-        List<String> msgs = appender.getMessages();
+        final List<String> msgs = appender.getMessages();
         assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
-        String msg = msgs.get(0);
+        final String msg = msgs.get(0);
         appender.clear();
-        String threadName = Thread.currentThread().getName();
-        String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + LINE_SEP;
+        final String threadName = Thread.currentThread().getName();
+        final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + LINE_SEP;
         assertTrue("Incorrect message \"" + msg + "\"" + " expected \"" + expected +"\"", msg.endsWith(expected));
     }
 
@@ -198,7 +198,7 @@ public class CategoryTest {
          * @param msg message
          */
         public void info(final String msg) {
-            Priority info = Level.INFO;
+            final Priority info = Level.INFO;
             forcedLog(MockCategory.class.toString(), info, msg, null);
         }
     }

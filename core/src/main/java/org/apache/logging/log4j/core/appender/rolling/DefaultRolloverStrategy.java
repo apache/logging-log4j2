@@ -93,7 +93,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param min The minimum index.
      * @param max The maximum index.
      */
-    protected DefaultRolloverStrategy(int min, int max, boolean useMax, StrSubstitutor subst) {
+    protected DefaultRolloverStrategy(final int min, final int max, final boolean useMax, final StrSubstitutor subst) {
         minIndex = min;
         maxIndex = max;
         this.subst = subst;
@@ -106,7 +106,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return A RolloverDescription.
      * @throws SecurityException if an error occurs.
      */
-    public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
+    public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         if (maxIndex >= 0) {
             int fileIndex;
 
@@ -114,12 +114,12 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 return null;
             }
 
-            StringBuilder buf = new StringBuilder();
+            final StringBuilder buf = new StringBuilder();
             manager.getProcessor().formatFileName(buf, fileIndex);
-            String currentFileName = manager.getFileName();
+            final String currentFileName = manager.getFileName();
 
             String renameTo = subst.replace(buf);
-            String compressedName = renameTo;
+            final String compressedName = renameTo;
             Action compressAction = null;
 
             if (renameTo.endsWith(".gz")) {
@@ -130,7 +130,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true);
             }
 
-            FileRenameAction renameAction =
+            final FileRenameAction renameAction =
                 new FileRenameAction(new File(currentFileName), new File(renameTo), false);
 
             return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
@@ -139,7 +139,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         return null;
     }
 
-    private int purge(final int lowIndex, final int highIndex, RollingFileManager manager) {
+    private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         return useMax ? purgeAscending(lowIndex, highIndex, manager) :
             purgeDescending(lowIndex, highIndex, manager);
     }
@@ -153,11 +153,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
-    private int purgeDescending(final int lowIndex, final int highIndex, RollingFileManager manager) {
+    private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         int suffixLength = 0;
 
-        List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
-        StringBuilder buf = new StringBuilder();
+        final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
+        final StringBuilder buf = new StringBuilder();
         manager.getProcessor().formatFileName(buf, lowIndex);
 
         String lowFilename = subst.replace(buf);
@@ -173,7 +173,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             boolean isBase = false;
 
             if (suffixLength > 0) {
-                File toRenameBase =
+                final File toRenameBase =
                     new File(lowFilename.substring(0, lowFilename.length() - suffixLength));
 
                 if (toRename.exists()) {
@@ -205,7 +205,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 buf.setLength(0);
                 manager.getProcessor().formatFileName(buf, i + 1);
 
-                String highFilename = subst.replace(buf);
+                final String highFilename = subst.replace(buf);
                 String renameTo = highFilename;
 
                 if (isBase) {
@@ -223,13 +223,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         //   work renames backwards
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
-            Action action = renames.get(i);
+            final Action action = renames.get(i);
 
             try {
                 if (!action.execute()) {
                     return -1;
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Exception during purge in RollingFileAppender", ex);
                 return -1;
             }
@@ -247,11 +247,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
-    private int purgeAscending(final int lowIndex, final int highIndex, RollingFileManager manager) {
+    private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         int suffixLength = 0;
 
-        List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
-        StringBuilder buf = new StringBuilder();
+        final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
+        final StringBuilder buf = new StringBuilder();
         manager.getProcessor().formatFileName(buf, highIndex);
 
         String highFilename = subst.replace(buf);
@@ -276,7 +276,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             boolean isBase = false;
 
             if (suffixLength > 0) {
-                File toRenameBase =
+                final File toRenameBase =
                     new File(highFilename.substring(0, highFilename.length() - suffixLength));
 
                 if (toRename.exists()) {
@@ -308,7 +308,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 buf.setLength(0);
                 manager.getProcessor().formatFileName(buf, i - 1);
 
-                String lowFilename = subst.replace(buf);
+                final String lowFilename = subst.replace(buf);
                 String renameTo = lowFilename;
 
                 if (isBase) {
@@ -332,13 +332,13 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         //   work renames backwards
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
-            Action action = renames.get(i);
+            final Action action = renames.get(i);
 
             try {
                 if (!action.execute()) {
                     return -1;
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Exception during purge in RollingFileAppender", ex);
                 return -1;
             }
@@ -359,11 +359,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return A DefaultRolloverStrategy.
      */
     @PluginFactory
-    public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") String max,
-                                                         @PluginAttr("min") String min,
-                                                         @PluginAttr("fileIndex") String fileIndex,
-                                                         @PluginConfiguration Configuration config) {
-        boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
+    public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") final String max,
+                                                         @PluginAttr("min") final String min,
+                                                         @PluginAttr("fileIndex") final String fileIndex,
+                                                         @PluginConfiguration final Configuration config) {
+        final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
         int minIndex;
         if (min != null) {
             minIndex = Integer.parseInt(min);

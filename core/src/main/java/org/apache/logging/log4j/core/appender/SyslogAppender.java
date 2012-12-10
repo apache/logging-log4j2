@@ -40,8 +40,8 @@ public class SyslogAppender extends SocketAppender {
 
     private static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(String name, Layout layout, Filter filter,
-                          boolean handleException, boolean immediateFlush, AbstractSocketManager manager) {
+    protected SyslogAppender(final String name, final Layout layout, final Filter filter,
+                          final boolean handleException, final boolean immediateFlush, final AbstractSocketManager manager) {
         super(name, layout, filter, manager, handleException, immediateFlush);
 
     }
@@ -76,33 +76,33 @@ public class SyslogAppender extends SocketAppender {
      * @return A SyslogAppender.
      */
     @PluginFactory
-    public static SyslogAppender createAppender(@PluginAttr("host") String host,
-                                                @PluginAttr("port") String portNum,
-                                                @PluginAttr("protocol") String protocol,
-                                                @PluginAttr("reconnectionDelay") String delay,
-                                                @PluginAttr("name") String name,
-                                                @PluginAttr("immediateFlush") String immediateFlush,
-                                                @PluginAttr("suppressExceptions") String suppress,
-                                                @PluginAttr("facility") String facility,
-                                                @PluginAttr("id") String id,
-                                                @PluginAttr("enterpriseNumber") String ein,
-                                                @PluginAttr("includeMDC") String includeMDC,
-                                                @PluginAttr("mdcId") String mdcId,
-                                                @PluginAttr("newLine") String includeNL,
-                                                @PluginAttr("appName") String appName,
-                                                @PluginAttr("messageId") String msgId,
-                                                @PluginAttr("mdcExcludes") String excludes,
-                                                @PluginAttr("mdcIncludes") String includes,
-                                                @PluginAttr("mdcRequired") String required,
-                                                @PluginAttr("format") String format,
-                                                @PluginElement("filters") Filter filter,
-                                                @PluginConfiguration Configuration config,
-                                                @PluginAttr("charset") String charset) {
+    public static SyslogAppender createAppender(@PluginAttr("host") final String host,
+                                                @PluginAttr("port") final String portNum,
+                                                @PluginAttr("protocol") final String protocol,
+                                                @PluginAttr("reconnectionDelay") final String delay,
+                                                @PluginAttr("name") final String name,
+                                                @PluginAttr("immediateFlush") final String immediateFlush,
+                                                @PluginAttr("suppressExceptions") final String suppress,
+                                                @PluginAttr("facility") final String facility,
+                                                @PluginAttr("id") final String id,
+                                                @PluginAttr("enterpriseNumber") final String ein,
+                                                @PluginAttr("includeMDC") final String includeMDC,
+                                                @PluginAttr("mdcId") final String mdcId,
+                                                @PluginAttr("newLine") final String includeNL,
+                                                @PluginAttr("appName") final String appName,
+                                                @PluginAttr("messageId") final String msgId,
+                                                @PluginAttr("mdcExcludes") final String excludes,
+                                                @PluginAttr("mdcIncludes") final String includes,
+                                                @PluginAttr("mdcRequired") final String required,
+                                                @PluginAttr("format") final String format,
+                                                @PluginElement("filters") final Filter filter,
+                                                @PluginConfiguration final Configuration config,
+                                                @PluginAttr("charset") final String charset) {
 
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
-        int port = portNum == null ? 0 : Integer.parseInt(portNum);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
@@ -111,7 +111,7 @@ public class SyslogAppender extends SocketAppender {
                 LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
             }
         }
-        Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
+        final Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, appName,  msgId,
                 excludes, includes, required, charset, config) :
             SyslogLayout.createLayout(facility, includeNL, charset);
@@ -120,7 +120,7 @@ public class SyslogAppender extends SocketAppender {
             LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
-        AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
+        final AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
         if (manager == null) {
             return null;
         }

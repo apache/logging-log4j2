@@ -79,7 +79,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * Initialize the TriggeringPolicy.
      * @param manager The RollingFileManager.
      */
-    public void initialize(RollingFileManager manager) {
+    public void initialize(final RollingFileManager manager) {
         this.manager = manager;
     }
 
@@ -89,7 +89,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * @param event   A reference to the currently event.
      * @return true if a rollover should take place, false otherwise.
      */
-    public boolean isTriggeringEvent(LogEvent event) {
+    public boolean isTriggeringEvent(final LogEvent event) {
         return manager.getFileSize() > maxFileSize;
     }
 
@@ -104,9 +104,9 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * @return A SizeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttr("size") String size) {
+    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttr("size") final String size) {
 
-        long maxSize = size == null ? MAX_FILE_SIZE : valueOf(size);
+        final long maxSize = size == null ? MAX_FILE_SIZE : valueOf(size);
         return new SizeBasedTriggeringPolicy(maxSize);
     }
 
@@ -143,7 +143,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
                     LOGGER.error("Units not recognized: " + string);
                     return MAX_FILE_SIZE;
                 }
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 LOGGER.error("Unable to parse numeric part: " + string, e);
                 return MAX_FILE_SIZE;
             }

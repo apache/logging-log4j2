@@ -28,11 +28,11 @@ import java.util.Properties;
  */
 public class PropertyConfigurator {
 
-    public void doConfigure(String configFileName, LoggerRepository hierarchy) {
+    public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {
 
     }
 
-    public static void configure(String configFileName) {
+    public static void configure(final String configFileName) {
     }
 
     /**
@@ -40,7 +40,7 @@ public class PropertyConfigurator {
 
      @since 0.8.2
      */
-    public static void configure(URL configURL) {
+    public static void configure(final URL configURL) {
     }
 
     /**
@@ -48,7 +48,7 @@ public class PropertyConfigurator {
 
      @since 1.2.17
      */
-    public static void configure(InputStream inputStream) {
+    public static void configure(final InputStream inputStream) {
     }
 
 
@@ -57,7 +57,7 @@ public class PropertyConfigurator {
 
      See {@link #doConfigure(String, LoggerRepository)} for the expected format.
      */
-    public static void configure(Properties properties) {
+    public static void configure(final Properties properties) {
     }
 
     /**
@@ -68,7 +68,7 @@ public class PropertyConfigurator {
      @param configFilename A file in key=value format.
 
      */
-    public static void configureAndWatch(String configFilename) {
+    public static void configureAndWatch(final String configFilename) {
     }
 
 
@@ -83,7 +83,7 @@ public class PropertyConfigurator {
      @param configFilename A file in key=value format.
      @param delay The delay in milliseconds to wait between each check.
      */
-    public static void configureAndWatch(String configFilename, long delay) {
+    public static void configureAndWatch(final String configFilename, final long delay) {
     }
 
 
@@ -92,7 +92,7 @@ public class PropertyConfigurator {
 
      See {@link #doConfigure(String, LoggerRepository)} for the expected format.
      */
-    public void doConfigure(Properties properties, LoggerRepository hierarchy) {
+    public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {
     }
 
     /**
@@ -100,12 +100,12 @@ public class PropertyConfigurator {
      *
      * @since 1.2.17
      */
-    public void doConfigure(InputStream inputStream, LoggerRepository hierarchy) {
+    public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
     }
 
     /**
      Read configuration options from url <code>configURL</code>.
      */
-    public void doConfigure(java.net.URL configURL, LoggerRepository hierarchy) {
+    public void doConfigure(final java.net.URL configURL, final LoggerRepository hierarchy) {
     }
 }

@@ -60,7 +60,7 @@ public final class TimeFilter extends AbstractFilter {
     private final TimeZone timezone;
 
 
-    private TimeFilter(long start, long end, TimeZone tz, Result onMatch, Result onMismatch) {
+    private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;
@@ -68,14 +68,14 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
-        Calendar calendar = Calendar.getInstance(timezone);
+    public Result filter(final LogEvent event) {
+        final Calendar calendar = Calendar.getInstance(timezone);
         calendar.setTimeInMillis(event.getMillis());
         //
         //   get apparent number of milliseconds since midnight
         //      (ignores extra or missing hour on daylight time changes).
         //
-        long apparentOffset = calendar.get(Calendar.HOUR_OF_DAY) * HOUR_MS +
+        final long apparentOffset = calendar.get(Calendar.HOUR_OF_DAY) * HOUR_MS +
             calendar.get(Calendar.MINUTE) * MINUTE_MS +
             calendar.get(Calendar.SECOND) * SECOND_MS +
             calendar.get(Calendar.MILLISECOND);
@@ -84,7 +84,7 @@ public final class TimeFilter extends AbstractFilter {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("start=").append(start);
         sb.append(", end=").append(end);
         sb.append(", timezone=").append(timezone.toString());
@@ -101,18 +101,18 @@ public final class TimeFilter extends AbstractFilter {
      * @return A TimeFilter.
      */
     @PluginFactory
-    public static TimeFilter createFilter(@PluginAttr("start") String start,
-                                          @PluginAttr("end") String end,
-                                          @PluginAttr("timezone") String tz,
-                                          @PluginAttr("onMatch") String match,
-                                          @PluginAttr("onMismatch") String mismatch) {
-        SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
+    public static TimeFilter createFilter(@PluginAttr("start") final String start,
+                                          @PluginAttr("end") final String end,
+                                          @PluginAttr("timezone") final String tz,
+                                          @PluginAttr("onMatch") final String match,
+                                          @PluginAttr("onMismatch") final String mismatch) {
+        final SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
         long s = 0;
         if (start != null) {
             stf.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
                 s = stf.parse(start).getTime();
-            } catch (ParseException ex) {
+            } catch (final ParseException ex) {
                 LOGGER.warn("Error parsing start value " + start, ex);
             }
         }
@@ -121,13 +121,13 @@ public final class TimeFilter extends AbstractFilter {
             stf.setTimeZone(TimeZone.getTimeZone("UTC"));
             try {
                 e = stf.parse(end).getTime();
-            } catch (ParseException ex) {
+            } catch (final ParseException ex) {
                 LOGGER.warn("Error parsing start value " + end, ex);
             }
         }
-        TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
-        Result onMatch = Result.toResult(match, Result.NEUTRAL);
-        Result onMismatch = Result.toResult(mismatch, Result.DENY);
+        final TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
+        final Result onMatch = Result.toResult(match, Result.NEUTRAL);
+        final Result onMismatch = Result.toResult(mismatch, Result.DENY);
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);
     }
 

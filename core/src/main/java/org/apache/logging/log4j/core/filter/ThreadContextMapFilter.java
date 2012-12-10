@@ -45,11 +45,11 @@ public class ThreadContextMapFilter extends MapFilter {
 
     private final boolean useMap;
 
-    public ThreadContextMapFilter(Map<String, List<String>> pairs, boolean oper, Result onMatch, Result onMismatch) {
+    public ThreadContextMapFilter(final Map<String, List<String>> pairs, final boolean oper, final Result onMatch, final Result onMismatch) {
         super(pairs, oper, onMatch, onMismatch);
         if (pairs.size() == 1) {
-            Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
-            Map.Entry<String, List<String>> entry = iter.next();
+            final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
+            final Map.Entry<String, List<String>> entry = iter.next();
             if (entry.getValue().size() == 1) {
                 this.key = entry.getKey();
                 this.value = entry.getValue().get(0);
@@ -67,25 +67,25 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter();
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter();
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter();
     }
 
     private Result filter() {
         boolean match = false;
         if (useMap) {
-            for (Map.Entry<String, List<String>> entry : getMap().entrySet()) {
-                String toMatch = ThreadContext.get(entry.getKey());
+            for (final Map.Entry<String, List<String>> entry : getMap().entrySet()) {
+                final String toMatch = ThreadContext.get(entry.getKey());
                 if (toMatch != null) {
                     match = entry.getValue().contains(toMatch);
                 } else {
@@ -102,27 +102,27 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return super.filter(event.getContextMap()) ? onMatch : onMismatch;
     }
 
     @PluginFactory
-    public static ThreadContextMapFilter createFilter(@PluginElement("pairs") KeyValuePair[] pairs,
-                                                      @PluginAttr("operator") String oper,
-                                                      @PluginAttr("onmatch") String match,
-                                                      @PluginAttr("onmismatch") String mismatch) {
+    public static ThreadContextMapFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+                                                      @PluginAttr("operator") final String oper,
+                                                      @PluginAttr("onmatch") final String match,
+                                                      @PluginAttr("onmismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;
         }
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
-        for (KeyValuePair pair : pairs) {
-            String key = pair.getKey();
+        final Map<String, List<String>> map = new HashMap<String, List<String>>();
+        for (final KeyValuePair pair : pairs) {
+            final String key = pair.getKey();
             if (key == null) {
                 LOGGER.error("A null key is not valid in MapFilter");
                 continue;
             }
-            String value = pair.getValue();
+            final String value = pair.getValue();
             if (value == null) {
                 LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
                 continue;
@@ -140,9 +140,9 @@ public class ThreadContextMapFilter extends MapFilter {
             LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
             return null;
         }
-        boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
-        Result onMatch = Result.toResult(match);
-        Result onMismatch = Result.toResult(mismatch);
+        final boolean isAnd = oper == null || !oper.equalsIgnoreCase("or");
+        final Result onMatch = Result.toResult(match);
+        final Result onMismatch = Result.toResult(mismatch);
         return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
     }
 }

@@ -93,14 +93,14 @@ public final class ZipCompressAction extends AbstractAction {
     public static boolean execute(final File source, final File destination, final boolean deleteSource)
         throws IOException {
         if (source.exists()) {
-            FileInputStream fis = new FileInputStream(source);
-            FileOutputStream fos = new FileOutputStream(destination);
-            ZipOutputStream zos = new ZipOutputStream(fos);
+            final FileInputStream fis = new FileInputStream(source);
+            final FileOutputStream fos = new FileOutputStream(destination);
+            final ZipOutputStream zos = new ZipOutputStream(fos);
 
-            ZipEntry zipEntry = new ZipEntry(source.getName());
+            final ZipEntry zipEntry = new ZipEntry(source.getName());
             zos.putNextEntry(zipEntry);
 
-            byte[] inbuf = new byte[BUF_SIZE];
+            final byte[] inbuf = new byte[BUF_SIZE];
             int n;
 
             while ((n = fis.read(inbuf)) != -1) {

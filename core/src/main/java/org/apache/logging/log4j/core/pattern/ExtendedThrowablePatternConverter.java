@@ -50,11 +50,11 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
         List<String> tempPackages = null;
         if (options != null && options.length > 1) {
             if (options[1].startsWith(FILTERS) && options[1].endsWith(")")) {
-                String filterStr = options[1].substring(FILTERS.length(), options[1].length() - 1);
-                String[] array = filterStr.split(",");
+                final String filterStr = options[1].substring(FILTERS.length(), options[1].length() - 1);
+                final String[] array = filterStr.split(",");
                 if (array.length > 0) {
                     tempPackages = new ArrayList<String>(array.length);
-                    for (String token : array) {
+                    for (final String token : array) {
                         tempPackages.add(token.trim());
                     }
                 }
@@ -74,10 +74,10 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
         String type = null;
         String[] array = options;
         if (options != null && options.length == 1 && options[0].length() > 0) {
-            String[] opts = options[0].split(",", 2);
-            String first = opts[0].trim();
+            final String[] opts = options[0].split(",", 2);
+            final String first = opts[0].trim();
             String filter;
-            Scanner scanner = new Scanner(first);
+            final Scanner scanner = new Scanner(first);
             if (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || scanner.hasNextInt()) {
                 type = first;
                 filter = opts[1].trim();
@@ -95,21 +95,21 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Throwable throwable = event.getThrown();
+        final Throwable throwable = event.getThrown();
         if (throwable != null) {
             if (!(throwable instanceof ThrowableProxy)) {
                 super.format(event, toAppendTo);
                 return;
             }
-            ThrowableProxy t = (ThrowableProxy) throwable;
-            String trace = t.getExtendedStackTrace(packages);
-            int len = toAppendTo.length();
+            final ThrowableProxy t = (ThrowableProxy) throwable;
+            final String trace = t.getExtendedStackTrace(packages);
+            final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
             }
             if (lines > 0) {
-                StringBuilder sb = new StringBuilder();
-                String[] array = trace.split("\n");
+                final StringBuilder sb = new StringBuilder();
+                final String[] array = trace.split("\n");
                 for (int i = 0; i < lines; ++i) {
                     sb.append(array[i]).append("\n");
                 }

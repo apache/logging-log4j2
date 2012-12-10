@@ -159,7 +159,7 @@ public abstract class StrMatcher {
      * @param ch  the character to match, must not be null
      * @return a new Matcher for the given char
      */
-    public static StrMatcher charMatcher(char ch) {
+    public static StrMatcher charMatcher(final char ch) {
         return new CharMatcher(ch);
     }
 
@@ -169,7 +169,7 @@ public abstract class StrMatcher {
      * @param chars  the characters to match, null or empty matches nothing
      * @return a new matcher for the given char[]
      */
-    public static StrMatcher charSetMatcher(char[] chars) {
+    public static StrMatcher charSetMatcher(final char[] chars) {
         if (chars == null || chars.length == 0) {
             return NONE_MATCHER;
         }
@@ -185,7 +185,7 @@ public abstract class StrMatcher {
      * @param chars  the characters to match, null or empty matches nothing
      * @return a new Matcher for the given characters
      */
-    public static StrMatcher charSetMatcher(String chars) {
+    public static StrMatcher charSetMatcher(final String chars) {
         if (chars == null || chars.length() == 0) {
             return NONE_MATCHER;
         }
@@ -201,7 +201,7 @@ public abstract class StrMatcher {
      * @param str  the string to match, null or empty matches nothing
      * @return a new Matcher for the given String
      */
-    public static StrMatcher stringMatcher(String str) {
+    public static StrMatcher stringMatcher(final String str) {
         if (str == null || str.length() == 0) {
             return NONE_MATCHER;
         }
@@ -255,7 +255,7 @@ public abstract class StrMatcher {
      * @return the number of matching characters, zero for no match
      * @since 2.4
      */
-    public int isMatch(char[] buffer, int pos) {
+    public int isMatch(final char[] buffer, final int pos) {
         return isMatch(buffer, pos, 0, buffer.length);
     }
 
@@ -272,7 +272,7 @@ public abstract class StrMatcher {
          *
          * @param chars  the characters to match, must not be null
          */
-        CharSetMatcher(char[] chars) {
+        CharSetMatcher(final char[] chars) {
             super();
             this.chars = chars.clone();
             Arrays.sort(this.chars);
@@ -288,7 +288,7 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
+        public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
             return Arrays.binarySearch(chars, buffer[pos]) >= 0 ? 1 : 0;
         }
     }
@@ -306,7 +306,7 @@ public abstract class StrMatcher {
          *
          * @param ch  the character to match
          */
-        CharMatcher(char ch) {
+        CharMatcher(final char ch) {
             super();
             this.ch = ch;
         }
@@ -321,7 +321,7 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
+        public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
             return ch == buffer[pos] ? 1 : 0;
         }
     }
@@ -339,7 +339,7 @@ public abstract class StrMatcher {
          *
          * @param str  the string to match, must not be null
          */
-        StringMatcher(String str) {
+        StringMatcher(final String str) {
             super();
             chars = str.toCharArray();
         }
@@ -354,8 +354,8 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
-            int len = chars.length;
+        public int isMatch(final char[] buffer, int pos, final int bufferStart, final int bufferEnd) {
+            final int len = chars.length;
             if (pos + len > bufferEnd) {
                 return 0;
             }
@@ -391,7 +391,7 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
+        public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
             return 0;
         }
     }
@@ -419,7 +419,7 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd) {
+        public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
             return buffer[pos] <= ' ' ? 1 : 0;
         }
     }

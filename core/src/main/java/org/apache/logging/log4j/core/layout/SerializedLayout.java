@@ -34,12 +34,12 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     private static byte[] header;
 
     static {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            final ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.close();
             header = baos.toByteArray();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to generate Object stream header", ex);
         }
     }
@@ -54,15 +54,15 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * @return the formatted LogEvent.
      */
     public byte[] toByteArray(final LogEvent event) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
+            final ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
             try {
                 oos.writeObject(event);
             } finally {
                 oos.close();
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.error("Serialization of LogEvent failed.", ioe);
         }
         return baos.toByteArray();
@@ -98,7 +98,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      */
     private class PrivateObjectOutputStream extends ObjectOutputStream {
 
-        public PrivateObjectOutputStream(OutputStream os) throws IOException {
+        public PrivateObjectOutputStream(final OutputStream os) throws IOException {
             super(os);
         }
 

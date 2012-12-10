@@ -40,7 +40,7 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
      * Provide the RollingFileManager to the policy.
      * @param manager The RollingFileManager.
      */
-    public void initialize(RollingFileManager manager) {
+    public void initialize(final RollingFileManager manager) {
         this.manager = manager;
     }
 
@@ -49,7 +49,7 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
      * @param event   A reference to the current event.
      * @return true if the target file's timestamp is older than the JVM start time.
      */
-    public boolean isTriggeringEvent(LogEvent event) {
+    public boolean isTriggeringEvent(final LogEvent event) {
         if (evaluated) {
             return false;
         }

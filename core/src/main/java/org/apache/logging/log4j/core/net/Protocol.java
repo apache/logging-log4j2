@@ -30,7 +30,7 @@ public enum Protocol {
      * @param name The enumeration name to check.
      * @return true if this enumeration has the specified name.
      */
-    public boolean isEqual(String name) {
+    public boolean isEqual(final String name) {
         return this.name().equalsIgnoreCase(name);
     }
 }

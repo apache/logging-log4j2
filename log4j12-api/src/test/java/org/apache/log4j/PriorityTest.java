@@ -175,7 +175,7 @@ public class PriorityTest {
     @Deprecated
     @Test
     public void testGetAllPossiblePriorities() {
-        Priority[] priorities = Priority.getAllPossiblePriorities();
+        final Priority[] priorities = Priority.getAllPossiblePriorities();
         assertEquals(5, priorities.length);
     }
 
@@ -231,7 +231,7 @@ public class PriorityTest {
     @Deprecated
     @Test
     public void testDotlessLowerI() {
-        Priority level = Priority.toPriority("\u0131nfo");
+        final Priority level = Priority.toPriority("\u0131nfo");
         assertEquals("INFO", level.toString());
     }
 
@@ -244,10 +244,10 @@ public class PriorityTest {
     @Deprecated
     @Test
     public void testDottedLowerI() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale turkey = new Locale("tr", "TR");
+        final Locale defaultLocale = Locale.getDefault();
+        final Locale turkey = new Locale("tr", "TR");
         Locale.setDefault(turkey);
-        Priority level = Priority.toPriority("info");
+        final Priority level = Priority.toPriority("info");
         Locale.setDefault(defaultLocale);
         assertEquals("INFO", level.toString());
   }

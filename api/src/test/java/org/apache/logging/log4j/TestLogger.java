@@ -35,34 +35,34 @@ public class TestLogger extends AbstractLogger {
         super();
     }
 
-    public TestLogger(String name, MessageFactory messageFactory) {
+    public TestLogger(final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
     }
 
-    public TestLogger(String name) {
+    public TestLogger(final String name) {
         super(name);
     }
 
-    private List<String> list = new ArrayList<String>();
+    private final List<String> list = new ArrayList<String>();
 
     public List<String> getEntries() {
         return list;
     }
 
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message msg, Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
+    public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable throwable) {
+        final StringBuilder sb = new StringBuilder();
         sb.append(" ");
         sb.append(level.toString());
         sb.append(" ");
         sb.append(msg.getFormattedMessage());
-        Map<String, String> mdc = ThreadContext.getContext();
+        final Map<String, String> mdc = ThreadContext.getContext();
         if (mdc.size() > 0) {
             sb.append(" ");
             sb.append(mdc.toString());
             sb.append(" ");
         }
-        Object[] params = msg.getParameters();
+        final Object[] params = msg.getParameters();
         Throwable t;
         if (throwable == null && params != null && params[params.length -1] instanceof Throwable ) {
             t = (Throwable) params[params.length - 1];
@@ -71,7 +71,7 @@ public class TestLogger extends AbstractLogger {
         }
         if (t != null) {
             sb.append(" ");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
         }
@@ -80,28 +80,28 @@ public class TestLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg) {
         return true;
     }
 
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
         return true;
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String msg, Object... p1) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
         return true;
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
         return true;
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message msg, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
         return true;
     }
 }

@@ -57,7 +57,7 @@ public class Category {
      * @param context The LoggerContext.
      * @param name The name of the Logger.
      */
-    protected Category(LoggerContext context, String name) {
+    protected Category(final LoggerContext context, final String name) {
         this.logger = context.getLogger(name);
     }
 
@@ -65,38 +65,38 @@ public class Category {
      * Constructor exposed by Log4j 1.2.
      * @param name The name of the Logger.
      */
-    protected Category(String name) {
+    protected Category(final String name) {
         this((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    private Category(org.apache.logging.log4j.core.Logger logger) {
+    private Category(final org.apache.logging.log4j.core.Logger logger) {
         this.logger = logger;
     }
 
-    public static Category getInstance(String name) {
+    public static Category getInstance(final String name) {
         return getInstance((LoggerContext) PrivateManager.getContext(), name, loggerFactory);
     }
 
-    static Category getInstance(LoggerContext context, String name) {
+    static Category getInstance(final LoggerContext context, final String name) {
         return getInstance(context, name, loggerFactory);
     }
 
-    static Category getInstance(LoggerContext context, String name, LoggerFactory factory) {
-        ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
+    static Category getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
         Logger logger = loggers.get(name);
         if (logger != null) {
             return logger;
         }
         logger = factory.makeNewLoggerInstance(context, name);
-        Logger prev = loggers.putIfAbsent(name, logger);
+        final Logger prev = loggers.putIfAbsent(name, logger);
         return prev == null ? logger : prev;
     }
 
-    public static Category getInstance(Class clazz) {
+    public static Category getInstance(final Class clazz) {
         return getInstance(clazz.getName());
     }
 
-    static Category getInstance(LoggerContext context, Class clazz) {
+    static Category getInstance(final LoggerContext context, final Class clazz) {
         return getInstance(context, clazz.getName());
     }
 
@@ -109,12 +109,12 @@ public class Category {
     }
 
     public final Category getParent() {
-        org.apache.logging.log4j.core.Logger parent = logger.getParent();
+        final org.apache.logging.log4j.core.Logger parent = logger.getParent();
         if (parent == null) {
             return null;
         }
-        ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
-        Logger l = loggers.get(parent.getName());
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
+        final Logger l = loggers.get(parent.getName());
         return l == null ? new Category(parent) : l;
     }
 
@@ -123,11 +123,11 @@ public class Category {
     }
 
 
-    static Category getRoot(LoggerContext context) {
+    static Category getRoot(final LoggerContext context) {
         return getInstance(context, "");
     }
 
-    private static ConcurrentMap<String, Logger> getLoggersMap(LoggerContext context) {
+    private static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
         synchronized (CONTEXT_MAP) {
             ConcurrentMap<String, Logger> map = CONTEXT_MAP.get(context);
             if (map == null) {
@@ -152,7 +152,7 @@ public class Category {
     }
 
     public final Level getEffectiveLevel() {
-        org.apache.logging.log4j.Level level = logger.getLevel();
+        final org.apache.logging.log4j.Level level = logger.getLevel();
 
         switch (level) {
             case TRACE:
@@ -176,7 +176,7 @@ public class Category {
         return getEffectiveLevel();
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(final Level level) {
         logger.setLevel(org.apache.logging.log4j.Level.toLevel(level.levelStr));
     }
 
@@ -184,15 +184,15 @@ public class Category {
         return getEffectiveLevel();
     }
 
-    public void setPriority(Priority priority) {
+    public void setPriority(final Priority priority) {
         logger.setLevel(org.apache.logging.log4j.Level.toLevel(priority.levelStr));
     }
 
-    public void debug(Object message) {
+    public void debug(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.DEBUG, message, null);
     }
 
-    public void debug(Object message, Throwable t) {
+    public void debug(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.DEBUG, message, t);
     }
 
@@ -200,11 +200,11 @@ public class Category {
         return logger.isDebugEnabled();
     }
 
-    public void error(Object message) {
+    public void error(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.ERROR, message, null);
     }
 
-    public void error(Object message, Throwable t) {
+    public void error(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.ERROR, message, t);
     }
 
@@ -212,11 +212,11 @@ public class Category {
         return logger.isErrorEnabled();
     }
 
-    public void warn(Object message) {
+    public void warn(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.WARN, message, null);
     }
 
-    public void warn(Object message, Throwable t) {
+    public void warn(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.WARN, message, t);
     }
 
@@ -224,11 +224,11 @@ public class Category {
         return logger.isWarnEnabled();
     }
 
-    public void fatal(Object message) {
+    public void fatal(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.FATAL, message, null);
     }
 
-    public void fatal(Object message, Throwable t) {
+    public void fatal(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.FATAL, message, t);
     }
 
@@ -236,11 +236,11 @@ public class Category {
         return logger.isFatalEnabled();
     }
 
-    public void info(Object message) {
+    public void info(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.INFO, message, null);
     }
 
-    public void info(Object message, Throwable t) {
+    public void info(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.INFO, message, t);
     }
 
@@ -248,11 +248,11 @@ public class Category {
         return logger.isInfoEnabled();
     }
 
-    public void trace(Object message) {
+    public void trace(final Object message) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, null);
     }
 
-    public void trace(Object message, Throwable t) {
+    public void trace(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
     }
 
@@ -260,8 +260,8 @@ public class Category {
         return logger.isTraceEnabled();
     }
 
-    public boolean isEnabledFor(Priority level) {
-        org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
+    public boolean isEnabledFor(final Priority level) {
+        final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         return isEnabledFor(lvl);
     }
 
@@ -269,14 +269,14 @@ public class Category {
      * No-op implementation.
      * @param appender The Appender to add.
      */
-    public void addAppender(Appender appender) {
+    public void addAppender(final Appender appender) {
     }
 
     /**
      * No-op implementation.
      * @param event The logging event.
      */
-    public void callAppenders(LoggingEvent event) {
+    public void callAppenders(final LoggingEvent event) {
     }
 
     public Enumeration getAllAppenders() {
@@ -288,7 +288,7 @@ public class Category {
      * @param name The name of the Appender.
      * @return null.
      */
-    public Appender getAppender(String name) {
+    public Appender getAppender(final String name) {
         return null;
     }
 
@@ -296,7 +296,7 @@ public class Category {
      Is the appender passed as parameter attached to this category?
      @param appender The Appender to add.
      */
-    public boolean isAttached(Appender appender) {
+    public boolean isAttached(final Appender appender) {
         return false;
     }
 
@@ -310,14 +310,14 @@ public class Category {
      * No-op implementation.
      * @param appender The Appender to remove.
      */
-    public void removeAppender(Appender appender) {
+    public void removeAppender(final Appender appender) {
     }
 
     /**
      * No-op implementation.
      * @param name The Appender to remove.
      */
-    public void removeAppender(String name) {
+    public void removeAppender(final String name) {
     }
 
     /**
@@ -327,13 +327,13 @@ public class Category {
     }
 
 
-    public void forcedLog(String fqcn, Priority level, Object message, Throwable t) {
-        org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
-        Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
+    public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
+        final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
+        final Message msg = message instanceof Message ? (Message) message : new ObjectMessage(message);
         logger.log(null, fqcn, lvl, msg, t);
     }
 
-    public boolean exists(String name) {
+    public boolean exists(final String name) {
         return PrivateManager.getContext().hasLogger(name);
     }
 
@@ -341,11 +341,11 @@ public class Category {
         return logger.isAdditive();
     }
 
-    public void setAdditivity(boolean additivity) {
+    public void setAdditivity(final boolean additivity) {
         logger.setAdditive(additivity);
     }
 
-    public void setResourceBundle(ResourceBundle bundle) {
+    public void setResourceBundle(final ResourceBundle bundle) {
         this.bundle = bundle;
     }
 
@@ -353,12 +353,12 @@ public class Category {
         if (bundle != null) {
             return bundle;
         }
-        int i = 0;
+        final int i = 0;
         String name = logger.getName();
-        ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
+        final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
         while ((name = NameUtil.getSubName(name)) != null) {
             if (loggers.containsKey(name)) {
-                ResourceBundle rb = loggers.get(name).bundle;
+                final ResourceBundle rb = loggers.get(name).bundle;
                 if (rb != null) {
                     return rb;
                 }
@@ -381,49 +381,49 @@ public class Category {
 
      @since 1.2
      */
-    public void assertLog(boolean assertion, String msg) {
+    public void assertLog(final boolean assertion, final String msg) {
         if (!assertion) {
             this.error(msg);
         }
     }
 
-    public void l7dlog(Priority priority, String key, Throwable t) {
+    public void l7dlog(final Priority priority, final String key, final Throwable t) {
         if (isEnabledFor(priority)) {
-            Message msg = new LocalizedMessage(bundle, key, null);
+            final Message msg = new LocalizedMessage(bundle, key, null);
             forcedLog(FQCN, priority, msg, t);
         }
     }
 
-    public void l7dlog(Priority priority, String key, Object[] params, Throwable t) {
+    public void l7dlog(final Priority priority, final String key, final Object[] params, final Throwable t) {
         if (isEnabledFor(priority)) {
-            Message msg = new LocalizedMessage(bundle, key, params);
+            final Message msg = new LocalizedMessage(bundle, key, params);
             forcedLog(FQCN, priority, msg, t);
         }
     }
 
-    public void log(Priority priority, Object message, Throwable t) {
+    public void log(final Priority priority, final Object message, final Throwable t) {
         if (isEnabledFor(priority)) {
-            Message msg = new ObjectMessage(message);
+            final Message msg = new ObjectMessage(message);
             forcedLog(FQCN, priority, msg, t);
         }
     }
 
-    public void log(Priority priority, Object message) {
+    public void log(final Priority priority, final Object message) {
         if (isEnabledFor(priority)) {
-            Message msg = new ObjectMessage(message);
+            final Message msg = new ObjectMessage(message);
             forcedLog(FQCN, priority, msg, null);
         }
     }
 
-    public void log(String fqcn, Priority priority, Object message, Throwable t) {
+    public void log(final String fqcn, final Priority priority, final Object message, final Throwable t) {
         if (isEnabledFor(priority)) {
-            Message msg = new ObjectMessage(message);
+            final Message msg = new ObjectMessage(message);
             forcedLog(fqcn, priority, msg, t);
         }
     }
 
-    private void maybeLog(String fqcn, org.apache.logging.log4j.Level level,
-            Object message, Throwable throwable) {
+    private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
+            final Object message, final Throwable throwable) {
         if (logger.isEnabled(level, null, message, throwable)) {
             logger.log(null, FQCN, level, new ObjectMessage(message), throwable);
         }
@@ -434,7 +434,7 @@ public class Category {
      */
     private static class PrivateFactory implements LoggerFactory {
 
-        public Logger makeNewLoggerInstance(LoggerContext context, String name) {
+        public Logger makeNewLoggerInstance(final LoggerContext context, final String name) {
             return new Logger(context, name);
         }
     }
@@ -449,12 +449,12 @@ public class Category {
             return getContext(FQCN, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(String name) {
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
     }
 
-    private boolean isEnabledFor(org.apache.logging.log4j.Level level) {
+    private boolean isEnabledFor(final org.apache.logging.log4j.Level level) {
         return logger.isEnabled(level, null, null);
     }
 

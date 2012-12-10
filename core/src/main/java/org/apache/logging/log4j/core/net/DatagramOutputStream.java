@@ -53,44 +53,44 @@ public class DatagramOutputStream extends OutputStream {
      * @param host The host to connect to.
      * @param port The port on the host.
      */
-    public DatagramOutputStream(String host, int port) {
+    public DatagramOutputStream(final String host, final int port) {
         this.port = port;
         try {
             address = InetAddress.getByName(host);
-        } catch (UnknownHostException ex) {
-            String msg = "Could not find host " + host;
+        } catch (final UnknownHostException ex) {
+            final String msg = "Could not find host " + host;
             LOGGER.error(msg, ex);
             throw new AppenderRuntimeException(msg, ex);
         }
 
         try {
             ds = new DatagramSocket();
-        } catch (SocketException ex) {
-            String msg = "Could not instantiate DatagramSocket to " + host;
+        } catch (final SocketException ex) {
+            final String msg = "Could not instantiate DatagramSocket to " + host;
             LOGGER.error(msg, ex);
             throw new AppenderRuntimeException(msg, ex);
         }
     }
 
     @Override
-    public synchronized void write(byte[] bytes, int offset, int length) throws IOException {
+    public synchronized void write(final byte[] bytes, final int offset, final int length) throws IOException {
         copy(bytes, offset, length);
     }
 
     @Override
-    public synchronized void write(int i) throws IOException {
+    public synchronized void write(final int i) throws IOException {
         copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
     }
 
     @Override
-    public synchronized void write(byte[] bytes) throws IOException {
+    public synchronized void write(final byte[] bytes) throws IOException {
         copy(bytes, 0, bytes.length);
     }
 
     @Override
     public synchronized void flush() throws IOException {
         if (this.ds != null && this.address != null) {
-            DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+            final DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
             ds.send(packet);
         }
         data = null;
@@ -107,9 +107,9 @@ public class DatagramOutputStream extends OutputStream {
         }
     }
 
-    private void copy(byte[] bytes, int offset, int length) {
-        int index = data == null ? 0 : data.length;
-        byte[] copy = new byte[length + index];
+    private void copy(final byte[] bytes, final int offset, final int length) {
+        final int index = data == null ? 0 : data.length;
+        final byte[] copy = new byte[length + index];
         if (data != null) {
             System.arraycopy(data, 0, copy, 0, index);
         }

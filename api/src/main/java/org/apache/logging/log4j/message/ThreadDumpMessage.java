@@ -42,9 +42,9 @@ public class ThreadDumpMessage implements Message {
     private String formattedMessage;
 
     static {
-        Method[] methods = ThreadInfo.class.getMethods();
+        final Method[] methods = ThreadInfo.class.getMethods();
         boolean basic = true;
-        for (Method method : methods) {
+        for (final Method method : methods) {
             if (method.getName().equals("getLockInfo")) {
                 basic = false;
                 break;
@@ -57,19 +57,19 @@ public class ThreadDumpMessage implements Message {
      * Generate a ThreadDumpMessage with a title.
      * @param title The title.
      */
-    public ThreadDumpMessage(String title) {
+    public ThreadDumpMessage(final String title) {
         this.title = title == null ? "" : title;
         threads = factory.createThreadInfo();
     }
 
-    private ThreadDumpMessage(String formattedMsg, String title) {
+    private ThreadDumpMessage(final String formattedMsg, final String title) {
         this.formattedMessage = formattedMsg;
         this.title = title == null ? "" : title;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ThreadDumpMessage[");
+        final StringBuilder sb = new StringBuilder("ThreadDumpMessage[");
         if (this.title.length() > 0) {
             sb.append("Title=\"").append(this.title).append("\"");
         }
@@ -85,12 +85,12 @@ public class ThreadDumpMessage implements Message {
         if (formattedMessage != null) {
             return formattedMessage;
         }
-        StringBuilder sb = new StringBuilder(title);
+        final StringBuilder sb = new StringBuilder(title);
         if (title.length() > 0) {
             sb.append("\n");
         }
-        for (Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {
-            ThreadInformation info = entry.getKey();
+        for (final Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {
+            final ThreadInformation info = entry.getKey();
             info.printThreadInfo(sb);
             info.printStack(sb, entry.getValue());
             sb.append("\n");
@@ -123,7 +123,7 @@ public class ThreadDumpMessage implements Message {
         return new ThreadDumpMessageProxy(this);
     }
 
-    private void readObject(ObjectInputStream stream)
+    private void readObject(final ObjectInputStream stream)
         throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
@@ -134,10 +134,10 @@ public class ThreadDumpMessage implements Message {
     private static class ThreadDumpMessageProxy implements Serializable {
 
         private static final long serialVersionUID = -3476620450287648269L;
-        private String formattedMsg;
-        private String title;
+        private final String formattedMsg;
+        private final String title;
 
-        public ThreadDumpMessageProxy(ThreadDumpMessage msg) {
+        public ThreadDumpMessageProxy(final ThreadDumpMessage msg) {
             this.formattedMsg = msg.getFormattedMessage();
             this.title = msg.title;
         }
@@ -163,10 +163,10 @@ public class ThreadDumpMessage implements Message {
      */
     private static class BasicThreadInfoFactory implements ThreadInfoFactory {
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
-            Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-            Map<ThreadInformation, StackTraceElement[]> threads =
+            final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
+            final Map<ThreadInformation, StackTraceElement[]> threads =
                 new HashMap<ThreadInformation, StackTraceElement[]>(map.size());
-            for (Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
+            for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
             }
             return threads;
@@ -178,12 +178,12 @@ public class ThreadDumpMessage implements Message {
      */
     private static class ExtendedThreadInfoFactory implements ThreadInfoFactory {
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
-            ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-            ThreadInfo[] array = bean.dumpAllThreads(true, true);
+            final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+            final ThreadInfo[] array = bean.dumpAllThreads(true, true);
 
-            Map<ThreadInformation, StackTraceElement[]>  threads =
+            final Map<ThreadInformation, StackTraceElement[]>  threads =
                 new HashMap<ThreadInformation, StackTraceElement[]>(array.length);
-            for (ThreadInfo info : array) {
+            for (final ThreadInfo info : array) {
                 threads.put(new ExtendedThreadInformation(info), info.getStackTrace());
             }
             return threads;

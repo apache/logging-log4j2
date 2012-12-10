@@ -53,15 +53,15 @@ public class SocketTest {
         Logger logger = null;
         try {
             logger = LogManager.getLogger(SocketTest.class);
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             fail("Unexpected exception; should not occur until first logging statement " + e.getMessage());
         }
 
-        String message = "Log #1";
+        final String message = "Log #1";
         try {
             logger.error(message);
             fail("Expected exception not thrown");
-        } catch (AppenderRuntimeException e) {
+        } catch (final AppenderRuntimeException e) {
             //System.err.println("Expected exception here, but already errored out when initializing logger");
         }
     }
@@ -71,7 +71,7 @@ public class SocketTest {
         TestSocketServer testServer = null;
         ExecutorService executor = null;
         Future<InputStream> futureIn;
-        InputStream in;
+        final InputStream in;
 
         try {
             executor = Executors.newSingleThreadExecutor();
@@ -81,7 +81,7 @@ public class SocketTest {
             Thread.sleep(300);
 
             //System.err.println("Initializing logger");
-            Logger logger = LogManager.getLogger(SocketTest.class);
+            final Logger logger = LogManager.getLogger(SocketTest.class);
 
             String message = "Log #1";
             logger.error(message);
@@ -97,7 +97,7 @@ public class SocketTest {
             message = "Log #3";
             try {
                 logger.error(message);
-            } catch (AppenderRuntimeException e) {
+            } catch (final AppenderRuntimeException e) {
                 // System.err.println("Caught expected exception");
             }
 
@@ -110,7 +110,7 @@ public class SocketTest {
                 logger.error(message);
                 reader = new BufferedReader(new InputStreamReader(futureIn.get()));
                 assertEquals(message, reader.readLine());
-            } catch (AppenderRuntimeException e) {
+            } catch (final AppenderRuntimeException e) {
                 e.printStackTrace();
                 fail("Unexpected Exception");
             }
@@ -138,32 +138,32 @@ public class SocketTest {
             closeQuietly(server);
         }
 
-        private void closeQuietly(ServerSocket socket) {
+        private void closeQuietly(final ServerSocket socket) {
             if (null != socket) {
                 try {
                     socket.close();
-                } catch (IOException ignore) {
+                } catch (final IOException ignore) {
                 }
             }
         }
 
-        private void closeQuietly(Socket socket) {
+        private void closeQuietly(final Socket socket) {
             if (null != socket) {
                 try {
                     socket.close();
-                } catch (IOException ignore) {
+                } catch (final IOException ignore) {
                 }
             }
         }
     }
 
-    private static void closeQuietly(ExecutorService executor) {
+    private static void closeQuietly(final ExecutorService executor) {
         if (null != executor) {
             executor.shutdownNow();
         }
     }
 
-    private static void closeQuietly(TestSocketServer testServer) {
+    private static void closeQuietly(final TestSocketServer testServer) {
         if (null != testServer) {
             testServer.close();
         }

@@ -42,7 +42,7 @@ public final class RegexReplacement {
      * @param pattern The Pattern.
      * @param substitution The substitution String.
      */
-    private RegexReplacement(Pattern pattern, String substitution) {
+    private RegexReplacement(final Pattern pattern, final String substitution) {
         this.pattern = pattern;
         this.substitution = substitution;
     }
@@ -52,7 +52,7 @@ public final class RegexReplacement {
      * @param msg The String to match against.
      * @return the replacement String.
      */
-    public String format(String msg) {
+    public String format(final String msg) {
         return pattern.matcher(msg).replaceAll(substitution);
     }
 
@@ -68,8 +68,8 @@ public final class RegexReplacement {
      * @return A RegexReplacement.
      */
     @PluginFactory
-    public static RegexReplacement createRegexReplacement(@PluginAttr("regex") String regex,
-                                                          @PluginAttr("replacement") String replacement) {
+    public static RegexReplacement createRegexReplacement(@PluginAttr("regex") final String regex,
+                                                          @PluginAttr("replacement") final String replacement) {
         if (regex == null) {
             LOGGER.error("A regular expression is required for replacement");
             return null;
@@ -77,7 +77,7 @@ public final class RegexReplacement {
         if (replacement == null) {
             LOGGER.error("A replacement string is required to perform replacement");
         }
-        Pattern p = Pattern.compile(regex);
+        final Pattern p = Pattern.compile(regex);
         return new RegexReplacement(p, replacement);
     }
 

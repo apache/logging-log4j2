@@ -42,7 +42,7 @@ public class LevelTest {
      */
     @Test
     public void testSerializeINFO() throws Exception {
-        int[] skip = new int[]{};
+        final int[] skip = new int[]{};
         SerializationTestHelper.assertSerializationEquals(
             "target/test-classes/witness/serialization/info.bin",
             Level.INFO, skip, Integer.MAX_VALUE);
@@ -55,11 +55,11 @@ public class LevelTest {
      */
     @Test
     public void testDeserializeINFO() throws Exception {
-        Object obj =
+        final Object obj =
             SerializationTestHelper.deserializeStream(
                 "target/test-classes/witness/serialization/info.bin");
         assertTrue(obj instanceof Level);
-        Level info = (Level) obj;
+        final Level info = (Level) obj;
         assertEquals("INFO", info.toString());
         //
         //  JDK 1.1 doesn't support readResolve necessary for the assertion
@@ -76,11 +76,11 @@ public class LevelTest {
      */
     @Test
     public void testCustomLevelSerialization() throws Exception {
-        CustomLevel custom = new CustomLevel();
-        Object obj = SerializationTestHelper.serializeClone(custom);
+        final CustomLevel custom = new CustomLevel();
+        final Object obj = SerializationTestHelper.serializeClone(custom);
         assertTrue(obj instanceof CustomLevel);
 
-        CustomLevel clone = (CustomLevel) obj;
+        final CustomLevel clone = (CustomLevel) obj;
         assertEquals(Level.INFO.level, clone.level);
         assertEquals(Level.INFO.levelStr, clone.levelStr);
         assertEquals(Level.INFO.syslogEquivalent, clone.syslogEquivalent);
@@ -123,7 +123,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToTrace() {
-        Level trace = Level.toLevel(5000);
+        final Level trace = Level.toLevel(5000);
         assertEquals("TRACE", trace.toString());
     }
 
@@ -132,7 +132,7 @@ public class LevelTest {
      */
     @Test
     public void testStringToTrace() {
-        Level trace = Level.toLevel("TRACE");
+        final Level trace = Level.toLevel("TRACE");
         assertEquals("TRACE", trace.toString());
     }
 
@@ -213,7 +213,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToAll() {
-        Level level = Level.toLevel(Level.ALL_INT);
+        final Level level = Level.toLevel(Level.ALL_INT);
         assertEquals("ALL", level.toString());
     }
 
@@ -222,7 +222,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToFatal() {
-        Level level = Level.toLevel(Level.FATAL_INT);
+        final Level level = Level.toLevel(Level.FATAL_INT);
         assertEquals("FATAL", level.toString());
     }
 
@@ -232,7 +232,7 @@ public class LevelTest {
      */
     @Test
     public void testIntToOff() {
-        Level level = Level.toLevel(Level.OFF_INT);
+        final Level level = Level.toLevel(Level.OFF_INT);
         assertEquals("OFF", level.toString());
     }
 
@@ -241,7 +241,7 @@ public class LevelTest {
      */
     @Test
     public void testToLevelUnrecognizedInt() {
-        Level level = Level.toLevel(17, Level.FATAL);
+        final Level level = Level.toLevel(17, Level.FATAL);
         assertEquals("FATAL", level.toString());
     }
 
@@ -250,7 +250,7 @@ public class LevelTest {
      */
     @Test
     public void testToLevelNull() {
-        Level level = Level.toLevel(null, Level.FATAL);
+        final Level level = Level.toLevel(null, Level.FATAL);
         assertEquals("FATAL", level.toString());
     }
 
@@ -259,7 +259,7 @@ public class LevelTest {
      */
     @Test
     public void testDotlessLowerI() {
-        Level level = Level.toLevel("\u0131nfo");
+        final Level level = Level.toLevel("\u0131nfo");
         assertEquals("INFO", level.toString());
     }
 
@@ -269,10 +269,10 @@ public class LevelTest {
      */
     @Test
     public void testDottedLowerI() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale turkey = new Locale("tr", "TR");
+        final Locale defaultLocale = Locale.getDefault();
+        final Locale turkey = new Locale("tr", "TR");
         Locale.setDefault(turkey);
-        Level level = Level.toLevel("info");
+        final Level level = Level.toLevel("info");
         Locale.setDefault(defaultLocale);
       assertEquals("INFO", level.toString());
   }

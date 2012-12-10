@@ -33,7 +33,7 @@ public class ContextMapLookupTest {
     @Test
     public void testLookup() {
         ThreadContext.put(TESTKEY, TESTVAL);
-        StrLookup lookup = new ContextMapLookup();
+        final StrLookup lookup = new ContextMapLookup();
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");

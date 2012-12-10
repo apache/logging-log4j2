@@ -83,7 +83,7 @@ public enum AnsiEscape {
     
     private final String code;
 
-    private AnsiEscape(String code) {
+    private AnsiEscape(final String code) {
         this.code = code;
     }
 
@@ -91,7 +91,7 @@ public enum AnsiEscape {
         return PREFIX.getCode() + SUFFIX.getCode();
     }
 
-    private static String toRegexSeparator(String separator) {
+    private static String toRegexSeparator(final String separator) {
         return WHITESPACE_REGEX + separator + WHITESPACE_REGEX;
     }
 
@@ -121,7 +121,7 @@ public enum AnsiEscape {
      *            do not escape these keys, leave the values as is in the map
      * @return a new map
      */
-    public static Map<String, String> createMap(String values, String[] dontEscapeKeys) {
+    public static Map<String, String> createMap(final String values, final String[] dontEscapeKeys) {
         return createMap(values.split(toRegexSeparator(",")), dontEscapeKeys);
     }
 
@@ -147,12 +147,12 @@ public enum AnsiEscape {
      *            do not escape these keys, leave the values as is in the map
      * @return a new map
      */
-    public static Map<String, String> createMap(String[] values, String[] dontEscapeKeys) {
+    public static Map<String, String> createMap(final String[] values, final String[] dontEscapeKeys) {
         final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : new String[0];
         Arrays.sort(sortedIgnoreKeys);
-        Map<String, String> map = new HashMap<String, String>();
-        for (String string : values) {
-            String[] keyValue = string.split(toRegexSeparator("="));
+        final Map<String, String> map = new HashMap<String, String>();
+        for (final String string : values) {
+            final String[] keyValue = string.split(toRegexSeparator("="));
             if (keyValue.length > 1) {
                 final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
                 final String value = keyValue[1];
@@ -170,21 +170,21 @@ public enum AnsiEscape {
      *            {@linkplain AnsiEscape} names.
      * @return An ANSI escape sequence.
      */
-    public static String createSequence(String... names) {
+    public static String createSequence(final String... names) {
         if (names == null) {
             return getDefaultStyle();
         }
-        StringBuilder sb = new StringBuilder(AnsiEscape.PREFIX.getCode());
+        final StringBuilder sb = new StringBuilder(AnsiEscape.PREFIX.getCode());
         boolean first = true;
-        for (String name : names) {
+        for (final String name : names) {
             try {
-                AnsiEscape escape = AnsiEscape.valueOf(name.trim().toUpperCase(Locale.ENGLISH));
+                final AnsiEscape escape = AnsiEscape.valueOf(name.trim().toUpperCase(Locale.ENGLISH));
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
                 first = false;
                 sb.append(escape.getCode());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Ignore the error.
             }
         }

@@ -35,7 +35,7 @@ class BasicThreadInformation implements ThreadInformation {
      * The Constructor.
      * @param thread The Thread to capture.
      */
-    public BasicThreadInformation(Thread thread) {
+    public BasicThreadInformation(final Thread thread) {
         this.id = thread.getId();
         this.name = thread.getName();
         this.longName = thread.toString();
@@ -43,12 +43,12 @@ class BasicThreadInformation implements ThreadInformation {
         this.priority = thread.getPriority();
         this.isAlive = thread.isAlive();
         this.isDaemon = thread.isDaemon();
-        ThreadGroup group = thread.getThreadGroup();
+        final ThreadGroup group = thread.getThreadGroup();
         threadGroupName = group == null ? null : group.getName();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -56,7 +56,7 @@ class BasicThreadInformation implements ThreadInformation {
             return false;
         }
 
-        BasicThreadInformation that = (BasicThreadInformation) o;
+        final BasicThreadInformation that = (BasicThreadInformation) o;
 
         if (id != that.id) {
             return false;
@@ -79,7 +79,7 @@ class BasicThreadInformation implements ThreadInformation {
      * Print the thread information.
      * @param sb The StringBuilder.
      */
-    public void printThreadInfo(StringBuilder sb) {
+    public void printThreadInfo(final StringBuilder sb) {
         sb.append("\"").append(name).append("\" ");
         if (isDaemon) {
             sb.append("daemon ");
@@ -97,8 +97,8 @@ class BasicThreadInformation implements ThreadInformation {
      * @param sb The StringBuilder.
      * @param trace The stack trace element array to format.
      */
-    public void printStack(StringBuilder sb, StackTraceElement[] trace) {
-        for (StackTraceElement element : trace) {
+    public void printStack(final StringBuilder sb, final StackTraceElement[] trace) {
+        for (final StackTraceElement element : trace) {
             sb.append("\tat ").append(element).append("\n");
         }
     }

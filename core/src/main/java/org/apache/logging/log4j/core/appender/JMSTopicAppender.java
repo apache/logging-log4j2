@@ -34,8 +34,8 @@ public final class JMSTopicAppender extends AbstractAppender {
 
     private final JMSTopicManager manager;
 
-    private JMSTopicAppender(String name, Filter filter, Layout layout, JMSTopicManager manager,
-                            boolean handleExceptions) {
+    private JMSTopicAppender(final String name, final Filter filter, final Layout layout, final JMSTopicManager manager,
+                            final boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
     }
@@ -45,10 +45,10 @@ public final class JMSTopicAppender extends AbstractAppender {
      * <p/>
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         try {
             manager.send(getLayout().toSerializable(event));
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             throw new AppenderRuntimeException(ex);
         }
     }
@@ -73,26 +73,26 @@ public final class JMSTopicAppender extends AbstractAppender {
      * @return The JMSTopicAppender.
      */
     @PluginFactory
-    public static JMSTopicAppender createAppender(@PluginAttr("name") String name,
-                                                  @PluginAttr("factoryName") String factoryName,
-                                                  @PluginAttr("providerURL") String providerURL,
-                                                  @PluginAttr("urlPkgPrefixes") String urlPkgPrefixes,
-                                                  @PluginAttr("securityPrincipalName") String securityPrincipalName,
-                                                  @PluginAttr("securityCredentials") String securityCredentials,
-                                                  @PluginAttr("factoryBindingName") String factoryBindingName,
-                                                  @PluginAttr("topicBindingName") String topicBindingName,
-                                                  @PluginAttr("userName") String userName,
-                                                  @PluginAttr("password") String password,
+    public static JMSTopicAppender createAppender(@PluginAttr("name") final String name,
+                                                  @PluginAttr("factoryName") final String factoryName,
+                                                  @PluginAttr("providerURL") final String providerURL,
+                                                  @PluginAttr("urlPkgPrefixes") final String urlPkgPrefixes,
+                                                  @PluginAttr("securityPrincipalName") final String securityPrincipalName,
+                                                  @PluginAttr("securityCredentials") final String securityCredentials,
+                                                  @PluginAttr("factoryBindingName") final String factoryBindingName,
+                                                  @PluginAttr("topicBindingName") final String topicBindingName,
+                                                  @PluginAttr("userName") final String userName,
+                                                  @PluginAttr("password") final String password,
                                                   @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") Filter filter,
-                                                  @PluginAttr("suppressExceptions") String suppress) {
+                                                  @PluginElement("filters") final Filter filter,
+                                                  @PluginAttr("suppressExceptions") final String suppress) {
 
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
         if (manager == null) {
             return null;

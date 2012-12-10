@@ -51,7 +51,7 @@ public class MDCOrderFilter implements Filter {
     }
 
     for(int i = 0; i < patterns.length; i++) {
-        int ipos = in.indexOf(patterns[i]);
+        final int ipos = in.indexOf(patterns[i]);
         if (ipos >= 1) {
             return in.substring(0, ipos)
                     + replacements[i]

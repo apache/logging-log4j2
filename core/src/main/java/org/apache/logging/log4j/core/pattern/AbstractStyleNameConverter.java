@@ -49,7 +49,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Black newInstance(Configuration config, final String[] options) {
+        public static Black newInstance(final Configuration config, final String[] options) {
             return newInstance(Black.class, NAME, config, options);
         }
 
@@ -61,7 +61,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Black(List<PatternFormatter> formatters, String styling) {
+        public Black(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -85,7 +85,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Blue newInstance(Configuration config, final String[] options) {
+        public static Blue newInstance(final Configuration config, final String[] options) {
             return newInstance(Blue.class, NAME, config, options);
         }
 
@@ -97,7 +97,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Blue(List<PatternFormatter> formatters, String styling) {
+        public Blue(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -121,7 +121,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Cyan newInstance(Configuration config, final String[] options) {
+        public static Cyan newInstance(final Configuration config, final String[] options) {
             return newInstance(Cyan.class, NAME, config, options);
         }
 
@@ -133,7 +133,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Cyan(List<PatternFormatter> formatters, String styling) {
+        public Cyan(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -157,7 +157,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Green newInstance(Configuration config, final String[] options) {
+        public static Green newInstance(final Configuration config, final String[] options) {
             return newInstance(Green.class, NAME, config, options);
         }
 
@@ -169,7 +169,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Green(List<PatternFormatter> formatters, String styling) {
+        public Green(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -193,7 +193,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Magenta newInstance(Configuration config, final String[] options) {
+        public static Magenta newInstance(final Configuration config, final String[] options) {
             return newInstance(Magenta.class, NAME, config, options);
         }
 
@@ -205,7 +205,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Magenta(List<PatternFormatter> formatters, String styling) {
+        public Magenta(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -229,7 +229,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Red newInstance(Configuration config, final String[] options) {
+        public static Red newInstance(final Configuration config, final String[] options) {
             return newInstance(Red.class, NAME, config, options);
         }
 
@@ -241,7 +241,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Red(List<PatternFormatter> formatters, String styling) {
+        public Red(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -265,7 +265,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static White newInstance(Configuration config, final String[] options) {
+        public static White newInstance(final Configuration config, final String[] options) {
             return newInstance(White.class, NAME, config, options);
         }
 
@@ -277,7 +277,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public White(List<PatternFormatter> formatters, String styling) {
+        public White(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -301,7 +301,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          *            formatted.
          * @return new instance of class or null
          */
-        public static Yellow newInstance(Configuration config, final String[] options) {
+        public static Yellow newInstance(final Configuration config, final String[] options) {
             return newInstance(Yellow.class, NAME, config, options);
         }
 
@@ -313,7 +313,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
          * @param styling
          *            The styling that should encapsulate the pattern.
          */
-        public Yellow(List<PatternFormatter> formatters, String styling) {
+        public Yellow(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
         }
     }
@@ -327,26 +327,26 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be formatted.
      * @return new instance of class or null
      */
-    private static <T extends AbstractStyleNameConverter> T newInstance(Class<T> asnConverterClass, String name, Configuration config,
+    private static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass, final String name, final Configuration config,
             final String[] options) {
-        List<PatternFormatter> formatters = toPatternFormatterList(config, options);
+        final List<PatternFormatter> formatters = toPatternFormatterList(config, options);
         if (formatters == null) {
             return null;
         }
         try {
             final Constructor<T> constructor = asnConverterClass.getConstructor(List.class, String.class);
             return constructor.newInstance(formatters, AnsiEscape.createSequence(name));
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             LOGGER.error(e.toString(), e);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             LOGGER.error(e.toString(), e);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             LOGGER.error(e.toString(), e);
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             LOGGER.error(e.toString(), e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             LOGGER.error(e.toString(), e);
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             LOGGER.error(e.toString(), e);
         }
         return null;
@@ -361,12 +361,12 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      *            pattern options
      * @return a list of PatternFormatter from the given configuration and options or null if no pattern is supplied.
      */
-    private static List<PatternFormatter> toPatternFormatterList(Configuration config, final String[] options) {
+    private static List<PatternFormatter> toPatternFormatterList(final Configuration config, final String[] options) {
         if (options.length == 0 || options[0] == null) {
             LOGGER.error("No pattern supplied on style for config=" + config);
             return null;
         }
-        PatternParser parser = PatternLayout.createPatternParser(config);
+        final PatternParser parser = PatternLayout.createPatternParser(config);
         if (parser == null) {
             LOGGER.error("No PatternParser created for config=" + config + ", options=" + options);
             return null;
@@ -386,7 +386,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      * @param styling
      *            The styling that should encapsulate the pattern.
      */
-    protected AbstractStyleNameConverter(String name, List<PatternFormatter> formatters, String styling) {
+    protected AbstractStyleNameConverter(final String name, final List<PatternFormatter> formatters, final String styling) {
         super(name, "style");
         this.formatters = formatters;
         this.style = styling;
@@ -397,8 +397,8 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
         if (buf.length() > 0) {

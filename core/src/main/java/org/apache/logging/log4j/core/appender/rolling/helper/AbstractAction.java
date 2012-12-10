@@ -61,7 +61,7 @@ public abstract class AbstractAction implements Action {
         if (!interrupted) {
             try {
                 execute();
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 reportException(ex);
             }
 

@@ -39,13 +39,13 @@ public final class PropertiesPlugin {
      * @return An Interpolator that includes the configuration properties.
      */
     @PluginFactory
-    public static StrLookup configureSubstitutor(@PluginElement("properties") Property[] properties) {
+    public static StrLookup configureSubstitutor(@PluginElement("properties") final Property[] properties) {
         if (properties == null) {
             return new Interpolator(null);
         }
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
 
-        for (Property prop : properties) {
+        for (final Property prop : properties) {
             map.put(prop.getName(), prop.getValue());
         }
 

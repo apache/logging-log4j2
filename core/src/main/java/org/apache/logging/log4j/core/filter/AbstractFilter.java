@@ -61,7 +61,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param onMatch The result to return when a match occurs.
      * @param onMismatch The result to return when a match dos not occur.
      */
-    protected AbstractFilter(Result onMatch, Result onMismatch) {
+    protected AbstractFilter(final Result onMatch, final Result onMismatch) {
         this.onMatch = onMatch == null ? Result.NEUTRAL : onMatch;
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
@@ -118,7 +118,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param params An array of parameters or null.
      * @return The Result of filtering.
      */
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return Result.NEUTRAL;
     }
 
@@ -131,7 +131,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return Result.NEUTRAL;
     }
 
@@ -144,7 +144,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return Result.NEUTRAL;
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param event The LogEvent.
      * @return The Result of filtering.
      */
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return Result.NEUTRAL;
     }
 }

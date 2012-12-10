@@ -47,7 +47,7 @@ public class AsynchAppenderTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
@@ -64,11 +64,11 @@ public class AsynchAppenderTest {
 
     @Test
     public void rewriteTest() throws Exception {
-        Logger logger = LogManager.getLogger(AsynchAppender.class);
+        final Logger logger = LogManager.getLogger(AsynchAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);
-        List<String> list = app.getMessages();
+        final List<String> list = app.getMessages();
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
         String msg = list.get(0);

@@ -44,17 +44,17 @@ public class ReflectionComparison {
     @BeforeClass
     public static void setupCallerCheck() {
         try {
-            ClassLoader loader = Loader.getClassLoader();
-            Class clazz = loader.loadClass("sun.reflect.Reflection");
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                int modifier = method.getModifiers();
+            final ClassLoader loader = Loader.getClassLoader();
+            final Class clazz = loader.loadClass("sun.reflect.Reflection");
+            final Method[] methods = clazz.getMethods();
+            for (final Method method : methods) {
+                final int modifier = method.getModifiers();
                 if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
                     getCallerClass = method;
                     break;
                 }
             }
-        } catch (ClassNotFoundException cnfe) {
+        } catch (final ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
             throw  new RuntimeException(cnfe);
         }
@@ -62,9 +62,9 @@ public class ReflectionComparison {
 
     @Test
     public void test1() {
-        Timer timer = new Timer("Reflection", COUNT);
+        final Timer timer = new Timer("Reflection", COUNT);
         timer.start();
-        Object[] arr = new Object[1];
+        final Object[] arr = new Object[1];
         arr[0] = 3;
         for (int i= 0; i < COUNT; ++i) {
             getCallerClass(arr);
@@ -76,7 +76,7 @@ public class ReflectionComparison {
 
     @Test
     public void test2() {
-        Timer timer = new Timer("Reflection", COUNT);
+        final Timer timer = new Timer("Reflection", COUNT);
         timer.start();
         for (int i= 0; i < COUNT; ++i) {
 
@@ -97,7 +97,7 @@ public class ReflectionComparison {
         }
         timer.stop();
         System.out.println(timer.toString());
-        Class<? extends Message> clazz = StringFormattedMessage.class;
+        final Class<? extends Message> clazz = StringFormattedMessage.class;
 
         timer = new Timer("ReflectionObject", COUNT);
         timer.start();
@@ -109,12 +109,12 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
-    private Class getCallerClass(Object[] array) {
+    private Class getCallerClass(final Object[] array) {
         if (getCallerClass != null) {
             try {
                 /*Object[] params = new Object[]{index}; */
                 return (Class) getCallerClass.invoke(null, array);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 fail(ex.getMessage());
                 // logger.debug("Unable to determine caller class via Sun Reflection", ex);
             }
@@ -122,8 +122,8 @@ public class ReflectionComparison {
         return null;
     }
 
-    private Message createMessage(Class<? extends Message> clazz, String msg, Object... params) throws Exception {
-        Constructor constructor = clazz.getConstructor(paramTypes);
+    private Message createMessage(final Class<? extends Message> clazz, final String msg, final Object... params) throws Exception {
+        final Constructor constructor = clazz.getConstructor(paramTypes);
         return (Message) constructor.newInstance(msg, params);
     }
 

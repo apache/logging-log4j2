@@ -34,12 +34,12 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         return new BasicConfiguration();
     }
 
     @Override
-    public Configuration getConfiguration(String name, URI configLocation) {
+    public Configuration getConfiguration(final String name, final URI configLocation) {
         return new BasicConfiguration();
     }
 
@@ -48,10 +48,10 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
         public BasicConfiguration() {
-            LoggerConfig root = getRootLogger();
+            final LoggerConfig root = getRootLogger();
             setName("BasicConfiguration");
-            String levelName = System.getProperty(DEFAULT_LEVEL);
-            Level level = (levelName != null && Level.valueOf(levelName) != null) ? Level.valueOf(levelName) : Level.DEBUG;
+            final String levelName = System.getProperty(DEFAULT_LEVEL);
+            final Level level = (levelName != null && Level.valueOf(levelName) != null) ? Level.valueOf(levelName) : Level.DEBUG;
             root.setLevel(level);
         }
 

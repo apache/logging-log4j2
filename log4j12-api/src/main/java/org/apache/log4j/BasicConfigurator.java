@@ -34,7 +34,7 @@ public class BasicConfigurator {
     /**
      * No-op implementation.
      */
-    public static void configure(Appender appender) {
+    public static void configure(final Appender appender) {
     }
 
     /**

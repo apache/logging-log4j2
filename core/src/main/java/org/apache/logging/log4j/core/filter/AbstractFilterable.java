@@ -29,7 +29,7 @@ public abstract class AbstractFilterable implements Filterable {
 
     private volatile Filter filter;
 
-    protected AbstractFilterable(Filter filter) {
+    protected AbstractFilterable(final Filter filter) {
         this.filter = filter;
     }
 
@@ -48,13 +48,13 @@ public abstract class AbstractFilterable implements Filterable {
      * Add a filter.
      * @param filter The Filter to add.
      */
-    public synchronized void addFilter(Filter filter) {
+    public synchronized void addFilter(final Filter filter) {
         if (this.filter == null) {
             this.filter = filter;
         } else if (filter instanceof CompositeFilter) {
             this.filter = ((CompositeFilter) this.filter).addFilter(filter);
         } else {
-            Filter[] filters = new Filter[] {this.filter, filter};
+            final Filter[] filters = new Filter[] {this.filter, filter};
             this.filter = CompositeFilter.createFilters(filters);
         }
     }
@@ -63,7 +63,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Remove a Filter.
      * @param filter The Filter to remove.
      */
-    public synchronized void removeFilter(Filter filter) {
+    public synchronized void removeFilter(final Filter filter) {
         if (this.filter == filter) {
             this.filter = null;
         } else if (filter instanceof CompositeFilter) {
@@ -72,7 +72,7 @@ public abstract class AbstractFilterable implements Filterable {
             if (composite.size() > 1) {
                 this.filter = composite;
             } else if (composite.size() == 1) {
-                Iterator<Filter> iter = composite.iterator();
+                final Iterator<Filter> iter = composite.iterator();
                 this.filter = iter.next();
             } else {
                 this.filter = null;
@@ -111,7 +111,7 @@ public abstract class AbstractFilterable implements Filterable {
      * @param event The LogEvent.
      * @return true if the LogEvent should be processed.
      */
-    public boolean isFiltered(LogEvent event) {
+    public boolean isFiltered(final LogEvent event) {
         return filter != null && filter.filter(event) == Filter.Result.DENY;
     }
 

@@ -43,7 +43,7 @@ public class SimplePerfTest {
     @BeforeClass
     public static void setupClass() {
 
-        Configuration config = ((LoggerContext)LogManager.getContext()).getConfiguration();
+        final Configuration config = ((LoggerContext)LogManager.getContext()).getConfiguration();
         if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
             System.out.println("Configuration was " + config.getName());
             ((LoggerContext)LogManager.getContext()).setConfiguration(new DefaultConfiguration());
@@ -53,7 +53,7 @@ public class SimplePerfTest {
             overhead();
         }
         System.gc();
-        Timer timer = new Timer("Setup", LOOP_CNT);
+        final Timer timer = new Timer("Setup", LOOP_CNT);
         timer.start();
         for (int i=0; i < (LOOP_CNT / 150); ++i) {
             overhead();
@@ -67,7 +67,7 @@ public class SimplePerfTest {
     @Test
     public void debugDisabled() {
         System.gc();
-        Timer timer = new Timer("DebugDisabled", LOOP_CNT);
+        final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
             logger.isDebugEnabled();
@@ -80,7 +80,7 @@ public class SimplePerfTest {
     @Test
     public void debugDisabledByLevel() {
         System.gc();
-        Timer timer = new Timer("DebugDisabled", LOOP_CNT);
+        final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
             logger.isEnabled(Level.DEBUG);
@@ -93,8 +93,8 @@ public class SimplePerfTest {
     @Test
     public void debugLogger() {
         System.gc();
-        Timer timer = new Timer("DebugLogger", LOOP_CNT);
-        String msg = "This is a test";
+        final Timer timer = new Timer("DebugLogger", LOOP_CNT);
+        final String msg = "This is a test";
         timer.start();
         for (int i=0; i < LOOP_CNT; ++i) {
             logger.debug(msg);
@@ -120,8 +120,8 @@ public class SimplePerfTest {
      * but the point is simply to insure that changes made don't suddenly cause performance issues.
      */
     private static void overhead() {
-        int values[] = new int[RAND_SIZE];
-        Random rand = new SimpleRandom();
+        final int values[] = new int[RAND_SIZE];
+        final Random rand = new SimpleRandom();
 
         for (int i = 0; i < RAND_SIZE; ++i) {
             values[i] = rand.nextInt();
@@ -145,12 +145,12 @@ public class SimplePerfTest {
      * Standard BubbleSort algorithm.
      * @param array The array to sort.
      */
-    private static void bubbleSort(int array[]) {
-        int length = array.length;
+    private static void bubbleSort(final int array[]) {
+        final int length = array.length;
         for (int i = 0; i < length; i++) {
             for (int j = 1; j > length - i; j++) {
                 if (array[j-1] > array[j]) {
-                    int temp = array[j-1];
+                    final int temp = array[j-1];
                     array[j-1] = array[j];
                     array[j] = temp;
                 }

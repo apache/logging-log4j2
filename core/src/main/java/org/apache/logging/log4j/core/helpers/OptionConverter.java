@@ -41,9 +41,9 @@ public final class OptionConverter {
     private OptionConverter() {
     }
 
-    public static String[] concatanateArrays(String[] l, String[] r) {
-        int len = l.length + r.length;
-        String[] a = new String[len];
+    public static String[] concatanateArrays(final String[] l, final String[] r) {
+        final int len = l.length + r.length;
+        final String[] a = new String[len];
 
         System.arraycopy(l, 0, a, 0, l.length);
         System.arraycopy(r, 0, a, l.length, r.length);
@@ -51,10 +51,10 @@ public final class OptionConverter {
         return a;
     }
 
-    public static String convertSpecialChars(String s) {
+    public static String convertSpecialChars(final String s) {
         char c;
-        int len = s.length();
-        StringBuffer sbuf = new StringBuffer(len);
+        final int len = s.length();
+        final StringBuffer sbuf = new StringBuffer(len);
 
         int i = 0;
         while (i < len) {
@@ -94,21 +94,21 @@ public final class OptionConverter {
      * @return the string value of the system property, or the default
      *         value if there is no property with that key.
      */
-    public static String getSystemProperty(String key, String def) {
+    public static String getSystemProperty(final String key, final String def) {
         try {
             return System.getProperty(key, def);
-        } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
+        } catch (final Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
             LOGGER.debug("Was not allowed to read system property \"" + key + "\".");
             return def;
         }
     }
 
 
-    public static Object instantiateByKey(Properties props, String key, Class<?> superClass,
-                                   Object defaultValue) {
+    public static Object instantiateByKey(final Properties props, final String key, final Class<?> superClass,
+                                   final Object defaultValue) {
 
         // Get the value of the property in string form
-        String className = findAndSubst(key, props);
+        final String className = findAndSubst(key, props);
         if (className == null) {
             LOGGER.error("Could not find value for key " + key);
             return defaultValue;
@@ -129,11 +129,11 @@ public final class OptionConverter {
      * @param dEfault The default value.
      * @return true or false, depending on the value and/or default.
      */
-    public static boolean toBoolean(String value, boolean dEfault) {
+    public static boolean toBoolean(final String value, final boolean dEfault) {
         if (value == null) {
             return dEfault;
         }
-        String trimmedVal = value.trim();
+        final String trimmedVal = value.trim();
         if ("true".equalsIgnoreCase(trimmedVal)) {
             return true;
         }
@@ -149,12 +149,12 @@ public final class OptionConverter {
      * @param dEfault The default value.
      * @return The value as an int.
      */
-    public static int toInt(String value, int dEfault) {
+    public static int toInt(final String value, final int dEfault) {
         if (value != null) {
-            String s = value.trim();
+            final String s = value.trim();
             try {
                 return Integer.valueOf(s);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 LOGGER.error("[" + s + "] is not in proper int form.");
                 e.printStackTrace();
             }
@@ -168,7 +168,7 @@ public final class OptionConverter {
      * @param defaultValue The default value.
      * @return The size of the file as a long.
      */
-    public static long toFileSize(String value, long defaultValue) {
+    public static long toFileSize(final String value, final long defaultValue) {
         if (value == null) {
             return defaultValue;
         }
@@ -190,7 +190,7 @@ public final class OptionConverter {
         if (s != null) {
             try {
                 return Long.valueOf(s) * multiplier;
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 LOGGER.error("[" + s + "] is not in proper int form.");
                 LOGGER.error("[" + value + "] not in expected format.", e);
             }
@@ -206,15 +206,15 @@ public final class OptionConverter {
      * @param props The properties.
      * @return The String after substitution.
      */
-    public static String findAndSubst(String key, Properties props) {
-        String value = props.getProperty(key);
+    public static String findAndSubst(final String key, final Properties props) {
+        final String value = props.getProperty(key);
         if (value == null) {
             return null;
         }
 
         try {
             return substVars(value, props);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             LOGGER.error("Bad option value [" + value + "].", e);
             return value;
         }
@@ -231,11 +231,11 @@ public final class OptionConverter {
      * @param defaultValue The object to return in case of non-fulfillment
      * @return The created object.
      */
-    public static Object instantiateByClassName(String className, Class<?> superClass,
-                                         Object defaultValue) {
+    public static Object instantiateByClassName(final String className, final Class<?> superClass,
+                                         final Object defaultValue) {
         if (className != null) {
             try {
-                Class<?> classObj = Loader.loadClass(className);
+                final Class<?> classObj = Loader.loadClass(className);
                 if (!superClass.isAssignableFrom(classObj)) {
                     LOGGER.error("A \"" + className + "\" object is not assignable to a \"" +
                         superClass.getName() + "\" variable.");
@@ -246,13 +246,13 @@ public final class OptionConverter {
                     return defaultValue;
                 }
                 return classObj.newInstance();
-            } catch (ClassNotFoundException e) {
+            } catch (final ClassNotFoundException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (InstantiationException e) {
+            } catch (final InstantiationException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
-            } catch (RuntimeException e) {
+            } catch (final RuntimeException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
             }
         }
@@ -297,10 +297,10 @@ public final class OptionConverter {
      * @return The String after substitution.
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
-    public static String substVars(String val, Properties props) throws
+    public static String substVars(final String val, final Properties props) throws
         IllegalArgumentException {
 
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
 
         int i = 0;
         int j;
@@ -325,7 +325,7 @@ public final class OptionConverter {
                         + '.');
                 } else {
                     j += DELIM_START_LEN;
-                    String key = val.substring(j, k);
+                    final String key = val.substring(j, k);
                     // first try in System properties
                     String replacement = getSystemProperty(key, null);
                     // then try props parameter
@@ -339,7 +339,7 @@ public final class OptionConverter {
                         // the where the properties are
                         // x1=p1
                         // x2=${x1}
-                        String recursiveReplacement = substVars(replacement, props);
+                        final String recursiveReplacement = substVars(replacement, props);
                         sbuf.append(recursiveReplacement);
                     }
                     i = k + DELIM_STOP_LEN;

@@ -27,19 +27,19 @@ public class Logger extends Category {
 
     private static final String FQCN = Logger.class.getName();
 
-    protected Logger(String name) {
+    protected Logger(final String name) {
         super((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    Logger(LoggerContext context, String name) {
+    Logger(final LoggerContext context, final String name) {
         super(context, name);
     }
 
-    public static Logger getLogger(String name) {
+    public static Logger getLogger(final String name) {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    public static Logger getLogger(Class<?> clazz) {
+    public static Logger getLogger(final Class<?> clazz) {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), clazz);
     }
 
@@ -47,7 +47,7 @@ public class Logger extends Category {
         return (Logger) Category.getRoot((LoggerContext) PrivateManager.getContext());
     }
 
-    public static Logger getLogger(String name, LoggerFactory factory) {
+    public static Logger getLogger(final String name, final LoggerFactory factory) {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name, factory);
     }
 
@@ -61,7 +61,7 @@ public class Logger extends Category {
             return getContext(FQCN, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(String name) {
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
     }

@@ -66,7 +66,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @param agents An array of Agents.
      * @param batchSize The number of evetns to include in a batch.
      */
-    protected FlumeAvroManager(String name, String shortName, Agent[] agents, int batchSize) {
+    protected FlumeAvroManager(final String name, final String shortName, final Agent[] agents, final int batchSize) {
         super(name);
         this.agents = agents;
         this.batchSize = batchSize;
@@ -79,7 +79,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.
      */
-    public static FlumeAvroManager getManager(String name, Agent[] agents, int batchSize) {
+    public static FlumeAvroManager getManager(final String name, final Agent[] agents, int batchSize) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -88,9 +88,9 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             batchSize = 1;
         }
 
-        StringBuilder sb = new StringBuilder("FlumeAvro[");
+        final StringBuilder sb = new StringBuilder("FlumeAvro[");
         boolean first = true;
-        for (Agent agent : agents) {
+        for (final Agent agent : agents) {
             if (!first) {
                 sb.append(",");
             }
@@ -118,22 +118,22 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     @Override
-    public synchronized void send(FlumeEvent event, int delay, int retries)  {
+    public synchronized void send(final FlumeEvent event, int delay, int retries)  {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
         if (retries == 0) {
             retries = DEFAULT_RECONNECTS;
         }
-        AvroFlumeEvent avroEvent = new AvroFlumeEvent();
+        final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
         avroEvent.body = ByteBuffer.wrap(event.getBody());
         avroEvent.headers = new HashMap<CharSequence, CharSequence>();
 
-        for (Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
+        for (final Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
           avroEvent.headers.put(entry.getKey(), entry.getValue());
         }
 
-        List<AvroFlumeEvent> batch = batchSize > 1 ? events.addAndGet(avroEvent, batchSize) : null;
+        final List<AvroFlumeEvent> batch = batchSize > 1 ? events.addAndGet(avroEvent, batchSize) : null;
         if (batch == null && batchSize > 1) {
             return;
         }
@@ -144,13 +144,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
         do {
             try {
-                Status status = (batch == null) ? client.append(avroEvent) : client.appendBatch(batch);
+                final Status status = (batch == null) ? client.append(avroEvent) : client.appendBatch(batch);
                 if (!status.equals(Status.OK)) {
                     throw new AvroRemoteException("RPC communication failed to " + agents[current].getHost() +
                         ":" + agents[current].getPort());
                 }
                 return;
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 if (i == retries - 1) {
                     msg = "Error writing to " + getName() + " at " + agents[current].getHost() + ":" +
                         agents[current].getPort();
@@ -165,16 +165,16 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             if (index == current) {
                 continue;
             }
-            Agent agent = agents[index];
+            final Agent agent = agents[index];
             i = 0;
             do {
                 try {
                     transceiver = null;
-                    AvroSourceProtocol c = connect(agent.getHost(), agent.getPort());
-                    Status status = (batch == null) ? c.append(avroEvent) : c.appendBatch(batch);
+                    final AvroSourceProtocol c = connect(agent.getHost(), agent.getPort());
+                    final Status status = (batch == null) ? c.append(avroEvent) : c.appendBatch(batch);
                     if (!status.equals(Status.OK)) {
                         if (i == retries - 1) {
-                            String warnMsg = "RPC communication failed to " + getName() + " at " +
+                            final String warnMsg = "RPC communication failed to " + getName() + " at " +
                                 agent.getHost() + ":" + agent.getPort();
                             LOGGER.warn(warnMsg);
                         }
@@ -183,9 +183,9 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                     client = c;
                     current = i;
                     return;
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     if (i == retries - 1) {
-                        String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
+                        final String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
                             agent.getPort();
                         LOGGER.warn(warnMsg, ex);
                         break;
@@ -199,10 +199,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     }
 
-    private void sleep(int delay) {
+    private void sleep(final int delay) {
         try {
             Thread.sleep(delay);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
     }
@@ -212,10 +212,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @param agents The list of agents to choose from
      * @return The FlumeEventAvroServer.
      */
-    private AvroSourceProtocol connect(Agent[] agents) {
+    private AvroSourceProtocol connect(final Agent[] agents) {
         int i = 0;
-        for (Agent agent : agents) {
-            AvroSourceProtocol server = connect(agent.getHost(), agent.getPort());
+        for (final Agent agent : agents) {
+            final AvroSourceProtocol server = connect(agent.getHost(), agent.getPort());
             if (server != null) {
                 current = i;
                 return server;
@@ -225,18 +225,18 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         throw new AppenderRuntimeException("Unable to connect to any agents");
     }
 
-    private AvroSourceProtocol connect(String hostname, int port) {
+    private AvroSourceProtocol connect(final String hostname, final int port) {
         try {
             if (transceiver == null) {
                 transceiver = new NettyTransceiver(new InetSocketAddress(hostname, port));
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.error("Unable to create transceiver", ioe);
             return null;
         }
         try {
             return SpecificRequestor.getClient(AvroSourceProtocol.class, transceiver);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.error("Unable to create Avro client");
             return null;
         }
@@ -247,7 +247,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         if (transceiver != null) {
             try {
                 transceiver.close();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOGGER.error("Attempt to clean up Avro transceiver failed", ioe);
             }
         }
@@ -259,10 +259,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      */
     private static class EventList extends ArrayList<AvroFlumeEvent> {
 
-        public synchronized List<AvroFlumeEvent> addAndGet(AvroFlumeEvent event, int batchSize) {
+        public synchronized List<AvroFlumeEvent> addAndGet(final AvroFlumeEvent event, final int batchSize) {
             super.add(event);
             if (this.size() >= batchSize) {
-                List<AvroFlumeEvent> events = new ArrayList<AvroFlumeEvent>();
+                final List<AvroFlumeEvent> events = new ArrayList<AvroFlumeEvent>();
                 events.addAll(this);
                 clear();
                 return events;
@@ -276,9 +276,9 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * Factory data.
      */
     private static class FactoryData {
-        private String name;
-        private Agent[] agents;
-        private int batchSize;
+        private final String name;
+        private final Agent[] agents;
+        private final int batchSize;
 
         /**
          * Constructor.
@@ -286,7 +286,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
          * @param agents The agents.
          * @param batchSize The number of events to include in a batch.
          */
-        public FactoryData(String name, Agent[] agents, int batchSize) {
+        public FactoryData(final String name, final Agent[] agents, final int batchSize) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -304,11 +304,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
          * @param data The data required to create the entity.
          * @return The FlumeAvroManager.
          */
-        public FlumeAvroManager createManager(String name, FactoryData data) {
+        public FlumeAvroManager createManager(final String name, final FactoryData data) {
             try {
 
                 return new FlumeAvroManager(name, data.name, data.agents, data.batchSize);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Could not create FlumeAvroManager", ex);
             }
             return null;

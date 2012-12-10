@@ -51,7 +51,7 @@ public class PatternLayoutTest {
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -67,16 +67,16 @@ public class PatternLayoutTest {
     @Test
     public void mdcPattern() throws Exception {
 
-        String mdcMsgPattern1 = "%m : %X%n";
-        String mdcMsgPattern2 = "%m : %X{key1}%n";
-        String mdcMsgPattern3 = "%m : %X{key2}%n";
-        String mdcMsgPattern4 = "%m : %X{key3}%n";
-        String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
+        final String mdcMsgPattern1 = "%m : %X%n";
+        final String mdcMsgPattern2 = "%m : %X{key1}%n";
+        final String mdcMsgPattern3 = "%m : %X{key2}%n";
+        final String mdcMsgPattern4 = "%m : %X{key3}%n";
+        final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null);
+        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null);
         //FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
-        FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File", "false",
+        final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File", "false",
             "true", "false", layout, null);
         appender.start();
 
@@ -135,12 +135,12 @@ public class PatternLayoutTest {
 
     @Test
     public void testRegex() throws Exception {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(),
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(),
             null, null);
-        LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
+        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
             Level.INFO, new SimpleMessage("Hello, world!"), null);
-        byte[] result = layout.toByteArray(event);
+        final byte[] result = layout.toByteArray(event);
         assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
     }
 }

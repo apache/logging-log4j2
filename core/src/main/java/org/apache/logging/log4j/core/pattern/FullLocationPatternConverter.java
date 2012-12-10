@@ -54,7 +54,7 @@ public final class FullLocationPatternConverter extends LogEventPatternConverter
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        StackTraceElement element = event.getSource();
+        final StackTraceElement element = event.getSource();
 
         if (element != null) {
             output.append(element.toString());

@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 public class PerformanceRun {
 
-    private Logger logger = LogManager.getLogger(PerformanceRun.class.getName());
+    private final Logger logger = LogManager.getLogger(PerformanceRun.class.getName());
 
     // How many times should we try to log:
     private static final int COUNT = 1000000;
@@ -58,7 +58,7 @@ public class PerformanceRun {
     @Test
     public void testPerformance() throws Exception {
         System.out.println("Starting Log4j 2.0");
-        long result3 = log4j2(COUNT);
+        final long result3 = log4j2(COUNT);
 
         System.out.println("###############################################");
         System.out.println("Log4j 2.0: " + result3);
@@ -67,18 +67,18 @@ public class PerformanceRun {
 
     // @Test
     public void testRawPerformance() throws Exception {
-        OutputStream os = new FileOutputStream("target/testos.log", true);
-        long result1 = writeToStream(COUNT, os);
+        final OutputStream os = new FileOutputStream("target/testos.log", true);
+        final long result1 = writeToStream(COUNT, os);
         os.close();
-        OutputStream bos = new BufferedOutputStream(new FileOutputStream("target/testbuffer.log", true));
-        long result2 = writeToStream(COUNT, bos);
+        final OutputStream bos = new BufferedOutputStream(new FileOutputStream("target/testbuffer.log", true));
+        final long result2 = writeToStream(COUNT, bos);
         bos.close();
-        Writer w = new FileWriter("target/testwriter.log", true);
-        long result3 = writeToWriter(COUNT, w);
+        final Writer w = new FileWriter("target/testwriter.log", true);
+        final long result3 = writeToWriter(COUNT, w);
         w.close();
-        FileOutputStream cos = new FileOutputStream("target/testchannel.log", true);
-        FileChannel channel = cos.getChannel();
-        long result4 = writeToChannel(COUNT, channel);
+        final FileOutputStream cos = new FileOutputStream("target/testchannel.log", true);
+        final FileChannel channel = cos.getChannel();
+        final long result4 = writeToChannel(COUNT, channel);
         cos.close();
         System.out.println("###############################################");
         System.out.println("FileOutputStream: " + result1);
@@ -88,8 +88,8 @@ public class PerformanceRun {
         System.out.println("###############################################");
     }
 
-    private long log4j2(int loop) {
-        long start = System.nanoTime();
+    private long log4j2(final int loop) {
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             if (logger.isDebugEnabled()) {
                 logger.debug("SEE IF THIS IS LOGGED");
@@ -98,42 +98,42 @@ public class PerformanceRun {
         return (System.nanoTime() - start) / loop;
     }
 
-    private long writeToWriter(int loop, Writer w) throws Exception {
-        Integer j = new Integer(2);
-        long start = System.nanoTime();
+    private long writeToWriter(final int loop, final Writer w) throws Exception {
+        final Integer j = new Integer(2);
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             w.write("SEE IF THIS IS LOGGED " + j + '.');
         }
         return (System.nanoTime() - start) / loop;
     }
 
-    private long writeToStream(int loop, OutputStream os) throws Exception {
-        Integer j = new Integer(2);
-        long start = System.nanoTime();
+    private long writeToStream(final int loop, final OutputStream os) throws Exception {
+        final Integer j = new Integer(2);
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             os.write(getBytes("SEE IF THIS IS LOGGED " + j + '.'));
         }
         return (System.nanoTime() - start) / loop;
     }
 
-    private long writeToChannel(int loop, FileChannel channel) throws Exception {
-        Integer j = new Integer(2);
-        ByteBuffer buf = ByteBuffer.allocateDirect(8 * 1024);
-        long start = System.nanoTime();
+    private long writeToChannel(final int loop, final FileChannel channel) throws Exception {
+        final Integer j = new Integer(2);
+        final ByteBuffer buf = ByteBuffer.allocateDirect(8 * 1024);
+        final long start = System.nanoTime();
         for (int i = 0; i < loop; i++) {
             channel.write(getByteBuffer(buf, "SEE IF THIS IS LOGGED " + j + '.'));
         }
         return (System.nanoTime() - start) / loop;
     }
 
-    private ByteBuffer getByteBuffer(ByteBuffer buf, String s) {
+    private ByteBuffer getByteBuffer(final ByteBuffer buf, final String s) {
         buf.clear();
         buf.put(s.getBytes());
         buf.flip();
         return buf;
     }
 
-    private byte[] getBytes(String s) {
+    private byte[] getBytes(final String s) {
         return s.getBytes();
     }
 

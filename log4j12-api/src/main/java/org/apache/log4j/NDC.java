@@ -53,8 +53,8 @@ public final class NDC {
      * @return Stack A clone of the current thread's  diagnostic context.
      */
     public static Stack cloneStack() {
-        Stack<String> stack = new Stack<String>();
-        for (String element : org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {
+        final Stack<String> stack = new Stack<String>();
+        for (final String element : org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {
             stack.push(element);
         }
         return stack;
@@ -80,7 +80,7 @@ public final class NDC {
      *
      * @param stack The diagnostic context of the parent thread.
      */
-    public static void inherit(Stack stack) {
+    public static void inherit(final Stack stack) {
         org.apache.logging.log4j.ThreadContext.setStack(stack);
     }
 
@@ -136,7 +136,7 @@ public final class NDC {
      *
      * @param message The new diagnostic context information.
      */
-    public static void push(String message) {
+    public static void push(final String message) {
         org.apache.logging.log4j.ThreadContext.push(message);
     }
 
@@ -190,7 +190,7 @@ public final class NDC {
      * @see #getDepth
      * @param maxDepth The maximum depth of the stack.
      */
-    public static void setMaxDepth(int maxDepth) {
+    public static void setMaxDepth(final int maxDepth) {
         org.apache.logging.log4j.ThreadContext.trim(maxDepth);
     }
 }

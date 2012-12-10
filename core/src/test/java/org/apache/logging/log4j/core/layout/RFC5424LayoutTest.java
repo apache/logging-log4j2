@@ -57,7 +57,7 @@ public class RFC5424LayoutTest {
     public static void setupClass() {
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
     }
 
@@ -76,9 +76,9 @@ public class RFC5424LayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+        final RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
             "true", "ATM", null, "key1, key2, locale", null, "loginId", null, null);
-        ListAppender appender = new ListAppender("List", null, layout, true, false);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -100,7 +100,7 @@ public class RFC5424LayoutTest {
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
         try {
-            StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+            final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
             msg.put("ToAccount", "123456");
             msg.put("FromAccount", "123457");
             msg.put("Amount", "200.00");

@@ -32,8 +32,8 @@ public final class FileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
 
-    private FileAppender(String name, Layout layout, Filter filter, FileManager manager, String filename,
-                        boolean handleException, boolean immediateFlush) {
+    private FileAppender(final String name, final Layout layout, final Filter filter, final FileManager manager, final String filename,
+                        final boolean handleException, final boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = filename;
     }
@@ -64,18 +64,18 @@ public final class FileAppender extends AbstractOutputStreamAppender {
      * @return The FileAppender.
      */
     @PluginFactory
-    public static FileAppender createAppender(@PluginAttr("fileName") String fileName,
-                                              @PluginAttr("append") String append,
-                                              @PluginAttr("locking") String locking,
-                                              @PluginAttr("name") String name,
-                                              @PluginAttr("immediateFlush") String immediateFlush,
-                                              @PluginAttr("suppressExceptions") String suppress,
-                                              @PluginAttr("bufferedIO") String bufferedIO,
+    public static FileAppender createAppender(@PluginAttr("fileName") final String fileName,
+                                              @PluginAttr("append") final String append,
+                                              @PluginAttr("locking") final String locking,
+                                              @PluginAttr("name") final String name,
+                                              @PluginAttr("immediateFlush") final String immediateFlush,
+                                              @PluginAttr("suppressExceptions") final String suppress,
+                                              @PluginAttr("bufferedIO") final String bufferedIO,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") Filter filter) {
+                                              @PluginElement("filters") final Filter filter) {
 
-        boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
+        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
+        final boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
         boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
@@ -83,8 +83,8 @@ public final class FileAppender extends AbstractOutputStreamAppender {
             }
             isBuffered = false;
         }
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
@@ -96,7 +96,7 @@ public final class FileAppender extends AbstractOutputStreamAppender {
             return null;
         }
 
-        FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered);
+        final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered);
         if (manager == null) {
             return null;
         }

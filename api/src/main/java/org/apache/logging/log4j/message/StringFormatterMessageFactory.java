@@ -28,7 +28,7 @@ public class StringFormatterMessageFactory extends AbstractMessageFactory {
      * 
      * @see MessageFactory#newMessage(String, Object...)
      */
-    public Message newMessage(String message, Object... params) {
+    public Message newMessage(final String message, final Object... params) {
         return new StringFormattedMessage(message, params);
     }
 }

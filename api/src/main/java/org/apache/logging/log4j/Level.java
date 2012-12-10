@@ -71,7 +71,7 @@ public enum Level {
 
     private final int intLevel;
 
-    private Level(int val) {
+    private Level(final int val) {
         intLevel = val;
     }
 
@@ -82,7 +82,7 @@ public enum Level {
      * @param sArg The name of the desired Level.
      * @return The Level associated with the String.
      */
-    public static Level toLevel(String sArg) {
+    public static Level toLevel(final String sArg) {
         return toLevel(sArg, DEBUG);
     }
 
@@ -100,7 +100,7 @@ public enum Level {
             return defaultLevel;
         }
         final String cleanLevel = name.toUpperCase(Locale.ENGLISH);
-        for (Level level : values()) {
+        for (final Level level : values()) {
             if (level.name().equals(cleanLevel)) {
                 return level;
             }
@@ -115,7 +115,7 @@ public enum Level {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean isAtLeastAsSpecificAs(Level level) {
+    public boolean isAtLeastAsSpecificAs(final Level level) {
         return intLevel <= level.intLevel;
     }
 
@@ -126,7 +126,7 @@ public enum Level {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean isAtLeastAsSpecificAs(int level) {
+    public boolean isAtLeastAsSpecificAs(final int level) {
         return intLevel <= level;
     }
 
@@ -135,7 +135,7 @@ public enum Level {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean lessOrEqual(Level level) {
+    public boolean lessOrEqual(final Level level) {
         return intLevel <= level.intLevel;
     }
 
@@ -144,7 +144,7 @@ public enum Level {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean lessOrEqual(int level) {
+    public boolean lessOrEqual(final int level) {
         return intLevel <= level;
     }
 

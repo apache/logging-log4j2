@@ -43,7 +43,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
 
     private volatile int counter = 0;
 
-    private Reconfigurable reconfigurable;
+    private final Reconfigurable reconfigurable;
 
     /**
      * Constructor.
@@ -52,8 +52,8 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      * @param listeners The List of ConfigurationListeners to notify upon a change.
      * @param interval The monitor interval in seconds. The minimum interval is 5 seconds.
      */
-    public FileConfigurationMonitor(Reconfigurable reconfigurable, File file, List<ConfigurationListener> listeners,
-                                    int interval) {
+    public FileConfigurationMonitor(final Reconfigurable reconfigurable, final File file, final List<ConfigurationListener> listeners,
+                                    final int interval) {
         this.reconfigurable = reconfigurable;
         this.file = file;
         this.lastModified = file.lastModified();
@@ -68,12 +68,12 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
     public void checkConfiguration() {
         if ((++counter & MASK) == 0) {
             synchronized (this) {
-                long current = System.currentTimeMillis();
+                final long current = System.currentTimeMillis();
                 if (current >= nextCheck) {
                     nextCheck = current + interval;
                     if (file.lastModified() > lastModified) {
                         lastModified = file.lastModified();
-                        for (ConfigurationListener listener : listeners) {
+                        for (final ConfigurationListener listener : listeners) {
                             listener.onChange(reconfigurable);
                         }
                     }

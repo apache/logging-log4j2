@@ -47,7 +47,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * @param host The target host name.
      * @param port The target port number.
      */
-    public AbstractSocketManager(String name, OutputStream os, InetAddress addr, String host, int port) {
+    public AbstractSocketManager(final String name, final OutputStream os, final InetAddress addr, final String host, final int port) {
         super(os, name);
         this.address = addr;
         this.host = host;

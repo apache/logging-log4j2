@@ -46,7 +46,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final long timestamp;
     private final ThrowableProxy throwable;
     private final Map<String, String> mdc;
-    private ThreadContext.ContextStack ndc;
+    private final ThreadContext.ContextStack ndc;
     private String threadName = null;
     private StackTraceElement location;
 
@@ -59,7 +59,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param message The Message.
      * @param t A Throwable or null.
      */
-    public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t) {
+    public Log4jLogEvent(final String loggerName, final Marker marker, final String fqcn, final Level level, final Message message, final Throwable t) {
         this(loggerName, marker, fqcn, level, message, null, t);
     }
 
@@ -72,8 +72,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param message The Message.
      * @param t A Throwable or null.
      */
-    public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message,
-                         List<Property> properties, Throwable t) {
+    public Log4jLogEvent(final String loggerName, final Marker marker, final String fqcn, final Level level, final Message message,
+                         final List<Property> properties, final Throwable t) {
         this(loggerName, marker, fqcn, level, message, t,
             createMap(properties),
             ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), null,
@@ -94,9 +94,9 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @param location The locations of the caller.
      * @param timestamp The timestamp of the event.
      */
-    public Log4jLogEvent(String loggerName, Marker marker, String fqcn, Level level, Message message, Throwable t,
-                         Map<String, String> mdc, ThreadContext.ContextStack ndc, String threadName,
-                         StackTraceElement location, long timestamp) {
+    public Log4jLogEvent(final String loggerName, final Marker marker, final String fqcn, final Level level, final Message message, final Throwable t,
+                         final Map<String, String> mdc, final ThreadContext.ContextStack ndc, final String threadName,
+                         final StackTraceElement location, final long timestamp) {
         name = loggerName;
         this.marker = marker;
         this.fqcnOfLogger = fqcn;
@@ -113,16 +113,16 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         }
     }
 
-    private static Map<String, String> createMap(List<Property> properties) {
+    private static Map<String, String> createMap(final List<Property> properties) {
         if (ThreadContext.isEmpty() && (properties == null || properties.size() == 0)) {
             return null;
         }
         if (properties == null || properties.size() == 0) {
             return ThreadContext.getImmutableContext();
         }
-        Map<String, String> map = ThreadContext.getContext();
+        final Map<String, String> map = ThreadContext.getContext();
 
-        for (Property prop : properties) {
+        for (final Property prop : properties) {
             if (!map.containsKey(prop.getName())) {
                 map.put(prop.getName(), prop.getValue());
             }
@@ -223,10 +223,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             return null;
         }
         if (location == null) {
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             boolean next = false;
-            for (StackTraceElement element : stackTrace) {
-                String className = element.getClassName();
+            for (final StackTraceElement element : stackTrace) {
+                final String className = element.getClassName();
                 if (next) {
                     if (fqcnOfLogger.equals(className)) {
                         continue;
@@ -254,30 +254,30 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return new LogEventProxy(this);
     }
 
-    public static Serializable serialize(Log4jLogEvent event) {
+    public static Serializable serialize(final Log4jLogEvent event) {
         return new LogEventProxy(event);
     }
 
-    public static Log4jLogEvent deserialize(Serializable event) {
+    public static Log4jLogEvent deserialize(final Serializable event) {
         if (event == null) {
             throw new NullPointerException("Event cannot be null");
         }
         if (event instanceof LogEventProxy) {
-            LogEventProxy proxy = (LogEventProxy) event;
+            final LogEventProxy proxy = (LogEventProxy) event;
             return new Log4jLogEvent(proxy.name, proxy.marker, proxy.fqcnOfLogger, proxy.level, proxy.message,
                 proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName, proxy.location, proxy.timestamp);
         }
         throw new IllegalArgumentException("Event is not a serialized LogEvent: " + event.toString());
     }
 
-    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        String n = name.length() == 0 ? "root" : name;
+        final StringBuilder sb = new StringBuilder();
+        final String n = name.length() == 0 ? "root" : name;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
         sb.append(" Message=").append(message.getFormattedMessage());
@@ -298,11 +298,11 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         private final long timestamp;
         private final Throwable throwable;
         private final Map<String, String> mdc;
-        private ThreadContext.ContextStack ndc;
-        private String threadName;
-        private StackTraceElement location;
+        private final ThreadContext.ContextStack ndc;
+        private final String threadName;
+        private final StackTraceElement location;
 
-        public LogEventProxy(Log4jLogEvent event) {
+        public LogEventProxy(final Log4jLogEvent event) {
             this.fqcnOfLogger = event.fqcnOfLogger;
             this.marker = event.marker;
             this.level = event.level;

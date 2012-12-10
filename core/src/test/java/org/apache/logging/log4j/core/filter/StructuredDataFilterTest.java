@@ -46,7 +46,7 @@ public class StructuredDataFilterTest {
 
     @Test
     public void testFilter() {
-        KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("id.name", "AccountTransfer"),
+        final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("id.name", "AccountTransfer"),
                                                     new KeyValuePair("ToAccount", "123456")};
         StructuredDataFilter filter = StructuredDataFilter.createFilter(pairs, "and", null, null);
         filter.start();
@@ -72,14 +72,14 @@ public class StructuredDataFilterTest {
 
     @Test
     public void testConfig() {
-        LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-sdfilter.xml");
-        Configuration config = ctx.getConfiguration();
-        Filter filter = config.getFilter();
+        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-sdfilter.xml");
+        final Configuration config = ctx.getConfiguration();
+        final Filter filter = config.getFilter();
         assertNotNull("No StructuredDataFilter", filter);
         assertTrue("Not a StructuredDataFilter", filter instanceof  StructuredDataFilter);
-        StructuredDataFilter sdFilter = (StructuredDataFilter) filter;
+        final StructuredDataFilter sdFilter = (StructuredDataFilter) filter;
         assertFalse("Should not be And filter", sdFilter.isAnd());
-        Map<String, List<String>> map = sdFilter.getMap();
+        final Map<String, List<String>> map = sdFilter.getMap();
         assertNotNull("No Map", map);
         assertTrue("No elements in Map", map.size() != 0);
         assertTrue("Incorrect number of elements in Map", map.size() == 1);

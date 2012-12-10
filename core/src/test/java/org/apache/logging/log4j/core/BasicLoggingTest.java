@@ -27,7 +27,7 @@ public class BasicLoggingTest {
 
     @Test
     public void test1() {
-        Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
+        final Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
         logger.debug("debug not set");
         logger.error("Test message");
     }

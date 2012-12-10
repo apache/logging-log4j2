@@ -323,7 +323,7 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
-    protected void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
             if (currentEvent.markerName != null) {
@@ -367,27 +367,27 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
         return isEnabled(level, marker, new SimpleMessage(data), null);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabled(level, marker, new SimpleMessage(data), t);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return isEnabled(level, marker, new ParameterizedMessage(data, p1), null);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabled(level, marker, new ObjectMessage(data), t);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
             if (currentEvent.markerName != null) {
@@ -438,7 +438,7 @@ public class AbstractLoggerTest extends AbstractLogger {
         Message data;
         Throwable t;
 
-        public LogEvent(String markerName, Message data, Throwable t) {
+        public LogEvent(final String markerName, final Message data, final Throwable t) {
             this.markerName = markerName;
             this.data = data;
             this.t = t;

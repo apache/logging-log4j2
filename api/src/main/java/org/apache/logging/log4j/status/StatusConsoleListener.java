@@ -39,7 +39,7 @@ public class StatusConsoleListener implements StatusListener {
      * default value of FATAL.
      */
     public StatusConsoleListener() {
-        String str = System.getProperty(STATUS_LEVEL);
+        final String str = System.getProperty(STATUS_LEVEL);
         if (str != null) {
             level = Level.toLevel(str, Level.FATAL);
         }
@@ -50,7 +50,7 @@ public class StatusConsoleListener implements StatusListener {
      * Creates the StatusConsoleListener using the supplied Level.
      * @param level The Level of status messages that should appear on the console.
      */
-    public StatusConsoleListener(Level level) {
+    public StatusConsoleListener(final Level level) {
         this.level = level;
         stream = System.out;
     }
@@ -60,7 +60,7 @@ public class StatusConsoleListener implements StatusListener {
      * @param level The Level of status messages that should appear on the console.
      * @param stream The PrintStream to write to.
      */
-    public StatusConsoleListener(Level level, PrintStream stream) {
+    public StatusConsoleListener(final Level level, final PrintStream stream) {
         this.level = level;
         this.stream = stream;
     }
@@ -69,7 +69,7 @@ public class StatusConsoleListener implements StatusListener {
      * Sets the level to a new value.
      * @param level The new Level.
      */
-    public void setLevel(Level level) {
+    public void setLevel(final Level level) {
         this.level = level;
     }
 
@@ -77,7 +77,7 @@ public class StatusConsoleListener implements StatusListener {
      * Writes status messages to the console.
      * @param data The StatusData.
      */
-    public void log(StatusData data) {
+    public void log(final StatusData data) {
         if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
             stream.println(data.getFormattedStatus());
         }
@@ -87,16 +87,16 @@ public class StatusConsoleListener implements StatusListener {
      * Adds package name filters to exclude.
      * @param filters An array of package names to exclude.
      */
-    public void setFilters(String... filters) {
+    public void setFilters(final String... filters) {
         this.filters = filters;
     }
 
-    private boolean filtered(StatusData data) {
+    private boolean filtered(final StatusData data) {
         if (filters == null) {
             return false;
         }
-        String caller = data.getStackTraceElement().getClassName();
-        for (String filter : filters) {
+        final String caller = data.getStackTraceElement().getClassName();
+        for (final String filter : filters) {
             if (caller.startsWith(filter)) {
                 return true;
             }

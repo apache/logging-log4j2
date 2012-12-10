@@ -52,7 +52,7 @@ public class StyleConverterTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
             }
@@ -73,7 +73,7 @@ public class StyleConverterTest {
     public void testReplacement() {
         logger.error(this.getClass().getName());
 
-        List<String> msgs = app.getMessages();
+        final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
         assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0), msgs.get(0).endsWith(EXPECTED));

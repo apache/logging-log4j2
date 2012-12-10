@@ -85,9 +85,9 @@ public class SyslogAppenderTest {
 
     @After
     public void teardown() {
-        Map<String,Appender> map = root.getAppenders();
-        for (Map.Entry<String, Appender> entry : map.entrySet()) {
-            Appender app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -97,7 +97,7 @@ public class SyslogAppenderTest {
 
     @Test
     public void testTCPAppender() throws Exception {
-        SyslogAppender appender = createAppender("tcp", "bsd");
+        final SyslogAppender appender = createAppender("tcp", "bsd");
         appender.start();
 
         // set appender on root and set level to debug
@@ -119,7 +119,7 @@ public class SyslogAppenderTest {
 
     @Test
     public void testDefaultAppender() throws Exception {
-        SyslogAppender appender = createAppender("tcp", null);
+        final SyslogAppender appender = createAppender("tcp", null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -142,7 +142,7 @@ public class SyslogAppenderTest {
 
     @Test
     public void testTCPStructuredAppender() throws Exception {
-        SyslogAppender appender = createAppender("tcp", "RFC5424");
+        final SyslogAppender appender = createAppender("tcp", "RFC5424");
         appender.start();
 
         // set appender on root and set level to debug
@@ -152,12 +152,12 @@ public class SyslogAppenderTest {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+        final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         root.info(MarkerManager.getMarker("EVENT"), msg);
-        String str = list.poll(3, TimeUnit.SECONDS);
+        final String str = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", str);
         assertTrue("Incorrect msg: " + str, str.endsWith(line1));
         assertTrue("Message not delivered via TCP", tcpCount > 0);
@@ -167,7 +167,7 @@ public class SyslogAppenderTest {
     @Test
     public void testUDPAppender() throws Exception {
 
-        SyslogAppender appender = createAppender("udp", "bsd");
+        final SyslogAppender appender = createAppender("udp", "bsd");
         appender.start();
 
         // set appender on root and set level to debug
@@ -175,7 +175,7 @@ public class SyslogAppenderTest {
         root.setLevel(Level.DEBUG);
         root.setAdditive(false);
         root.debug("This is a test message");
-        String str = list.poll(3, TimeUnit.SECONDS);
+        final String str = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", str);
         assertTrue("Incorrect msg: " + str, str.endsWith("This is a test message\n"));
         assertTrue("Message not delivered via UDP", udpCount > 0);
@@ -186,7 +186,7 @@ public class SyslogAppenderTest {
 
     @Test
     public void testUDPStructuredAppender() throws Exception {
-        SyslogAppender appender = createAppender("udp", "RFC5424");
+        final SyslogAppender appender = createAppender("udp", "RFC5424");
         appender.start();
 
         // set appender on root and set level to debug
@@ -196,12 +196,12 @@ public class SyslogAppenderTest {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
-        StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+        final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
         msg.put("ToAccount", "123456");
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         root.info(MarkerManager.getMarker("EVENT"), msg);
-        String str = list.poll(3, TimeUnit.SECONDS);
+        final String str = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", str);
         assertTrue("Incorrect msg: " + str, str.endsWith(line1));
         assertTrue("Message not delivered via TCP", udpCount > 0);
@@ -209,7 +209,7 @@ public class SyslogAppenderTest {
         appender.stop();
     }
 
-    private SyslogAppender createAppender(String protocol, String format) {
+    private SyslogAppender createAppender(final String protocol, final String format) {
         return SyslogAppender.createAppender("localhost", PORT, protocol, "-1", "Test", "true", "false", "LOCAL0", "Audit",
             "18060", "true", "RequestContext", "true", "TestApp", "Test", null, "ipAddress,loginId", null, format, null,
                 null, null);
@@ -232,16 +232,16 @@ public class SyslogAppenderTest {
         @Override
         public void run() {
             this.thread = Thread.currentThread();
-            byte[] bytes = new byte[4096];
-            DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
+            final byte[] bytes = new byte[4096];
+            final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
             try {
                 while (!shutdown) {
                     sock.receive(packet);
-                    String str = new String(packet.getData(), 0, packet.getLength());
+                    final String str = new String(packet.getData(), 0, packet.getLength());
                     ++udpCount;
                     list.add(str);
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 if (!shutdown) {
                     throw new RuntimeException(ex);
                 }
@@ -269,16 +269,16 @@ public class SyslogAppenderTest {
             this.thread = Thread.currentThread();
             while (!shutdown) {
                 try {
-                    byte[] buffer = new byte[4096];
-                    Socket socket = sock.accept();
+                    final byte[] buffer = new byte[4096];
+                    final Socket socket = sock.accept();
                     socket.setSoLinger(true, 0);
-                    StringBuilder sb = new StringBuilder();
+                    final StringBuilder sb = new StringBuilder();
                     if (socket != null) {
-                        InputStream in = socket.getInputStream();
+                        final InputStream in = socket.getInputStream();
                         int i = in.read(buffer, 0, buffer.length);
                         while (i != -1) {
                             if (i < buffer.length) {
-                                String line = new String(buffer, 0, i);
+                                final String line = new String(buffer, 0, i);
                                 ++tcpCount;
                                 list.add(line);
                                 i = in.read(buffer, 0, buffer.length);
@@ -291,7 +291,7 @@ public class SyslogAppenderTest {
 
                         socket.close();
                     }
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     if (!shutdown) {
                         System.out.println("Caught exception: " + ex.getMessage());
                     }

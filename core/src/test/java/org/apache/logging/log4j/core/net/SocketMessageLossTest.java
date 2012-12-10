@@ -61,12 +61,12 @@ public class SocketMessageLossTest {
             futureIn = executor.submit(testServer);
 
             //System.err.println("Initializing logger");
-            Logger logger = LogManager.getLogger(SocketMessageLossTest.class);
+            final Logger logger = LogManager.getLogger(SocketMessageLossTest.class);
 
             String message = "Log #1";
             logger.error(message);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(futureIn.get()));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(futureIn.get()));
             assertEquals(message, reader.readLine());
 
             //System.err.println("Closing server");
@@ -80,7 +80,7 @@ public class SocketMessageLossTest {
             try {
                 logger.error(message);
                 fail("Expected exception not thrown");
-            } catch (AppenderRuntimeException e) {
+            } catch (final AppenderRuntimeException e) {
                 // An exception is expected.
             }
 
@@ -88,7 +88,7 @@ public class SocketMessageLossTest {
             try {
                 logger.error(message);
                 fail("Expected exception not thrown");
-            } catch (AppenderRuntimeException e) {
+            } catch (final AppenderRuntimeException e) {
                 // An exception is expected.
             }
         } finally {
@@ -98,7 +98,7 @@ public class SocketMessageLossTest {
 
 
     private static class TestSocketServer implements Callable<InputStream> {
-        private ServerSocket server;
+        private final ServerSocket server;
         private Socket client;
 
         public TestSocketServer() throws Exception {
@@ -115,33 +115,33 @@ public class SocketMessageLossTest {
             closeQuietly(server);
         }
 
-        private void closeQuietly(ServerSocket socket) {
+        private void closeQuietly(final ServerSocket socket) {
             if (null != socket) {
                 try {
                     socket.close();
-                } catch (IOException ignore) {
+                } catch (final IOException ignore) {
                 }
             }
         }
 
-        private void closeQuietly(Socket socket) {
+        private void closeQuietly(final Socket socket) {
             if (null != socket) {
                 try {
                     socket.setSoLinger(true, 0);
                     socket.close();
-                } catch (IOException ignore) {
+                } catch (final IOException ignore) {
                 }
             }
         }
     }
 
-    private static void closeQuietly(ExecutorService executor) {
+    private static void closeQuietly(final ExecutorService executor) {
         if (null != executor) {
             executor.shutdownNow();
         }
     }
 
-    private static void closeQuietly(TestSocketServer testServer) {
+    private static void closeQuietly(final TestSocketServer testServer) {
         if (null != testServer) {
             testServer.close();
         }

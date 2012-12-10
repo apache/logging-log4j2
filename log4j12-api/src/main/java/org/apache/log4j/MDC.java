@@ -37,7 +37,7 @@ public final class MDC {
             }
 
             @Override
-            protected Map<String, Object> childValue(Map<String, Object> parentValue) {
+            protected Map<String, Object> childValue(final Map<String, Object> parentValue) {
                 return parentValue == null ? new HashMap<String, Object>() : new HashMap<String, Object>(parentValue);
             }
         };
@@ -46,22 +46,22 @@ public final class MDC {
     }
 
 
-    public static void put(String key, String value) {
+    public static void put(final String key, final String value) {
         localMap.get().put(key, value);
         ThreadContext.put(key, value);
     }
 
 
-    public static void put(String key, Object value) {
+    public static void put(final String key, final Object value) {
         localMap.get().put(key, value);
         ThreadContext.put(key, value.toString());
     }
 
-    public static Object get(String key) {
+    public static Object get(final String key) {
         return localMap.get().get(key);
     }
 
-    public static void remove(String key) {
+    public static void remove(final String key) {
         localMap.get().remove(key);
         ThreadContext.remove(key);
     }

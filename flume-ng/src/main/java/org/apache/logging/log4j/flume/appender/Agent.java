@@ -38,7 +38,7 @@ public final class Agent {
 
     private final int port;
 
-    private Agent(String host, int port) {
+    private Agent(final String host, final int port) {
         this.host = host;
         this.port = port;
     }
@@ -72,7 +72,7 @@ public final class Agent {
      */
     @PluginFactory
     public static Agent createAgent(@PluginAttr("host") String host,
-                                    @PluginAttr("port") String port) {
+                                    @PluginAttr("port") final String port) {
         if (host == null) {
             host = DEFAULT_HOST;
         }
@@ -81,7 +81,7 @@ public final class Agent {
         if (port != null) {
             try {
                 portNum = Integer.parseInt(port);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Error parsing port number " + port, ex);
                 return null;
             }

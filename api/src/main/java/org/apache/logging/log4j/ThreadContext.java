@@ -61,7 +61,7 @@ public final class ThreadContext {
     private static ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {
             @Override
-            protected Map<String, String> childValue(Map<String, String> parentValue) {
+            protected Map<String, String> childValue(final Map<String, String> parentValue) {
                 return parentValue == null || !useMap ? null : new HashMap<String, String>(parentValue);
             }
         };
@@ -82,7 +82,7 @@ public final class ThreadContext {
      * @param key The key name.
      * @param value The key value.
      */
-    public static void put(String key, String value) {
+    public static void put(final String key, final String value) {
         if (!useMap) {
             return;
         }
@@ -101,8 +101,8 @@ public final class ThreadContext {
      * @param key The key to locate.
      * @return The value associated with the key or null.
      */
-    public static String get(String key) {
-        Map<String, String> map = localMap.get();
+    public static String get(final String key) {
+        final Map<String, String> map = localMap.get();
         return map == null ? null : map.get(key);
     }
 
@@ -111,8 +111,8 @@ public final class ThreadContext {
      * parameter.
      * @param key The key to remove.
      */
-    public static void remove(String key) {
-        Map<String, String> map = localMap.get();
+    public static void remove(final String key) {
+        final Map<String, String> map = localMap.get();
         if (map != null) {
             map.remove(key);
         }
@@ -130,8 +130,8 @@ public final class ThreadContext {
      * @param key The key to locate.
      * @return True if the key is in the context, false otherwise.
      */
-    public static boolean containsKey(String key) {
-        Map<String, String> map = localMap.get();
+    public static boolean containsKey(final String key) {
+        final Map<String, String> map = localMap.get();
         return map == null ? false : map.containsKey(key);
     }
 
@@ -140,7 +140,7 @@ public final class ThreadContext {
      * @return a copy of the context.
      */
     public static Map<String, String> getContext() {
-        Map<String, String> map = localMap.get();
+        final Map<String, String> map = localMap.get();
         return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
     }
 
@@ -149,7 +149,7 @@ public final class ThreadContext {
      * @return An immutable copy of the ThreadContext Map.
      */
     public static Map<String, String> getImmutableContext() {
-        Map<String, String> map = localMap.get();
+        final Map<String, String> map = localMap.get();
         return map == null ? new ImmutableMap() : new ImmutableMap(map);
     }
 
@@ -158,7 +158,7 @@ public final class ThreadContext {
      * @return true if the Map is empty, false otherwise.
      */
     public static boolean isEmpty() {
-        Map<String, String> map = localMap.get();
+        final Map<String, String> map = localMap.get();
         return map == null || map.size() == 0;
     }
 
@@ -174,7 +174,7 @@ public final class ThreadContext {
      * @return A copy of this thread's stack.
      */
     public static ContextStack cloneStack() {
-        ContextStack stack = localStack.get();
+        final ContextStack stack = localStack.get();
         return stack == null ? new ThreadContextStack() : new ThreadContextStack(stack.asList());
     }
 
@@ -183,7 +183,7 @@ public final class ThreadContext {
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
-        ContextStack stack = localStack.get();
+        final ContextStack stack = localStack.get();
         return stack == null ? EMPTY_STACK : new ImmutableStack(stack.asList());
     }
 
@@ -191,7 +191,7 @@ public final class ThreadContext {
      * Set this thread's stack.
      * @param stack The stack to use.
      */
-    public static void setStack(Collection<String> stack) {
+    public static void setStack(final Collection<String> stack) {
         if (stack.size() == 0 || !useStack) {
             return;
         }
@@ -205,7 +205,7 @@ public final class ThreadContext {
      * @see #trim
      */
     public static int getDepth() {
-        ContextStack stack = localStack.get();
+        final ContextStack stack = localStack.get();
         return stack == null ? 0 : stack.getDepth();
     }
 
@@ -218,7 +218,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String pop() {
-        ContextStack s = localStack.get();
+        final ContextStack s = localStack.get();
         if (s == null || s.getDepth() == 0) {
             return "";
         }
@@ -235,7 +235,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-        ContextStack s = localStack.get();
+        final ContextStack s = localStack.get();
         if (s == null || s.getDepth() == 0) {
             return "";
         }
@@ -250,7 +250,7 @@ public final class ThreadContext {
      *
      * @param message The new diagnostic context information.
      */
-    public static void push(String message) {
+    public static void push(final String message) {
         if (!useStack) {
             return;
         }
@@ -271,7 +271,7 @@ public final class ThreadContext {
      *
      * @param message The new diagnostic context information.
      */
-    public static void push(String message, Object... args) {
+    public static void push(final String message, final Object... args) {
         if (!useStack) {
             return;
         }
@@ -334,8 +334,8 @@ public final class ThreadContext {
      * @see #getDepth
      * @param depth The number of elements to keep.
      */
-    public static void trim(int depth) {
-        ContextStack stack = localStack.get();
+    public static void trim(final int depth) {
+        final ContextStack stack = localStack.get();
         if (stack != null) {
             stack.trim(depth);
         }
@@ -406,14 +406,14 @@ public final class ThreadContext {
             super();
         }
 
-        public ThreadContextStack(Collection<String> collection) {
+        public ThreadContextStack(final Collection<String> collection) {
             super(collection);
         }
 
         public String pop() {
-            int index = size() - 1;
+            final int index = size() - 1;
             if (index >= 0) {
-                String result = get(index);
+                final String result = get(index);
                 remove(index);
                 return result;
             }
@@ -421,14 +421,14 @@ public final class ThreadContext {
         }
 
         public String peek() {
-            int index = size() - 1;
+            final int index = size() - 1;
             if (index >= 0) {
                 return get(index);
             }
             return null;
         }
 
-        public void push(String message) {
+        public void push(final String message) {
             add(message);
         }
 
@@ -440,7 +440,7 @@ public final class ThreadContext {
             return this;
         }
 
-        public void trim(int depth) {
+        public void trim(final int depth) {
             if (depth < 0) {
                 throw new IllegalArgumentException("Maximum stack depth cannot be negative");
             }
@@ -465,21 +465,21 @@ public final class ThreadContext {
         public ImmutableStack() {
         }
 
-        public ImmutableStack(Collection<String> collection) {
+        public ImmutableStack(final Collection<String> collection) {
             super(collection);
         }
 
-        public ImmutableStack(ThreadContextStack stack) {
+        public ImmutableStack(final ThreadContextStack stack) {
             super(stack);
         }
 
         @Override
-        public void push(String message) {
+        public void push(final String message) {
             throw new UnsupportedOperationException("Stack cannot be modified");
         }
 
         @Override
-        public void trim(int depth) {
+        public void trim(final int depth) {
             throw new UnsupportedOperationException("Stack cannot be modified");
         }
     }
@@ -494,22 +494,22 @@ public final class ThreadContext {
             super();
         }
 
-        public ImmutableMap(Map<String, String> map) {
+        public ImmutableMap(final Map<String, String> map) {
             super(map);
         }
 
         @Override
-        public String put(String s, String s1) {
+        public String put(final String s, final String s1) {
             throw new UnsupportedOperationException("Map cannot be modified");
         }
 
         @Override
-        public void putAll(Map<? extends String, ? extends String> map) {
+        public void putAll(final Map<? extends String, ? extends String> map) {
             throw new UnsupportedOperationException("Map cannot be modified");
         }
 
         @Override
-        public String remove(Object o) {
+        public String remove(final Object o) {
             throw new UnsupportedOperationException("Map cannot be modified");
         }
 

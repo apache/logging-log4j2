@@ -50,8 +50,8 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
-    private FailoverAppender(String name, Filter filter, String primary, String[] failovers,
-                            Configuration config, boolean handleExceptions) {
+    private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
+                            final Configuration config, final boolean handleExceptions) {
         super(name, filter, null, handleExceptions);
         this.primaryRef = primary;
         this.failovers = failovers;
@@ -61,7 +61,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         int errors = 0;
         if (map.containsKey(primaryRef)) {
             primary = new AppenderControl(map.get(primaryRef), null, null);
@@ -69,7 +69,7 @@ public final class FailoverAppender extends AbstractAppender {
             LOGGER.error("Unable to locate primary Appender " + primaryRef);
             ++errors;
         }
-        for (String name : failovers) {
+        for (final String name : failovers) {
             if (map.containsKey(name)) {
                 failoverAppenders.add(new AppenderControl(map.get(name), null, null));
             } else {
@@ -89,7 +89,7 @@ public final class FailoverAppender extends AbstractAppender {
      * Handle the Log event.
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         RuntimeException re = null;
         if (!isStarted()) {
             error("FailoverAppender " + getName() + " did not start successfully");
@@ -97,15 +97,15 @@ public final class FailoverAppender extends AbstractAppender {
         }
         try {
             primary.callAppender(event);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             re = new LoggingException(ex);
             boolean written = false;
-            for (AppenderControl control : failoverAppenders) {
+            for (final AppenderControl control : failoverAppenders) {
                 try {
                     control.callAppender(event);
                     written = true;
                     break;
-                } catch (Exception fex) {
+                } catch (final Exception fex) {
                     continue;
                 }
             }
@@ -117,10 +117,10 @@ public final class FailoverAppender extends AbstractAppender {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getName());
+        final StringBuilder sb = new StringBuilder(getName());
         sb.append(" primary=").append(primary).append(", failover={");
         boolean first = true;
-        for (String str : failovers) {
+        for (final String str : failovers) {
             if (!first) {
                 sb.append(", ");
             }
@@ -143,12 +143,12 @@ public final class FailoverAppender extends AbstractAppender {
      * @return The FailoverAppender that was created.
      */
     @PluginFactory
-    public static FailoverAppender createAppender(@PluginAttr("name") String name,
-                                                  @PluginAttr("primary") String primary,
-                                                  @PluginElement("failovers") String[] failovers,
-                                                  @PluginConfiguration Configuration config,
-                                                  @PluginElement("filters") Filter filter,
-                                                  @PluginAttr("suppressExceptions") String suppress) {
+    public static FailoverAppender createAppender(@PluginAttr("name") final String name,
+                                                  @PluginAttr("primary") final String primary,
+                                                  @PluginElement("failovers") final String[] failovers,
+                                                  @PluginConfiguration final Configuration config,
+                                                  @PluginElement("filters") final Filter filter,
+                                                  @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;
@@ -162,7 +162,7 @@ public final class FailoverAppender extends AbstractAppender {
             return null;
         }
 
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         return new FailoverAppender(name, filter, primary, failovers, config, handleExceptions);
     }

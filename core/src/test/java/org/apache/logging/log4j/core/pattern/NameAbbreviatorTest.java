@@ -27,52 +27,52 @@ public class NameAbbreviatorTest {
 
     @Test
     public void testZero() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator("0");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("0");
+        final String result = a.abbreviate(str);
         assertEquals("NameAbbreviatorTest", result);
     }
 
     @Test
     public void testNameAbbreviation() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator("1");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("1");
+        final String result = a.abbreviate(str);
         assertEquals("NameAbbreviatorTest", result);
     }
 
      @Test
     public void testTwo() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator("2");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("2");
+        final String result = a.abbreviate(str);
         assertEquals("pattern.NameAbbreviatorTest", result);
 
     }
 
     @Test
     public void testShortName() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator("1.");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("1.");
+        final String result = a.abbreviate(str);
         assertEquals("o.a.l.l.c.p.NameAbbreviatorTest", result);
 
     }
 
     @Test
     public void testSkipNames() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator("1.1.~");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator("1.1.~");
+        final String result = a.abbreviate(str);
         assertEquals("o.a.~.~.~.~.NameAbbreviatorTest", result);
 
     }
 
      @Test
     public void testZeroDot() {
-        String str = this.getClass().getName();
-        NameAbbreviator a = NameAbbreviator.getAbbreviator(".");
-        String result = a.abbreviate(str);
+        final String str = this.getClass().getName();
+        final NameAbbreviator a = NameAbbreviator.getAbbreviator(".");
+        final String result = a.abbreviate(str);
         assertEquals("......NameAbbreviatorTest", result);
 
     }

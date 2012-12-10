@@ -38,7 +38,7 @@ public final class AppenderRef {
     private final Level level;
     private final Filter filter;
 
-    private AppenderRef(String ref, Level level, Filter filter) {
+    private AppenderRef(final String ref, final Level level, final Filter filter) {
         this.ref = ref;
         this.level = level;
         this.filter = filter;
@@ -64,9 +64,9 @@ public final class AppenderRef {
      * @return The name of the Appender.
      */
     @PluginFactory
-    public static AppenderRef createAppenderRef(@PluginAttr("ref") String ref,
-                                                @PluginAttr("level") String levelName,
-                                                @PluginElement("filters") Filter filter) {
+    public static AppenderRef createAppenderRef(@PluginAttr("ref") final String ref,
+                                                @PluginAttr("level") final String levelName,
+                                                @PluginElement("filters") final Filter filter) {
 
         if (ref == null) {
             LOGGER.error("Appender references must contain a reference");

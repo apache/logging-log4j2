@@ -42,7 +42,7 @@ public class StringFormattedMessage implements Message, Serializable {
     private String[] stringArgs;
     private transient String formattedMessage;
 
-    public StringFormattedMessage(String messagePattern, Object... arguments) {
+    public StringFormattedMessage(final String messagePattern, final Object... arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
     }
@@ -77,17 +77,17 @@ public class StringFormattedMessage implements Message, Serializable {
         return stringArgs;
     }
 
-    protected String formatMessage(String msgPattern, Object... args) {
+    protected String formatMessage(final String msgPattern, final Object... args) {
         try {
             return String.format(msgPattern, args);
-        } catch (IllegalFormatException ife) {
+        } catch (final IllegalFormatException ife) {
             LOGGER.error("Unable to format msg: " + msgPattern, ife);
             return msgPattern;
         }
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -95,7 +95,7 @@ public class StringFormattedMessage implements Message, Serializable {
             return false;
         }
 
-        StringFormattedMessage that = (StringFormattedMessage) o;
+        final StringFormattedMessage that = (StringFormattedMessage) o;
 
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
@@ -121,7 +121,7 @@ public class StringFormattedMessage implements Message, Serializable {
             Arrays.toString(argArray) +  "]";
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         getFormattedMessage();
         out.writeUTF(formattedMessage);
@@ -129,17 +129,17 @@ public class StringFormattedMessage implements Message, Serializable {
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
         int i = 0;
-        for (Object obj : argArray) {
+        for (final Object obj : argArray) {
             stringArgs[i] = obj.toString();
             ++i;
         }
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();
-        int length = in.readInt();
+        final int length = in.readInt();
         stringArgs = new String[length];
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();

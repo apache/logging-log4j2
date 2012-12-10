@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
 @Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
 public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
-    private AbstractFlumeManager manager;
+    private final AbstractFlumeManager manager;
 
     private final String mdcIncludes;
     private final String mdcExcludes;
@@ -51,10 +51,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private final FlumeEventFactory factory;
 
-    private FlumeAppender(String name, Filter filter, Layout layout, boolean handleException,
-                          String includes, String excludes, String required, String mdcPrefix,
-                          String eventPrefix, boolean compress, int delay, int retries,
-                          FlumeEventFactory factory, AbstractFlumeManager manager) {
+    private FlumeAppender(final String name, final Filter filter, final Layout layout, final boolean handleException,
+                          final String includes, final String excludes, final String required, final String mdcPrefix,
+                          final String eventPrefix, final boolean compress, final int delay, final int retries,
+                          final FlumeEventFactory factory, final AbstractFlumeManager manager) {
         super(name, filter, layout, handleException);
         this.manager = manager;
         this.mdcIncludes = includes;
@@ -72,9 +72,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * Publish the event.
      * @param event The LogEvent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
 
-        FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
+        final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
         manager.send(flumeEvent, reconnectDelay, retries);
@@ -97,8 +97,8 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @param compress If true the body will be compressed.
      * @return A Flume Event.
      */
-    public FlumeEvent createEvent(LogEvent event, String includes, String excludes, String required,
-                      String mdcPrefix, String eventPrefix, boolean compress) {
+    public FlumeEvent createEvent(final LogEvent event, final String includes, final String excludes, final String required,
+                      final String mdcPrefix, final String eventPrefix, final boolean compress) {
         return new FlumeEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
     }
@@ -124,32 +124,32 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      */
     @PluginFactory
     public static FlumeAppender createAppender(@PluginElement("agents") Agent[] agents,
-                                                   @PluginElement("properties") Property[] properties,
-                                                   @PluginAttr("embedded") String embedded,
-                                                   @PluginAttr("dataDir") String dataDir,
-                                                   @PluginAttr("reconnectionDelay") String delay,
-                                                   @PluginAttr("agentRetries") String agentRetries,
-                                                   @PluginAttr("name") String name,
-                                                   @PluginAttr("suppressExceptions") String suppress,
-                                                   @PluginAttr("mdcExcludes") String excludes,
-                                                   @PluginAttr("mdcIncludes") String includes,
-                                                   @PluginAttr("mdcRequired") String required,
-                                                   @PluginAttr("mdcPrefix") String mdcPrefix,
-                                                   @PluginAttr("eventPrefix") String eventPrefix,
-                                                   @PluginAttr("compress") String compressBody,
-                                                   @PluginAttr("batchSize") String batchSize,
-                                                   @PluginElement("flumeEventFactory") FlumeEventFactory factory,
+                                                   @PluginElement("properties") final Property[] properties,
+                                                   @PluginAttr("embedded") final String embedded,
+                                                   @PluginAttr("dataDir") final String dataDir,
+                                                   @PluginAttr("reconnectionDelay") final String delay,
+                                                   @PluginAttr("agentRetries") final String agentRetries,
+                                                   @PluginAttr("name") final String name,
+                                                   @PluginAttr("suppressExceptions") final String suppress,
+                                                   @PluginAttr("mdcExcludes") final String excludes,
+                                                   @PluginAttr("mdcIncludes") final String includes,
+                                                   @PluginAttr("mdcRequired") final String required,
+                                                   @PluginAttr("mdcPrefix") final String mdcPrefix,
+                                                   @PluginAttr("eventPrefix") final String eventPrefix,
+                                                   @PluginAttr("compress") final String compressBody,
+                                                   @PluginAttr("batchSize") final String batchSize,
+                                                   @PluginElement("flumeEventFactory") final FlumeEventFactory factory,
                                                    @PluginElement("layout") Layout layout,
-                                                   @PluginElement("filters") Filter filter) {
+                                                   @PluginElement("filters") final Filter filter) {
 
-        boolean embed = embedded != null ? Boolean.valueOf(embedded) :
+        final boolean embed = embedded != null ? Boolean.valueOf(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
 
-        int batchCount = batchSize == null ? 1 : Integer.parseInt(batchSize);
-        int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
-        int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
+        final int batchCount = batchSize == null ? 1 : Integer.parseInt(batchSize);
+        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
 
         if (layout == null) {
             layout = RFC5424Layout.createLayout(null, null, null, "True", null, null, null, null, excludes,

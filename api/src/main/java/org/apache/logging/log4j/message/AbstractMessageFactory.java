@@ -9,14 +9,14 @@ public abstract class AbstractMessageFactory implements MessageFactory {
     /* (non-Javadoc)
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.Object)
      */
-    public Message newMessage(Object message) {
+    public Message newMessage(final Object message) {
         return new ObjectMessage(message);
     }
 
     /* (non-Javadoc)
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.String)
      */
-    public Message newMessage(String message) {
+    public Message newMessage(final String message) {
         return new SimpleMessage(message);
     }
 

@@ -60,7 +60,7 @@ public final class StatusLogger extends AbstractLogger {
     private final ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
-        PropsUtil props = new PropsUtil("log4j2.StatusLogger.properties");
+        final PropsUtil props = new PropsUtil("log4j2.StatusLogger.properties");
         this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, props, System.err);
     }
 
@@ -72,7 +72,7 @@ public final class StatusLogger extends AbstractLogger {
         return statusLogger;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(final Level level) {
         logger.setLevel(level);
     }
 
@@ -80,7 +80,7 @@ public final class StatusLogger extends AbstractLogger {
      * Register a new listener.
      * @param listener The StatusListener to register.
      */
-    public void registerListener(StatusListener listener) {
+    public void registerListener(final StatusListener listener) {
         listenersLock.writeLock().lock();
         try {
             listeners.add(listener);
@@ -93,7 +93,7 @@ public final class StatusLogger extends AbstractLogger {
      * Remove a StatusListener.
      * @param listener The StatusListener to remove.
      */
-    public void removeListener(StatusListener listener) {
+    public void removeListener(final StatusListener listener) {
         listenersLock.writeLock().lock();
         try {
             listeners.remove(listener);
@@ -153,12 +153,12 @@ public final class StatusLogger extends AbstractLogger {
      * @param t      A Throwable or null.
      */
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message msg, Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable t) {
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
-        StatusData data = new StatusData(element, level, msg, t);
+        final StatusData data = new StatusData(element, level, msg, t);
         msgLock.lock();
         try {
             messages.add(data);
@@ -166,7 +166,7 @@ public final class StatusLogger extends AbstractLogger {
             msgLock.unlock();
         }
         if (listeners.size() > 0) {
-            for (StatusListener listener : listeners) {
+            for (final StatusListener listener : listeners) {
                 listener.log(data);
             }
         } else {
@@ -174,16 +174,16 @@ public final class StatusLogger extends AbstractLogger {
         }
     }
 
-    private StackTraceElement getStackTraceElement(String fqcn, StackTraceElement[] stackTrace) {
+    private StackTraceElement getStackTraceElement(final String fqcn, final StackTraceElement[] stackTrace) {
         if (fqcn == null) {
             return null;
         }
         boolean next = false;
-        for (StackTraceElement element : stackTrace) {
+        for (final StackTraceElement element : stackTrace) {
             if (next) {
                 return element;
             }
-            String className = element.getClassName();
+            final String className = element.getClassName();
             if (fqcn.equals(className)) {
                 next = true;
             } else if (NOT_AVAIL.equals(className)) {
@@ -194,31 +194,31 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         return isEnabled(level, marker);
     }
 
-    protected boolean isEnabled(Level level, Marker marker) {
+    protected boolean isEnabled(final Level level, final Marker marker) {
         if (listeners.size() > 0) {
             return true;
         }
@@ -249,12 +249,12 @@ public final class StatusLogger extends AbstractLogger {
         
         private final int size;
 
-        public BoundedQueue(int size) {
+        public BoundedQueue(final int size) {
             this.size = size;
         }
 
         @Override
-        public boolean add(E object) {
+        public boolean add(final E object) {
             while (messages.size() > size) {
                 messages.poll();
             }

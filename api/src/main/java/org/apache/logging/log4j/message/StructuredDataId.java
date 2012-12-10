@@ -53,7 +53,7 @@ public class StructuredDataId implements Serializable {
     private final String[] optional;
 
 
-    protected StructuredDataId(String name, String[] required, String[] optional) {
+    protected StructuredDataId(final String name, final String[] required, final String[] optional) {
         int index = -1;
         if (name != null) {
             if (name.length() > MAX_LENGTH) {
@@ -81,7 +81,7 @@ public class StructuredDataId implements Serializable {
      * @param required         The list of keys that are required for this id.
      * @param optional         The list of keys that are optional for this id.
      */
-    public StructuredDataId(String name, int enterpriseNumber, String[] required, String[] optional) {
+    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required, final String[] optional) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
@@ -93,7 +93,7 @@ public class StructuredDataId implements Serializable {
         }
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
-        String id = enterpriseNumber < 0 ? name : name + "@" + enterpriseNumber;
+        final String id = enterpriseNumber < 0 ? name : name + "@" + enterpriseNumber;
         if (id.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + id);
         }
@@ -106,7 +106,7 @@ public class StructuredDataId implements Serializable {
      * @param id The original StructuredDataId.
      * @return the new StructuredDataId.
      */
-    public StructuredDataId makeId(StructuredDataId id) {
+    public StructuredDataId makeId(final StructuredDataId id) {
         if (id == null) {
             return this;
         }
@@ -119,7 +119,7 @@ public class StructuredDataId implements Serializable {
      * @param enterpriseNumber The enterprise number.
      * @return a StructuredDataId.
      */
-    public StructuredDataId makeId(String defaultId, int enterpriseNumber) {
+    public StructuredDataId makeId(final String defaultId, final int enterpriseNumber) {
         String id;
         String[] req;
         String[] opt;

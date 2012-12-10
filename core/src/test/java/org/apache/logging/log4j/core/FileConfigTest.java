@@ -42,7 +42,7 @@ public class FileConfigTest {
     private static ListAppender app;
     private static LoggerContext ctx;
 
-    private org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+    private final org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
 
     @BeforeClass
     public static void setupClass() {
@@ -60,7 +60,7 @@ public class FileConfigTest {
     @Before
     public void before() {
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
@@ -72,15 +72,15 @@ public class FileConfigTest {
 
     @Test
     public void testReconfiguration() throws Exception {
-        File file = new File(CONFIG);
-        long orig = file.lastModified();
-        long newTime = orig + 10000;
+        final File file = new File(CONFIG);
+        final long orig = file.lastModified();
+        final long newTime = orig + 10000;
         file.setLastModified(newTime);
         Thread.sleep(6000);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Reconfigure");
         }
-        Configuration cfg = ctx.getConfiguration();
+        final Configuration cfg = ctx.getConfiguration();
         assertNotNull("No configuration", cfg);
         assertTrue("Reconfiguration failed", cfg != config);
     }

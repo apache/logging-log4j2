@@ -26,11 +26,11 @@ public class PropertySetterException extends Exception {
     private static final long serialVersionUID = -1352613734254235861L;
     protected Throwable rootCause;
 
-    public PropertySetterException(String msg) {
+    public PropertySetterException(final String msg) {
         super(msg);
     }
 
-    public PropertySetterException(Throwable rootCause) {
+    public PropertySetterException(final Throwable rootCause) {
         super();
         this.rootCause = rootCause;
     }

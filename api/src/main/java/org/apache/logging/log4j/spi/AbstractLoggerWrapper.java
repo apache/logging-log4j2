@@ -37,7 +37,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param name The name of the Logger.
      * @param messageFactory TODO
      */
-    public AbstractLoggerWrapper(AbstractLogger logger, String name, MessageFactory messageFactory) {
+    public AbstractLoggerWrapper(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.logger = logger;
     }
@@ -51,7 +51,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param t      A Throwable or null.
      */
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         logger.log(marker, fqcn, level, data, t);
     }
 
@@ -63,7 +63,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @return true if the event would be logged for the Level, Marker and data, false otherwise.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, String data) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data) {
         return logger.isEnabled(level, marker, data);
     }
 
@@ -76,7 +76,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @return true if the event would be logged for the Level, Marker, data and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 
@@ -89,7 +89,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @return true if the event would be logged for the Level, Marker, data and parameter.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return logger.isEnabled(level, marker, data, p1);
     }
 
@@ -102,7 +102,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, Object data, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 
@@ -115,7 +115,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @return true if the event would be logged for the Level, Marker, Message and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(Level level, Marker marker, Message data, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 }

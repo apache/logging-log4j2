@@ -105,7 +105,7 @@ public enum Facility {
      * @param name The Facility enum name, case-insensitive. If null, returns, null
      * @return a Facility enum value or null if name is null
      */
-    public static Facility toFacility(String name) {
+    public static Facility toFacility(final String name) {
         return toFacility(name, null);
     }
 
@@ -116,13 +116,13 @@ public enum Facility {
      * @param defaultFacility the Facility to return if name is null
      * @return a Facility enum value or null if name is null
      */
-    public static Facility toFacility(String name, Facility defaultFacility) {
+    public static Facility toFacility(final String name, final Facility defaultFacility) {
         return EnglishEnums.valueOf(Facility.class, name, defaultFacility);
     }
 
     private final int code;
 
-    private Facility(int code) {
+    private Facility(final int code) {
         this.code = code;
     }
 
@@ -139,7 +139,7 @@ public enum Facility {
      * @param name The name to check.
      * @return true if the name matches this enumeration, ignoring case.
      */
-    public boolean isEqual(String name) {
+    public boolean isEqual(final String name) {
         return this.name().equalsIgnoreCase(name);
     }
 

@@ -43,8 +43,8 @@ public final class RewriteAppender extends AbstractAppender {
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
-    private RewriteAppender(String name, Filter filter, boolean handleException, AppenderRef[] appenderRefs,
-                            RewritePolicy rewritePolicy, Configuration config) {
+    private RewriteAppender(final String name, final Filter filter, final boolean handleException, final AppenderRef[] appenderRefs,
+                            final RewritePolicy rewritePolicy, final Configuration config) {
         super(name, filter, null, handleException);
         this.config = config;
         this.rewritePolicy = rewritePolicy;
@@ -53,10 +53,10 @@ public final class RewriteAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        Map<String, Appender> map = config.getAppenders();
-        for (AppenderRef ref : appenderRefs) {
-            String name = ref.getRef();
-            Appender appender = map.get(name);
+        final Map<String, Appender> map = config.getAppenders();
+        for (final AppenderRef ref : appenderRefs) {
+            final String name = ref.getRef();
+            final Appender appender = map.get(name);
             if (appender != null) {
                 appenders.put(name, new AppenderControl(appender, ref.getLevel(), null));
             } else {
@@ -79,7 +79,7 @@ public final class RewriteAppender extends AbstractAppender {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
         }
-        for (AppenderControl control : appenders.values()) {
+        for (final AppenderControl control : appenders.values()) {
             control.callAppender(event);
         }
     }
@@ -95,14 +95,14 @@ public final class RewriteAppender extends AbstractAppender {
      * @return The created RewriteAppender.
      */
     @PluginFactory
-    public static RewriteAppender createAppender(@PluginAttr("name") String name,
-                                          @PluginAttr("suppressExceptions") String suppress,
-                                          @PluginElement("appender-ref") AppenderRef[] appenderRefs,
-                                          @PluginConfiguration Configuration config,
-                                          @PluginElement("rewritePolicy") RewritePolicy rewritePolicy,
-                                          @PluginElement("filter") Filter filter) {
+    public static RewriteAppender createAppender(@PluginAttr("name") final String name,
+                                          @PluginAttr("suppressExceptions") final String suppress,
+                                          @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+                                          @PluginConfiguration final Configuration config,
+                                          @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
+                                          @PluginElement("filter") final Filter filter) {
 
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
         if (name == null) {
             LOGGER.error("No name provided for RewriteAppender");

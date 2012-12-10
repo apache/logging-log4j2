@@ -26,17 +26,17 @@ public class MarkerWrapper extends BasicMarker implements Marker {
 
     private MarkerWrapper parent;
 
-    MarkerWrapper(String name) {
+    MarkerWrapper(final String name) {
         super(name);
     }
 
     @Override
-    public void add(org.slf4j.Marker reference) {
+    public void add(final org.slf4j.Marker reference) {
         super.add(reference);
         ((MarkerWrapper) reference).setParent(this);
     }
 
-    private void setParent(MarkerWrapper marker) {
+    private void setParent(final MarkerWrapper marker) {
         parent = marker;
     }
 
@@ -44,7 +44,7 @@ public class MarkerWrapper extends BasicMarker implements Marker {
         return this.parent;
     }
 
-    public boolean isInstanceOf(org.apache.logging.log4j.Marker marker) {
+    public boolean isInstanceOf(final org.apache.logging.log4j.Marker marker) {
         if (marker == null) {
             throw new IllegalArgumentException("A marker parameter is required");
         }
@@ -56,7 +56,7 @@ public class MarkerWrapper extends BasicMarker implements Marker {
         }
     }
 
-    public boolean isInstanceOf(String name) {
+    public boolean isInstanceOf(final String name) {
         if (name == null) {
             throw new IllegalArgumentException("A marker name is required");
         }

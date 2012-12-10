@@ -36,16 +36,16 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
         "org.codehaus.jackson.map.ObjectMapper"
     };
 
-    private File configFile = null;
+    private final File configFile = null;
 
     private boolean isActive;
 
     public JSONConfigurationFactory() {
         try {
-            for (String item : dependencies) {
+            for (final String item : dependencies) {
                 Class.forName(item);
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             LOGGER.debug("Missing dependencies for Json support");
             isActive = false;
             return;
@@ -59,7 +59,7 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(ConfigurationSource source) {
+    public Configuration getConfiguration(final ConfigurationSource source) {
         if (!isActive) {
             return null;
         }

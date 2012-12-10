@@ -92,7 +92,7 @@ public final class PatternParser {
      * Constructor.
      * @param converterKey The type of converters that will be used.
      */
-    public PatternParser(String converterKey) {
+    public PatternParser(final String converterKey) {
         this(null, converterKey, null);
     }
 
@@ -102,23 +102,23 @@ public final class PatternParser {
      * @param converterKey The key to lookup the converters.
      * @param expected The expected base Class of each Converter.
      */
-    public PatternParser(Configuration config, String converterKey, Class<?> expected) {
+    public PatternParser(final Configuration config, final String converterKey, final Class<?> expected) {
         this.config = config;
-        PluginManager manager = new PluginManager(converterKey, expected);
+        final PluginManager manager = new PluginManager(converterKey, expected);
         manager.collectPlugins();
-        Map<String, PluginType> plugins = manager.getPlugins();
-        Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
+        final Map<String, PluginType> plugins = manager.getPlugins();
+        final Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
 
-        for (PluginType type : plugins.values()) {
+        for (final PluginType type : plugins.values()) {
             try {
-                Class<PatternConverter> clazz = type.getPluginClass();
-                ConverterKeys keys = clazz.getAnnotation(ConverterKeys.class);
+                final Class<PatternConverter> clazz = type.getPluginClass();
+                final ConverterKeys keys = clazz.getAnnotation(ConverterKeys.class);
                 if (keys != null) {
-                    for (String key : keys.value()) {
+                    for (final String key : keys.value()) {
                         converters.put(key, clazz);
                     }
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Error processing plugin " + type.getElementName(), ex);
             }
         }
@@ -126,16 +126,16 @@ public final class PatternParser {
     }
 
 
-    public List<PatternFormatter> parse(String pattern) {
-        List<PatternFormatter> list = new ArrayList<PatternFormatter>();
-        List<PatternConverter> converters = new ArrayList<PatternConverter>();
-        List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
+    public List<PatternFormatter> parse(final String pattern) {
+        final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
+        final List<PatternConverter> converters = new ArrayList<PatternConverter>();
+        final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
 
         parse(pattern, converters, fields);
 
-        Iterator<FormattingInfo> fieldIter = fields.iterator();
+        final Iterator<FormattingInfo> fieldIter = fields.iterator();
 
-        for (PatternConverter converter : converters) {
+        for (final PatternConverter converter : converters) {
             LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
                 pc = (LogEventPatternConverter) converter;
@@ -176,7 +176,7 @@ public final class PatternParser {
      * @return position in pattern after converter.
      */
     private static int extractConverter(
-        char lastChar, final String pattern, int i, final StringBuilder convBuf,
+        final char lastChar, final String pattern, int i, final StringBuilder convBuf,
         final StringBuilder currentLiteral) {
         convBuf.setLength(0);
 
@@ -208,15 +208,15 @@ public final class PatternParser {
      * @param options array to receive extracted options
      * @return position in pattern after options.
      */
-    private static int extractOptions(String pattern, int i, List<String> options) {
+    private static int extractOptions(final String pattern, int i, final List<String> options) {
         while ((i < pattern.length()) && (pattern.charAt(i) == '{')) {
-            int begin = i++;
+            final int begin = i++;
             int end;
             int depth = 0;
             do {
                 end = pattern.indexOf('}', i);
                 if (end != -1) {
-                    int next = pattern.indexOf("{", i);
+                    final int next = pattern.indexOf("{", i);
                     if (next != -1 && next < end) {
                         i = end + 1;
                         ++depth;
@@ -230,7 +230,7 @@ public final class PatternParser {
                 break;
             }
 
-            String r = pattern.substring(begin + 1, end);
+            final String r = pattern.substring(begin + 1, end);
             options.add(r);
             i = end + 1;
         }
@@ -251,9 +251,9 @@ public final class PatternParser {
             throw new NullPointerException("pattern");
         }
 
-        StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
+        final StringBuilder currentLiteral = new StringBuilder(BUF_SIZE);
 
-        int patternLength = pattern.length();
+        final int patternLength = pattern.length();
         ParserState state = ParserState.LITERAL_STATE;
         char c;
         int i = 0;
@@ -427,9 +427,9 @@ public final class PatternParser {
 
         // Work around the regression bug in Class.getDeclaredMethods() in Oracle Java in version > 1.6.0_17:
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6815786
-        Method[] methods = converterClass.getDeclaredMethods();
+        final Method[] methods = converterClass.getDeclaredMethods();
         Method newInstanceMethod = null;
-        for (Method method : methods) {
+        for (final Method method : methods) {
             if (Modifier.isStatic(method.getModifiers()) && method.getDeclaringClass().equals(converterClass) &&
                     method.getName().equals("newInstance")) {
                 if (newInstanceMethod == null) {
@@ -445,15 +445,15 @@ public final class PatternParser {
             return null;
         }
 
-        Class<?>[] parmTypes = newInstanceMethod.getParameterTypes();
-        Object [] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
+        final Class<?>[] parmTypes = newInstanceMethod.getParameterTypes();
+        final Object [] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
 
         if (parms != null) {
             int i = 0;
             boolean errors = false;
-            for (Class<?> clazz : parmTypes) {
+            for (final Class<?> clazz : parmTypes) {
                 if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
-                    String[] optionsArray = options.toArray(new String[options.size()]);
+                    final String[] optionsArray = options.toArray(new String[options.size()]);
                     parms[i] = optionsArray;
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;
@@ -470,7 +470,7 @@ public final class PatternParser {
         }
 
         try {
-            Object newObj = newInstanceMethod.invoke(null, parms);
+            final Object newObj = newInstanceMethod.invoke(null, parms);
 
             if (newObj instanceof PatternConverter) {
                 currentLiteral.delete(0, currentLiteral.length()
@@ -480,7 +480,7 @@ public final class PatternParser {
             } else {
                 LOGGER.warn("Class " + converterClass.getName() + " does not extend PatternConverter.");
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Error creating converter for " + converterId, ex);
         }
 
@@ -500,19 +500,19 @@ public final class PatternParser {
      * @param formattingInfos   list to receive corresponding field specifier.
      * @return position after format specifier sequence.
      */
-    private int finalizeConverter(char c, String pattern, int i,
+    private int finalizeConverter(final char c, final String pattern, int i,
             final StringBuilder currentLiteral, final FormattingInfo formattingInfo,
             final Map<String, Class<PatternConverter>> rules,
             final List<PatternConverter> patternConverters, final List<FormattingInfo> formattingInfos) {
-        StringBuilder convBuf = new StringBuilder();
+        final StringBuilder convBuf = new StringBuilder();
         i = extractConverter(c, pattern, i, convBuf, currentLiteral);
 
-        String converterId = convBuf.toString();
+        final String converterId = convBuf.toString();
 
-        List<String> options = new ArrayList<String>();
+        final List<String> options = new ArrayList<String>();
         i = extractOptions(pattern, i, options);
 
-        PatternConverter pc = createConverter(converterId, currentLiteral, rules, options);
+        final PatternConverter pc = createConverter(converterId, currentLiteral, rules, options);
 
         if (pc == null) {
             StringBuilder msg;

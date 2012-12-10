@@ -52,7 +52,7 @@ public class Logger extends AbstractLogger {
      * @param messageFactory The message factory.
      * @param name The name of the Logger.
      */
-    protected Logger(LoggerContext context, String name, MessageFactory messageFactory) {
+    protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.context = context;
         config = new PrivateConfig(context.getConfiguration(), this);
@@ -63,7 +63,7 @@ public class Logger extends AbstractLogger {
      * @return The parent Logger.
      */
     public Logger getParent() {
-        LoggerConfig lc = config.loggerConfig.getParent();
+        final LoggerConfig lc = config.loggerConfig.getParent();
         if (lc == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is provided primarily for unit testing.
      * @param level The Level to use on this Logger.
      */
-    public synchronized void setLevel(Level level) {
+    public synchronized void setLevel(final Level level) {
         if (level != null) {
             config = new PrivateConfig(config, level);
         }
@@ -100,7 +100,7 @@ public class Logger extends AbstractLogger {
     }
 
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, Message data, final Throwable t) {
         if (data == null) {
             data = new SimpleMessage("");
         }
@@ -109,27 +109,27 @@ public class Logger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, String msg) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
         return config.filter(level, marker, msg);
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, String msg, Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
         return config.filter(level, marker, msg, p1);
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, Object msg, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
     @Override
-    public boolean isEnabled(Level level, Marker marker, Message msg, Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
         return config.filter(level, marker, msg, t);
     }
 
@@ -137,7 +137,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to add to the Logger.
      */
-    public void addAppender(Appender appender) {
+    public void addAppender(final Appender appender) {
         config.config.addLoggerAppender(this, appender);
     }
 
@@ -145,7 +145,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to remove from the Logger.
      */
-    public void removeAppender(Appender appender) {
+    public void removeAppender(final Appender appender) {
         config.loggerConfig.removeAppender(appender.getName());
     }
 
@@ -162,13 +162,13 @@ public class Logger extends AbstractLogger {
      * @return An Iterator over all the Filters associated with the Logger.
      */
     public Iterator<Filter> getFilters() {
-        Filter filter = config.loggerConfig.getFilter();
+        final Filter filter = config.loggerConfig.getFilter();
         if (filter == null) {
             return new ArrayList<Filter>().iterator();
         } else if (filter instanceof CompositeFilter) {
             return ((CompositeFilter) filter).iterator();
         } else {
-            List<Filter> filters = new ArrayList<Filter>();
+            final List<Filter> filters = new ArrayList<Filter>();
             filters.add(filter);
             return filters.iterator();
         }
@@ -179,7 +179,7 @@ public class Logger extends AbstractLogger {
      * @return The number of Filters associated with the Logger.
      */
     public int filterCount() {
-        Filter filter = config.loggerConfig.getFilter();
+        final Filter filter = config.loggerConfig.getFilter();
         if (filter == null) {
             return 0;
         } else if (filter instanceof CompositeFilter) {
@@ -192,7 +192,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param filter The Filter to add.
      */
-    public void addFilter(Filter filter) {
+    public void addFilter(final Filter filter) {
         config.config.addLoggerFilter(this, filter);
     }
 
@@ -210,7 +210,7 @@ public class Logger extends AbstractLogger {
      * compatibility bridge.
      * @param additive Boolean value to indicate whether the Logger is additive or not.
      */
-    public void setAdditive(boolean additive) {
+    public void setAdditive(final boolean additive) {
         config.config.setLoggerAdditive(this, additive);
     }
 
@@ -226,7 +226,7 @@ public class Logger extends AbstractLogger {
      *
      * @param config The new Configuration.
      */
-    void updateConfiguration(Configuration config) {
+    void updateConfiguration(final Configuration config) {
         this.config = new PrivateConfig(config, this);
     }
 
@@ -240,7 +240,7 @@ public class Logger extends AbstractLogger {
         private final int intLevel;
         private final Logger logger;
 
-        public PrivateConfig(Configuration config, Logger logger) {
+        public PrivateConfig(final Configuration config, final Logger logger) {
             this.config = config;
             this.loggerConfig = config.getLoggerConfig(getName());
             this.level = this.loggerConfig.getLevel();
@@ -248,7 +248,7 @@ public class Logger extends AbstractLogger {
             this.logger = logger;
         }
 
-        public PrivateConfig(PrivateConfig pc, Level level) {
+        public PrivateConfig(final PrivateConfig pc, final Level level) {
             this.config = pc.config;
             this.loggerConfig = pc.loggerConfig;
             this.level = level;
@@ -256,7 +256,7 @@ public class Logger extends AbstractLogger {
             this.logger = pc.logger;
         }
 
-        public PrivateConfig(PrivateConfig pc, LoggerConfig lc) {
+        public PrivateConfig(final PrivateConfig pc, final LoggerConfig lc) {
             this.config = pc.config;
             this.loggerConfig = lc;
             this.level = lc.getLevel();
@@ -264,16 +264,16 @@ public class Logger extends AbstractLogger {
             this.logger = pc.logger;
         }
 
-        protected void logEvent(LogEvent event) {
+        protected void logEvent(final LogEvent event) {
             config.getConfigurationMonitor().checkConfiguration();
             loggerConfig.log(event);
         }
 
-        boolean filter(Level level, Marker marker, String msg) {
+        boolean filter(final Level level, final Marker marker, final String msg) {
             config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
+            final Filter filter = config.getFilter();
             if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg);
+                final Filter.Result r = filter.filter(logger, level, marker, msg);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }
@@ -282,11 +282,11 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
 
-        boolean filter(Level level, Marker marker, String msg, Throwable t) {
+        boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {
             config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
+            final Filter filter = config.getFilter();
             if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                final Filter.Result r = filter.filter(logger, level, marker, msg, t);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }
@@ -295,11 +295,11 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
 
-        boolean filter(Level level, Marker marker, String msg, Object... p1) {
+        boolean filter(final Level level, final Marker marker, final String msg, final Object... p1) {
             config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
+            final Filter filter = config.getFilter();
             if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, p1);
+                final Filter.Result r = filter.filter(logger, level, marker, msg, p1);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }
@@ -308,11 +308,11 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
 
-        boolean filter(Level level, Marker marker, Object msg, Throwable t) {
+        boolean filter(final Level level, final Marker marker, final Object msg, final Throwable t) {
             config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
+            final Filter filter = config.getFilter();
             if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                final Filter.Result r = filter.filter(logger, level, marker, msg, t);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }
@@ -321,11 +321,11 @@ public class Logger extends AbstractLogger {
             return intLevel >= level.intLevel();
         }
 
-        boolean filter(Level level, Marker marker, Message msg, Throwable t) {
+        boolean filter(final Level level, final Marker marker, final Message msg, final Throwable t) {
             config.getConfigurationMonitor().checkConfiguration();
-            Filter filter = config.getFilter();
+            final Filter filter = config.getFilter();
             if (filter != null) {
-                Filter.Result r = filter.filter(logger, level, marker, msg, t);
+                final Filter.Result r = filter.filter(logger, level, marker, msg, t);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }

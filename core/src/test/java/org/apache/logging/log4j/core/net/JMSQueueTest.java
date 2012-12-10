@@ -66,7 +66,7 @@ public class JMSQueueTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
-        StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
+        final StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
         StatusLogger.getLogger().registerListener(l);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
@@ -83,9 +83,9 @@ public class JMSQueueTest {
 
     @After
     public void teardown() {
-        Map<String,Appender> map = root.getAppenders();
-        for (Map.Entry<String, Appender> entry : map.entrySet()) {
-            Appender app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -93,19 +93,19 @@ public class JMSQueueTest {
 
     @Test
     public void testServer() throws Exception {
-        Filter clientFilter = new MessageFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
-        Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        CompositeFilter clientFilters = CompositeFilter.createFilters(new Filter[]{clientFilter});
-        JMSQueueAppender appender = JMSQueueAppender.createAppender("Test", null, null, null, null, null, FACTORY_NAME,
+        final Filter clientFilter = new MessageFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
+        final Filter serverFilter = new MessageFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final CompositeFilter clientFilters = CompositeFilter.createFilters(new Filter[]{clientFilter});
+        final JMSQueueAppender appender = JMSQueueAppender.createAppender("Test", null, null, null, null, null, FACTORY_NAME,
                 QUEUE_NAME, null, null, null, clientFilters, "true");
         appender.start();
-        CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
-        ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
+        final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
+        final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
-        PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
-        ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
+        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
-        Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
+        final Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
         serverLogger.addAppender(console);
         serverLogger.setAdditive(false);
 
@@ -117,21 +117,21 @@ public class JMSQueueTest {
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
         Thread.sleep(100);
-        List<LogEvent> events = listApp.getEvents();
+        final List<LogEvent> events = listApp.getEvents();
         assertNotNull("No event retrieved", events);
         assertTrue("No events retrieved", events.size() > 0);
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals("This is a test message"));
     }
 
     private class MessageFilter extends AbstractFilter {
-        public MessageFilter(Result onMatch, Result onMismatch) {
+        public MessageFilter(final Result onMatch, final Result onMismatch) {
             super(onMatch, onMismatch);
         }
 
         @Override
-        public Result filter(LogEvent event) {
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTrace) {
+        public Result filter(final LogEvent event) {
+            final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (final StackTraceElement element : stackTrace) {
                 if (element.getMethodName().equals("onMessage")) {
                     return onMatch;
                 } else if (element.getMethodName().equals("testServer")) {

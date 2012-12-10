@@ -80,7 +80,7 @@ public class LoggerTest {
 
     @After
     public void tearDown() {
-        LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) org.apache.logging.log4j.LogManager.getContext();
         ctx.reconfigure();
         a1 = null;
         a2 = null;
@@ -124,9 +124,9 @@ public class LoggerTest {
      */
     @Test
     public void testAdditivity1() {
-        Logger a = Logger.getLogger("a");
-        Logger ab = Logger.getLogger("a.b");
-        CountingAppender ca = new CountingAppender();
+        final Logger a = Logger.getLogger("a");
+        final Logger ab = Logger.getLogger("a.b");
+        final CountingAppender ca = new CountingAppender();
         ca.start();
         a.getLogger().addAppender(ca);
 
@@ -149,14 +149,14 @@ public class LoggerTest {
     @Test
     public void testAdditivity2() {
 
-        Logger a = Logger.getLogger("a");
-        Logger ab = Logger.getLogger("a.b");
-        Logger abc = Logger.getLogger("a.b.c");
-        Logger x = Logger.getLogger("x");
+        final Logger a = Logger.getLogger("a");
+        final Logger ab = Logger.getLogger("a.b");
+        final Logger abc = Logger.getLogger("a.b.c");
+        final Logger x = Logger.getLogger("x");
 
-        CountingAppender ca1 = new CountingAppender();
+        final CountingAppender ca1 = new CountingAppender();
         ca1.start();
-        CountingAppender ca2 = new CountingAppender();
+        final CountingAppender ca2 = new CountingAppender();
         ca2.start();
 
         a.getLogger().addAppender(ca1);
@@ -188,17 +188,17 @@ public class LoggerTest {
     @Test
     public void testAdditivity3() {
 
-        Logger root = Logger.getRootLogger();
-        Logger a = Logger.getLogger("a");
-        Logger ab = Logger.getLogger("a.b");
-        Logger abc = Logger.getLogger("a.b.c");
-        Logger x = Logger.getLogger("x");
+        final Logger root = Logger.getRootLogger();
+        final Logger a = Logger.getLogger("a");
+        final Logger ab = Logger.getLogger("a.b");
+        final Logger abc = Logger.getLogger("a.b.c");
+        final Logger x = Logger.getLogger("x");
 
-        CountingAppender caRoot = new CountingAppender();
+        final CountingAppender caRoot = new CountingAppender();
         caRoot.start();
-        CountingAppender caA = new CountingAppender();
+        final CountingAppender caA = new CountingAppender();
         caA.start();
-        CountingAppender caABC = new CountingAppender();
+        final CountingAppender caABC = new CountingAppender();
         caABC.start();
 
         root.getLogger().addAppender(caRoot);
@@ -300,14 +300,14 @@ public class LoggerTest {
 
     @Test
     public void testRB1() {
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
         assertSame(t, rbUS);
 
-        Logger x = Logger.getLogger("x");
-        Logger x_y = Logger.getLogger("x.y");
-        Logger x_y_z = Logger.getLogger("x.y.z");
+        final Logger x = Logger.getLogger("x");
+        final Logger x_y = Logger.getLogger("x.y");
+        final Logger x_y_z = Logger.getLogger("x.y.z");
 
         t = x.getResourceBundle();
         assertSame(t, rbUS);
@@ -319,14 +319,14 @@ public class LoggerTest {
 
     @Test
     public void testRB2() {
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
         assertTrue(t == rbUS);
 
-        Logger x = Logger.getLogger("x");
-        Logger x_y = Logger.getLogger("x.y");
-        Logger x_y_z = Logger.getLogger("x.y.z");
+        final Logger x = Logger.getLogger("x");
+        final Logger x_y = Logger.getLogger("x.y");
+        final Logger x_y_z = Logger.getLogger("x.y.z");
 
         x_y.setResourceBundle(rbFR);
         t = x.getResourceBundle();
@@ -339,14 +339,14 @@ public class LoggerTest {
 
     @Test
     public void testRB3() {
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
         assertTrue(t == rbUS);
 
-        Logger x = Logger.getLogger("x");
-        Logger x_y = Logger.getLogger("x.y");
-        Logger x_y_z = Logger.getLogger("x.y.z");
+        final Logger x = Logger.getLogger("x");
+        final Logger x_y = Logger.getLogger("x.y");
+        final Logger x_y_z = Logger.getLogger("x.y.z");
 
         x_y.setResourceBundle(rbFR);
         x_y_z.setResourceBundle(rbCH);
@@ -360,9 +360,9 @@ public class LoggerTest {
 
     @Test
     public void testExists() {
-        Logger a = Logger.getLogger("a");
-        Logger a_b = Logger.getLogger("a.b");
-        Logger a_b_c = Logger.getLogger("a.b.c");
+        final Logger a = Logger.getLogger("a");
+        final Logger a_b = Logger.getLogger("a.b");
+        final Logger a_b_c = Logger.getLogger("a.b.c");
 
         Logger t;
         t = LogManager.exists("xx");
@@ -391,22 +391,22 @@ public class LoggerTest {
      */
     @Test
     public void testTrace() {
-        ListAppender appender = new ListAppender("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
 
-        Logger tracer = Logger.getLogger("com.example.Tracer");
+        final Logger tracer = Logger.getLogger("com.example.Tracer");
         tracer.setLevel(Level.TRACE);
 
         tracer.trace("Message 1");
         root.trace("Discarded Message");
         root.trace("Discarded Message");
 
-        List<LogEvent> msgs = appender.getEvents();
+        final List<LogEvent> msgs = appender.getEvents();
         assertEquals(1, msgs.size());
-        LogEvent event = (LogEvent) msgs.get(0);
+        final LogEvent event = (LogEvent) msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormat());
         appender.stop();
@@ -418,23 +418,23 @@ public class LoggerTest {
      */
     @Test
     public void testTraceWithException() {
-        ListAppender appender = new ListAppender("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
 
-        Logger tracer = Logger.getLogger("com.example.Tracer");
+        final Logger tracer = Logger.getLogger("com.example.Tracer");
         tracer.setLevel(Level.TRACE);
-        NullPointerException ex = new NullPointerException();
+        final NullPointerException ex = new NullPointerException();
 
         tracer.trace("Message 1", ex);
         root.trace("Discarded Message", ex);
         root.trace("Discarded Message", ex);
 
-        List<LogEvent> msgs = appender.getEvents();
+        final List<LogEvent> msgs = appender.getEvents();
         assertEquals(1, msgs.size());
-        LogEvent event = msgs.get(0);
+        final LogEvent event = msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormattedMessage());
         appender.stop();
@@ -446,13 +446,13 @@ public class LoggerTest {
      */
     @Test
     public void testIsTraceEnabled() {
-        ListAppender appender = new ListAppender("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
 
-        Logger tracer = Logger.getLogger("com.example.Tracer");
+        final Logger tracer = Logger.getLogger("com.example.Tracer");
         tracer.setLevel(Level.TRACE);
 
         assertTrue(tracer.isTraceEnabled());
@@ -463,19 +463,19 @@ public class LoggerTest {
 
     @Test
     public void testLog() {
-        PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null);
-        ListAppender appender = new ListAppender("List", null, layout, false, false);
+        final PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null);
+        final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
-        Logger root = Logger.getRootLogger();
+        final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
         root.setLevel(Level.INFO);
-        MyLogger log = new MyLogger(root);
+        final MyLogger log = new MyLogger(root);
         log.logInfo("This is a test", null);
         root.log(Priority.INFO, "Test msg2", null);
         root.log(Priority.INFO, "Test msg3");
-        List<String> msgs = appender.getMessages();
+        final List<String> msgs = appender.getMessages();
         assertTrue("Incorrect number of messages", msgs.size() == 3);
-        String msg = msgs.get(0);
+        final String msg = msgs.get(0);
         assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
         appender.stop();
         root.getLogger().removeAppender(appender);
@@ -483,13 +483,13 @@ public class LoggerTest {
 
     private static class MyLogger {
 
-        private Logger logger;
+        private final Logger logger;
 
-        public MyLogger(Logger logger) {
+        public MyLogger(final Logger logger) {
             this.logger = logger;
         }
 
-        public void logInfo(String msg, Throwable t) {
+        public void logInfo(final String msg, final Throwable t) {
             logger.log(MyLogger.class.getName(), Priority.INFO, msg, t);
         }
     }
@@ -507,7 +507,7 @@ public class LoggerTest {
         public void close() {
         }
 
-        public void append(LogEvent event) {
+        public void append(final LogEvent event) {
             counter++;
         }
 

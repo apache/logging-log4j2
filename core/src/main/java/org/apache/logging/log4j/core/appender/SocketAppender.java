@@ -39,8 +39,8 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public class SocketAppender extends AbstractOutputStreamAppender {
 
 
-    protected SocketAppender(String name, Layout layout, Filter filter, AbstractSocketManager manager,
-                          boolean handleException, boolean immediateFlush) {
+    protected SocketAppender(final String name, final Layout layout, final Filter filter, final AbstractSocketManager manager,
+                          final boolean handleException, final boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
 
     }
@@ -60,20 +60,20 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @return A SocketAppender.
      */
     @PluginFactory
-    public static SocketAppender createAppender(@PluginAttr("host") String host,
-                                                @PluginAttr("port") String portNum,
-                                                @PluginAttr("protocol") String protocol,
-                                                @PluginAttr("reconnectionDelay") String delay,
-                                                @PluginAttr("name") String name,
-                                                @PluginAttr("immediateFlush") String immediateFlush,
-                                                @PluginAttr("suppressExceptions") String suppress,
+    public static SocketAppender createAppender(@PluginAttr("host") final String host,
+                                                @PluginAttr("port") final String portNum,
+                                                @PluginAttr("protocol") final String protocol,
+                                                @PluginAttr("reconnectionDelay") final String delay,
+                                                @PluginAttr("name") final String name,
+                                                @PluginAttr("immediateFlush") final String immediateFlush,
+                                                @PluginAttr("suppressExceptions") final String suppress,
                                                 @PluginElement("layout") Layout layout,
-                                                @PluginElement("filters") Filter filter) {
+                                                @PluginElement("filters") final Filter filter) {
 
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
-        int port = portNum == null ? 0 : Integer.parseInt(portNum);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
@@ -83,15 +83,15 @@ public class SocketAppender extends AbstractOutputStreamAppender {
             return null;
         }
 
-        AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
+        final AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
         if (manager == null) {
             return null;
         }
         return new SocketAppender(name, layout, filter, manager, handleExceptions, isFlush);
     }
 
-    protected static AbstractSocketManager createSocketManager(String protocol, String host, int port, int delay) {
-        Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
+    protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port, final int delay) {
+        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:
                 return TCPSocketManager.getSocketManager(host, port, delay);

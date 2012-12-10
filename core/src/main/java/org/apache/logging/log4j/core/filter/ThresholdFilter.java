@@ -38,32 +38,32 @@ public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
 
-    private ThresholdFilter(Level level, Result onMatch, Result onMismatch) {
+    private ThresholdFilter(final Level level, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return filter(event.getLevel());
     }
 
-    private Result filter(Level level) {
+    private Result filter(final Level level) {
         return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
     }
 
@@ -80,12 +80,12 @@ public final class ThresholdFilter extends AbstractFilter {
      * @return The created ThresholdFilter.
      */
     @PluginFactory
-    public static ThresholdFilter createFilter(@PluginAttr("level") String levelName,
-                                               @PluginAttr("onMatch") String match,
-                                               @PluginAttr("onMismatch") String mismatch) {
-        Level level = Level.toLevel(levelName, Level.ERROR);
-        Result onMatch = Result.toResult(match, Result.NEUTRAL);
-        Result onMismatch = Result.toResult(mismatch, Result.DENY);
+    public static ThresholdFilter createFilter(@PluginAttr("level") final String levelName,
+                                               @PluginAttr("onMatch") final String match,
+                                               @PluginAttr("onMismatch") final String mismatch) {
+        final Level level = Level.toLevel(levelName, Level.ERROR);
+        final Result onMatch = Result.toResult(match, Result.NEUTRAL);
+        final Result onMismatch = Result.toResult(mismatch, Result.DENY);
         return new ThresholdFilter(level, onMatch, onMismatch);
     }
 

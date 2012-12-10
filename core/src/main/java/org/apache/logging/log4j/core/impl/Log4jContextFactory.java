@@ -37,15 +37,15 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * Constructor that initializes the ContextSelector.
      */
     public Log4jContextFactory() {
-        String sel = System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+        final String sel = System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
             try {
-                Class clazz = Loader.loadClass(sel);
+                final Class clazz = Loader.loadClass(sel);
                 if (clazz != null && ContextSelector.class.isAssignableFrom(clazz)) {
                     selector = (ContextSelector) clazz.newInstance();
                     return;
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 logger.error("Unable to create context " + sel, ex);
             }
 
@@ -69,8 +69,8 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * for the caller if a more appropriate Context can be determined.
      * @return The LoggerContext.
      */
-    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
-        LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
         }

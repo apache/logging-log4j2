@@ -34,11 +34,11 @@ public class MarkerFilterTest {
 
     @Test
     public void testMarkers() {
-        Marker parent = MarkerManager.getMarker("Parent");
-        Marker child = MarkerManager.getMarker("Child", parent);
-        Marker grandChild = MarkerManager.getMarker("GrandChild", child);
-        Marker sibling = MarkerManager.getMarker("Sibling", parent);
-        Marker stranger = MarkerManager.getMarker("Stranger");
+        final Marker parent = MarkerManager.getMarker("Parent");
+        final Marker child = MarkerManager.getMarker("Child", parent);
+        final Marker grandChild = MarkerManager.getMarker("GrandChild", child);
+        final Marker sibling = MarkerManager.getMarker("Sibling", parent);
+        final Marker stranger = MarkerManager.getMarker("Stranger");
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
         assertTrue(filter.isStarted());

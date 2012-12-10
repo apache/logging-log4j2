@@ -35,7 +35,7 @@ public final class EventLogger {
     private static AbstractLoggerWrapper logger;
 
     static {
-        Logger l = LogManager.getLogger("EventLogger");
+        final Logger l = LogManager.getLogger("EventLogger");
         if (!(l instanceof AbstractLogger)) {
             throw new LoggingException("Logger returned must be based on AbstractLogger");
         }
@@ -50,7 +50,7 @@ public final class EventLogger {
      * Log events with a level of ALL.
      * @param msg The event StructuredDataMessage.
      */
-    public static void logEvent(StructuredDataMessage msg) {
+    public static void logEvent(final StructuredDataMessage msg) {
         logger.log(EVENT_MARKER, FQCN, Level.OFF, msg, null);
     }
 
@@ -59,7 +59,7 @@ public final class EventLogger {
      * @param msg The event StructuredDataMessage.
      * @param level The logging Level.
      */
-    public static void logEvent(StructuredDataMessage msg, Level level) {
+    public static void logEvent(final StructuredDataMessage msg, final Level level) {
         logger.log(EVENT_MARKER, FQCN, level, msg, null);
     }
 }

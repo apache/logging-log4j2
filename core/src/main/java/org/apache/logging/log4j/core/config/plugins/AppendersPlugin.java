@@ -36,10 +36,10 @@ public final class AppendersPlugin {
      * @return The Appender Map.
      */
     @PluginFactory
-    public static ConcurrentMap<String, Appender> createAppenders(@PluginElement("appenders") Appender[] appenders) {
-        ConcurrentMap<String, Appender> map = new ConcurrentHashMap<String, Appender>();
+    public static ConcurrentMap<String, Appender> createAppenders(@PluginElement("appenders") final Appender[] appenders) {
+        final ConcurrentMap<String, Appender> map = new ConcurrentHashMap<String, Appender>();
 
-        for (Appender appender : appenders) {
+        for (final Appender appender : appenders) {
                 map.put(appender.getName(), appender);
         }
 

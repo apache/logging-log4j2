@@ -34,7 +34,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param host The host to connect to.
      * @param port The port on the host.
      */
-    protected DatagramSocketManager(OutputStream os, String name, String host, int port) {
+    protected DatagramSocketManager(final OutputStream os, final String name, final String host, final int port) {
         super(name, os, null, host, port);
     }
 
@@ -44,7 +44,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param port The port on the host.
      * @return A DatagramSocketManager.
      */
-    public static DatagramSocketManager getSocketManager(String host, int port) {
+    public static DatagramSocketManager getSocketManager(final String host, final int port) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -59,10 +59,10 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * Data for the factory.
      */
     private static class FactoryData {
-        private String host;
-        private int port;
+        private final String host;
+        private final int port;
 
-        public FactoryData(String host, int port) {
+        public FactoryData(final String host, final int port) {
             this.host = host;
             this.port = port;
         }
@@ -73,8 +73,8 @@ public class DatagramSocketManager extends AbstractSocketManager {
      */
     private static class DatagramSocketManagerFactory implements ManagerFactory<DatagramSocketManager, FactoryData> {
 
-        public DatagramSocketManager createManager(String name, FactoryData data) {
-            OutputStream os = new DatagramOutputStream(data.host, data.port);
+        public DatagramSocketManager createManager(final String name, final FactoryData data) {
+            final OutputStream os = new DatagramOutputStream(data.host, data.port);
             return new DatagramSocketManager(os, name, data.host, data.port);
         }
     }

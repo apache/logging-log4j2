@@ -57,7 +57,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
      */
-    protected AbstractAppender(String name, Filter filter, Layout<T> layout) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout) {
         this(name, filter, layout, true);
     }
 
@@ -69,7 +69,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param handleException If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
-    protected AbstractAppender(String name, Filter filter, Layout<T> layout, boolean handleException) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout, final boolean handleException) {
         super(filter);
         this.name = name;
         this.layout = layout;
@@ -88,7 +88,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * The handler must be set before the appender is started.
      * @param handler The ErrorHandler to use.
      */
-    public void setHandler(ErrorHandler handler) {
+    public void setHandler(final ErrorHandler handler) {
         if (handler == null) {
             LOGGER.error("The handler cannot be set to null");
         }
@@ -164,7 +164,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Handle an error with a message.
      * @param msg The message.
      */
-    public void error(String msg) {
+    public void error(final String msg) {
         handler.error(msg);
     }
 
@@ -173,7 +173,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param msg The message.
      * @param t The Throwable.
      */
-    public void error(String msg, Throwable t) {
+    public void error(final String msg, final Throwable t) {
         handler.error(msg, t);
     }
 
@@ -183,7 +183,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param event The LogEvent.
      * @param t The Throwable.
      */
-    public void error(String msg, LogEvent event, Throwable t) {
+    public void error(final String msg, final LogEvent event, final Throwable t) {
         handler.error(msg, event, t);
     }
 

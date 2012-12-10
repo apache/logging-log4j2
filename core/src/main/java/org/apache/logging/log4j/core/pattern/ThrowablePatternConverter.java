@@ -58,7 +58,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      * @param style CSS style for output.
      * @param options options, may be null.
      */
-    protected ThrowablePatternConverter(String name, String style, final String[] options) {
+    protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
         super(name, style);
         int count = 0;
         if ((options != null) && (options.length > 0)) {
@@ -92,18 +92,18 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Throwable t = event.getThrown();
+        final Throwable t = event.getThrown();
 
         if (t != null) {
-            StringWriter w = new StringWriter();
+            final StringWriter w = new StringWriter();
             t.printStackTrace(new PrintWriter(w));
-            int len = toAppendTo.length();
+            final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
             }
             if (lines > 0) {
-                StringBuilder sb = new StringBuilder();
-                String[] array = w.toString().split("\n");
+                final StringBuilder sb = new StringBuilder();
+                final String[] array = w.toString().split("\n");
                 for (int i = 0; i < lines; ++i) {
                     sb.append(array[i]).append("\n");
                 }

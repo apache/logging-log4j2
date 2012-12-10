@@ -69,7 +69,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
         private final String size;
 
-        private FontSize(String size) {
+        private FontSize(final String size) {
             this.size = size;
         }
 
@@ -77,8 +77,8 @@ public final class HTMLLayout extends AbstractStringLayout {
             return size;
         }
 
-        public static FontSize getFontSize(String size) {
-            for (FontSize fontSize : values()) {
+        public static FontSize getFontSize(final String size) {
+            for (final FontSize fontSize : values()) {
                 if (fontSize.size.equals(size)) {
                     return fontSize;
                 }
@@ -95,8 +95,8 @@ public final class HTMLLayout extends AbstractStringLayout {
     private final String fontSize;
     private final String headerSize;
 
-    private HTMLLayout(boolean locationInfo, String title, String contentType, Charset charset,
-                       String font, String fontSize, String headerSize) {
+    private HTMLLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
+                       final String font, final String fontSize, final String headerSize) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
@@ -112,8 +112,8 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @param event The Logging Event.
      * @return A String containging the LogEvent as HTML.
      */
-    public String toSerializable(LogEvent event) {
-        StringBuilder sbuf = new StringBuilder(BUF_SIZE);
+    public String toSerializable(final LogEvent event) {
+        final StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
         sbuf.append(LINE_SEP).append("<tr>").append(LINE_SEP);
 
@@ -121,7 +121,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append(event.getMillis() - jvmStartTime);
         sbuf.append("</td>").append(LINE_SEP);
 
-        String escapedThread = Transform.escapeTags(event.getThreadName());
+        final String escapedThread = Transform.escapeTags(event.getThreadName());
         sbuf.append("<td title=\"").append(escapedThread).append(" thread\">");
         sbuf.append(escapedThread);
         sbuf.append("</td>").append(LINE_SEP);
@@ -149,7 +149,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("</td>").append(LINE_SEP);
 
         if (locationInfo) {
-            StackTraceElement element = event.getSource();
+            final StackTraceElement element = event.getSource();
             sbuf.append("<td>");
             sbuf.append(Transform.escapeTags(element.getFileName()));
             sbuf.append(':');
@@ -178,7 +178,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             sbuf.append("</td></tr>").append(LINE_SEP);
         }
 
-        Throwable throwable = event.getThrown();
+        final Throwable throwable = event.getThrown();
         if (throwable != null) {
             sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\">");
@@ -189,31 +189,31 @@ public final class HTMLLayout extends AbstractStringLayout {
         return sbuf.toString();
     }
 
-    private void appendThrowableAsHTML(Throwable throwable, StringBuilder sbuf) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
+    private void appendThrowableAsHTML(final Throwable throwable, final StringBuilder sbuf) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
         try {
             throwable.printStackTrace(pw);
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             // Ignore the exception.
         }
         pw.flush();
-        LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
-        ArrayList<String> lines = new ArrayList<String>();
+        final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
+        final ArrayList<String> lines = new ArrayList<String>();
         try {
           String line = reader.readLine();
           while (line != null) {
             lines.add(line);
             line = reader.readLine();
           }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             if (ex instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             lines.add(ex.toString());
         }
         boolean first = true;
-        for (String line : lines) {
+        for (final String line : lines) {
             if (!first) {
                 sbuf.append(TRACE_PREFIX);
             } else {
@@ -230,7 +230,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getHeader() {
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
         sbuf.append("\"http://www.w3.org/TR/html4/loose.dtd\">");
         sbuf.append(LINE_SEP);
@@ -271,7 +271,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getFooter() {
-        StringBuilder sbuf = new StringBuilder();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append("</table>").append(LINE_SEP);
         sbuf.append("<br>").append(LINE_SEP);
         sbuf.append("</body></html>");
@@ -287,10 +287,10 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @return An HTML Layout.
      */
     @PluginFactory
-    public static HTMLLayout createLayout(@PluginAttr("locationInfo") String locationInfo,
+    public static HTMLLayout createLayout(@PluginAttr("locationInfo") final String locationInfo,
                                           @PluginAttr("title") String title,
                                           @PluginAttr("contentType") String contentType,
-                                          @PluginAttr("charset") String charset,
+                                          @PluginAttr("charset") final String charset,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
@@ -304,10 +304,10 @@ public final class HTMLLayout extends AbstractStringLayout {
         if (font == null) {
             font = "arial,sans-serif";
         }
-        FontSize fs = FontSize.getFontSize(fontSize);
+        final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
-        String headerSize = fs.larger().getFontSize();
-        boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
+        final String headerSize = fs.larger().getFontSize();
+        final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
         if (title == null) {
             title = DEFAULT_TITLE;
         }

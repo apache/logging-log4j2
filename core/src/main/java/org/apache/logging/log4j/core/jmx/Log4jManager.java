@@ -33,8 +33,8 @@ public class Log4jManager {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     public List<LoggerContext> getLoggerContexts() {
-        Log4jContextFactory factory = (Log4jContextFactory) LogManager.getFactory();
-        ContextSelector selector = factory.getSelector();
+        final Log4jContextFactory factory = (Log4jContextFactory) LogManager.getFactory();
+        final ContextSelector selector = factory.getSelector();
         return selector.getLoggerContexts();
     }
 

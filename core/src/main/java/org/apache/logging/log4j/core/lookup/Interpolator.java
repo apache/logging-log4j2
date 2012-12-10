@@ -39,17 +39,17 @@ public class Interpolator implements StrLookup {
 
     private final StrLookup defaultLookup;
 
-    public Interpolator(StrLookup defaultLookup) {
+    public Interpolator(final StrLookup defaultLookup) {
         this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
-        PluginManager manager = new PluginManager("Lookup");
+        final PluginManager manager = new PluginManager("Lookup");
         manager.collectPlugins();
-        Map<String, PluginType> plugins = manager.getPlugins();
+        final Map<String, PluginType> plugins = manager.getPlugins();
 
-        for (Map.Entry<String, PluginType> entry : plugins.entrySet()) {
-            Class<StrLookup> clazz = entry.getValue().getPluginClass();
+        for (final Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+            final Class<StrLookup> clazz = entry.getValue().getPluginClass();
             try {
                 lookups.put(entry.getKey(), clazz.newInstance());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Unable to create Lookup for " + entry.getKey(), ex);
             }
         }
@@ -72,7 +72,7 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
-    public String lookup(String var) {
+    public String lookup(final String var) {
         return lookup(null, var);
     }
 
@@ -89,16 +89,16 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
-    public String lookup(LogEvent event, String var) {
+    public String lookup(final LogEvent event, String var) {
         if (var == null) {
             return null;
         }
 
-        int prefixPos = var.indexOf(PREFIX_SEPARATOR);
+        final int prefixPos = var.indexOf(PREFIX_SEPARATOR);
         if (prefixPos >= 0) {
-            String prefix = var.substring(0, prefixPos);
-            String name = var.substring(prefixPos + 1);
-            StrLookup lookup = lookups.get(prefix);
+            final String prefix = var.substring(0, prefixPos);
+            final String name = var.substring(prefixPos + 1);
+            final StrLookup lookup = lookups.get(prefix);
             String value = null;
             if (lookup != null) {
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
@@ -117,8 +117,8 @@ public class Interpolator implements StrLookup {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String name : lookups.keySet()) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String name : lookups.keySet()) {
             if (sb.length() == 0) {
                 sb.append("{");
             } else {

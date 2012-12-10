@@ -48,14 +48,14 @@ public class LoggerTest {
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -74,15 +74,15 @@ public class LoggerTest {
         verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + LINE_SEP);
     }
 
-    private void verify(String name, String expected) {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Map<String, Appender> list = ctx.getConfiguration().getAppenders();
-        Appender listApp = list.get(name);
+    private void verify(final String name, final String expected) {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        final Appender listApp = list.get(name);
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        List<String> events = ((ListAppender) listApp).getMessages();
+        final List<String> events = ((ListAppender) listApp).getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
-        String actual = events.get(0);
+        final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         ((ListAppender) listApp).clear();
     }

@@ -44,7 +44,7 @@ public abstract class NameAbbreviator {
         if (pattern.length() > 0) {
             //  if pattern is just spaces and numbers then
             //     use MaxElementAbbreviator
-            String trimmed = pattern.trim();
+            final String trimmed = pattern.trim();
 
             if (trimmed.length() == 0) {
                 return DEFAULT;
@@ -64,7 +64,7 @@ public abstract class NameAbbreviator {
                 return new MaxElementAbbreviator(Integer.parseInt(trimmed));
             }
 
-            ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<PatternAbbreviatorFragment>(5);
+            final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<PatternAbbreviatorFragment>(5);
             char ellipsis;
             int charCount;
             int pos = 0;
@@ -262,7 +262,7 @@ public abstract class NameAbbreviator {
          *
          * @param fragments element abbreviation patterns.
          */
-        public PatternAbbreviator(List<PatternAbbreviatorFragment> fragments) {
+        public PatternAbbreviator(final List<PatternAbbreviatorFragment> fragments) {
             if (fragments.size() == 0) {
                 throw new IllegalArgumentException(
                     "fragments must have at least one element");
@@ -283,7 +283,7 @@ public abstract class NameAbbreviator {
             //  all non-terminal patterns are executed once
             //
             int pos = 0;
-            StringBuilder sb = new StringBuilder(buf);
+            final StringBuilder sb = new StringBuilder(buf);
 
             for (int i = 0; (i < (fragments.length - 1)) && (pos < buf.length());
                  i++) {
@@ -293,7 +293,7 @@ public abstract class NameAbbreviator {
             //
             //   last pattern in executed repeatedly
             //
-            PatternAbbreviatorFragment terminalFragment = fragments[fragments.length - 1];
+            final PatternAbbreviatorFragment terminalFragment = fragments[fragments.length - 1];
 
             while ((pos < buf.length()) && (pos >= 0)) {
                 pos = terminalFragment.abbreviate(sb, pos);

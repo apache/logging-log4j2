@@ -102,7 +102,7 @@ public class Level extends Priority implements Serializable {
      * @param levelStr         The level name.
      * @param syslogEquivalent The matching syslog level.
      */
-    protected Level(int level, String levelStr, int syslogEquivalent) {
+    protected Level(final int level, final String levelStr, final int syslogEquivalent) {
         super(level, levelStr, syslogEquivalent);
     }
 
@@ -114,7 +114,7 @@ public class Level extends Priority implements Serializable {
      * @param sArg The level name.
      * @return The Level.
      */
-    public static Level toLevel(String sArg) {
+    public static Level toLevel(final String sArg) {
         return toLevel(sArg, Level.DEBUG);
     }
 
@@ -125,7 +125,7 @@ public class Level extends Priority implements Serializable {
      * @param val The integer value of the Level.
      * @return The Level.
      */
-    public static Level toLevel(int val) {
+    public static Level toLevel(final int val) {
         return toLevel(val, Level.DEBUG);
     }
 
@@ -137,7 +137,7 @@ public class Level extends Priority implements Serializable {
      * @param defaultLevel the default level if the integer doesn't match.
      * @return The matching Level.
      */
-    public static Level toLevel(int val, Level defaultLevel) {
+    public static Level toLevel(final int val, final Level defaultLevel) {
         switch (val) {
             case ALL_INT:
                 return ALL;
@@ -168,12 +168,12 @@ public class Level extends Priority implements Serializable {
      * @param defaultLevel The default Level to use.
      * @return the matching Level.
      */
-    public static Level toLevel(String sArg, Level defaultLevel) {
+    public static Level toLevel(final String sArg, final Level defaultLevel) {
         if (sArg == null) {
             return defaultLevel;
         }
 
-        String s = sArg.toUpperCase();
+        final String s = sArg.toUpperCase();
 
         if (s.equals("ALL")) {
             return Level.ALL;

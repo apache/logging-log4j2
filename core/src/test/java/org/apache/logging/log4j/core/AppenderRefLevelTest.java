@@ -49,7 +49,7 @@ public class AppenderRefLevelTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("LIST1")) {
                 app1 = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("LIST2")) {
@@ -112,7 +112,7 @@ public class AppenderRefLevelTest {
         logger3.info(testMarker, "Info Message");
         logger3.warn("warn Message");
         logger3.exit();
-        List<LogEvent> events = app1.getEvents();
+        final List<LogEvent> events = app1.getEvents();
         assertTrue("Incorrect number of events. Expected 4, actual " + events.size(), events.size() == 4);
     }
 }

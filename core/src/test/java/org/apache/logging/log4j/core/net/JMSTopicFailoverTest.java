@@ -77,7 +77,7 @@ public class JMSTopicFailoverTest {
     @Before
     public void before() {
         config = ctx.getConfiguration();
-        for (Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
                 break;
@@ -90,7 +90,7 @@ public class JMSTopicFailoverTest {
 
     private static void setupQueue() throws Exception {
         // MockContextFactory becomes the primary JNDI provider
-        StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
+        final StatusConsoleListener l = new StatusConsoleListener(Level.ERROR);
         StatusLogger.getLogger().registerListener(l);
         MockContextFactory.setAsInitial();
         context = new InitialContext();
@@ -103,9 +103,9 @@ public class JMSTopicFailoverTest {
     @Test
     public void testFailover() throws Exception {
         ThreadContext.put("appender", "Failover");
-        Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
+        final Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
         logger.debug("Test Message");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertNotNull("No events returned", events);
         assertTrue("No events returned", events.size() > 0);
         assertTrue("Incorrect event", "Test Message".equals(events.get(0).getMessage().getFormattedMessage()));
@@ -114,11 +114,11 @@ public class JMSTopicFailoverTest {
     @Test
     public void testReconnect() throws Exception {
         context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME));
-        AbstractJMSReceiver receiver = new JMSTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
+        final AbstractJMSReceiver receiver = new JMSTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
         ThreadContext.put("appender", "Failover");
-        Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
+        final Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
         logger.debug("Test Message");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertNotNull("No events returned", events);
         assertTrue("No events returned", events.size() > 0);
         assertTrue("Incorrect event", "Test Message".equals(events.get(0).getMessage().getFormattedMessage()));

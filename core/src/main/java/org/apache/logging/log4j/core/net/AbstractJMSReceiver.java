@@ -41,17 +41,17 @@ public abstract class AbstractJMSReceiver extends AbstractServer implements java
      * Listener that receives the event.
      * @param message The received message.
      */
-    public void onMessage(javax.jms.Message message) {
+    public void onMessage(final javax.jms.Message message) {
 
         try {
             if (message instanceof ObjectMessage) {
-                ObjectMessage objectMessage = (ObjectMessage) message;
+                final ObjectMessage objectMessage = (ObjectMessage) message;
                 log((LogEvent) objectMessage.getObject());
             } else {
                 logger.warn("Received message is of type " + message.getJMSType()
                     + ", was expecting ObjectMessage.");
             }
-        } catch (JMSException jmse) {
+        } catch (final JMSException jmse) {
             logger.error("Exception thrown while processing incoming message.",
                 jmse);
         }
@@ -64,10 +64,10 @@ public abstract class AbstractJMSReceiver extends AbstractServer implements java
      * @return The object.
      * @throws NamingException if an error occurs.
      */
-    protected Object lookup(Context ctx, String name) throws NamingException {
+    protected Object lookup(final Context ctx, final String name) throws NamingException {
         try {
             return ctx.lookup(name);
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             logger.error("Could not find name [" + name + "].");
             throw e;
         }

@@ -85,9 +85,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private String timestamppStr;
 
 
-    private RFC5424Layout(Configuration config, Facility facility, String id, int ein, boolean includeMDC,
-                          boolean includeNL, String mdcId, String appName, String messageId, String excludes,
-                          String includes, String required, Charset charset) {
+    private RFC5424Layout(final Configuration config, final Facility facility, final String id, final int ein, final boolean includeMDC,
+                          final boolean includeNL, final String mdcId, final String appName, final String messageId, final String excludes,
+                          final String includes, final String required, final Charset charset) {
         super(charset);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
@@ -100,11 +100,11 @@ public final class RFC5424Layout extends AbstractStringLayout {
         this.localHostName = getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
-            String[] array = excludes.split(",");
+            final String[] array = excludes.split(",");
             if (array.length > 0) {
                 c = new ExcludeChecker();
                 mdcExcludes = new ArrayList<String>(array.length);
-                for (String str : array) {
+                for (final String str : array) {
                     mdcExcludes.add(str.trim());
                 }
             } else {
@@ -114,11 +114,11 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcExcludes = null;
         }
         if (includes != null) {
-            String[] array = includes.split(",");
+            final String[] array = includes.split(",");
             if (array.length > 0) {
                 c = new IncludeChecker();
                 mdcIncludes = new ArrayList<String>(array.length);
-                for (String str : array) {
+                for (final String str : array) {
                     mdcIncludes.add(str.trim());
                 }
             } else {
@@ -128,10 +128,10 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcIncludes = null;
         }
         if (required != null) {
-            String[] array = required.split(",");
+            final String[] array = required.split(",");
             if (array.length > 0) {
                 mdcRequired = new ArrayList<String>(array.length);
-                for (String str : array) {
+                for (final String str : array) {
                     mdcRequired.add(str.trim());
                 }
             } else {
@@ -142,7 +142,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcRequired = null;
         }
         this.checker = c != null ? c : noopChecker;
-        String name = config == null ? null : config.getName();
+        final String name = config == null ? null : config.getName();
         configName = (name != null && name.length() > 0) ? name : null;
     }
 
@@ -153,9 +153,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @return The RFC 5424 String representation of the LogEvent.
      */
     public String toSerializable(final LogEvent event) {
-        Message msg = event.getMessage();
-        boolean isStructured = msg instanceof StructuredDataMessage;
-        StringBuilder buf = new StringBuilder();
+        final Message msg = event.getMessage();
+        final boolean isStructured = msg instanceof StructuredDataMessage;
+        final StringBuilder buf = new StringBuilder();
 
         buf.append("<");
         buf.append(Priority.getPriority(facility, event.getLevel()));
@@ -174,7 +174,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(" ");
         buf.append(getProcId());
         buf.append(" ");
-        String type = isStructured ? ((StructuredDataMessage) msg).getType() : null;
+        final String type = isStructured ? ((StructuredDataMessage) msg).getType() : null;
         if (type != null) {
             buf.append(type);
         } else if (messageId != null) {
@@ -187,8 +187,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
             StructuredDataId id = null;
             String text;
             if (isStructured) {
-                StructuredDataMessage data = (StructuredDataMessage) msg;
-                Map<String, String> map = data.getData();
+                final StructuredDataMessage data = (StructuredDataMessage) msg;
+                final Map<String, String> map = data.getData();
                 id = data.getId();
                 formatStructuredElement(id, map, buf, noopChecker);
                 text = data.getFormat();
@@ -199,8 +199,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 if (mdcRequired != null) {
                     checkRequired(event.getContextMap());
                 }
-                int ein = id == null || id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
-                StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
+                final int ein = id == null || id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
+                final StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
                 formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
             }
             if (text != null && text.length() > 0) {
@@ -229,25 +229,25 @@ public final class RFC5424Layout extends AbstractStringLayout {
      */
     public String getLocalHostname() {
         try {
-            InetAddress addr = InetAddress.getLocalHost();
+            final InetAddress addr = InetAddress.getLocalHost();
             return addr.getHostName();
-        } catch (UnknownHostException uhe) {
+        } catch (final UnknownHostException uhe) {
             try {
-                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                 while (interfaces.hasMoreElements()) {
-                    NetworkInterface nic = interfaces.nextElement();
-                    Enumeration<InetAddress> addresses = nic.getInetAddresses();
+                    final NetworkInterface nic = interfaces.nextElement();
+                    final Enumeration<InetAddress> addresses = nic.getInetAddresses();
                     while (addresses.hasMoreElements()) {
-                        InetAddress address = addresses.nextElement();
+                        final InetAddress address = addresses.nextElement();
                         if (!address.isLoopbackAddress()) {
-                            String hostname = address.getHostName();
+                            final String hostname = address.getHostName();
                             if (hostname != null) {
                                 return hostname;
                             }
                         }
                     }
                 }
-            } catch (SocketException se) {
+            } catch (final SocketException se) {
                 LOGGER.error("Could not determine local host name", uhe);
                 return "UNKNOWN_LOCALHOST";
             }
@@ -264,7 +264,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         return mdcIncludes;
     }
 
-    private String computeTimeStampString(long now) {
+    private String computeTimeStampString(final long now) {
         long last;
         synchronized (this) {
             last = lastTimestamp;
@@ -273,8 +273,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
             }
         }
 
-        StringBuilder buf = new StringBuilder();
-        Calendar cal = new GregorianCalendar();
+        final StringBuilder buf = new StringBuilder();
+        final Calendar cal = new GregorianCalendar();
         cal.setTimeInMillis(now);
         buf.append(Integer.toString(cal.get(Calendar.YEAR)));
         buf.append("-");
@@ -288,7 +288,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(":");
         pad(cal.get(Calendar.SECOND), TWO_DIGITS, buf);
 
-        int millis = cal.get(Calendar.MILLISECOND);
+        final int millis = cal.get(Calendar.MILLISECOND);
         if (millis != 0) {
             buf.append('.');
             pad(millis, THREE_DIGITS, buf);
@@ -304,7 +304,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             } else {
                 buf.append("+");
             }
-            int tzhour = tzmin / MINUTES_PER_HOUR;
+            final int tzhour = tzmin / MINUTES_PER_HOUR;
             tzmin -= tzhour * MINUTES_PER_HOUR;
             pad(tzhour, TWO_DIGITS, buf);
             buf.append(":");
@@ -319,7 +319,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         return buf.toString();
     }
 
-    private void pad(int val, int max, StringBuilder buf) {
+    private void pad(final int val, int max, final StringBuilder buf) {
         while (max > 1) {
             if (val < max) {
                 buf.append("0");
@@ -329,8 +329,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(StructuredDataId id, Map<String, String> data, StringBuilder sb,
-                                         ListChecker checker) {
+    private void formatStructuredElement(final StructuredDataId id, final Map<String, String> data, final StringBuilder sb,
+                                         final ListChecker checker) {
         if (id == null && defaultId == null) {
             return;
         }
@@ -340,8 +340,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         sb.append("]");
     }
 
-    private String getId(StructuredDataId id) {
-        StringBuilder sb = new StringBuilder();
+    private String getId(final StructuredDataId id) {
+        final StringBuilder sb = new StringBuilder();
         if (id.getName() == null) {
             sb.append(defaultId);
         } else {
@@ -357,19 +357,19 @@ public final class RFC5424Layout extends AbstractStringLayout {
         return sb.toString();
     }
 
-    private void checkRequired(Map<String, String> map) {
-        for (String key : mdcRequired) {
-            String value = map.get(key);
+    private void checkRequired(final Map<String, String> map) {
+        for (final String key : mdcRequired) {
+            final String value = map.get(key);
             if (value == null) {
                 throw new LoggingException("Required key " + key + " is missing from the " + mdcId);
             }
         }
     }
 
-    private void appendMap(Map<String, String> map, StringBuilder sb, ListChecker checker)
+    private void appendMap(final Map<String, String> map, final StringBuilder sb, final ListChecker checker)
     {
-        SortedMap<String, String> sorted = new TreeMap<String, String>(map);
-        for (Map.Entry<String, String> entry : sorted.entrySet()) {
+        final SortedMap<String, String> sorted = new TreeMap<String, String>(map);
+        for (final Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey()) && entry.getValue() != null) {
                 sb.append(" ");
                 sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
@@ -388,7 +388,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Includes only the listed keys.
      */
     private class IncludeChecker implements ListChecker {
-        public boolean check(String key) {
+        public boolean check(final String key) {
             return mdcIncludes.contains(key);
         }
     }
@@ -397,7 +397,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Excludes the listed keys.
      */
     private class ExcludeChecker implements ListChecker {
-        public boolean check(String key) {
+        public boolean check(final String key) {
             return !mdcExcludes.contains(key);
         }
     }
@@ -406,14 +406,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Does nothing.
      */
     private class NoopChecker implements ListChecker {
-        public boolean check(String key) {
+        public boolean check(final String key) {
             return true;
         }
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("facility=").append(facility.name());
         sb.append(" appName=").append(appName);
         sb.append(" defaultId=").append(defaultId);
@@ -443,19 +443,19 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @return An RFC5424Layout.
      */
     @PluginFactory
-    public static RFC5424Layout createLayout(@PluginAttr("facility") String facility,
-                                             @PluginAttr("id") String id,
-                                             @PluginAttr("enterpriseNumber") String ein,
-                                             @PluginAttr("includeMDC") String includeMDC,
+    public static RFC5424Layout createLayout(@PluginAttr("facility") final String facility,
+                                             @PluginAttr("id") final String id,
+                                             @PluginAttr("enterpriseNumber") final String ein,
+                                             @PluginAttr("includeMDC") final String includeMDC,
                                              @PluginAttr("mdcId") String mdcId,
-                                             @PluginAttr("newLine") String includeNL,
-                                             @PluginAttr("appName") String appName,
-                                             @PluginAttr("messageId") String msgId,
-                                             @PluginAttr("mdcExcludes") String excludes,
+                                             @PluginAttr("newLine") final String includeNL,
+                                             @PluginAttr("appName") final String appName,
+                                             @PluginAttr("messageId") final String msgId,
+                                             @PluginAttr("mdcExcludes") final String excludes,
                                              @PluginAttr("mdcIncludes") String includes,
-                                             @PluginAttr("mdcRequired") String required,
-                                             @PluginAttr("charset") String charset,
-                                             @PluginConfiguration Configuration config) {
+                                             @PluginAttr("mdcRequired") final String required,
+                                             @PluginAttr("charset") final String charset,
+                                             @PluginConfiguration final Configuration config) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {
@@ -468,10 +468,10 @@ public final class RFC5424Layout extends AbstractStringLayout {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
         }
-        Facility f = Facility.toFacility(facility, Facility.LOCAL0);
-        int enterpriseNumber = ein == null ? DEFAULT_ENTERPRISE_NUMBER : Integer.parseInt(ein);
-        boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
-        boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
+        final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
+        final int enterpriseNumber = ein == null ? DEFAULT_ENTERPRISE_NUMBER : Integer.parseInt(ein);
+        final boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
+        final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
         if (mdcId == null) {
             mdcId = DEFAULT_MDCID;
         }

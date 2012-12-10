@@ -47,11 +47,11 @@ public class PatternParserTest {
     Logger root = ctx.getLogger("");
 
     private static String msgPattern = "%m%n";
-    private String mdcMsgPattern1 = "%m : %X%n";
-    private String mdcMsgPattern2 = "%m : %X{key1}%n";
-    private String mdcMsgPattern3 = "%m : %X{key2}%n";
-    private String mdcMsgPattern4 = "%m : %X{key3}%n";
-    private String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
+    private final String mdcMsgPattern1 = "%m : %X%n";
+    private final String mdcMsgPattern2 = "%m : %X{key1}%n";
+    private final String mdcMsgPattern3 = "%m : %X{key2}%n";
+    private final String mdcMsgPattern4 = "%m : %X{key3}%n";
+    private final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
     private static String nestedPattern =
@@ -67,8 +67,8 @@ public class PatternParserTest {
         parser = new PatternParser(KEY);
     }
 
-    private void validateConverter(List<PatternFormatter> formatter, int index, String name) {
-        PatternConverter pc = formatter.get(index).getConverter();
+    private void validateConverter(final List<PatternFormatter> formatter, final int index, final String name) {
+        final PatternConverter pc = formatter.get(index).getConverter();
         assertEquals("Incorrect converter " + pc.getName() + " at index " + index + " expected " + name,
             pc.getName(), name);
     }
@@ -78,7 +78,7 @@ public class PatternParserTest {
      */
     @Test
     public void defaultPattern() {
-        List<PatternFormatter> formatters = parser.parse(msgPattern);
+        final List<PatternFormatter> formatters = parser.parse(msgPattern);
         assertNotNull(formatters);
         assertTrue(formatters.size() == 2);
         validateConverter(formatters, 0, "Message");
@@ -90,39 +90,39 @@ public class PatternParserTest {
      */
     @Test
     public void testCustomPattern() {
-        List<PatternFormatter> formatters = parser.parse(customPattern);
+        final List<PatternFormatter> formatters = parser.parse(customPattern);
         assertNotNull(formatters);
-        Map<String, String> mdc = new HashMap<String, String>();
+        final Map<String, String> mdc = new HashMap<String, String>();
         mdc.put("loginId", "Fred");
-        Throwable t = new Throwable();
-        StackTraceElement[] elements = t.getStackTrace();
-        LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
+        final Throwable t = new Throwable();
+        final StackTraceElement[] elements = t.getStackTrace();
+        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
             Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null,
             mdc, null, "Thread1", elements[0], System.currentTimeMillis());
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
-        String str = buf.toString();
-        String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + LINE_SEP;
+        final String str = buf.toString();
+        final String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + LINE_SEP;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
     @Test
     public void testNestedPattern() {
-        List<PatternFormatter> formatters = parser.parse(nestedPattern);
+        final List<PatternFormatter> formatters = parser.parse(nestedPattern);
         assertNotNull(formatters);
-        Throwable t = new Throwable();
-        StackTraceElement[] elements = t.getStackTrace();
-        LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
+        final Throwable t = new Throwable();
+        final StackTraceElement[] elements = t.getStackTrace();
+        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
                 Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null, null, null, "Thread1", elements[0],
                 System.currentTimeMillis());
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
-        String str = buf.toString();
-        String expected = String.format("] INFO : Hello, world%s\u001B[m", LINE_SEP);
+        final String str = buf.toString();
+        final String expected = String.format("] INFO : Hello, world%s\u001B[m", LINE_SEP);
         assertTrue(" Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 

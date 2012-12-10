@@ -80,9 +80,9 @@ public class SocketAppenderTest {
 
     @After
     public void teardown() {
-        Map<String,Appender> map = root.getAppenders();
-        for (Map.Entry<String, Appender> entry : map.entrySet()) {
-            Appender app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -93,7 +93,7 @@ public class SocketAppenderTest {
     @Test
     public void testTCPAppender() throws Exception {
 
-        SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
             "Test", null, null, null, null);
         appender.start();
 
@@ -102,7 +102,7 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
-        LogEvent event = list.poll(3, TimeUnit.SECONDS);
+        final LogEvent event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
         assertTrue("Message not delivered via TCP", tcpCount > 0);
@@ -112,7 +112,7 @@ public class SocketAppenderTest {
     @Test
     public void testUDPAppender() throws Exception {
 
-        SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", "-1",
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", "-1",
             "Test", null, null, null, null);
         appender.start();
 
@@ -121,7 +121,7 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
-        LogEvent event = list.poll(3, TimeUnit.SECONDS);
+        final LogEvent event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
         assertTrue("Message not delivered via UDP", udpCount > 0);
@@ -144,16 +144,16 @@ public class SocketAppenderTest {
         @Override
         public void run() {
             this.thread = Thread.currentThread();
-            byte[] bytes = new byte[4096];
-            DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
+            final byte[] bytes = new byte[4096];
+            final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
             try {
                 while (!shutdown) {
                     sock.receive(packet);
-                    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+                    final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
                     ++udpCount;
                     list.add((LogEvent) ois.readObject());
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 if (!shutdown) {
                     throw new RuntimeException(ex);
                 }
@@ -178,17 +178,17 @@ public class SocketAppenderTest {
         @Override
         public void run() {
             try {
-                Socket socket = sock.accept();
+                final Socket socket = sock.accept();
                 if (socket != null) {
-                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    final ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     while (!shutdown) {
                         list.add((LogEvent) ois.readObject());
                         ++tcpCount;
                     }
                 }
-            } catch (EOFException eof) {
+            } catch (final EOFException eof) {
                 // Socket is closed.
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 if (!shutdown) {
                     throw new RuntimeException(ex);
                 }

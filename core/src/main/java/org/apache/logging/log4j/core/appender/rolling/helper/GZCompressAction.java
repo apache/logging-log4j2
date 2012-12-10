@@ -92,11 +92,11 @@ public final class GZCompressAction extends AbstractAction {
     public static boolean execute(final File source, final File destination, final boolean deleteSource)
         throws IOException {
         if (source.exists()) {
-            FileInputStream fis = new FileInputStream(source);
-            FileOutputStream fos = new FileOutputStream(destination);
-            GZIPOutputStream gzos = new GZIPOutputStream(fos);
-            BufferedOutputStream os = new BufferedOutputStream(gzos);
-            byte[] inbuf = new byte[BUF_SIZE];
+            final FileInputStream fis = new FileInputStream(source);
+            final FileOutputStream fos = new FileOutputStream(destination);
+            final GZIPOutputStream gzos = new GZIPOutputStream(fos);
+            final BufferedOutputStream os = new BufferedOutputStream(gzos);
+            final byte[] inbuf = new byte[BUF_SIZE];
             int n;
 
             while ((n = fis.read(inbuf)) != -1) {

@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class InMemoryAppender extends AbstractOutputStreamAppender {
 
-    public InMemoryAppender(String name, Layout layout, CompositeFilter filters, boolean handleException) {
+    public InMemoryAppender(final String name, final Layout layout, final CompositeFilter filters, final boolean handleException) {
         super(name, layout, filters, handleException, true, new InMemoryManager(name));
     }
 
@@ -39,7 +39,7 @@ public class InMemoryAppender extends AbstractOutputStreamAppender {
 
     private static class InMemoryManager extends OutputStreamManager {
 
-        public InMemoryManager(String name) {
+        public InMemoryManager(final String name) {
             super(new ByteArrayOutputStream(), name);
         }
 

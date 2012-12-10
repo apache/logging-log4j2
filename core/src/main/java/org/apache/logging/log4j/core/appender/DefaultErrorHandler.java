@@ -39,7 +39,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private final Appender appender;
 
-    public DefaultErrorHandler(Appender appender) {
+    public DefaultErrorHandler(final Appender appender) {
         this.appender = appender;
     }
 
@@ -48,8 +48,8 @@ public class DefaultErrorHandler implements ErrorHandler {
      * Handle an error with a message.
      * @param msg The message.
      */
-    public void error(String msg) {
-        long current = System.currentTimeMillis();
+    public void error(final String msg) {
+        final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
             LOGGER.error(msg);
         }
@@ -61,8 +61,8 @@ public class DefaultErrorHandler implements ErrorHandler {
      * @param msg The message.
      * @param t The Throwable.
      */
-    public void error(String msg, Throwable t) {
-        long current = System.currentTimeMillis();
+    public void error(final String msg, final Throwable t) {
+        final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
             LOGGER.error(msg, t);
         }
@@ -78,8 +78,8 @@ public class DefaultErrorHandler implements ErrorHandler {
      * @param event The LogEvent.
      * @param t The Throwable.
      */
-    public void error(String msg, LogEvent event, Throwable t) {
-        long current = System.currentTimeMillis();
+    public void error(final String msg, final LogEvent event, final Throwable t) {
+        final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
             LOGGER.error(msg, t);
         }

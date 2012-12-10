@@ -34,16 +34,16 @@ public class CollectionLoggingTest {
 
     @Test
     public void testSystemProperties() {
-        Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
+        final Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         // logger.error(new MapMessage(System.getProperties()));
     }
 
     @Test
     public void testSimpleMap() {
-        Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
+        final Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("MyKey1", "MyValue1");
         map.put("MyKey2", "MyValue2");
         logger.error(new MapMessage(map));
@@ -52,13 +52,13 @@ public class CollectionLoggingTest {
 
     @Test
     public void testNetworkInterfaces() throws SocketException {
-        Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
+        final Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
         logger.error(NetworkInterface.getNetworkInterfaces());
     }
 
     @Test
     public void testAvailableCharsets() throws SocketException {
-        Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
+        final Logger logger = LogManager.getLogger(CollectionLoggingTest.class.getName());
         logger.error(Charset.availableCharsets());
     }
 

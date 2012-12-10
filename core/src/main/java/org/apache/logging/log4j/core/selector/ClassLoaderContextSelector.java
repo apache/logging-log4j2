@@ -61,9 +61,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
         setupCallerCheck();
     }
 
-    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         if (currentContext) {
-            LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
                 return ctx;
             }
@@ -76,7 +76,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
                     Class clazz = Class.class;
                     boolean next = false;
                     for (int index = 2; clazz != null; ++index) {
-                        Object[] params = new Object[] {index};
+                        final Object[] params = new Object[] {index};
                         clazz = (Class) getCallerClass.invoke(null, params);
                         if (clazz == null) {
                             break;
@@ -92,22 +92,22 @@ public class ClassLoaderContextSelector implements ContextSelector {
                     if (clazz != null) {
                         return locateContext(clazz.getClassLoader(), null);
                     }
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     // logger.debug("Unable to determine caller class via Sun Reflection", ex);
                 }
             }
 
             if (securityManager != null) {
-                Class clazz = securityManager.getCaller(fqcn);
+                final Class clazz = securityManager.getCaller(fqcn);
                 if (clazz != null) {
                     return locateContext(clazz.getClassLoader(), null);
                 }
             }
 
-            Throwable t = new Throwable();
+            final Throwable t = new Throwable();
             boolean next = false;
             String name = null;
-            for (StackTraceElement element : t.getStackTrace()) {
+            for (final StackTraceElement element : t.getStackTrace()) {
                 if (element.getClassName().equals(fqcn)) {
                     next = true;
                     continue;
@@ -120,11 +120,11 @@ public class ClassLoaderContextSelector implements ContextSelector {
             if (name != null) {
                 try {
                     return locateContext(Loader.loadClass(name).getClassLoader(), null);
-                } catch (ClassNotFoundException ex) {
+                } catch (final ClassNotFoundException ex) {
                     //System.out.println("Could not load class " + name);
                 }
             }
-            LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
+            final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
             if (lc != null) {
                 return lc;
             }
@@ -132,9 +132,9 @@ public class ClassLoaderContextSelector implements ContextSelector {
         }
     }
 
-    public void removeContext(LoggerContext context) {
-        for (Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : contextMap.entrySet()) {
-            LoggerContext ctx = entry.getValue().get().get();
+    public void removeContext(final LoggerContext context) {
+        for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : contextMap.entrySet()) {
+            final LoggerContext ctx = entry.getValue().get().get();
             if (ctx == context) {
                 contextMap.remove(entry.getKey());
             }
@@ -142,10 +142,10 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     public List<LoggerContext> getLoggerContexts() {
-        List<LoggerContext> list = new ArrayList<LoggerContext>();
-        Collection<AtomicReference<WeakReference<LoggerContext>>> coll = contextMap.values();
-        for (AtomicReference<WeakReference<LoggerContext>> ref : coll) {
-            LoggerContext ctx = ref.get().get();
+        final List<LoggerContext> list = new ArrayList<LoggerContext>();
+        final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = contextMap.values();
+        for (final AtomicReference<WeakReference<LoggerContext>> ref : coll) {
+            final LoggerContext ctx = ref.get().get();
             if (ctx != null) {
                 list.add(ctx);
             }
@@ -153,19 +153,19 @@ public class ClassLoaderContextSelector implements ContextSelector {
         return Collections.unmodifiableList(list);
     }
 
-    private LoggerContext locateContext(ClassLoader loader, String configLocation) {
-        String name = loader.toString();
-        AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
+    private LoggerContext locateContext(final ClassLoader loader, final String configLocation) {
+        final String name = loader.toString();
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref == null) {
             LoggerContext ctx = new LoggerContext(name, null, configLocation);
-            AtomicReference<WeakReference<LoggerContext>> r =
+            final AtomicReference<WeakReference<LoggerContext>> r =
                 new AtomicReference<WeakReference<LoggerContext>>();
             r.set(new WeakReference<LoggerContext>(ctx));
             contextMap.putIfAbsent(loader.toString(), r);
             ctx = contextMap.get(name).get().get();
             return ctx;
         } else {
-            WeakReference<LoggerContext> r = ref.get();
+            final WeakReference<LoggerContext> r = ref.get();
             LoggerContext ctx = r.get();
             if (ctx != null) {
                 return ctx;
@@ -178,29 +178,29 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     private static void setupCallerCheck() {
         try {
-            ClassLoader loader = Loader.getClassLoader();
-            Class clazz = loader.loadClass("sun.reflect.Reflection");
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                int modifier = method.getModifiers();
+            final ClassLoader loader = Loader.getClassLoader();
+            final Class clazz = loader.loadClass("sun.reflect.Reflection");
+            final Method[] methods = clazz.getMethods();
+            for (final Method method : methods) {
+                final int modifier = method.getModifiers();
                 if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
                     getCallerClass = method;
                     break;
                 }
             }
-        } catch (ClassNotFoundException cnfe) {
+        } catch (final ClassNotFoundException cnfe) {
             logger.debug("sun.reflect.Reflection is not installed");
         }
         try {
             securityManager = new PrivateSecurityManager();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
             logger.debug("Unable to install security manager", ex);
         }
     }
 
     private LoggerContext getDefault() {
-        LoggerContext ctx = context.get();
+        final LoggerContext ctx = context.get();
         if (ctx != null) {
             return ctx;
         }
@@ -213,10 +213,10 @@ public class ClassLoaderContextSelector implements ContextSelector {
      */
     private static class PrivateSecurityManager extends SecurityManager {
 
-        public Class getCaller(String fqcn) {
-            Class[] classes = getClassContext();
+        public Class getCaller(final String fqcn) {
+            final Class[] classes = getClassContext();
             boolean next = false;
-            for (Class clazz : classes) {
+            for (final Class clazz : classes) {
                 if (clazz.getName().equals(fqcn)) {
                     next = true;
                     continue;

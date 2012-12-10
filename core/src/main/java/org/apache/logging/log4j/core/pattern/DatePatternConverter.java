@@ -128,7 +128,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         
         try {
             tempFormat = new SimpleDateFormat(pattern);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
 
             // default to the ISO8601 format
@@ -137,7 +137,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         // if the option list contains a TZ option, then set it.
         if ((options != null) && (options.length > 1)) {
-            TimeZone tz = TimeZone.getTimeZone(options[1]);
+            final TimeZone tz = TimeZone.getTimeZone(options[1]);
             tempFormat.setTimeZone(tz);
         }
         simpleFormat = tempFormat; 
@@ -158,7 +158,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        long timestamp = event.getMillis();
+        final long timestamp = event.getMillis();
 
         synchronized (this) {
             if (timestamp != lastTimestamp) {
@@ -169,8 +169,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         output.append(cachedDate);
     }
 
-    public void format(final StringBuilder toAppendTo, Object... objects) {
-        for (Object obj : objects) {
+    public void format(final StringBuilder toAppendTo, final Object... objects) {
+        for (final Object obj : objects) {
             if (obj instanceof Date) {
                 format(obj, toAppendTo);
                 break;

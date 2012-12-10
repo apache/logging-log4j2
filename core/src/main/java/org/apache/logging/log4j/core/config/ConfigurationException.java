@@ -21,11 +21,11 @@ package org.apache.logging.log4j.core.config;
  */
 public class ConfigurationException extends RuntimeException {
 
-    public ConfigurationException(String msg) {
+    public ConfigurationException(final String msg) {
         super(msg);
     }
 
-    public ConfigurationException(String msg, Exception ex) {
+    public ConfigurationException(final String msg, final Exception ex) {
         super(msg, ex);
     }
 }

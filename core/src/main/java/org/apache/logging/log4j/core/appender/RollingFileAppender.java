@@ -41,8 +41,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
     private final String filePattern;
 
 
-    private RollingFileAppender(String name, Layout layout, Filter filter, RollingFileManager manager, String fileName,
-                                String filePattern, boolean handleException, boolean immediateFlush) {
+    private RollingFileAppender(final String name, final Layout layout, final Filter filter, final RollingFileManager manager, final String fileName,
+                                final String filePattern, final boolean handleException, final boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = fileName;
         this.filePattern = filePattern;
@@ -54,7 +54,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
      * @param event The LogEvent.
      */
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         ((RollingFileManager) getManager()).checkRollover(event);
         super.append(event);
     }
@@ -94,23 +94,23 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
      * @return A RollingFileAppender.
      */
     @PluginFactory
-    public static RollingFileAppender createAppender(@PluginAttr("fileName") String fileName,
-                                              @PluginAttr("filePattern") String filePattern,
-                                              @PluginAttr("append") String append,
-                                              @PluginAttr("name") String name,
-                                              @PluginAttr("bufferedIO") String bufferedIO,
-                                              @PluginAttr("immediateFlush") String immediateFlush,
-                                              @PluginElement("policy") TriggeringPolicy policy,
+    public static RollingFileAppender createAppender(@PluginAttr("fileName") final String fileName,
+                                              @PluginAttr("filePattern") final String filePattern,
+                                              @PluginAttr("append") final String append,
+                                              @PluginAttr("name") final String name,
+                                              @PluginAttr("bufferedIO") final String bufferedIO,
+                                              @PluginAttr("immediateFlush") final String immediateFlush,
+                                              @PluginElement("policy") final TriggeringPolicy policy,
                                               @PluginElement("strategy") RolloverStrategy strategy,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filter") Filter filter,
-                                              @PluginAttr("suppressExceptions") String suppress,
-                                              @PluginConfiguration Configuration config) {
+                                              @PluginElement("filter") final Filter filter,
+                                              @PluginAttr("suppressExceptions") final String suppress,
+                                              @PluginConfiguration final Configuration config) {
 
-        boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
+        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
+        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
@@ -136,7 +136,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
             strategy = DefaultRolloverStrategy.createStrategy(null, null, "true", config);
         }
 
-        RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered,
+        final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend, isBuffered,
             policy, strategy);
         if (manager == null) {
             return null;

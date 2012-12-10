@@ -35,12 +35,12 @@ public class MarkerPatternConverterTest {
 
     @Test
     public void testLookup() {
-        Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
-        Marker eventMarker = MarkerManager.getMarker("EVENT");
-        Marker auditMarker = MarkerManager.getMarker("AUDIT", eventMarker);
-        LogEvent event = new Log4jLogEvent("MyLogger", auditMarker, null, Level.DEBUG, msg, null);
-        StringBuilder sb = new StringBuilder();
-        MarkerPatternConverter converter = MarkerPatternConverter.newInstance(null);
+        final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
+        final Marker eventMarker = MarkerManager.getMarker("EVENT");
+        final Marker auditMarker = MarkerManager.getMarker("AUDIT", eventMarker);
+        final LogEvent event = new Log4jLogEvent("MyLogger", auditMarker, null, Level.DEBUG, msg, null);
+        final StringBuilder sb = new StringBuilder();
+        final MarkerPatternConverter converter = MarkerPatternConverter.newInstance(null);
         converter.format(event, sb);
         assertEquals(auditMarker.toString(), sb.toString());
     }

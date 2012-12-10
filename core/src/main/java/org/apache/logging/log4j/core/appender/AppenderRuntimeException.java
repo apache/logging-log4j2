@@ -23,15 +23,15 @@ package org.apache.logging.log4j.core.appender;
  */
 public class AppenderRuntimeException extends RuntimeException {
 
-    public AppenderRuntimeException(String msg) {
+    public AppenderRuntimeException(final String msg) {
         super(msg);
     }
 
-    public AppenderRuntimeException(String msg, Throwable ex) {
+    public AppenderRuntimeException(final String msg, final Throwable ex) {
         super(msg, ex);
     }
 
-    public AppenderRuntimeException(Throwable ex) {
+    public AppenderRuntimeException(final Throwable ex) {
         super(ex);
     }
 }

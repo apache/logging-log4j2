@@ -66,7 +66,7 @@ public class ObjectMessage implements Message, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -74,7 +74,7 @@ public class ObjectMessage implements Message, Serializable {
             return false;
         }
 
-        ObjectMessage that = (ObjectMessage) o;
+        final ObjectMessage that = (ObjectMessage) o;
 
         return !(obj != null ? !obj.equals(that.obj) : that.obj != null);
     }
@@ -89,7 +89,7 @@ public class ObjectMessage implements Message, Serializable {
         return "ObjectMessage[obj=" + obj.toString() + "]";
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         if (obj instanceof Serializable) {
             out.writeObject(obj);
@@ -98,7 +98,7 @@ public class ObjectMessage implements Message, Serializable {
         }
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         obj = in.readObject();
     }

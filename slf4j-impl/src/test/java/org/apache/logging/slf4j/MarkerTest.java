@@ -30,11 +30,11 @@ public class MarkerTest {
 
     @Test
     public void testMarker() {
-        org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker("TEST");
-        org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker("PARENT");
+        final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker("TEST");
+        final org.slf4j.Marker slf4jParent = org.slf4j.MarkerFactory.getMarker("PARENT");
         slf4jMarker.add(slf4jParent);
-        Marker log4jParent = MarkerManager.getMarker("PARENT");
-        Marker log4jMarker = MarkerManager.getMarker("TEST", log4jParent);
+        final Marker log4jParent = MarkerManager.getMarker("PARENT");
+        final Marker log4jMarker = MarkerManager.getMarker("TEST", log4jParent);
 
         assertTrue("Incorrect Marker class", slf4jMarker instanceof MarkerWrapper);
         assertTrue("SLF4J Marker doesn't match Log4j Marker", ((MarkerWrapper) slf4jMarker).isInstanceOf(log4jMarker));

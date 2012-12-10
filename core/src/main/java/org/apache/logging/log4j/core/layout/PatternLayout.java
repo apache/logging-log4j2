@@ -100,13 +100,13 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param pattern conversion pattern.
      * @param charset The character set.
      */
-    private PatternLayout(Configuration config, final RegexReplacement replace, final String pattern,
+    private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
                          final Charset charset) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;
         this.config = config;
-        PatternParser parser = createPatternParser(config);
+        final PatternParser parser = createPatternParser(config);
         formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
         handlesExceptions = parser.handlesExceptions();
     }
@@ -119,11 +119,11 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param conversionPattern conversion pattern.
      */
     public void setConversionPattern(final String conversionPattern) {
-        String pattern = OptionConverter.convertSpecialChars(conversionPattern);
+        final String pattern = OptionConverter.convertSpecialChars(conversionPattern);
         if (pattern == null) {
             return;
         }
-        PatternParser parser = createPatternParser(this.config);
+        final PatternParser parser = createPatternParser(this.config);
         formatters = parser.parse(pattern);
         handlesExceptions = parser.handlesExceptions();
     }
@@ -136,8 +136,8 @@ public final class PatternLayout extends AbstractStringLayout {
      * @return The event formatted as a String.
      */
     public String toSerializable(final LogEvent event) {
-        StringBuilder buf = new StringBuilder();
-        for (PatternFormatter formatter : formatters) {
+        final StringBuilder buf = new StringBuilder();
+        for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
         String str = buf.toString();
@@ -152,7 +152,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param config The Configuration.
      * @return The PatternParser.
      */
-    public static PatternParser createPatternParser(Configuration config) {
+    public static PatternParser createPatternParser(final Configuration config) {
         if (config == null) {
             return new PatternParser(config, KEY, LogEventPatternConverter.class);
         }
@@ -179,10 +179,10 @@ public final class PatternLayout extends AbstractStringLayout {
      * @return The PatternLayout.
      */
     @PluginFactory
-    public static PatternLayout createLayout(@PluginAttr("pattern") String pattern,
-                                             @PluginConfiguration Configuration config,
-                                             @PluginElement("replace") RegexReplacement replace,
-                                             @PluginAttr("charset") String charset) {
+    public static PatternLayout createLayout(@PluginAttr("pattern") final String pattern,
+                                             @PluginConfiguration final Configuration config,
+                                             @PluginElement("replace") final RegexReplacement replace,
+                                             @PluginAttr("charset") final String charset) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charset != null) {
             if (Charset.isSupported(charset)) {

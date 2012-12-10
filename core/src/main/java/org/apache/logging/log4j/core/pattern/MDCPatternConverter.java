@@ -63,7 +63,7 @@ public final class MDCPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Map<String, String> contextMap = event.getContextMap();
+        final Map<String, String> contextMap = event.getContextMap();
         // if there is no additional options, we output every single
         // Key/Value pair for the MDC in a similar format to Hashtable.toString()
         if (key == null) {
@@ -73,9 +73,9 @@ public final class MDCPatternConverter extends LogEventPatternConverter {
                 toAppendTo.append("{}");
                 return;
             }
-            StringBuilder sb = new StringBuilder("{");
-            Set<String> keys = new TreeSet<String>(contextMap.keySet());
-            for (String key : keys) {
+            final StringBuilder sb = new StringBuilder("{");
+            final Set<String> keys = new TreeSet<String>(contextMap.keySet());
+            for (final String key : keys) {
                 if (sb.length() > 1) {
                     sb.append(", ");
                 }
@@ -86,7 +86,7 @@ public final class MDCPatternConverter extends LogEventPatternConverter {
             toAppendTo.append(sb);
         } else if (contextMap != null) {
             // otherwise they just want a single key output
-            Object val = contextMap.get(key);
+            final Object val = contextMap.get(key);
 
             if (val != null) {
                 toAppendTo.append(val);

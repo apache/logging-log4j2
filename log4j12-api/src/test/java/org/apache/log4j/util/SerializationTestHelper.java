@@ -51,13 +51,13 @@ public class SerializationTestHelper {
      */
     public static Object serializeClone(final Object obj)
         throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream memOut = new ByteArrayOutputStream();
-        ObjectOutputStream objOut = new ObjectOutputStream(memOut);
+        final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
+        final ObjectOutputStream objOut = new ObjectOutputStream(memOut);
         objOut.writeObject(obj);
         objOut.close();
 
-        ByteArrayInputStream src = new ByteArrayInputStream(memOut.toByteArray());
-        ObjectInputStream objIs = new ObjectInputStream(src);
+        final ByteArrayInputStream src = new ByteArrayInputStream(memOut.toByteArray());
+        final ObjectInputStream objIs = new ObjectInputStream(src);
 
         return objIs.readObject();
     }
@@ -71,8 +71,8 @@ public class SerializationTestHelper {
      */
     public static Object deserializeStream(final String witness)
         throws Exception {
-        FileInputStream fileIs = new FileInputStream(witness);
-        ObjectInputStream objIs = new ObjectInputStream(fileIs);
+        final FileInputStream fileIs = new FileInputStream(witness);
+        final ObjectInputStream objIs = new ObjectInputStream(fileIs);
 
         return objIs.readObject();
     }
@@ -90,8 +90,8 @@ public class SerializationTestHelper {
     public static void assertSerializationEquals(
         final String witness, final Object obj, final int[] skip,
         final int endCompare) throws Exception {
-        ByteArrayOutputStream memOut = new ByteArrayOutputStream();
-        ObjectOutputStream objOut = new ObjectOutputStream(memOut);
+        final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
+        final ObjectOutputStream objOut = new ObjectOutputStream(memOut);
         objOut.writeObject(obj);
         objOut.close();
 
@@ -110,13 +110,13 @@ public class SerializationTestHelper {
     public static void assertStreamEquals(
         final String witness, final byte[] actual, final int[] skip,
         final int endCompare) throws IOException {
-        File witnessFile = new File(witness);
+        final File witnessFile = new File(witness);
 
         if (witnessFile.exists()) {
             int skipIndex = 0;
-            byte[] expected = new byte[actual.length];
-            FileInputStream is = new FileInputStream(witnessFile);
-            int bytesRead = is.read(expected);
+            final byte[] expected = new byte[actual.length];
+            final FileInputStream is = new FileInputStream(witnessFile);
+            final int bytesRead = is.read(expected);
             is.close();
 
             if (bytesRead < endCompare) {
@@ -143,7 +143,7 @@ public class SerializationTestHelper {
             //
             //  if the file doesn't exist then
             //      assume that we are setting up and need to write it
-            FileOutputStream os = new FileOutputStream(witnessFile);
+            final FileOutputStream os = new FileOutputStream(witnessFile);
             os.write(actual);
             os.close();
             fail("Writing witness file " + witness);

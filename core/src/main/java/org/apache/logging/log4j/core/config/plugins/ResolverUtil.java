@@ -82,10 +82,10 @@ public class ResolverUtil<T> {
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
-    private Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
+    private final Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
 
     /** The set of matches being accumulated. */
-    private Set<URI> resourceMatches = new HashSet<URI>();
+    private final Set<URI> resourceMatches = new HashSet<URI>();
 
     /**
      * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
@@ -128,7 +128,7 @@ public class ResolverUtil<T> {
      *
      * @param classloader a ClassLoader to use when scanning for classes
      */
-    public void setClassLoader(ClassLoader classloader) { this.classloader = classloader; }
+    public void setClassLoader(final ClassLoader classloader) { this.classloader = classloader; }
 
     /**
      * Attempts to discover classes that are assignable to the type provided. In the case
@@ -139,13 +139,13 @@ public class ResolverUtil<T> {
      * @param parent the class of interface to find subclasses or implementations of
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
-    public void findImplementations(Class parent, String... packageNames) {
+    public void findImplementations(final Class parent, final String... packageNames) {
         if (packageNames == null) {
             return;
         }
 
-        Test test = new IsA(parent);
-        for (String pkg : packageNames) {
+        final Test test = new IsA(parent);
+        for (final String pkg : packageNames) {
             findInPackage(test, pkg);
         }
     }
@@ -157,13 +157,13 @@ public class ResolverUtil<T> {
      * @param suffix The class name suffix to match
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
-    public void findSuffix(String suffix, String... packageNames) {
+    public void findSuffix(final String suffix, final String... packageNames) {
         if (packageNames == null) {
             return;
         }
 
-        Test test = new NameEndsWith(suffix);
-        for (String pkg : packageNames) {
+        final Test test = new NameEndsWith(suffix);
+        for (final String pkg : packageNames) {
             findInPackage(test, pkg);
         }
     }
@@ -175,24 +175,24 @@ public class ResolverUtil<T> {
      * @param annotation the annotation that should be present on matching classes
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
-    public void findAnnotated(Class<? extends Annotation> annotation, String... packageNames) {
+    public void findAnnotated(final Class<? extends Annotation> annotation, final String... packageNames) {
         if (packageNames == null) {
             return;
         }
 
-        Test test = new AnnotatedWith(annotation);
-        for (String pkg : packageNames) {
+        final Test test = new AnnotatedWith(annotation);
+        for (final String pkg : packageNames) {
             findInPackage(test, pkg);
         }
     }
 
-    public void findNamedResource(String name, String... pathNames) {
+    public void findNamedResource(final String name, final String... pathNames) {
         if (pathNames == null) {
             return;
         }
 
-        Test test = new NameIs(name);
-        for (String pkg : pathNames) {
+        final Test test = new NameIs(name);
+        for (final String pkg : pathNames) {
             findInPackage(test, pkg);
         }
     }
@@ -204,12 +204,12 @@ public class ResolverUtil<T> {
      * @param test the test to determine matching classes
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
-    public void find(Test test, String... packageNames) {
+    public void find(final Test test, final String... packageNames) {
         if (packageNames == null) {
             return;
         }
 
-        for (String pkg : packageNames) {
+        for (final String pkg : packageNames) {
             findInPackage(test, pkg);
         }
     }
@@ -224,21 +224,21 @@ public class ResolverUtil<T> {
      * @param packageName the name of the package from which to start scanning for
      *        classes, e.g. {@code net.sourceforge.stripes}
      */
-    public void findInPackage(Test test, String packageName) {
+    public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
-        ClassLoader loader = getClassLoader();
+        final ClassLoader loader = getClassLoader();
         Enumeration<URL> urls;
 
         try {
             urls = loader.getResources(packageName);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOG.warn("Could not read package: " + packageName, ioe);
             return;
         }
 
         while (urls.hasMoreElements()) {
             try {
-                URL url = urls.nextElement();
+                final URL url = urls.nextElement();
                 String urlPath = url.getFile();
                 urlPath = URLDecoder.decode(urlPath, "UTF-8");
 
@@ -255,30 +255,30 @@ public class ResolverUtil<T> {
                 LOG.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
                 // Check for a jar in a war in JBoss
                 if (VFSZIP.equals(url.getProtocol())) {
-                    String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
-                    URL newURL = new URL(url.getProtocol(), url.getHost(), path);
-                    JarInputStream stream = new JarInputStream(newURL.openStream());
+                    final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
+                    final URL newURL = new URL(url.getProtocol(), url.getHost(), path);
+                    final JarInputStream stream = new JarInputStream(newURL.openStream());
                     loadImplementationsInJar(test, packageName, path, stream);
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
-                    File file = new File(urlPath);
+                    final File file = new File(urlPath);
                     if (file.isDirectory()) {
                         loadImplementationsInDirectory(test, packageName, file);
                     } else {
                         loadImplementationsInJar(test, packageName, file);
                     }
                 }
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOG.warn("could not read entries", ioe);
             }
         }
     }
 
-    private void loadImplementationsInBundle(Test test, String packageName) {
-        BundleWiring wiring = (BundleWiring)FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
-        Collection<String> list = wiring.listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
-        for (String name : list) {
+    private void loadImplementationsInBundle(final Test test, final String packageName) {
+        final BundleWiring wiring = (BundleWiring)FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
+        final Collection<String> list = wiring.listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+        for (final String name : list) {
             addIfMatching(test, name);
         }
     }
@@ -296,14 +296,14 @@ public class ResolverUtil<T> {
      *        the values of <i>parent</i> would be <i>org/apache</i>
      * @param location a File object representing a directory
      */
-    private void loadImplementationsInDirectory(Test test, String parent, File location) {
-        File[] files = location.listFiles();
+    private void loadImplementationsInDirectory(final Test test, final String parent, final File location) {
+        final File[] files = location.listFiles();
         StringBuilder builder;
 
-        for (File file : files) {
+        for (final File file : files) {
             builder = new StringBuilder();
             builder.append(parent).append("/").append(file.getName());
-            String packageOrClass = parent == null ? file.getName() : builder.toString();
+            final String packageOrClass = parent == null ? file.getName() : builder.toString();
 
             if (file.isDirectory()) {
                 loadImplementationsInDirectory(test, packageOrClass, file);
@@ -313,7 +313,7 @@ public class ResolverUtil<T> {
         }
     }
 
-    private boolean isTestApplicable(Test test, String path) {
+    private boolean isTestApplicable(final Test test, final String path) {
         return test.doesMatchResource() || path.endsWith(".class") && test.doesMatchClass();
     }
 
@@ -326,15 +326,15 @@ public class ResolverUtil<T> {
      * @param parent the parent package under which classes must be in order to be considered
      * @param jarfile the jar file to be examined for classes
      */
-    private void loadImplementationsInJar(Test test, String parent, File jarfile) {
+    private void loadImplementationsInJar(final Test test, final String parent, final File jarfile) {
         JarInputStream jarStream;
         try {
             jarStream = new JarInputStream(new FileInputStream(jarfile));
             loadImplementationsInJar(test, parent, jarfile.getPath(), jarStream);
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
                 test + " file not found");
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
                 test + " due to an IOException", ioe);
         }
@@ -349,18 +349,18 @@ public class ResolverUtil<T> {
      * @param parent the parent package under which classes must be in order to be considered
      * @param stream The jar InputStream
      */
-    private void loadImplementationsInJar(Test test, String parent, String path, JarInputStream stream) {
+    private void loadImplementationsInJar(final Test test, final String parent, final String path, final JarInputStream stream) {
 
         try {
             JarEntry entry;
 
             while ((entry = stream.getNextJarEntry()) != null) {
-                String name = entry.getName();
+                final String name = entry.getName();
                 if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                     addIfMatching(test, name);
                 }
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOG.error("Could not search jar file '" + path + "' for classes matching criteria: " +
                 test + " due to an IOException", ioe);
         }
@@ -373,16 +373,16 @@ public class ResolverUtil<T> {
      * @param test the test used to determine if the class matches
      * @param fqn the fully qualified name of a class
      */
-    protected void addIfMatching(Test test, String fqn) {
+    protected void addIfMatching(final Test test, final String fqn) {
         try {
-            ClassLoader loader = getClassLoader();
+            final ClassLoader loader = getClassLoader();
             if (test.doesMatchClass()) {
-                String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
+                final String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
                 }
 
-                Class type = loader.loadClass(externalName);
+                final Class type = loader.loadClass(externalName);
                 if (test.matches(type)) {
                     classMatches.add(type);
                 }
@@ -396,7 +396,7 @@ public class ResolverUtil<T> {
                     resourceMatches.add(url.toURI());
                 }
             }
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             LOG.warn("Could not examine class '" + fqn + "' due to a " +
                 t.getClass().getName() + " with message: " + t.getMessage());
         }
@@ -430,7 +430,7 @@ public class ResolverUtil<T> {
      * Test against a Class.
      */
     public abstract static class ClassTest implements Test {
-        public boolean matches(URI resource) {
+        public boolean matches(final URI resource) {
             throw new UnsupportedOperationException();
         }
 
@@ -446,7 +446,7 @@ public class ResolverUtil<T> {
      * Test against a resource.
      */
     public abstract static class ResourceTest implements Test {
-        public boolean matches(Class cls) {
+        public boolean matches(final Class cls) {
             throw new UnsupportedOperationException();
         }
 
@@ -469,14 +469,14 @@ public class ResolverUtil<T> {
          * Constructs an IsA test using the supplied Class as the parent class/interface.
          * @param parentType The parent class to check for.
          */
-        public IsA(Class parentType) { this.parent = parentType; }
+        public IsA(final Class parentType) { this.parent = parentType; }
 
         /**
          * Returns true if type is assignable to the parent type supplied in the constructor.
          * @param type The Class to check.
          * @return true if the Class matches.
          */
-        public boolean matches(Class type) {
+        public boolean matches(final Class type) {
             return type != null && parent.isAssignableFrom(type);
         }
 
@@ -496,14 +496,14 @@ public class ResolverUtil<T> {
          * Constructs a NameEndsWith test using the supplied suffix.
          * @param suffix the String suffix to check for.
          */
-        public NameEndsWith(String suffix) { this.suffix = suffix; }
+        public NameEndsWith(final String suffix) { this.suffix = suffix; }
 
         /**
          * Returns true if type name ends with the suffix supplied in the constructor.
          * @param type The Class to check.
          * @return true if the Class matches.
          */
-        public boolean matches(Class type) {
+        public boolean matches(final Class type) {
             return type != null && type.getName().endsWith(suffix);
         }
 
@@ -524,7 +524,7 @@ public class ResolverUtil<T> {
          * Constructs an AnnotatedWith test for the specified annotation type.
          * @param annotation The annotation to check for.
          */
-        public AnnotatedWith(Class<? extends Annotation> annotation) {
+        public AnnotatedWith(final Class<? extends Annotation> annotation) {
             this.annotation = annotation;
         }
 
@@ -533,7 +533,7 @@ public class ResolverUtil<T> {
          * @param type the Class to match against.
          * @return true if the Classes match.
          */
-        public boolean matches(Class type) {
+        public boolean matches(final Class type) {
             return type != null && type.isAnnotationPresent(annotation);
         }
 
@@ -549,9 +549,9 @@ public class ResolverUtil<T> {
     public static class NameIs extends ResourceTest {
         private final String name;
 
-        public NameIs(String name) { this.name = "/" + name; }
+        public NameIs(final String name) { this.name = "/" + name; }
 
-        public boolean matches(URI resource) {
+        public boolean matches(final URI resource) {
             return resource.getPath().endsWith(name);
         }
 

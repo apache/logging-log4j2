@@ -56,10 +56,10 @@ public final class Transform {
         //Use a StringBuffer in lieu of String concatenation -- it is
         //much more efficient this way.
 
-        StringBuilder buf = new StringBuilder(input.length() + 6);
+        final StringBuilder buf = new StringBuilder(input.length() + 6);
         char ch = ' ';
 
-        int len = input.length();
+        final int len = input.length();
         for (int i = 0; i < len; i++) {
             ch = input.charAt(i);
             if (ch > '>') {

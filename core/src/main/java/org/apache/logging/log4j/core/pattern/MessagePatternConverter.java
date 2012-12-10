@@ -59,7 +59,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        Message msg = event.getMessage();
+        final Message msg = event.getMessage();
         if (msg != null) {
             String result;
             if (msg instanceof MultiformatMessage) {

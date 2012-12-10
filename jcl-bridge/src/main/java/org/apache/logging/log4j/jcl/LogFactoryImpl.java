@@ -36,16 +36,16 @@ public class LogFactoryImpl extends LogFactory {
     private final Map<LoggerContext, ConcurrentMap<String, Log>> contextMap =
         new WeakHashMap<LoggerContext, ConcurrentMap<String, Log>>();
 
-    private ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+    private final ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
     @Override
-    public Log getInstance(String name) throws LogConfigurationException {
-        LoggerContext context = PrivateManager.getContext();
-        ConcurrentMap<String, Log> loggers = getLoggersMap();
+    public Log getInstance(final String name) throws LogConfigurationException {
+        final LoggerContext context = PrivateManager.getContext();
+        final ConcurrentMap<String, Log> loggers = getLoggersMap();
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        org.apache.logging.log4j.Logger logger = PrivateManager.getLogger(name);
+        final org.apache.logging.log4j.Logger logger = PrivateManager.getLogger(name);
         if (logger instanceof AbstractLogger) {
             loggers.putIfAbsent(name, new Log4JLog((AbstractLogger) logger, name));
             return loggers.get(name);
@@ -55,7 +55,7 @@ public class LogFactoryImpl extends LogFactory {
     }
 
     private ConcurrentMap<String, Log> getLoggersMap() {
-        LoggerContext context = PrivateManager.getContext();
+        final LoggerContext context = PrivateManager.getContext();
         synchronized (contextMap) {
             ConcurrentMap<String, Log> map = contextMap.get(context);
             if (map == null) {
@@ -67,7 +67,7 @@ public class LogFactoryImpl extends LogFactory {
     }
 
     @Override
-    public Object getAttribute(String name) {
+    public Object getAttribute(final String name) {
         return attributes.get(name);
     }
 
@@ -77,7 +77,7 @@ public class LogFactoryImpl extends LogFactory {
     }
 
     @Override
-    public Log getInstance(Class clazz) throws LogConfigurationException {
+    public Log getInstance(final Class clazz) throws LogConfigurationException {
         return getInstance(clazz.getName());
     }
 
@@ -91,12 +91,12 @@ public class LogFactoryImpl extends LogFactory {
     }
 
     @Override
-    public void removeAttribute(String name) {
+    public void removeAttribute(final String name) {
         attributes.remove(name);
     }
 
     @Override
-    public void setAttribute(String name, Object value) {
+    public void setAttribute(final String name, final Object value) {
         if (value != null) {
             attributes.put(name, value);
         } else {
@@ -114,7 +114,7 @@ public class LogFactoryImpl extends LogFactory {
             return getContext(FQCN, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(String name) {
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
     }

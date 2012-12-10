@@ -37,13 +37,13 @@ public class FileOutputTest {
 
     @BeforeClass
     public static void setupClass() {
-        File file = new File(STATUS_LOG);
+        final File file = new File(STATUS_LOG);
         file.delete();
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
-            String name = ((XMLConfiguration) config).getName();
+            final String name = ((XMLConfiguration) config).getName();
             if (name == null || !name.equals("XMLConfigTest")) {
                 ctx.reconfigure();
             }
@@ -55,16 +55,16 @@ public class FileOutputTest {
     @AfterClass
     public static void cleanupClass() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
-        File file = new File(STATUS_LOG);
+        final File file = new File(STATUS_LOG);
         file.delete();
     }
 
     @Test
     public void testConfig() {
-        File file = new File(STATUS_LOG);
+        final File file = new File(STATUS_LOG);
         assertTrue("Status output file does not exist", file.exists());
         assertTrue("File is empty", file.length() > 0);
     }

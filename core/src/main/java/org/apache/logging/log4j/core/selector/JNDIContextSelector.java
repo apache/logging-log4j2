@@ -93,9 +93,9 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
 
-        LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
+        final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
             return lc;
         }
@@ -103,53 +103,53 @@ public class JNDIContextSelector implements NamedContextSelector {
         String loggingContextName = null;
 
         try {
-            Context ctx = new InitialContext();
+            final Context ctx = new InitialContext();
             loggingContextName = (String) lookup(ctx, Constants.JNDI_CONTEXT_NAME);
-        } catch (NamingException ne) {
+        } catch (final NamingException ne) {
             LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
         }
 
         return loggingContextName == null ? context : locateContext(loggingContextName, null);
     }
 
-    public LoggerContext locateContext(String name, String configLocation) {
+    public LoggerContext locateContext(final String name, final String configLocation) {
         if (name == null) {
             LOGGER.error("A context name is required to locate a LoggerContext");
             return null;
         }
         if (!contextMap.containsKey(name)) {
-            LoggerContext ctx = new LoggerContext(name, null, configLocation);
+            final LoggerContext ctx = new LoggerContext(name, null, configLocation);
             contextMap.putIfAbsent(name, ctx);
         }
         return contextMap.get(name);
     }
 
-    public void removeContext(LoggerContext context) {
+    public void removeContext(final LoggerContext context) {
 
-        for (Map.Entry<String, LoggerContext> entry : contextMap.entrySet()) {
+        for (final Map.Entry<String, LoggerContext> entry : contextMap.entrySet()) {
             if (entry.getValue().equals(context)) {
                 contextMap.remove(entry.getKey());
             }
         }
     }
 
-    public LoggerContext removeContext(String name) {
+    public LoggerContext removeContext(final String name) {
         return contextMap.remove(name);
     }
 
     public List<LoggerContext> getLoggerContexts() {
-        List<LoggerContext> list = new ArrayList<LoggerContext>(contextMap.values());
+        final List<LoggerContext> list = new ArrayList<LoggerContext>(contextMap.values());
         return Collections.unmodifiableList(list);
     }
 
 
-    protected static Object lookup(Context ctx, String name) throws NamingException {
+    protected static Object lookup(final Context ctx, final String name) throws NamingException {
         if (ctx == null) {
             return null;
         }
         try {
             return ctx.lookup(name);
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             LOGGER.error("Could not find name [" + name + "].");
             throw e;
         }

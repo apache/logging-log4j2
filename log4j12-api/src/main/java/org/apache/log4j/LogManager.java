@@ -77,8 +77,8 @@ public final class LogManager {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    public static Logger exists(String name) {
-        LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
+    public static Logger exists(final String name) {
+        final LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
         if (!ctx.hasLogger(name)) {
             return null;
         }
@@ -90,7 +90,7 @@ public final class LogManager {
     }
 
     static void reconfigure() {
-        LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
+        final LoggerContext ctx = (LoggerContext) PrivateManager.getContext();
         ctx.reconfigure();
     }
 
@@ -112,7 +112,7 @@ public final class LogManager {
      * @param guard prevents calls at the incorrect time.
      * @throws IllegalArgumentException
      */
-    public static void setRepositorySelector(RepositorySelector selector, Object guard)
+    public static void setRepositorySelector(final RepositorySelector selector, final Object guard)
         throws IllegalArgumentException {
     }
 
@@ -121,23 +121,23 @@ public final class LogManager {
     }
 
     private static class Repository implements LoggerRepository {
-        public void addHierarchyEventListener(HierarchyEventListener listener) {
+        public void addHierarchyEventListener(final HierarchyEventListener listener) {
 
         }
 
-        public boolean isDisabled(int level) {
+        public boolean isDisabled(final int level) {
             return false;
         }
 
-        public void setThreshold(Level level) {
+        public void setThreshold(final Level level) {
 
         }
 
-        public void setThreshold(String val) {
+        public void setThreshold(final String val) {
 
         }
 
-        public void emitNoAppenderWarning(Category cat) {
+        public void emitNoAppenderWarning(final Category cat) {
 
         }
 
@@ -145,11 +145,11 @@ public final class LogManager {
             return Level.OFF;
         }
 
-        public Logger getLogger(String name) {
+        public Logger getLogger(final String name) {
             return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
         }
 
-        public Logger getLogger(String name, LoggerFactory factory) {
+        public Logger getLogger(final String name, final LoggerFactory factory) {
             return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
         }
 
@@ -157,7 +157,7 @@ public final class LogManager {
             return (Logger) Category.getRoot((LoggerContext) PrivateManager.getContext());
         }
 
-        public Logger exists(String name) {
+        public Logger exists(final String name) {
             return LogManager.exists(name);
         }
 
@@ -172,7 +172,7 @@ public final class LogManager {
             return NullEnumeration.getInstance();
         }
 
-        public void fireAddAppenderEvent(Category logger, Appender appender) {
+        public void fireAddAppenderEvent(final Category logger, final Appender appender) {
         }
 
         public void resetConfiguration() {
@@ -190,7 +190,7 @@ public final class LogManager {
             return getContext(FQCN, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(String name) {
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
     }

@@ -94,47 +94,47 @@ public abstract class ConfigurationFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
-        String factoryClass = System.getProperty(CONFIGURATION_FACTORY_PROPERTY);
+        final String factoryClass = System.getProperty(CONFIGURATION_FACTORY_PROPERTY);
         if (factoryClass != null) {
             addFactory(factoryClass);
         }
-        PluginManager manager = new PluginManager("ConfigurationFactory");
+        final PluginManager manager = new PluginManager("ConfigurationFactory");
         manager.collectPlugins();
-        Map<String, PluginType> plugins = manager.getPlugins();
-        Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
-        for (PluginType type : plugins.values()) {
+        final Map<String, PluginType> plugins = manager.getPlugins();
+        final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
+        for (final PluginType type : plugins.values()) {
             try {
-                Class<ConfigurationFactory> clazz = type.getPluginClass();
-                Order o = clazz.getAnnotation(Order.class);
-                Integer weight = o.value();
+                final Class<ConfigurationFactory> clazz = type.getPluginClass();
+                final Order o = clazz.getAnnotation(Order.class);
+                final Integer weight = o.value();
                 if (o != null) {
                     ordered.add(new WeightedFactory(weight, clazz));
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
               LOGGER.warn("Unable to add class " + type.getPluginClass());
             }
         }
-        for (WeightedFactory wf : ordered) {
+        for (final WeightedFactory wf : ordered) {
             addFactory(wf.factoryClass);
         }
         return configFactory;
     }
 
-    private static void addFactory(String factoryClass) {
+    private static void addFactory(final String factoryClass) {
         try {
-            Class clazz = Class.forName(factoryClass);
+            final Class clazz = Class.forName(factoryClass);
             addFactory(clazz);
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             LOGGER.error("Unable to load class " + factoryClass, ex);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to load class " + factoryClass, ex);
         }
     }
 
-    private static void addFactory(Class factoryClass) {
+    private static void addFactory(final Class factoryClass) {
         try {
             factories.add((ConfigurationFactory) factoryClass.newInstance());
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to create instance of " + factoryClass.getName(), ex);
         }
     }
@@ -143,7 +143,7 @@ public abstract class ConfigurationFactory {
      * Set the configuration factory.
      * @param factory the ConfigurationFactory.
      */
-    public static void setConfigurationFactory(ConfigurationFactory factory) {
+    public static void setConfigurationFactory(final ConfigurationFactory factory) {
         configFactory = factory;
     }
 
@@ -158,7 +158,7 @@ public abstract class ConfigurationFactory {
      * Remove the ConfigurationFactory.
      * @param factory The factory to remove.
      */
-    public static void removeConfigurationFactory(ConfigurationFactory factory) {
+    public static void removeConfigurationFactory(final ConfigurationFactory factory) {
         factories.remove(factory);
     }
 
@@ -176,12 +176,12 @@ public abstract class ConfigurationFactory {
      * @param configLocation The configuration location.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(String name, URI configLocation) {
+    public Configuration getConfiguration(final String name, final URI configLocation) {
         if (!isActive()) {
             return null;
         }
         if (configLocation != null) {
-            ConfigurationSource source = getInputFromURI(configLocation);
+            final ConfigurationSource source = getInputFromURI(configLocation);
             if (source != null) {
                 return getConfiguration(source);
             }
@@ -194,30 +194,30 @@ public abstract class ConfigurationFactory {
      * @param configLocation A URI representing the location of the configuration.
      * @return The ConfigurationSource for the configuration.
      */
-    protected ConfigurationSource getInputFromURI(URI configLocation) {
-        File configFile = FileUtils.fileFromURI(configLocation);
+    protected ConfigurationSource getInputFromURI(final URI configLocation) {
+        final File configFile = FileUtils.fileFromURI(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {
                 return new ConfigurationSource(new FileInputStream(configFile), configFile);
-            } catch (FileNotFoundException ex) {
+            } catch (final FileNotFoundException ex) {
                 LOGGER.error("Cannot locate file " + configLocation.getPath(), ex);
             }
         }
-        String scheme = configLocation.getScheme();
+        final String scheme = configLocation.getScheme();
         if (scheme == null || scheme.equals("classloader")) {
-            ClassLoader loader = this.getClass().getClassLoader();
-            ConfigurationSource source = getInputFromResource(configLocation.getPath(), loader);
+            final ClassLoader loader = this.getClass().getClassLoader();
+            final ConfigurationSource source = getInputFromResource(configLocation.getPath(), loader);
             if (source != null) {
                 return source;
             }
         }
         try {
             return new ConfigurationSource(configLocation.toURL().openStream(), configLocation.getPath());
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             LOGGER.error("Invalid URL " + configLocation.toString(), ex);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.error("Unable to access " + configLocation.toString(), ex);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to access " + configLocation.toString(), ex);
         }
         return null;
@@ -229,17 +229,17 @@ public abstract class ConfigurationFactory {
      * @param loader The default ClassLoader to use.
      * @return The InputSource to use to read the configuration.
      */
-    protected ConfigurationSource getInputFromString(String config, ClassLoader loader) {
+    protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
         try {
-            URL url = new URL(config);
+            final URL url = new URL(config);
             return new ConfigurationSource(url.openStream(), FileUtils.fileFromURI(url.toURI()));
-        } catch (Exception ex) {
-            ConfigurationSource source = getInputFromResource(config, loader);
+        } catch (final Exception ex) {
+            final ConfigurationSource source = getInputFromResource(config, loader);
             if (source == null) {
                 try {
-                    File file = new File(config);
+                    final File file = new File(config);
                     return new ConfigurationSource(new FileInputStream(file), file);
-                } catch (FileNotFoundException fnfe) {
+                } catch (final FileNotFoundException fnfe) {
                     // Ignore the exception
                 }
             }
@@ -253,15 +253,15 @@ public abstract class ConfigurationFactory {
      * @param loader The default ClassLoader to use.
      * @return The ConfigurationSource for the configuration.
      */
-    protected ConfigurationSource getInputFromResource(String resource, ClassLoader loader) {
-        URL url = Loader.getResource(resource, loader);
+    protected ConfigurationSource getInputFromResource(final String resource, final ClassLoader loader) {
+        final URL url = Loader.getResource(resource, loader);
         if (url == null) {
             return null;
         }
         InputStream is = null;
         try {
             is = url.openStream();
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             return null;
         }
         if (is == null) {
@@ -271,7 +271,7 @@ public abstract class ConfigurationFactory {
         if (FileUtils.isFile(url)) {
             try {
                 return new ConfigurationSource(is, FileUtils.fileFromURI((url.toURI())));
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
             }
         }
@@ -282,21 +282,21 @@ public abstract class ConfigurationFactory {
      * Factory that chooses a ConfigurationFactory based on weighting.
      */
     private static class WeightedFactory implements Comparable<WeightedFactory> {
-        private int weight;
-        private Class<ConfigurationFactory> factoryClass;
+        private final int weight;
+        private final Class<ConfigurationFactory> factoryClass;
 
         /**
          * Constructor.
          * @param weight The weight.
          * @param clazz The class.
          */
-        public WeightedFactory(int weight, Class<ConfigurationFactory> clazz) {
+        public WeightedFactory(final int weight, final Class<ConfigurationFactory> clazz) {
             this.weight = weight;
             this.factoryClass = clazz;
         }
 
-        public int compareTo(WeightedFactory wf) {
-            int w = wf.weight;
+        public int compareTo(final WeightedFactory wf) {
+            final int w = wf.weight;
             if (weight == w) {
                 return 0;
             } else if (weight > w) {
@@ -319,20 +319,20 @@ public abstract class ConfigurationFactory {
          * @return The Configuration.
          */
         @Override
-        public Configuration getConfiguration(String name, URI configLocation) {
+        public Configuration getConfiguration(final String name, final URI configLocation) {
 
             if (configLocation == null) {
-                String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
+                final String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
                 if (config != null) {
-                    ClassLoader loader = this.getClass().getClassLoader();
-                    ConfigurationSource source = getInputFromString(config, loader);
+                    final ClassLoader loader = this.getClass().getClassLoader();
+                    final ConfigurationSource source = getInputFromString(config, loader);
                     if (source != null) {
-                        for (ConfigurationFactory factory : factories) {
-                            String[] types = factory.getSupportedTypes();
+                        for (final ConfigurationFactory factory : factories) {
+                            final String[] types = factory.getSupportedTypes();
                             if (types != null) {
-                                for (String type : types) {
+                                for (final String type : types) {
                                     if (type.equals("*") || config.endsWith(type)) {
-                                        Configuration c = factory.getConfiguration(source);
+                                        final Configuration c = factory.getConfiguration(source);
                                         if (c != null) {
                                             return c;
                                         }
@@ -343,12 +343,12 @@ public abstract class ConfigurationFactory {
                     }
                 }
             } else {
-                for (ConfigurationFactory factory : factories) {
-                    String[] types = factory.getSupportedTypes();
+                for (final ConfigurationFactory factory : factories) {
+                    final String[] types = factory.getSupportedTypes();
                     if (types != null) {
-                        for (String type : types) {
+                        for (final String type : types) {
                             if (type.equals("*") || configLocation.getPath().endsWith(type)) {
-                                Configuration config = factory.getConfiguration(name, configLocation);
+                                final Configuration config = factory.getConfiguration(name, configLocation);
                                 if (config != null) {
                                     return config;
                                 }
@@ -371,24 +371,24 @@ public abstract class ConfigurationFactory {
             return config != null ? config : new DefaultConfiguration();
         }
 
-        private Configuration getConfiguration(boolean isTest, String name) {
-            boolean named = (name != null && name.length() > 0);
-            ClassLoader loader = this.getClass().getClassLoader();
-            for (ConfigurationFactory factory : factories) {
+        private Configuration getConfiguration(final boolean isTest, final String name) {
+            final boolean named = (name != null && name.length() > 0);
+            final ClassLoader loader = this.getClass().getClassLoader();
+            for (final ConfigurationFactory factory : factories) {
                 String configName;
-                String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
-                String [] types = factory.getSupportedTypes();
+                final String prefix = isTest ? TEST_PREFIX : DEFAULT_PREFIX;
+                final String [] types = factory.getSupportedTypes();
                 if (types == null) {
                     continue;
                 }
 
-                for (String suffix : types) {
+                for (final String suffix : types) {
                     if (suffix.equals("*")) {
                         continue;
                     }
                     configName = named ? prefix + name + suffix : prefix + suffix;
 
-                    ConfigurationSource source = getInputFromResource(configName, loader);
+                    final ConfigurationSource source = getInputFromResource(configName, loader);
                     if (source != null) {
                         return factory.getConfiguration(source);
                     }
@@ -403,15 +403,15 @@ public abstract class ConfigurationFactory {
         }
 
         @Override
-        public Configuration getConfiguration(ConfigurationSource source) {
+        public Configuration getConfiguration(final ConfigurationSource source) {
             if (source != null) {
-                String config = source.getLocation();
-                for (ConfigurationFactory factory : factories) {
-                    String[] types = factory.getSupportedTypes();
+                final String config = source.getLocation();
+                for (final ConfigurationFactory factory : factories) {
+                    final String[] types = factory.getSupportedTypes();
                     if (types != null) {
-                        for (String type : types) {
+                        for (final String type : types) {
                             if (type.equals("*") || (config != null && config.endsWith(type))) {
-                                Configuration c = factory.getConfiguration(source);
+                                final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
                                     return c;
                                 } else {
@@ -439,19 +439,19 @@ public abstract class ConfigurationFactory {
         public ConfigurationSource() {
         }
 
-        public ConfigurationSource(InputStream stream) {
+        public ConfigurationSource(final InputStream stream) {
             this.stream = stream;
             this .file = null;
             this.location = null;
         }
 
-        public ConfigurationSource(InputStream stream, File file) {
+        public ConfigurationSource(final InputStream stream, final File file) {
             this.stream = stream;
             this.file = file;
             this.location = file.getAbsolutePath();
         }
 
-        public ConfigurationSource(InputStream stream, String location) {
+        public ConfigurationSource(final InputStream stream, final String location) {
             this.stream = stream;
             this.location = location;
             this.file = null;
@@ -461,7 +461,7 @@ public abstract class ConfigurationFactory {
             return file;
         }
 
-        public void setFile(File file) {
+        public void setFile(final File file) {
             this.file = file;
         }
 
@@ -469,7 +469,7 @@ public abstract class ConfigurationFactory {
             return location;
         }
 
-        public void setLocation(String location) {
+        public void setLocation(final String location) {
             this.location = location;
         }
 
@@ -477,7 +477,7 @@ public abstract class ConfigurationFactory {
             return stream;
         }
 
-        public void setInputStream(InputStream stream) {
+        public void setInputStream(final InputStream stream) {
             this.stream = stream;
         }
     }

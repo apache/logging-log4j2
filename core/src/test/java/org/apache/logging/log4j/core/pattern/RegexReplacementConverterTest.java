@@ -36,14 +36,14 @@ public class RegexReplacementConverterTest {
     @Test
     public void testReplacement() {
         ThreadContext.put("MyKey", "Apache");
-        LogEvent event = new Log4jLogEvent(RegexReplacementConverterTest.class.getName(), null, null,
+        final LogEvent event = new Log4jLogEvent(RegexReplacementConverterTest.class.getName(), null, null,
             Level.DEBUG, new SimpleMessage("This is a test"), null);
-        StringBuilder sb = new StringBuilder();
-        LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        String[] options = new String[] {
+        final StringBuilder sb = new StringBuilder();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final String[] options = new String[] {
             "%logger %msg%n", "\\.", "/"
         };
-        RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
+        final RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
         converter.format(event, sb);
         assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" + LINE_SEP,

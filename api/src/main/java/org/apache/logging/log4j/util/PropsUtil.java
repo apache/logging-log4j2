@@ -24,43 +24,43 @@ import java.util.Properties;
  */
 public class PropsUtil {
 
-    private Properties props;
+    private final Properties props;
 
-    public PropsUtil(Properties props) {
+    public PropsUtil(final Properties props) {
         this.props = props;
     }
 
-    public PropsUtil(String propsLocn) {
+    public PropsUtil(final String propsLocn) {
         this.props = new Properties();
-        ClassLoader loader = findClassLoader();
-        InputStream in = loader.getResourceAsStream(propsLocn);
+        final ClassLoader loader = findClassLoader();
+        final InputStream in = loader.getResourceAsStream(propsLocn);
         if (null != in) {
             try {
                 this.props.load(in);
                 in.close();
-            } catch(java.io.IOException e) {
+            } catch(final java.io.IOException e) {
                 // ignored
             }
         }
     }
 
-    public String getStringProperty(String name) {
+    public String getStringProperty(final String name) {
         String prop = null;
         try {
             prop = System.getProperty(name);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             // Ignore
         }
         return (prop == null) ? props.getProperty(name) : prop;
     }
 
-    public String getStringProperty(String name, String defaultValue) {
-        String prop = getStringProperty(name);
+    public String getStringProperty(final String name, final String defaultValue) {
+        final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : prop;
     }
 
-    public boolean getBooleanProperty(String name, boolean defaultValue) {
-        String prop = getStringProperty(name);
+    public boolean getBooleanProperty(final String name, final boolean defaultValue) {
+        final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
     }
 
