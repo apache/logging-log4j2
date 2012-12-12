@@ -86,8 +86,9 @@ public interface Logger {
    * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
    *
    * @param marker the marker data specific to this log statement
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    */
   void debug(Marker marker, String message, Object... params);
 
@@ -141,8 +142,9 @@ public interface Logger {
 
   /**
    * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    */
   void debug(String message, Object... params);
 
@@ -217,8 +219,9 @@ public interface Logger {
   /**
    * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
    * @param marker the marker data specific to this log statement.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
@@ -278,8 +281,9 @@ public interface Logger {
   /**
    * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
    *
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
@@ -358,8 +362,9 @@ public interface Logger {
    * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
    *
    * @param marker The marker data specific to this log statement.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call.(RG) I assume you
@@ -419,8 +424,9 @@ public interface Logger {
   /**
    * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
    *
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call.(RG) I assume you
@@ -491,8 +497,9 @@ public interface Logger {
    * Logs a message with parameters at the {@link Level#INFO INFO} level.
    *
    * @param marker the marker data specific to this log statement
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) It isn't
@@ -552,8 +559,9 @@ public interface Logger {
  /**
    * Logs a message with parameters at the {@link Level#INFO INFO} level.
    *
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) It isn't
@@ -754,8 +762,9 @@ public interface Logger {
    * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
    *
    * @param marker the marker data specific to this log statement
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    */
   void trace(Marker marker, String message, Object... params);
 
@@ -817,8 +826,9 @@ public interface Logger {
 
   /**
    * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    */
   void trace(String message, Object... params);
 
@@ -883,8 +893,9 @@ public interface Logger {
    * Logs a message with parameters at the {@link Level#WARN WARN} level.
    *
    * @param marker the marker data specific to this log statement.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
    *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
@@ -943,8 +954,10 @@ public interface Logger {
 
   /**
    * Logs a message with parameters at the {@link Level#WARN WARN} level.
-   * @param message the message to log.
+   * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
+   * @see #getMessageFactory()
+   * 
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
    * meant warn, not info. It isn't possible to be misinterpreted as the previous method
@@ -962,7 +975,7 @@ public interface Logger {
   void warn(String message, Throwable t);
   
   /**
-   * Gets the message factory.
+   * Gets the message factory used to convert message Objects and Strings into actual log Messages.
    * 
    * @return the message factory.
    */
