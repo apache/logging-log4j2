@@ -27,7 +27,7 @@ package org.apache.logging.log4j.message;
  * 
  * @version $Id$
  */
-public class ParameterizedMessageFactory extends AbstractMessageFactory {
+public final class ParameterizedMessageFactory extends AbstractMessageFactory {
 
     /**
      * Instance of StringFormatterMessageFactory.

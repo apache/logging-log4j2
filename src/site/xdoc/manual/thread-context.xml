@@ -20,6 +20,7 @@
     <properties>
         <title>Log4j 2 Thread Context</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="ggregory@apache.org">Gary Gregory</author>
     </properties>
 
     <body>

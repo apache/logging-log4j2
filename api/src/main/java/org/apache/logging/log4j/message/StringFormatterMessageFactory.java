@@ -29,7 +29,7 @@ import java.util.Formatter;
  * 
  * @version $Id$
  */
-public class StringFormatterMessageFactory extends AbstractMessageFactory {
+public final class StringFormatterMessageFactory extends AbstractMessageFactory {
 
     /**
      * Instance of StringFormatterMessageFactory.

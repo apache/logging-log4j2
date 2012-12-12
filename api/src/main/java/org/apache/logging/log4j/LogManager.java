@@ -19,12 +19,14 @@ package org.apache.logging.log4j;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Formatter;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
@@ -238,6 +240,96 @@ public class LogManager {
     }
 
     /**
+     * Returns a formatter Logger using the fully qualified name of the Class as the Logger name.
+     * <p>
+     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * </p>
+     * <p>
+     * Short-hand for {@code getLogger(clazz, StringFormatterMessageFactory.INSTANCE)}
+     * </p>
+     * 
+     * @param clazz
+     *            The Class whose name should be used as the Logger name.
+     * @return The Logger, created with a {@link StringFormatterMessageFactory}
+     * @see Logger#fatal(Marker, String, Object...)
+     * @see Logger#fatal(String, Object...)
+     * @see Logger#error(Marker, String, Object...)
+     * @see Logger#error(String, Object...)
+     * @see Logger#warn(Marker, String, Object...)
+     * @see Logger#warn(String, Object...)
+     * @see Logger#info(Marker, String, Object...)
+     * @see Logger#info(String, Object...)
+     * @see Logger#debug(Marker, String, Object...)
+     * @see Logger#debug(String, Object...)
+     * @see Logger#trace(Marker, String, Object...)
+     * @see Logger#trace(String, Object...)
+     * @see StringFormatterMessageFactory
+     */
+    public static Logger getFormatterLogger(final Class<?> clazz) {
+        return getLogger(clazz, StringFormatterMessageFactory.INSTANCE);
+    }
+
+    /**
+     * Returns a formatter Logger using the fully qualified name of the value's Class as the Logger name.
+     * <p>
+     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * </p>
+     * <p>
+     * Short-hand for {@code getLogger(value, StringFormatterMessageFactory.INSTANCE)}
+     * </p>
+     * 
+     * @param value
+     *            The value's whose class name should be used as the Logger name.
+     * @return The Logger, created with a {@link StringFormatterMessageFactory}
+     * @see Logger#fatal(Marker, String, Object...)
+     * @see Logger#fatal(String, Object...)
+     * @see Logger#error(Marker, String, Object...)
+     * @see Logger#error(String, Object...)
+     * @see Logger#warn(Marker, String, Object...)
+     * @see Logger#warn(String, Object...)
+     * @see Logger#info(Marker, String, Object...)
+     * @see Logger#info(String, Object...)
+     * @see Logger#debug(Marker, String, Object...)
+     * @see Logger#debug(String, Object...)
+     * @see Logger#trace(Marker, String, Object...)
+     * @see Logger#trace(String, Object...)
+     * @see StringFormatterMessageFactory
+     */
+    public static Logger getFormatterLogger(final Object value) {
+        return getLogger(value, StringFormatterMessageFactory.INSTANCE);
+    }
+
+    /**
+     * Returns a formatter Logger with the specified name.
+     * <p>
+     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * </p>
+     * <p>
+     * Short-hand for {@code getLogger(name, StringFormatterMessageFactory.INSTANCE)}
+     * </p>
+     * 
+     * @param name
+     *            The logger name.
+     * @return The Logger, created with a {@link StringFormatterMessageFactory}
+     * @see Logger#fatal(Marker, String, Object...)
+     * @see Logger#fatal(String, Object...)
+     * @see Logger#error(Marker, String, Object...)
+     * @see Logger#error(String, Object...)
+     * @see Logger#warn(Marker, String, Object...)
+     * @see Logger#warn(String, Object...)
+     * @see Logger#info(Marker, String, Object...)
+     * @see Logger#info(String, Object...)
+     * @see Logger#debug(Marker, String, Object...)
+     * @see Logger#debug(String, Object...)
+     * @see Logger#trace(Marker, String, Object...)
+     * @see Logger#trace(String, Object...)
+     * @see StringFormatterMessageFactory
+     */
+    public static Logger getFormatterLogger(final String name) {
+        return getLogger(name, StringFormatterMessageFactory.INSTANCE);
+    }
+
+    /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
      * @param clazz The Class whose name should be used as the Logger name.
      * @return The Logger.
@@ -284,7 +376,6 @@ public class LogManager {
     public static Logger getLogger(final String name) {
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(name);
     }
-
 
     /**
      * Returns a Logger with the specified name.

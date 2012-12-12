@@ -136,11 +136,23 @@ public class LoggerTest {
     public void getLogger_Class_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestStringFormatterMessageFactory.class,
-                messageFactory);
+                StringFormatterMessageFactory.INSTANCE);
         assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
+        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getFormatterLogger_Class() {
+        // The TestLogger logger was already created in an instance variable for this class.
+        // The message factory is only used when the logger is created.
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(TestStringFormatterMessageFactory.class);
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -150,11 +162,24 @@ public class LoggerTest {
     public void getLogger_Object_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestStringFormatterMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getFormatterLogger_Object() {
+        // The TestLogger logger was already created in an instance variable for this class.
+        // The message factory is only used when the logger is created.
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(new TestStringFormatterMessageFactory());
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -174,7 +199,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_StringFormatterMessageFactory() {
-        final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
@@ -185,8 +210,20 @@ public class LoggerTest {
     }
 
     @Test
+    public void getFormatterLogger_String() {
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(messageFactory, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final StringFormatterMessageFactory messageFactory = new StringFormatterMessageFactory();
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
                 messageFactory);
         assertNotNull(testLogger);
