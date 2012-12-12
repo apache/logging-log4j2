@@ -41,7 +41,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -55,7 +55,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -77,7 +77,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -91,7 +91,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -113,7 +113,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -127,7 +127,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -149,7 +149,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -163,7 +163,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -185,7 +185,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -199,7 +199,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -221,7 +221,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -235,7 +235,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -257,7 +257,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -271,7 +271,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter. This constructor must be public.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -293,7 +293,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Gets an instance of the class (called via reflection).
-         * 
+         *
          * @param config
          *            The current Configuration.
          * @param options
@@ -307,7 +307,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
         /**
          * Constructs the converter.
-         * 
+         *
          * @param formatters
          *            The PatternFormatters to generate the text to manipulate.
          * @param styling
@@ -320,14 +320,14 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
     /**
      * Gets an instance of the class (called via reflection).
-     * 
+     *
      * @param config
      *            The current Configuration.
      * @param options
      *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be formatted.
      * @return new instance of class or null
      */
-    private static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass, final String name, final Configuration config,
+    protected static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass, final String name, final Configuration config,
             final String[] options) {
         final List<PatternFormatter> formatters = toPatternFormatterList(config, options);
         if (formatters == null) {
@@ -354,7 +354,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
     /**
      * Creates a list of PatternFormatter from the given configuration and options or null if no pattern is supplied.
-     * 
+     *
      * @param config
      *            A configuration
      * @param options
@@ -380,7 +380,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
 
     /**
      * Constructs the converter.
-     * 
+     *
      * @param formatters
      *            The PatternFormatters to generate the text to manipulate.
      * @param styling
