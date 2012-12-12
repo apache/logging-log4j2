@@ -17,11 +17,8 @@
 
 package org.apache.logging.log4j.core;
 
-import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.EnglishEnums;
 
