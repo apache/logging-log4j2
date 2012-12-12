@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.message;
 
 /**
- * Creates messages.
+ * Creates messages. Implementations can provide different message format syntaxes.
  * 
  * @see ParameterizedMessageFactory
  * @see StringFormatterMessageFactory
