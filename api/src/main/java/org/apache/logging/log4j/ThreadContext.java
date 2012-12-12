@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * The ThreadContext allows applications to store information either in a Map
- * <p/>
- * <p><b><em>The MDC is managed on a per thread basis</em></b>. A
- * child thread automatically inherits a <em>copy</em> of the mapped
- * diagnostic context of its parent.
+ * The ThreadContext allows applications to store information either in a Map.
+ * <p>
+ * <b><em>The MDC is managed on a per thread basis</em></b>. A child thread automatically inherits a <em>copy</em> of
+ * the mapped diagnostic context of its parent.
+ * </p>
  */
 public final class ThreadContext {
 
