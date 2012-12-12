@@ -129,10 +129,11 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatch() {
-        final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch", new StringFormatterMessageFactory(), new ParameterizedMessageFactory());
+        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatch",
+                new StringFormatterMessageFactory(), ParameterizedMessageFactory.INSTANCE);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);        
+        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
     }
 

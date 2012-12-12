@@ -23,10 +23,18 @@ import java.util.Formatter;
  * <p>
  * Creates {@link StringFormattedMessage} instances for {@link #newMessage(String, Object...)}.
  * </p>
+ * <p>
+ * This class is immutable.
+ * </p>
  * 
  * @version $Id$
  */
 public class StringFormatterMessageFactory extends AbstractMessageFactory {
+
+    /**
+     * Instance of StringFormatterMessageFactory.
+     */
+    public static final StringFormatterMessageFactory INSTANCE = new StringFormatterMessageFactory();
 
     /**
      * Creates {@link StringFormattedMessage} instances.

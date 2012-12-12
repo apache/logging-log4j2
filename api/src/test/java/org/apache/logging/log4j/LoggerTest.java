@@ -108,7 +108,7 @@ public class LoggerTest {
     public void getLogger_Class_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
+        final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
                 messageFactory);
         assertNotNull(testLogger);
@@ -122,7 +122,7 @@ public class LoggerTest {
     public void getLogger_Object_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
+        final ParameterizedMessageFactory messageFactory =  ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
@@ -162,7 +162,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_ParameterizedMessageFactory() {
-        final ParameterizedMessageFactory messageFactory = new ParameterizedMessageFactory();
+        final ParameterizedMessageFactory messageFactory =  ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory",
                 messageFactory);
         assertNotNull(testLogger);
@@ -192,7 +192,7 @@ public class LoggerTest {
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
         final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
-                new ParameterizedMessageFactory());
+                ParameterizedMessageFactory.INSTANCE);
         //TODO: How to test?
         //This test context always creates new loggers, other test context impls I tried fail other tests.
         //assertEquals(messageFactory, testLogger2.getMessageFactory());        

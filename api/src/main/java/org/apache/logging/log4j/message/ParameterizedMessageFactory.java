@@ -21,10 +21,18 @@ package org.apache.logging.log4j.message;
  * <p>
  * Creates {@link ParameterizedMessage} instances for {@link #newMessage(String, Object...)}.
  * </p>
+ * <p>
+ * This class is immutable.
+ * </p>
  * 
  * @version $Id$
  */
 public class ParameterizedMessageFactory extends AbstractMessageFactory {
+
+    /**
+     * Instance of StringFormatterMessageFactory.
+     */
+    public static final ParameterizedMessageFactory INSTANCE = new ParameterizedMessageFactory();
 
     /**
      * Creates {@link ParameterizedMessage} instances.
