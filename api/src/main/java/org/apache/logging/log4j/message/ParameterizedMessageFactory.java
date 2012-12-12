@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.message;
 
 /**
+ * Enables use of <code>{}</code> parameter markers in message strings.
+ * <p>
  * Creates {@link ParameterizedMessage} instances for {@link #newMessage(String, Object...)}.
+ * </p>
  * 
  * @version $Id$
  */
