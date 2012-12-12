@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.Formatter;
+
 /**
+ * Allows use of {@link Formatter} strings in message strings.
+ * 
  * Creates {@link StringFormattedMessage} instances for {@link #newMessage(String, Object...)}.
  * 
  * @version $Id$
