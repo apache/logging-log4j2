@@ -111,9 +111,19 @@ ThreadContext.clear();</pre>
           </p>
           <h4>Including the ThreadContext when writing logs</h4>
           <p>
-            The PatternLayout provides mechanisms to print the contents of the ThreadContext Map and Stack. Using
-            %X by itself will cause the full contents of the Map to be included while %X{key} will cause the value
-            of the specified key to be included. %x will include the full contents of the Stack.
+            The <a href="../log4j-api/apidocs/org/apache/logging/log4j/core/PatternLayout.html">PatternLayout</a>
+            provides mechanisms to print the contents of the 
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html">ThreadContext</a> 
+            Map and Stack. 
+            <ul>
+              Use <code>%X</code> by itself to include the full contents of the Map.
+            </ul>
+            <ul>
+              Use <code>%X{key}</code> to include the specified key. 
+            </ul>
+            <ul>
+              Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
+            </ul>
           </p>
         </subsection>
       </section>
