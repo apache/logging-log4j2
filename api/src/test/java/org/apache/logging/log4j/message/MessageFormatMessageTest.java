@@ -25,30 +25,31 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class StringFormattedMessageTest {
+public class MessageFormatMessageTest {
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
 
     @Test
     public void testNoArgs() {
-        final String testMsg = "Test message %1s";
-        StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
+        String testMsg = "Test message {0}";
+        MessageFormatMessage msg = new MessageFormatMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        final String expected = "Test message null";
+        String expected = "Test message {0}";
         assertEquals(expected, result);
-        final Object[] array = null;
-        msg = new StringFormattedMessage(testMsg, array, null);
+        Object[] array = null;
+        msg = new MessageFormatMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
+        expected = "Test message null";
         assertEquals(expected, result);
     }
 
     @Test
     public void testOneArg() {
-        final String testMsg = "Test message %1s";
-        final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
-        final String result = msg.getFormattedMessage();
-        final String expected = "Test message Apache";
+        String testMsg = "Test message {0}";
+        MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
+        String result = msg.getFormattedMessage();
+        String expected = "Test message Apache";
         assertEquals(expected, result);
     }
 }

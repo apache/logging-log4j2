@@ -51,7 +51,7 @@ public class LogFactoryImpl extends LogFactory {
             return loggers.get(name);
         }
         throw new LogConfigurationException(
-            "SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
+            "Commons Logging Adapter requires base logging system to extend Log4J AbstractLogger");
     }
 
     private ConcurrentMap<String, Log> getLoggersMap() {

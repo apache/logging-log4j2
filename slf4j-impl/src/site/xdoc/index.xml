@@ -34,9 +34,17 @@
 
         <section name="Requirements">
            <p>
-             The SLF4J bridge requires at least Java 5.
+             The SLF4J bridge requires at least Java 5 and has a dependency on the Log4j 2 API.
           </p>
         </section>
+
+      <section name="Usage">
+        <p>
+          The SLF4J bindings provided in this Bridge cause all the SLF4J APIs to be routed to Log4j 2. Simply
+          include the SLF4J Bindings jar along with the Log4j 2 jars to cause all SLF4J logging to be handled
+          by Log4j 2.
+        </p>
+      </section>
 
     </body>
 </document>

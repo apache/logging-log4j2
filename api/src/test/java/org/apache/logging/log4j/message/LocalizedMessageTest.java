@@ -16,39 +16,36 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.Timer;
-import org.junit.AfterClass;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  */
-public class StringFormattedMessageTest {
+public class LocalizedMessageTest {
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
 
-    @Test
-    public void testNoArgs() {
-        final String testMsg = "Test message %1s";
-        StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
-        String result = msg.getFormattedMessage();
-        final String expected = "Test message null";
-        assertEquals(expected, result);
-        final Object[] array = null;
-        msg = new StringFormattedMessage(testMsg, array, null);
-        result = msg.getFormattedMessage();
-        assertEquals(expected, result);
-    }
 
     @Test
-    public void testOneArg() {
-        final String testMsg = "Test message %1s";
-        final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
-        final String result = msg.getFormattedMessage();
-        final String expected = "Test message Apache";
-        assertEquals(expected, result);
+    public void testMessageFormat() {
+        LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
+        String result = msg.getFormattedMessage();
+        String expected = "This is test number 1 with string argument Test.";
+        assertTrue(expected.equals(result));
+    }
+
+
+    @Test
+    public void testStringFormat() {
+        LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
+        String result = msg.getFormattedMessage();
+        String expected = "This is test number 1 with string argument Test.";
+        assertTrue(expected.equals(result));
     }
 }

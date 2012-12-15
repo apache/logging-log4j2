@@ -34,9 +34,18 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 1.2 bridge requires at least Java 5.
+             The Log4j 1.2 bridge requires at least Java 5 and is dependent on the Log4j 2 API and implementation.
           </p>
         </section>
+
+      <section name="Usage">
+        <p>
+          To use the Log4j Legacy Bridge just remove all the Log4j 1.x jars from the application and replace them
+          with the bridge jar. Once in place all logging that uses Log4j 1.x will be routed to Log4j 2. However,
+          applications that attempt to modify legacy Log4j by adding Appenders, Filters, etc may experience problems
+          if they try to verify the success of these actions as these methods are largely no-ops.
+        </p>
+      </section>
 
     </body>
 </document>

@@ -167,11 +167,12 @@ public class MyApp {
       <a name="FormattedMessage"/>
       <h4>FormattedMessage</h4>
         <p>
-          A FormattedMessage will have setFormat and getFormat methods. The setFormat method may be called by a
-          Layout to provide advice on how the Message should be formatted. If the Message doesn't recognize the
-          format name it will simply format the data using its default format. An example of this is the
-          StructuredDataMessage which accepts a format String of "XML" which will cause it to format the event data
-          as XML instead of the RFC 5424 format.
+          The message pattern passed to a
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage.html">FormattedMessage</a>
+          is first checked to see if it is a valid java.text.MessageFormat pattern. If it is, a MessageFormatMessage is
+          used to format it. If not it is next checked to see if it contains any tokens that are valid format
+          specifiers for String.format(). If so, a StringFormattedMessage is used to format it. Finally, if the
+          pattern doesn't match either of those then a ParameterizedMessage is used to format it.
         </p>
       <a name="LocalizedMessage"/>
       <h4>LocalizedMessage</h4>
@@ -181,10 +182,10 @@ public class MyApp {
           the best approach to localization is to have the client UI render the events in the client's locale.
         </p>
         <p>
-          LocalizedMessage extends a ParameterizedMessage by incorporating a ResourceBundle and allowing
-          the message pattern parameter to be the key to the message pattern in the bundle. If no bundle is specified,
+          LocalizedMessage incorporates a ResourceBundle and allows the message pattern parameter to be the key to
+          the message pattern in the bundle. If no bundle is specified,
           LocalizedMessage will attempt to locate a bundle with the name of the Logger used to log the event. The
-          parameters to the Message will be incorporated into the Message whereever the "{}" placeholders occur.
+          message retrieved from the bundle will be formatted using a FormattedMessage.
         </p>
       <a name="LoggerNameAwareMessage"/>
       <h4>LoggerNameAwareMessage</h4>
@@ -199,6 +200,23 @@ public class MyApp {
           A MapMessage contains a Map of String keys and values. MapMessage implements FormattedMessage and accepts
           a format specifier of "XML", in which case the Map will be formatted as XML. Otherwise, the Map will be
           formatted as "key1=value1 key2=value2...".
+        </p>
+        <a name="MessageFormatMessage"/>
+        <h4>MessageFormatMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
+          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html">conversion format</a>.
+          While this Message has more flexibility than ParameterizedMessage, it is also about two times slower.
+        </p>
+      <a name="MultiformatMessage"/>
+      <h4>MultiformatMessage</h4>
+        <p>
+          A MultiformatMessage will have a getFormats method and a getFormattedMessage method that accepts and array
+          of format Strings. The getFormats method may be called by a Layout to provide it information on what
+          formatting optionsthe Message supports. The Layout may then call getFormattedMessage with one or more
+          for the formats. If the Message doesn't recognize the format name it will simply format the data using its
+          default format. An example of this is the StructuredDataMessage which accepts a format String of "XML"
+          which will cause it to format the event data as XML instead of the RFC 5424 format.
         </p>
       <a name="ObjectMessage"/>
       <h4>ObjectMessage</h4>
