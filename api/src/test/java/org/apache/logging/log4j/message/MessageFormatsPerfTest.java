@@ -32,13 +32,14 @@ public class MessageFormatsPerfTest {
     private static long stringTime = 0;
     private static long paramTime = 0;
     private static long msgFormatTime = 0;
+    private static long formattedTime = 0;
 
     @AfterClass
     public static void after() {
         if (stringTime > paramTime) {
             System.out.println(String.format("Parameterized is %1$.2f times faster than StringFormat.",
                 ((float) stringTime / paramTime)));
-        } else if (stringTime > paramTime) {
+        } else if (stringTime < paramTime) {
             System.out.println(String.format("Parameterized is %1$.2f times slower than StringFormat.",
                 ((float) paramTime / stringTime)));
         } else {
@@ -47,11 +48,20 @@ public class MessageFormatsPerfTest {
         if (msgFormatTime > paramTime) {
             System.out.println(String.format("Parameterized is %1$.2f times faster than MessageFormat.",
                 ((float) msgFormatTime / paramTime)));
-        } else if (msgFormatTime > paramTime) {
+        } else if (msgFormatTime < paramTime) {
             System.out.println(String.format("Parameterized is %1$.2f times slower than MessageFormat.",
                 ((float) paramTime / msgFormatTime)));
         } else {
             System.out.println("The speed of Parameterized and MessageFormat are the same");
+        }
+        if (formattedTime > paramTime) {
+            System.out.println(String.format("Parameterized is %1$.2f times faster than Formatted.",
+                ((float) formattedTime / paramTime)));
+        } else if (formattedTime < paramTime) {
+            System.out.println(String.format("Parameterized is %1$.2f times slower than Formatted.",
+                ((float) paramTime / formattedTime)));
+        } else {
+            System.out.println("The speed of Parameterized and Formatted are the same");
         }
     }
 
@@ -94,6 +104,20 @@ public class MessageFormatsPerfTest {
         }
         timer.stop();
         paramTime = timer.getElapsedNanoTime();
+        System.out.println(timer.toString());
+    }
+
+    @Test
+    public void testFormattedParameterizedPerf() {
+        String testMsg = "Test message {} {}";
+        Timer timer = new Timer("FormattedParameterized", LOOP_CNT);
+        timer.start();
+        for (int i = 0; i < LOOP_CNT; ++i) {
+            FormattedMessage msg = new FormattedMessage(testMsg, "Apache", "Log4j");
+            array[i] = msg.getFormattedMessage();
+        }
+        timer.stop();
+        formattedTime = timer.getElapsedNanoTime();
         System.out.println(timer.toString());
     }
 }
