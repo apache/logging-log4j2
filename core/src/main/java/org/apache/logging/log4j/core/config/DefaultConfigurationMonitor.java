@@ -17,11 +17,14 @@
 package org.apache.logging.log4j.core.config;
 
 /**
- *
+ * The default configuration monitor does not do anything.
  */
 public class DefaultConfigurationMonitor implements ConfigurationMonitor {
 
+    /**
+     * Does nothing.
+     */
     public void checkConfiguration() {
-
+        // do nothing
     }
 }
