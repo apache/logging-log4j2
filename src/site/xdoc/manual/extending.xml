@@ -212,7 +212,7 @@ public class SystemPropertiesLookup implements StrLookup {
             </p>
             <pre class="prettyprint linenums">
 @Plugin(name = "ThresholdFilter", type = "Core", elementType = "filter", printObject = true)
-public final class ThresholdFilter extends FilterBase {
+public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
 
