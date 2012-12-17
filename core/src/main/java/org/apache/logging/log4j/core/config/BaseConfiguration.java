@@ -132,7 +132,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
-        for (int i = array.length - 1; i > 0; --i) {
+        for (int i = array.length - 1; i >= 0; --i) {
             array[i].stop();
         }
         stopFilter();
