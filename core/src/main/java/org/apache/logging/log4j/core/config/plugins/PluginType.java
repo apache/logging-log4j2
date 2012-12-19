@@ -21,6 +21,8 @@ import java.io.Serializable;
 
 /**
  * Plugin Descriptor.
+ * 
+ * @param <T> The plug-in class, which can be any kind of class.
  */
 public class PluginType<T> implements Serializable {
 
