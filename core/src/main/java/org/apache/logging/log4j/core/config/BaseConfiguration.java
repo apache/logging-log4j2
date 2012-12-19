@@ -482,7 +482,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
    /*
     * Retrieve a static public 'method to create the desired object. Every parameter
     * will be annotated to identify the appropriate attribute or element to use to
-    * set the value of the paraemter.
+    * set the value of the parameter.
     * Parameters annotated with PluginAttr will always be set as Strings.
     * Parameters annotated with PluginElement may be Objects or arrays. Collections
     * and Maps are currently not supported, although the factory method that is called
