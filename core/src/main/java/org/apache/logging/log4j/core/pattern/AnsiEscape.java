@@ -30,6 +30,9 @@ import java.util.Map;
  */
 public enum AnsiEscape {
 
+    /**
+     * Escape [
+     */
     PREFIX("\u001b["),
     SUFFIX("m"),
     SEPARATOR(";"),
