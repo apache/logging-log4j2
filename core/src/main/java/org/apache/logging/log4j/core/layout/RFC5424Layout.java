@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.message.Message;
@@ -97,7 +98,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         this.mdcId = mdcId;
         this.appName = appName;
         this.messageId = messageId;
-        this.localHostName = getLocalHostname();
+        this.localHostName = NetUtils.getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
             final String[] array = excludes.split(",");
@@ -218,42 +219,6 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     protected String getProcId() {
         return "-";
-    }
-
-    /**
-     * This method gets the network name of the machine we are running on.
-     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name
-     * cannot be found.
-     *
-     * @return String the name of the local host
-     */
-    public String getLocalHostname() {
-        try {
-            final InetAddress addr = InetAddress.getLocalHost();
-            return addr.getHostName();
-        } catch (final UnknownHostException uhe) {
-            try {
-                final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-                while (interfaces.hasMoreElements()) {
-                    final NetworkInterface nic = interfaces.nextElement();
-                    final Enumeration<InetAddress> addresses = nic.getInetAddresses();
-                    while (addresses.hasMoreElements()) {
-                        final InetAddress address = addresses.nextElement();
-                        if (!address.isLoopbackAddress()) {
-                            final String hostname = address.getHostName();
-                            if (hostname != null) {
-                                return hostname;
-                            }
-                        }
-                    }
-                }
-            } catch (final SocketException se) {
-                LOGGER.error("Could not determine local host name", uhe);
-                return "UNKNOWN_LOCALHOST";
-            }
-            LOGGER.error("Could not determine local host name", uhe);
-            return "UNKNOWN_LOCALHOST";
-        }
     }
 
     protected List<String> getMdcExcludes() {

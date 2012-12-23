@@ -133,7 +133,7 @@ public class StrSubstitutor {
     /**
      * Variable resolution is delegated to an implementor of VariableResolver.
      */
-    private StrLookup<?> variableResolver;
+    private StrLookup variableResolver;
     /**
      * The flag whether substitution in variable names is enabled.
      */
@@ -151,37 +151,34 @@ public class StrSubstitutor {
      * Creates a new instance and initializes it. Uses defaults for variable
      * prefix and suffix and the escaping character.
      *
-     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      */
-    public <V> StrSubstitutor(final Map<String, V> valueMap) {
+    public StrSubstitutor(final Map<String, String> valueMap) {
         this(new MapLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
 
     /**
      * Creates a new instance and initializes it. Uses a default escaping character.
      *
-     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      * @param prefix  the prefix for variables, not null
      * @param suffix  the suffix for variables, not null
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public <V> StrSubstitutor(final Map<String, V> valueMap, final String prefix, final String suffix) {
+    public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix) {
         this(new MapLookup(valueMap), prefix, suffix, DEFAULT_ESCAPE);
     }
 
     /**
      * Creates a new instance and initializes it.
      *
-     * @param <V> The type of object contained in the Map.
      * @param valueMap  the map with the variables' values, may be null
      * @param prefix  the prefix for variables, not null
      * @param suffix  the suffix for variables, not null
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public <V> StrSubstitutor(final Map<String, V> valueMap, final String prefix, final String suffix, final char escape) {
+    public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix, final char escape) {
         this(new MapLookup(valueMap), prefix, suffix, escape);
     }
 
@@ -190,7 +187,7 @@ public class StrSubstitutor {
      *
      * @param variableResolver  the variable resolver, may be null
      */
-    public StrSubstitutor(final StrLookup<?> variableResolver) {
+    public StrSubstitutor(final StrLookup variableResolver) {
         this(variableResolver, DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
 
@@ -203,7 +200,7 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(final StrLookup<?> variableResolver, final String prefix, final String suffix, final char escape) {
+    public StrSubstitutor(final StrLookup variableResolver, final String prefix, final String suffix, final char escape) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -219,7 +216,7 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(final StrLookup<?> variableResolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher,
+    public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher,
                           final char escape) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefixMatcher(prefixMatcher);
@@ -231,12 +228,11 @@ public class StrSubstitutor {
      * Replaces all the occurrences of variables in the given source object with
      * their matching values from the map.
      *
-     * @param <V> The type of object contained in the Map.
      * @param source  the source text containing the variables to substitute, null returns null
      * @param valueMap  the map with the values, may be null
      * @return the result of the replace operation
      */
-    public static <V> String replace(final Object source, final Map<String, V> valueMap) {
+    public static String replace(final Object source, final Map<String, String> valueMap) {
         return new StrSubstitutor(valueMap).replace(source);
     }
 
@@ -245,7 +241,6 @@ public class StrSubstitutor {
      * their matching values from the map. This method allows to specifiy a
      * custom variable prefix and suffix
      *
-     * @param <V> The type of object contained in the Map.
      * @param source  the source text containing the variables to substitute, null returns null
      * @param valueMap  the map with the values, may be null
      * @param prefix  the prefix of variables, not null
@@ -253,7 +248,7 @@ public class StrSubstitutor {
      * @return the result of the replace operation
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public static <V> String replace(final Object source, final Map<String, V> valueMap, final String prefix, final String suffix) {
+    public static String replace(final Object source, final Map<String, String> valueMap, final String prefix, final String suffix) {
         return new StrSubstitutor(valueMap, prefix, suffix).replace(source);
     }
 
@@ -897,7 +892,7 @@ public class StrSubstitutor {
      */
     protected String resolveVariable(final LogEvent event, final String variableName, final StringBuilder buf, final int startPos,
                                      final int endPos) {
-        final StrLookup<?> resolver = getVariableResolver();
+        final StrLookup resolver = getVariableResolver();
         if (resolver == null) {
             return null;
         }
@@ -1063,7 +1058,7 @@ public class StrSubstitutor {
      *
      * @return the VariableResolver
      */
-    public StrLookup<?> getVariableResolver() {
+    public StrLookup getVariableResolver() {
         return this.variableResolver;
     }
 
@@ -1072,7 +1067,7 @@ public class StrSubstitutor {
      *
      * @param variableResolver  the VariableResolver
      */
-    public void setVariableResolver(final StrLookup<?> variableResolver) {
+    public void setVariableResolver(final StrLookup variableResolver) {
         this.variableResolver = variableResolver;
     }
 

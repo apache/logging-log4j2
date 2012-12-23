@@ -31,6 +31,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
@@ -50,6 +51,7 @@ public class LoggerTest {
     private static final String CONFIG = "log4j-test2.xml";
     private static Configuration config;
     private static ListAppender app;
+    private static ListAppender host;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -71,11 +73,14 @@ public class LoggerTest {
         for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
-                break;
+            } else if (entry.getKey().equals("HostTest")) {
+                host = (ListAppender) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
+        assertNotNull("No Host Appender", host);
         app.clear();
+        host.clear();
     }
 
 
@@ -142,7 +147,7 @@ public class LoggerTest {
         final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         final List<LogEvent> events = app.getEvents();
-        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);        
+        assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         assertEquals(String.format("%,d", Integer.MAX_VALUE), events.get(0).getMessage().getFormattedMessage());
     }
 
@@ -169,6 +174,18 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
+    }
+
+    @Test
+    public void testHostname() {
+        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.hosttest");
+        testLogger.debug("Hello, {}", "World");
+        final List<String> msgs = host.getMessages();
+        assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        String expected = NetUtils.getLocalHostname() + System.getProperty("line.separator");
+        assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
+            msgs.get(0).endsWith(expected));
+
     }
 
     @Test

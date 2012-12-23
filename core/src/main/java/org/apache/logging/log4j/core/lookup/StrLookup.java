@@ -33,10 +33,8 @@ import org.apache.logging.log4j.core.LogEvent;
  *
  * @author Apache Software Foundation
  * @version $Id$
- *
- * @param <V> The type of the value that is being queried.
  */
-public interface StrLookup<V> {
+public interface StrLookup {
     /**
      * Looks up a String key to a String value.
      * <p>

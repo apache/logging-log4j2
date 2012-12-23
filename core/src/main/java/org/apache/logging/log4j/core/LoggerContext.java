@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
@@ -29,6 +31,7 @@ import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -260,6 +263,10 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
         final Configuration prev = this.config;
         config.addListener(this);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("hostName", NetUtils.getLocalHostname());
+        map.put("contextName", name);
+        config.addComponent(Configuration.CONTEXT_PROPERTIES, map);
         config.start();
         this.config = config;
         updateLoggers();

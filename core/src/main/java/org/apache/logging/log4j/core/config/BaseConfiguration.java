@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -45,6 +46,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,6 +105,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected BaseConfiguration() {
         pluginManager = new PluginManager("Core");
         rootNode = new Node();
+    }
+
+    public Map<String, String> getProperties() {
+        return (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
     }
 
     /**
@@ -165,7 +171,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 }
                 continue;
             } else if (tempLookup == subst.getVariableResolver()) {
-                subst.setVariableResolver(new Interpolator(null));
+                Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
+                StrLookup lookup = map == null ? null : new MapLookup(map);
+                subst.setVariableResolver(new Interpolator(lookup));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();

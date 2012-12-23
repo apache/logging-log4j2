@@ -30,6 +30,8 @@ import java.util.Map;
  */
 public interface Configuration extends Filterable {
 
+    public static final String CONTEXT_PROPERTIES = "ContextProperties";
+
     /**
      * Returns the configuration name.
      * @return the name of the configuration.
@@ -57,6 +59,8 @@ public interface Configuration extends Filterable {
     void addLoggerFilter(Logger logger, Filter filter);
 
     void setLoggerAdditive(Logger logger, boolean additive);
+
+    Map<String, String> getProperties();
 
     void start();
 

@@ -24,21 +24,20 @@ import java.util.Map;
 
 /**
  * The basis for a lookup based on a Map.
- * @param <V> The type of object contained in the Map.
  */
 @Plugin(name = "map", type = "Lookup")
-public class MapLookup<V> implements StrLookup<V> {
+public class MapLookup implements StrLookup {
     /**
      * Map keys are variable names and value.
      */
-    private final Map<String, V> map;
+    private final Map<String, String> map;
 
     /**
      * Creates a new instance backed by a Map. Used by the default lookup.
      *
      * @param map the map of keys to values, may be null
      */
-    public MapLookup(final Map<String, V> map) {
+    public MapLookup(final Map<String, String> map) {
         this.map = map;
     }
 
@@ -62,11 +61,11 @@ public class MapLookup<V> implements StrLookup<V> {
         if (map == null) {
             return null;
         }
-        final Object obj = map.get(key);
+        final String obj = map.get(key);
         if (obj == null) {
             return null;
         }
-        return obj.toString();
+        return obj;
     }
 
     public String lookup(final LogEvent event, final String key) {
@@ -74,9 +73,9 @@ public class MapLookup<V> implements StrLookup<V> {
             return null;
         }
         if (map != null && map.containsKey(key)) {
-            final Object obj = map.get(key);
+            final String obj = map.get(key);
             if (obj != null) {
-                return obj.toString();
+                return obj;
             }
         }
         if (event.getMessage() instanceof MapMessage) {

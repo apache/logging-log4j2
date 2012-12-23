@@ -696,7 +696,7 @@ public class Bar {
             Log4j 2 supports the ability to specify tokens in the configuration as references to properties defined
             elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
             others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
-            uses variations Apache Commons Lang's
+            uses variations of Apache Commons Lang's
             <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor">StrSubstitutor</a>
             and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup">StrLookup</a>
             classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${name}</code>
@@ -782,6 +782,12 @@ public class Bar {
                 <td>System properties</td>
               </tr>
             </table>
+          </p>
+          <p>
+            A default property map can be declared in the configuration file. If the value cannot be located in
+            the specified lookup the value in the default property map will be used. The default map is
+            pre-populated with a value for "hostName" that is the current system's host name or ip address and
+            the "contextName" with is the value of the current logging context.
           </p>
           <p>
             An interesting feature of StrLookup processing is that when a variable reference is declared with

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
@@ -39,11 +40,12 @@ public final class PropertiesPlugin {
      * @return An Interpolator that includes the configuration properties.
      */
     @PluginFactory
-    public static StrLookup configureSubstitutor(@PluginElement("properties") final Property[] properties) {
+    public static StrLookup configureSubstitutor(@PluginElement("properties") final Property[] properties,
+                                                 @PluginConfiguration final Configuration config) {
         if (properties == null) {
             return new Interpolator(null);
         }
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>(config.getProperties());
 
         for (final Property prop : properties) {
             map.put(prop.getName(), prop.getValue());

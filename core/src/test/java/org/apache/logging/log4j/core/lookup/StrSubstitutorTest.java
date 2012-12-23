@@ -50,7 +50,7 @@ public class StrSubstitutorTest {
     public void testLookup() {
         final Map<String, String> map = new HashMap<String, String>();
         map.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new Interpolator(new MapLookup<String>(map));
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = subst.replace("${TestKey}-${ctx:TestKey}-${sys:TestKey}");

@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="add">
+        Added hostName and contextName to property map.
+      </action>
       <action issue="LOG4J2-135" dev="ggregory" type="fix" due-to="Ingo Feltes">
         BaseConfiguration does not close the first appender.
       </action>
