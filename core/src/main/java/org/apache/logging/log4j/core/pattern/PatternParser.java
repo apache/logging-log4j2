@@ -78,11 +78,6 @@ public final class PatternParser {
 
     private static final int DECIMAL = 10;
 
-    /**
-     * Does pattern process exceptions.
-     */
-    private boolean handlesExceptions;
-
     private final Configuration config;
 
     private final Map<String, Class<PatternConverter>> converterRules;
@@ -125,8 +120,12 @@ public final class PatternParser {
         converterRules = converters;
     }
 
-
     public List<PatternFormatter> parse(final String pattern) {
+        return parse(pattern, false);
+    }
+
+
+    public List<PatternFormatter> parse(final String pattern, boolean handleExceptions) {
         final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
@@ -134,6 +133,7 @@ public final class PatternParser {
         parse(pattern, converters, fields);
 
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
+        boolean handlesExceptions = false;
 
         for (final PatternConverter converter : converters) {
             LogEventPatternConverter pc;
@@ -152,11 +152,11 @@ public final class PatternParser {
             }
             list.add(new PatternFormatter(pc, field));
         }
+        if (handleExceptions && !handlesExceptions) {
+            LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(null);
+            list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
+        }
         return list;
-    }
-
-    public boolean handlesExceptions() {
-        return handlesExceptions;
     }
 
     /**

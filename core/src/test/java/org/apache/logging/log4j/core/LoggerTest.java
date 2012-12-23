@@ -52,6 +52,7 @@ public class LoggerTest {
     private static Configuration config;
     private static ListAppender app;
     private static ListAppender host;
+    private static ListAppender noThrown;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -75,6 +76,8 @@ public class LoggerTest {
                 app = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("HostTest")) {
                 host = (ListAppender) entry.getValue();
+            } else if (entry.getKey().equals("NoThrowable")) {
+                noThrown = (ListAppender) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
@@ -187,6 +190,28 @@ public class LoggerTest {
             msgs.get(0).endsWith(expected));
 
     }
+
+    @Test
+    public void testImpliedThrowable() {
+        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.hosttest");
+        testLogger.debug("This is a test", new Throwable("Testing"));
+        final List<String> msgs = host.getMessages();
+        assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        String expected = "java.lang.Throwable: Testing";
+        assertTrue("Incorrect message data", msgs.get(0).contains(expected));
+    }
+
+
+    @Test
+    public void testSuppressedThrowable() {
+        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.nothrown");
+        testLogger.debug("This is a test", new Throwable("Testing"));
+        final List<String> msgs = noThrown.getMessages();
+        assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
+        String suppressed = "java.lang.Throwable: Testing";
+        assertTrue("Incorrect message data", !msgs.get(0).contains(suppressed));
+    }
+
 
     @Test
     public void mdc() {

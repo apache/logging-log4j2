@@ -18,7 +18,7 @@
       </PatternLayout>
     </File>
     <List name="List">
-      <PatternLayout pattern="%C{1.} %m MDC%X%n"/>
+      <PatternLayout pattern="%C{1.} %m MDC%X%n%ex{0}"/>
     </List>
     <SLF4J name="SLF4J"/>
   </appenders>

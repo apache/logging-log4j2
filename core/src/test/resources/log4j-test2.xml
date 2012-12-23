@@ -47,6 +47,9 @@
     <List name="HostTest">
       <PatternLayout pattern="%d %p %C{1.} [%t] %m ${hostName}%n"/>
     </List>
+    <List name="NoThrowable">
+      <PatternLayout pattern="%d %p %C{1.} [%t] %m%n%ex{0}"/>
+    </List>
   </appenders>
 
   <loggers>
@@ -60,6 +63,12 @@
     <logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
       <appender-ref ref="HostTest"/>
     </logger>
+
+
+    <logger name="org.apache.logging.log4j.nothrown" level="debug" additivity="false">
+      <appender-ref ref="NoThrowable"/>
+    </logger>
+
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <appender-ref ref="File"/>

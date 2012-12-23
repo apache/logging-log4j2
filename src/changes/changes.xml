@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-130" dev="rgoers" type="fix">
+        PatternLayout should format throwables without requiring a converter.
+      </action>
       <action dev="rgoers" type="add">
         Added hostName and contextName to property map.
       </action>

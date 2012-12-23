@@ -80,10 +80,6 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     private final String conversionPattern;
 
-    /**
-     * True if any element in pattern formats information from exceptions.
-     */
-    private boolean handlesExceptions;
 
     /**
      * The current Configuration.
@@ -107,8 +103,7 @@ public final class PatternLayout extends AbstractStringLayout {
         this.conversionPattern = pattern;
         this.config = config;
         final PatternParser parser = createPatternParser(config);
-        formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern);
-        handlesExceptions = parser.handlesExceptions();
+        formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern, true);
     }
 
     /**
@@ -125,7 +120,6 @@ public final class PatternLayout extends AbstractStringLayout {
         }
         final PatternParser parser = createPatternParser(this.config);
         formatters = parser.parse(pattern);
-        handlesExceptions = parser.handlesExceptions();
     }
 
     /**

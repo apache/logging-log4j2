@@ -32,6 +32,7 @@ import java.io.StringWriter;
 @ConverterKeys({"ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
+    protected static final String NONE = "none";
     /**
      * Format the whole stack trace.
      */
@@ -60,10 +61,12 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
         super(name, style);
-        int count = 0;
+        int count = Integer.MAX_VALUE;
         if ((options != null) && (options.length > 0)) {
             option = options[0];
             if (option == null) {
+            } else if (option.equalsIgnoreCase(NONE)) {
+                count = 0;
             } else if (option.equalsIgnoreCase(SHORT)) {
                 count = 2;
             } else if (!option.equalsIgnoreCase(FULL)) {
@@ -94,17 +97,18 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Throwable t = event.getThrown();
 
-        if (t != null) {
+        if (t != null && lines > 0) {
             final StringWriter w = new StringWriter();
             t.printStackTrace(new PrintWriter(w));
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
             }
-            if (lines > 0) {
+            if (lines != Integer.MAX_VALUE) {
                 final StringBuilder sb = new StringBuilder();
                 final String[] array = w.toString().split("\n");
-                for (int i = 0; i < lines; ++i) {
+                int limit = lines > array.length ? array.length : lines;
+                for (int i = 0; i < limit; ++i) {
                     sb.append(array[i]).append("\n");
                 }
                 toAppendTo.append(sb.toString());

@@ -45,7 +45,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      *
      * @param options options, may be null.
      */
-    private ExtendedThrowablePatternConverter(final String[] options) {        
+    private ExtendedThrowablePatternConverter(final String[] options) {
         super("ExtendedThrowable", "throwable", options);
         List<String> tempPackages = null;
         if (options != null && options.length > 1) {
@@ -96,7 +96,7 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Throwable throwable = event.getThrown();
-        if (throwable != null) {
+        if (throwable != null && lines > 0) {
             if (!(throwable instanceof ThrowableProxy)) {
                 super.format(event, toAppendTo);
                 return;
@@ -107,10 +107,11 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
             }
-            if (lines > 0) {
+            if (lines != Integer.MAX_VALUE) {
                 final StringBuilder sb = new StringBuilder();
                 final String[] array = trace.split("\n");
-                for (int i = 0; i < lines; ++i) {
+                int limit = lines > array.length ? array.length : lines;
+                for (int i = 0; i < limit; ++i) {
                     sb.append(array[i]).append("\n");
                 }
                 toAppendTo.append(sb.toString());
