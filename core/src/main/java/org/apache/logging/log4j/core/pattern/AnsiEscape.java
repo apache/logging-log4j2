@@ -31,65 +31,197 @@ import java.util.Map;
 public enum AnsiEscape {
 
     /**
-     * Escape [
+     * Escape prefix.
      */
     PREFIX("\u001b["),
+    /**
+     * Escape suffix.
+     */
     SUFFIX("m"),
+
+    /**
+     * Escape separator.
+     */
     SEPARATOR(";"),
 
     /**
-     * General Attributes.
+     * Normal general attribute.
      */
     NORMAL("0"),
+
+    /**
+     * Bright general attribute.
+     */
     BRIGHT("1"),
+
+    /**
+     * Dim general attribute.
+     */
     DIM("2"),
+
+    /**
+     * Underline general attribute.
+     */
     UNDERLINE("3"),
+
+    /**
+     * Blink general attribute.
+     */
     BLINK("5"),
+
+    /**
+     * Reverse general attribute.
+     */
     REVERSE("7"),
+
+    /**
+     * Normal general attribute.
+     */
     HIDDEN("8"),
 
     /**
-     * Foreground Colors.
+     * Black foreground color.
      */
     BLACK("30"),
+
+    /**
+     * Black foreground color.
+     */
     FG_BLACK("30"),
+
+    /**
+     * Red foreground color.
+     */
     RED("31"),
+
+    /**
+     * Red foreground color.
+     */
     FG_RED("31"),
+
+    /**
+     * Green foreground color.
+     */
     GREEN("32"),
+
+    /**
+     * Green foreground color.
+     */
     FG_GREEN("32"),
+
+    /**
+     * Yellow foreground color.
+     */
     YELLOW("33"),
+
+    /**
+     * Yellow foreground color.
+     */
     FG_YELLOW("33"),
+
+    /**
+     * Blue foreground color.
+     */
     BLUE("34"),
+
+    /**
+     * Blue foreground color.
+     */
     FG_BLUE("34"),
+
+    /**
+     * Magenta foreground color.
+     */
     MAGENTA("35"),
+
+    /**
+     * Magenta foreground color.
+     */
     FG_MAGENTA("35"),
+
+    /**
+     * Cyan foreground color.
+     */
     CYAN("36"),
+
+    /**
+     * Cyan foreground color.
+     */
     FG_CYAN("36"),
+
+    /**
+     * White foreground color.
+     */
     WHITE("37"),
+
+    /**
+     * White foreground color.
+     */
     FG_WHITE("37"),
+
+    /**
+     * Default foreground color.
+     */
     DEFAULT("39"),
+
+    /**
+     * Default foreground color.
+     */
     FG_DEFAULT("39"),
 
     /**
-     * Background Colors.
+     * Black background color.
      */
     BG_BLACK("40"),
+
+    /**
+     * Red background color.
+     */
     BG_RED("41"),
+
+    /**
+     * Green background color.
+     */
     BG_GREEN("42"),
+
+    /**
+     * Yellow background color.
+     */
     BG_YELLOW("43"),
+
+    /**
+     * Blue background color.
+     */
     BG_BLUE("44"),
+
+    /**
+     * Magenta background color.
+     */
     BG_MAGENTA("45"),
+
+    /**
+     * Cyan background color.
+     */
     BG_CYAN("46"),
+
+    /**
+     * White background color.
+     */
     BG_WHITE("47");
 
     private static final String WHITESPACE_REGEX = "\\s*";
-    
+
     private final String code;
 
     private AnsiEscape(final String code) {
         this.code = code;
     }
 
+    /**
+     * Gets the default style
+     * 
+     * @return the default style
+     */
     public static String getDefaultStyle() {
         return PREFIX.getCode() + SUFFIX.getCode();
     }
@@ -98,6 +230,11 @@ public enum AnsiEscape {
         return WHITESPACE_REGEX + separator + WHITESPACE_REGEX;
     }
 
+    /**
+     * Gets the escape code.
+     * 
+     * @return the escape code.
+     */
     public String getCode() {
         return code;
     }
