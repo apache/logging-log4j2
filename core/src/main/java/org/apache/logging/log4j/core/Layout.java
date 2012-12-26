@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Lays out a {@linkplain LogEvent} in different formats.
- * 
+ *
  * The formats are:
  * <ul>
  * <li>
@@ -32,10 +32,10 @@ import java.io.Serializable;
  * <li>
  * {@linkplain LogEvent}</li>
  * </ul>
- * 
+ *
  * @param <T>
  *            The type returned by {@link #toSerializable(LogEvent)}
- *            
+ *
  * @doubt There is still a need for a character-based layout for character based event sinks (databases, etc). Would introduce an
  *        EventEncoder, EventRenderer or something similar for the logging event to byte encoding. (RG) A layout can be configured with a
  *        Charset and then Strings can be converted to byte arrays. OTOH, it isn't possible to write byte arrays as character streams.
@@ -76,5 +76,9 @@ public interface Layout<T extends Serializable> {
      */
     T toSerializable(LogEvent event);
 
-
+    /**
+     * Returns the content type output by this layout. The base class
+     returns "text/plain".
+     */
+    String getContentType();
 }

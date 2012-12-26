@@ -94,6 +94,14 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     }
 
     /**
+     * SerializedLayout returns a binary stream.
+     * @return The content type.
+     */
+    public String getContentType() {
+        return "application/octet-stream";
+    }
+
+    /**
      * The stream header will be written in the Manager so skip it here.
      */
     private class PrivateObjectOutputStream extends ObjectOutputStream {

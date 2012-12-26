@@ -24,6 +24,7 @@ import org.apache.flume.node.nodemanager.DefaultLogicalNodeManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.helpers.NameUtil;
 
 import java.security.MessageDigest;
 import java.util.Locale;
@@ -106,22 +107,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.append(prop.getName()).append("=").append(prop.getValue());
                 sep = ",";
             }
-            try {
-                final MessageDigest digest = MessageDigest.getInstance("MD5");
-                digest.update(sb.toString().getBytes());
-                final byte[] bytes = digest.digest();
-                final StringBuilder md5 = new StringBuilder();
-                for (final byte b : bytes) {
-                    final String hex = Integer.toHexString(0xff & b);
-                    if (hex.length() == 1) {
-                        md5.append('0');
-                    }
-                    md5.append(hex);
-                }
-                sb.append(md5.toString());
-            } catch (final Exception ex) {
-                sb.append(props);
-            }
+            sb.append(NameUtil.md5(props.toString()));
         }
         return (FlumeEmbeddedManager) getManager(sb.toString(), factory,
             new FactoryData(name, agents, properties, batchSize, dataDir));

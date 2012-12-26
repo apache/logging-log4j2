@@ -97,6 +97,7 @@
     <logback.version>1.0.7</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-beta3</Log4jReleaseVersion>
+    <jackson.version>1.9.2</jackson.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
@@ -178,6 +179,57 @@
         <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>core</artifactId>
+        <version>4.3.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>oro</groupId>
+        <artifactId>oro</artifactId>
+        <version>2.0.8</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fusesource.jansi</groupId>
+        <artifactId>jansi</artifactId>
+        <version>1.9</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>${jackson.version}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson.version}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jms_1.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockejb</groupId>
+        <artifactId>mockejb</artifactId>
+        <version>0.6-beta2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>dumbster</groupId>
+        <artifactId>dumbster</artifactId>
+        <version>1.6</version>
+        <scope>test</scope>
+      </dependency>
  	    <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
@@ -187,7 +239,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.3.1</version>
+        <version>4.7</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

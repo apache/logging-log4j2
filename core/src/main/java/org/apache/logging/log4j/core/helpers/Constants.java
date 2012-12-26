@@ -32,6 +32,11 @@ public final class Constants {
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
+     * Line separator.
+     */
+    public static final String LINE_SEP = PropertiesUtil.getSystemProperty("line.separator", "\n");
+
+    /**
      * Prevent class instantiation.
      */
     private Constants() {

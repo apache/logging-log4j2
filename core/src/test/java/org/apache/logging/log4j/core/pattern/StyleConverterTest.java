@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -43,9 +44,9 @@ public class StyleConverterTest {
     private static ListAppender app;
     private static LoggerContext ctx;
 
-    private static final String LINE_SEP = System.getProperty("line.separator");
-
-    private static final String EXPECTED = "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest" + LINE_SEP;
+    private static final String EXPECTED =
+        "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
+        + Constants.LINE_SEP;
 
     @BeforeClass
     public static void setupClass() {

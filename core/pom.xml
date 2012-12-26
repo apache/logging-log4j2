@@ -41,31 +41,26 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>core</artifactId>
-      <version>4.3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-      <version>1.9.2</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.2</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
-      <version>1.9</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
-      <version>2.0.8</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -87,13 +82,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockejb</groupId>
       <artifactId>mockejb</artifactId>
-      <version>0.6-beta2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -109,8 +102,17 @@
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-jms_1.1_spec</artifactId>
-      <version>1.0</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+	  <groupId>dumbster</groupId>
+	    <artifactId>dumbster</artifactId>
+	    <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

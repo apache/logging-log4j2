@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+import java.security.MessageDigest;
+
 /**
  *
  */
@@ -30,5 +32,24 @@ public final class NameUtil {
         }
         final int i = name.lastIndexOf('.');
         return i > 0 ? name.substring(0, i) : "";
+    }
+
+    public static String md5(String string) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(string.getBytes());
+            final byte[] bytes = digest.digest();
+            final StringBuilder md5 = new StringBuilder();
+            for (final byte b : bytes) {
+                final String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    md5.append('0');
+                }
+                md5.append(hex);
+            }
+            return md5.toString();
+        } catch (Exception ex) {
+            return string;
+        }
     }
 }

@@ -20,6 +20,7 @@ package org.apache.log4j;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -44,8 +45,6 @@ import java.util.List;
 public class CategoryTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
-
-    private static final String LINE_SEP = System.getProperty("line.separator");
 
     private static ListAppender appender = new ListAppender("List");
 
@@ -175,7 +174,7 @@ public class CategoryTest {
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();
-        final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + LINE_SEP;
+        final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Constants.LINE_SEP;
         assertTrue("Incorrect message \"" + msg + "\"" + " expected \"" + expected +"\"", msg.endsWith(expected));
     }
 

@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -44,9 +45,8 @@ public class RegexReplacementTest {
     private static ListAppender app;
     private static ListAppender app2;
     private static LoggerContext ctx;
-    
-    private static final String LINE_SEP = System.getProperty("line.separator");
-    private static final String EXPECTED = "/RegexReplacementTest" + LINE_SEP;
+
+    private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEP;
 
     @BeforeClass
     public static void setupClass() {
@@ -87,7 +87,7 @@ public class RegexReplacementTest {
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertTrue("Incorrect number of messages. Should be 1 is " + msgs.size(), msgs.size() == 1);
-        assertEquals("LoggerTest This is a test for Apache" + LINE_SEP , msgs.get(0));
+        assertEquals("LoggerTest This is a test for Apache" + Constants.LINE_SEP , msgs.get(0));
         app.clear();
 
     }

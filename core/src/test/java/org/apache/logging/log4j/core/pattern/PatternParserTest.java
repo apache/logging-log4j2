@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Logger;
 
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Before;
@@ -56,8 +57,6 @@ public class PatternParserTest {
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
     private static String nestedPattern =
         "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
-
-    private static final String LINE_SEP = System.getProperty("line.separator");
 
     private static final String KEY = "Converter";
     private PatternParser parser;
@@ -104,7 +103,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :97  ] - Hello, world" + LINE_SEP;
+        final String expected = "INFO  [PatternParserTest        :96  ] - Hello, world" + Constants.LINE_SEP;
         assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
@@ -122,7 +121,7 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = String.format("] INFO : Hello, world%s\u001B[m", LINE_SEP);
+        final String expected = String.format("] INFO : Hello, world%s\u001B[m", Constants.LINE_SEP);
         assertTrue(" Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 

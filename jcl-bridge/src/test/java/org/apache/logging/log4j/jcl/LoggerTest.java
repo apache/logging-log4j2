@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -43,8 +44,6 @@ public class LoggerTest {
 
     private static final String CONFIG = "log4j-test1.xml";
 
-    private static final String LINE_SEP = System.getProperty("line.separator");
-
     @BeforeClass
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
@@ -65,13 +64,13 @@ public class LoggerTest {
     @Test
     public void testLog() {
         logger.debug("Test message");
-        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Constants.LINE_SEP);
         logger.debug("Exception: " , new NullPointerException("Test"));
-        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Exception:  MDC{}" + Constants.LINE_SEP);
         logger.info("Info Message");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Info Message MDC{}" + Constants.LINE_SEP);
         logger.info("Info Message {}");
-        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + LINE_SEP);
+        verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Constants.LINE_SEP);
     }
 
     private void verify(final String name, final String expected) {

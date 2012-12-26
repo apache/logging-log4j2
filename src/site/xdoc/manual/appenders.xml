@@ -1406,6 +1406,131 @@
 </configuration>]]></pre>
           </p>
         </subsection>
+        <a name="SMTPAppender"/>
+        <subsection name="SMTPAppender">
+          <p>
+            Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.
+          </p>
+          <p>
+            The number of logging events delivered in this e-mail depend on the value of
+            <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the last
+            <code>BufferSize</code> logging events in its cyclic buffer. This keeps
+            memory requirements at a reasonable level while still delivering useful
+            application context.
+          </p>
+          <p>
+            The default behavior is to trigger sending an email whenever an ERROR or higher
+            severity event is logged and to format it as HTML. The circumstances on when the
+            email is sent can be controlled by setting one or more filters on the Appender.
+            As with other Appenders, the formatting can be controlled by specifying a Layout
+            for the Appender.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>bcc</td>
+              <td>String</td>
+              <td>The comma-separated list of BCC email addresses.</td>
+            </tr>
+            <tr>
+              <td>cc</td>
+              <td>String</td>
+              <td>The comma-separated list of CC email addresses.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>integer</td>
+              <td>The maximum number of log events to be buffered for inclusion in the message. Defaults to 512.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.
+              </td>
+            </tr>
+            <tr>
+              <td>from</td>
+              <td>String</td>
+              <td>The email address of the sender.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>replyTo</td>
+              <td>String</td>
+              <td>The comma-separated list of reply-to email addresses.</td>
+            </tr>
+            <tr>
+              <td>smtpDebug</td>
+              <td>boolean</td>
+              <td>When set to true enables session debugging on STDOUT. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>smtpHost</td>
+              <td>String</td>
+              <td>The SMTP hostname to send to. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>smtpPassword</td>
+              <td>String</td>
+              <td>The password required to authenticate against the SMTP server.</td>
+            </tr>
+            <tr>
+              <td>smtpPort</td>
+              <td>integer</td>
+              <td>The SMTP port to send to. </td>
+            </tr>
+            <tr>
+              <td>smtpProtocol</td>
+              <td>String</td>
+              <td>The SMTP transport protocol (such as "smtps", defaults to "smtp").</td>
+            </tr>
+            <tr>
+              <td>smtpUsername</td>
+              <td>String</td>
+              <td>The username required to authenticate against the SMTP server.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.
+              </td>
+            </tr>
+            <tr>
+              <td>to</td>
+              <td>String</td>
+              <td>The comma-separated list of recipient email addresses.</td>
+            </tr>
+            <caption align="top">SMTPAppender Parameters</caption>
+          </table>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <SMTP name="Mail" suppressExceptions="false" subject="Error Log" to="errors@logging.apache.org"
+      from="test@logging.apache.org" smtpHost="localhost" smtpPort="25" bufferSize="50">
+    </SMTP>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Mail"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+        </subsection>
         <a name="SocketAppender"/>
         <subsection name="SocketAppender">
           <p>

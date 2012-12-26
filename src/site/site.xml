@@ -74,6 +74,7 @@
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
+        <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
         <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
       </item>

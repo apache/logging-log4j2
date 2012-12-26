@@ -214,6 +214,14 @@ public class XMLLayout extends AbstractStringLayout {
         return sbuf.toString().getBytes(getCharset());
     }
 
+    @Override
+    /**
+     * @return The content type.
+     */
+    public String getContentType() {
+        return "text/xml";
+    }
+
     List<String> getThrowableString(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);

@@ -56,6 +56,13 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
         return encoder.getBytes(toSerializable(event));
     }
 
+    /**
+     * @return The default content type for Strings.
+     */
+    public String getContentType() {
+        return "text/plain";
+    }
+
     protected Charset getCharset() {
         return charset;
     }

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -34,8 +35,6 @@ import static org.junit.Assert.assertNotNull;
  */
 public class OutputStreamAppenderTest {
 
-    private static final String LINE_SEP = System.getProperty("line.separator");
-
     @Test
     public void testAppender() {
         final Layout layout = PatternLayout.createLayout(null, null, null, null);
@@ -47,7 +46,7 @@ public class OutputStreamAppenderTest {
         app.append(event);
         final String msg = app.toString();
         assertNotNull("No message", msg);
-        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + LINE_SEP));
+        assertTrue("Incorrect message: " + msg , msg.endsWith("Test" + Constants.LINE_SEP));
         app.stop();
         assertFalse("Appender did not stop", app.isStarted());
     }

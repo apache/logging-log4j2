@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
@@ -32,7 +33,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class RegexReplacementConverterTest {
 
-    private static final String LINE_SEP = System.getProperty("line.separator");
     @Test
     public void testReplacement() {
         ThreadContext.put("MyKey", "Apache");
@@ -46,7 +46,7 @@ public class RegexReplacementConverterTest {
         final RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
         converter.format(event, sb);
-        assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" + LINE_SEP,
-            sb.toString());
+        assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
+            Constants.LINE_SEP, sb.toString());
     }
 }
