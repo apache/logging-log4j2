@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -31,5 +32,44 @@ public class ThreadContextTest {
         ThreadContext.push("{} is {}", ThreadContextTest.class.getSimpleName(), "running");
         assertEquals("Incorrect parameterized stack value", ThreadContext.pop(), "ThreadContextTest is running");
         assertEquals("Incorrect simple stack value", ThreadContext.pop(), "Hello");
+    }
+
+    @Test
+    public void testInheritance() throws Exception {
+        ThreadContext.clear();
+        ThreadContext.put("Greeting", "Hello");
+        StringBuilder sb = new StringBuilder();
+        TestThread thread = new TestThread(sb);
+        thread.start();
+        thread.join();
+        String str = sb.toString();
+        assertTrue("Unexpected ThreadContext value. Expected Hello. Actual " + str, "Hello".equals(str));
+        sb = new StringBuilder();
+        thread = new TestThread(sb);
+        thread.start();
+        thread.join();
+        str = sb.toString();
+        assertTrue("Unexpected ThreadContext value. Expected Hello. Actual " + str, "Hello".equals(str));
+    }
+
+
+    private class TestThread extends Thread {
+
+        private final StringBuilder sb;
+
+        public TestThread(StringBuilder sb) {
+            this.sb = sb;
+        }
+
+        @Override
+        public void run() {
+            String greeting = ThreadContext.get("Greeting");
+            if (greeting == null) {
+                sb.append("null");
+            } else {
+                sb.append(greeting);
+            }
+            ThreadContext.clear();
+        }
     }
 }
