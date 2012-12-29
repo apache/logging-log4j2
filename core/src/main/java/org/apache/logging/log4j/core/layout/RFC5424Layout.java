@@ -26,6 +26,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternFormatter;
+import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -43,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -59,6 +65,10 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * The default event id.
      */
     public static final String DEFAULT_ID = "Audit";
+    /**
+     * Match newlines in a platform-independent manner
+     */
+    public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
 
     private static final String DEFAULT_MDCID = "mdc";
     private static final int TWO_DIGITS = 10;
@@ -81,20 +91,28 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private final ListChecker checker;
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
+    private final String escapeNewLine;
 
     private long lastTimestamp = -1;
     private String timestamppStr;
+    private static final String COMPONENT_KEY = "RFC5424-Converter";
+    private static final String DEFAULT_CONVERSION_PATTERN = "%xEx";
 
+    private List<PatternFormatter> formatters;
 
-    private RFC5424Layout(final Configuration config, final Facility facility, final String id, final int ein, final boolean includeMDC,
-                          final boolean includeNL, final String mdcId, final String appName, final String messageId, final String excludes,
-                          final String includes, final String required, final Charset charset) {
+    private RFC5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
+                          final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+                          final String appName, final String messageId, final String excludes, final String includes,
+                          final String required, final Charset charset, final String exceptionPattern) {
         super(charset);
+        final PatternParser parser = createPatternParser(config);
+        formatters = exceptionPattern == null ? null : parser.parse(exceptionPattern, false);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
         this.enterpriseNumber = ein;
         this.includeMDC = includeMDC;
         this.includeNewLine = includeNL;
+        this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
         this.mdcId = mdcId;
         this.appName = appName;
         this.messageId = messageId;
@@ -145,6 +163,25 @@ public final class RFC5424Layout extends AbstractStringLayout {
         this.checker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
         configName = (name != null && name.length() > 0) ? name : null;
+    }
+
+    /**
+     * Create a PatternParser.
+     * @param config The Configuration.
+     * @return The PatternParser.
+     */
+    public static PatternParser createPatternParser(final Configuration config) {
+        if (config == null) {
+            return new PatternParser(config, PatternLayout.KEY, LogEventPatternConverter.class,
+                ThrowablePatternConverter.class);
+        }
+        PatternParser parser = (PatternParser) config.getComponent(COMPONENT_KEY);
+        if (parser == null) {
+            parser = new PatternParser(config, PatternLayout.KEY, ThrowablePatternConverter.class);
+            config.addComponent(COMPONENT_KEY, parser);
+            parser = (PatternParser) config.getComponent(COMPONENT_KEY);
+        }
+        return parser;
     }
 
     /**
@@ -205,16 +242,31 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
             }
             if (text != null && text.length() > 0) {
-                buf.append(" ").append(text);
+                buf.append(" ").append(escapeNewlines(text, escapeNewLine));
             }
         } else {
             buf.append("- ");
-            buf.append(msg.getFormattedMessage());
+            buf.append(escapeNewlines(msg.getFormattedMessage(), escapeNewLine));
+        }
+        if (formatters != null && event.getThrown() != null) {
+            StringBuilder exception = new StringBuilder("\n");
+            for (PatternFormatter formatter : formatters) {
+                formatter.format(event, exception);
+            }
+            buf.append(escapeNewlines(exception.toString(), escapeNewLine));
         }
         if (includeNewLine) {
             buf.append("\n");
         }
         return buf.toString();
+    }
+
+    private String escapeNewlines(String text, String escapeNewLine)
+    {
+        if(null == escapeNewLine) {
+            return text;
+        }
+        return NEWLINE_PATTERN.matcher(text).replaceAll(escapeNewLine);
     }
 
     protected String getProcId() {
@@ -398,12 +450,13 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
      * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param escapeNL String that should be used to replace newlines within the message text
      * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
      * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
      * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
      * @param includes A comma separated list of mdc keys that should be included in the FlumeEvent.
      * @param required A comma separated list of mdc keys that must be present in the MDC.
-     * @param charset The character set.
+     * @param charsetName The character set.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An RFC5424Layout.
      */
@@ -414,21 +467,27 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("includeMDC") final String includeMDC,
                                              @PluginAttr("mdcId") String mdcId,
                                              @PluginAttr("newLine") final String includeNL,
+                                             @PluginAttr("newLineEscape") final String escapeNL,
                                              @PluginAttr("appName") final String appName,
                                              @PluginAttr("messageId") final String msgId,
                                              @PluginAttr("mdcExcludes") final String excludes,
                                              @PluginAttr("mdcIncludes") String includes,
                                              @PluginAttr("mdcRequired") final String required,
-                                             @PluginAttr("charset") final String charset,
+                                             @PluginAttr("charset") final String charsetName,
+                                             @PluginAttr("exceptionPattern") final String exceptionPattern,
                                              @PluginConfiguration final Configuration config) {
-        Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        Charset charset = null;
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                charset = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
             }
         }
+        if(charset == null) {
+            charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+        }
+
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
@@ -441,7 +500,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcId = DEFAULT_MDCID;
         }
 
-        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, mdcId, appName, msgId,
-                                 excludes, includes, required, c);
+        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, appName, msgId,
+                                 excludes, includes, required, charset, exceptionPattern);
     }
 }

@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-136" dev="rgoers" type="update" due-to="Scott Severtson">
+        Allow newlines to be escaped in Syslog and RFC5424 layouts. Allow Throwables to be included in
+        the output from RFC5424Layout.
+      </action>
       <action issue="LOG4J2-131" dev="rgoers" type="add" due-to="Scott Severtson">
         Add SMTPAppender.
       </action>

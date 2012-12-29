@@ -20,9 +20,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -66,19 +68,19 @@ public class RFC5424LayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-
-
-
     /**
      * Test case for MDC conversion pattern.
      */
     @Test
     public void testLayout() throws Exception {
-
+        for (Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
         // set up appender
         final RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            "true", "ATM", null, "key1, key2, locale", null, "loginId", null, null);
+            "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
+
         appender.start();
 
         // set appender on root and set level to debug
@@ -122,12 +124,51 @@ public class RFC5424LayoutTest {
             list = appender.getMessages();
             assertTrue("No messages expected, found " + list.size(), list.size() == 0);
         } finally {
-
+            root.removeAppender(appender);
             ThreadContext.clear();
 
             appender.stop();
         }
 
+    }
+
+    /**
+     * Test case for MDC conversion pattern.
+     */
+    @Test
+    public void testException() throws Exception {
+        for (Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        // set up appender
+        final RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+            "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, "%xEx", null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        ThreadContext.put("loginId", "JohnDoe");
+
+        // output starting message
+        root.debug("starting mdc pattern test", new IllegalArgumentException("Test"));
+
+        try {
+
+            List<String> list = appender.getMessages();
+
+            assertTrue("Not enough list entries", list.size() > 1);
+            assertTrue("No Exception", list.get(1).contains("IllegalArgumentException"));
+
+            appender.clear();
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
     }
 
 }

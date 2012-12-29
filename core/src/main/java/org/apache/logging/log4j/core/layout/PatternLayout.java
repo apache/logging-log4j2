@@ -68,7 +68,7 @@ public final class PatternLayout extends AbstractStringLayout {
     public static final String SIMPLE_CONVERSION_PATTERN =
         "%d [%t] %p %c - %m%n";
 
-    private static final String KEY = "Converter";
+    public static final String KEY = "Converter";
 
     /**
      * Initial converter for pattern.

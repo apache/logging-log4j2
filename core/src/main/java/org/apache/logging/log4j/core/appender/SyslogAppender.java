@@ -89,6 +89,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("includeMDC") final String includeMDC,
                                                 @PluginAttr("mdcId") final String mdcId,
                                                 @PluginAttr("newLine") final String includeNL,
+                                                @PluginAttr("newLineEscape") final String escapeNL,
                                                 @PluginAttr("appName") final String appName,
                                                 @PluginAttr("messageId") final String msgId,
                                                 @PluginAttr("mdcExcludes") final String excludes,
@@ -97,7 +98,8 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("format") final String format,
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginConfiguration final Configuration config,
-                                                @PluginAttr("charset") final String charset) {
+                                                @PluginAttr("charset") final String charset,
+                                                @PluginAttr("exceptionPattern") final String exceptionPattern) {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
@@ -112,9 +114,9 @@ public class SyslogAppender extends SocketAppender {
             }
         }
         final Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
-            RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, appName,  msgId,
-                excludes, includes, required, charset, config) :
-            SyslogLayout.createLayout(facility, includeNL, charset);
+            RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
+                msgId, excludes, includes, required, charset, exceptionPattern, config) :
+            SyslogLayout.createLayout(facility, includeNL, escapeNL, charset);
 
         if (name == null) {
             LOGGER.error("No name provided for SyslogAppender");
@@ -127,6 +129,4 @@ public class SyslogAppender extends SocketAppender {
 
         return new SyslogAppender(name, layout, filter, handleExceptions, isFlush, manager);
     }
-
-
 }

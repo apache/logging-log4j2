@@ -88,7 +88,7 @@ public final class PatternParser {
      * @param converterKey The type of converters that will be used.
      */
     public PatternParser(final String converterKey) {
-        this(null, converterKey, null);
+        this(null, converterKey, null, null);
     }
 
     /**
@@ -98,6 +98,18 @@ public final class PatternParser {
      * @param expected The expected base Class of each Converter.
      */
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expected) {
+        this(config, converterKey, expected, null);
+    }
+
+    /**
+     * Constructor.
+     * @param config The current Configuration.
+     * @param converterKey The key to lookup the converters.
+     * @param expected The expected base Class of each Converter.
+     * @param filterClass Filter the returned plugins after calling the plugin manager.
+     */
+    public PatternParser(final Configuration config, final String converterKey, final Class<?> expected,
+                         final Class<?> filterClass) {
         this.config = config;
         final PluginManager manager = new PluginManager(converterKey, expected);
         manager.collectPlugins();
@@ -107,6 +119,9 @@ public final class PatternParser {
         for (final PluginType type : plugins.values()) {
             try {
                 final Class<PatternConverter> clazz = type.getPluginClass();
+                if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {
+                    continue;
+                }
                 final ConverterKeys keys = clazz.getAnnotation(ConverterKeys.class);
                 if (keys != null) {
                     for (final String key : keys.value()) {
@@ -119,6 +134,7 @@ public final class PatternParser {
         }
         converterRules = converters;
     }
+
 
     public List<PatternFormatter> parse(final String pattern) {
         return parse(pattern, false);

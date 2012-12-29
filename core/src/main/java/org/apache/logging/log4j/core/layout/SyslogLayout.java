@@ -29,6 +29,8 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -36,9 +38,14 @@ import java.util.Locale;
  */
 @Plugin(name = "SyslogLayout", type = "Core", elementType = "layout", printObject = true)
 public class SyslogLayout extends AbstractStringLayout {
+    /**
+     * Match newlines in a platform-independent manner
+     */
+    public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
 
     private final Facility facility;
     private final boolean includeNewLine;
+    private final String escapeNewLine;
 
     /**
      * Date format used if header = true.
@@ -50,10 +57,12 @@ public class SyslogLayout extends AbstractStringLayout {
     private final String localHostname = getLocalHostname();
 
 
-    protected SyslogLayout(final Facility facility, final boolean includeNL, final Charset c) {
+
+    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset c) {
         super(c);
         this.facility = facility;
         this.includeNewLine = includeNL;
+        this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
     }
 
     /**
@@ -72,7 +81,14 @@ public class SyslogLayout extends AbstractStringLayout {
         buf.append(" ");
         buf.append(localHostname);
         buf.append(" ");
-        buf.append(event.getMessage().getFormattedMessage());
+        
+        String message = event.getMessage().getFormattedMessage();
+        if(null != escapeNewLine)
+        {
+            message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
+        }
+        buf.append(message);
+        
         if (includeNewLine) {
             buf.append("\n");
         }
@@ -115,6 +131,7 @@ public class SyslogLayout extends AbstractStringLayout {
     @PluginFactory
     public static SyslogLayout createLayout(@PluginAttr("facility") final String facility,
                                             @PluginAttr("newLine") final String includeNL,
+                                            @PluginAttr("newLineEscape") final String escapeNL,
                                             @PluginAttr("charset") final String charset) {
 
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
@@ -127,6 +144,6 @@ public class SyslogLayout extends AbstractStringLayout {
         }
         final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
-        return new SyslogLayout(f, includeNewLine, c);
+        return new SyslogLayout(f, includeNewLine, escapeNL, c);
     }
 }

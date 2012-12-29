@@ -988,6 +988,13 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 <a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
             </tr>
             <tr>
+              <td>exceptionPattern</td>
+              <td>String</td>
+              <td>One of the conversion specifiers from PatternLayout that defines which ThrowablePatternConverter
+              to use to format exceptions. Any of the options that are valid for those specifiers may be included.
+              The default is to not include the Throwable from the event, if any, in the output.</td>
+            </tr>
+            <tr>
               <td>facility</td>
               <td>String</td>
               <td>The facility is used to try to classify the message. The facility option must be set to one of
@@ -1057,6 +1064,11 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, a newline will be appended to the end of the syslog record. The default is false.</td>
             </tr>
+            <tr>
+              <td>newLineEscape</td>
+              <td>String</td>
+              <td>String that should be used to replace newlines within the message text.</td>
+            </tr>
             <caption align="top">RFC5424Layout Parameters</caption>
           </table>
         </subsection>
@@ -1097,7 +1109,12 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>boolean</td>
               <td>If true, a newline will be appended to the end of the syslog record. The default is false.</td>
             </tr>
-            <caption align="top">SyslogLayout Parameters</caption>
+             <tr>
+               <td>newLineEscape</td>
+               <td>String</td>
+               <td>String that should be used to replace newlines within the message text.</td>
+             </tr>
+             <caption align="top">SyslogLayout Parameters</caption>
           </table>
         </subsection>
         <a name="XMLLayout"/>
