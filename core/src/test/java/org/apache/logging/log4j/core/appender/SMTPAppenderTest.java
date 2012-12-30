@@ -52,7 +52,12 @@ public class SMTPAppenderTest {
         assertNull(builder.getMimeMessage().getFrom());
 
         builder.setFrom(null);
-        assertArrayEquals(new Address[] { InternetAddress.getLocalAddress(null) }, builder.getMimeMessage().getFrom());
+        Address[] array = null;
+        Address addr = InternetAddress.getLocalAddress(null);
+        if (addr != null) {
+            array = new Address[] {addr};
+        }
+        assertArrayEquals(array, builder.getMimeMessage().getFrom());
 
         builder.setFrom(address);
         assertArrayEquals(new Address[] { new InternetAddress(address) }, builder.getMimeMessage().getFrom());

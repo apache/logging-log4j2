@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,17 +34,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class SocketTest {
+public class SocketReconnectTest {
     private static final int SOCKET_PORT = 5514;
 
     private static final String CONFIG = "log4j-socket.xml";
@@ -48,23 +48,61 @@ public class SocketTest {
     }
 
     @Test
-    public void testConnect() throws Exception {
-        System.err.println("Initializing logger");
-        Logger logger = null;
-        try {
-            logger = LogManager.getLogger(SocketTest.class);
-        } catch (final NullPointerException e) {
-            fail("Unexpected exception; should not occur until first logging statement " + e.getMessage());
-        }
+    public void testReconnect() throws Exception {
+        TestSocketServer testServer = null;
+        ExecutorService executor = null;
+        Future<InputStream> futureIn;
+        final InputStream in;
 
-        final String message = "Log #1";
         try {
+            executor = Executors.newSingleThreadExecutor();
+            System.err.println("Initializing server");
+            testServer = new TestSocketServer();
+            futureIn = executor.submit(testServer);
+            Thread.sleep(300);
+
+            //System.err.println("Initializing logger");
+            final Logger logger = LogManager.getLogger(SocketReconnectTest.class);
+
+            String message = "Log #1";
             logger.error(message);
-            fail("Expected exception not thrown");
-        } catch (final AppenderRuntimeException e) {
-            //System.err.println("Expected exception here, but already errored out when initializing logger");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(futureIn.get()));
+            assertEquals(message, reader.readLine());
+
+            closeQuietly(testServer);
+
+            message = "Log #2";
+            logger.error(message);
+
+            message = "Log #3";
+            try {
+                logger.error(message);
+            } catch (final AppenderRuntimeException e) {
+                // System.err.println("Caught expected exception");
+            }
+
+            //System.err.println("Re-initializing server");
+            testServer = new TestSocketServer();
+            futureIn = executor.submit(testServer);
+            Thread.sleep(500);
+
+            try {
+                logger.error(message);
+                reader = new BufferedReader(new InputStreamReader(futureIn.get()));
+                assertEquals(message, reader.readLine());
+            } catch (final AppenderRuntimeException e) {
+                e.printStackTrace();
+                fail("Unexpected Exception");
+            }
+            //System.err.println("Sleeping to demonstrate repeated re-connections");
+            //Thread.sleep(5000);
+        } finally {
+            closeQuietly(testServer);
+            closeQuietly(executor);
         }
     }
+
 
     private static class TestSocketServer implements Callable<InputStream> {
         private ServerSocket server;

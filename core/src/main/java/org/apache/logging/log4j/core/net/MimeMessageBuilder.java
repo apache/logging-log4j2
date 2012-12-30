@@ -39,7 +39,11 @@ public class MimeMessageBuilder {
         if (null != address) {
             message.setFrom(address);
         } else {
-            message.setFrom();
+            try {
+                message.setFrom();
+            } catch (Exception ex) {
+                message.setFrom(null);
+            }
         }
         return this;
     }

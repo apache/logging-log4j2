@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.helpers.CyclicBuffer;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.helpers.PropertiesUtil;
 
 public class SMTPManager extends AbstractManager {
@@ -280,6 +281,10 @@ public class SMTPManager extends AbstractManager {
 
             Properties properties = PropertiesUtil.getSystemProperties();
             properties.put("mail.transport.protocol", data.protocol);
+            if (properties.getProperty("mail.host") == null) {
+                // Prevent an UnknownHostException in Java 7
+                properties.put("mail.host", NetUtils.getLocalHostname());
+            }
 
             if (null != data.host) {
                 properties.put(prefix + ".host", data.host);
