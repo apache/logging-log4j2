@@ -109,11 +109,6 @@
       <artifactId>mail</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
-	  <groupId>dumbster</groupId>
-	    <artifactId>dumbster</artifactId>
-	    <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

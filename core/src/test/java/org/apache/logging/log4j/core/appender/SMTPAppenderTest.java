@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.helpers.CyclicBuffer;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.junit.Test;
 
-import com.dumbster.smtp.SimpleSmtpServer;
-import com.dumbster.smtp.SmtpMessage;
+import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
+import org.apache.logging.dumbster.smtp.SmtpMessage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
