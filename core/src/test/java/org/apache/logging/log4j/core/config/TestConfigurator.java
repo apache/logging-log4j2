@@ -45,6 +45,23 @@ public class TestConfigurator {
 
     private static final String FILESEP = System.getProperty("file.separator");
 
+    private static final String[] CHARS = new String[]
+        {
+            "aaaaaaaaaa",
+            "bbbbbbbbbb",
+            "cccccccccc",
+            "dddddddddd",
+            "eeeeeeeeee",
+            "ffffffffff",
+            "gggggggggg",
+            "hhhhhhhhhh",
+            "iiiiiiiiii",
+            "jjjjjjjjjj",
+            "kkkkkkkkkk",
+            "llllllllll",
+            "mmmmmmmmmm",
+        };
+
 
     @Test
     public void testFromFile() throws Exception {
@@ -224,7 +241,13 @@ public class TestConfigurator {
 
     @Test
     public void testBadFileName() throws Exception {
-        final String value = FILESEP.equals("/") ? "/rootdir/test.log" : "1:/target/bad:file.log";
+        StringBuilder dir = new StringBuilder("/VeryLongDirectoryName");
+
+        for (int i = 0; i < CHARS.length; ++i) {
+            dir.append(CHARS[i]);
+            dir.append(CHARS[i].toUpperCase());
+        }
+        final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);
         final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badfilename.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
