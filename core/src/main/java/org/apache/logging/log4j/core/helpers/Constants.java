@@ -37,6 +37,11 @@ public final class Constants {
     public static final String LINE_SEP = PropertiesUtil.getSystemProperty("line.separator", "\n");
 
     /**
+     * Number of milliseconds in a second.
+     */
+    public static final int MILLIS_IN_SECONDS = 1000;
+
+    /**
      * Prevent class instantiation.
      */
     private Constants() {

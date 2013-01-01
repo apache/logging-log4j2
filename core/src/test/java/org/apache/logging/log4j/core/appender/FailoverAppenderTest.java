@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -41,6 +42,7 @@ public class FailoverAppenderTest {
     private static final String CONFIG = "log4j-failover.xml";
     private static Configuration config;
     private static ListAppender app;
+    private static FailOnceAppender foApp;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -51,7 +53,8 @@ public class FailoverAppenderTest {
         for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender) entry.getValue();
-                break;
+            } else if (entry.getKey().equals("Once")) {
+                foApp = (FailOnceAppender) entry.getValue();
             }
         }
     }
@@ -64,9 +67,11 @@ public class FailoverAppenderTest {
     }
 
     org.apache.logging.log4j.Logger logger = LogManager.getLogger("LoggerTest");
+    org.apache.logging.log4j.Logger onceLogger = LogManager.getLogger("Once");
 
     @Test
     public void testFailover() {
+        app.clear();
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
@@ -76,5 +81,22 @@ public class FailoverAppenderTest {
         events = app.getEvents();
         assertNotNull(events);
         assertTrue("Incorrect number of events. Should be 1 is " + events.size(), events.size() == 1);
+    }
+
+    @Test
+    public void testRecovery() throws Exception {
+        app.clear();
+        onceLogger.error("Fail once");
+        onceLogger.error("Fail again");
+        List<LogEvent> events = app.getEvents();
+        assertNotNull(events);
+        assertTrue("Incorrect number of events. Should be 2 is " + events.size(), events.size() == 2);
+        app.clear();
+        Thread.sleep(1100);
+        onceLogger.error("Fail after recovery interval");
+        events = app.getEvents();
+        assertTrue("Did not recoever", events.size() == 0);
+        events = foApp.getEvents();
+        assertTrue("No events in primary appender", events.size() == 1);
     }
 }

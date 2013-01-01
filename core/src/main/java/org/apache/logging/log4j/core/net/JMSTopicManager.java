@@ -103,18 +103,37 @@ public class JMSTopicManager extends AbstractJMSManager {
             info = connect(context, factoryBindingName, topicBindingName, userName, password, false);
         }
         super.send(object, info.session, info.publisher);
+        try {
+            super.send(object, info.session, info.publisher);
+        } catch (Exception ex) {
+            cleanup(true);
+            throw ex;
+        }
     }
 
     @Override
     public void releaseSub() {
-        try {
-            if (info != null) {
-                info.session.close();
-                info.conn.close();
-            }
-        } catch (final JMSException ex) {
-            LOGGER.error("Error closing " + getName(), ex);
+        if (info != null) {
+            cleanup(false);
         }
+    }
+
+    private void cleanup(boolean quiet) {
+        try {
+            info.session.close();
+        } catch (Exception e) {
+            if (!quiet) {
+                LOGGER.error("Error closing session for " + getName(), e);
+            }
+        }
+        try {
+            info.conn.close();
+        } catch (Exception e) {
+            if (!quiet) {
+                LOGGER.error("Error closing connection for " + getName(), e);
+            }
+        }
+        info = null;
     }
 
     /**

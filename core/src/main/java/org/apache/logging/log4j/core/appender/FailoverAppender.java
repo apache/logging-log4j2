@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +51,21 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
+    private final long interval;
+
+    private long nextCheck = 0;
+
+    private volatile boolean failure = false;
+
+    private static final int DEFAULT_INTERVAL = 60 * Constants.MILLIS_IN_SECONDS;
+
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
-                            final Configuration config, final boolean handleExceptions) {
+                             final int interval, final Configuration config, final boolean handleExceptions) {
         super(name, filter, null, handleExceptions);
         this.primaryRef = primary;
         this.failovers = failovers;
         this.config = config;
+        this.interval = interval;
     }
 
 
@@ -95,22 +105,48 @@ public final class FailoverAppender extends AbstractAppender {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
         }
+        if (!failure) {
+            callAppender(event);
+        } else {
+            long current = System.currentTimeMillis();
+            if (current >= nextCheck) {
+                callAppender(event);
+            } else {
+                failover(event, null);
+            }
+        }
+    }
+
+    private void callAppender(final LogEvent event) {
         try {
             primary.callAppender(event);
         } catch (final Exception ex) {
-            re = new LoggingException(ex);
-            boolean written = false;
-            for (final AppenderControl control : failoverAppenders) {
-                try {
-                    control.callAppender(event);
-                    written = true;
-                    break;
-                } catch (final Exception fex) {
-                    continue;
+            nextCheck = System.currentTimeMillis() + interval;
+            failure = true;
+            failover(event, ex);
+        }
+    }
+
+    private void failover(final LogEvent event, Exception ex) {
+        RuntimeException re = ex != null ? new LoggingException(ex) : null;
+        boolean written = false;
+        Exception failoverException = null;
+        for (final AppenderControl control : failoverAppenders) {
+            try {
+                control.callAppender(event);
+                written = true;
+                break;
+            } catch (final Exception fex) {
+                if (failoverException == null) {
+                    failoverException = fex;
                 }
             }
-            if (!written && !isExceptionSuppressed()) {
+        }
+        if (!written && !isExceptionSuppressed()) {
+            if (re != null) {
                 throw re;
+            } else {
+                throw new LoggingException("Unable to write to failover appenders", failoverException);
             }
         }
     }
@@ -136,6 +172,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @param name The name of the Appender (required).
      * @param primary The name of the primary Appender (required).
      * @param failovers The name of one or more Appenders to fail over to (at least one is required).
+     * @param interval The retry interval.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
@@ -146,6 +183,7 @@ public final class FailoverAppender extends AbstractAppender {
     public static FailoverAppender createAppender(@PluginAttr("name") final String name,
                                                   @PluginAttr("primary") final String primary,
                                                   @PluginElement("failovers") final String[] failovers,
+                                                  @PluginAttr("retryInterval") final String interval,
                                                   @PluginConfiguration final Configuration config,
                                                   @PluginElement("filters") final Filter filter,
                                                   @PluginAttr("suppressExceptions") final String suppress) {
@@ -162,8 +200,26 @@ public final class FailoverAppender extends AbstractAppender {
             return null;
         }
 
+        int retryInterval;
+        if (interval == null) {
+            retryInterval = DEFAULT_INTERVAL;
+        } else {
+            try {
+                int value = Integer.parseInt(interval);
+                if (value >= 0) {
+                    retryInterval = value * Constants.MILLIS_IN_SECONDS;
+                } else {
+                    LOGGER.warn("Interval " + interval + " is less than zero. Using default");
+                    retryInterval = DEFAULT_INTERVAL;
+                }
+            } catch (NumberFormatException nfe) {
+                LOGGER.error("Interval " + interval + " is non-numeric. Using default");
+                retryInterval = DEFAULT_INTERVAL;
+            }
+        }
+
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new FailoverAppender(name, filter, primary, failovers, config, handleExceptions);
+        return new FailoverAppender(name, filter, primary, failovers, retryInterval, config, handleExceptions);
     }
 }

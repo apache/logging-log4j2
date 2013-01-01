@@ -19,8 +19,14 @@
 <configuration status="error" name="FailoverTest" packages="org.apache.logging.log4j.test">
   <Appenders>
     <AlwaysFail name="Fail" />
+    <FailOnce name="Once"/>
     <List name="List" />
     <Failover name="Failover" primary="Fail" suppressExceptions="false">
+      <Failovers>
+        <appender-ref ref="List"/>
+      </Failovers>
+    </Failover>
+    <Failover name="FailoverOnce" primary="Once" suppressExceptions="false" retryInterval="1">
       <Failovers>
         <appender-ref ref="List"/>
       </Failovers>
@@ -28,6 +34,9 @@
   </Appenders>
 
   <loggers>
+    <logger name="Once" level="error" additvity="false">
+      <appender-ref ref="FailoverOnce"/>
+    </logger>
     <root level="error">
       <appender-ref ref="Failover"/>
     </root>

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.helpers.Constants;
+
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -81,8 +83,6 @@ final class CachedDateFormat extends DateFormat {
     private static final String ZERO_STRING = "000";
 
     private static final int BUF_SIZE = 50;
-
-    private static final int MILLIS_IN_SECONDS = 1000;
 
     private static final int DEFAULT_VALIDITY = 1000;
 
@@ -170,10 +170,10 @@ final class CachedDateFormat extends DateFormat {
      *         field (likely RelativeTimeDateFormat)
      */
     public static int findMillisecondStart(final long time, final String formatted, final DateFormat formatter) {
-        long slotBegin = (time / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
+        long slotBegin = (time / Constants.MILLIS_IN_SECONDS) * Constants.MILLIS_IN_SECONDS;
 
         if (slotBegin > time) {
-            slotBegin -= MILLIS_IN_SECONDS;
+            slotBegin -= Constants.MILLIS_IN_SECONDS;
         }
 
         final int millis = (int) (time - slotBegin);
@@ -292,10 +292,10 @@ final class CachedDateFormat extends DateFormat {
         cache.append(formatter.format(tmpDate));
         buf.append(cache);
         previousTime = now;
-        slotBegin = (previousTime / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
+        slotBegin = (previousTime / Constants.MILLIS_IN_SECONDS) * Constants.MILLIS_IN_SECONDS;
 
         if (slotBegin > previousTime) {
-            slotBegin -= MILLIS_IN_SECONDS;
+            slotBegin -= Constants.MILLIS_IN_SECONDS;
         }
 
         //

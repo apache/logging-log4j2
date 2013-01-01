@@ -222,6 +222,11 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
+              <td>retryInterval</td>
+              <td>integer</td>
+              <td>The number of seconds that should pass before retrying the primary Appender. The default is 60.</td>
+            </tr>
+            <tr>
               <td>suppressExceptions</td>
               <td>boolean</td>
               <td>The default is true, causing exceptions to be internally logged and then ignored. When set to

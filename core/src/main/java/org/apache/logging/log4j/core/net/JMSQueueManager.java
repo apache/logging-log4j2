@@ -102,21 +102,37 @@ public class JMSQueueManager extends AbstractJMSManager {
         if (info == null) {
             info = connect(context, factoryBindingName, queueBindingName, userName, password, false);
         }
-        super.send(object, info.session, info.sender);
+        try {
+            super.send(object, info.session, info.sender);
+        } catch (Exception ex) {
+            cleanup(true);
+            throw ex;
+        }
     }
 
     @Override
     public void releaseSub() {
-        try {
-            if (info != null) {
-                info.session.close();
-                info.conn.close();
-            }
-        } catch (final JMSException ex) {
-            LOGGER.error("Error closing " + getName(), ex);
-        } finally {
-            info = null;
+        if (info != null) {
+            cleanup(false);
         }
+    }
+
+    private void cleanup(boolean quiet) {
+        try {
+            info.session.close();
+        } catch (Exception e) {
+            if (!quiet) {
+                LOGGER.error("Error closing session for " + getName(), e);
+            }
+        }
+        try {
+            info.conn.close();
+        } catch (Exception e) {
+            if (!quiet) {
+                LOGGER.error("Error closing connection for " + getName(), e);
+            }
+        }
+        info = null;
     }
 
     /**
