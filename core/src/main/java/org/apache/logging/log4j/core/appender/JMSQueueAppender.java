@@ -66,7 +66,7 @@ public final class JMSQueueAppender extends AbstractAppender {
      * @param queueBindingName The name to use to locate the Queue.
      * @param userName The userid to use to create the Queue Connection.
      * @param password The password to use to create the Queue Connection.
-     * @param layout The layout to use (defaults to SerlializedLayout).
+     * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".

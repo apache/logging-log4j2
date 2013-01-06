@@ -1608,7 +1608,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Socket name="socket" host="localhost" port="9500">
-      <SerlializedLayout />
+      <SerializedLayout />
     </Socket>
   </appenders>
   <loggers>

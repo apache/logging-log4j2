@@ -55,7 +55,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @param immediateFlush "true" if data should be flushed on each write.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
-     * @param layout The layout to use (defaults to SerlializedLayout).
+     * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @return A SocketAppender.
      */

@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-140" dev="ggregory" type="fix" due-to="Joern Huxhorn">
+        Typo in documentation of SocketAppender.
+      </action>
       <action issue="LOG4J2-137" dev="rgoers" type="fix">
         Fix hang in Dumbster SMTP test server.
       </action>
