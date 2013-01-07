@@ -139,6 +139,13 @@
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <type>test-jar</type>
+        <version>${logback.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
       </dependency>
@@ -526,6 +533,7 @@
     <module>core</module>
     <module>log4j12-api</module>
     <module>slf4j-impl</module>
+    <module>log4j-to-slf4j</module>
     <module>jcl-bridge</module>
     <module>flume-ng</module>
     <module>web</module>

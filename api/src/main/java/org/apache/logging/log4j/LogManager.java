@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Formatter;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
@@ -30,8 +31,10 @@ import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
  * The anchor point for the logging system.
@@ -62,9 +65,9 @@ public class LogManager {
      */
     static {
         // Shortcut binding to force a specific logging implementation.
-        final PropsUtil managerProps = new PropsUtil("log4j2.LogManager.properties");
+        final PropsUtil managerProps = PropsUtil.getComponentProperties();
         final String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
-        final ClassLoader cl = findClassLoader();
+        final ClassLoader cl = ProviderUtil.findClassLoader();
         if (factoryClass != null) {
             try {
                 final Class<?> clazz = cl.loadClass(factoryClass);
@@ -81,48 +84,33 @@ public class LogManager {
         if (factory == null) {
             final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
 
-            Enumeration<URL> enumResources = null;
-            try {
-                enumResources = cl.getResources(LOGGER_RESOURCE);
-            } catch (final IOException e) {
-                logger.fatal("Unable to locate " + LOGGER_RESOURCE, e);
-            }
-
-            if (enumResources != null) {
-                while (enumResources.hasMoreElements()) {
-                    final Properties props = new Properties();
-                    final URL url = enumResources.nextElement();
-                    try {
-                        props.load(url.openStream());
-                    } catch (final IOException ioe) {
-                        logger.error("Unable to read " + url.toString(), ioe);
-                    }
-                    if (!validVersion(props.getProperty(API_VERSION))) {
-                        continue;
-                    }
-                    final String weight = props.getProperty(FACTORY_PRIORITY);
-                    final Integer priority = weight == null ? -1 : Integer.valueOf(weight);
-                    final String className = props.getProperty(LOGGER_CONTEXT_FACTORY);
+            if (ProviderUtil.hasProviders()) {
+                Iterator<Provider> providers = ProviderUtil.getProviders();
+                while (providers.hasNext()) {
+                    Provider provider = providers.next();
+                    String className = provider.getClassName();
                     if (className != null) {
                         try {
                             final Class<?> clazz = cl.loadClass(className);
                             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
-                                factories.put(priority, (LoggerContextFactory) clazz.newInstance());
+                                factories.put(provider.getPriority(), (LoggerContextFactory) clazz.newInstance());
                             } else {
                                 logger.error(className + " does not implement " + LoggerContextFactory.class.getName());
                             }
                         } catch (final ClassNotFoundException cnfe) {
-                            logger.error("Unable to locate class " + className + " specified in " + url.toString(),
-                                cnfe);
+                            logger.error("Unable to locate class " + className + " specified in " +
+                                provider.getURL().toString(), cnfe);
                         } catch (final IllegalAccessException iae) {
-                            logger.error("Unable to create class " + className + " specified in " + url.toString(),
-                                iae);
+                            logger.error("Unable to create class " + className + " specified in " +
+                                provider.getURL().toString(), iae);
                         } catch (final Exception e) {
-                            logger.error("Unable to create class " + className + " specified in " + url.toString(), e);
+                            logger.error("Unable to create class " + className + " specified in " +
+                                provider.getURL().toString(), e);
                             e.printStackTrace();
                         }
                     }
                 }
+
                 if (factories.size() == 0) {
                     logger.error("Unable to locate a logging implementation, using SimpleLogger");
                     factory = new SimpleLoggerContextFactory();
@@ -142,26 +130,6 @@ public class LogManager {
                 factory = new SimpleLoggerContextFactory();
             }
         }
-    }
-
-    private static ClassLoader findClassLoader() {
-        ClassLoader cl;
-        if (System.getSecurityManager() == null) {
-            cl = Thread.currentThread().getContextClassLoader();
-        } else {
-            cl = java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                }
-            );
-        }
-        if (cl == null) {
-            cl = LogManager.class.getClassLoader();
-        }
-
-        return cl;
     }
 
     /**
@@ -247,7 +215,7 @@ public class LogManager {
      * <p>
      * Short-hand for {@code getLogger(clazz, StringFormatterMessageFactory.INSTANCE)}
      * </p>
-     * 
+     *
      * @param clazz
      *            The Class whose name should be used as the Logger name.
      * @return The Logger, created with a {@link StringFormatterMessageFactory}
@@ -277,7 +245,7 @@ public class LogManager {
      * <p>
      * Short-hand for {@code getLogger(value, StringFormatterMessageFactory.INSTANCE)}
      * </p>
-     * 
+     *
      * @param value
      *            The value's whose class name should be used as the Logger name.
      * @return The Logger, created with a {@link StringFormatterMessageFactory}
@@ -307,7 +275,7 @@ public class LogManager {
      * <p>
      * Short-hand for {@code getLogger(name, StringFormatterMessageFactory.INSTANCE)}
      * </p>
-     * 
+     *
      * @param name
      *            The logger name.
      * @return The Logger, created with a {@link StringFormatterMessageFactory}

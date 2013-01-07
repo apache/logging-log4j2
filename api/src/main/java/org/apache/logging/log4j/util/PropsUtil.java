@@ -26,13 +26,20 @@ public class PropsUtil {
 
     private final Properties props;
 
+    private static final PropsUtil LOG4J_PROPERTIES = new PropsUtil("log4j2.component.properties");
+
+    public static PropsUtil getComponentProperties() {
+        return LOG4J_PROPERTIES;
+    }
+
+
     public PropsUtil(final Properties props) {
         this.props = props;
     }
 
     public PropsUtil(final String propsLocn) {
         this.props = new Properties();
-        final ClassLoader loader = findClassLoader();
+        final ClassLoader loader = ProviderUtil.findClassLoader();
         final InputStream in = loader.getResourceAsStream(propsLocn);
         if (null != in) {
             try {
@@ -62,25 +69,5 @@ public class PropsUtil {
     public boolean getBooleanProperty(final String name, final boolean defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
-    }
-
-    private static ClassLoader findClassLoader() {
-        ClassLoader cl;
-        if (System.getSecurityManager() == null) {
-            cl = Thread.currentThread().getContextClassLoader();
-        } else {
-            cl = java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                }
-            );
-        }
-        if (cl == null) {
-            cl = PropsUtil.class.getClassLoader();
-        }
-
-        return cl;
     }
 }

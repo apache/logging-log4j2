@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="add">
+        Added Log4j 2 to SLF4J adapter.
+      </action>
       <action issue="LOG4J2-140" dev="ggregory" type="fix" due-to="Joern Huxhorn">
         Typo in documentation of SocketAppender.
       </action>

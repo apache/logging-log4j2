@@ -18,11 +18,19 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.ProviderUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -34,7 +42,7 @@ import java.util.NoSuchElementException;
  * the mapped diagnostic context of its parent.
  * </p>
  */
-public final class ThreadContext {
+public final class ThreadContext  {
 
     /**
      * Empty, immutable Map.
@@ -52,19 +60,65 @@ public final class ThreadContext {
 
     private static final String DISABLE_ALL = "disableThreadContext";
 
+    private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
+
     private static boolean all = Boolean.getBoolean(DISABLE_ALL);
 
     private static boolean useMap = !(Boolean.getBoolean(DISABLE_MAP) || all);
 
     private static boolean useStack = !(Boolean.getBoolean(DISABLE_STACK) || all);
 
-    private static ThreadLocal<Map<String, String>> localMap =
-        new InheritableThreadLocal<Map<String, String>>() {
-            @Override
-            protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                return parentValue == null || !useMap ? null : new HashMap<String, String>(parentValue);
+    private static ThreadContextMap contextMap;
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    static {
+        final PropsUtil managerProps = PropsUtil.getComponentProperties();
+        String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
+        final ClassLoader cl = ProviderUtil.findClassLoader();
+        if (threadContextMapName != null) {
+            try {
+                final Class<?> clazz = cl.loadClass(threadContextMapName);
+                if (ThreadContextMap.class.isAssignableFrom(clazz)) {
+                    contextMap = (ThreadContextMap) clazz.newInstance();
+                }
+            } catch (final ClassNotFoundException cnfe) {
+                LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
             }
-        };
+        }
+        if (contextMap == null && ProviderUtil.hasProviders()) {
+            LoggerContextFactory factory = LogManager.getFactory();
+            Iterator<Provider> providers = ProviderUtil.getProviders();
+            while (providers.hasNext()) {
+                Provider provider = providers.next();
+                threadContextMapName = provider.getThreadContextMap();
+                String factoryClassName = provider.getClassName();
+                if (threadContextMapName != null && factory.getClass().getName().equals(factoryClassName)) {
+                    try {
+                        final Class<?> clazz = cl.loadClass(threadContextMapName);
+                        if (ThreadContextMap.class.isAssignableFrom(clazz)) {
+                            contextMap = (ThreadContextMap) clazz.newInstance();
+                            break;
+                        }
+                    } catch (final ClassNotFoundException cnfe) {
+                        LOGGER.error("Unable to locate configured LoggerContextFactory {}", threadContextMapName);
+                        contextMap = new DefaultThreadContextMap(useMap);
+                    } catch (final Exception ex) {
+                        LOGGER.error("Unable to create configured LoggerContextFactory {}", threadContextMapName, ex);
+                        contextMap = new DefaultThreadContextMap(useMap);
+                    }
+                }
+            }
+            if (contextMap == null) {
+                contextMap = new DefaultThreadContextMap(useMap);
+            }
+
+        } else {
+            contextMap = new DefaultThreadContextMap(useMap);
+        }
+    }
 
     private static ThreadLocal<ContextStack> localStack = new ThreadLocal<ContextStack>();
 
@@ -83,15 +137,7 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void put(final String key, final String value) {
-        if (!useMap) {
-            return;
-        }
-        Map<String, String> map = localMap.get();
-        if (map == null) {
-            map = new HashMap<String, String>();
-            localMap.set(map);
-        }
-        map.put(key, value);
+        contextMap.put(key, value);
     }
 
     /**
@@ -102,8 +148,7 @@ public final class ThreadContext {
      * @return The value associated with the key or null.
      */
     public static String get(final String key) {
-        final Map<String, String> map = localMap.get();
-        return map == null ? null : map.get(key);
+        return contextMap.get(key);
     }
 
     /**
@@ -112,17 +157,14 @@ public final class ThreadContext {
      * @param key The key to remove.
      */
     public static void remove(final String key) {
-        final Map<String, String> map = localMap.get();
-        if (map != null) {
-            map.remove(key);
-        }
+        contextMap.remove(key);
     }
 
     /**
      * Clear the context.
      */
     public static void clear() {
-        localMap.remove();
+        contextMap.clear();
     }
 
     /**
@@ -131,8 +173,7 @@ public final class ThreadContext {
      * @return True if the key is in the context, false otherwise.
      */
     public static boolean containsKey(final String key) {
-        final Map<String, String> map = localMap.get();
-        return map == null ? false : map.containsKey(key);
+        return contextMap.containsKey(key);
     }
 
     /**
@@ -140,8 +181,7 @@ public final class ThreadContext {
      * @return a copy of the context.
      */
     public static Map<String, String> getContext() {
-        final Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
+        return contextMap.getContext();
     }
 
     /**
@@ -149,7 +189,7 @@ public final class ThreadContext {
      * @return An immutable copy of the ThreadContext Map.
      */
     public static Map<String, String> getImmutableContext() {
-        final Map<String, String> map = localMap.get();
+        final Map<String, String> map = contextMap.get();
         return map == null ? new ImmutableMap() : new ImmutableMap(map);
     }
 
@@ -158,8 +198,7 @@ public final class ThreadContext {
      * @return true if the Map is empty, false otherwise.
      */
     public static boolean isEmpty() {
-        final Map<String, String> map = localMap.get();
-        return map == null || map.size() == 0;
+        return contextMap.isEmpty();
     }
 
     /**

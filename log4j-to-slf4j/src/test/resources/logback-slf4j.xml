@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%X{TestYear}%msg</Pattern>
+    </layout>
+  </appender>
+
+  <root level="trace">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>
