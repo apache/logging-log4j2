@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-139" dev="rgoers" type="fix">
+        Fix null pointer exception in SocketAppender if no protocol is specified. The protocol will default
+        to TCP for the SocketAppender and UDP for the SyslogAppender.
+      </action>
       <action dev="rgoers" type="add">
         Added Log4j 2 to SLF4J adapter.
       </action>

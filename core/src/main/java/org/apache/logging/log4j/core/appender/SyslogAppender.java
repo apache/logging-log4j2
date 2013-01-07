@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
+import org.apache.logging.log4j.core.net.Protocol;
 
 import java.nio.charset.Charset;
 
@@ -122,7 +123,8 @@ public class SyslogAppender extends SocketAppender {
             LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
-        final AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
+        final String prot = protocol != null ? protocol : Protocol.UDP.name();
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay);
         if (manager == null) {
             return null;
         }

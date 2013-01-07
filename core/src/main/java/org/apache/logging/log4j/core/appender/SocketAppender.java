@@ -80,7 +80,9 @@ public class SocketAppender extends AbstractOutputStreamAppender {
             return null;
         }
 
-        final AbstractSocketManager manager = createSocketManager(protocol, host, port, reconnectDelay);
+        final String prot = protocol != null ? protocol : Protocol.TCP.name();
+
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay);
         if (manager == null) {
             return null;
         }
