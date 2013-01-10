@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 
-import java.security.MessageDigest;
 import java.util.Locale;
 import java.util.Properties;
 

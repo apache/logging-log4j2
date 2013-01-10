@@ -31,7 +31,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

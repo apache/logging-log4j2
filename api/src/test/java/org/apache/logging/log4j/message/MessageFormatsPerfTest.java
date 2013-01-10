@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Timer;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  *
  */

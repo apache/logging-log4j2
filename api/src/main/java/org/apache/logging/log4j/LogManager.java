@@ -16,13 +16,9 @@
  */
 package org.apache.logging.log4j;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 

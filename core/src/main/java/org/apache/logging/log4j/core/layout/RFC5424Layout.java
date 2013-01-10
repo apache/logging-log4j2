@@ -34,14 +34,9 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;

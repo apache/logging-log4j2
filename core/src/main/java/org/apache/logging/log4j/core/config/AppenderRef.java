@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;

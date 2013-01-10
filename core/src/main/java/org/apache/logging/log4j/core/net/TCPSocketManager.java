@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.InterfaceAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.CountDownLatch;

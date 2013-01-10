@@ -19,23 +19,13 @@ package org.apache.logging.log4j.core.net;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.appender.JMSQueueAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
-import org.apache.logging.log4j.core.filter.AbstractFilter;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,10 +36,8 @@ import org.mockejb.jndi.MockContextFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**

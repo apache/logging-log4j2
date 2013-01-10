@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;

@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

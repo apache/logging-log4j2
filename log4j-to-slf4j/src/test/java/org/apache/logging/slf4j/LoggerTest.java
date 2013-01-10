@@ -35,7 +35,6 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

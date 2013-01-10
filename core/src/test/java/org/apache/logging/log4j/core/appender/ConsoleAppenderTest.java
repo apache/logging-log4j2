@@ -23,16 +23,12 @@ import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.appender.InMemoryAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 /**
