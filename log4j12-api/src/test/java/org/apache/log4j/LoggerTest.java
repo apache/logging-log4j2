@@ -406,7 +406,7 @@ public class LoggerTest {
 
         final List<LogEvent> msgs = appender.getEvents();
         assertEquals(1, msgs.size());
-        final LogEvent event = (LogEvent) msgs.get(0);
+        final LogEvent event = msgs.get(0);
         assertEquals(org.apache.logging.log4j.Level.TRACE, event.getLevel());
         assertEquals("Message 1", event.getMessage().getFormat());
         appender.stop();

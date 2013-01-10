@@ -117,7 +117,7 @@ public class SMTPManager extends AbstractManager {
 
         String name = "SMTP:" + NameUtil.md5(sb.toString());
 
-        return (SMTPManager) getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo, subject,
+        return getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo, subject,
             protocol, host, port, username, password, isDebug, numElements));
     }
 

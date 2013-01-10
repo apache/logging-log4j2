@@ -133,10 +133,10 @@ public class LoggerTest {
     }
 
     private Logger testMessageFactoryMismatch(final String name, final MessageFactory messageFactory1, final MessageFactory messageFactory2) {
-        final Logger testLogger = (Logger) LogManager.getLogger(name, messageFactory1);
+        final Logger testLogger = LogManager.getLogger(name, messageFactory1);
         assertNotNull(testLogger);
         assertEquals(messageFactory1, testLogger.getMessageFactory());
-        final Logger testLogger2 = (Logger) LogManager.getLogger(name, messageFactory2);
+        final Logger testLogger2 = LogManager.getLogger(name, messageFactory2);
         assertEquals(messageFactory1, testLogger2.getMessageFactory());
         return testLogger;
     }
