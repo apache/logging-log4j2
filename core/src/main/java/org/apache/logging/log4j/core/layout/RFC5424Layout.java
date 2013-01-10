@@ -479,7 +479,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
             }
         }
-        if(charset == null) {
+        if (charset == null) {
             charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         }
 
