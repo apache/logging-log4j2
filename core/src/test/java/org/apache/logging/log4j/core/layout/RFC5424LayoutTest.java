@@ -72,7 +72,7 @@ public class RFC5424LayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-        for (Appender appender : root.getAppenders().values()) {
+        for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appender
@@ -136,7 +136,7 @@ public class RFC5424LayoutTest {
      */
     @Test
     public void testException() throws Exception {
-        for (Appender appender : root.getAppenders().values()) {
+        for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appender
@@ -156,7 +156,7 @@ public class RFC5424LayoutTest {
 
         try {
 
-            List<String> list = appender.getMessages();
+            final List<String> list = appender.getMessages();
 
             assertTrue("Not enough list entries", list.size() > 1);
             assertTrue("No Exception", list.get(1).contains("IllegalArgumentException"));

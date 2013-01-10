@@ -100,7 +100,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @param event The LogEvent.
      */
     public void append(final LogEvent event) {
-        RuntimeException re = null;
+        final RuntimeException re = null;
         if (!isStarted()) {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
@@ -108,7 +108,7 @@ public final class FailoverAppender extends AbstractAppender {
         if (!failure) {
             callAppender(event);
         } else {
-            long current = System.currentTimeMillis();
+            final long current = System.currentTimeMillis();
             if (current >= nextCheck) {
                 callAppender(event);
             } else {
@@ -128,7 +128,7 @@ public final class FailoverAppender extends AbstractAppender {
     }
 
     private void failover(final LogEvent event, Exception ex) {
-        RuntimeException re = ex != null ? new LoggingException(ex) : null;
+        final RuntimeException re = ex != null ? new LoggingException(ex) : null;
         boolean written = false;
         Exception failoverException = null;
         for (final AppenderControl control : failoverAppenders) {
@@ -205,14 +205,14 @@ public final class FailoverAppender extends AbstractAppender {
             retryInterval = DEFAULT_INTERVAL;
         } else {
             try {
-                int value = Integer.parseInt(interval);
+                final int value = Integer.parseInt(interval);
                 if (value >= 0) {
                     retryInterval = value * Constants.MILLIS_IN_SECONDS;
                 } else {
                     LOGGER.warn("Interval " + interval + " is less than zero. Using default");
                     retryInterval = DEFAULT_INTERVAL;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 LOGGER.error("Interval " + interval + " is non-numeric. Using default");
                 retryInterval = DEFAULT_INTERVAL;
             }

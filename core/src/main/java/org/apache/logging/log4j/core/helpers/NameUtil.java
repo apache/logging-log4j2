@@ -48,7 +48,7 @@ public final class NameUtil {
                 md5.append(hex);
             }
             return md5.toString();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             return string;
         }
     }

@@ -89,12 +89,12 @@ public final class ThreadContext  {
             }
         }
         if (contextMap == null && ProviderUtil.hasProviders()) {
-            LoggerContextFactory factory = LogManager.getFactory();
-            Iterator<Provider> providers = ProviderUtil.getProviders();
+            final LoggerContextFactory factory = LogManager.getFactory();
+            final Iterator<Provider> providers = ProviderUtil.getProviders();
             while (providers.hasNext()) {
-                Provider provider = providers.next();
+                final Provider provider = providers.next();
                 threadContextMapName = provider.getThreadContextMap();
-                String factoryClassName = provider.getClassName();
+                final String factoryClassName = provider.getClassName();
                 if (threadContextMapName != null && factory.getClass().getName().equals(factoryClassName)) {
                     try {
                         final Class<?> clazz = cl.loadClass(threadContextMapName);

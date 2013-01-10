@@ -30,12 +30,12 @@ public class FormattedMessageTest {
 
     @Test
     public void testStringNoArgs() {
-        String testMsg = "Test message %1s";
+        final String testMsg = "Test message %1s";
         FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        String expected = "Test message null";
+        final String expected = "Test message null";
         assertEquals(expected, result);
-        Object[] array = null;
+        final Object[] array = null;
         msg = new FormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         assertEquals(expected, result);
@@ -43,21 +43,21 @@ public class FormattedMessageTest {
 
     @Test
     public void tesStringtOneArg() {
-        String testMsg = "Test message %1s";
-        FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
-        String result = msg.getFormattedMessage();
-        String expected = "Test message Apache";
+        final String testMsg = "Test message %1s";
+        final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache";
         assertEquals(expected, result);
     }
 
     @Test
     public void testNoArgs() {
-        String testMsg = "Test message {0}";
+        final String testMsg = "Test message {0}";
         FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
-        String expected = "Test message {0}";
+        final String expected = "Test message {0}";
         assertEquals(expected, result);
-        Object[] array = null;
+        final Object[] array = null;
         msg = new FormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         assertEquals(expected, result);
@@ -65,20 +65,20 @@ public class FormattedMessageTest {
 
     @Test
     public void testOneArg() {
-        String testMsg = "Test message {0}";
-        FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
-        String result = msg.getFormattedMessage();
-        String expected = "Test message Apache";
+        final String testMsg = "Test message {0}";
+        final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache";
         assertEquals(expected, result);
     }
 
     @Test
     public void testParamNoArgs() {
-        String testMsg = "Test message {}";
+        final String testMsg = "Test message {}";
         FormattedMessage msg = new FormattedMessage(testMsg, null);
         String result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
-        Object[] array = null;
+        final Object[] array = null;
         msg = new FormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         assertEquals(testMsg, result);

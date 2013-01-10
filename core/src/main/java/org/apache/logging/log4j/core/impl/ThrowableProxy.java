@@ -110,7 +110,7 @@ public class ThrowableProxy extends Throwable {
 
     @Override
     public String toString() {
-        String msg = getMessage();
+        final String msg = getMessage();
         return msg != null ? name + ": " + msg : name;
     }
 
@@ -190,7 +190,7 @@ public class ThrowableProxy extends Throwable {
      */
     public String getExtendedStackTrace(final List<String> packages) {
         final StringBuilder sb = new StringBuilder(name);
-        String msg = getMessage();
+        final String msg = getMessage();
         if (msg != null) {
             sb.append(": ").append(getMessage());
         }

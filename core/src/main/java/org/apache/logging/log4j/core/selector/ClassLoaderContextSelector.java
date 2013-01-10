@@ -100,7 +100,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             if (securityManager != null) {
                 final Class clazz = securityManager.getCaller(fqcn);
                 if (clazz != null) {
-                    ClassLoader ldr = clazz.getClassLoader() != null ? clazz.getClassLoader() :
+                    final ClassLoader ldr = clazz.getClassLoader() != null ? clazz.getClassLoader() :
                         ClassLoader.getSystemClassLoader();
                     return locateContext(ldr, null);
                 }

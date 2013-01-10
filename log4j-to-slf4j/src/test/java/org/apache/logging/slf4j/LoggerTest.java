@@ -67,7 +67,7 @@ public class LoggerTest {
     }
 
     private static void configure(String file) throws JoranException {
-        JoranConfigurator jc = new JoranConfigurator();
+        final JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         jc.doConfigure(file);
     }
@@ -157,7 +157,7 @@ public class LoggerTest {
         logger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = list.strList;
         assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = "java.lang.Throwable: Testing";
+        final String expected = "java.lang.Throwable: Testing";
         assertTrue("Incorrect message data", msgs.get(0).contains(expected));
     }
     @Test

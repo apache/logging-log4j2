@@ -63,7 +63,7 @@ public class ThreadContextTest {
 
         @Override
         public void run() {
-            String greeting = ThreadContext.get("Greeting");
+            final String greeting = ThreadContext.get("Greeting");
             if (greeting == null) {
                 sb.append("null");
             } else {

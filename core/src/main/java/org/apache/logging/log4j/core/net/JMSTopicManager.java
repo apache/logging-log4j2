@@ -105,7 +105,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         super.send(object, info.session, info.publisher);
         try {
             super.send(object, info.session, info.publisher);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             cleanup(true);
             throw ex;
         }
@@ -121,14 +121,14 @@ public class JMSTopicManager extends AbstractJMSManager {
     private void cleanup(boolean quiet) {
         try {
             info.session.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (!quiet) {
                 LOGGER.error("Error closing session for " + getName(), e);
             }
         }
         try {
             info.conn.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (!quiet) {
                 LOGGER.error("Error closing connection for " + getName(), e);
             }

@@ -105,8 +105,8 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
-        Exception parent = new IllegalStateException("Test");
-        Throwable child = new LoggingException("This is a test");
+        final Exception parent = new IllegalStateException("Test");
+        final Throwable child = new LoggingException("This is a test");
         root.error("Throwing an exception", child);
         root.debug("This is another test message");
         Thread.sleep(250);

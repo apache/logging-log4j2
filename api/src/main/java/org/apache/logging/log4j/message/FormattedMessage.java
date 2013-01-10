@@ -123,19 +123,19 @@ public class FormattedMessage implements Message, Serializable {
 
     protected Message getMessage(String msgPattern, Object[] args, Throwable throwable) {
         try {
-            MessageFormat format = new MessageFormat(msgPattern);
-            Format[] formats = format.getFormats();
+            final MessageFormat format = new MessageFormat(msgPattern);
+            final Format[] formats = format.getFormats();
             if (formats != null && formats.length > 0) {
                 return new MessageFormatMessage(msgPattern, args);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             // Obviously, the message is not a proper pattern for MessageFormat.
         }
         try {
             if (MSG_PATTERN.matcher(msgPattern).find()) {
                 return new StringFormattedMessage(msgPattern, args);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             // Also not properly formatted.
         }
         return new ParameterizedMessage(msgPattern, args, throwable);
@@ -150,7 +150,7 @@ public class FormattedMessage implements Message, Serializable {
             return false;
         }
 
-        FormattedMessage that = (FormattedMessage) o;
+        final FormattedMessage that = (FormattedMessage) o;
 
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
@@ -184,7 +184,7 @@ public class FormattedMessage implements Message, Serializable {
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
         int i = 0;
-        for (Object obj : argArray) {
+        for (final Object obj : argArray) {
             stringArgs[i] = obj.toString();
             ++i;
         }
@@ -194,7 +194,7 @@ public class FormattedMessage implements Message, Serializable {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();
-        int length = in.readInt();
+        final int length = in.readInt();
         stringArgs = new String[length];
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();

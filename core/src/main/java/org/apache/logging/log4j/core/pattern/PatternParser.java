@@ -169,7 +169,7 @@ public final class PatternParser {
             list.add(new PatternFormatter(pc, field));
         }
         if (handleExceptions && !handlesExceptions) {
-            LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(null);
+            final LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(null);
             list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
         }
         return list;

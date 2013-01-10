@@ -53,10 +53,10 @@ public class SmtpMessage {
     public void store(SmtpResponse response, String params) {
         if (params != null) {
             if (SmtpState.DATA_HDR.equals(response.getNextState())) {
-                int headerNameEnd = params.indexOf(':');
+                final int headerNameEnd = params.indexOf(':');
                 if (headerNameEnd >= 0) {
-                    String name = params.substring(0, headerNameEnd).trim();
-                    String value = params.substring(headerNameEnd + 1).trim();
+                    final String name = params.substring(0, headerNameEnd).trim();
+                    final String value = params.substring(headerNameEnd + 1).trim();
                     addHeader(name, value);
                 }
             } else if (SmtpState.DATA_BODY == response.getNextState()) {
@@ -71,7 +71,7 @@ public class SmtpMessage {
      * @return an Iterator over the set of header names (String)
      */
     public Iterator getHeaderNames() {
-        Set nameSet = headers.keySet();
+        final Set nameSet = headers.keySet();
         return nameSet.iterator();
     }
 
@@ -82,7 +82,7 @@ public class SmtpMessage {
      * @return value(s) associated with the header name
      */
     public String[] getHeaderValues(String name) {
-        List values = (List) headers.get(name);
+        final List values = (List) headers.get(name);
         if (values == null) {
             return new String[0];
         } else {
@@ -97,11 +97,11 @@ public class SmtpMessage {
      * @return first value associated with the header name
      */
     public String getHeaderValue(String name) {
-        List values = (List) headers.get(name);
+        final List values = (List) headers.get(name);
         if (values == null) {
             return null;
         } else {
-            Iterator iterator = values.iterator();
+            final Iterator iterator = values.iterator();
             return (String) iterator.next();
         }
     }
@@ -137,12 +137,12 @@ public class SmtpMessage {
      */
     @Override
     public String toString() {
-        StringBuffer msg = new StringBuffer();
-        for (Iterator i = headers.keySet().iterator(); i.hasNext(); ) {
-            String name = (String) i.next();
-            List values = (List) headers.get(name);
-            for (Iterator j = values.iterator(); j.hasNext(); ) {
-                String value = (String) j.next();
+        final StringBuffer msg = new StringBuffer();
+        for (final Iterator i = headers.keySet().iterator(); i.hasNext(); ) {
+            final String name = (String) i.next();
+            final List values = (List) headers.get(name);
+            for (final Iterator j = values.iterator(); j.hasNext(); ) {
+                final String value = (String) j.next();
                 msg.append(name);
                 msg.append(": ");
                 msg.append(value);

@@ -40,8 +40,8 @@ public class LogEventTest {
     public void testSerialization() throws Exception {
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
             Level.INFO, new SimpleMessage("Hello, world!"), null);
-        Exception parent = new IllegalStateException("Test");
-        Throwable child = new LoggingException("This is a test", parent);
+        final Exception parent = new IllegalStateException("Test");
+        final Throwable child = new LoggingException("This is a test", parent);
         final LogEvent event2 = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
             Level.INFO, new SimpleMessage("Hello, world!"), child);
 

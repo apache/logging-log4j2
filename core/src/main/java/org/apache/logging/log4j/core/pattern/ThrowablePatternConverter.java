@@ -107,7 +107,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
             if (lines != Integer.MAX_VALUE) {
                 final StringBuilder sb = new StringBuilder();
                 final String[] array = w.toString().split("\n");
-                int limit = lines > array.length ? array.length : lines;
+                final int limit = lines > array.length ? array.length : lines;
                 for (int i = 0; i < limit; ++i) {
                     sb.append(array[i]).append("\n");
                 }

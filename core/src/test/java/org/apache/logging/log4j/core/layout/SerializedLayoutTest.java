@@ -100,8 +100,8 @@ public class SerializedLayoutTest {
 
         root.error("finished mdc pattern test", new NullPointerException("test"));
 
-        Exception parent = new IllegalStateException("Test");
-        Throwable child = new LoggingException("This is a test", parent);
+        final Exception parent = new IllegalStateException("Test");
+        final Throwable child = new LoggingException("This is a test", parent);
 
         root.error("Throwing an exception", child);
 

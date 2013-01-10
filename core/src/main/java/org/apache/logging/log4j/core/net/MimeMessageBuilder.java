@@ -34,14 +34,14 @@ public class MimeMessageBuilder {
     }
 
     public MimeMessageBuilder setFrom(final String from) throws MessagingException {
-        InternetAddress address = parseAddress(from);
+        final InternetAddress address = parseAddress(from);
 
         if (null != address) {
             message.setFrom(address);
         } else {
             try {
                 message.setFrom();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 message.setFrom(null);
             }
         }
@@ -49,7 +49,7 @@ public class MimeMessageBuilder {
     }
 
     public MimeMessageBuilder setReplyTo(final String replyTo) throws MessagingException {
-        InternetAddress[] addresses = parseAddresses(replyTo);
+        final InternetAddress[] addresses = parseAddresses(replyTo);
 
         if (null != addresses) {
             message.setReplyTo(addresses);
@@ -59,7 +59,7 @@ public class MimeMessageBuilder {
 
     public MimeMessageBuilder setRecipients(final Message.RecipientType recipientType, final String recipients)
         throws MessagingException {
-        InternetAddress[] addresses = parseAddresses(recipients);
+        final InternetAddress[] addresses = parseAddresses(recipients);
 
         if (null != addresses) {
             message.setRecipients(recipientType, addresses);

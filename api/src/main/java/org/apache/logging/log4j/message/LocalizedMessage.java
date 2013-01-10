@@ -176,11 +176,11 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
                 bundle = getBundle(loggerName, locale, true);
             }
         }
-        String messagePattern = getFormat();
-        String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?
+        final String messagePattern = getFormat();
+        final String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?
             messagePattern : bundle.getString(messagePattern);
-        Object[] array = argArray == null ? stringArgs : argArray;
-        FormattedMessage msg = new FormattedMessage(msgPattern, array);
+        final Object[] array = argArray == null ? stringArgs : argArray;
+        final FormattedMessage msg = new FormattedMessage(msgPattern, array);
         formattedMessage = msg.getFormattedMessage();
         throwable = msg.getThrowable();
         return formattedMessage;
@@ -254,7 +254,7 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
         int i = 0;
-        for (Object obj : argArray) {
+        for (final Object obj : argArray) {
             stringArgs[i] = obj.toString();
             ++i;
         }
@@ -265,7 +265,7 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();
         bundleId = in.readUTF();
-        int length = in.readInt();
+        final int length = in.readInt();
         stringArgs = new String[length];
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();

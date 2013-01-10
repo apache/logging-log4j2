@@ -170,8 +170,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 }
                 continue;
             } else if (tempLookup == subst.getVariableResolver()) {
-                Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
-                StrLookup lookup = map == null ? null : new MapLookup(map);
+                final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
+                final StrLookup lookup = map == null ? null : new MapLookup(map);
                 subst.setVariableResolver(new Interpolator(lookup));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {

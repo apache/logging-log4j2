@@ -241,9 +241,9 @@ public class TestConfigurator {
 
     @Test
     public void testBadFileName() throws Exception {
-        StringBuilder dir = new StringBuilder("/VeryLongDirectoryName");
+        final StringBuilder dir = new StringBuilder("/VeryLongDirectoryName");
 
-        for (String element : CHARS) {
+        for (final String element : CHARS) {
             dir.append(element);
             dir.append(element.toUpperCase());
         }

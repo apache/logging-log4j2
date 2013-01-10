@@ -63,7 +63,7 @@ public class CyclicBuffer<T> {
     }
 
     public synchronized T[] removeAll() {
-        T[] array = makeArray(clazz, numElems);
+        final T[] array = makeArray(clazz, numElems);
         int index = 0;
         while (numElems > 0) {
             numElems--;

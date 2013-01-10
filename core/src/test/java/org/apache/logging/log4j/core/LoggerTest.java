@@ -186,7 +186,7 @@ public class LoggerTest {
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
         assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
+        final String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
         assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
             msgs.get(0).endsWith(expected));
 
@@ -198,7 +198,7 @@ public class LoggerTest {
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = host.getMessages();
         assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = "java.lang.Throwable: Testing";
+        final String expected = "java.lang.Throwable: Testing";
         assertTrue("Incorrect message data", msgs.get(0).contains(expected));
     }
 
@@ -209,7 +209,7 @@ public class LoggerTest {
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = noThrown.getMessages();
         assertTrue("Incorrect number of messages. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String suppressed = "java.lang.Throwable: Testing";
+        final String suppressed = "java.lang.Throwable: Testing";
         assertTrue("Incorrect message data", !msgs.get(0).contains(suppressed));
     }
 

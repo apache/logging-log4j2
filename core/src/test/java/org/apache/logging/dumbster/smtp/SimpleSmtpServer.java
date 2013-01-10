@@ -94,7 +94,7 @@ public class SimpleSmtpServer implements Runnable {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     if (socket != null) {
                         socket.close();
                     }
@@ -102,8 +102,8 @@ public class SimpleSmtpServer implements Runnable {
                 }
 
                 // Get the input and output streams
-                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream());
+                final BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                final PrintWriter out = new PrintWriter(socket.getOutputStream());
 
                 synchronized (this) {
           /*
@@ -112,19 +112,19 @@ public class SimpleSmtpServer implements Runnable {
            * For higher concurrency, we could just change handle to return void and update the list inside the method
            * to limit the duration that we hold the lock.
            */
-                    List msgs = handleTransaction(out, input);
+                    final List msgs = handleTransaction(out, input);
                     receivedMail.addAll(msgs);
                 }
                 socket.close();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             /** @todo Should throw an appropriate exception here. */
             e.printStackTrace();
         } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -150,7 +150,7 @@ public class SimpleSmtpServer implements Runnable {
         try {
             // Kick the server accept loop
             serverSocket.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Ignore
         }
     }
@@ -166,36 +166,36 @@ public class SimpleSmtpServer implements Runnable {
     private List handleTransaction(PrintWriter out, BufferedReader input) throws IOException {
         // Initialize the state machine
         SmtpState smtpState = SmtpState.CONNECT;
-        SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, "", smtpState);
+        final SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, "", smtpState);
 
         // Execute the connection request
-        SmtpResponse smtpResponse = smtpRequest.execute();
+        final SmtpResponse smtpResponse = smtpRequest.execute();
 
         // Send initial response
         sendResponse(out, smtpResponse);
         smtpState = smtpResponse.getNextState();
 
-        List msgList = new ArrayList();
+        final List msgList = new ArrayList();
         SmtpMessage msg = new SmtpMessage();
 
         while (smtpState != SmtpState.CONNECT) {
-            String line = input.readLine();
+            final String line = input.readLine();
 
             if (line == null) {
                 break;
             }
 
             // Create request from client input and current state
-            SmtpRequest request = SmtpRequest.createRequest(line, smtpState);
+            final SmtpRequest request = SmtpRequest.createRequest(line, smtpState);
             // Execute request and create response object
-            SmtpResponse response = request.execute();
+            final SmtpResponse response = request.execute();
             // Move to next internal state
             smtpState = response.getNextState();
             // Send reponse to client
             sendResponse(out, response);
 
             // Store input in message
-            String params = request.getParams();
+            final String params = request.getParams();
             msg.store(response, params);
 
             // If message reception is complete save it
@@ -216,8 +216,8 @@ public class SimpleSmtpServer implements Runnable {
      */
     private static void sendResponse(PrintWriter out, SmtpResponse smtpResponse) {
         if (smtpResponse.getCode() > 0) {
-            int code = smtpResponse.getCode();
-            String message = smtpResponse.getMessage();
+            final int code = smtpResponse.getCode();
+            final String message = smtpResponse.getMessage();
             out.print(code + " " + message + "\r\n");
             out.flush();
         }
@@ -257,8 +257,8 @@ public class SimpleSmtpServer implements Runnable {
      * @return a reference to the SMTP server
      */
     public static SimpleSmtpServer start(int port) {
-        SimpleSmtpServer server = new SimpleSmtpServer(port);
-        Thread t = new Thread(server);
+        final SimpleSmtpServer server = new SimpleSmtpServer(port);
+        final Thread t = new Thread(server);
 
 
         // Block until the server socket is created
@@ -266,7 +266,7 @@ public class SimpleSmtpServer implements Runnable {
             t.start();
             try {
                 server.wait();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // Ignore don't care.
             }
         }

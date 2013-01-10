@@ -109,7 +109,7 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
     public void append(final LogEvent event) {
         readLock.lock();
         try {
-            byte[] bytes = getLayout().toByteArray(event);
+            final byte[] bytes = getLayout().toByteArray(event);
             if (bytes.length > 0) {
                 manager.write(bytes);
                 if (this.immediateFlush) {

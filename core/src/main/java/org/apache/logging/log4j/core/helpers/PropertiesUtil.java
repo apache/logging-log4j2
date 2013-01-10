@@ -39,7 +39,7 @@ public final class PropertiesUtil {
     public static String getSystemProperty(final String key) {
         try {
             return System.getProperty(key);
-        } catch (SecurityException ex) {
+        } catch (final SecurityException ex) {
             LOGGER.error("Unable to access system property {} due to security restrictions. Defaulting to null",
                 key);
             return null;
@@ -55,9 +55,9 @@ public final class PropertiesUtil {
      */
     public static String getSystemProperty(final String key, final String defaultValue) {
         try {
-            String value = System.getProperty(key);
+            final String value = System.getProperty(key);
             return value == null ? defaultValue : value;
-        } catch (SecurityException ex) {
+        } catch (final SecurityException ex) {
             LOGGER.warn("Unable to access system property {} due to security restrictions. Defaulting to {}",
                 key, defaultValue);
             return defaultValue;
@@ -71,7 +71,7 @@ public final class PropertiesUtil {
     public static Properties getSystemProperties() {
         try {
             return new Properties(System.getProperties());
-        } catch (SecurityException ex) {
+        } catch (final SecurityException ex) {
             LOGGER.error("Unable to access system properties.");
             // Sandboxed - can't read System Properties
             return new Properties();

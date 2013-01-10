@@ -53,7 +53,7 @@ public class SMTPAppenderTest {
 
         builder.setFrom(null);
         Address[] array = null;
-        Address addr = InternetAddress.getLocalAddress(null);
+        final Address addr = InternetAddress.getLocalAddress(null);
         if (addr != null) {
             array = new Address[] {addr};
         }
@@ -148,7 +148,7 @@ public class SMTPAppenderTest {
 
         server.stop();
         assertTrue(server.getReceivedEmailSize() == 1);
-        SmtpMessage email = (SmtpMessage) server.getReceivedEmail().next();
+        final SmtpMessage email = (SmtpMessage) server.getReceivedEmail().next();
 
         assertEquals("to@example.com", email.getHeaderValue("To"));
         assertEquals("cc@example.com", email.getHeaderValue("Cc"));
@@ -158,7 +158,7 @@ public class SMTPAppenderTest {
         assertEquals("replyTo@example.com", email.getHeaderValue("Reply-To"));
         assertEquals("Subject", email.getHeaderValue("Subject"));
 
-        String body = email.getBody();
+        final String body = email.getBody();
         assertFalse(body.contains("Debug message #1"));
         assertTrue(body.contains("Debug message #2"));
         assertTrue(body.contains("Debug message #3"));

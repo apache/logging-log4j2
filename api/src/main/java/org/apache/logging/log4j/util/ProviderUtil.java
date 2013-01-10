@@ -48,7 +48,7 @@ public final class ProviderUtil {
     }
 
     static {
-        ClassLoader cl = findClassLoader();
+        final ClassLoader cl = findClassLoader();
         Enumeration<URL> enumResources = null;
         try {
             enumResources = cl.getResources(PROVIDER_RESOURCE);

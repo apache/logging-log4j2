@@ -263,7 +263,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
         final Configuration prev = this.config;
         config.addListener(this);
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("hostName", NetUtils.getLocalHostname());
         map.put("contextName", name);
         config.addComponent(Configuration.CONTEXT_PROPERTIES, map);

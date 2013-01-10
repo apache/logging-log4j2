@@ -75,9 +75,9 @@ public class SLF4JLogger extends AbstractLogger {
         if (marker == null) {
             return null;
         }
-        Marker parent = marker.getParent();
-        org.slf4j.Marker parentMarker = parent == null ? null : getMarker(parent);
-        org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
+        final Marker parent = marker.getParent();
+        final org.slf4j.Marker parentMarker = parent == null ? null : getMarker(parent);
+        final org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
         if (parentMarker != null && !slf4jMarker.contains(parentMarker)) {
             slf4jMarker.add(parentMarker);
         }
@@ -127,7 +127,7 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     private boolean isEnabledFor(Level level, Marker marker) {
-        org.slf4j.Marker slf4jMarker = getMarker(marker);
+        final org.slf4j.Marker slf4jMarker = getMarker(marker);
         switch (level) {
             case DEBUG :
                 return logger.isDebugEnabled(slf4jMarker);

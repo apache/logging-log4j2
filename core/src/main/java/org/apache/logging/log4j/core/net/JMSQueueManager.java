@@ -104,7 +104,7 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
         try {
             super.send(object, info.session, info.sender);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             cleanup(true);
             throw ex;
         }
@@ -120,14 +120,14 @@ public class JMSQueueManager extends AbstractJMSManager {
     private void cleanup(boolean quiet) {
         try {
             info.session.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (!quiet) {
                 LOGGER.error("Error closing session for " + getName(), e);
             }
         }
         try {
             info.conn.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (!quiet) {
                 LOGGER.error("Error closing connection for " + getName(), e);
             }

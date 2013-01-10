@@ -65,11 +65,11 @@ public class MessageFormatsPerfTest {
 
     @Test
     public void testStringPerf() {
-        String testMsg = "Test message %1s %2s";
-        Timer timer = new Timer("StringFormat", LOOP_CNT);
+        final String testMsg = "Test message %1s %2s";
+        final Timer timer = new Timer("StringFormat", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache", "Log4j");
+            final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();
@@ -79,11 +79,11 @@ public class MessageFormatsPerfTest {
 
     @Test
     public void testMessageFormatPerf() {
-        String testMsg = "Test message {0} {1}";
-        Timer timer = new Timer("MessageFormat", LOOP_CNT);
+        final String testMsg = "Test message {0} {1}";
+        final Timer timer = new Timer("MessageFormat", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", "Log4j");
+            final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();
@@ -93,11 +93,11 @@ public class MessageFormatsPerfTest {
 
     @Test
     public void testParameterizedPerf() {
-        String testMsg = "Test message {} {}";
-        Timer timer = new Timer("Parameterized", LOOP_CNT);
+        final String testMsg = "Test message {} {}";
+        final Timer timer = new Timer("Parameterized", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            ParameterizedMessage msg = new ParameterizedMessage(testMsg, "Apache", "Log4j");
+            final ParameterizedMessage msg = new ParameterizedMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();
@@ -107,11 +107,11 @@ public class MessageFormatsPerfTest {
 
     @Test
     public void testFormattedParameterizedPerf() {
-        String testMsg = "Test message {} {}";
-        Timer timer = new Timer("FormattedParameterized", LOOP_CNT);
+        final String testMsg = "Test message {} {}";
+        final Timer timer = new Timer("FormattedParameterized", LOOP_CNT);
         timer.start();
         for (int i = 0; i < LOOP_CNT; ++i) {
-            FormattedMessage msg = new FormattedMessage(testMsg, "Apache", "Log4j");
+            final FormattedMessage msg = new FormattedMessage(testMsg, "Apache", "Log4j");
             array[i] = msg.getFormattedMessage();
         }
         timer.stop();

@@ -72,7 +72,7 @@ public class SyslogLayoutTest {
      */
     @Test
     public void testLayout() throws Exception {
-        for (Appender appender : root.getAppenders().values()) {
+        for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appender

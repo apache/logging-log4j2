@@ -30,12 +30,12 @@ public class MessageFormatMessageTest {
 
     @Test
     public void testNoArgs() {
-        String testMsg = "Test message {0}";
+        final String testMsg = "Test message {0}";
         MessageFormatMessage msg = new MessageFormatMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
         String expected = "Test message {0}";
         assertEquals(expected, result);
-        Object[] array = null;
+        final Object[] array = null;
         msg = new MessageFormatMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         expected = "Test message null";
@@ -44,10 +44,10 @@ public class MessageFormatMessageTest {
 
     @Test
     public void testOneArg() {
-        String testMsg = "Test message {0}";
-        MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
-        String result = msg.getFormattedMessage();
-        String expected = "Test message Apache";
+        final String testMsg = "Test message {0}";
+        final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache";
         assertEquals(expected, result);
     }
 }

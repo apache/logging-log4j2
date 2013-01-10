@@ -81,7 +81,7 @@ public class MessageFormatMessage implements Message, Serializable {
     protected String formatMessage(String msgPattern, Object... args) {
         try {
             return MessageFormat.format(msgPattern, args);
-        } catch (IllegalFormatException ife) {
+        } catch (final IllegalFormatException ife) {
             LOGGER.error("Unable to format msg: " + msgPattern, ife);
             return msgPattern;
         }
@@ -96,7 +96,7 @@ public class MessageFormatMessage implements Message, Serializable {
             return false;
         }
 
-        MessageFormatMessage that = (MessageFormatMessage) o;
+        final MessageFormatMessage that = (MessageFormatMessage) o;
 
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
@@ -130,7 +130,7 @@ public class MessageFormatMessage implements Message, Serializable {
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
         int i = 0;
-        for (Object obj : argArray) {
+        for (final Object obj : argArray) {
             stringArgs[i] = obj.toString();
             ++i;
         }
@@ -140,7 +140,7 @@ public class MessageFormatMessage implements Message, Serializable {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();
-        int length = in.readInt();
+        final int length = in.readInt();
         stringArgs = new String[length];
         for (int i = 0; i < length; ++i) {
             stringArgs[i] = in.readUTF();

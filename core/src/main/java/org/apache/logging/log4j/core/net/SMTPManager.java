@@ -79,7 +79,7 @@ public class SMTPManager extends AbstractManager {
             protocol = "smtp";
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         if (to != null) {
             sb.append(to);
         }
@@ -115,7 +115,7 @@ public class SMTPManager extends AbstractManager {
         sb.append(isDebug ? ":debug:" : "::");
         sb.append(filterName);
 
-        String name = "SMTP:" + NameUtil.md5(sb.toString());
+        final String name = "SMTP:" + NameUtil.md5(sb.toString());
 
         return getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo, subject,
             protocol, host, port, username, password, isDebug, numElements));
@@ -129,30 +129,30 @@ public class SMTPManager extends AbstractManager {
             connect();
         }
         try {
-            byte[] rawBytes = formatContentToBytes(buffer, layout);
+            final byte[] rawBytes = formatContentToBytes(buffer, layout);
 
-            String contentType = layout.getContentType();
-            String encoding = getEncoding(rawBytes, contentType);
-            byte[] encodedBytes = encodeContentToBytes(rawBytes, encoding);
+            final String contentType = layout.getContentType();
+            final String encoding = getEncoding(rawBytes, contentType);
+            final byte[] encodedBytes = encodeContentToBytes(rawBytes, encoding);
 
-            InternetHeaders headers = getHeaders(contentType, encoding);
-            MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
+            final InternetHeaders headers = getHeaders(contentType, encoding);
+            final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
             sendMultipartMessage(message, mp);
-        } catch (MessagingException e) {
+        } catch (final MessagingException e) {
             LOGGER.error("Error occurred while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Error occurred while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             LOGGER.error("Error occurred while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
     }
 
     protected byte[] formatContentToBytes(CyclicBuffer<LogEvent> cb, Layout<?> layout) throws IOException {
-        ByteArrayOutputStream raw = new ByteArrayOutputStream();
+        final ByteArrayOutputStream raw = new ByteArrayOutputStream();
         writeContent(cb, layout, raw);
         return raw.toByteArray();
     }
@@ -165,55 +165,55 @@ public class SMTPManager extends AbstractManager {
     }
 
     protected void writeHeader(Layout<?> layout, OutputStream out) throws IOException {
-        byte[] header = layout.getHeader();
+        final byte[] header = layout.getHeader();
         if (header != null) {
             out.write(header);
         }
     }
 
     protected void writeBuffer(CyclicBuffer<LogEvent> cb, Layout<?> layout, OutputStream out) throws IOException {
-        LogEvent[] events = cb.removeAll();
-        for (LogEvent event : events) {
-            byte[] bytes = layout.toByteArray(event);
+        final LogEvent[] events = cb.removeAll();
+        for (final LogEvent event : events) {
+            final byte[] bytes = layout.toByteArray(event);
             out.write(bytes);
         }
     }
 
     protected void writeFooter(Layout<?> layout, OutputStream out) throws IOException {
-        byte[] footer = layout.getFooter();
+        final byte[] footer = layout.getFooter();
         if (footer != null) {
             out.write(footer);
         }
     }
 
     protected String getEncoding(byte[] rawBytes, String contentType) {
-        DataSource dataSource = new ByteArrayDataSource(rawBytes, contentType);
+        final DataSource dataSource = new ByteArrayDataSource(rawBytes, contentType);
         return MimeUtility.getEncoding(dataSource);
     }
 
     protected byte[] encodeContentToBytes(byte[] rawBytes, String encoding) throws MessagingException, IOException {
-        ByteArrayOutputStream encoded = new ByteArrayOutputStream();
+        final ByteArrayOutputStream encoded = new ByteArrayOutputStream();
         encodeContent(rawBytes, encoding, encoded);
         return encoded.toByteArray();
     }
 
     protected void encodeContent(byte[] bytes, String encoding, ByteArrayOutputStream out)
         throws MessagingException, IOException {
-        OutputStream encoder = MimeUtility.encode(out, encoding);
+        final OutputStream encoder = MimeUtility.encode(out, encoding);
         encoder.write(bytes);
         encoder.close();
     }
 
     protected InternetHeaders getHeaders(String contentType, String encoding) {
-        InternetHeaders headers = new InternetHeaders();
+        final InternetHeaders headers = new InternetHeaders();
         headers.setHeader("Content-Type", contentType + "; charset=UTF-8");
         headers.setHeader("Content-Transfer-Encoding", encoding);
         return headers;
     }
 
     protected MimeMultipart getMimeMultipart(byte[] encodedBytes, InternetHeaders headers) throws MessagingException {
-        MimeMultipart mp = new MimeMultipart();
-        MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
+        final MimeMultipart mp = new MimeMultipart();
+        final MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
         mp.addBodyPart(part);
         return mp;
     }
@@ -268,7 +268,7 @@ public class SMTPManager extends AbstractManager {
             message = new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                 .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                 .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
-        } catch (MessagingException e) {
+        } catch (final MessagingException e) {
             LOGGER.error("Could not set SMTPAppender message options.", e);
             message = null;
         }
@@ -279,7 +279,7 @@ public class SMTPManager extends AbstractManager {
         public SMTPManager createManager(final String name, final FactoryData data) {
             final String prefix = "mail." + data.protocol;
 
-            Properties properties = PropertiesUtil.getSystemProperties();
+            final Properties properties = PropertiesUtil.getSystemProperties();
             properties.put("mail.transport.protocol", data.protocol);
             if (properties.getProperty("mail.host") == null) {
                 // Prevent an UnknownHostException in Java 7
@@ -307,7 +307,7 @@ public class SMTPManager extends AbstractManager {
                 message = new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
                     .setRecipients(Message.RecipientType.TO, data.to).setRecipients(Message.RecipientType.CC, data.cc)
                     .setRecipients(Message.RecipientType.BCC, data.bcc).setSubject(data.subject).getMimeMessage();
-            } catch (MessagingException e) {
+            } catch (final MessagingException e) {
                 LOGGER.error("Could not set SMTPAppender message options.", e);
                 message = null;
             }

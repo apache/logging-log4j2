@@ -33,18 +33,18 @@ public class LocalizedMessageTest {
 
     @Test
     public void testMessageFormat() {
-        LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
-        String result = msg.getFormattedMessage();
-        String expected = "This is test number 1 with string argument Test.";
+        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
+        final String result = msg.getFormattedMessage();
+        final String expected = "This is test number 1 with string argument Test.";
         assertTrue(expected.equals(result));
     }
 
 
     @Test
     public void testStringFormat() {
-        LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
-        String result = msg.getFormattedMessage();
-        String expected = "This is test number 1 with string argument Test.";
+        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en_US"), "msg1", new Object[] {"1", "Test"});
+        final String result = msg.getFormattedMessage();
+        final String expected = "This is test number 1 with string argument Test.";
         assertTrue(expected.equals(result));
     }
 }

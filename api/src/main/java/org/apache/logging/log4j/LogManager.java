@@ -81,10 +81,10 @@ public class LogManager {
             final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<Integer, LoggerContextFactory>();
 
             if (ProviderUtil.hasProviders()) {
-                Iterator<Provider> providers = ProviderUtil.getProviders();
+                final Iterator<Provider> providers = ProviderUtil.getProviders();
                 while (providers.hasNext()) {
-                    Provider provider = providers.next();
-                    String className = provider.getClassName();
+                    final Provider provider = providers.next();
+                    final String className = provider.getClassName();
                     if (className != null) {
                         try {
                             final Class<?> clazz = cl.loadClass(className);

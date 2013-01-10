@@ -50,7 +50,7 @@ public class FailOnceAppender extends AbstractAppender {
     }
 
     public List<LogEvent> getEvents() {
-        List<LogEvent> list = new ArrayList<LogEvent>(events);
+        final List<LogEvent> list = new ArrayList<LogEvent>(events);
         events.clear();
         return list;
     }

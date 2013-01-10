@@ -244,8 +244,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
             buf.append(escapeNewlines(msg.getFormattedMessage(), escapeNewLine));
         }
         if (formatters != null && event.getThrown() != null) {
-            StringBuilder exception = new StringBuilder("\n");
-            for (PatternFormatter formatter : formatters) {
+            final StringBuilder exception = new StringBuilder("\n");
+            for (final PatternFormatter formatter : formatters) {
                 formatter.format(event, exception);
             }
             buf.append(escapeNewlines(exception.toString(), escapeNewLine));
