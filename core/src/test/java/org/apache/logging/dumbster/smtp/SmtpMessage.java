@@ -30,11 +30,11 @@ public class SmtpMessage {
     /**
      * Headers: Map of List of String hashed on header name.
      */
-    private Map headers;
+    private final Map headers;
     /**
      * Message body.
      */
-    private StringBuffer body;
+    private final StringBuffer body;
 
     /**
      * Constructor. Initializes headers Map and body buffer.

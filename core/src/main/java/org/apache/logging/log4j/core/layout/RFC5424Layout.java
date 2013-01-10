@@ -93,7 +93,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private static final String COMPONENT_KEY = "RFC5424-Converter";
     private static final String DEFAULT_CONVERSION_PATTERN = "%xEx";
 
-    private List<PatternFormatter> formatters;
+    private final List<PatternFormatter> formatters;
 
     private RFC5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
                           final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,

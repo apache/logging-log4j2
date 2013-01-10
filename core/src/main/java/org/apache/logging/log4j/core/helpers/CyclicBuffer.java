@@ -23,7 +23,7 @@ import java.lang.reflect.Array;
  * size of the buffer the oldest element will be overwritten. Access to the buffer is thread safe.
  */
 public class CyclicBuffer<T> {
-    private T[] ring;
+    private final T[] ring;
     private int first = 0;
     private int last = 0;
     private int numElems = 0;

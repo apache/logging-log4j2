@@ -24,9 +24,9 @@ import java.util.Map;
  */
 public class DefaultThreadContextMap implements ThreadContextMap {
 
-    private boolean useMap;
+    private final boolean useMap;
 
-    private ThreadLocal<Map<String, String>> localMap =
+    private final ThreadLocal<Map<String, String>> localMap =
         new InheritableThreadLocal<Map<String, String>>() {
             @Override
             protected Map<String, String> childValue(final Map<String, String> parentValue) {

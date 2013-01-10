@@ -35,7 +35,7 @@ public class SimpleSmtpServer implements Runnable {
     /**
      * Stores all of the email received since this instance started up.
      */
-    private List receivedMail;
+    private final List receivedMail;
 
     /**
      * Default SMTP port is 25.

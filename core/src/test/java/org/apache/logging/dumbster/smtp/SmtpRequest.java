@@ -45,15 +45,15 @@ public class SmtpRequest {
     /**
      * SMTP action received from client.
      */
-    private SmtpActionType action;
+    private final SmtpActionType action;
     /**
      * Current state of the SMTP state table.
      */
-    private SmtpState state;
+    private final SmtpState state;
     /**
      * Additional information passed from the client with the SMTP action.
      */
-    private String params;
+    private final String params;
 
     /**
      * Create a new SMTP client request.

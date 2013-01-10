@@ -51,7 +51,7 @@ public class SMTPManager extends AbstractManager {
 
     private final Session session;
 
-    private CyclicBuffer<LogEvent> buffer;
+    private final CyclicBuffer<LogEvent> buffer;
 
     private volatile MimeMessage message;
 

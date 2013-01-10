@@ -44,7 +44,7 @@ public class FormattedMessage implements Message, Serializable {
     private transient Object[] argArray;
     private String[] stringArgs;
     private transient String formattedMessage;
-    private Throwable throwable;
+    private final Throwable throwable;
 
     private Message message;
 

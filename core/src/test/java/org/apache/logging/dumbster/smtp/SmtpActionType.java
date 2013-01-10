@@ -23,7 +23,7 @@ public class SmtpActionType {
     /**
      * Internal value for the action type.
      */
-    private byte value;
+    private final byte value;
 
     /**
      * Internal representation of the CONNECT action.

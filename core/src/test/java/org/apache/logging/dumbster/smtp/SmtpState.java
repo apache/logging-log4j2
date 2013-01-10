@@ -23,7 +23,7 @@ public class SmtpState {
     /**
      * Internal representation of the state.
      */
-    private byte value;
+    private final byte value;
 
     /**
      * Internal representation of the CONNECT state.

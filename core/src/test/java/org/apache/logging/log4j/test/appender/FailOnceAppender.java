@@ -34,7 +34,7 @@ public class FailOnceAppender extends AbstractAppender {
 
     boolean fail = true;
 
-    private List<LogEvent> events = new ArrayList<LogEvent>();
+    private final List<LogEvent> events = new ArrayList<LogEvent>();
 
     private FailOnceAppender(final String name) {
         super(name, null, null, false);
