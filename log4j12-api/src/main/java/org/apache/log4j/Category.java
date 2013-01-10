@@ -354,7 +354,6 @@ public class Category {
         if (bundle != null) {
             return bundle;
         }
-        final int i = 0;
         String name = logger.getName();
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(logger.getContext());
         while ((name = NameUtil.getSubName(name)) != null) {
