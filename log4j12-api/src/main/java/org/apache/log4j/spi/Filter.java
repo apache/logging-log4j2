@@ -26,6 +26,7 @@ public abstract class Filter {
      *
      * @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
      */
+    @Deprecated
     public Filter next;
 
     /**

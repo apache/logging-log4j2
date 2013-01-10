@@ -39,6 +39,7 @@ public final class ParameterizedMessageFactory extends AbstractMessageFactory {
      * 
      * @see MessageFactory#newMessage(String, Object...)
      */
+    @Override
     public Message newMessage(final String message, final Object... params) {
         return new ParameterizedMessage(message, params);
     }

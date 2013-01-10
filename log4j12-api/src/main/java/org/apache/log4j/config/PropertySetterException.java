@@ -38,6 +38,7 @@ public class PropertySetterException extends Exception {
     /**
      * Returns descriptive text on the cause of this exception.
      */
+    @Override
     public String getMessage() {
         String msg = super.getMessage();
         if (msg == null && rootCause != null) {

@@ -29,6 +29,7 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
+    @Override
     public Message newMessage(String message, Object... params) {
         return new MessageFormatMessage(message, params);
     }

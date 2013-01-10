@@ -97,6 +97,7 @@ public class SmtpState {
      *
      * @return a String
      */
+    @Override
     public String toString() {
         switch (value) {
             case CONNECT_BYTE:

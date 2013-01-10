@@ -46,6 +46,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
+    @Override
     public Message newMessage(String message, Object... params) {
         if (bundle == null) {
             return new LocalizedMessage(bundleId,  message, params);

@@ -320,6 +320,7 @@ public class SMTPManager extends AbstractManager {
                 return new Authenticator() {
                     private final PasswordAuthentication passwordAuthentication = new PasswordAuthentication(username, password);
 
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return passwordAuthentication;
                     }

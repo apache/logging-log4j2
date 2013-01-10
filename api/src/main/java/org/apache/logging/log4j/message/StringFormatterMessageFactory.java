@@ -41,6 +41,7 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
      * 
      * @see MessageFactory#newMessage(String, Object...)
      */
+    @Override
     public Message newMessage(final String message, final Object... params) {
         return new StringFormattedMessage(message, params);
     }

@@ -147,6 +147,7 @@ public class Category {
 
      @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
+    @Deprecated
     public static Enumeration getCurrentCategories() {
         return LogManager.getCurrentLoggers();
     }

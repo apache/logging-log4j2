@@ -135,6 +135,7 @@ public class SmtpMessage {
      *
      * @return a String
      */
+    @Override
     public String toString() {
         StringBuffer msg = new StringBuffer();
         for (Iterator i = headers.keySet().iterator(); i.hasNext(); ) {
