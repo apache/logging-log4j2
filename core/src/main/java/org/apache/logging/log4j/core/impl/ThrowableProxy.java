@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -47,9 +45,10 @@ public class ThrowableProxy extends Throwable {
     private static Method getSuppressed;
     private static Method addSuppressed;
 
-    private final Throwable throwable;
-    private final ThrowableProxy cause;
+    private final ThrowableProxy proxyCause;
     private int commonElementCount;
+
+    private final String name;
 
     private final StackTracePackageElement[] callerPackageData;
 
@@ -64,11 +63,13 @@ public class ThrowableProxy extends Throwable {
      * @param throwable The Throwable to wrap.
      */
     public ThrowableProxy(final Throwable throwable) {
-        this.throwable = throwable;
+        super(throwable.getMessage(), null);
+        this.name = throwable.getClass().getName();
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
         final Stack<Class<?>> stack = getCurrentStack();
+        super.setStackTrace(throwable.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
-        this.cause = (throwable.getCause() == null) ? null :
+        this.proxyCause = (throwable.getCause() == null) ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
         setSuppressed(throwable);
     }
@@ -82,11 +83,13 @@ public class ThrowableProxy extends Throwable {
      * @param cause The Throwable to wrap.
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map, final Throwable cause) {
-        this.throwable = cause;
+        super(cause.getMessage(), null);
+        this.name = cause.getClass().getName();
+        super.setStackTrace(cause.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.cause = (throwable.getCause() == null) ? null :
-            new ThrowableProxy(parent, stack, map, throwable.getCause());
-        setSuppressed(throwable);
+        this.proxyCause = (cause.getCause() == null) ? null :
+            new ThrowableProxy(parent, stack, map, cause.getCause());
+        setSuppressed(cause);
     }
 
 
@@ -96,18 +99,8 @@ public class ThrowableProxy extends Throwable {
     }
 
     @Override
-    public String getMessage() {
-        return throwable.getMessage();
-    }
-
-    @Override
-    public String getLocalizedMessage() {
-        return throwable.getLocalizedMessage();
-    }
-
-    @Override
     public Throwable getCause() {
-        return cause;
+        return proxyCause;
     }
 
     @Override
@@ -117,22 +110,8 @@ public class ThrowableProxy extends Throwable {
 
     @Override
     public String toString() {
-        return throwable.toString();
-    }
-
-    @Override
-    public void printStackTrace() {
-        throwable.printStackTrace();
-    }
-
-    @Override
-    public void printStackTrace(final PrintStream printStream) {
-        throwable.printStackTrace(printStream);
-    }
-
-    @Override
-    public void printStackTrace(final PrintWriter printWriter) {
-        throwable.printStackTrace(printWriter);
+        String msg = getMessage();
+        return msg != null ? name + ": " + msg : name;
     }
 
     @Override
@@ -140,10 +119,11 @@ public class ThrowableProxy extends Throwable {
         return this;
     }
 
+    /*
     @Override
     public StackTraceElement[] getStackTrace() {
-        return throwable.getStackTrace();
-    }
+        return callerData;
+    } */
 
     /**
      * Format the Throwable that is the cause of this Throwable.
@@ -160,13 +140,13 @@ public class ThrowableProxy extends Throwable {
      */
     public String getRootCauseStackTrace(final List<String> packages) {
         final StringBuilder sb = new StringBuilder();
-        if (cause != null) {
-            formatWrapper(sb, cause);
+        if (proxyCause != null) {
+            formatWrapper(sb, proxyCause);
             sb.append("Wrapped by: ");
         }
-        sb.append(throwable.toString());
+        sb.append(toString());
         sb.append("\n");
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
+        formatElements(sb, 0, getStackTrace(), callerPackageData, packages);
         return sb.toString();
     }
 
@@ -188,7 +168,7 @@ public class ThrowableProxy extends Throwable {
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         final Throwable caused = cause.getCause();
         if (caused != null) {
-            formatWrapper(sb, cause.cause);
+            formatWrapper(sb, cause.proxyCause);
             sb.append("Wrapped by: ");
         }
         sb.append(cause).append("\n");
@@ -209,11 +189,15 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTrace(final List<String> packages) {
-        final StringBuilder sb = new StringBuilder(throwable.toString());
+        final StringBuilder sb = new StringBuilder(name);
+        String msg = getMessage();
+        if (msg != null) {
+            sb.append(": ").append(getMessage());
+        }
         sb.append("\n");
-        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
-        if (cause != null) {
-            formatCause(sb, cause, packages);
+        formatElements(sb, 0, getStackTrace(), callerPackageData, packages);
+        if (proxyCause != null) {
+            formatCause(sb, proxyCause, packages);
         }
         return sb.toString();
     }
@@ -238,7 +222,7 @@ public class ThrowableProxy extends Throwable {
         sb.append("Caused by: ").append(cause).append("\n");
         formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
         if (cause.getCause() != null) {
-            formatCause(sb, cause.cause, packages);
+            formatCause(sb, cause.proxyCause, packages);
         }
     }
 

@@ -18,12 +18,14 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,6 +64,11 @@ public class AsynchAppenderTest {
         StatusLogger.getLogger().reset();
     }
 
+    @After
+    public void after() {
+        app.clear();
+    }
+
     @Test
     public void rewriteTest() throws Exception {
         final Logger logger = LogManager.getLogger(AsynchAppender.class);
@@ -77,5 +84,19 @@ public class AsynchAppenderTest {
         msg = list.get(1);
         expected = AsynchAppenderTest.class.getName() + " rewriteTest Hello world!";
         assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
+    }
+
+    @Test
+    public void testException() throws Exception {
+        final Logger logger = LogManager.getLogger(AsynchAppender.class);
+        Exception parent = new IllegalStateException("Test");
+        Throwable child = new LoggingException("This is a test", parent);
+        logger.error("This is a test", child);
+        Thread.sleep(100);
+        final List<String> list = app.getMessages();
+        assertNotNull("No events generated", list);
+        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        String msg = list.get(0);
+        assertTrue("No parent exception", msg.contains("java.lang.IllegalStateException"));
     }
 }

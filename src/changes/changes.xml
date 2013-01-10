@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-142" dev="rgoers" type="fix">
+        Serialized LogEvents were not reset in the output stream causing them to deserialize incorrectly.
+      </action>
       <action issue="LOG4J2-139" dev="rgoers" type="fix">
         Fix null pointer exception in SocketAppender if no protocol is specified. The protocol will default
         to TCP for the SocketAppender and UDP for the SyslogAppender.

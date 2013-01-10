@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.LogEvent;
@@ -64,7 +65,8 @@ public class SerializedLayoutTest {
         "Logger=root Level=DEBUG Message=starting mdc pattern test",
         "Logger=root Level=DEBUG Message=empty mdc",
         "Logger=root Level=DEBUG Message=filled mdc",
-        "Logger=root Level=ERROR Message=finished mdc pattern test"
+        "Logger=root Level=ERROR Message=finished mdc pattern test",
+        "Logger=root Level=ERROR Message=Throwing an exception"
     };
 
 
@@ -97,6 +99,11 @@ public class SerializedLayoutTest {
         ThreadContext.remove("key2");
 
         root.error("finished mdc pattern test", new NullPointerException("test"));
+
+        Exception parent = new IllegalStateException("Test");
+        Throwable child = new LoggingException("This is a test", parent);
+
+        root.error("Throwing an exception", child);
 
         appender.stop();
 

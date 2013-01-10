@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -76,6 +77,7 @@ public class SocketAppenderTest {
     public static void cleanupClass() {
         tcp.shutdown();
         udp.shutdown();
+        list.clear();
     }
 
     @After
@@ -88,6 +90,7 @@ public class SocketAppenderTest {
         }
         tcpCount = 0;
         udpCount = 0;
+        list.clear();
     }
 
     @Test
@@ -102,10 +105,19 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
-        final LogEvent event = list.poll(3, TimeUnit.SECONDS);
+        Exception parent = new IllegalStateException("Test");
+        Throwable child = new LoggingException("This is a test");
+        root.error("Throwing an exception", child);
+        root.debug("This is another test message");
+        Thread.sleep(250);
+        LogEvent event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
         assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
         assertTrue("Message not delivered via TCP", tcpCount > 0);
+        event = list.poll(3, TimeUnit.SECONDS);
+        assertNotNull("No event retrieved", event);
+        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
+        assertTrue("Message not delivered via TCP", tcpCount > 1);
     }
 
 
@@ -120,10 +132,10 @@ public class SocketAppenderTest {
         root.addAppender(appender);
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
-        root.debug("This is a test message");
+        root.debug("This is a udp message");
         final LogEvent event = list.poll(3, TimeUnit.SECONDS);
         assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
+        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a udp message"));
         assertTrue("Message not delivered via UDP", udpCount > 0);
     }
 

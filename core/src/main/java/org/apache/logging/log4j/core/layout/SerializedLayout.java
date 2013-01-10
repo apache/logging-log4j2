@@ -59,6 +59,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
             final ObjectOutputStream oos = new PrivateObjectOutputStream(baos);
             try {
                 oos.writeObject(event);
+                oos.reset();
             } finally {
                 oos.close();
             }

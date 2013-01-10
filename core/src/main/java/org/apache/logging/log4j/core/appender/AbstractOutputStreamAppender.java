@@ -109,9 +109,12 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
     public void append(final LogEvent event) {
         readLock.lock();
         try {
-            manager.write(getLayout().toByteArray(event));
-            if (this.immediateFlush) {
-                manager.flush();
+            byte[] bytes = getLayout().toByteArray(event);
+            if (bytes.length > 0) {
+                manager.write(bytes);
+                if (this.immediateFlush) {
+                    manager.flush();
+                }
             }
         } catch (final AppenderRuntimeException ex) {
             error("Unable to write to stream " + manager.getName() + " for appender " + getName());

@@ -109,7 +109,6 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
         try {
             getOutputStream().write(bytes, offset, length);
-            socket.setSendBufferSize(length);
         } catch (final IOException ex) {
             if (retry && connector == null) {
                 connector = new Reconnector(this);
