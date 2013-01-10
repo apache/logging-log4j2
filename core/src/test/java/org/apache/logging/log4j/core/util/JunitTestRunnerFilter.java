@@ -47,8 +47,8 @@ public class JunitTestRunnerFilter implements Filter {
         return "\tat java.lang.reflect.Method.invoke(X)\n" + in;
     }
 
-    for (int i = 0; i < patterns.length; i++) {
-        if(util.match(patterns[i], in)) {
+    for (String pattern : patterns) {
+        if(util.match(pattern, in)) {
             return null;
         }
     }

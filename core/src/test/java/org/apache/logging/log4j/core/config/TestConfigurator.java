@@ -243,9 +243,9 @@ public class TestConfigurator {
     public void testBadFileName() throws Exception {
         StringBuilder dir = new StringBuilder("/VeryLongDirectoryName");
 
-        for (int i = 0; i < CHARS.length; ++i) {
-            dir.append(CHARS[i]);
-            dir.append(CHARS[i].toUpperCase());
+        for (String element : CHARS) {
+            dir.append(element);
+            dir.append(element.toUpperCase());
         }
         final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);

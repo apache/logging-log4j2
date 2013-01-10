@@ -40,8 +40,8 @@ public class Transformer {
       // Initialization of input and output omitted
       while ((line = input.readLine()) != null) {
         // apply all filters
-        for (int i = 0; i < filters.length; i++) {
-          line = filters[i].filter(line);
+        for (Filter filter : filters) {
+          line = filter.filter(line);
         }
         if (line != null) {
           output.println(line);
