@@ -54,15 +54,15 @@ public class JNDIContextFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         context = filterConfig.getServletContext();
         name = filterConfig.getInitParameter(CONTEXT_NAME);
-        String configLocn = filterConfig.getInitParameter(CONFIG_LOCATION);
+        final String configLocn = filterConfig.getInitParameter(CONFIG_LOCATION);
         if (name == null) {
             throw new UnavailableException("A context-name attribute is required");
         }
         if (context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE) == null) {
             LoggerContext ctx;
-            LoggerContextFactory factory = LogManager.getFactory();
+            final LoggerContextFactory factory = LogManager.getFactory();
             if (factory instanceof Log4jContextFactory) {
-                ContextSelector sel = ((Log4jContextFactory) factory).getSelector();
+                final ContextSelector sel = ((Log4jContextFactory) factory).getSelector();
                 if (sel instanceof NamedContextSelector) {
                     selector = (NamedContextSelector) sel;
                     ctx = selector.locateContext(name, configLocn);
@@ -80,7 +80,7 @@ public class JNDIContextFilter implements Filter {
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
         throws IOException, ServletException {
-        LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
+        final LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null) {
             ContextAnchor.THREAD_CONTEXT.set(ctx);
             try {
@@ -94,7 +94,7 @@ public class JNDIContextFilter implements Filter {
     }
 
     public void destroy() {
-        LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
+        final LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null && created) {
             context.log("Removing context for " + name);
             context.removeAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);

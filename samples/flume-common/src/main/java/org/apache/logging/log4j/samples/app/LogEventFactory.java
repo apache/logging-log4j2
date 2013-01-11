@@ -34,11 +34,11 @@ public class LogEventFactory {
 
     public static <T> T getEvent(Class<T> intrface) {
 
-        Class<?>[] interfaces = new Class<?>[]{intrface};
+        final Class<?>[] interfaces = new Class<?>[]{intrface};
 
-        String eventId = NamingUtils.lowerFirst(intrface.getSimpleName());
-        StructuredDataMessage msg = new StructuredDataMessage(eventId, null, "Audit");
-        AuditEvent audit = (AuditEvent) Proxy.newProxyInstance(intrface
+        final String eventId = NamingUtils.lowerFirst(intrface.getSimpleName());
+        final StructuredDataMessage msg = new StructuredDataMessage(eventId, null, "Audit");
+        final AuditEvent audit = (AuditEvent) Proxy.newProxyInstance(intrface
             .getClassLoader(), interfaces, new AuditProxy(msg, intrface));
 
         return (T) audit;
@@ -58,17 +58,17 @@ public class LogEventFactory {
             throws Throwable {
             if (method.getName().equals("logEvent")) {
 
-                StringBuilder missing = new StringBuilder();
+                final StringBuilder missing = new StringBuilder();
 
-                Method[] methods = intrface.getMethods();
+                final Method[] methods = intrface.getMethods();
 
-                for (Method _method : methods) {
-                    String name = NamingUtils.lowerFirst(NamingUtils
+                for (final Method _method : methods) {
+                    final String name = NamingUtils.lowerFirst(NamingUtils
                         .getMethodShortName(_method.getName()));
 
-                    Annotation[] annotations = _method.getDeclaredAnnotations();
-                    for (Annotation annotation : annotations) {
-                        Constraint constraint = (Constraint) annotation;
+                    final Annotation[] annotations = _method.getDeclaredAnnotations();
+                    for (final Annotation annotation : annotations) {
+                        final Constraint constraint = (Constraint) annotation;
 
                         if (constraint.required() && msg.get(name) == null) {
                             if (missing.length() > 0) {
@@ -86,11 +86,11 @@ public class LogEventFactory {
                 EventLogger.logEvent(msg);
             }
             if (method.getName().equals("setCompletionStatus")) {
-                String name = NamingUtils.lowerFirst(NamingUtils.getMethodShortName(method.getName()));
+                final String name = NamingUtils.lowerFirst(NamingUtils.getMethodShortName(method.getName()));
                 msg.put(name, objects[0].toString());
             }
             if (method.getName().startsWith("set")) {
-                String name = NamingUtils.lowerFirst(NamingUtils.getMethodShortName(method.getName()));
+                final String name = NamingUtils.lowerFirst(NamingUtils.getMethodShortName(method.getName()));
 
                 /*
                  * Perform any validation here. Currently the catalog doesn't

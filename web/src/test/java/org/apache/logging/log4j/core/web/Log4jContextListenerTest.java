@@ -50,19 +50,19 @@ public class Log4jContextListenerTest {
 
     @Test
     public void testFromFile() throws Exception {
-        MockServletContext context = new MockServletContext();
+        final MockServletContext context = new MockServletContext();
         context.setInitParameter(Log4jContextListener.LOG4J_CONTEXT_NAME, "Test1");
         context.setInitParameter(Log4jContextListener.LOG4J_CONFIG, "target/test-classes/log4j2-config.xml");
-        Log4jContextListener listener = new Log4jContextListener();
-        ServletContextEvent event = new ServletContextEvent(context);
+        final Log4jContextListener listener = new Log4jContextListener();
+        final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
@@ -73,19 +73,19 @@ public class Log4jContextListenerTest {
 
     @Test
     public void testFromClassPath() throws Exception {
-        MockServletContext context = new MockServletContext();
+        final MockServletContext context = new MockServletContext();
         context.setInitParameter(Log4jContextListener.LOG4J_CONTEXT_NAME, "Test1");
         context.setInitParameter(Log4jContextListener.LOG4J_CONFIG, "log4j2-config.xml");
-        Log4jContextListener listener = new Log4jContextListener();
-        ServletContextEvent event = new ServletContextEvent(context);
+        final Log4jContextListener listener = new Log4jContextListener();
+        final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
@@ -96,18 +96,18 @@ public class Log4jContextListenerTest {
 
     @Test
     public void testByName() throws Exception {
-        MockServletContext context = new MockServletContext();
+        final MockServletContext context = new MockServletContext();
         context.setInitParameter(Log4jContextListener.LOG4J_CONTEXT_NAME, "-config");
-        Log4jContextListener listener = new Log4jContextListener();
-        ServletContextEvent event = new ServletContextEvent(context);
+        final Log4jContextListener listener = new Log4jContextListener();
+        final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);

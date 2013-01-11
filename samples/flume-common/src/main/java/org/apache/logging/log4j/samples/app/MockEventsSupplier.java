@@ -34,20 +34,20 @@ public class MockEventsSupplier {
 
 	public static List<AuditEvent> getAllEvents(String member) {
 
-		List<AuditEvent> events = new ArrayList<AuditEvent>();
+		final List<AuditEvent> events = new ArrayList<AuditEvent>();
 
 
-		Login login = LogEventFactory.getEvent(Login.class);
+		final Login login = LogEventFactory.getEvent(Login.class);
 		login.setStartPageOption("account summary");
 		login.setSource("online");
 		login.setMember(member);
 		events.add(login);
 
-		ChangePassword changePassword = LogEventFactory.getEvent(ChangePassword.class);
+		final ChangePassword changePassword = LogEventFactory.getEvent(ChangePassword.class);
 		changePassword.setMember(member);
 		events.add(changePassword);
 
-		Transfer transfer = LogEventFactory.getEvent(Transfer.class);
+		final Transfer transfer = LogEventFactory.getEvent(Transfer.class);
 
 		transfer.setAmount("4251");
 		transfer.setFromAccount("REPLACE"); // getAccount(mbr, accounts));
@@ -62,7 +62,7 @@ public class MockEventsSupplier {
 		transfer.setMember(member);
 		events.add(transfer);
 
-		Alert alert = LogEventFactory.getEvent(Alert.class);
+		final Alert alert = LogEventFactory.getEvent(Alert.class);
 
 		alert.setAction("add");
 		alert.setType("balance alert");
@@ -72,7 +72,7 @@ public class MockEventsSupplier {
 		alert.setMember(member);
 		events.add(alert);
 
-		ScheduledTransaction scheduledTransaction = LogEventFactory
+		final ScheduledTransaction scheduledTransaction = LogEventFactory
 				.getEvent(ScheduledTransaction.class);
 
 		scheduledTransaction.setAction("add");

@@ -49,8 +49,8 @@ public class Log4jContextListener implements ServletContextListener {
      * @param event The ServletContextEvent.
      */
     public void contextInitialized(ServletContextEvent event) {
-        ServletContext context = event.getServletContext();
-        String locn = context.getInitParameter(LOG4J_CONFIG);
+        final ServletContext context = event.getServletContext();
+        final String locn = context.getInitParameter(LOG4J_CONFIG);
         String name = context.getInitParameter(LOG4J_CONTEXT_NAME);
         if (name == null) {
             name = context.getServletContextName();
@@ -67,14 +67,14 @@ public class Log4jContextListener implements ServletContextListener {
      * @param event The ServletContextEvent.
      */
     public void contextDestroyed(ServletContextEvent event) {
-        LoggerContext ctx = (LoggerContext) event.getServletContext().getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
+        final LoggerContext ctx = (LoggerContext) event.getServletContext().getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
         Configurator.shutdown(ctx);
     }
 
     private ClassLoader getClassLoader(ServletContext context) {
-        Method[] methods = context.getClass().getMethods();
+        final Method[] methods = context.getClass().getMethods();
         Method getClassLoader = null;
-        for (Method method : methods) {
+        for (final Method method : methods) {
             if (method.getName().equals("getClassLoader")) {
                 getClassLoader = method;
                 break;
@@ -84,7 +84,7 @@ public class Log4jContextListener implements ServletContextListener {
         if (getClassLoader != null) {
             try {
                 return (ClassLoader) getClassLoader.invoke(context, null);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Ignore the exception
             }
         }

@@ -51,7 +51,7 @@ public class NamingUtils {
     }
 
     public static void main(String[] args) {
-        String blah = "com.test.generator.Classname";
+        final String blah = "com.test.generator.Classname";
         System.out.println(getSimpleName(blah));
         System.out.println(lowerFirst(getSimpleName(blah)));
 

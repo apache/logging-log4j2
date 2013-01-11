@@ -34,7 +34,7 @@ public class MessagePatternConverterTest {
 
     @Test
     public void testPattern() throws Exception {
-        MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
         Message msg = new SimpleMessage("Hello!");
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         StringBuilder sb = new StringBuilder();
@@ -54,8 +54,8 @@ public class MessagePatternConverterTest {
 
     @Test
     public void testPatternWithConfiguration() throws Exception {
-        Configuration config = new DefaultConfiguration();
-        MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
+        final Configuration config = new DefaultConfiguration();
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
         Message msg = new SimpleMessage("Hello!");
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
         StringBuilder sb = new StringBuilder();

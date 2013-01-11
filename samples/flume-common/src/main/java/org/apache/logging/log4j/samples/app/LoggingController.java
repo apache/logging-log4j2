@@ -81,19 +81,19 @@ public class LoggingController {
             public void run() {
                 while (generateLog) {
                     // Generate rand number between 1 to 10
-                    int rand = ran.nextInt(9) + 1;
+                    final int rand = ran.nextInt(9) + 1;
 
                     // Sleep for rand seconds
                     try {
                         Thread.sleep(rand * 1000);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         logger.warn("WARN", e);
                     }
 
                     // Write rand number of logs
                     for (int i = 0; i < rand; i++) {
-                        int eventIndex = (Math.abs(ran.nextInt())) % events.size();
-                        AuditEvent event = events.get(eventIndex);
+                        final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
+                        final AuditEvent event = events.get(eventIndex);
                         RequestContext.setUserId(member);
                         event.logEvent();
 
