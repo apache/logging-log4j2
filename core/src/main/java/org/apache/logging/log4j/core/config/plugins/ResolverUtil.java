@@ -82,7 +82,7 @@ public class ResolverUtil<T> {
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
-    private final Set<Class<? extends T>> classMatches = new HashSet<Class<?extends T>>();
+    private final Set<Class<? extends T>> classMatches = new HashSet<Class<? extends T>>();
 
     /** The set of matches being accumulated. */
     private final Set<URI> resourceMatches = new HashSet<URI>();
