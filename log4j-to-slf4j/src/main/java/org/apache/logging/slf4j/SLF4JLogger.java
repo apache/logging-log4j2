@@ -46,7 +46,7 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         if (locationAwareLogger != null) {
             if (data instanceof LoggerNameAwareMessage) {
                 ((LoggerNameAwareMessage) data).setLoggerName(getName());
@@ -71,7 +71,7 @@ public class SLF4JLogger extends AbstractLogger {
         }
     }
 
-    private org.slf4j.Marker getMarker(Marker marker) {
+    private org.slf4j.Marker getMarker(final Marker marker) {
         if (marker == null) {
             return null;
         }
@@ -84,7 +84,7 @@ public class SLF4JLogger extends AbstractLogger {
         return slf4jMarker;
     }
 
-    private int convertLevel(Level level) {
+    private int convertLevel(final Level level) {
         switch (level) {
             case DEBUG :
                 return LocationAwareLogger.DEBUG_INT;
@@ -102,31 +102,31 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, String data, Object... p1) {
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Object data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(Level level, Marker marker, Message data, Throwable t) {
+    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 
-    private boolean isEnabledFor(Level level, Marker marker) {
+    private boolean isEnabledFor(final Level level, final Marker marker) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
         switch (level) {
             case DEBUG :

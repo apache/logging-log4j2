@@ -34,21 +34,21 @@ public class SLF4JLoggerContext implements LoggerContext {
         return null;
     }
 
-    public Logger getLogger(String name) {
+    public Logger getLogger(final String name) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
         }
         return loggers.get(name);
     }
 
-    public Logger getLogger(String name, MessageFactory messageFactory) {
+    public Logger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
         }
         return loggers.get(name);
     }
 
-    public boolean hasLogger(String name) {
+    public boolean hasLogger(final String name) {
         return loggers.containsKey(name);
     }
 }

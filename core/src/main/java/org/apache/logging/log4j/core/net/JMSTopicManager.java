@@ -118,7 +118,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
-    private void cleanup(boolean quiet) {
+    private void cleanup(final boolean quiet) {
         try {
             info.session.close();
         } catch (final Exception e) {

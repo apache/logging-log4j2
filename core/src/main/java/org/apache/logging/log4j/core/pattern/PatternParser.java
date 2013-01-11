@@ -141,7 +141,7 @@ public final class PatternParser {
     }
 
 
-    public List<PatternFormatter> parse(final String pattern, boolean handleExceptions) {
+    public List<PatternFormatter> parse(final String pattern, final boolean handleExceptions) {
         final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();

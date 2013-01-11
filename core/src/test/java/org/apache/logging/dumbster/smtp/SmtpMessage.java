@@ -50,7 +50,7 @@ public class SmtpMessage {
      * @param response SmtpResponse object
      * @param params   remainder of input line after SMTP command has been removed
      */
-    public void store(SmtpResponse response, String params) {
+    public void store(final SmtpResponse response, final String params) {
         if (params != null) {
             if (SmtpState.DATA_HDR.equals(response.getNextState())) {
                 final int headerNameEnd = params.indexOf(':');
@@ -81,7 +81,7 @@ public class SmtpMessage {
      * @param name header name
      * @return value(s) associated with the header name
      */
-    public String[] getHeaderValues(String name) {
+    public String[] getHeaderValues(final String name) {
         final List values = (List) headers.get(name);
         if (values == null) {
             return new String[0];
@@ -96,7 +96,7 @@ public class SmtpMessage {
      * @param name header name
      * @return first value associated with the header name
      */
-    public String getHeaderValue(String name) {
+    public String getHeaderValue(final String name) {
         final List values = (List) headers.get(name);
         if (values == null) {
             return null;
@@ -121,7 +121,7 @@ public class SmtpMessage {
      * @param name  header name
      * @param value header value
      */
-    private void addHeader(String name, String value) {
+    private void addHeader(final String name, final String value) {
         List valueList = (List) headers.get(name);
         if (valueList == null) {
             valueList = new ArrayList(1);

@@ -125,7 +125,7 @@ public class Log4jContextListenerTest {
         private final Hashtable<String, Object> attrs = new Hashtable<String, Object>();
 
 
-        public ServletContext getContext(String s) {
+        public ServletContext getContext(final String s) {
             return null;
         }
 
@@ -137,31 +137,31 @@ public class Log4jContextListenerTest {
             return 0;
         }
 
-        public String getMimeType(String s) {
+        public String getMimeType(final String s) {
             return null;
         }
 
-        public Set getResourcePaths(String s) {
+        public Set getResourcePaths(final String s) {
             return null;
         }
 
-        public URL getResource(String s) throws MalformedURLException {
+        public URL getResource(final String s) throws MalformedURLException {
             return null;
         }
 
-        public InputStream getResourceAsStream(String s) {
+        public InputStream getResourceAsStream(final String s) {
             return null;
         }
 
-        public RequestDispatcher getRequestDispatcher(String s) {
+        public RequestDispatcher getRequestDispatcher(final String s) {
             return null;
         }
 
-        public RequestDispatcher getNamedDispatcher(String s) {
+        public RequestDispatcher getNamedDispatcher(final String s) {
             return null;
         }
 
-        public Servlet getServlet(String s) throws ServletException {
+        public Servlet getServlet(final String s) throws ServletException {
             return null;
         }
 
@@ -173,21 +173,21 @@ public class Log4jContextListenerTest {
             return null;
         }
 
-        public void log(String s) {
+        public void log(final String s) {
             System.out.println(s);
         }
 
-        public void log(Exception e, String s) {
+        public void log(final Exception e, final String s) {
             System.out.println(s);
             e.printStackTrace();
         }
 
-        public void log(String s, Throwable throwable) {
+        public void log(final String s, final Throwable throwable) {
             System.out.println(s);
             throwable.printStackTrace();
         }
 
-        public String getRealPath(String s) {
+        public String getRealPath(final String s) {
             return null;
         }
 
@@ -195,11 +195,11 @@ public class Log4jContextListenerTest {
             return "Mock";
         }
 
-        public void setInitParameter(String key, String value) {
+        public void setInitParameter(final String key, final String value) {
             params.put(key, value);
         }
 
-        public String getInitParameter(String s) {
+        public String getInitParameter(final String s) {
             return params.get(s);
         }
 
@@ -207,7 +207,7 @@ public class Log4jContextListenerTest {
             return params.keys();
         }
 
-        public Object getAttribute(String s) {
+        public Object getAttribute(final String s) {
             return attrs.get(s);
         }
 
@@ -215,11 +215,11 @@ public class Log4jContextListenerTest {
             return attrs.keys();
         }
 
-        public void setAttribute(String s, Object o) {
+        public void setAttribute(final String s, final Object o) {
             attrs.put(s, o);
         }
 
-        public void removeAttribute(String s) {
+        public void removeAttribute(final String s) {
             attrs.remove(s);
         }
 

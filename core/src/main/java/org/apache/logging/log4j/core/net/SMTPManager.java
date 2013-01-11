@@ -66,7 +66,7 @@ public class SMTPManager extends AbstractManager {
         this.buffer = new CyclicBuffer<LogEvent>(LogEvent.class, data.numElements);
     }
 
-    public void add(LogEvent event) {
+    public void add(final LogEvent event) {
         buffer.add(event);
     }
 
@@ -124,7 +124,7 @@ public class SMTPManager extends AbstractManager {
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
      */
-    public void sendEvents(Layout<?> layout) {
+    public void sendEvents(final Layout<?> layout) {
         if (message == null) {
             connect();
         }
@@ -151,27 +151,27 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected byte[] formatContentToBytes(CyclicBuffer<LogEvent> cb, Layout<?> layout) throws IOException {
+    protected byte[] formatContentToBytes(final CyclicBuffer<LogEvent> cb, final Layout<?> layout) throws IOException {
         final ByteArrayOutputStream raw = new ByteArrayOutputStream();
         writeContent(cb, layout, raw);
         return raw.toByteArray();
     }
 
-    private void writeContent(CyclicBuffer<LogEvent> cb, Layout<?> layout, ByteArrayOutputStream out)
+    private void writeContent(final CyclicBuffer<LogEvent> cb, final Layout<?> layout, final ByteArrayOutputStream out)
         throws IOException {
         writeHeader(layout, out);
         writeBuffer(cb, layout, out);
         writeFooter(layout, out);
     }
 
-    protected void writeHeader(Layout<?> layout, OutputStream out) throws IOException {
+    protected void writeHeader(final Layout<?> layout, final OutputStream out) throws IOException {
         final byte[] header = layout.getHeader();
         if (header != null) {
             out.write(header);
         }
     }
 
-    protected void writeBuffer(CyclicBuffer<LogEvent> cb, Layout<?> layout, OutputStream out) throws IOException {
+    protected void writeBuffer(final CyclicBuffer<LogEvent> cb, final Layout<?> layout, final OutputStream out) throws IOException {
         final LogEvent[] events = cb.removeAll();
         for (final LogEvent event : events) {
             final byte[] bytes = layout.toByteArray(event);
@@ -179,46 +179,46 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected void writeFooter(Layout<?> layout, OutputStream out) throws IOException {
+    protected void writeFooter(final Layout<?> layout, final OutputStream out) throws IOException {
         final byte[] footer = layout.getFooter();
         if (footer != null) {
             out.write(footer);
         }
     }
 
-    protected String getEncoding(byte[] rawBytes, String contentType) {
+    protected String getEncoding(final byte[] rawBytes, final String contentType) {
         final DataSource dataSource = new ByteArrayDataSource(rawBytes, contentType);
         return MimeUtility.getEncoding(dataSource);
     }
 
-    protected byte[] encodeContentToBytes(byte[] rawBytes, String encoding) throws MessagingException, IOException {
+    protected byte[] encodeContentToBytes(final byte[] rawBytes, final String encoding) throws MessagingException, IOException {
         final ByteArrayOutputStream encoded = new ByteArrayOutputStream();
         encodeContent(rawBytes, encoding, encoded);
         return encoded.toByteArray();
     }
 
-    protected void encodeContent(byte[] bytes, String encoding, ByteArrayOutputStream out)
+    protected void encodeContent(final byte[] bytes, final String encoding, final ByteArrayOutputStream out)
         throws MessagingException, IOException {
         final OutputStream encoder = MimeUtility.encode(out, encoding);
         encoder.write(bytes);
         encoder.close();
     }
 
-    protected InternetHeaders getHeaders(String contentType, String encoding) {
+    protected InternetHeaders getHeaders(final String contentType, final String encoding) {
         final InternetHeaders headers = new InternetHeaders();
         headers.setHeader("Content-Type", contentType + "; charset=UTF-8");
         headers.setHeader("Content-Transfer-Encoding", encoding);
         return headers;
     }
 
-    protected MimeMultipart getMimeMultipart(byte[] encodedBytes, InternetHeaders headers) throws MessagingException {
+    protected MimeMultipart getMimeMultipart(final byte[] encodedBytes, final InternetHeaders headers) throws MessagingException {
         final MimeMultipart mp = new MimeMultipart();
         final MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
         mp.addBodyPart(part);
         return mp;
     }
 
-    protected void sendMultipartMessage(MimeMessage message, MimeMultipart mp) throws MessagingException {
+    protected void sendMultipartMessage(final MimeMessage message, final MimeMultipart mp) throws MessagingException {
         synchronized (message) {
             message.setContent(mp);
             message.setSentDate(new Date());

@@ -66,7 +66,7 @@ public class LoggingController {
     @RequestMapping(value = "/start.do", method = RequestMethod.GET)
     public ModelAndView startLogging(
         @RequestParam(value = "member", required = false, defaultValue = "fakemember") final String member,
-                      HttpServletRequest servletRequest) {
+                      final HttpServletRequest servletRequest) {
 
         System.out.println("STARTING..................");
 
@@ -116,7 +116,7 @@ public class LoggingController {
     }
 
     @RequestMapping(value = "/stop.do", method = RequestMethod.GET)
-    public ModelAndView stopLogging(HttpServletRequest servletRequest) {
+    public ModelAndView stopLogging(final HttpServletRequest servletRequest) {
         generateLog = false;
         return new ModelAndView("stop.jsp");
     }

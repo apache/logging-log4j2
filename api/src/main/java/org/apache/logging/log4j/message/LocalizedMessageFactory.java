@@ -29,13 +29,13 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     private final ResourceBundle bundle;
     private final String bundleId;
 
-    public LocalizedMessageFactory(ResourceBundle bundle) {
+    public LocalizedMessageFactory(final ResourceBundle bundle) {
         this.bundle = bundle;
         this.bundleId = null;
     }
 
 
-    public LocalizedMessageFactory(String bundleId) {
+    public LocalizedMessageFactory(final String bundleId) {
         this.bundle = null;
         this.bundleId = bundleId;
     }
@@ -47,7 +47,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(String message, Object... params) {
+    public Message newMessage(final String message, final Object... params) {
         if (bundle == null) {
             return new LocalizedMessage(bundleId,  message, params);
         }

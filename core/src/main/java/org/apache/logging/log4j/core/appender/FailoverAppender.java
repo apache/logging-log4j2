@@ -127,7 +127,7 @@ public final class FailoverAppender extends AbstractAppender {
         }
     }
 
-    private void failover(final LogEvent event, Exception ex) {
+    private void failover(final LogEvent event, final Exception ex) {
         final RuntimeException re = ex != null ? new LoggingException(ex) : null;
         boolean written = false;
         Exception failoverException = null;

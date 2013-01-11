@@ -54,13 +54,13 @@ public class FormattedMessage implements Message, Serializable {
     private static final Pattern MSG_PATTERN = Pattern.compile(formatSpecifier);
 
 
-    public FormattedMessage(String messagePattern, Object[] arguments, Throwable throwable) {
+    public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.throwable = throwable;
     }
 
-    public FormattedMessage(String messagePattern, Object[] arguments) {
+    public FormattedMessage(final String messagePattern, final Object[] arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.throwable = null;
@@ -71,7 +71,7 @@ public class FormattedMessage implements Message, Serializable {
      * @param messagePattern The message pattern.
      * @param arg The parameter.
      */
-    public FormattedMessage(String messagePattern, Object arg) {
+    public FormattedMessage(final String messagePattern, final Object arg) {
         this.messagePattern = messagePattern;
         this.argArray = new Object[] {arg};
         this.throwable = null;
@@ -83,7 +83,7 @@ public class FormattedMessage implements Message, Serializable {
      * @param arg1 The first parameter.
      * @param arg2 The second parameter.
      */
-    public FormattedMessage(String messagePattern, Object arg1, Object arg2) {
+    public FormattedMessage(final String messagePattern, final Object arg1, final Object arg2) {
         this(messagePattern, new Object[]{arg1, arg2});
     }
 
@@ -121,7 +121,7 @@ public class FormattedMessage implements Message, Serializable {
         return stringArgs;
     }
 
-    protected Message getMessage(String msgPattern, Object[] args, Throwable throwable) {
+    protected Message getMessage(final String msgPattern, final Object[] args, final Throwable throwable) {
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
@@ -142,7 +142,7 @@ public class FormattedMessage implements Message, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -176,7 +176,7 @@ public class FormattedMessage implements Message, Serializable {
             Arrays.toString(argArray) +  "]";
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         getFormattedMessage();
         out.writeUTF(formattedMessage);
@@ -190,7 +190,7 @@ public class FormattedMessage implements Message, Serializable {
         }
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();

@@ -32,7 +32,7 @@ public class Provider {
     private final String threadContextMap;
     private final URL url;
 
-    public Provider(Properties props, URL url) {
+    public Provider(final Properties props, final URL url) {
         this.url = url;
         final String weight = props.getProperty(FACTORY_PRIORITY);
         priority = weight == null ? -1 : Integer.valueOf(weight);

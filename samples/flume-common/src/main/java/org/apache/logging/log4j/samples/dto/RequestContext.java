@@ -64,7 +64,7 @@ public final class RequestContext {
         return ThreadContext.get(REQUEST_ID);
     }
 
-    public static void setSessionId(String id) {
+    public static void setSessionId(final String id) {
         ThreadContext.put(SESSION_ID, id);
     }
 
@@ -72,7 +72,7 @@ public final class RequestContext {
         return ThreadContext.get(SESSION_ID);
     }
 
-    public static void setTransId(String id) {
+    public static void setTransId(final String id) {
         ThreadContext.put(TRANSACTION_ID,  id);
     }
 
@@ -80,7 +80,7 @@ public final class RequestContext {
         return ThreadContext.get(TRANSACTION_ID);
     }
 
-    public static void setRequestURI(String URI) {
+    public static void setRequestURI(final String URI) {
         ThreadContext.put(REQUEST_URI,  URI);
     }
 
@@ -88,7 +88,7 @@ public final class RequestContext {
         return ThreadContext.get(REQUEST_URI);
     }
 
-    public static void setLoginId(String id) {
+    public static void setLoginId(final String id) {
         ThreadContext.put(LOGIN_ID,  id);
     }
 
@@ -96,7 +96,7 @@ public final class RequestContext {
         return ThreadContext.get(LOGIN_ID);
     }
 
-    public static void setUserId(String id) {
+    public static void setUserId(final String id) {
         ThreadContext.put(USER_ID,  id);
     }
 
@@ -104,7 +104,7 @@ public final class RequestContext {
         return ThreadContext.get(USER_ID);
     }
 
-    public static void setUserType(String type) {
+    public static void setUserType(final String type) {
         ThreadContext.put(USER_TYPE,  type);
     }
 
@@ -112,7 +112,7 @@ public final class RequestContext {
         return ThreadContext.get(USER_TYPE);
     }
 
-    public static void setClientId(String id) {
+    public static void setClientId(final String id) {
         ThreadContext.put(CLIENT_ID,  id);
     }
 
@@ -120,7 +120,7 @@ public final class RequestContext {
         return ThreadContext.get(CLIENT_ID);
     }
 
-    public static void setIpAddress(String addr) {
+    public static void setIpAddress(final String addr) {
         ThreadContext.put(IP_ADDRESS,  addr);
     }
 
@@ -128,7 +128,7 @@ public final class RequestContext {
         return ThreadContext.get(IP_ADDRESS);
     }
 
-    public static void setProductName(String productName) {
+    public static void setProductName(final String productName) {
         ThreadContext.put(PRODUCT_NAME, productName);
     }
 
@@ -137,7 +137,7 @@ public final class RequestContext {
     }
 
 
-    public static void setProductVersion(String productVersion) {
+    public static void setProductVersion(final String productVersion) {
         ThreadContext.put(PRODUCT_VERSION, productVersion);
     }
 
@@ -145,7 +145,7 @@ public final class RequestContext {
         return ThreadContext.get(PRODUCT_VERSION);
     }
 
-    public static void setLocale(String locale) {
+    public static void setLocale(final String locale) {
         ThreadContext.put(LOCALE, locale);
     }
 
@@ -153,7 +153,7 @@ public final class RequestContext {
         return ThreadContext.get(LOCALE);
     }
 
-    public static void setRegion(String region) {
+    public static void setRegion(final String region) {
         ThreadContext.put(REGION, region);
     }
 
@@ -161,7 +161,7 @@ public final class RequestContext {
         return ThreadContext.get(REGION);
     }
 
-    public static void setUserAgent(String agent) {
+    public static void setUserAgent(final String agent) {
         ThreadContext.put(USER_AGENT, agent);
     }
 

@@ -88,7 +88,7 @@ public class SmtpState {
      *
      * @param value one of the _BYTE values.
      */
-    private SmtpState(byte value) {
+    private SmtpState(final byte value) {
         this.value = value;
     }
 

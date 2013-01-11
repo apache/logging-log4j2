@@ -40,7 +40,7 @@ public class SmtpResponse {
      * @param message response message
      * @param next    next state of the SMTP server
      */
-    public SmtpResponse(int code, String message, SmtpState next) {
+    public SmtpResponse(final int code, final String message, final SmtpState next) {
         this.code = code;
         this.message = message;
         this.nextState = next;

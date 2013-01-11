@@ -130,7 +130,7 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
         this(bundleId, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(ResourceBundle bundle, Locale locale, String key, Object arg1, Object arg2) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 
@@ -245,7 +245,7 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
         return rb;
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         getFormattedMessage();
         out.writeUTF(formattedMessage);
@@ -260,7 +260,7 @@ public class LocalizedMessage implements Message, Serializable, LoggerNameAwareM
         }
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();

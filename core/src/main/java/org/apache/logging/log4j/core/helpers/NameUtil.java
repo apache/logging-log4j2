@@ -34,7 +34,7 @@ public final class NameUtil {
         return i > 0 ? name.substring(0, i) : "";
     }
 
-    public static String md5(String string) {
+    public static String md5(final String string) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(string.getBytes());

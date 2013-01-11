@@ -66,7 +66,7 @@ public class LoggerTest {
         rootLogger.detachAppender("console");
     }
 
-    private static void configure(String file) throws JoranException {
+    private static void configure(final String file) throws JoranException {
         final JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         jc.doConfigure(file);

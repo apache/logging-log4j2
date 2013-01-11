@@ -32,7 +32,7 @@ public class MockEventsSupplier {
 	/* This provides random generation */
 	static Random ran = new Random();
 
-	public static List<AuditEvent> getAllEvents(String member) {
+	public static List<AuditEvent> getAllEvents(final String member) {
 
 		final List<AuditEvent> events = new ArrayList<AuditEvent>();
 

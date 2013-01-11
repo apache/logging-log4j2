@@ -43,7 +43,7 @@ public class MessageFormatMessage implements Message, Serializable {
     private String[] stringArgs;
     private transient String formattedMessage;
 
-    public MessageFormatMessage(String messagePattern, Object... arguments) {
+    public MessageFormatMessage(final String messagePattern, final Object... arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
     }
@@ -78,7 +78,7 @@ public class MessageFormatMessage implements Message, Serializable {
         return stringArgs;
     }
 
-    protected String formatMessage(String msgPattern, Object... args) {
+    protected String formatMessage(final String msgPattern, final Object... args) {
         try {
             return MessageFormat.format(msgPattern, args);
         } catch (final IllegalFormatException ife) {
@@ -88,7 +88,7 @@ public class MessageFormatMessage implements Message, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -122,7 +122,7 @@ public class MessageFormatMessage implements Message, Serializable {
             Arrays.toString(argArray) +  "]";
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         getFormattedMessage();
         out.writeUTF(formattedMessage);
@@ -136,7 +136,7 @@ public class MessageFormatMessage implements Message, Serializable {
         }
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();

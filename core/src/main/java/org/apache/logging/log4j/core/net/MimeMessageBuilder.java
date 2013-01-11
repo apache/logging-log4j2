@@ -29,7 +29,7 @@ import javax.mail.internet.MimeMessage;
 public class MimeMessageBuilder {
     private final MimeMessage message;
 
-    public MimeMessageBuilder(Session session) {
+    public MimeMessageBuilder(final Session session) {
         message = new MimeMessage(session);
     }
 
@@ -78,11 +78,11 @@ public class MimeMessageBuilder {
         return message;
     }
 
-    private static InternetAddress parseAddress(String address) throws AddressException {
+    private static InternetAddress parseAddress(final String address) throws AddressException {
         return address == null ? null : new InternetAddress(address);
     }
 
-    private static InternetAddress[] parseAddresses(String addresses) throws AddressException {
+    private static InternetAddress[] parseAddresses(final String addresses) throws AddressException {
         return addresses == null ? null : InternetAddress.parse(addresses, true);
     }
 }

@@ -34,7 +34,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             }
         };
 
-    public DefaultThreadContextMap(boolean useMap) {
+    public DefaultThreadContextMap(final boolean useMap) {
         this.useMap = useMap;
     }
 

@@ -67,7 +67,7 @@ public class SimpleSmtpServer implements Runnable {
      *
      * @param port port number
      */
-    public SimpleSmtpServer(int port) {
+    public SimpleSmtpServer(final int port) {
         receivedMail = new ArrayList();
         this.port = port;
     }
@@ -163,7 +163,7 @@ public class SimpleSmtpServer implements Runnable {
      * @return List of SmtpMessage
      * @throws IOException
      */
-    private List handleTransaction(PrintWriter out, BufferedReader input) throws IOException {
+    private List handleTransaction(final PrintWriter out, final BufferedReader input) throws IOException {
         // Initialize the state machine
         SmtpState smtpState = SmtpState.CONNECT;
         final SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, "", smtpState);
@@ -214,7 +214,7 @@ public class SimpleSmtpServer implements Runnable {
      * @param out          socket output stream
      * @param smtpResponse response object
      */
-    private static void sendResponse(PrintWriter out, SmtpResponse smtpResponse) {
+    private static void sendResponse(final PrintWriter out, final SmtpResponse smtpResponse) {
         if (smtpResponse.getCode() > 0) {
             final int code = smtpResponse.getCode();
             final String message = smtpResponse.getMessage();
@@ -256,7 +256,7 @@ public class SimpleSmtpServer implements Runnable {
      * @param port port number the server should listen to
      * @return a reference to the SMTP server
      */
-    public static SimpleSmtpServer start(int port) {
+    public static SimpleSmtpServer start(final int port) {
         final SimpleSmtpServer server = new SimpleSmtpServer(port);
         final Thread t = new Thread(server);
 

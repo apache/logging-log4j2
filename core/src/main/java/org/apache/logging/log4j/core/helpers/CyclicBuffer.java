@@ -33,7 +33,7 @@ public class CyclicBuffer<T> {
      * Instantiate a new CyclicBuffer of at most <code>maxSize</code>
      * events.
      */
-    public CyclicBuffer(Class<T> clazz, int size) throws IllegalArgumentException {
+    public CyclicBuffer(final Class<T> clazz, final int size) throws IllegalArgumentException {
         if (size < 1) {
             throw new IllegalArgumentException("The maxSize argument (" + size + ") is not a positive integer.");
         }
@@ -42,14 +42,14 @@ public class CyclicBuffer<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private T[] makeArray(Class<T> clazz, int size) {
+    private T[] makeArray(final Class<T> clazz, final int size) {
         return (T[]) Array.newInstance(clazz, size);
     }
 
     /**
      * Add an item as the last event in the buffer.
      */
-    public synchronized void add(T item) {
+    public synchronized void add(final T item) {
         ring[last] = item;
         if (++last == ring.length) {
             last = 0;

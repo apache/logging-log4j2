@@ -32,7 +32,7 @@ import java.lang.reflect.Proxy;
  */
 public class LogEventFactory {
 
-    public static <T> T getEvent(Class<T> intrface) {
+    public static <T> T getEvent(final Class<T> intrface) {
 
         final Class<?>[] interfaces = new Class<?>[]{intrface};
 
@@ -49,12 +49,12 @@ public class LogEventFactory {
         private final StructuredDataMessage msg;
         private final Class intrface;
 
-        public AuditProxy(StructuredDataMessage msg, Class intrface) {
+        public AuditProxy(final StructuredDataMessage msg, final Class intrface) {
             this.msg = msg;
             this.intrface = intrface;
         }
 
-        public Object invoke(Object o, Method method, Object[] objects)
+        public Object invoke(final Object o, final Method method, final Object[] objects)
             throws Throwable {
             if (method.getName().equals("logEvent")) {
 

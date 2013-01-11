@@ -146,7 +146,7 @@ public class SmtpActionType {
      *
      * @param value one of the _BYTE values
      */
-    private SmtpActionType(byte value) {
+    private SmtpActionType(final byte value) {
         this.value = value;
     }
 

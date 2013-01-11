@@ -25,15 +25,15 @@ import java.util.Map;
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
 public class MDCContextMap implements ThreadContextMap {
-    public void put(String key, String value) {
+    public void put(final String key, final String value) {
         MDC.put(key, value);
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         return MDC.get(key);
     }
 
-    public void remove(String key) {
+    public void remove(final String key) {
         MDC.remove(key);
     }
 
@@ -41,7 +41,7 @@ public class MDCContextMap implements ThreadContextMap {
         MDC.clear();
     }
 
-    public boolean containsKey(String key) {
+    public boolean containsKey(final String key) {
         return MDC.getCopyOfContextMap().containsKey(key);
     }
 

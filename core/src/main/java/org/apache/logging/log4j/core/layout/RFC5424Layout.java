@@ -256,7 +256,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         return buf.toString();
     }
 
-    private String escapeNewlines(String text, String escapeNewLine)
+    private String escapeNewlines(final String text, final String escapeNewLine)
     {
         if(null == escapeNewLine) {
             return text;

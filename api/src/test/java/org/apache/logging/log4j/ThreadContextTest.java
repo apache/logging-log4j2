@@ -57,7 +57,7 @@ public class ThreadContextTest {
 
         private final StringBuilder sb;
 
-        public TestThread(StringBuilder sb) {
+        public TestThread(final StringBuilder sb) {
             this.sb = sb;
         }
 

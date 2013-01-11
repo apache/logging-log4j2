@@ -51,7 +51,7 @@ public class SMTPAppender extends AbstractAppender {
     protected final SMTPManager manager;
 
     private SMTPAppender(final String name, final Filter filter, final Layout<?> layout, final SMTPManager manager,
-                         boolean handleExceptions) {
+                         final boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
     }
@@ -105,7 +105,7 @@ public class SMTPAppender extends AbstractAppender {
                                               @PluginAttr("from") final String from,
                                               @PluginAttr("replyTo") final String replyTo,
                                               @PluginAttr("subject") final String subject,
-                                              @PluginAttr("smtpProtocol") String smtpProtocol,
+                                              @PluginAttr("smtpProtocol") final String smtpProtocol,
                                               @PluginAttr("smtpHost") final String smtpHost,
                                               @PluginAttr("smtpPort") final String smtpPortNum,
                                               @PluginAttr("smtpUsername") final String smtpUsername,
@@ -145,7 +145,7 @@ public class SMTPAppender extends AbstractAppender {
      * Capture all events in CyclicBuffer
      */
     @Override
-    public boolean isFiltered(LogEvent event) {
+    public boolean isFiltered(final LogEvent event) {
         manager.add(event);
         return super.isFiltered(event);
     }
@@ -155,7 +155,7 @@ public class SMTPAppender extends AbstractAppender {
      * to a cyclic buffer and checking if the event triggers an e-mail to be
      * sent.
      */
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
         manager.sendEvents(getLayout());
     }
 }

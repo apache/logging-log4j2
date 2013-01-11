@@ -62,7 +62,7 @@ public class SmtpRequest {
      * @param params     remainder of command line once command is removed
      * @param state      current SMTP server state
      */
-    public SmtpRequest(SmtpActionType actionType, String params, SmtpState state) {
+    public SmtpRequest(final SmtpActionType actionType, final String params, final SmtpState state) {
         this.action = actionType;
         this.state = state;
         this.params = params;
@@ -161,7 +161,7 @@ public class SmtpRequest {
      * @param state current state
      * @return a populated SmtpRequest object
      */
-    public static SmtpRequest createRequest(String s, SmtpState state) {
+    public static SmtpRequest createRequest(final String s, final SmtpState state) {
         SmtpActionType action = null;
         String params = null;
 
