@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 /**
  * Represents a Message that consists of a Map.
  */
-public class MapMessage implements MultiformatMessage, Serializable {
+public class MapMessage implements MultiformatMessage {
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */

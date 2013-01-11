@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * Handles messages that contain a format String. Dynamically determines if the format conforms to
  * MessageFormat or String.format and if not then uses ParameterizedMessage to format.
  */
-public class FormattedMessage implements Message, Serializable {
+public class FormattedMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

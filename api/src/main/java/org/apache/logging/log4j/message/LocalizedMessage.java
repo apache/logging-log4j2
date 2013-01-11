@@ -35,7 +35,7 @@ import java.util.ResourceBundle;
  * used to read the events and display them to the user should also localize and format the
  * messages for the end user.
  */
-public class LocalizedMessage implements Message, Serializable, LoggerNameAwareMessage
+public class LocalizedMessage implements Message, LoggerNameAwareMessage
 {
     private static final long serialVersionUID = 3893703791567290742L;
 

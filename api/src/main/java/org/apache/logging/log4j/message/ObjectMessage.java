@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * Handles messages that contain an Object.
  */
-public class ObjectMessage implements Message, Serializable {
+public class ObjectMessage implements Message {
 
     private static final long serialVersionUID = -5903272448334166185L;
 

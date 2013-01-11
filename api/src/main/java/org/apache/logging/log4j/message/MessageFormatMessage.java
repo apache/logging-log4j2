@@ -30,7 +30,7 @@ import java.util.IllegalFormatException;
 /**
  * Handles messages that consist of a format string conforming to java.text.MessageFormat.
  */
-public class MessageFormatMessage implements Message, Serializable {
+public class MessageFormatMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

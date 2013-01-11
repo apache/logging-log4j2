@@ -33,7 +33,7 @@ import java.util.Set;
  * Joern Huxhorn where it is licensed under the LGPL. It has been relicensed here with his permission
  * providing that this attribution remain.
  */
-public class ParameterizedMessage implements Message, Serializable {
+public class ParameterizedMessage implements Message {
 
     /**
      * Prefix for recursion.

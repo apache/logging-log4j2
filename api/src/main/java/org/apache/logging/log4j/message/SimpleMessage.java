@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
-public class SimpleMessage implements Message, Serializable {
+public class SimpleMessage implements Message {
     private static final long serialVersionUID = -8398002534962715992L;
 
     private final String message;

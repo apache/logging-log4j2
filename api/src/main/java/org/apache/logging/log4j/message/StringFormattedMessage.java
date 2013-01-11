@@ -29,7 +29,7 @@ import java.util.IllegalFormatException;
 /**
  * Handles messages that consist of a format string conforming to java.util.Formatter.
  */
-public class StringFormattedMessage implements Message, Serializable {
+public class StringFormattedMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
