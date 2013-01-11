@@ -123,8 +123,8 @@ public class ReflectionComparison {
     }
 
     private Message createMessage(final Class<? extends Message> clazz, final String msg, final Object... params) throws Exception {
-        final Constructor constructor = clazz.getConstructor(paramTypes);
-        return (Message) constructor.newInstance(msg, params);
+        final Constructor<? extends Message> constructor = clazz.getConstructor(paramTypes);
+        return constructor.newInstance(msg, params);
     }
 
 }
