@@ -71,9 +71,8 @@ import java.util.jar.JarInputStream;
  * </p>
  *
  * @author Tim Fennell
- * @param <T> The type of the Class that can be returned.
  */
-public class ResolverUtil<T> {
+public class ResolverUtil {
     /** An instance of Log to use for logging in this class. */
     private static final Logger LOG = StatusLogger.getLogger();
 
@@ -82,7 +81,7 @@ public class ResolverUtil<T> {
     private static final String BUNDLE_RESOURCE = "bundleresource";
 
     /** The set of matches being accumulated. */
-    private final Set<Class<? extends T>> classMatches = new HashSet<Class<? extends T>>();
+    private final Set<Class<?>> classMatches = new HashSet<Class<?>>();
 
     /** The set of matches being accumulated. */
     private final Set<URI> resourceMatches = new HashSet<URI>();
@@ -99,7 +98,7 @@ public class ResolverUtil<T> {
      *
      * @return the set of classes that have been discovered.
      */
-    public Set<Class<? extends T>> getClasses() {
+    public Set<Class<?>> getClasses() {
         return classMatches;
     }
 
@@ -383,7 +382,7 @@ public class ResolverUtil<T> {
                     LOG.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
                 }
 
-                final Class type = loader.loadClass(externalName);
+                final Class<?> type = loader.loadClass(externalName);
                 if (test.matches(type)) {
                     classMatches.add(type);
                 }

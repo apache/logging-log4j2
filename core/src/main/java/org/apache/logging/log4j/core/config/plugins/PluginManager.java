@@ -137,7 +137,7 @@ public class PluginManager {
             preLoad = false;
         }
         final long start = System.nanoTime();
-        final ResolverUtil<?> resolver = new ResolverUtil();
+        final ResolverUtil resolver = new ResolverUtil();
         final ClassLoader loader = Loader.getClassLoader();
         if (loader != null) {
             resolver.setClassLoader(loader);
