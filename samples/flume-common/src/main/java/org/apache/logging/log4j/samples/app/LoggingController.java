@@ -46,7 +46,7 @@ public class LoggingController {
     private static Logger logger = LogManager.getLogger(LoggingController.class);
 
     private volatile boolean generateLog = false;
-    private Random ran = new Random();
+    private final Random ran = new Random();
 
     private List<AuditEvent> events;
 

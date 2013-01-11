@@ -120,9 +120,9 @@ public class Log4jContextListenerTest {
     private class MockServletContext implements ServletContext {
         private String name;
 
-        private Hashtable<String, String> params = new Hashtable<String, String>();
+        private final Hashtable<String, String> params = new Hashtable<String, String>();
 
-        private Hashtable<String, Object> attrs = new Hashtable<String, Object>();
+        private final Hashtable<String, Object> attrs = new Hashtable<String, Object>();
 
 
         public ServletContext getContext(String s) {
