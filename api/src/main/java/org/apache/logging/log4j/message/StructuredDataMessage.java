@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 /**
  * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
  */
-public class StructuredDataMessage extends MapMessage implements MultiformatMessage, Serializable {
+public class StructuredDataMessage extends MapMessage {
 
     private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
