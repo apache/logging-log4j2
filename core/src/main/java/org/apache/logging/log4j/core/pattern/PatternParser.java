@@ -105,13 +105,13 @@ public final class PatternParser {
      * Constructor.
      * @param config The current Configuration.
      * @param converterKey The key to lookup the converters.
-     * @param expected The expected base Class of each Converter.
+     * @param expectedClass The expected base Class of each Converter.
      * @param filterClass Filter the returned plugins after calling the plugin manager.
      */
-    public PatternParser(final Configuration config, final String converterKey, final Class<?> expected,
+    public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
                          final Class<?> filterClass) {
         this.config = config;
-        final PluginManager manager = new PluginManager(converterKey, expected);
+        final PluginManager manager = new PluginManager(converterKey, expectedClass);
         manager.collectPlugins();
         final Map<String, PluginType> plugins = manager.getPlugins();
         final Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
