@@ -44,6 +44,11 @@ public class DateLookupTest {
     }
 
     private class MyLogEvent implements LogEvent {
+        /**
+         * Generated serial version ID.
+         */
+        private static final long serialVersionUID = -2663819677970643109L;
+
         public Level getLevel() {
             return null;
         }

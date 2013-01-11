@@ -23,6 +23,11 @@ package org.apache.logging.log4j.core.appender;
  */
 public class AppenderRuntimeException extends RuntimeException {
 
+    /**
+     * Generated serial version ID.
+     */
+    private static final long serialVersionUID = 6545990597472958303L;
+
     public AppenderRuntimeException(final String msg) {
         super(msg);
     }

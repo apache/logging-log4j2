@@ -22,6 +22,11 @@ package org.apache.logging.slf4j;
  */
 public class SLF4JLoggingException extends RuntimeException {
 
+    /**
+     * Generated serial version ID.
+     */
+    private static final long serialVersionUID = -1618650972455089998L;
+
     public SLF4JLoggingException(final String msg) {
         super(msg);
     }

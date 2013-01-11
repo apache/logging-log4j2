@@ -92,6 +92,11 @@ public class LevelTest {
      */
     private static class CustomLevel extends Level {
         /**
+         * Generated serial version ID.
+         */
+        private static final long serialVersionUID = -6931920872225831135L;
+
+        /**
          * Create an instance of CustomLevel.
          */
         public CustomLevel() {

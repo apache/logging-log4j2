@@ -56,6 +56,11 @@ public class XMLEvents {
 
     private class TransferMessage extends StructuredDataMessage {
 
+        /**
+         * Generated serial version ID.
+         */
+        private static final long serialVersionUID = -4334703653495359785L;
+
         public TransferMessage() {
             super("Transfer@18060", null, "Audit");
         }

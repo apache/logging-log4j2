@@ -130,6 +130,10 @@ public class SimplePerfTest {
     }
 
     private static class SimpleRandom extends Random {
+        /**
+         * Generated serial version ID.
+         */
+        private static final long serialVersionUID = 3517002855516031846L;
         private int low = 5;
         private int high = 55;
 

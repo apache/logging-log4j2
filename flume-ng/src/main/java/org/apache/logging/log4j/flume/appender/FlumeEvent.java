@@ -41,6 +41,11 @@ import java.util.zip.GZIPOutputStream;
  */
 public class FlumeEvent extends SimpleEvent implements LogEvent {
 
+    /**
+     * Generated serial version ID.
+     */
+    private static final long serialVersionUID = -8988674608627854140L;
+
     private static final String DEFAULT_MDC_PREFIX = "mdc:";
 
     private static final String DEFAULT_EVENT_PREFIX = "";

@@ -21,6 +21,11 @@ package org.apache.logging.log4j.core.config;
  */
 public class ConfigurationException extends RuntimeException {
 
+    /**
+     * Generated serial version ID.
+     */
+    private static final long serialVersionUID = -2413951820300775294L;
+
     public ConfigurationException(final String msg) {
         super(msg);
     }

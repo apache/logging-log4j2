@@ -259,6 +259,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      */
     private static class EventList extends ArrayList<AvroFlumeEvent> {
 
+        /**
+         * Generated serial version ID.
+         */
+        private static final long serialVersionUID = -1599817377315957495L;
+
         public synchronized List<AvroFlumeEvent> addAndGet(final AvroFlumeEvent event, final int batchSize) {
             super.add(event);
             if (this.size() >= batchSize) {
