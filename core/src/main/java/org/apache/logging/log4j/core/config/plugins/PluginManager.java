@@ -58,7 +58,7 @@ public class PluginManager {
 
     private Map<String, PluginType> plugins = new HashMap<String, PluginType>();
     private final String type;
-    private final Class clazz;
+    private final Class<?> clazz;
 
     /**
      * Constructor that takes only a type name.
@@ -74,7 +74,7 @@ public class PluginManager {
      * @param type The type that must be matched.
      * @param clazz The Class each match must be an instance of.
      */
-    public PluginManager(final String type, final Class clazz) {
+    public PluginManager(final String type, final Class<?> clazz) {
         this.type = type;
         this.clazz = clazz;
     }
@@ -219,7 +219,7 @@ public class PluginManager {
                         final String name = dis.readUTF();
                         final boolean printable = dis.readBoolean();
                         final boolean defer = dis.readBoolean();
-                        final Class clazz = Class.forName(className);
+                        final Class<?> clazz = Class.forName(className);
                         types.put(key, new PluginType(clazz, name, printable, defer));
                     }
                     map.putIfAbsent(type, types);
@@ -265,13 +265,13 @@ public class PluginManager {
      * is, then the test returns true, otherwise false.
      */
     public static class PluginTest extends ResolverUtil.ClassTest {
-        private final Class isA;
+        private final Class<?> isA;
 
         /**
          * Constructs an AnnotatedWith test for the specified annotation type.
          * @param isA The class to compare against.
          */
-        public PluginTest(final Class isA) {
+        public PluginTest(final Class<?> isA) {
             this.isA = isA;
         }
 
@@ -280,7 +280,7 @@ public class PluginManager {
          * @param type The type to check for.
          * @return true if the Class is of the specified type.
          */
-        public boolean matches(final Class type) {
+        public boolean matches(final Class<?> type) {
             return type != null && type.isAnnotationPresent(Plugin.class) &&
                 (isA == null || isA.isAssignableFrom(type));
         }
