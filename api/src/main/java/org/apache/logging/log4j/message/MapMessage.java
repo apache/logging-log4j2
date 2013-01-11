@@ -217,16 +217,15 @@ public class MapMessage implements MultiformatMessage {
     public String getFormattedMessage(final String[] formats) {
         if (formats == null || formats.length == 0) {
             return asString();
-        } else {
-            for (final String format : formats) {
-                for (final MapFormat mapFormat : MapFormat.values()) {
-                    if (mapFormat.name().equalsIgnoreCase(format)) {
-                        return asString(mapFormat);
-                    }
+        }
+        for (final String format : formats) {
+            for (final MapFormat mapFormat : MapFormat.values()) {
+                if (mapFormat.name().equalsIgnoreCase(format)) {
+                    return asString(mapFormat);
                 }
             }
-            return asString();
         }
+        return asString();
 
     }
 
