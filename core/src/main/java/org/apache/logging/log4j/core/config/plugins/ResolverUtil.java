@@ -467,13 +467,13 @@ public class ResolverUtil<T> {
      * that this test will match the parent type itself if it is presented for matching.
      */
     public static class IsA extends ClassTest {
-        private final Class parent;
+        private final Class<?> parent;
 
         /**
          * Constructs an IsA test using the supplied Class as the parent class/interface.
          * @param parentType The parent class to check for.
          */
-        public IsA(final Class parentType) { this.parent = parentType; }
+        public IsA(final Class<?> parentType) { this.parent = parentType; }
 
         /**
          * Returns true if type is assignable to the parent type supplied in the constructor.
