@@ -424,6 +424,7 @@ public class ResolverUtil<T> {
         boolean matches(URI resource);
 
         boolean doesMatchClass();
+        
         boolean doesMatchResource();
     }
 
@@ -438,6 +439,7 @@ public class ResolverUtil<T> {
         public boolean doesMatchClass() {
             return true;
         }
+        
         public boolean doesMatchResource() {
             return false;
         }
@@ -454,6 +456,7 @@ public class ResolverUtil<T> {
         public boolean doesMatchClass() {
             return false;
         }
+        
         public boolean doesMatchResource() {
             return true;
         }
