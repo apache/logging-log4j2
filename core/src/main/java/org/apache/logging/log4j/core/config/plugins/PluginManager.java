@@ -166,14 +166,14 @@ public class PluginManager {
             resolver.findInPackage(test, pkg);
         }
         for (final Class<?> clazz : resolver.getClasses()) {
-            final Plugin p = clazz.getAnnotation(Plugin.class);
-            final String pluginType = p.type();
+            final Plugin plugin = clazz.getAnnotation(Plugin.class);
+            final String pluginType = plugin.type();
             if (!pluginTypeMap.containsKey(pluginType)) {
                 pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType>());
             }
             final Map<String, PluginType> map = pluginTypeMap.get(pluginType);
-            final String type = p.elementType().equals(Plugin.EMPTY) ? p.name() : p.elementType();
-            map.put(p.name().toLowerCase(), new PluginType(clazz, type, p.printObject(), p.deferChildren()));
+            final String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
+            map.put(plugin.name().toLowerCase(), new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren()));
         }
         long elapsed = System.nanoTime() - start;
         plugins = pluginTypeMap.get(type);
