@@ -42,7 +42,7 @@ public class Log4JMDCAdapter implements MDCAdapter {
         ThreadContext.clear();
     }
 
-    public Map getCopyOfContextMap() {
+    public Map<String, String> getCopyOfContextMap() {
         return ThreadContext.getContext();
     }
 
