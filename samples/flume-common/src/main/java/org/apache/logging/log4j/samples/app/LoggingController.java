@@ -78,6 +78,7 @@ public class LoggingController {
 
         (new Thread() {
 
+            @Override
             public void run() {
                 while (generateLog) {
                     // Generate rand number between 1 to 10
