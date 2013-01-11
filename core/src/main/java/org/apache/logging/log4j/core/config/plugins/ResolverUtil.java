@@ -139,7 +139,7 @@ public class ResolverUtil<T> {
      * @param parent the class of interface to find subclasses or implementations of
      * @param packageNames one or more package names to scan (including subpackages) for classes
      */
-    public void findImplementations(final Class parent, final String... packageNames) {
+    public void findImplementations(final Class<?> parent, final String... packageNames) {
         if (packageNames == null) {
             return;
         }
@@ -449,7 +449,7 @@ public class ResolverUtil<T> {
      * Test against a resource.
      */
     public abstract static class ResourceTest implements Test {
-        public boolean matches(final Class cls) {
+        public boolean matches(final Class<?> cls) {
             throw new UnsupportedOperationException();
         }
 
@@ -480,7 +480,7 @@ public class ResolverUtil<T> {
          * @param type The Class to check.
          * @return true if the Class matches.
          */
-        public boolean matches(final Class type) {
+        public boolean matches(final Class<?> type) {
             return type != null && parent.isAssignableFrom(type);
         }
 
@@ -507,7 +507,7 @@ public class ResolverUtil<T> {
          * @param type The Class to check.
          * @return true if the Class matches.
          */
-        public boolean matches(final Class type) {
+        public boolean matches(final Class<?> type) {
             return type != null && type.getName().endsWith(suffix);
         }
 
@@ -537,7 +537,7 @@ public class ResolverUtil<T> {
          * @param type the Class to match against.
          * @return true if the Classes match.
          */
-        public boolean matches(final Class type) {
+        public boolean matches(final Class<?> type) {
             return type != null && type.isAnnotationPresent(annotation);
         }
 
