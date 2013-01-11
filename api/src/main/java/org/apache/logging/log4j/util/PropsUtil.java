@@ -45,7 +45,7 @@ public class PropsUtil {
             try {
                 this.props.load(in);
                 in.close();
-            } catch(final java.io.IOException e) {
+            } catch (final java.io.IOException e) {
                 // ignored
             }
         }
