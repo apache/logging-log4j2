@@ -50,7 +50,7 @@ public interface ErrorHandler {
 
     /**
      * Equivalent to the {@link #error(String, Exception, int,
-     * LoggingEvent event)} with the the event parameteter set to
+     * LoggingEvent)} with the the event parameter set to
      * <code>null</code>.
      */
     void error(String message, Exception e, int errorCode);
