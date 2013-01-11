@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-143" dev="rgoers" type="fix">
+        MessagePatternConverter now returns "null" if the log message is null.
+      </action>
       <action issue="LOG4J2-142" dev="rgoers" type="fix">
         Serialized LogEvents were not reset in the output stream causing them to deserialize incorrectly.
       </action>
