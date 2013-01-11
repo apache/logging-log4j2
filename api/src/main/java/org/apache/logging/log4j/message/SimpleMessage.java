@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */

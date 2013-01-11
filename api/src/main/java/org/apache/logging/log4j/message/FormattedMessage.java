@@ -22,7 +22,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;

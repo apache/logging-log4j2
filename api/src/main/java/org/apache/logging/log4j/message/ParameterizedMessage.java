@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
