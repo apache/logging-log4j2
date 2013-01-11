@@ -219,9 +219,9 @@ public class MapMessage implements MultiformatMessage {
             return asString();
         } else {
             for (final String format : formats) {
-                for (final MapFormat f : MapFormat.values()) {
-                    if (f.name().equalsIgnoreCase(format)) {
-                        return asString(f);
+                for (final MapFormat mapFormat : MapFormat.values()) {
+                    if (mapFormat.name().equalsIgnoreCase(format)) {
+                        return asString(mapFormat);
                     }
                 }
             }
