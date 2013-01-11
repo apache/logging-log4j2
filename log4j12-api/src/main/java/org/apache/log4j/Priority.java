@@ -130,9 +130,8 @@ public class Priority {
         if (o instanceof Priority) {
             final Priority r = (Priority) o;
             return this.level == r.level;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
