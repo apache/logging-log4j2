@@ -105,14 +105,18 @@ public class XMLConfigurationTest {
         final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
         logger.debug("This is a test");
         final DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(LOGFILE)));
-        int count = 0;
-        String str = "";
-        while (is.available() != 0) {
-            str = is.readLine();
-            ++count;
+        try {
+            int count = 0;
+            String str = "";
+            while (is.available() != 0) {
+                str = is.readLine();
+                ++count;
+            }
+            assertTrue("Incorrect count " + count, count == 1);
+            assertTrue("Bad data", str.endsWith("This is a test"));
+        } finally {
+            is.close();
         }
-        assertTrue("Incorrect count " + count, count == 1);
-        assertTrue("Bad data", str.endsWith("This is a test"));
     }
 
 }
