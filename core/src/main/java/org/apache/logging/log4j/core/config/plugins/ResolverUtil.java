@@ -414,7 +414,7 @@ public class ResolverUtil<T> {
          * @param type The Class to match against.
          * @return true if the Class matches.
          */
-        boolean matches(Class type);
+        boolean matches(Class<?> type);
 
         /**
          * Test for a resource.
