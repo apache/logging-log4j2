@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-144" dev="ggregory" type="fix">
+        NullPointerException in RFC5424Layout.
+      </action>
       <action issue="LOG4J2-143" dev="rgoers" type="fix">
         MessagePatternConverter now returns "null" if the log message is null.
       </action>

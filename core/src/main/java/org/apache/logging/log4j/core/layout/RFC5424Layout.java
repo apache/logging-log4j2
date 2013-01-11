@@ -475,14 +475,15 @@ public final class RFC5424Layout extends AbstractStringLayout {
         if (charsetName != null) {
             if (Charset.isSupported(charsetName)) {
                 charset = Charset.forName(charsetName);
-            } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
+            } 
         }
         if (charset == null) {
             charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+            if (charsetName != null) {
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
+            }
         }
-
+        
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;
