@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -32,7 +33,6 @@ public class PropsUtil {
         return LOG4J_PROPERTIES;
     }
 
-
     public PropsUtil(final Properties props) {
         this.props = props;
     }
@@ -44,9 +44,14 @@ public class PropsUtil {
         if (null != in) {
             try {
                 this.props.load(in);
-                in.close();
-            } catch (final java.io.IOException e) {
+            } catch (final IOException e) {
                 // ignored
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException e) {
+                    // ignored
+                }
             }
         }
     }
