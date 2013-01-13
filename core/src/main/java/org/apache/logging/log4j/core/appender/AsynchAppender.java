@@ -43,7 +43,7 @@ import java.util.concurrent.BlockingQueue;
  * filter to be specified on the Appender references.
  */
 @Plugin(name = "Asynch", type = "Core", elementType = "appender", printObject = true)
-public final class AsynchAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class AsynchAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
