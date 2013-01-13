@@ -471,19 +471,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("exceptionPattern") final String exceptionPattern,
                                              @PluginConfiguration final Configuration config) {
-        Charset charset = null;
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            } 
-        }
-        if (charset == null) {
-            charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-            if (charsetName != null) {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
-        }
-        
+        final Charset charset = getSupportedCharset(charsetName);
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;

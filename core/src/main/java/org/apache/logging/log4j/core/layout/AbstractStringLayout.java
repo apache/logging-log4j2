@@ -27,6 +27,30 @@ import java.nio.charset.Charset;
 public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     /**
+     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8, if not supported, use the platform
+     * default.
+     * 
+     * @param charsetName
+     *            the preferred charset name
+     * @return a Charset, not null.
+     */
+    public static Charset getSupportedCharset(final String charsetName) {
+        Charset charset = null;
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                charset = Charset.forName(charsetName);
+            }
+        }
+        if (charset == null) {
+            charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+            if (charsetName != null) {
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
+            }
+        }
+        return charset;
+    }
+
+    /**
      * The charset of the formatted message.
      */
     private final Charset charset;

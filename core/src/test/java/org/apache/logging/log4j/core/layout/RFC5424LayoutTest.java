@@ -76,7 +76,7 @@ public class RFC5424LayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
             "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
@@ -140,7 +140,7 @@ public class RFC5424LayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final RFC5424Layout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
             "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, "%xEx", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();

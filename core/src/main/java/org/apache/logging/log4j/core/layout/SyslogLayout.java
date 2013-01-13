@@ -133,15 +133,7 @@ public class SyslogLayout extends AbstractStringLayout {
                                             @PluginAttr("newLine") final String includeNL,
                                             @PluginAttr("newLineEscape") final String escapeNL,
                                             @PluginAttr("charset") final String charsetName) {
-
-        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
-        }
+        final Charset charset = getSupportedCharset(charsetName);
         final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         return new SyslogLayout(f, includeNewLine, escapeNL, charset);

@@ -300,14 +300,7 @@ public final class HTMLLayout extends AbstractStringLayout {
                                           @PluginAttr("charset") final String charsetName,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
-        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
-        }
+        final Charset charset = getSupportedCharset(charsetName);
         if (font == null) {
             font = "arial,sans-serif";
         }

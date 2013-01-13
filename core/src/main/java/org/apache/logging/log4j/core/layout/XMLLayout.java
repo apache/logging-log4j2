@@ -261,14 +261,7 @@ public class XMLLayout extends AbstractStringLayout {
                                          @PluginAttr("properties") final String properties,
                                          @PluginAttr("complete") final String complete,
                                          @PluginAttr("charset") final String charsetName) {
-        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
-        }
+        final Charset charset = getSupportedCharset(charsetName);
         final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
         final boolean props = properties == null ? false : Boolean.valueOf(properties);
         final boolean comp = complete == null ? false : Boolean.valueOf(complete);
