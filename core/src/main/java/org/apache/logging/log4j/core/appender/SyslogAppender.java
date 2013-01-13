@@ -106,14 +106,6 @@ public class SyslogAppender extends SocketAppender {
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
-        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
-            }
-        }
         final Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
                 msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
