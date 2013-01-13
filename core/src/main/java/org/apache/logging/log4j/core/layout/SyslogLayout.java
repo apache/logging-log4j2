@@ -125,21 +125,21 @@ public class SyslogLayout extends AbstractStringLayout {
      * Create a SyslogLayout.
      * @param facility The Facility is used to try to classify the message.
      * @param includeNL If true a newline will be appended to the result.
-     * @param charset The character set.
+     * @param charsetName The character set.
      * @return A SyslogLayout.
      */
     @PluginFactory
     public static SyslogLayout createLayout(@PluginAttr("facility") final String facility,
                                             @PluginAttr("newLine") final String includeNL,
                                             @PluginAttr("newLineEscape") final String escapeNL,
-                                            @PluginAttr("charset") final String charset) {
+                                            @PluginAttr("charset") final String charsetName) {
 
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                c = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
             }
         }
         final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);

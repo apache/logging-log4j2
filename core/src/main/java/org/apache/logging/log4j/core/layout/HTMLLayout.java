@@ -290,22 +290,22 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @param locationInfo If "true", location information will be included. The default is false.
      * @param title The title to include in the file header. If none is specified the default title will be used.
      * @param contentType The content type. Defaults to "text/html".
-     * @param charset The character set to use. If not specified, the default will be used.
+     * @param charsetName The character set to use. If not specified, the default will be used.
      * @return An HTML Layout.
      */
     @PluginFactory
     public static HTMLLayout createLayout(@PluginAttr("locationInfo") final String locationInfo,
                                           @PluginAttr("title") String title,
                                           @PluginAttr("contentType") String contentType,
-                                          @PluginAttr("charset") final String charset,
+                                          @PluginAttr("charset") final String charsetName,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                c = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
             }
         }
         if (font == null) {

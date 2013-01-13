@@ -253,20 +253,20 @@ public class XMLLayout extends AbstractStringLayout {
      * @param locationInfo If "true" include the location information in the generated XML.
      * @param properties If "true" include the thread context in the generated XML.
      * @param complete If "true" include the XML header.
-     * @param charset The character set to use.
+     * @param charsetName The character set to use.
      * @return An XML Layout.
      */
     @PluginFactory
     public static XMLLayout createLayout(@PluginAttr("locationInfo") final String locationInfo,
                                          @PluginAttr("properties") final String properties,
                                          @PluginAttr("complete") final String complete,
-                                         @PluginAttr("charset") final String charset) {
+                                         @PluginAttr("charset") final String charsetName) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                c = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
             }
         }
         final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);

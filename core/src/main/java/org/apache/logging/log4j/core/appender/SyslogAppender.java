@@ -73,7 +73,7 @@ public class SyslogAppender extends SocketAppender {
      * it will be formatted as a BSD Syslog record.
      * @param filter A Filter to determine if the event should be handled by this Appender.
      * @param config The Configuration.
-     * @param charset The character set to use when converting the syslog String to a byte array.
+     * @param charsetName The character set to use when converting the syslog String to a byte array.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -99,7 +99,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("format") final String format,
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginConfiguration final Configuration config,
-                                                @PluginAttr("charset") final String charset,
+                                                @PluginAttr("charset") final String charsetName,
                                                 @PluginAttr("exceptionPattern") final String exceptionPattern) {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
@@ -107,17 +107,17 @@ public class SyslogAppender extends SocketAppender {
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                c = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
             }
         }
         final Layout layout = (RFC5424.equalsIgnoreCase(format)) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
-                msgId, excludes, includes, required, charset, exceptionPattern, config) :
-            SyslogLayout.createLayout(facility, includeNL, escapeNL, charset);
+                msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
+            SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
 
         if (name == null) {
             LOGGER.error("No name provided for SyslogAppender");

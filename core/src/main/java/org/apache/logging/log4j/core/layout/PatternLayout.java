@@ -169,20 +169,20 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param pattern The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @param replace A Regex replacement String.
-     * @param charset The character set.
+     * @param charsetName The character set.
      * @return The PatternLayout.
      */
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") final String pattern,
                                              @PluginConfiguration final Configuration config,
                                              @PluginElement("replace") final RegexReplacement replace,
-                                             @PluginAttr("charset") final String charset) {
+                                             @PluginAttr("charset") final String charsetName) {
         Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
-        if (charset != null) {
-            if (Charset.isSupported(charset)) {
-                c = Charset.forName(charset);
+        if (charsetName != null) {
+            if (Charset.isSupported(charsetName)) {
+                c = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charset + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
             }
         }
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, c);
