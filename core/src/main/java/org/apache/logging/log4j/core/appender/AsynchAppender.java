@@ -53,8 +53,8 @@ public final class AsynchAppender extends AbstractAppender {
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
-    private AppenderControl errorAppender = null;
-    private AsynchThread thread = null;
+    private AppenderControl errorAppender;
+    private AsynchThread thread;
 
     private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs, final String errorRef,
                            final int queueSize, final boolean blocking,
