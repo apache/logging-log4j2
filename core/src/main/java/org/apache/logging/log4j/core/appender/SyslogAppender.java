@@ -29,8 +29,6 @@ import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
 
-import java.nio.charset.Charset;
-
 /**
  * The Syslog Appender.
  */
