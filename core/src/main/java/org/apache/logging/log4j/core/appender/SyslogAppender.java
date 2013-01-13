@@ -106,7 +106,7 @@ public class SyslogAppender extends SocketAppender {
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
-        final Layout layout = RFC5424.equalsIgnoreCase(format) ?
+        final Layout<String> layout = RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
                 msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
