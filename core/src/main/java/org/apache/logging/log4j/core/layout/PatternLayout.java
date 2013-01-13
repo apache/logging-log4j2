@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.OptionConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
@@ -177,7 +178,7 @@ public final class PatternLayout extends AbstractStringLayout {
                                              @PluginConfiguration final Configuration config,
                                              @PluginElement("replace") final RegexReplacement replace,
                                              @PluginAttr("charset") final String charsetName) {
-        final Charset charset = getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName);
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset);
     }
 }

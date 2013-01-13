@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -471,7 +472,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("exceptionPattern") final String exceptionPattern,
                                              @PluginConfiguration final Configuration config) {
-        final Charset charset = getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName);
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;

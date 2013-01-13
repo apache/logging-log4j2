@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 
@@ -133,7 +134,7 @@ public class SyslogLayout extends AbstractStringLayout {
                                             @PluginAttr("newLine") final String includeNL,
                                             @PluginAttr("newLineEscape") final String escapeNL,
                                             @PluginAttr("charset") final String charsetName) {
-        final Charset charset = getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         return new SyslogLayout(f, includeNewLine, escapeNL, charset);

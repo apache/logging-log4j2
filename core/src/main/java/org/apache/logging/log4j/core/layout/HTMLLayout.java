@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Transform;
 
@@ -300,7 +301,7 @@ public final class HTMLLayout extends AbstractStringLayout {
                                           @PluginAttr("charset") final String charsetName,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
-        final Charset charset = getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName);
         if (font == null) {
             font = "arial,sans-serif";
         }

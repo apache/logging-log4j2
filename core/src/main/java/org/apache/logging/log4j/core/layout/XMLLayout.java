@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Transform;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
@@ -261,7 +262,7 @@ public class XMLLayout extends AbstractStringLayout {
                                          @PluginAttr("properties") final String properties,
                                          @PluginAttr("complete") final String complete,
                                          @PluginAttr("charset") final String charsetName) {
-        final Charset charset = getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
         final boolean props = properties == null ? false : Boolean.valueOf(properties);
         final boolean comp = complete == null ? false : Boolean.valueOf(complete);
