@@ -177,14 +177,14 @@ public final class PatternLayout extends AbstractStringLayout {
                                              @PluginConfiguration final Configuration config,
                                              @PluginElement("replace") final RegexReplacement replace,
                                              @PluginAttr("charset") final String charsetName) {
-        Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charsetName != null) {
             if (Charset.isSupported(charsetName)) {
-                c = Charset.forName(charsetName);
+                charset = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
             }
         }
-        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, c);
+        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset);
     }
 }

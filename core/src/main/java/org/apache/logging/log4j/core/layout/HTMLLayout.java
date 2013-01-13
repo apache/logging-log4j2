@@ -300,12 +300,12 @@ public final class HTMLLayout extends AbstractStringLayout {
                                           @PluginAttr("charset") final String charsetName,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
-        Charset c = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+        Charset charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
         if (charsetName != null) {
             if (Charset.isSupported(charsetName)) {
-                c = Charset.forName(charsetName);
+                charset = Charset.forName(charsetName);
             } else {
-                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + c.displayName());
+                LOGGER.error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
             }
         }
         if (font == null) {
@@ -321,6 +321,6 @@ public final class HTMLLayout extends AbstractStringLayout {
         if (contentType == null) {
             contentType = DEFAULT_CONTENT_TYPE;
         }
-        return new HTMLLayout(info, title, contentType, c, font, fontSize, headerSize);
+        return new HTMLLayout(info, title, contentType, charset, font, fontSize, headerSize);
     }
 }
