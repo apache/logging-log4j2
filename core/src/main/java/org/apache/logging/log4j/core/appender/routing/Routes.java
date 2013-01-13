@@ -60,7 +60,7 @@ public final class Routes {
         final StringBuilder sb = new StringBuilder("{");
         boolean first = true;
         for (final Route route : routes) {
-            if ((!first)) {
+            if (!first) {
                 sb.append(",");
             }
             first = false;

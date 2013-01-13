@@ -62,7 +62,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
         super(name, style);
         int count = Integer.MAX_VALUE;
-        if ((options != null) && (options.length > 0)) {
+        if (options != null && options.length > 0) {
             option = options[0];
             if (option == null) {
             } else if (option.equalsIgnoreCase(NONE)) {

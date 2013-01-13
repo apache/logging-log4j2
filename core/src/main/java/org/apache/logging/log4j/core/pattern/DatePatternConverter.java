@@ -100,7 +100,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         String patternOption;
 
-        if ((options == null) || (options.length == 0)) {
+        if (options == null || options.length == 0) {
             // the branch could be optimized, but here we are making explicit
             // that null values for patternOption are allowed.
             patternOption = null;
@@ -136,7 +136,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         // if the option list contains a TZ option, then set it.
-        if ((options != null) && (options.length > 1)) {
+        if (options != null && options.length > 1) {
             final TimeZone tz = TimeZone.getTimeZone(options[1]);
             tempFormat.setTimeZone(tz);
         }

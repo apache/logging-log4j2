@@ -79,7 +79,7 @@ public final class TimeFilter extends AbstractFilter {
             calendar.get(Calendar.MINUTE) * MINUTE_MS +
             calendar.get(Calendar.SECOND) * SECOND_MS +
             calendar.get(Calendar.MILLISECOND);
-        return (apparentOffset >= start && apparentOffset < end) ? onMatch : onMismatch;
+        return apparentOffset >= start && apparentOffset < end ? onMatch : onMismatch;
     }
 
     @Override
@@ -125,7 +125,7 @@ public final class TimeFilter extends AbstractFilter {
                 LOGGER.warn("Error parsing start value " + end, ex);
             }
         }
-        final TimeZone timezone = (tz == null) ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
+        final TimeZone timezone = tz == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tz);
         final Result onMatch = Result.toResult(match, Result.NEUTRAL);
         final Result onMismatch = Result.toResult(mismatch, Result.DENY);
         return new TimeFilter(s, e, timezone, onMatch, onMismatch);

@@ -207,7 +207,7 @@ public final class PatternParser {
 
         convBuf.append(lastChar);
 
-        while ((i < pattern.length()) && Character.isUnicodeIdentifierPart(pattern.charAt(i))) {
+        while (i < pattern.length() && Character.isUnicodeIdentifierPart(pattern.charAt(i))) {
             convBuf.append(pattern.charAt(i));
             currentLiteral.append(pattern.charAt(i));
             i++;
@@ -225,7 +225,7 @@ public final class PatternParser {
      * @return position in pattern after options.
      */
     private static int extractOptions(final String pattern, int i, final List<String> options) {
-        while ((i < pattern.length()) && (pattern.charAt(i) == '{')) {
+        while (i < pattern.length() && pattern.charAt(i) == '{') {
             final int begin = i++;
             int end;
             int depth = 0;
@@ -332,7 +332,7 @@ public final class PatternParser {
 
                         default:
 
-                            if ((c >= '0') && (c <= '9')) {
+                            if (c >= '0' && c <= '9') {
                                 formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), c - '0',
                                         formattingInfo.getMaxLength());
                                 state = ParserState.MIN_STATE;
@@ -352,10 +352,10 @@ public final class PatternParser {
                 case MIN_STATE:
                     currentLiteral.append(c);
 
-                    if ((c >= '0') && (c <= '9')) {
+                    if (c >= '0' && c <= '9') {
                         // Multiply the existing value and add the value of the number just encountered.
                         formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(),
-                                (formattingInfo.getMinLength() * DECIMAL) + (c - '0'),
+                                formattingInfo.getMinLength() * DECIMAL + c - '0',
                                 formattingInfo.getMaxLength());
                     } else if (c == '.') {
                         state = ParserState.DOT_STATE;
@@ -372,7 +372,7 @@ public final class PatternParser {
                 case DOT_STATE:
                     currentLiteral.append(c);
 
-                    if ((c >= '0') && (c <= '9')) {
+                    if (c >= '0' && c <= '9') {
                         formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(),
                             formattingInfo.getMinLength(), c - '0');
                         state = ParserState.MAX_STATE;
@@ -388,11 +388,11 @@ public final class PatternParser {
                 case MAX_STATE:
                     currentLiteral.append(c);
 
-                    if ((c >= '0') && (c <= '9')) {
+                    if (c >= '0' && c <= '9') {
                         // Multiply the existing value and add the value of the number just encountered.
                         formattingInfo = new FormattingInfo(
                                 formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-                                (formattingInfo.getMaxLength() * DECIMAL) + (c - '0'));
+                                formattingInfo.getMaxLength() * DECIMAL + c - '0');
                     } else {
                         i = finalizeConverter(c, pattern, i, currentLiteral, formattingInfo,
                                 converterRules, patternConverters, formattingInfos);
@@ -428,10 +428,10 @@ public final class PatternParser {
         String converterName = converterId;
         Class<PatternConverter> converterClass = null;
 
-        for (int i = converterId.length(); (i > 0) && (converterClass == null); i--) {
+        for (int i = converterId.length(); i > 0 && converterClass == null; i--) {
             converterName = converterName.substring(0, i);
 
-            if ((converterClass == null) && (rules != null)) {
+            if (converterClass == null && rules != null) {
                 converterClass = rules.get(converterName);
             }
         }
@@ -533,7 +533,7 @@ public final class PatternParser {
         if (pc == null) {
             StringBuilder msg;
 
-            if ((converterId == null) || (converterId.length() == 0)) {
+            if (converterId == null || converterId.length() == 0) {
                 msg =
                     new StringBuilder("Empty conversion specifier starting at position ");
             } else {

@@ -74,7 +74,7 @@ public class FileRenameAction extends AbstractAction {
      * @return true if successfully renamed.
      */
     public static boolean execute(final File source, final File destination, final boolean renameEmptyFiles) {
-        if (renameEmptyFiles || (source.length() > 0)) {
+        if (renameEmptyFiles || source.length() > 0) {
             final File parent = destination.getParentFile();
             if (!parent.exists()) {
                 if (!parent.mkdirs()) {

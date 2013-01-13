@@ -39,7 +39,7 @@ public final class FileDatePatternConverter {
      * @return instance of pattern converter.
      */
     public static PatternConverter newInstance(final String[] options) {
-        if ((options == null) || (options.length == 0)) {
+        if (options == null || options.length == 0) {
             return DatePatternConverter.newInstance(
                 new String[]{
                     "yyyy-MM-dd"

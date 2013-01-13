@@ -36,7 +36,7 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
     protected NamePatternConverter(final String name, final String style, final String[] options) {
         super(name, style);
 
-        if ((options != null) && (options.length > 0)) {
+        if (options != null && options.length > 0) {
             abbreviator = NameAbbreviator.getAbbreviator(options[0]);
         } else {
             abbreviator = NameAbbreviator.getDefaultAbbreviator();

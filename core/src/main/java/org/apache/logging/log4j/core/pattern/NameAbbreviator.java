@@ -52,8 +52,8 @@ public abstract class NameAbbreviator {
 
             int i = 0;
 
-            while ((i < trimmed.length()) && (trimmed.charAt(i) >= '0')
-                    && (trimmed.charAt(i) <= '9')) {
+            while (i < trimmed.length() && trimmed.charAt(i) >= '0'
+                    && trimmed.charAt(i) <= '9') {
                 i++;
             }
 
@@ -69,14 +69,14 @@ public abstract class NameAbbreviator {
             int charCount;
             int pos = 0;
 
-            while ((pos < trimmed.length()) && (pos >= 0)) {
+            while (pos < trimmed.length() && pos >= 0) {
                 int ellipsisPos = pos;
 
                 if (trimmed.charAt(pos) == '*') {
                     charCount = Integer.MAX_VALUE;
                     ellipsisPos++;
                 } else {
-                    if ((trimmed.charAt(pos) >= '0') && (trimmed.charAt(pos) <= '9')) {
+                    if (trimmed.charAt(pos) >= '0' && trimmed.charAt(pos) <= '9') {
                         charCount = trimmed.charAt(pos) - '0';
                         ellipsisPos++;
                     } else {
@@ -231,7 +231,7 @@ public abstract class NameAbbreviator {
             int nextDot = buf.toString().indexOf('.', startPos);
 
             if (nextDot != -1) {
-                if ((nextDot - startPos) > charCount) {
+                if (nextDot - startPos > charCount) {
                     buf.delete(startPos + charCount, nextDot);
                     nextDot = startPos + charCount;
 
@@ -285,7 +285,7 @@ public abstract class NameAbbreviator {
             int pos = 0;
             final StringBuilder sb = new StringBuilder(buf);
 
-            for (int i = 0; (i < (fragments.length - 1)) && (pos < buf.length());
+            for (int i = 0; i < fragments.length - 1 && pos < buf.length();
                  i++) {
                 pos = fragments[i].abbreviate(sb, pos);
             }
@@ -295,7 +295,7 @@ public abstract class NameAbbreviator {
             //
             final PatternAbbreviatorFragment terminalFragment = fragments[fragments.length - 1];
 
-            while ((pos < buf.length()) && (pos >= 0)) {
+            while (pos < buf.length() && pos >= 0) {
                 pos = terminalFragment.abbreviate(sb, pos);
             }
             return sb.toString();

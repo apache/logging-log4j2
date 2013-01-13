@@ -49,7 +49,7 @@ public final class LoggerPatternConverter extends NamePatternConverter {
      */
     public static LoggerPatternConverter newInstance(
         final String[] options) {
-        if ((options == null) || (options.length == 0)) {
+        if (options == null || options.length == 0) {
             return INSTANCE;
         }
 

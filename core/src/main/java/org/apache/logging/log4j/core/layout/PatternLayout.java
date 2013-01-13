@@ -104,7 +104,7 @@ public final class PatternLayout extends AbstractStringLayout {
         this.conversionPattern = pattern;
         this.config = config;
         final PatternParser parser = createPatternParser(config);
-        formatters = parser.parse((pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern, true);
+        formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, true);
     }
 
     /**

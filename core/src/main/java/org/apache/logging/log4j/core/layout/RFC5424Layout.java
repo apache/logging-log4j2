@@ -158,7 +158,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
         this.checker = c != null ? c : noopChecker;
         final String name = config == null ? null : config.getName();
-        configName = (name != null && name.length() > 0) ? name : null;
+        configName = name != null && name.length() > 0 ? name : null;
     }
 
     /**

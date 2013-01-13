@@ -69,7 +69,7 @@ public class ThrowableProxy extends Throwable {
         final Stack<Class<?>> stack = getCurrentStack();
         super.setStackTrace(throwable.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
-        this.proxyCause = (throwable.getCause() == null) ? null :
+        this.proxyCause = throwable.getCause() == null ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
         setSuppressed(throwable);
     }
@@ -87,7 +87,7 @@ public class ThrowableProxy extends Throwable {
         this.name = cause.getClass().getName();
         super.setStackTrace(cause.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
-        this.proxyCause = (cause.getCause() == null) ? null :
+        this.proxyCause = cause.getCause() == null ? null :
             new ThrowableProxy(parent, stack, map, cause.getCause());
         setSuppressed(cause);
     }
