@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -26,12 +28,13 @@ import org.apache.logging.log4j.core.filter.Filterable;
 
 /**
  * Wraps an {@link Appender} with details an appender implementation shouldn't need to know about.
+ * @param <T> The appender's Serializable type.
  */
-public class AppenderControl extends AbstractFilterable {
+public class AppenderControl<T extends Serializable> extends AbstractFilterable {
 
-    private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<AppenderControl>();
+    private final ThreadLocal<AppenderControl<T>> recursive = new ThreadLocal<AppenderControl<T>>();
 
-    private final Appender appender;
+    private final Appender<T> appender;
 
     private final Level level;
     private final int intLevel;
@@ -42,7 +45,7 @@ public class AppenderControl extends AbstractFilterable {
      * @param level the Level to filter on.
      * @param filter the Filter(s) to apply.
      */
-    public AppenderControl(final Appender appender, final Level level, final Filter filter) {
+    public AppenderControl(final Appender<T> appender, final Level level, final Filter filter) {
         super(filter);
         this.appender = appender;
         this.level = level;
@@ -54,7 +57,7 @@ public class AppenderControl extends AbstractFilterable {
      * Returns the Appender.
      * @return the Appender.
      */
-    public Appender getAppender() {
+    public Appender<T> getAppender() {
         return appender;
     }
 
