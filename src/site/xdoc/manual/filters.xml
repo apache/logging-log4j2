@@ -80,12 +80,12 @@
                 average rate. The default is 10 times the rate.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -187,12 +187,12 @@
                 to evaluate when the key matches.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -251,12 +251,12 @@
                 a match, otherwise all the key/value pairs must match.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -367,12 +367,12 @@
               </td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -427,12 +427,12 @@
                 default value is false.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -490,12 +490,12 @@
                 a match, otherwise all the key/value pairs must match.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -554,12 +554,12 @@
                 a match, otherwise all the key/value pairs must match.</td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -641,12 +641,12 @@
               </td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
@@ -710,12 +710,12 @@
               </td>
             </tr>
             <tr>
-              <td>omMatch</td>
+              <td>onMatch</td>
               <td>String</td>
               <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
             </tr>
             <tr>
-              <td>omMismatch</td>
+              <td>onMismatch</td>
               <td>String</td>
               <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
                 DENY.</td>
