@@ -34,7 +34,7 @@ import java.io.Serializable;
  * </ul>
  *
  * @param <T>
- *            The type returned by {@link #toSerializable(LogEvent)}
+ *            The Serializable type returned by {@link #toSerializable(LogEvent)}
  *
  * @doubt There is still a need for a character-based layout for character based event sinks (databases, etc). Would introduce an
  *        EventEncoder, EventRenderer or something similar for the logging event to byte encoding. (RG) A layout can be configured with a
