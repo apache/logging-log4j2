@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -38,12 +39,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Appender to write to one or more Appenders asynchronously.  The AsynchAppender can be configrued with one
- * or more Appenders and an Appender to write to if the queue is full. The AsynchAppender does not allow
- * filter to be specified on the Appender references.
+ * Appends to one or more Appenders asynchronously.  You can configure an AsynchAppender with one
+ * or more Appenders and an Appender to append to if the queue is full. The AsynchAppender does not allow
+ * a filter to be specified on the Appender references.
+ * 
+ * @param <T> The {@link Layout}'s {@link Serializable} type. 
  */
 @Plugin(name = "Asynch", type = "Core", elementType = "appender", printObject = true)
-public final class AsynchAppender extends AbstractAppender {
+public final class AsynchAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
@@ -53,7 +56,7 @@ public final class AsynchAppender extends AbstractAppender {
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
-    private AppenderControl errorAppender;
+    private AppenderControl<T> errorAppender;
     private AsynchThread thread;
 
     private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs, final String errorRef,
@@ -80,7 +83,7 @@ public final class AsynchAppender extends AbstractAppender {
         }
         if (errorRef != null) {
             if (map.containsKey(errorRef)) {
-                errorAppender = new AppenderControl(map.get(errorRef), null, null);
+                errorAppender = new AppenderControl<T>(map.get(errorRef), null, null);
             } else {
                 LOGGER.error("Unable to set up error Appender. No appender named {} was configured", errorRef);
             }
@@ -147,7 +150,7 @@ public final class AsynchAppender extends AbstractAppender {
      * @return The AsynchAppender.
      */
     @PluginFactory
-    public static AsynchAppender createAppender(@PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+    public static <S extends Serializable> AsynchAppender<S> createAppender(@PluginElement("appender-ref") final AppenderRef[] appenderRefs,
                                                 @PluginAttr("error-ref") final String errorRef,
                                                 @PluginAttr("blocking") final String blocking,
                                                 @PluginAttr("bufferSize") final String size,
@@ -168,7 +171,7 @@ public final class AsynchAppender extends AbstractAppender {
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new AsynchAppender(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions,
+        return new AsynchAppender<S>(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions,
                                   config);
     }
 
