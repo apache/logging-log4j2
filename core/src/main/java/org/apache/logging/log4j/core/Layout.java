@@ -77,8 +77,9 @@ public interface Layout<T extends Serializable> {
     T toSerializable(LogEvent event);
 
     /**
-     * Returns the content type output by this layout. The base class
-     returns "text/plain".
+     * Returns the content type output by this layout. The base class returns "text/plain".
+     * 
+     * @return the content type.
      */
     String getContentType();
 }
