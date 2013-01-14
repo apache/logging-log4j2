@@ -31,6 +31,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
+ * 
+ * @param <T> The {@link Layout}'s {@link Serializable} type. 
  */
 public abstract class AbstractAppender<T extends Serializable> extends AbstractFilterable implements Appender<T>, LifeCycle {
     /**
