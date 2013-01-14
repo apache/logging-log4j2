@@ -56,7 +56,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
-    private AppenderControl<T> errorAppender;
+    private AppenderControl errorAppender;
     private AsynchThread thread;
 
     private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs, final String errorRef,
@@ -83,7 +83,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
         }
         if (errorRef != null) {
             if (map.containsKey(errorRef)) {
-                errorAppender = new AppenderControl<T>(map.get(errorRef), null, null);
+                errorAppender = new AppenderControl(map.get(errorRef), null, null);
             } else {
                 LOGGER.error("Unable to set up error Appender. No appender named {} was configured", errorRef);
             }
