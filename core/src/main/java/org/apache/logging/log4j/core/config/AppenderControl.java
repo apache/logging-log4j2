@@ -37,6 +37,7 @@ public class AppenderControl<T extends Serializable> extends AbstractFilterable 
     private final Appender<T> appender;
 
     private final Level level;
+    
     private final int intLevel;
 
     /**
