@@ -19,6 +19,10 @@ package org.apache.logging.log4j.core;
 import java.io.Serializable;
 
 /**
+ * Appends log events.
+ * 
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
+ * 
  * @issue LOG4J2-36: Appender interface should be refactored
  */
 public interface Appender<T extends Serializable> extends LifeCycle {
