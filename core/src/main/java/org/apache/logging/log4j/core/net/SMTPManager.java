@@ -123,13 +123,15 @@ public class SMTPManager extends AbstractManager {
 
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
+     * @param appendEvent 
      */
-    public void sendEvents(final Layout<?> layout) {
+    public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         if (message == null) {
             connect();
         }
         try {
-            final byte[] rawBytes = formatContentToBytes(buffer, layout);
+        	final LogEvent[] priorEvents = buffer.removeAll();
+            final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
 
             final String contentType = layout.getContentType();
             final String encoding = getEncoding(rawBytes, contentType);
@@ -151,16 +153,16 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected byte[] formatContentToBytes(final CyclicBuffer<LogEvent> cb, final Layout<?> layout) throws IOException {
+    protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout) throws IOException {
         final ByteArrayOutputStream raw = new ByteArrayOutputStream();
-        writeContent(cb, layout, raw);
+        writeContent(priorEvents, appendEvent, layout, raw);
         return raw.toByteArray();
     }
 
-    private void writeContent(final CyclicBuffer<LogEvent> cb, final Layout<?> layout, final ByteArrayOutputStream out)
+    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout, final ByteArrayOutputStream out)
         throws IOException {
         writeHeader(layout, out);
-        writeBuffer(cb, layout, out);
+        writeBuffer(priorEvents, appendEvent, layout, out);
         writeFooter(layout, out);
     }
 
@@ -171,12 +173,14 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected void writeBuffer(final CyclicBuffer<LogEvent> cb, final Layout<?> layout, final OutputStream out) throws IOException {
-        final LogEvent[] events = cb.removeAll();
-        for (final LogEvent event : events) {
-            final byte[] bytes = layout.toByteArray(event);
+    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout, final OutputStream out) throws IOException {
+        for (final LogEvent priorEvent : priorEvents) {
+            final byte[] bytes = layout.toByteArray(priorEvent);
             out.write(bytes);
         }
+        
+        final byte[] bytes = layout.toByteArray(appendEvent);
+        out.write(bytes);
     }
 
     protected void writeFooter(final Layout<?> layout, final OutputStream out) throws IOException {

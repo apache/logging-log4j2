@@ -144,6 +144,7 @@ public class SMTPAppenderTest {
         root.debug("Debug message #1");
         root.debug("Debug message #2");
         root.debug("Debug message #3");
+        root.debug("Debug message #4");
         root.error("Error with exception", new RuntimeException("Exception message"));
 
         server.stop();
@@ -162,6 +163,7 @@ public class SMTPAppenderTest {
         assertFalse(body.contains("Debug message #1"));
         assertTrue(body.contains("Debug message #2"));
         assertTrue(body.contains("Debug message #3"));
+        assertTrue(body.contains("Debug message #4"));
         assertTrue(body.contains("Error with exception"));
         assertTrue(body.contains("RuntimeException"));
         assertTrue(body.contains("Exception message"));

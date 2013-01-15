@@ -146,8 +146,11 @@ public class SMTPAppender extends AbstractAppender {
      */
     @Override
     public boolean isFiltered(final LogEvent event) {
-        manager.add(event);
-        return super.isFiltered(event);
+        final boolean filtered = super.isFiltered(event);
+        if(filtered) {
+            manager.add(event);
+        }
+		return filtered;
     }
 
     /**
@@ -156,6 +159,6 @@ public class SMTPAppender extends AbstractAppender {
      * sent.
      */
     public void append(final LogEvent event) {
-        manager.sendEvents(getLayout());
+        manager.sendEvents(getLayout(), event);
     }
 }
