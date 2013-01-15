@@ -23,7 +23,7 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-149" dev="rgoers" type="fix">
+      <action issue="LOG4J2-149" dev="rgoers" type="fix" due-to="Scott Severtson">
         SMTPAppender will only cache filtered events.
       </action>
       <action issue="LOG4J2-145" dev="ggregory" type="fix">
