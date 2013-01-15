@@ -147,7 +147,7 @@ public class SMTPAppender extends AbstractAppender {
     @Override
     public boolean isFiltered(final LogEvent event) {
         final boolean filtered = super.isFiltered(event);
-        if(filtered) {
+        if (filtered) {
             manager.add(event);
         }
 		return filtered;
