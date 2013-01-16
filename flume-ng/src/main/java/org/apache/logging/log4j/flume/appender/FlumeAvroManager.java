@@ -125,74 +125,80 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         if (retries == 0) {
             retries = DEFAULT_RECONNECTS;
         }
-        final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
-        avroEvent.body = ByteBuffer.wrap(event.getBody());
-        avroEvent.headers = new HashMap<CharSequence, CharSequence>();
-
-        for (final Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
-          avroEvent.headers.put(entry.getKey(), entry.getValue());
+        if (client == null) {
+            client = connect(agents);
         }
+        String msg = "No Flume agents are available";
+        if (client != null) {
+            final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
+            avroEvent.body = ByteBuffer.wrap(event.getBody());
+            avroEvent.headers = new HashMap<CharSequence, CharSequence>();
 
-        final List<AvroFlumeEvent> batch = batchSize > 1 ? events.addAndGet(avroEvent, batchSize) : null;
-        if (batch == null && batchSize > 1) {
-            return;
-        }
+            for (final Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
+                avroEvent.headers.put(entry.getKey(), entry.getValue());
+            }
 
-        int i = 0;
-
-        String msg = "Error writing to " + getName();
-
-        do {
-            try {
-                final Status status = (batch == null) ? client.append(avroEvent) : client.appendBatch(batch);
-                if (!status.equals(Status.OK)) {
-                    throw new AvroRemoteException("RPC communication failed to " + agents[current].getHost() +
-                        ":" + agents[current].getPort());
-                }
+            final List<AvroFlumeEvent> batch = batchSize > 1 ? events.addAndGet(avroEvent, batchSize) : null;
+            if (batch == null && batchSize > 1) {
                 return;
-            } catch (final Exception ex) {
-                if (i == retries - 1) {
-                    msg = "Error writing to " + getName() + " at " + agents[current].getHost() + ":" +
-                        agents[current].getPort();
-                    LOGGER.warn(msg, ex);
-                    break;
-                }
-                sleep(delay);
             }
-        } while (++i < retries);
 
-        for (int index = 0; index < agents.length; ++index) {
-            if (index == current) {
-                continue;
-            }
-            final Agent agent = agents[index];
-            i = 0;
+            int i = 0;
+
+            msg = "Error writing to " + getName();
+
             do {
                 try {
-                    transceiver = null;
-                    final AvroSourceProtocol c = connect(agent.getHost(), agent.getPort());
-                    final Status status = (batch == null) ? c.append(avroEvent) : c.appendBatch(batch);
+                    final Status status = (batch == null) ? client.append(avroEvent) : client.appendBatch(batch);
                     if (!status.equals(Status.OK)) {
-                        if (i == retries - 1) {
-                            final String warnMsg = "RPC communication failed to " + getName() + " at " +
-                                agent.getHost() + ":" + agent.getPort();
-                            LOGGER.warn(warnMsg);
-                        }
-                        continue;
+                        throw new AvroRemoteException("RPC communication failed to " + agents[current].getHost() +
+                            ":" + agents[current].getPort());
                     }
-                    client = c;
-                    current = i;
                     return;
                 } catch (final Exception ex) {
                     if (i == retries - 1) {
-                        final String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
-                            agent.getPort();
-                        LOGGER.warn(warnMsg, ex);
+                        msg = "Error writing to " + getName() + " at " + agents[current].getHost() + ":" +
+                            agents[current].getPort();
+                        LOGGER.warn(msg, ex);
                         break;
                     }
                     sleep(delay);
                 }
             } while (++i < retries);
+
+            for (int index = 0; index < agents.length; ++index) {
+                if (index == current) {
+                    continue;
+                }
+                final Agent agent = agents[index];
+                i = 0;
+                do {
+                    try {
+                        transceiver = null;
+                        final AvroSourceProtocol c = connect(agent.getHost(), agent.getPort());
+                        final Status status = (batch == null) ? c.append(avroEvent) : c.appendBatch(batch);
+                        if (!status.equals(Status.OK)) {
+                            if (i == retries - 1) {
+                                final String warnMsg = "RPC communication failed to " + getName() + " at " +
+                                    agent.getHost() + ":" + agent.getPort();
+                                LOGGER.warn(warnMsg);
+                            }
+                            continue;
+                        }
+                        client = c;
+                        current = i;
+                        return;
+                    } catch (final Exception ex) {
+                        if (i == retries - 1) {
+                            final String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
+                                agent.getPort();
+                            LOGGER.warn(warnMsg, ex);
+                            break;
+                        }
+                        sleep(delay);
+                    }
+                } while (++i < retries);
+            }
         }
 
         throw new AppenderRuntimeException(msg);
@@ -222,7 +228,8 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             }
             ++i;
         }
-        throw new AppenderRuntimeException("Unable to connect to any agents");
+        LOGGER.error("Flume manager " + getName() + " was unable to connect to any agents");
+        return null;
     }
 
     private AvroSourceProtocol connect(final String hostname, final int port) {

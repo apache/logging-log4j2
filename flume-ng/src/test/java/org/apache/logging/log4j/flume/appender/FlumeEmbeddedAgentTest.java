@@ -75,6 +75,10 @@ public class FlumeEmbeddedAgentTest {
     @BeforeClass
     public static void setupClass() {
         // System.setProperty(DefaultConfiguration.DEFAULT_LEVEL, Level.DEBUG.toString());
+        final File file = new File("target/file-channel");
+        if (!deleteFiles(file)) {
+            System.err.println("Warning - unable to delete target/file-channel. Test errors may occur");
+        }
     }
 
     @AfterClass
@@ -268,7 +272,7 @@ public class FlumeEmbeddedAgentTest {
 
     }
 
-    private boolean deleteFiles(final File file) {
+    private static boolean deleteFiles(final File file) {
         boolean result = true;
         if (file.isDirectory()) {
 
@@ -278,7 +282,7 @@ public class FlumeEmbeddedAgentTest {
             }
 
         } else if (!file.exists()) {
-            return false;
+            return true;
         }
 
         return result &= file.delete();
