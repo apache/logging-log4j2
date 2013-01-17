@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *
@@ -44,7 +44,7 @@ public class SimpleLoggerContext implements LoggerContext {
     /** Properties loaded from simplelog.properties */
     private final Properties simpleLogProps = new Properties();
 
-    private final PropsUtil props;
+    private final PropertiesUtil props;
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
@@ -65,7 +65,7 @@ public class SimpleLoggerContext implements LoggerContext {
     private final PrintStream stream;
 
     public SimpleLoggerContext() {
-        props = new PropsUtil("log4j2.simplelog.properties");
+        props = new PropertiesUtil("log4j2.simplelog.properties");
 
         showContextMap = props.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
         showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);

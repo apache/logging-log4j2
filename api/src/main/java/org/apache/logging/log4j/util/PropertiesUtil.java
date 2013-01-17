@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -23,21 +26,23 @@ import java.util.Properties;
 /**
  * Utility class to help with accessing System Properties.
  */
-public class PropsUtil {
+public class PropertiesUtil {
 
     private final Properties props;
 
-    private static final PropsUtil LOG4J_PROPERTIES = new PropsUtil("log4j2.component.properties");
+    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
-    public static PropsUtil getComponentProperties() {
+    private Logger logger;
+
+    public static PropertiesUtil getProperties() {
         return LOG4J_PROPERTIES;
     }
 
-    public PropsUtil(final Properties props) {
+    public PropertiesUtil(final Properties props) {
         this.props = props;
     }
 
-    public PropsUtil(final String propsLocn) {
+    public PropertiesUtil(final String propsLocn) {
         this.props = new Properties();
         final ClassLoader loader = ProviderUtil.findClassLoader();
         final InputStream in = loader.getResourceAsStream(propsLocn);
@@ -71,8 +76,26 @@ public class PropsUtil {
         return (prop == null) ? defaultValue : prop;
     }
 
+    public boolean getBooleanProperty(final String name) {
+        return getBooleanProperty(name, false);
+    }
+
     public boolean getBooleanProperty(final String name, final boolean defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : "true".equalsIgnoreCase(prop);
+    }
+
+    /**
+     * Return the system properties or an empty Properties object if an error occurs.
+     * @return The system properties.
+     */
+    public static Properties getSystemProperties() {
+        try {
+            return new Properties(System.getProperties());
+        } catch (final SecurityException ex) {
+            StatusLogger.getLogger().error("Unable to access system properties.");
+            // Sandboxed - can't read System Properties
+            return new Properties();
+        }
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -115,7 +117,7 @@ public final class UUIDUtil {
         long rand = uuidSequence;
         final Runtime runtime = Runtime.getRuntime();
         synchronized (runtime) {
-            String assigned = System.getProperty(ASSIGNED_SEQUENCES);
+            String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
             long[] sequences;
             if (assigned == null) {
                 sequences = new long[0];

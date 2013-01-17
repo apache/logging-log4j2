@@ -24,6 +24,7 @@ import org.apache.flume.node.nodemanager.DefaultLogicalNodeManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 
 import java.util.Locale;
@@ -41,8 +42,6 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     private NodeConfiguration conf;
 
     protected static final String SOURCE_NAME = "log4j-source";
-
-    private static final String LINE_SEP = System.getProperty("file.separator");
 
     private final Log4jEventSource source;
 
@@ -201,8 +200,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.put(name + ".channels", "file");
                 props.put(name + ".channels.file.type", "file");
                 if (dataDir != null && dataDir.length() > 0) {
-                    if (!dataDir.endsWith(LINE_SEP)) {
-                        dataDir = dataDir + LINE_SEP;
+                    if (!dataDir.endsWith(Constants.LINE_SEP)) {
+                        dataDir = dataDir + Constants.LINE_SEP;
                     }
 
                     props.put(name + ".channels.file.checkpointDir", dataDir + "checkpoint");

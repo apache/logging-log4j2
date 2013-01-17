@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -36,7 +37,7 @@ public final class Loader {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
-        final String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
+        final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
         if (ignoreTCLProp != null) {
             ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);
         }

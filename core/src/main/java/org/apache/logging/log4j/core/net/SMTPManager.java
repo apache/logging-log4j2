@@ -44,7 +44,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.helpers.CyclicBuffer;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.NetUtils;
-import org.apache.logging.log4j.core.helpers.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 public class SMTPManager extends AbstractManager {
     private static final SMTPManagerFactory factory = new SMTPManagerFactory();
@@ -123,7 +123,7 @@ public class SMTPManager extends AbstractManager {
 
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
-     * @param appendEvent 
+     * @param appendEvent
      */
     public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         if (message == null) {
@@ -178,7 +178,7 @@ public class SMTPManager extends AbstractManager {
             final byte[] bytes = layout.toByteArray(priorEvent);
             out.write(bytes);
         }
-        
+
         final byte[] bytes = layout.toByteArray(appendEvent);
         out.write(bytes);
     }

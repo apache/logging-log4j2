@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -222,14 +223,16 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         setName(DefaultConfiguration.DEFAULT_NAME);
         final Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
             null, null, null);
-        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
+            "true");
         appender.start();
         addAppender(appender);
         final LoggerConfig root = getRootLogger();
         root.addAppender(appender, null, null);
 
-        final String levelName = System.getProperty(DefaultConfiguration.DEFAULT_LEVEL);
-        final Level level = levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
+        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL);
+        final Level level = levelName != null && Level.valueOf(levelName) != null ?
+            Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 

@@ -31,7 +31,11 @@ public class SystemPropertiesLookup implements StrLookup {
      * @return The value for the key.
      */
     public String lookup(final String key) {
-        return System.getProperty(key);
+        try {
+            return System.getProperty(key);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     /**
@@ -41,6 +45,10 @@ public class SystemPropertiesLookup implements StrLookup {
      * @return The value associated with the key.
      */
     public String lookup(final LogEvent event, final String key) {
-        return System.getProperty(key);
+        try {
+            return System.getProperty(key);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

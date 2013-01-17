@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -100,7 +101,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         final PrintStream printStream = target == Target.SYSTEM_OUT ?
             follow ? new PrintStream(new SystemOutStream()) : System.out :
             follow ? new PrintStream(new SystemErrStream()) : System.err;
-        if (!System.getProperty("os.name").startsWith("Windows") || Boolean.getBoolean("log4j.skipJansi")) {
+        PropertiesUtil propsUtil = PropertiesUtil.getProperties();
+        if (!propsUtil.getStringProperty("os.name").startsWith("Windows") ||
+            propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return printStream;
         } else {
             try {

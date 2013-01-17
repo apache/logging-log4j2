@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -83,26 +84,6 @@ public final class OptionConverter {
         }
         return sbuf.toString();
     }
-
-
-    /**
-     * Very similar to <code>System.getProperty</code> except
-     * that the {@link SecurityException} is hidden.
-     *
-     * @param key The key to search for.
-     * @param def The default value to return.
-     * @return the string value of the system property, or the default
-     *         value if there is no property with that key.
-     */
-    public static String getSystemProperty(final String key, final String def) {
-        try {
-            return System.getProperty(key, def);
-        } catch (final Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
-            LOGGER.debug("Was not allowed to read system property \"" + key + "\".");
-            return def;
-        }
-    }
-
 
     public static Object instantiateByKey(final Properties props, final String key, final Class<?> superClass,
                                    final Object defaultValue) {
@@ -327,7 +308,7 @@ public final class OptionConverter {
                     j += DELIM_START_LEN;
                     final String key = val.substring(j, k);
                     // first try in System properties
-                    String replacement = getSystemProperty(key, null);
+                    String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
                     // then try props parameter
                     if (replacement == null && props != null) {
                         replacement = props.getProperty(key);

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.PrintStream;
 
@@ -39,7 +40,7 @@ public class StatusConsoleListener implements StatusListener {
      * default value of FATAL.
      */
     public StatusConsoleListener() {
-        final String str = System.getProperty(STATUS_LEVEL);
+        final String str = PropertiesUtil.getProperties().getStringProperty(STATUS_LEVEL);
         if (str != null) {
             level = Level.toLevel(str, Level.FATAL);
         }

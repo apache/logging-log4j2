@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 /**
  * Log4j Constants.
  */
@@ -34,7 +36,7 @@ public final class Constants {
     /**
      * Line separator.
      */
-    public static final String LINE_SEP = PropertiesUtil.getSystemProperty("line.separator", "\n");
+    public static final String LINE_SEP = PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
 
     /**
      * Number of milliseconds in a second.

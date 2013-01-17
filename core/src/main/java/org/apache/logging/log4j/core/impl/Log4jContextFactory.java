@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.
@@ -37,7 +38,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * Constructor that initializes the ContextSelector.
      */
     public Log4jContextFactory() {
-        final String sel = System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+        final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
             try {
                 final Class clazz = Loader.loadClass(sel);

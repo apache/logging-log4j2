@@ -29,7 +29,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 
 /**
@@ -61,7 +61,7 @@ public class LogManager {
      */
     static {
         // Shortcut binding to force a specific logging implementation.
-        final PropsUtil managerProps = PropsUtil.getComponentProperties();
+        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         final String factoryClass = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         if (factoryClass != null) {

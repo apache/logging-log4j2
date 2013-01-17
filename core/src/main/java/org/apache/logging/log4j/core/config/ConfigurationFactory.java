@@ -22,6 +22,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,7 +55,7 @@ import java.util.TreeSet;
  * factory to be the first one inspected. See
  * {@linkplain XMLConfigurationFactory} for an example.</li>
  * </ol>
- * 
+ *
  * If the ConfigurationFactory that was added returns null on a call to
  * getConfiguration the any other ConfigurationFactories found as plugins will
  * be called in their respective order. DefaultConfiguration is always called
@@ -94,7 +96,7 @@ public abstract class ConfigurationFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
-        final String factoryClass = System.getProperty(CONFIGURATION_FACTORY_PROPERTY);
+        final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
         if (factoryClass != null) {
             addFactory(factoryClass);
         }
@@ -322,7 +324,7 @@ public abstract class ConfigurationFactory {
         public Configuration getConfiguration(final String name, final URI configLocation) {
 
             if (configLocation == null) {
-                final String config = System.getProperty(CONFIGURATION_FILE_PROPERTY);
+                final String config = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FILE_PROPERTY);
                 if (config != null) {
                     final ClassLoader loader = this.getClass().getClassLoader();
                     final ConfigurationSource source = getInputFromString(config, loader);

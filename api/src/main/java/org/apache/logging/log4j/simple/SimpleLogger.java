@@ -29,7 +29,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
@@ -57,7 +57,7 @@ public class SimpleLogger extends AbstractLogger {
 
     public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName, final boolean showShortLogName,
                         final boolean showDateTime, final boolean showContextMap, final String dateTimeFormat,
-                        final MessageFactory messageFactory, final PropsUtil props, final PrintStream stream) {
+                        final MessageFactory messageFactory, final PropertiesUtil props, final PrintStream stream) {
         super(name, messageFactory);
         final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);

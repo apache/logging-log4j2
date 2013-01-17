@@ -21,7 +21,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,7 +60,7 @@ public final class StatusLogger extends AbstractLogger {
     private final ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
-        final PropsUtil props = new PropsUtil("log4j2.StatusLogger.properties");
+        final PropertiesUtil props = new PropertiesUtil("log4j2.StatusLogger.properties");
         this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, props, System.err);
     }
 
@@ -246,7 +246,7 @@ public final class StatusLogger extends AbstractLogger {
     private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
 
         private static final long serialVersionUID = -3945953719763255337L;
-        
+
         private final int size;
 
         public BoundedQueue(final int size) {

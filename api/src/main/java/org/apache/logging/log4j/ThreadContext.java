@@ -23,7 +23,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropsUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 
 import java.io.Serializable;
@@ -62,18 +62,21 @@ public final class ThreadContext  {
 
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
 
-    private static boolean all = Boolean.getBoolean(DISABLE_ALL);
+    private static boolean all;
 
-    private static boolean useMap = !(Boolean.getBoolean(DISABLE_MAP) || all);
+    private static boolean useMap;
 
-    private static boolean useStack = !(Boolean.getBoolean(DISABLE_STACK) || all);
+    private static boolean useStack;
 
     private static ThreadContextMap contextMap;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
-        final PropsUtil managerProps = PropsUtil.getComponentProperties();
+        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        all = managerProps.getBooleanProperty(DISABLE_ALL);
+        useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || all);
+        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || all);
         String threadContextMapName = managerProps.getStringProperty(THREAD_CONTEXT_KEY);
         final ClassLoader cl = ProviderUtil.findClassLoader();
         if (threadContextMapName != null) {
