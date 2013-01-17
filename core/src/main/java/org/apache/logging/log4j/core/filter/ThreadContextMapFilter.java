@@ -96,7 +96,7 @@ public class ThreadContextMapFilter extends MapFilter {
                 }
             }
         } else {
-            match = key.equals(ThreadContext.get(key));
+            match = value.equals(ThreadContext.get(key));
         }
         return match ? onMatch : onMismatch;
     }

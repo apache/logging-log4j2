@@ -57,6 +57,11 @@ public class ThreadContextMapFilterTest {
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.DENY);
         ThreadContext.remove("organization");
         assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.DENY);
+        final KeyValuePair[] single = new KeyValuePair[] {new KeyValuePair("userid", "testuser")};
+        filter = ThreadContextMapFilter.createFilter(single, null, null, null);
+        filter.start();
+        assertTrue(filter.isStarted());
+        assertTrue(filter.filter(null, Level.DEBUG, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
         ThreadContext.clear();
     }
 }

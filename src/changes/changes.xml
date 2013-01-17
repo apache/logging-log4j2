@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-147" dev="rgoers" type="fix" due-to="William Burns">
+        ThreadContextMapFilter was matching on the key instead of the value of the key.
+      </action>
       <action dev="rgoers" type="fix">
         Allow FlumeAvroManager to initialize even if it cannot connect to an agent.
       </action>
