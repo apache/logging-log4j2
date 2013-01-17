@@ -51,7 +51,7 @@ public final class UUIDUtil {
 
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
-    private static long uuidSequence = Long.getLong(UUID_SEQUENCE, 0);
+    private static long uuidSequence = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
 
     private static long least;
 

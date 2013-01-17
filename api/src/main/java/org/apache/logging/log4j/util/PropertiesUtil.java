@@ -71,6 +71,48 @@ public class PropertiesUtil {
         return (prop == null) ? props.getProperty(name) : prop;
     }
 
+
+    public int getIntegerProperty(final String name, final int defaultValue) {
+        String prop = null;
+        try {
+            prop = System.getProperty(name);
+        } catch (final SecurityException e) {
+            // Ignore
+        }
+        if (prop == null) {
+            prop = props.getProperty(name);
+        }
+        if (prop != null) {
+            try {
+                return Integer.parseInt(prop);
+            } catch (Exception ex) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+
+    public long getLongProperty(final String name, final long defaultValue) {
+        String prop = null;
+        try {
+            prop = System.getProperty(name);
+        } catch (final SecurityException e) {
+            // Ignore
+        }
+        if (prop == null) {
+            prop = props.getProperty(name);
+        }
+        if (prop != null) {
+            try {
+                return Long.parseLong(prop);
+            } catch (Exception ex) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
     public String getStringProperty(final String name, final String defaultValue) {
         final String prop = getStringProperty(name);
         return (prop == null) ? defaultValue : prop;
