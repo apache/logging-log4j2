@@ -76,7 +76,7 @@ public class FileRenameAction extends AbstractAction {
     public static boolean execute(final File source, final File destination, final boolean renameEmptyFiles) {
         if (renameEmptyFiles || source.length() > 0) {
             final File parent = destination.getParentFile();
-            if (!parent.exists()) {
+            if (parent != null && !parent.exists()) {
                 if (!parent.mkdirs()) {
                     LOGGER.error("Unable to create directory {}", parent.getAbsolutePath());
                     return false;
@@ -101,6 +101,12 @@ public class FileRenameAction extends AbstractAction {
                     LOGGER.error("Unable to rename file {} to {} - {}", source.getAbsolutePath(),
                         destination.getAbsolutePath(), iex.getMessage());
                 }
+            }
+        } else {
+            try {
+                source.delete();
+            } catch (Exception ex) {
+                LOGGER.error("Unable to delete empty file " + source.getAbsolutePath());
             }
         }
 

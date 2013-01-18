@@ -23,6 +23,10 @@
 
   <body>
     <release version="2.0-beta4" date="TBD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-152" dev="rgoers" type="fix" due-to="Remko Popma">
+        RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified
+        on the target file name.
+      </action>
       <action issue="LOG4J2-150" dev="rgoers" type="fix">
         Convert all System.getProperty calls to use PropertiesUtil to suppress SecurityExceptions.
       </action>
