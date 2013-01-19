@@ -143,6 +143,23 @@ limitations under the License.
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.adapters</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.adapters</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.adapters</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
