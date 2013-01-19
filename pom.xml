@@ -96,7 +96,7 @@
     <slf4j.version>1.7.2</slf4j.version>
     <logback.version>1.0.7</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0-beta3</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.0-beta4</Log4jReleaseVersion>
     <jackson.version>1.9.2</jackson.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>

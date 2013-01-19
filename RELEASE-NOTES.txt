@@ -1,10 +1,10 @@
 
-              Apache Log4j 2.0-beta3 RELEASE NOTES
+              Apache Log4j 2.0-beta4 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta3 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta4 release!
 
-Apache Log4j 2.0-beta3 requires a minimum of Java 5 to build and run. Basic compatibility with
-Log4j 1.x is provided through the log4j12-api component, however it does not implement some of the
+Apache Log4j 2.0-beta4 requires a minimum of Java 5 to build and run. Basic compatibility with
+Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
 
@@ -13,33 +13,55 @@ Bug fixes and enhancements
 Changes in this version include:
 
 New features:
-o LOG4J2-28:  Added PropertiesRewritePolicy and ability to define properties on a Logger. 
-o LOG4J2-55:  Added ability to configure from an InputSource. 
+o Added Log4j 2 to SLF4J adapter. 
+o LOG4J2-131:  Add SMTPAppender. Thanks to Scott Severtson. 
+o Added hostName and contextName to property map. 
+o Add MessageFormatMessage and FormattedMessage. 
+o LOG4J2-134:  Use %red, %white, %blue, and so on in the console appender. 
+o LOG4J2-133:  Allow custom message creation via a message factory. 
+o Added Flume Appender samples. 
 
 Fixed Bugs:
-o LOG4J2-108:  Fix NullPointerException in ClassLoaderContextSelector when no class is returned from
-        the SecurityManager. 
-o LOG4J2-107:  PatternParser was not properly handling adjacent nested options 
-o LOG4J2-95:  Add support for loading plugins inside the OSGi bundle. 
-o LOG4J2-103:  The LogEvent was wrapping a ThrowableProxy with another ThrowableProxy when deserializing. Thanks to Das Archive. 
-o LOG4J2-104:  Convert LogManager binding to use "regular" java properties instead of XML properties to workaround a
-        bug in Oracle's xmlparserv2 jar. 
-o LOG4J2-102:  The Facility value was being improperly calculated. Thanks to Emanuele Colombo. 
-o LOG4J2-101:  A NullPointerException would occur if no format value was passed to the SyslogAppender. Thanks to Emanuele Colombo. 
-o LOG4J2-99:  MapRewritePolicy had an extra call to putAll that caused updates to behave like adds. Thanks to Das Archive. 
-o Avoid NPE when duplicate LoggerContextFactorys are present. Allow factories to specify a weight to allow
-        real implementations to outrank test implementations. Provide a simple default LoggerContextFactory. 
-o LOG4J2-97:  Added several missing classes and methods for Log4j 1.x compatibility. 
-o LOG4J2-94:  Interpolator was not stripping Lookup key separator when trying to locate the default value for a variable. Thanks to Denis Treskunov. 
-o Log4j 1.2 Category.forcedLog was wrapping the message with an ObjectMessage even if the parameter was an
-        ObjectMessage. 
+o LOG4J2-152:  RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified
+        on the target file name. Thanks to Remko Popma. 
+o LOG4J2-150:  Convert all System.getProperty calls to use PropertiesUtil to suppress SecurityExceptions. 
+o LOG4J2-147:  ThreadContextMapFilter was matching on the key instead of the value of the key. Thanks to William Burns. 
+o Allow FlumeAvroManager to initialize even if it cannot connect to an agent. 
+o LOG4J2-149:  SMTPAppender will only cache filtered events. Thanks to Scott Severtson. 
+o LOG4J2-145:  Add missing serial version IDs. 
+o LOG4J2-144:  NullPointerException in RFC5424Layout. 
+o LOG4J2-143:  MessagePatternConverter now returns "null" if the log message is null. 
+o LOG4J2-142:  Serialized LogEvents were not reset in the output stream causing them to deserialize incorrectly. 
+o LOG4J2-139:  Fix null pointer exception in SocketAppender if no protocol is specified. The protocol will default
+        to TCP for the SocketAppender and UDP for the SyslogAppender. 
+o LOG4J2-140:  Typo in documentation of SocketAppender. Thanks to Joern Huxhorn. 
+o LOG4J2-137:  Fix hang in Dumbster SMTP test server. 
+o LOG4J2-130:  PatternLayout should format throwables without requiring a converter. 
+o LOG4J2-135:  BaseConfiguration does not close the first appender. Thanks to Ingo Feltes. 
+o LOG4J2-132:  AbstractLogger.catching(Throwable) checks for DEBUG level but logs at ERROR level. 
+o LOG4J2-129:  RoutingAppender was only creating a single appender for the default Route. 
+o LOG4J2-126:  Allow JMS appenders to recover if the queue or topic is unavailable. 
+o LOG4J2-127:  AbstractLogger methods were not passing Markers to the isEnabled methods. 
+o LOG4J2-125:  JMSQueue and JMSTopic Appenders did not allow name to be specified. 
+o LOG4J2-111:  Enhanced javadoc copyright statement. 
+o LOG4J2-120:  TCPSocketManager would fail if the initial connection could not be established. 
+o LOG4J2-119:  A broken socket connection would cause the TCPSocketManager to continuously reconnect. 
+o LOG4J2-123:  The example for ThreadContextMapFilter was incorrect. Thanks to Olivier Lamy. 
+o LOG4J2-116:  File renaming was using the wrong date value. Enhanced DefaultRolloverStrategy to store newest files in
+        highest index as well as lowest. 
+o LOG4J2-115:  ThreadContext Map elements with null values are now ignored when constructing a Flume event and in the
+        RFC5424 Layout. 
+o LOG4J2-113:  StructuredDataFilter createFilter was annotated with PluginAttr instead of PluginElement for the
+        KeyValuePairs. 
+o LOG4J2-114:  StructuredDataMessage was validating the length of the values in the event Map instead of the lengths
+        of the keys. Thanks to Arkin Yetis. 
 
 Changes:
-o LOG4J2-105:  Add ability to customize the names of the Levels in the LevelPatternConverter. 
-o LOG4J2-85:  Add ThreadContext.push(String format, Object... args) 
-o Created combined jar to combine API and Core contents for users who only want the Log4j implementation. 
-o LOG4J2-87:  Build pdf of user's guide. 
-o LOG4J2-29:  Added font and fontSize parameters to HTMLLayout. Replace newlines in message with br tag. 
+o LOG4J2-136:  Allow newlines to be escaped in Syslog and RFC5424 layouts. Allow Throwables to be included in
+        the output from RFC5424Layout. Thanks to Scott Severtson. 
+o LOG4J2-128:  Add follow attribute to Console Appender. 
+o LOG4J2-122:  Add unit test to verify exceptions are thrown when the socket connection fails. 
+o LOG4J2-110:  Renamed log4j12-api to log4j-1.2-api. 
 
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
