@@ -35,13 +35,14 @@ import java.util.Properties;
  */
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
+    /** Name for the Flume source */
+    protected static final String SOURCE_NAME = "log4j-source";
+
     private static ManagerFactory factory = new FlumeManagerFactory();
 
     private final FlumeNode node;
 
     private NodeConfiguration conf;
-
-    protected static final String SOURCE_NAME = "log4j-source";
 
     private final Log4jEventSource source;
 
@@ -66,12 +67,15 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     /**
      * Returns a FlumeEmbeddedManager.
+     * @param name The name of the manager.
      * @param agents The agents to use.
+     * @param properties Properties for the embedded manager.
      * @param batchSize The number of events to include in a batch.
+     * @param dataDir The directory where the Flume FileChannel should write to.
      * @return A FlumeAvroManager.
      */
-    public static FlumeEmbeddedManager getManager(final String name, final Agent[] agents, final Property[] properties, int batchSize,
-                                                  final String dataDir) {
+    public static FlumeEmbeddedManager getManager(final String name, final Agent[] agents, final Property[] properties,
+                                                  int batchSize, final String dataDir) {
 
         if (batchSize <= 0) {
             batchSize = 1;
@@ -139,7 +143,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
          * @param batchSize The number of events to include in a batch.
          * @param dataDir The directory where Flume should write to.
          */
-        public FactoryData(final String name, final Agent[] agents, final Property[] properties, final int batchSize, final String dataDir) {
+        public FactoryData(final String name, final Agent[] agents, final Property[] properties, final int batchSize,
+                           final String dataDir) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -152,7 +157,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
      * Avro Manager Factory.
      */
     private static class FlumeManagerFactory implements ManagerFactory<FlumeEmbeddedManager, FactoryData> {
-        private static final String sourceType = Log4jEventSource.class.getName();
+        private static final String SOURCE_TYPE = Log4jEventSource.class.getName();
 
         /**
          * Create the FlumeAvroManager.
@@ -180,8 +185,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             return null;
         }
 
-        private Properties createProperties(final String name, final Agent[] agents, final Property[] properties, final int batchSize,
-                                            String dataDir) {
+        private Properties createProperties(final String name, final Agent[] agents, final Property[] properties,
+                                            final int batchSize, String dataDir) {
             final Properties props = new Properties();
 
             if ((agents == null || agents.length == 0) && (properties == null || properties.length == 0)) {
@@ -196,7 +201,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
             if (agents != null && agents.length > 0) {
                 props.put(name + ".sources", FlumeEmbeddedManager.SOURCE_NAME);
-                props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", sourceType);
+                props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", SOURCE_TYPE);
                 props.put(name + ".channels", "file");
                 props.put(name + ".channels.file.type", "file");
                 if (dataDir != null && dataDir.length() > 0) {
@@ -211,7 +216,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 final StringBuilder sb = new StringBuilder();
                 String leading = "";
                 int priority = agents.length;
-                for (int i=0; i < agents.length; ++i) {
+                for (int i = 0; i < agents.length; ++i) {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
                     final String prefix = name + ".sinks.agent" + i;
@@ -235,7 +240,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 String[] sinks = null;
 
                 props.put(name + ".sources", FlumeEmbeddedManager.SOURCE_NAME);
-                props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", sourceType);
+                props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", SOURCE_TYPE);
 
                 for (final Property property : properties) {
                     final String key = property.getName();
@@ -249,7 +254,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                     final String upperKey = key.toUpperCase(Locale.ENGLISH);
 
                     if (upperKey.startsWith(name.toUpperCase(Locale.ENGLISH))) {
-                        final String msg = "Specification of the agent name is allowed in Flume Appender configuration: " + key;
+                        final String msg =
+                            "Specification of the agent name is allowed in Flume Appender configuration: " + key;
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);
                     }

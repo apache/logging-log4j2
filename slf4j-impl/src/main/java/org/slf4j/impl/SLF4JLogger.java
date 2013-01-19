@@ -421,7 +421,8 @@ public class SLF4JLogger implements LocationAwareLogger {
     }
 
 
-    public void log(final Marker marker, final String fqcn, final int i, final String s1, final Object[] objects, Throwable throwable) {
+    public void log(final Marker marker, final String fqcn, final int i, final String s1, final Object[] objects,
+                    Throwable throwable) {
         if (!logger.isEnabled(getLevel(i), (org.apache.logging.log4j.Marker) marker, s1)) {
             return;
         }

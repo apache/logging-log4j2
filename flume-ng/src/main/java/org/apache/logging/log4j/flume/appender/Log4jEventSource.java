@@ -28,9 +28,9 @@ import org.slf4j.Logger;
  */
 public class Log4jEventSource extends AbstractSource implements EventDrivenSource {
 
-    private final SourceCounter sourceCounter = new SourceCounter("log4j");
+    private static final Logger LOGGER = LoggerFactory.getLogger(Log4jEventSource.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(Log4jEventSource.class);
+    private final SourceCounter sourceCounter = new SourceCounter("log4j");
 
     public Log4jEventSource() {
         setName("Log4jEvent");
@@ -40,14 +40,14 @@ public class Log4jEventSource extends AbstractSource implements EventDrivenSourc
     public synchronized void start() {
         super.start();
 
-        logger.info("Log4j Source started");
+        LOGGER.info("Log4j Source started");
     }
 
     @Override
     public synchronized void stop() {
         super.stop();
 
-        logger.info("Log4j Source stopped. Metrics {}", sourceCounter);
+        LOGGER.info("Log4j Source stopped. Metrics {}", sourceCounter);
     }
 
 
@@ -57,7 +57,7 @@ public class Log4jEventSource extends AbstractSource implements EventDrivenSourc
         try {
             getChannelProcessor().processEvent(event);
         } catch (final ChannelException ex) {
-            logger.warn("Unabled to process event {}" + event, ex);
+            LOGGER.warn("Unabled to process event {}" + event, ex);
             throw ex;
         }
         sourceCounter.incrementAppendAcceptedCount();

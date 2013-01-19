@@ -46,7 +46,8 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+    protected void log(final Marker marker, final String fqcn, final Level level, final Message data,
+                       final Throwable t) {
         if (locationAwareLogger != null) {
             if (data instanceof LoggerNameAwareMessage) {
                 ((LoggerNameAwareMessage) data).setLoggerName(getName());
@@ -57,16 +58,22 @@ public class SLF4JLogger extends AbstractLogger {
             switch (level) {
                 case DEBUG :
                     logger.debug(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
                 case TRACE :
                     logger.trace(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
                 case INFO :
                     logger.info(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
                 case WARN :
                     logger.warn(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
                 case ERROR :
                     logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
                 default :
                     logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    break;
             }
         }
     }

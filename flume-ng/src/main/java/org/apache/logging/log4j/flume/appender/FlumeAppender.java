@@ -97,8 +97,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @param compress If true the body will be compressed.
      * @return A Flume Event.
      */
-    public FlumeEvent createEvent(final LogEvent event, final String includes, final String excludes, final String required,
-                      final String mdcPrefix, final String eventPrefix, final boolean compress) {
+    public FlumeEvent createEvent(final LogEvent event, final String includes, final String excludes,
+                                  final String required, final String mdcPrefix, final String eventPrefix,
+                                  final boolean compress) {
         return new FlumeEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
     }
@@ -106,6 +107,9 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     /**
      * Create a Flume Avro Appender.
      * @param agents An array of Agents.
+     * @param properties Properties to pass to the embedded agent.
+     * @param embedded true if the embedded agent manager should be used. otherwise the Avro mangaer will be used.
+     * @param dataDir The directory where the Flume FileChannel should write its data.
      * @param delay The amount of time in milliseconds to wait between retries.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
      * @param name The name of the Appender.

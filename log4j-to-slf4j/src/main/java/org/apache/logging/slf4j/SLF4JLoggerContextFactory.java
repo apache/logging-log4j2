@@ -25,7 +25,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     private static LoggerContext context = new SLF4JLoggerContext();
 
-    public LoggerContext getContext(final String FQCN, final ClassLoader loader, final boolean currentContext) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return context;
     }
 }

@@ -75,6 +75,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     /**
      * Returns a FlumeAvroManager.
+     * @param name The name of the manager.
      * @param agents The agents to use.
      * @param batchSize The number of events to include in a batch.
      * @return A FlumeAvroManager.

@@ -78,7 +78,8 @@ public class JNDIContextFilter implements Filter {
         }
     }
 
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain)
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+                         final FilterChain filterChain)
         throws IOException, ServletException {
         final LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null) {

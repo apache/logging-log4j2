@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FlumeNode implements LifecycleAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(FlumeNode.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlumeNode.class);
 
     private LifecycleState lifecycleState;
     private final NodeManager nodeManager;
@@ -39,18 +39,17 @@ public class FlumeNode implements LifecycleAware {
 
     public FlumeNode(final NodeManager manager, final NodeConfiguration conf) {
         this.nodeManager = manager;
-        this.conf =conf;
+        this.conf = conf;
         supervisor = new LifecycleSupervisor();
     }
 
     public void start() {
 
-        Preconditions.checkState(nodeManager != null,
-            "Node manager can not be null");
+        Preconditions.checkState(nodeManager != null, "Node manager can not be null");
 
         supervisor.start();
 
-        logger.info("Flume node starting");
+        LOGGER.info("Flume node starting");
 
         supervisor.supervise(nodeManager,
             new LifecycleSupervisor.SupervisorPolicy.AlwaysRestartPolicy(), LifecycleState.START);
@@ -60,7 +59,7 @@ public class FlumeNode implements LifecycleAware {
 
     public void stop() {
 
-        logger.info("Flume node stopping");
+        LOGGER.info("Flume node stopping");
 
         supervisor.stop();
 

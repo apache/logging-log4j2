@@ -70,7 +70,8 @@ public class FlumeConfigurationBuilder {
     private final SourceFactory sourceFactory = new DefaultSourceFactory();
     private final SinkFactory sinkFactory = new DefaultSinkFactory();
 
-    public NodeConfiguration load(final String name, final Properties props, final NodeConfigurationAware configurationAware) {
+    public NodeConfiguration load(final String name, final Properties props,
+                                  final NodeConfigurationAware configurationAware) {
         final NodeConfiguration conf = new SimpleNodeConfiguration();
         FlumeConfiguration fconfig;
         try {
@@ -141,7 +142,8 @@ public class FlumeConfigurationBuilder {
         for (final String ch : channels) {
             final Context context = agentConf.getChannelContext().get(ch);
             if (context != null) {
-                final Channel channel = channelFactory.create(ch, context.getString(BasicConfigurationConstants.CONFIG_TYPE));
+                final Channel channel = channelFactory.create(ch,
+                    context.getString(BasicConfigurationConstants.CONFIG_TYPE));
                 Configurables.configure(channel, context);
                 conf.getChannels().put(ch, channel);
                 LOGGER.info("created channel " + ch);
@@ -182,11 +184,13 @@ public class FlumeConfigurationBuilder {
 
         for (final String src : sources) {
             final Context context = sourceContexts.get(src);
-            if (context != null){
-                final Source source = sourceFactory.create(src, context.getString(BasicConfigurationConstants.CONFIG_TYPE));
+            if (context != null) {
+                final Source source = sourceFactory.create(src,
+                    context.getString(BasicConfigurationConstants.CONFIG_TYPE));
                 final List<Channel> channels = new ArrayList<Channel>();
                 Configurables.configure(source, context);
-                final String[] channelNames = context.getString(BasicConfigurationConstants.CONFIG_CHANNELS).split("\\s+");
+                final String[] channelNames =
+                    context.getString(BasicConfigurationConstants.CONFIG_CHANNELS).split("\\s+");
                 for (final String chName : channelNames) {
                     channels.add(conf.getChannels().get(chName));
                 }
@@ -226,7 +230,8 @@ public class FlumeConfigurationBuilder {
         for (final String sinkName : sinkNames) {
             final Context context = sinkContexts.get(sinkName);
             if (context != null) {
-                final Sink sink = sinkFactory.create(sinkName, context.getString(BasicConfigurationConstants.CONFIG_TYPE));
+                final Sink sink = sinkFactory.create(sinkName,
+                    context.getString(BasicConfigurationConstants.CONFIG_TYPE));
                 Configurables.configure(sink, context);
 
                 sink.setChannel(conf.getChannels().get(context.getString(BasicConfigurationConstants.CONFIG_CHANNEL)));

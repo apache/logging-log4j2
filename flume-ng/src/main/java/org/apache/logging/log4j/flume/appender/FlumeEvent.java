@@ -138,7 +138,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         addGuid(headers);
     }
 
-    protected void addStructuredData(final String prefix, final Map<String, String> fields, final StructuredDataMessage msg) {
+    protected void addStructuredData(final String prefix, final Map<String, String> fields,
+                                     final StructuredDataMessage msg) {
         fields.put(prefix + EVENT_TYPE, msg.getType());
         final StructuredDataId id = msg.getId();
         fields.put(prefix + EVENT_ID, id.getName());
@@ -151,7 +152,8 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
     }
 
-    protected void addContextData(final String prefix, final Map<String, String> fields, final Map<String, String> context) {
+    protected void addContextData(final String prefix, final Map<String, String> fields,
+                                  final Map<String, String> context) {
         for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 fields.put(prefix + entry.getKey(), entry.getValue());
