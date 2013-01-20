@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.0-beta4-SNAPSHOT</version>
+  <version>2.0-beta4</version>
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -84,9 +84,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0-beta4</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/log4j2/tags/log4j-2.0-beta4</developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/log4j2/tags/log4j-2.0-beta4</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -102,8 +102,8 @@
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
     <osgi.import>*</osgi.import>
-    <osgi.dynamicImport/>
-    <osgi.private/>
+    <osgi.dynamicImport />
+    <osgi.private />
     <pmd.plugin.version>2.7.1</pmd.plugin.version>
     <changes.plugin.version>2.8</changes.plugin.version>
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
@@ -112,7 +112,7 @@
     <maven.compile.source>1.5</maven.compile.source>
     <maven.compile.target>1.5</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
-    <projectDir/>
+    <projectDir />
   </properties>
   <pluginRepositories>
     <pluginRepository>
