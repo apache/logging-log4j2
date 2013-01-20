@@ -36,7 +36,7 @@ import java.io.Serializable;
  * interface to implement or extend Serializable". Such is the case here as the LogEvent must be Serializable.
  */
 public interface Message extends Serializable {
-    
+
     /**
      * Gets the Message formatted as a String. Each Message implementation determines the
      * appropriate way to format the data encapsulated in the Message. Messages that provide
@@ -68,7 +68,7 @@ public interface Message extends Serializable {
 
     /**
      * Gets the throwable, if any.
-     * 
+     *
      * @return the throwable or null.
      */
     Throwable getThrowable();

@@ -89,7 +89,7 @@ public class SimpleMessage implements Message {
 
     /**
      * Always returns null.
-     * 
+     *
      * @return null
      */
     public Throwable getThrowable() {

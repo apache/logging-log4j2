@@ -42,7 +42,7 @@ public final class ProviderUtil {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final List<Provider> providers = new ArrayList<Provider>();
+    private static final List<Provider> PROVIDERS = new ArrayList<Provider>();
 
     private ProviderUtil() {
     }
@@ -68,17 +68,17 @@ public final class ProviderUtil {
                 if (!validVersion(props.getProperty(API_VERSION))) {
                     continue;
                 }
-                providers.add(new Provider(props, url));
+                PROVIDERS.add(new Provider(props, url));
             }
         }
     }
 
     public static Iterator<Provider> getProviders() {
-        return providers.iterator();
+        return PROVIDERS.iterator();
     }
 
     public static boolean hasProviders() {
-        return providers.size() > 0;
+        return PROVIDERS.size() > 0;
     }
 
     public static ClassLoader findClassLoader() {

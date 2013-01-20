@@ -45,13 +45,13 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
-    private static final PropertiesUtil props = new PropertiesUtil("log4j2.StatusLogger.properties");
+    private static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
 
-    private static final int MAX_ENTRIES = props.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
+    private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
     // private static final String FQCN = AbstractLogger.class.getName();
 
-    private static final StatusLogger statusLogger = new StatusLogger();
+    private static final StatusLogger STATUS_LOGGER = new StatusLogger();
 
     private final SimpleLogger logger;
 
@@ -62,7 +62,8 @@ public final class StatusLogger extends AbstractLogger {
     private final ReentrantLock msgLock = new ReentrantLock();
 
     private StatusLogger() {
-        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, props, System.err);
+        this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, false, false, "", null, PROPS,
+            System.err);
     }
 
     /**
@@ -70,7 +71,7 @@ public final class StatusLogger extends AbstractLogger {
      * @return The StatusLogger.
      */
     public static StatusLogger getLogger() {
-        return statusLogger;
+        return STATUS_LOGGER;
     }
 
     public void setLevel(final Level level) {

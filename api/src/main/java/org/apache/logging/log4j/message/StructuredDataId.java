@@ -81,7 +81,8 @@ public class StructuredDataId implements Serializable {
      * @param required         The list of keys that are required for this id.
      * @param optional         The list of keys that are optional for this id.
      */
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required, final String[] optional) {
+    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+                            final String[] optional) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }

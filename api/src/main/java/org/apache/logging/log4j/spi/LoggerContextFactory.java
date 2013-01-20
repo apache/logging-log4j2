@@ -23,7 +23,7 @@ public interface LoggerContextFactory {
 
     /**
      * Creates a {@link LoggerContext}.
-     * 
+     *
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate

@@ -25,7 +25,10 @@ import java.util.Locale;
  * avoid problems on the Turkish locale. Do not use with Turkish enum values.
  * </p>
  */
-public class EnglishEnums {
+public final class EnglishEnums {
+
+    private EnglishEnums() {
+    }
 
     /**
      * Returns the Result for the given string.
@@ -33,10 +36,11 @@ public class EnglishEnums {
      * The {@code name} is converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
      * avoid problems on the Turkish locale. Do not use with Turkish enum values.
      * </p>
-     * 
-     * @param name
-     *            The enum name, case-insensitive. If null, returns {@code defaultValue}
-     * @return an enum value or null if {@code name} is null
+     *
+     * @param enumType The Class of the enum.
+     * @param name The enum name, case-insensitive. If null, returns {@code defaultValue}.
+     * @param <T> The type of the enum.
+     * @return an enum value or null if {@code name} is null.
      */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name) {
         return valueOf(enumType, name, null);
@@ -48,12 +52,12 @@ public class EnglishEnums {
      * The {@code name} is converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
      * avoid problems on the Turkish locale. Do not use with Turkish enum values.
      * </p>
-     * 
-     * @param name
-     *            The enum name, case-insensitive. If null, returns {@code defaultValue}
-     * @param defaultValue
-     *            the enum value to return if {@code name} is null
-     * @return an enum value or {@code defaultValue} if {@code name} is null
+     *
+     * @param name The enum name, case-insensitive. If null, returns {@code defaultValue}.
+     * @param enumType The Class of the enum.
+     * @param defaultValue the enum value to return if {@code name} is null.
+     * @param <T> The type of the enum.
+     * @return an enum value or {@code defaultValue} if {@code name} is null.
      */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name, final T defaultValue) {
         return name == null ? defaultValue : Enum.valueOf(enumType, name.toUpperCase(Locale.ENGLISH));

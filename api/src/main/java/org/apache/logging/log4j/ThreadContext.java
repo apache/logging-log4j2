@@ -312,6 +312,7 @@ public final class ThreadContext  {
      * with ParameterizedMessage.
      *
      * @param message The new diagnostic context information.
+     * @param args Parameters for the message.
      */
     public static void push(final String message, final Object... args) {
         if (!useStack) {

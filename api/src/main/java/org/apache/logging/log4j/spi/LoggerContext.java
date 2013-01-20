@@ -40,7 +40,8 @@ public interface LoggerContext {
     /**
      * Returns a Logger.
      * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
      * @return The logger with the specified name.
      */
     Logger getLogger(String name, MessageFactory messageFactory);

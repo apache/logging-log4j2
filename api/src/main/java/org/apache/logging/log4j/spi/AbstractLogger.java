@@ -30,78 +30,51 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  */
 public abstract class AbstractLogger implements Logger {
-
-    /**
-     * The default MessageFactory class.
-     */
-    public static Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = ParameterizedMessageFactory.class;
-    
-    private static final String THROWING = "throwing";
-    
-    private static final String CATCHING = "catching";
-
     /**
      * Marker for flow tracing.
      */
     public static final Marker FLOW_MARKER = MarkerManager.getMarker("FLOW");
-    
+
     /**
      * Marker for method entry tracing.
      */
     public static final Marker ENTRY_MARKER = MarkerManager.getMarker("ENTRY", FLOW_MARKER);
-    
+
     /**
      * Marker for method exit tracing.
      */
     public static final Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
-    
+
     /**
      * Marker for exception tracing.
      */
     public static final Marker EXCEPTION_MARKER = MarkerManager.getMarker("EXCEPTION");
-    
+
     /**
      * Marker for throwing exceptions.
      */
     public static final Marker THROWING_MARKER = MarkerManager.getMarker("THROWING", EXCEPTION_MARKER);
-    
+
     /**
      * Marker for catching exceptions.
      */
     public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING", EXCEPTION_MARKER);
 
+    /**
+     * The default MessageFactory class.
+     */
+    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
+        ParameterizedMessageFactory.class;
+
     private static final String FQCN = AbstractLogger.class.getName();
 
-    private final String name;
-    
-    private final MessageFactory messageFactory;
+    private static final String THROWING = "throwing";
 
-    /**
-     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
-     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
-     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
-     * 
-     * @param logger
-     *            The logger to check
-     * @param messageFactory
-     *            The message factory to check.
-     */
-    public static void checkMessageFactory(final Logger logger, final MessageFactory messageFactory) {
-        final String name = logger.getName();
-        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
-            StatusLogger
-                    .getLogger()
-                    .warn("The Logger {} was created with the message factory {} and is now requested with the message factory {}, which may create log events with unexpected formatting.",
-                            name, loggerMessageFactory, messageFactory);
-        } else if (messageFactory == null
-                && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
-            StatusLogger
-                    .getLogger()
-                    .warn("The Logger {} was created with the message factory {} and is now requested with a null message factory (defaults to {}), which may create log events with unexpected formatting.",
-                            name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
-        }
-    }
+    private static final String CATCHING = "catching";
+
+    private final String name;
+
+    private final MessageFactory messageFactory;
 
     /**
      * Creates a new logger named after the class (or subclass).
@@ -130,6 +103,35 @@ public abstract class AbstractLogger implements Logger {
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
         this.name = name;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
+    }
+
+    /**
+     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
+     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
+     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
+     *
+     * @param logger
+     *            The logger to check
+     * @param messageFactory
+     *            The message factory to check.
+     */
+    public static void checkMessageFactory(final Logger logger, final MessageFactory messageFactory) {
+        final String name = logger.getName();
+        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
+            StatusLogger
+                    .getLogger()
+                    .warn("The Logger {} was created with the message factory {} and is now requested with the " +
+                        "message factory {}, which may create log events with unexpected formatting.",
+                            name, loggerMessageFactory, messageFactory);
+        } else if (messageFactory == null
+                && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
+            StatusLogger
+                    .getLogger()
+                    .warn("The Logger {} was created with the message factory {} and is now requested with a null " +
+                        "message factory (defaults to {}), which may create log events with unexpected formatting.",
+                            name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
+        }
     }
 
     private MessageFactory createDefaultMessageFactory() {
@@ -1555,7 +1557,7 @@ public abstract class AbstractLogger implements Logger {
 
     /**
      * Gets the message factory.
-     * 
+     *
      * @return the message factory.
      */
     public MessageFactory getMessageFactory() {

@@ -55,9 +55,10 @@ public class SimpleLogger extends AbstractLogger {
     private String logName;
 
 
-    public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName, final boolean showShortLogName,
-                        final boolean showDateTime, final boolean showContextMap, final String dateTimeFormat,
-                        final MessageFactory messageFactory, final PropertiesUtil props, final PrintStream stream) {
+    public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName,
+                        final boolean showShortLogName, final boolean showDateTime, final boolean showContextMap,
+                        final String dateTimeFormat, final MessageFactory messageFactory, final PropertiesUtil props,
+                        final PrintStream stream) {
         super(name, messageFactory);
         final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);
@@ -78,7 +79,7 @@ public class SimpleLogger extends AbstractLogger {
         if (showDateTime) {
             try {
                 this.dateFormatter = new SimpleDateFormat(dateTimeFormat);
-            } catch(final IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 // If the format pattern is invalid - use the default format
                 this.dateFormatter = new SimpleDateFormat(SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT);
             }
@@ -96,13 +97,14 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable throwable) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message msg,
+                    final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
-        if(showDateTime) {
+        if (showDateTime) {
             final Date now = new Date();
             String dateText;
-            synchronized(dateFormatter) {
+            synchronized (dateFormatter) {
                 dateText = dateFormatter.format(now);
             }
             sb.append(dateText);
@@ -126,7 +128,7 @@ public class SimpleLogger extends AbstractLogger {
         }
         final Object[] params = msg.getParameters();
         Throwable t;
-        if (throwable == null && params != null && params[params.length -1] instanceof Throwable ) {
+        if (throwable == null && params != null && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
         } else {
             t = throwable;

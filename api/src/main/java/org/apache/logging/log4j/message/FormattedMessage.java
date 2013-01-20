@@ -39,6 +39,10 @@ public class FormattedMessage implements Message {
 
     private static final int HASHVAL = 31;
 
+    private static final String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
+
+    private static final Pattern MSG_PATTERN = Pattern.compile(FORMAT_SPECIFIER);
+
     private String messagePattern;
     private transient Object[] argArray;
     private String[] stringArgs;
@@ -46,12 +50,6 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
 
     private Message message;
-
-    private static final String formatSpecifier
-        = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
-
-    private static final Pattern MSG_PATTERN = Pattern.compile(formatSpecifier);
-
 
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;

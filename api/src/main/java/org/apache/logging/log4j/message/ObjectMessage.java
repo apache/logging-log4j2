@@ -105,7 +105,7 @@ public class ObjectMessage implements Message {
 
     /**
      * Gets the message if it is a throwable.
-     * 
+     *
      * @return the message if it is a throwable.
      */
     public Throwable getThrowable() {

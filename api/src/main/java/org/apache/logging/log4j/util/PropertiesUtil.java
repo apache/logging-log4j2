@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.IOException;
@@ -28,15 +27,9 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    private final Properties props;
-
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
-    private Logger logger;
-
-    public static PropertiesUtil getProperties() {
-        return LOG4J_PROPERTIES;
-    }
+    private final Properties props;
 
     public PropertiesUtil(final Properties props) {
         this.props = props;
@@ -59,6 +52,10 @@ public class PropertiesUtil {
                 }
             }
         }
+    }
+
+    public static PropertiesUtil getProperties() {
+        return LOG4J_PROPERTIES;
     }
 
     public String getStringProperty(final String name) {

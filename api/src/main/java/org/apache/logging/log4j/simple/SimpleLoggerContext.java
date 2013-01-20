@@ -64,6 +64,8 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final PrintStream stream;
 
+    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
 
@@ -93,8 +95,6 @@ public class SimpleLoggerContext implements LoggerContext {
         }
         this.stream = ps;
     }
-
-    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
     public Logger getLogger(final String name) {
         return getLogger(name, null);

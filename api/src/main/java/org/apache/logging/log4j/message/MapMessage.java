@@ -298,7 +298,7 @@ public class MapMessage implements MultiformatMessage {
 
     /**
      * Always returns null.
-     * 
+     *
      * @return null
      */
     public Throwable getThrowable() {

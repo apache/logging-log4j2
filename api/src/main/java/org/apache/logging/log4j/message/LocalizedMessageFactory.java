@@ -44,6 +44,10 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
      *
+     * @param message The message format String.
+     * @param params The parameters for the message.
+     * @return The Message.
+     *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override

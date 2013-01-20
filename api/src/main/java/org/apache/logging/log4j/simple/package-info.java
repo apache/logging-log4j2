@@ -14,19 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.simple;
-
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 
 /**
- *
+ * Simple logging implementation.
  */
-public class SimpleLoggerContextFactory implements LoggerContextFactory {
-
-    private static LoggerContext context = new SimpleLoggerContext();
-
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-        return context;
-    }
-}
+package org.apache.logging.log4j.simple;

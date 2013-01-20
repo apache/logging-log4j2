@@ -147,7 +147,7 @@ public class StringFormattedMessage implements Message {
 
     /**
      * Always returns null.
-     * 
+     *
      * @return null
      */
     public Throwable getThrowable() {

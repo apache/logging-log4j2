@@ -18,7 +18,7 @@ package org.apache.logging.log4j.message;
 
 /**
  * Creates messages. Implementations can provide different message format syntaxes.
- * 
+ *
  * @see ParameterizedMessageFactory
  * @see StringFormatterMessageFactory
  * @version $Id$
@@ -27,7 +27,7 @@ public interface MessageFactory {
 
     /**
      * Creates a new message based on an Object.
-     * 
+     *
      * @param message
      *            a message object
      * @return a new message
@@ -36,7 +36,7 @@ public interface MessageFactory {
 
     /**
      * Creates a new message based on a String.
-     * 
+     *
      * @param message
      *            a message String
      * @return a new message
@@ -45,7 +45,7 @@ public interface MessageFactory {
 
     /**
      * Creates a new parameterized message.
-     * 
+     *
      * @param message
      *            a message template, the kind of message template depends on the implementaion.
      * @param params
@@ -55,5 +55,4 @@ public interface MessageFactory {
      * @see StringFormatterMessageFactory
      */
     Message newMessage(String message, Object... params);
-
 }

@@ -27,6 +27,10 @@ public class FormattedMessageFactory extends AbstractMessageFactory {
     /**
      * Creates {@link StringFormattedMessage} instances.
      *
+     * @param message The message format.
+     * @param params Message parameters.
+     * @return The Message object.
+     *
      * @see MessageFactory#newMessage(String, Object...)
      */
     @Override

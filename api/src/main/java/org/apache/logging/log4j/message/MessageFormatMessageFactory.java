@@ -26,6 +26,9 @@ public class MessageFormatMessageFactory extends AbstractMessageFactory {
 
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
+     * @param message The message pattern.
+     * @param params Parameters to the message.
+     * @return The Message.
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */

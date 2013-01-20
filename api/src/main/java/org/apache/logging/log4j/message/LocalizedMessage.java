@@ -34,8 +34,7 @@ import java.util.ResourceBundle;
  * used to read the events and display them to the user should also localize and format the
  * messages for the end user.
  */
-public class LocalizedMessage implements Message, LoggerNameAwareMessage
-{
+public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private static final long serialVersionUID = 3893703791567290742L;
 
     private String bundleId;
@@ -54,7 +53,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage
     private transient Throwable throwable;
 
     /**
-     * <p></p>
+     * Constructor with message pattern and arguments.
      *
      * @param messagePattern the message pattern that to be checked for placeholders.
      * @param arguments      the argument array to be converted.
@@ -68,7 +67,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final String key, final Object[] arguments) {
-        this(bundle, (Locale)null, key, arguments);
+        this(bundle, (Locale) null, key, arguments);
     }
 
     public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object[] arguments) {
@@ -78,7 +77,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage
         setup(bundleId, null, locale);
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
+                            final Object[] arguments) {
         this.messagePattern = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -125,11 +125,13 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage
         this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final String bundleId, final Locale locale, final String key, final Object arg1,
+                            final Object arg2) {
         this(bundleId, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
+                            final Object arg2) {
         this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 

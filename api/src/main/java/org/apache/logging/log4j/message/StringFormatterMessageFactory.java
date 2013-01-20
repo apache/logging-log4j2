@@ -26,7 +26,7 @@ import java.util.Formatter;
  * <p>
  * This class is immutable.
  * </p>
- * 
+ *
  * @version $Id$
  */
 public final class StringFormatterMessageFactory extends AbstractMessageFactory {
@@ -38,7 +38,11 @@ public final class StringFormatterMessageFactory extends AbstractMessageFactory 
 
     /**
      * Creates {@link StringFormattedMessage} instances.
-     * 
+     *
+     * @param message The message pattern.
+     * @param params The parameters to the message.
+     * @return The Message.
+     *
      * @see MessageFactory#newMessage(String, Object...)
      */
     @Override

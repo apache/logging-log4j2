@@ -25,7 +25,7 @@ import org.apache.logging.log4j.message.MessageFactory;
  * @doubt See LOG4J2-16.
  */
 public interface Logger {
-    
+
   /**
    * Logs an exception or error that has been caught.
    * @param level The logging Level.
@@ -446,7 +446,7 @@ public interface Logger {
 
   /**
    * Gets the logger name.
-   * 
+   *
    * @return the logger name.
    */
     String getName();
@@ -605,7 +605,7 @@ public interface Logger {
    * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
    */
   boolean isEnabled(Level level);
-  
+
   /**
    * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
    *
@@ -957,7 +957,7 @@ public interface Logger {
    * @param message the message to log; the format depends on the message factory.
    * @param params parameters to the message.
    * @see #getMessageFactory()
-   * 
+   *
    * @doubt Likely to misinterpret existing log4j client code that intended to call
    * info(Object,Throwable). Incurs array creation expense on every call. (RG) I assume you
    * meant warn, not info. It isn't possible to be misinterpreted as the previous method
@@ -973,10 +973,10 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void warn(String message, Throwable t);
-  
+
   /**
    * Gets the message factory used to convert message Objects and Strings into actual log Messages.
-   * 
+   *
    * @return the message factory.
    */
   MessageFactory getMessageFactory();

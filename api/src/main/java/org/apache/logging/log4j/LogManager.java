@@ -41,19 +41,11 @@ public class LogManager {
      */
     public static final String ROOT_LOGGER_NAME = "";
 
-    private static final String LOGGER_RESOURCE = "META-INF/log4j-provider.properties";
-    private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
-    private static final String API_VERSION = "Log4jAPIVersion";
-    private static final String FACTORY_PRIORITY = "FactoryPriority";
-    private static final String[] COMPATIBLE_API_VERSIONS = {
-        "2.0.0"
-    };
-
     private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
 
     private static LoggerContextFactory factory;
 
-    private static final Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Scans the classpath to find all logging implementation. Currently, only one will
@@ -71,9 +63,9 @@ public class LogManager {
                     factory = (LoggerContextFactory) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                logger.error("Unable to locate configured LoggerContextFactory {}", factoryClass);
+                LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClass);
             } catch (final Exception ex) {
-                logger.error("Unable to create configured LoggerContextFactory {}", factoryClass, ex);
+                LOGGER.error("Unable to create configured LoggerContextFactory {}", factoryClass, ex);
             }
         }
 
@@ -91,16 +83,16 @@ public class LogManager {
                             if (LoggerContextFactory.class.isAssignableFrom(clazz)) {
                                 factories.put(provider.getPriority(), (LoggerContextFactory) clazz.newInstance());
                             } else {
-                                logger.error(className + " does not implement " + LoggerContextFactory.class.getName());
+                                LOGGER.error(className + " does not implement " + LoggerContextFactory.class.getName());
                             }
                         } catch (final ClassNotFoundException cnfe) {
-                            logger.error("Unable to locate class " + className + " specified in " +
+                            LOGGER.error("Unable to locate class " + className + " specified in " +
                                 provider.getURL().toString(), cnfe);
                         } catch (final IllegalAccessException iae) {
-                            logger.error("Unable to create class " + className + " specified in " +
+                            LOGGER.error("Unable to create class " + className + " specified in " +
                                 provider.getURL().toString(), iae);
                         } catch (final Exception e) {
-                            logger.error("Unable to create class " + className + " specified in " +
+                            LOGGER.error("Unable to create class " + className + " specified in " +
                                 provider.getURL().toString(), e);
                             e.printStackTrace();
                         }
@@ -108,7 +100,7 @@ public class LogManager {
                 }
 
                 if (factories.size() == 0) {
-                    logger.error("Unable to locate a logging implementation, using SimpleLogger");
+                    LOGGER.error("Unable to locate a logging implementation, using SimpleLogger");
                     factory = new SimpleLoggerContextFactory();
                 } else {
                     final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
@@ -118,14 +110,20 @@ public class LogManager {
                     }
                     factory = factories.get(factories.lastKey());
                     sb.append("Using factory: ").append(factory.getClass().getName());
-                    logger.warn(sb.toString());
+                    LOGGER.warn(sb.toString());
 
                 }
             } else {
-                logger.error("Unable to locate a logging implementation, using SimpleLogger");
+                LOGGER.error("Unable to locate a logging implementation, using SimpleLogger");
                 factory = new SimpleLoggerContextFactory();
             }
         }
+    }
+
+    /**
+     * Prevents instantiation
+     */
+    protected LogManager() {
     }
 
     /**
@@ -191,7 +189,8 @@ public class LogManager {
      * returned. If true then only a single LoggerContext will be returned.
      * @return a LoggerContext.
      */
-    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+    protected static LoggerContext getContext(final String fqcn, final ClassLoader loader,
+                                              final boolean currentContext) {
         return factory.getContext(fqcn, loader, currentContext);
     }
 
@@ -305,7 +304,8 @@ public class LogManager {
     /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
      * @param clazz The Class whose name should be used as the Logger name.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
      * @return The Logger.
      */
     public static Logger getLogger(final Class<?> clazz, final MessageFactory messageFactory) {
@@ -324,7 +324,8 @@ public class LogManager {
     /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
      * @param value The value whose class name should be used as the Logger name.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
      * @return The Logger.
      */
     public static Logger getLogger(final Object value, final MessageFactory messageFactory) {
@@ -345,13 +346,13 @@ public class LogManager {
      * Returns a Logger with the specified name.
      *
      * @param name The logger name.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
      * @return The Logger.
      */
     public static Logger getLogger(final String name, final MessageFactory messageFactory) {
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(name, messageFactory);
     }
-
 
     /**
      * Returns a Logger with the specified name.
@@ -363,20 +364,4 @@ public class LogManager {
     protected static Logger getLogger(final String fqcn, final String name) {
         return factory.getContext(fqcn, null, false).getLogger(name);
     }
-
-    private static boolean validVersion(final String version) {
-        for (final String v : COMPATIBLE_API_VERSIONS) {
-            if (version.startsWith(v)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Prevents instantiation
-     */
-    protected LogManager() {
-    }
-
 }

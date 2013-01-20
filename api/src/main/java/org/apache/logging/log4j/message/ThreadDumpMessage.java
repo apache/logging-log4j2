@@ -33,7 +33,7 @@ public class ThreadDumpMessage implements Message {
 
     private static final long serialVersionUID = -1103400781608841088L;
 
-    private final static ThreadInfoFactory factory;
+    private static final ThreadInfoFactory FACTORY;
 
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
 
@@ -50,7 +50,7 @@ public class ThreadDumpMessage implements Message {
                 break;
             }
         }
-        factory = basic ? new BasicThreadInfoFactory() : new ExtendedThreadInfoFactory();
+        FACTORY = basic ? new BasicThreadInfoFactory() : new ExtendedThreadInfoFactory();
     }
 
     /**
@@ -59,7 +59,7 @@ public class ThreadDumpMessage implements Message {
      */
     public ThreadDumpMessage(final String title) {
         this.title = title == null ? "" : title;
-        threads = factory.createThreadInfo();
+        threads = FACTORY.createThreadInfo();
     }
 
     private ThreadDumpMessage(final String formattedMsg, final String title) {
@@ -192,7 +192,7 @@ public class ThreadDumpMessage implements Message {
 
     /**
      * Always returns null.
-     * 
+     *
      * @return null
      */
     public Throwable getThrowable() {
