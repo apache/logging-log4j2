@@ -37,8 +37,10 @@ public final class AppendersPlugin {
      * @return The Appender Map.
      */
     @PluginFactory
-    public static ConcurrentMap<String, Appender<? extends Serializable>> createAppenders(@PluginElement("appenders") final Appender<?>[] appenders) {
-        final ConcurrentMap<String, Appender<? extends Serializable>> map = new ConcurrentHashMap<String, Appender<? extends Serializable>>();
+    public static ConcurrentMap<String, Appender<? extends Serializable>> createAppenders(
+                                             @PluginElement("appenders") final Appender<?>[] appenders) {
+        final ConcurrentMap<String, Appender<? extends Serializable>> map =
+            new ConcurrentHashMap<String, Appender<? extends Serializable>>();
 
         for (final Appender<?> appender : appenders) {
                 map.put(appender.getName(), appender);

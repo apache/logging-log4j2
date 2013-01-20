@@ -42,7 +42,8 @@ public class MapFilter extends AbstractFilter {
 
     private final boolean isAnd;
 
-    protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
+    protected MapFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
+                        final Result onMismatch) {
         super(onMatch, onMismatch);
         if (map == null) {
             throw new NullPointerException("key cannot be null");
@@ -52,7 +53,8 @@ public class MapFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         if (msg instanceof MapMessage) {
             return filter(((MapMessage) msg).getData()) ? onMatch : onMismatch;
         }

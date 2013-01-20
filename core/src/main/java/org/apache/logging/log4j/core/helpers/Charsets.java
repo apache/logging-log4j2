@@ -23,12 +23,15 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Charset utilities.
  */
-public class Charsets {
+public final class Charsets {
+
+    private Charsets() {
+    }
 
     /**
-     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8, if not supported, use the platform
-     * default.
-     * 
+     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8, if not
+     * supported, use the platform default.
+     *
      * @param charsetName
      *            the preferred charset name
      * @return a Charset, not null.
@@ -43,7 +46,8 @@ public class Charsets {
         if (charset == null) {
             charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
             if (charsetName != null) {
-                StatusLogger.getLogger().error("Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
+                StatusLogger.getLogger().error("Charset " + charsetName + " is not supported for layout, using " +
+                    charset.displayName());
             }
         }
         return charset;

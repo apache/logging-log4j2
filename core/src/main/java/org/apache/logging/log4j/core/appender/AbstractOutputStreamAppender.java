@@ -54,8 +54,9 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout layout, final Filter filter, final boolean handleException,
-                                final boolean immediateFlush, final OutputStreamManager manager) {
+    protected AbstractOutputStreamAppender(final String name, final Layout layout, final Filter filter,
+                                           final boolean handleException, final boolean immediateFlush,
+                                           final OutputStreamManager manager) {
         super(name, filter, layout, handleException);
         if (layout != null) {
             manager.setHeader(layout.getHeader());

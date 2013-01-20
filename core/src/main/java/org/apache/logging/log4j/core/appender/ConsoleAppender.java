@@ -56,8 +56,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         SYSTEM_ERR
     }
 
-    private ConsoleAppender(final String name, final Layout layout, final Filter filter, final OutputStreamManager manager,
-                           final boolean handleExceptions) {
+    private ConsoleAppender(final String name, final Layout layout, final Filter filter,
+                            final OutputStreamManager manager,
+                            final boolean handleExceptions) {
         super(name, layout, filter, handleExceptions, true, manager);
     }
 
@@ -66,6 +67,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
      * @param layout The layout to use (required).
      * @param filter The Filter or null.
      * @param t The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
+     * @param follow If true will follow changes to the underlying output stream.
      * @param name The name of the Appender (required).
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".

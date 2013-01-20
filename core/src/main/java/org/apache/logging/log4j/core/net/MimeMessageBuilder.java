@@ -24,7 +24,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- *  Helper class for SMTPManager
+ *  Helper class for SMTPManager.
  */
 public class MimeMessageBuilder {
     private final MimeMessage message;

@@ -30,6 +30,23 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  */
 public abstract class AbstractStyleNameConverter extends LogEventPatternConverter {
 
+    private final List<PatternFormatter> formatters;
+
+    private final String style;
+
+    /**
+     * Constructs the converter.
+     *
+     * @param formatters The PatternFormatters to generate the text to manipulate.
+     * @param styling The styling that should encapsulate the pattern.
+     */
+    protected AbstractStyleNameConverter(final String name, final List<PatternFormatter> formatters,
+                                         final String styling) {
+        super(name, "style");
+        this.formatters = formatters;
+        this.style = styling;
+    }
+
     /**
      * Black style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
@@ -37,32 +54,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Black.NAME)
     public static final class Black extends AbstractStyleNameConverter {
 
+        /** Black */
         protected static final String NAME = "black";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Black newInstance(final Configuration config, final String[] options) {
-            return newInstance(Black.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Black(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *            throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Black newInstance(final Configuration config, final String[] options) {
+            return newInstance(Black.class, NAME, config, options);
         }
     }
 
@@ -73,32 +87,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Blue.NAME)
     public static final class Blue extends AbstractStyleNameConverter {
 
+        /** Blue */
         protected static final String NAME = "blue";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Blue newInstance(final Configuration config, final String[] options) {
-            return newInstance(Blue.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Blue(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Blue newInstance(final Configuration config, final String[] options) {
+            return newInstance(Blue.class, NAME, config, options);
         }
     }
 
@@ -109,32 +120,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Cyan.NAME)
     public static final class Cyan extends AbstractStyleNameConverter {
 
+        /** Cyan */
         protected static final String NAME = "cyan";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Cyan newInstance(final Configuration config, final String[] options) {
-            return newInstance(Cyan.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Cyan(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Cyan newInstance(final Configuration config, final String[] options) {
+            return newInstance(Cyan.class, NAME, config, options);
         }
     }
 
@@ -145,32 +153,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Green.NAME)
     public static final class Green extends AbstractStyleNameConverter {
 
+        /** Green */
         protected static final String NAME = "green";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Green newInstance(final Configuration config, final String[] options) {
-            return newInstance(Green.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Green(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Green newInstance(final Configuration config, final String[] options) {
+            return newInstance(Green.class, NAME, config, options);
         }
     }
 
@@ -181,32 +186,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Magenta.NAME)
     public static final class Magenta extends AbstractStyleNameConverter {
 
+        /** Magenta */
         protected static final String NAME = "magenta";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Magenta newInstance(final Configuration config, final String[] options) {
-            return newInstance(Magenta.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Magenta(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Magenta newInstance(final Configuration config, final String[] options) {
+            return newInstance(Magenta.class, NAME, config, options);
         }
     }
 
@@ -217,32 +219,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Red.NAME)
     public static final class Red extends AbstractStyleNameConverter {
 
+        /** Red */
         protected static final String NAME = "red";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static Red newInstance(final Configuration config, final String[] options) {
-            return newInstance(Red.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public Red(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static Red newInstance(final Configuration config, final String[] options) {
+            return newInstance(Red.class, NAME, config, options);
         }
     }
 
@@ -253,32 +252,29 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(White.NAME)
     public static final class White extends AbstractStyleNameConverter {
 
+        /** White */
         protected static final String NAME = "white";
-
-        /**
-         * Gets an instance of the class (called via reflection).
-         *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
-         * @return new instance of class or null
-         */
-        public static White newInstance(final Configuration config, final String[] options) {
-            return newInstance(White.class, NAME, config, options);
-        }
 
         /**
          * Constructs the converter. This constructor must be public.
          *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
          */
         public White(final List<PatternFormatter> formatters, final String styling) {
             super(NAME, formatters, styling);
+        }
+
+        /**
+         * Gets an instance of the class (called via reflection).
+         *
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
+         * @return new instance of class or null
+         */
+        public static White newInstance(final Configuration config, final String[] options) {
+            return newInstance(White.class, NAME, config, options);
         }
     }
 
@@ -289,46 +285,43 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     @ConverterKeys(Yellow.NAME)
     public static final class Yellow extends AbstractStyleNameConverter {
 
+        /** Yellow */
         protected static final String NAME = "yellow";
+
+        /**
+         * Constructs the converter. This constructor must be public.
+         *
+         * @param formatters The PatternFormatters to generate the text to manipulate.
+         * @param styling The styling that should encapsulate the pattern.
+         */
+        public Yellow(final List<PatternFormatter> formatters, final String styling) {
+            super(NAME, formatters, styling);
+        }
 
         /**
          * Gets an instance of the class (called via reflection).
          *
-         * @param config
-         *            The current Configuration.
-         * @param options
-         *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be
-         *            formatted.
+         * @param config The current Configuration.
+         * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+         *                throwable will be formatted.
          * @return new instance of class or null
          */
         public static Yellow newInstance(final Configuration config, final String[] options) {
             return newInstance(Yellow.class, NAME, config, options);
-        }
-
-        /**
-         * Constructs the converter.
-         *
-         * @param formatters
-         *            The PatternFormatters to generate the text to manipulate.
-         * @param styling
-         *            The styling that should encapsulate the pattern.
-         */
-        public Yellow(final List<PatternFormatter> formatters, final String styling) {
-            super(NAME, formatters, styling);
         }
     }
 
     /**
      * Gets an instance of the class (called via reflection).
      *
-     * @param config
-     *            The current Configuration.
-     * @param options
-     *            The pattern options, may be null. If the first element is "short", only the first line of the throwable will be formatted.
+     * @param config The current Configuration.
+     * @param options The pattern options, may be null. If the first element is "short", only the first line of the
+     *                throwable will be formatted.
      * @return new instance of class or null
      */
-    protected static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass, final String name, final Configuration config,
-            final String[] options) {
+    protected static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass,
+                                                                          final String name, final Configuration config,
+                                                                          final String[] options) {
         final List<PatternFormatter> formatters = toPatternFormatterList(config, options);
         if (formatters == null) {
             return null;
@@ -355,10 +348,8 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Creates a list of PatternFormatter from the given configuration and options or null if no pattern is supplied.
      *
-     * @param config
-     *            A configuration
-     * @param options
-     *            pattern options
+     * @param config A configuration.
+     * @param options pattern options.
      * @return a list of PatternFormatter from the given configuration and options or null if no pattern is supplied.
      */
     private static List<PatternFormatter> toPatternFormatterList(final Configuration config, final String[] options) {
@@ -372,24 +363,6 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
             return null;
         }
         return parser.parse(options[0]);
-    }
-
-    private final List<PatternFormatter> formatters;
-
-    private final String style;
-
-    /**
-     * Constructs the converter.
-     *
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     * @param styling
-     *            The styling that should encapsulate the pattern.
-     */
-    protected AbstractStyleNameConverter(final String name, final List<PatternFormatter> formatters, final String styling) {
-        super(name, "style");
-        this.formatters = formatters;
-        this.style = styling;
     }
 
     /**

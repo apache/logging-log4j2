@@ -82,7 +82,8 @@ public class XMLLayout extends AbstractStringLayout {
     private final boolean properties;
     private final boolean complete;
 
-    protected XMLLayout(final boolean locationInfo, final boolean properties, final boolean complete, final Charset charset) {
+    protected XMLLayout(final boolean locationInfo, final boolean properties, final boolean complete,
+                        final Charset charset) {
         super(charset);
         this.locationInfo = locationInfo;
         this.properties = properties;

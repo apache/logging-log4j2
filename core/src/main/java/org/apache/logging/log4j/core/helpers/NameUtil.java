@@ -23,6 +23,8 @@ import java.security.MessageDigest;
  */
 public final class NameUtil {
 
+    private static final int MASK = 0xff;
+
     private NameUtil() {
     }
 
@@ -41,7 +43,7 @@ public final class NameUtil {
             final byte[] bytes = digest.digest();
             final StringBuilder md5 = new StringBuilder();
             for (final byte b : bytes) {
-                final String hex = Integer.toHexString(0xff & b);
+                final String hex = Integer.toHexString(MASK & b);
                 if (hex.length() == 1) {
                     md5.append('0');
                 }

@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *	  http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,8 +46,11 @@ import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+/**
+ * Manager for sending SMTP events.
+ */
 public class SMTPManager extends AbstractManager {
-    private static final SMTPManagerFactory factory = new SMTPManagerFactory();
+    private static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
 
     private final Session session;
 
@@ -117,20 +120,21 @@ public class SMTPManager extends AbstractManager {
 
         final String name = "SMTP:" + NameUtil.md5(sb.toString());
 
-        return getManager(name, factory, new FactoryData(to, cc, bcc, from, replyTo, subject,
+        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subject,
             protocol, host, port, username, password, isDebug, numElements));
     }
 
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
-     * @param appendEvent
+     * @param layout The layout for formatting the events.
+     * @param appendEvent The event that triggered the send.
      */
     public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
         if (message == null) {
             connect();
         }
         try {
-        	final LogEvent[] priorEvents = buffer.removeAll();
+            final LogEvent[] priorEvents = buffer.removeAll();
             final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
 
             final String contentType = layout.getContentType();
@@ -153,13 +157,15 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout) throws IOException {
+    protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent,
+                                          final Layout<?> layout) throws IOException {
         final ByteArrayOutputStream raw = new ByteArrayOutputStream();
         writeContent(priorEvents, appendEvent, layout, raw);
         return raw.toByteArray();
     }
 
-    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout, final ByteArrayOutputStream out)
+    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
+                              final ByteArrayOutputStream out)
         throws IOException {
         writeHeader(layout, out);
         writeBuffer(priorEvents, appendEvent, layout, out);
@@ -173,7 +179,8 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
-    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout, final OutputStream out) throws IOException {
+    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
+                               final OutputStream out) throws IOException {
         for (final LogEvent priorEvent : priorEvents) {
             final byte[] bytes = layout.toByteArray(priorEvent);
             out.write(bytes);
@@ -195,7 +202,8 @@ public class SMTPManager extends AbstractManager {
         return MimeUtility.getEncoding(dataSource);
     }
 
-    protected byte[] encodeContentToBytes(final byte[] rawBytes, final String encoding) throws MessagingException, IOException {
+    protected byte[] encodeContentToBytes(final byte[] rawBytes, final String encoding)
+        throws MessagingException, IOException {
         final ByteArrayOutputStream encoded = new ByteArrayOutputStream();
         encodeContent(rawBytes, encoding, encoded);
         return encoded.toByteArray();
@@ -215,7 +223,8 @@ public class SMTPManager extends AbstractManager {
         return headers;
     }
 
-    protected MimeMultipart getMimeMultipart(final byte[] encodedBytes, final InternetHeaders headers) throws MessagingException {
+    protected MimeMultipart getMimeMultipart(final byte[] encodedBytes, final InternetHeaders headers)
+        throws MessagingException {
         final MimeMultipart mp = new MimeMultipart();
         final MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
         mp.addBodyPart(part);
@@ -230,6 +239,9 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
+    /**
+     * Factory data.
+     */
     private static class FactoryData {
         private final String to;
         private final String cc;
@@ -278,6 +290,9 @@ public class SMTPManager extends AbstractManager {
         }
     }
 
+    /**
+     * Factory to create the SMTP Manager.
+     */
     private static class SMTPManagerFactory implements ManagerFactory<SMTPManager, FactoryData> {
 
         public SMTPManager createManager(final String name, final FactoryData data) {
@@ -322,7 +337,8 @@ public class SMTPManager extends AbstractManager {
         private Authenticator buildAuthenticator(final String username, final String password) {
             if (null != password && null != username) {
                 return new Authenticator() {
-                    private final PasswordAuthentication passwordAuthentication = new PasswordAuthentication(username, password);
+                    private final PasswordAuthentication passwordAuthentication =
+                        new PasswordAuthentication(username, password);
 
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {

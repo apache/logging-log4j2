@@ -82,7 +82,8 @@ public class ThrowableProxy extends Throwable {
      * @param map The cache containing the packaging data.
      * @param cause The Throwable to wrap.
      */
-    private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map, final Throwable cause) {
+    private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
+                           final Throwable cause) {
         super(cause.getMessage(), null);
         this.name = cause.getClass().getName();
         super.setStackTrace(cause.getStackTrace());
@@ -262,7 +263,8 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
-    private void formatEntry(final StackTraceElement element, final StackTracePackageElement packageData, final StringBuilder sb) {
+    private void formatEntry(final StackTraceElement element, final StackTracePackageElement packageData,
+                             final StringBuilder sb) {
         sb.append("\tat ");
         sb.append(element);
         sb.append(" ");
@@ -315,7 +317,8 @@ public class ThrowableProxy extends Throwable {
      * @param stackTrace The stack trace being resolved.
      * @return The StackTracePackageElement array.
      */
-    private StackTracePackageElement[] resolvePackageData(final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
+    private StackTracePackageElement[] resolvePackageData(final Stack<Class<?>> stack, final Map<String,
+                                                          CacheEntry> map,
                                                           final StackTraceElement[] rootTrace,
                                                           final StackTraceElement[] stackTrace) {
         int stackLength;

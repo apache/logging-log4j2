@@ -30,7 +30,8 @@ import java.util.Map;
  */
 public interface Configuration extends Filterable {
 
-    public static final String CONTEXT_PROPERTIES = "ContextProperties";
+    /** Key for storing the Context properties. */
+    String CONTEXT_PROPERTIES = "ContextProperties";
 
     /**
      * Returns the configuration name.

@@ -99,9 +99,15 @@ public enum Facility {
     /** Local use 7. */
     LOCAL7(23);
 
+    private final int code;
+
+    private Facility(final int code) {
+        this.code = code;
+    }
+
     /**
      * Returns the Facility for the given string.
-     * 
+     *
      * @param name The Facility enum name, case-insensitive. If null, returns, null
      * @return a Facility enum value or null if name is null
      */
@@ -111,19 +117,13 @@ public enum Facility {
 
     /**
      * Returns the Facility for the given string.
-     * 
+     *
      * @param name The Facility enum name, case-insensitive. If null, returns, defaultFacility
      * @param defaultFacility the Facility to return if name is null
      * @return a Facility enum value or null if name is null
      */
     public static Facility toFacility(final String name, final Facility defaultFacility) {
         return EnglishEnums.valueOf(Facility.class, name, defaultFacility);
-    }
-
-    private final int code;
-
-    private Facility(final int code) {
-        this.code = code;
     }
 
     /**

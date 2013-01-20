@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
 
-    private static final StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
 
@@ -203,7 +203,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Obtain a Logger from the Context.
      * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
      * @return The Logger.
      */
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
@@ -281,7 +282,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      *  Reconfigure the context.
      */
     public synchronized void reconfigure() {
-        logger.debug("Reconfiguration started for context " + name);
+        LOGGER.debug("Reconfiguration started for context " + name);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
         /*instance.start();
@@ -290,7 +291,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         if (old != null) {
             old.stop();
         } */
-        logger.debug("Reconfiguration completed");
+        LOGGER.debug("Reconfiguration completed");
     }
 
     /**
@@ -315,13 +316,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     public synchronized void onChange(final Reconfigurable reconfigurable) {
-        logger.debug("Reconfiguration started for context " + name);
+        LOGGER.debug("Reconfiguration started for context " + name);
         final Configuration config = reconfigurable.reconfigure();
         if (config != null) {
             setConfiguration(config);
-            logger.debug("Reconfiguration completed");
+            LOGGER.debug("Reconfiguration completed");
         } else {
-            logger.debug("Reconfiguration failed");
+            LOGGER.debug("Reconfiguration failed");
         }
     }
 

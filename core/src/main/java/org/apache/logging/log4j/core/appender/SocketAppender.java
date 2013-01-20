@@ -36,8 +36,9 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public class SocketAppender extends AbstractOutputStreamAppender {
 
 
-    protected SocketAppender(final String name, final Layout layout, final Filter filter, final AbstractSocketManager manager,
-                          final boolean handleException, final boolean immediateFlush) {
+    protected SocketAppender(final String name, final Layout layout, final Filter filter,
+                             final AbstractSocketManager manager, final boolean handleException,
+                             final boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
 
     }
@@ -89,7 +90,8 @@ public class SocketAppender extends AbstractOutputStreamAppender {
         return new SocketAppender(name, layout, filter, manager, handleExceptions, isFlush);
     }
 
-    protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port, final int delay) {
+    protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port,
+                                                               final int delay) {
         final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:

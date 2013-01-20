@@ -73,19 +73,20 @@ public final class JMSTopicAppender extends AbstractAppender {
      * @return The JMSTopicAppender.
      */
     @PluginFactory
-    public static JMSTopicAppender createAppender(@PluginAttr("name") final String name,
-                                                  @PluginAttr("factoryName") final String factoryName,
-                                                  @PluginAttr("providerURL") final String providerURL,
-                                                  @PluginAttr("urlPkgPrefixes") final String urlPkgPrefixes,
-                                                  @PluginAttr("securityPrincipalName") final String securityPrincipalName,
-                                                  @PluginAttr("securityCredentials") final String securityCredentials,
-                                                  @PluginAttr("factoryBindingName") final String factoryBindingName,
-                                                  @PluginAttr("topicBindingName") final String topicBindingName,
-                                                  @PluginAttr("userName") final String userName,
-                                                  @PluginAttr("password") final String password,
-                                                  @PluginElement("layout") Layout layout,
-                                                  @PluginElement("filters") final Filter filter,
-                                                  @PluginAttr("suppressExceptions") final String suppress) {
+    public static JMSTopicAppender createAppender(
+                                                @PluginAttr("name") final String name,
+                                                @PluginAttr("factoryName") final String factoryName,
+                                                @PluginAttr("providerURL") final String providerURL,
+                                                @PluginAttr("urlPkgPrefixes") final String urlPkgPrefixes,
+                                                @PluginAttr("securityPrincipalName") final String securityPrincipalName,
+                                                @PluginAttr("securityCredentials") final String securityCredentials,
+                                                @PluginAttr("factoryBindingName") final String factoryBindingName,
+                                                @PluginAttr("topicBindingName") final String topicBindingName,
+                                                @PluginAttr("userName") final String userName,
+                                                @PluginAttr("password") final String password,
+                                                @PluginElement("layout") Layout layout,
+                                                @PluginElement("filters") final Filter filter,
+                                                @PluginAttr("suppressExceptions") final String suppress) {
 
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");

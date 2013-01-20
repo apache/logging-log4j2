@@ -31,7 +31,7 @@ import java.nio.channels.FileLock;
  */
 public class FileManager extends OutputStreamManager {
 
-    private static final FileManagerFactory factory = new FileManagerFactory();
+    private static final FileManagerFactory FACTORY = new FileManagerFactory();
 
     private final boolean isAppend;
     private final boolean isLocking;
@@ -50,12 +50,13 @@ public class FileManager extends OutputStreamManager {
      * @param bufferedIO true if the contents should be buffered as they are written.
      * @return A FileManager for the File.
      */
-    public static FileManager getFileManager(final String fileName, final boolean append, boolean locking, final boolean bufferedIO) {
+    public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
+                                             final boolean bufferedIO) {
 
         if (locking && bufferedIO) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO), factory);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO), FACTORY);
     }
 
     @Override

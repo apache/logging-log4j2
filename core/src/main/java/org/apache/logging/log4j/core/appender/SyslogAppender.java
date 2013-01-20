@@ -39,8 +39,8 @@ public class SyslogAppender extends SocketAppender {
 
     private static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(final String name, final Layout layout, final Filter filter,
-                          final boolean handleException, final boolean immediateFlush, final AbstractSocketManager manager) {
+    protected SyslogAppender(final String name, final Layout layout, final Filter filter, final boolean handleException,
+                             final boolean immediateFlush, final AbstractSocketManager manager) {
         super(name, layout, filter, manager, handleException, immediateFlush);
 
     }
@@ -62,6 +62,7 @@ public class SyslogAppender extends SocketAppender {
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
      * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param escapeNL String that should be used to replace newlines within the message text.
      * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
      * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
      * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
@@ -72,6 +73,7 @@ public class SyslogAppender extends SocketAppender {
      * @param filter A Filter to determine if the event should be handled by this Appender.
      * @param config The Configuration.
      * @param charsetName The character set to use when converting the syslog String to a byte array.
+     * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @return A SyslogAppender.
      */
     @PluginFactory

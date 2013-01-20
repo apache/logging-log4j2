@@ -21,13 +21,13 @@ import java.io.Serializable;
 
 /**
  * Plugin Descriptor.
- * 
+ *
  * @param <T> The plug-in class, which can be any kind of class.
  */
 public class PluginType<T> implements Serializable {
 
     private static final long serialVersionUID = 4743255148794846612L;
-    
+
     private final Class<T> pluginClass;
     private final String elementName;
     private final boolean printObject;

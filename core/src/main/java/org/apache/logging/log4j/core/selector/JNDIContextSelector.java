@@ -86,9 +86,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class JNDIContextSelector implements NamedContextSelector {
 
-    private static final LoggerContext context = new LoggerContext("Default");
+    private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
-    private static final ConcurrentMap<String, LoggerContext> contextMap =
+    private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP =
         new ConcurrentHashMap<String, LoggerContext>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
@@ -109,7 +109,7 @@ public class JNDIContextSelector implements NamedContextSelector {
             LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
         }
 
-        return loggingContextName == null ? context : locateContext(loggingContextName, null);
+        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null);
     }
 
     public LoggerContext locateContext(final String name, final String configLocation) {
@@ -117,28 +117,28 @@ public class JNDIContextSelector implements NamedContextSelector {
             LOGGER.error("A context name is required to locate a LoggerContext");
             return null;
         }
-        if (!contextMap.containsKey(name)) {
+        if (!CONTEXT_MAP.containsKey(name)) {
             final LoggerContext ctx = new LoggerContext(name, null, configLocation);
-            contextMap.putIfAbsent(name, ctx);
+            CONTEXT_MAP.putIfAbsent(name, ctx);
         }
-        return contextMap.get(name);
+        return CONTEXT_MAP.get(name);
     }
 
     public void removeContext(final LoggerContext context) {
 
-        for (final Map.Entry<String, LoggerContext> entry : contextMap.entrySet()) {
+        for (final Map.Entry<String, LoggerContext> entry : CONTEXT_MAP.entrySet()) {
             if (entry.getValue().equals(context)) {
-                contextMap.remove(entry.getKey());
+                CONTEXT_MAP.remove(entry.getKey());
             }
         }
     }
 
     public LoggerContext removeContext(final String name) {
-        return contextMap.remove(name);
+        return CONTEXT_MAP.remove(name);
     }
 
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<LoggerContext>(contextMap.values());
+        final List<LoggerContext> list = new ArrayList<LoggerContext>(CONTEXT_MAP.values());
         return Collections.unmodifiableList(list);
     }
 

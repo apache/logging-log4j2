@@ -41,6 +41,8 @@ import java.util.Map;
 @Plugin(name = "Failover", type = "Core", elementType = "appender", printObject = true)
 public final class FailoverAppender extends AbstractAppender {
 
+    private static final int DEFAULT_INTERVAL = 60 * Constants.MILLIS_IN_SECONDS;
+
     private final String primaryRef;
 
     private final String[] failovers;
@@ -56,8 +58,6 @@ public final class FailoverAppender extends AbstractAppender {
     private long nextCheck = 0;
 
     private volatile boolean failure = false;
-
-    private static final int DEFAULT_INTERVAL = 60 * Constants.MILLIS_IN_SECONDS;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
                              final int interval, final Configuration config, final boolean handleExceptions) {

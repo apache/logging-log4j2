@@ -46,15 +46,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ClassLoaderContextSelector implements ContextSelector {
 
-    private static final AtomicReference<LoggerContext> context = new AtomicReference<LoggerContext>();
+    private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<LoggerContext>();
 
     private static PrivateSecurityManager securityManager;
 
     private static Method getCallerClass;
 
-    private static final StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> contextMap =
+    private static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
         new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
 
     static {
@@ -135,17 +135,17 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     public void removeContext(final LoggerContext context) {
-        for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : contextMap.entrySet()) {
+        for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : CONTEXT_MAP.entrySet()) {
             final LoggerContext ctx = entry.getValue().get().get();
             if (ctx == context) {
-                contextMap.remove(entry.getKey());
+                CONTEXT_MAP.remove(entry.getKey());
             }
         }
     }
 
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<LoggerContext>();
-        final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = contextMap.values();
+        final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = CONTEXT_MAP.values();
         for (final AtomicReference<WeakReference<LoggerContext>> ref : coll) {
             final LoggerContext ctx = ref.get().get();
             if (ctx != null) {
@@ -157,14 +157,14 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     private LoggerContext locateContext(final ClassLoader loader, final String configLocation) {
         final String name = loader.toString();
-        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             LoggerContext ctx = new LoggerContext(name, null, configLocation);
             final AtomicReference<WeakReference<LoggerContext>> r =
                 new AtomicReference<WeakReference<LoggerContext>>();
             r.set(new WeakReference<LoggerContext>(ctx));
-            contextMap.putIfAbsent(loader.toString(), r);
-            ctx = contextMap.get(name).get().get();
+            CONTEXT_MAP.putIfAbsent(loader.toString(), r);
+            ctx = CONTEXT_MAP.get(name).get().get();
             return ctx;
         } else {
             final WeakReference<LoggerContext> r = ref.get();
@@ -191,23 +191,23 @@ public class ClassLoaderContextSelector implements ContextSelector {
                 }
             }
         } catch (final ClassNotFoundException cnfe) {
-            logger.debug("sun.reflect.Reflection is not installed");
+            LOGGER.debug("sun.reflect.Reflection is not installed");
         }
         try {
             securityManager = new PrivateSecurityManager();
         } catch (final Exception ex) {
             ex.printStackTrace();
-            logger.debug("Unable to install security manager", ex);
+            LOGGER.debug("Unable to install security manager", ex);
         }
     }
 
     private LoggerContext getDefault() {
-        final LoggerContext ctx = context.get();
+        final LoggerContext ctx = CONTEXT.get();
         if (ctx != null) {
             return ctx;
         }
-        context.compareAndSet(null, new LoggerContext("Default"));
-        return context.get();
+        CONTEXT.compareAndSet(null, new LoggerContext("Default"));
+        return CONTEXT.get();
     }
 
     /**

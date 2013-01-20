@@ -41,17 +41,20 @@ public final class MarkerFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
         return filter(marker);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
         return filter(marker);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         return filter(marker);
     }
 

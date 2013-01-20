@@ -24,8 +24,8 @@ import java.util.Map;
 /**
  * Converts text into ANSI escape sequences.
  * <p>
- * The names for colors and attributes are standard, but the exact shade/hue/value of colors are not, and depend on the device used to
- * display them.
+ * The names for colors and attributes are standard, but the exact shade/hue/value of colors are not, and depend on the
+ * device used to display them.
  * </p>
  */
 public enum AnsiEscape {
@@ -218,8 +218,8 @@ public enum AnsiEscape {
     }
 
     /**
-     * Gets the default style
-     * 
+     * Gets the default style.
+     *
      * @return the default style
      */
     public static String getDefaultStyle() {
@@ -232,7 +232,7 @@ public enum AnsiEscape {
 
     /**
      * Gets the escape code.
-     * 
+     *
      * @return the escape code.
      */
     public String getCode() {
@@ -241,24 +241,22 @@ public enum AnsiEscape {
 
     /**
      * Creates a Map from a source array where values are ANSI escape sequences. The format is:
-     * 
+     *
      * <pre>
      * Key1=Value, Key2=Value, ...
      * </pre>
-     * 
+     *
      * For example:
-     * 
+     *
      * <pre>
      * ERROR=red bold, WARN=yellow bold, INFO=green, ...
      * </pre>
-     * 
-     * You can use whitespace around the comma and equal sign. The names in values MUST come from the {@linkplain AnsiEscape} enum, case is
-     * normalized to upper-case internally.
-     * 
-     * @param values
-     *            the source string to parse.
-     * @param dontEscapeKeys
-     *            do not escape these keys, leave the values as is in the map
+     *
+     * You can use whitespace around the comma and equal sign. The names in values MUST come from the
+     * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
+     *
+     * @param values the source string to parse.
+     * @param dontEscapeKeys do not escape these keys, leave the values as is in the map
      * @return a new map
      */
     public static Map<String, String> createMap(final String values, final String[] dontEscapeKeys) {
@@ -267,20 +265,20 @@ public enum AnsiEscape {
 
     /**
      * Creates a Map from a source array where values are ANSI escape sequences. Each array entry must be in the format:
-     * 
+     *
      * <pre>
      * Key1 = Value
      * </pre>
-     * 
+     *
      * For example:
-     * 
+     *
      * <pre>
      * ERROR=red bold
      * </pre>
-     * 
-     * You can use whitespace around the equal sign and between the value elements. The names in values MUST come from the
-     * {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
-     * 
+     *
+     * You can use whitespace around the equal sign and between the value elements. The names in values MUST come from
+     * the {@linkplain AnsiEscape} enum, case is normalized to upper-case internally.
+     *
      * @param values
      *            the source array to parse.
      * @param dontEscapeKeys
@@ -305,7 +303,7 @@ public enum AnsiEscape {
 
     /**
      * Creates an ANSI escape sequence from the given {@linkplain AnsiEscape} names.
-     * 
+     *
      * @param names
      *            {@linkplain AnsiEscape} names.
      * @return An ANSI escape sequence.

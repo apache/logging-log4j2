@@ -21,6 +21,7 @@ import java.lang.reflect.Array;
 /**
  * A bounded buffer containing elements of type T. When the number of elements to be added will exceed the
  * size of the buffer the oldest element will be overwritten. Access to the buffer is thread safe.
+ * @param <T> The type of object stored in the buffer.
  */
 public class CyclicBuffer<T> {
     private final T[] ring;
@@ -30,8 +31,10 @@ public class CyclicBuffer<T> {
     private final Class<T> clazz;
 
     /**
-     * Instantiate a new CyclicBuffer of at most <code>maxSize</code>
-     * events.
+     * Instantiate a new CyclicBuffer of at most <code>maxSize</code> events.
+     * @param clazz The Class associate with the type of object in the buffer.
+     * @param size The number of items in the buffer.
+     * @throws IllegalArgumentException if the size is negative.
      */
     public CyclicBuffer(final Class<T> clazz, final int size) throws IllegalArgumentException {
         if (size < 1) {
@@ -48,6 +51,7 @@ public class CyclicBuffer<T> {
 
     /**
      * Add an item as the last event in the buffer.
+     * @param item The item to add to the buffer.
      */
     public synchronized void add(final T item) {
         ring[last] = item;
@@ -62,6 +66,10 @@ public class CyclicBuffer<T> {
         }
     }
 
+    /**
+     * Removes all the elements from the buffer and returns them.
+     * @return An array of the elements in the buffer.
+     */
     public synchronized T[] removeAll() {
         final T[] array = makeArray(clazz, numElems);
         int index = 0;
@@ -76,6 +84,10 @@ public class CyclicBuffer<T> {
         return array;
     }
 
+    /**
+     * Determines if the buffer contains elements.
+     * @return true if the buffer is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return 0 == numElems;
     }

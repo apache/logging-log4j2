@@ -32,8 +32,8 @@ public final class FileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
 
-    private FileAppender(final String name, final Layout layout, final Filter filter, final FileManager manager, final String filename,
-                        final boolean handleException, final boolean immediateFlush) {
+    private FileAppender(final String name, final Layout layout, final Filter filter, final FileManager manager,
+                         final String filename, final boolean handleException, final boolean immediateFlush) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         this.fileName = filename;
     }

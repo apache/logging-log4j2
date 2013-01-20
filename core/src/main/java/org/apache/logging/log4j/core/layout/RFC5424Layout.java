@@ -62,7 +62,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_ID = "Audit";
     /**
-     * Match newlines in a platform-independent manner
+     * Match newlines in a platform-independent manner.
      */
     public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
 
@@ -71,6 +71,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private static final int THREE_DIGITS = 100;
     private static final int MILLIS_PER_MINUTE = 60000;
     private static final int MINUTES_PER_HOUR = 60;
+
+    private static final String COMPONENT_KEY = "RFC5424-Converter";
 
     private final Facility facility;
     private final String defaultId;
@@ -91,8 +93,6 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private long lastTimestamp = -1;
     private String timestamppStr;
-    private static final String COMPONENT_KEY = "RFC5424-Converter";
-    private static final String DEFAULT_CONVERSION_PATTERN = "%xEx";
 
     private final List<PatternFormatter> formatters;
 
@@ -233,7 +233,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 if (mdcRequired != null) {
                     checkRequired(event.getContextMap());
                 }
-                final int ein = id == null || id.getEnterpriseNumber() < 0 ? enterpriseNumber : id.getEnterpriseNumber();
+                final int ein = id == null || id.getEnterpriseNumber() < 0 ?
+                    enterpriseNumber : id.getEnterpriseNumber();
                 final StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
                 formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
             }
@@ -259,7 +260,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private String escapeNewlines(final String text, final String escapeNewLine)
     {
-        if(null == escapeNewLine) {
+        if (null == escapeNewLine) {
             return text;
         }
         return NEWLINE_PATTERN.matcher(text).replaceAll(escapeNewLine);
@@ -342,8 +343,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(final StructuredDataId id, final Map<String, String> data, final StringBuilder sb,
-                                         final ListChecker checker) {
+    private void formatStructuredElement(final StructuredDataId id, final Map<String, String> data,
+                                         final StringBuilder sb, final ListChecker checker) {
         if (id == null && defaultId == null) {
             return;
         }
@@ -446,13 +447,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
      * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
-     * @param escapeNL String that should be used to replace newlines within the message text
+     * @param escapeNL String that should be used to replace newlines within the message text.
      * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
      * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
      * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
      * @param includes A comma separated list of mdc keys that should be included in the FlumeEvent.
      * @param required A comma separated list of mdc keys that must be present in the MDC.
      * @param charsetName The character set.
+     * @param exceptionPattern The pattern for formatting exceptions.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An RFC5424Layout.
      */
@@ -485,7 +487,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcId = DEFAULT_MDCID;
         }
 
-        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, appName, msgId,
-                                 excludes, includes, required, charset, exceptionPattern);
+        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, appName,
+                                 msgId, excludes, includes, required, charset, exceptionPattern);
     }
 }

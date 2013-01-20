@@ -71,6 +71,8 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     /**
      * Create a TimeBasedTriggeringPolicy.
+     * @param interval The interval between rollovers.
+     * @param modulate If true the time will be rounded to occur on a boundary aligned with the increment.
      * @return a TimeBasedTriggeringPolicy.
      */
     @PluginFactory

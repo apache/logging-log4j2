@@ -63,6 +63,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     private final String contentType;
 
+    /**Possible font sizes */
     private enum FontSize {
         SMALLER("smaller"), XXSMALL("xx-small"), XSMALL("x-small"), SMALL("small"), MEDIUM("medium"), LARGE("large"),
         XLARGE("x-large"), XXLARGE("xx-large"),  LARGER("larger");
@@ -292,6 +293,8 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @param title The title to include in the file header. If none is specified the default title will be used.
      * @param contentType The content type. Defaults to "text/html".
      * @param charsetName The character set to use. If not specified, the default will be used.
+     * @param fontSize The font size of the text.
+     * @param font The font to use for the text.
      * @return An HTML Layout.
      */
     @PluginFactory

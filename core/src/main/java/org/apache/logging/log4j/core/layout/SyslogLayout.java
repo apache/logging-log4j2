@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 @Plugin(name = "SyslogLayout", type = "Core", elementType = "layout", printObject = true)
 public class SyslogLayout extends AbstractStringLayout {
     /**
-     * Match newlines in a platform-independent manner
+     * Match newlines in a platform-independent manner.
      */
     public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
 
@@ -82,14 +82,13 @@ public class SyslogLayout extends AbstractStringLayout {
         buf.append(" ");
         buf.append(localHostname);
         buf.append(" ");
-        
+
         String message = event.getMessage().getFormattedMessage();
-        if(null != escapeNewLine)
-        {
+        if (null != escapeNewLine) {
             message = NEWLINE_PATTERN.matcher(message).replaceAll(escapeNewLine);
         }
         buf.append(message);
-        
+
         if (includeNewLine) {
             buf.append("\n");
         }
@@ -126,6 +125,7 @@ public class SyslogLayout extends AbstractStringLayout {
      * Create a SyslogLayout.
      * @param facility The Facility is used to try to classify the message.
      * @param includeNL If true a newline will be appended to the result.
+     * @param escapeNL Pattern to use for replacing newlines.
      * @param charsetName The character set.
      * @return A SyslogLayout.
      */

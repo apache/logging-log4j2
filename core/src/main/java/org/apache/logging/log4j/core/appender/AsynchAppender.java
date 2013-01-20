@@ -42,8 +42,8 @@ import java.util.concurrent.BlockingQueue;
  * Appends to one or more Appenders asynchronously.  You can configure an AsynchAppender with one
  * or more Appenders and an Appender to append to if the queue is full. The AsynchAppender does not allow
  * a filter to be specified on the Appender references.
- * 
- * @param <T> The {@link Layout}'s {@link Serializable} type. 
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Asynch", type = "Core", elementType = "appender", printObject = true)
 public final class AsynchAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -59,8 +59,8 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private AppenderControl errorAppender;
     private AsynchThread thread;
 
-    private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs, final String errorRef,
-                           final int queueSize, final boolean blocking,
+    private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
+                           final String errorRef, final int queueSize, final boolean blocking,
                            final boolean handleExceptions, final Configuration config) {
         super(name, filter, null, handleExceptions);
         this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
@@ -147,10 +147,12 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
      * @param config The Configuration.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
+     * @param <S> The actual type of the Serializable.
      * @return The AsynchAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> AsynchAppender<S> createAppender(@PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+    public static <S extends Serializable> AsynchAppender<S> createAppender(
+                                                @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
                                                 @PluginAttr("error-ref") final String errorRef,
                                                 @PluginAttr("blocking") final String blocking,
                                                 @PluginAttr("bufferSize") final String size,

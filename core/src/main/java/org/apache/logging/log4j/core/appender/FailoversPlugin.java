@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "failovers", type = "Core")
 public final class FailoversPlugin {
 
-    private static final Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Prevent instantiation.
@@ -46,7 +46,7 @@ public final class FailoversPlugin {
     public static String[] createFailovers(@PluginElement("appender-ref") final AppenderRef... refs) {
 
         if (refs == null) {
-            logger.error("failovers must contain an appender-reference");
+            LOGGER.error("failovers must contain an appender-reference");
             return null;
         }
         final String[] arr = new String[refs.length];

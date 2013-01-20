@@ -52,7 +52,8 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
      * @param listeners The List of ConfigurationListeners to notify upon a change.
      * @param interval The monitor interval in seconds. The minimum interval is 5 seconds.
      */
-    public FileConfigurationMonitor(final Reconfigurable reconfigurable, final File file, final List<ConfigurationListener> listeners,
+    public FileConfigurationMonitor(final Reconfigurable reconfigurable, final File file,
+                                    final List<ConfigurationListener> listeners,
                                     final int interval) {
         this.reconfigurable = reconfigurable;
         this.file = file;

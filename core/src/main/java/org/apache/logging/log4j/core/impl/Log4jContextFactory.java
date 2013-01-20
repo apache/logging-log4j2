@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class Log4jContextFactory implements LoggerContextFactory {
 
-    private static final StatusLogger logger = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private ContextSelector selector;
 
@@ -47,7 +47,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
                     return;
                 }
             } catch (final Exception ex) {
-                logger.error("Unable to create context " + sel, ex);
+                LOGGER.error("Unable to create context " + sel, ex);
             }
 
         }

@@ -25,7 +25,7 @@ import java.io.OutputStream;
  */
 public class DatagramSocketManager extends AbstractSocketManager {
 
-    private static final DatagramSocketManagerFactory factory = new DatagramSocketManagerFactory();
+    private static final DatagramSocketManagerFactory FACTORY = new DatagramSocketManagerFactory();
 
     /**
      * The Constructor.
@@ -51,7 +51,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port), factory
+        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port), FACTORY
         );
     }
 

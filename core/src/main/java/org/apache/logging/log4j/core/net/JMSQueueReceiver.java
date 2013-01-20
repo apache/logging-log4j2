@@ -42,7 +42,8 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
      * @param username The userid to connect to the queue.
      * @param password The password to connect to the queue.
      */
-    public JMSQueueReceiver(final String qcfBindingName, final String queueBindingName, final String username, final String password) {
+    public JMSQueueReceiver(final String qcfBindingName, final String queueBindingName, final String username,
+                            final String password) {
 
         try {
             final Context ctx = new InitialContext();

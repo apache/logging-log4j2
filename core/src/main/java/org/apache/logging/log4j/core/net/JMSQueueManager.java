@@ -34,7 +34,7 @@ import java.io.Serializable;
  */
 public class JMSQueueManager extends AbstractJMSManager {
 
-    private static final JMSQueueManagerFactory factory = new JMSQueueManagerFactory();
+    private static final JMSQueueManagerFactory FACTORY = new JMSQueueManagerFactory();
 
     private QueueInfo info;
     private final String factoryBindingName;
@@ -53,8 +53,9 @@ public class JMSQueueManager extends AbstractJMSManager {
      * @param password The credentials for the user.
      * @param info The Queue connection info.
      */
-    protected JMSQueueManager(final String name, final Context context, final String factoryBindingName, final String queueBindingName,
-                              final String userName, final String password, final QueueInfo info) {
+    protected JMSQueueManager(final String name, final Context context, final String factoryBindingName,
+                              final String queueBindingName, final String userName, final String password,
+                              final QueueInfo info) {
         super(name);
         this.context = context;
         this.factoryBindingName = factoryBindingName;
@@ -78,10 +79,11 @@ public class JMSQueueManager extends AbstractJMSManager {
      * @param password The password to use to create the Queue Connection.
      * @return The JMSQueueManager.
      */
-    public static JMSQueueManager getJMSQueueManager(final String factoryName, final String providerURL, final String urlPkgPrefixes,
-                                                     final String securityPrincipalName, final String securityCredentials,
-                                                     final String factoryBindingName, final String queueBindingName,
-                                                     final String userName, final String password) {
+    public static JMSQueueManager getJMSQueueManager(final String factoryName, final String providerURL,
+                                                     final String urlPkgPrefixes, final String securityPrincipalName,
+                                                     final String securityCredentials, final String factoryBindingName,
+                                                     final String queueBindingName, final String userName,
+                                                     final String password) {
 
         if (factoryBindingName == null) {
             LOGGER.error("No factory name provided for JMSQueueManager");
@@ -93,7 +95,7 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
 
         final String name = "JMSQueue:" + factoryBindingName + '.' + queueBindingName;
-        return getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
+        return getManager(name, FACTORY, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password));
     }
 
@@ -149,9 +151,10 @@ public class JMSQueueManager extends AbstractJMSManager {
         private final String userName;
         private final String password;
 
-        public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes, final String securityPrincipalName,
-                           final String securityCredentials, final String factoryBindingName, final String queueBindingName,
-                           final String userName, final String password) {
+        public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes,
+                           final String securityPrincipalName, final String securityCredentials,
+                           final String factoryBindingName, final String queueBindingName, final String userName,
+                           final String password) {
             this.factoryName = factoryName;
             this.providerURL = providerURL;
             this.urlPkgPrefixes = urlPkgPrefixes;
@@ -164,8 +167,9 @@ public class JMSQueueManager extends AbstractJMSManager {
         }
     }
 
-    private static QueueInfo connect(final Context context, final String factoryBindingName, final String queueBindingName,
-                                     final String userName, final String password, final boolean suppress) throws Exception {
+    private static QueueInfo connect(final Context context, final String factoryBindingName,
+                                     final String queueBindingName, final String userName, final String password,
+                                     final boolean suppress) throws Exception {
         try {
             final QueueConnectionFactory factory = (QueueConnectionFactory) lookup(context, factoryBindingName);
             QueueConnection conn;
@@ -193,6 +197,7 @@ public class JMSQueueManager extends AbstractJMSManager {
         return null;
     }
 
+    /** Queue connection information */
     private static class QueueInfo {
         private final QueueConnection conn;
         private final QueueSession session;

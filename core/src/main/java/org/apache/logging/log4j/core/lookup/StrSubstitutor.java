@@ -178,7 +178,8 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix, final char escape) {
+    public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix,
+                          final char escape) {
         this(new MapLookup(valueMap), prefix, suffix, escape);
     }
 
@@ -200,7 +201,8 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(final StrLookup variableResolver, final String prefix, final String suffix, final char escape) {
+    public StrSubstitutor(final StrLookup variableResolver, final String prefix, final String suffix,
+                          final char escape) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -216,7 +218,8 @@ public class StrSubstitutor {
      * @param escape  the escape character
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher,
+    public StrSubstitutor(final StrLookup variableResolver, final StrMatcher prefixMatcher,
+                          final StrMatcher suffixMatcher,
                           final char escape) {
         this.setVariableResolver(variableResolver);
         this.setVariablePrefixMatcher(prefixMatcher);
@@ -248,7 +251,8 @@ public class StrSubstitutor {
      * @return the result of the replace operation
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
-    public static String replace(final Object source, final Map<String, String> valueMap, final String prefix, final String suffix) {
+    public static String replace(final Object source, final Map<String, String> valueMap, final String prefix,
+                                 final String suffix) {
         return new StrSubstitutor(valueMap, prefix, suffix).replace(source);
     }
 
@@ -746,7 +750,8 @@ public class StrSubstitutor {
      * @return the length change that occurs, unless priorVariables is null when the int
      *  represents a boolean flag as to whether any change occurred.
      */
-    private int substitute(final LogEvent event, final StringBuilder buf, final int offset, final int length, List<String> priorVariables) {
+    private int substitute(final LogEvent event, final StringBuilder buf, final int offset, final int length,
+                           List<String> priorVariables) {
         final StrMatcher prefixMatcher = getVariablePrefixMatcher();
         final StrMatcher suffixMatcher = getVariableSuffixMatcher();
         final char escape = getEscapeChar();
@@ -890,8 +895,8 @@ public class StrSubstitutor {
      * @param endPos  the end position of the variable including the suffix, valid
      * @return the variable's value or <b>null</b> if the variable is unknown
      */
-    protected String resolveVariable(final LogEvent event, final String variableName, final StringBuilder buf, final int startPos,
-                                     final int endPos) {
+    protected String resolveVariable(final LogEvent event, final String variableName, final StringBuilder buf,
+                                     final int startPos, final int endPos) {
         final StrLookup resolver = getVariableResolver();
         if (resolver == null) {
             return null;

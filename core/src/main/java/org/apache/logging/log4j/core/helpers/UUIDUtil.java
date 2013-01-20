@@ -176,8 +176,8 @@ public final class UUIDUtil {
      */
     public static UUID getTimeBasedUUID() {
 
-        final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) +
-            (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+        final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
+            NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (count.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
         final long timeLow = (time & LOW_MASK) << SHIFT_4;
         final long timeMid = (time & MID_MASK) >> SHIFT_2;
         final long timeHi = (time & HIGH_MASK) >> SHIFT_6;

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public final class ClassNamePatternConverter extends NamePatternConverter {
 
     private static final String NA = "?";
-    
+
     /**
      * Private constructor.
      *

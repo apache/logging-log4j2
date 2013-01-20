@@ -48,10 +48,10 @@ public interface Filter {
          * The event should not be processed.
          */
         DENY;
-        
+
         /**
          * Returns the Result for the given string.
-         * 
+         *
          * @param name The Result enum name, case-insensitive. If null, returns, null
          * @return a Result enum value or null if name is null
          */
@@ -61,7 +61,7 @@ public interface Filter {
 
         /**
          * Returns the Result for the given string.
-         * 
+         *
          * @param name The Result enum name, case-insensitive. If null, returns, defaultResult
          * @param defaultResult the Result to return if name is null
          * @return a Result enum value or null if name is null

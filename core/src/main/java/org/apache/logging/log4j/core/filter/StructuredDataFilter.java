@@ -39,12 +39,14 @@ import java.util.Map;
 @Plugin(name = "StructuredDataFilter", type = "Core", elementType = "filter", printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
-    private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch, final Result onMismatch) {
+    private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,
+                                 final Result onMismatch) {
         super(map, oper, onMatch, onMismatch);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         if (msg instanceof StructuredDataMessage) {
             return filter((StructuredDataMessage) msg);
         }

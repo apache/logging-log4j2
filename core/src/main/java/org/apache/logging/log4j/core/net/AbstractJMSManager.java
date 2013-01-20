@@ -55,8 +55,9 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @return the InitialContext.
      * @throws NamingException if a naming error occurs.
      */
-    protected static Context createContext(final String factoryName, final String providerURL, final String urlPkgPrefixes,
-                                           final String securityPrincipalName, final String securityCredentials)
+    protected static Context createContext(final String factoryName, final String providerURL,
+                                           final String urlPkgPrefixes, final String securityPrincipalName,
+                                           final String securityCredentials)
         throws NamingException {
 
         final Properties props = getEnvironment(factoryName, providerURL, urlPkgPrefixes, securityPrincipalName,
@@ -90,8 +91,9 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @param securityCredentials The security credentials of the Principal.
      * @return The Properties.
      */
-    protected static Properties getEnvironment(final String factoryName, final String providerURL, final String urlPkgPrefixes,
-                                               final String securityPrincipalName, final String securityCredentials) {
+    protected static Properties getEnvironment(final String factoryName, final String providerURL,
+                                               final String urlPkgPrefixes, final String securityPrincipalName,
+                                               final String securityCredentials) {
         final Properties props = new Properties();
         if (factoryName != null) {
             props.put(Context.INITIAL_CONTEXT_FACTORY, factoryName);
@@ -132,7 +134,8 @@ public abstract class AbstractJMSManager extends AbstractManager {
      * @param producer The MessageProducer.
      * @throws Exception if an error occurs.
      */
-    public synchronized void send(final Serializable object, final Session session, final MessageProducer producer) throws Exception {
+    public synchronized void send(final Serializable object, final Session session, final MessageProducer producer)
+        throws Exception {
         try {
             Message msg;
             if (object instanceof String) {

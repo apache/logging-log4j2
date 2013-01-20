@@ -35,12 +35,12 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * ABSOLUTE string literal.
      */
     private static final String ABSOLUTE_FORMAT = "ABSOLUTE";
-    
+
     /**
      * COMPACT string literal.
      */
     private static final String COMPACT_FORMAT = "COMPACT";
-    
+
     /**
      * SimpleTimePattern for ABSOLUTE.
      */
@@ -50,7 +50,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * DATE string literal.
      */
     private static final String DATE_AND_TIME_FORMAT = "DATE";
-    
+
     /**
      * SimpleTimePattern for DATE.
      */
@@ -60,27 +60,27 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * ISO8601 string literal.
      */
     private static final String ISO8601_FORMAT = "ISO8601";
-    
+
     /**
      * ISO8601_BASIC string literal.
      */
     private static final String ISO8601_BASIC_FORMAT = "ISO8601_BASIC";
-    
+
     /**
      * SimpleTimePattern for ISO8601.
      */
     private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
-    
+
     /**
      * SimpleTimePattern for ISO8601_BASIC.
      */
     private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
-    
+
     /**
      * SimpleTimePattern for COMPACT.
      */
     private static final String COMPACT_PATTERN = "yyyyMMddHHmmssSSS";
-    
+
     /**
      * Date format.
      */
@@ -125,7 +125,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
 
         SimpleDateFormat tempFormat;
-        
+
         try {
             tempFormat = new SimpleDateFormat(pattern);
         } catch (final IllegalArgumentException e) {
@@ -140,7 +140,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             final TimeZone tz = TimeZone.getTimeZone(options[1]);
             tempFormat.setTimeZone(tz);
         }
-        simpleFormat = tempFormat; 
+        simpleFormat = tempFormat;
     }
 
     /**

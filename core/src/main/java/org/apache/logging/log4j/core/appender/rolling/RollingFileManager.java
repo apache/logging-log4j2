@@ -44,8 +44,9 @@ public class RollingFileManager extends FileManager {
     private final TriggeringPolicy policy;
     private final RolloverStrategy strategy;
 
-    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os, final boolean append, final long size,
-                                 final long time, final TriggeringPolicy policy, final RolloverStrategy strategy) {
+    protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
+                                 final boolean append, final long size, final long time, final TriggeringPolicy policy,
+                                 final RolloverStrategy strategy) {
         super(fileName, os, append, false);
         this.size = size;
         this.initialTime = time;
@@ -61,6 +62,8 @@ public class RollingFileManager extends FileManager {
      * @param pattern The pattern for rolling file.
      * @param append true if the file should be appended to.
      * @param bufferedIO true if data should be buffered.
+     * @param policy The TriggeringPolicy.
+     * @param strategy The RolloverStrategy.
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
@@ -232,8 +235,8 @@ public class RollingFileManager extends FileManager {
          * @param append The append flag.
          * @param bufferedIO The bufferedIO flag.
          */
-        public FactoryData(final String pattern, final boolean append, final boolean bufferedIO, final TriggeringPolicy policy,
-                           final RolloverStrategy strategy) {
+        public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
+                           final TriggeringPolicy policy, final RolloverStrategy strategy) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;

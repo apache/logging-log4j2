@@ -36,9 +36,9 @@ public abstract class AbstractManager {
 
     // Need to lock that map instead of using a ConcurrentMap due to stop removing the
     // manager from the map and closing the stream, requiring the whole stop method to be locked.
-    private static final Map<String, AbstractManager> map = new HashMap<String, AbstractManager>();
+    private static final Map<String, AbstractManager> MAP = new HashMap<String, AbstractManager>();
 
-    private static final Lock lock = new ReentrantLock();
+    private static final Lock LOCK = new ReentrantLock();
 
     /**
      * Number of Appenders using this manager.
@@ -58,23 +58,25 @@ public abstract class AbstractManager {
      * @param factory The Factory to use to create the Manager.
      * @param data An Object that should be passed to the factory when creating the Manager.
      * @param <M> The Type of the Manager to be created.
+     * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
      */
-    public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory, final T data) {
-        lock.lock();
+    public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
+                                                              final T data) {
+        LOCK.lock();
         try {
-            M manager = (M) map.get(name);
+            M manager = (M) MAP.get(name);
             if (manager == null) {
                 manager = factory.createManager(name, data);
                 if (manager == null) {
                     throw new IllegalStateException("Unable to create a manager");
                 }
-                map.put(name, manager);
+                MAP.put(name, manager);
             }
             manager.count++;
             return manager;
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
 
@@ -84,11 +86,11 @@ public abstract class AbstractManager {
      * @return True if the Manager exists, false otherwise.
      */
     public static boolean hasManager(final String name) {
-        lock.lock();
+        LOCK.lock();
         try {
-            return map.containsKey(name);
+            return MAP.containsKey(name);
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
 
@@ -107,16 +109,16 @@ public abstract class AbstractManager {
      * Called to signify that this Manager is no longer required by an Appender.
      */
     public void release() {
-        lock.lock();
+        LOCK.lock();
         try {
             --count;
             if (count <= 0) {
-                map.remove(name);
+                MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
                 releaseSub();
             }
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
     }
 

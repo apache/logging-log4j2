@@ -43,8 +43,9 @@ public final class RewriteAppender extends AbstractAppender {
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
-    private RewriteAppender(final String name, final Filter filter, final boolean handleException, final AppenderRef[] appenderRefs,
-                            final RewritePolicy rewritePolicy, final Configuration config) {
+    private RewriteAppender(final String name, final Filter filter, final boolean handleException,
+                            final AppenderRef[] appenderRefs, final RewritePolicy rewritePolicy,
+                            final Configuration config) {
         super(name, filter, null, handleException);
         this.config = config;
         this.rewritePolicy = rewritePolicy;

@@ -45,7 +45,8 @@ public class ThreadContextMapFilter extends MapFilter {
 
     private final boolean useMap;
 
-    public ThreadContextMapFilter(final Map<String, List<String>> pairs, final boolean oper, final Result onMatch, final Result onMismatch) {
+    public ThreadContextMapFilter(final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
+                                  final Result onMismatch) {
         super(pairs, oper, onMatch, onMismatch);
         if (pairs.size() == 1) {
             final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
@@ -67,17 +68,20 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
         return filter();
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         return filter();
     }
 

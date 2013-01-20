@@ -33,23 +33,24 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
  * <p>
  * For example:
- * 
+ *
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}
  * </pre>
  * </p>
- * 
+ *
  * <p>
  * You can define custom colors for each Level:
- * 
+ *
  * <pre>
- * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=black}
+ * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan,
+ * TRACE=black}
  * </pre>
  * </p>
- * 
+ *
  * <p>
  * You can use a predefined style:
- * 
+ *
  * <pre>
  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Log4J}
  * </pre>
@@ -60,9 +61,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * <li>{@code Logback}</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
- * You can use whitespace around the comma and equal sign. The names in values MUST come from the {@linkplain AnsiEscape} enum, case is
+ * You can use whitespace around the comma and equal sign. The names in values MUST come from the
+ * {@linkplain AnsiEscape} enum, case is
  * normalized to upper-case internally.
  * </p>
  */
@@ -81,6 +83,10 @@ public final class HighlightConverter extends LogEventPatternConverter {
     private static final EnumMap<Level, String> LOGBACK_STYLES = new EnumMap<Level, String>(Level.class);
 
     private static final Map<String, EnumMap<Level, String>> STYLES = new HashMap<String, EnumMap<Level, String>>();
+
+    private final List<PatternFormatter> formatters;
+
+    private final EnumMap<Level, String> levelStyles;
 
     static {
         // Default styles:
@@ -103,23 +109,37 @@ public final class HighlightConverter extends LogEventPatternConverter {
     }
 
     /**
-     * Creates a level style map where values are ANSI escape sequences given configuration options in {@code option[1]}.
+     * Construct the converter.
+     *
+     * @param formatters
+     *            The PatternFormatters to generate the text to manipulate.
+     */
+    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
+        super("style", "style");
+        this.formatters = formatters;
+        this.levelStyles = levelStyles;
+    }
+
+    /**
+     * Creates a level style map where values are ANSI escape sequences given configuration options in
+     * {@code option[1]}.
      * <p/>
      * The format of the option string in {@code option[1]} is:
-     * 
+     *
      * <pre>
      * Level1=Value, Level2=Value, ...
      * </pre>
-     * 
+     *
      * For example:
-     * 
+     *
      * <pre>
      * ERROR=red bold, WARN=yellow bold, INFO=green, ...
      * </pre>
-     * 
-     * You can use whitespace around the comma and equal sign. The names in values MUST come from the {@linkplain AnsiEscape} enum, case is
+     *
+     * You can use whitespace around the comma and equal sign. The names in values MUST come from the
+     * {@linkplain AnsiEscape} enum, case is
      * normalized to upper-case internally.
-     * 
+     *
      * @param options
      *            The second slot can optionally contain the style map.
      * @return a new map
@@ -128,7 +148,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
         if (options.length < 2) {
             return DEFAULT_STYLES;
         }
-        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[] { STYLE_KEY });
+        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[] {STYLE_KEY});
         final EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
@@ -136,14 +156,16 @@ public final class HighlightConverter extends LogEventPatternConverter {
             if (STYLE_KEY.equalsIgnoreCase(key)) {
                 final EnumMap<Level, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
-                    LOGGER.error("Unkown level style: " + value + ". Use one of " + Arrays.toString(STYLES.keySet().toArray()));
+                    LOGGER.error("Unkown level style: " + value + ". Use one of " +
+                        Arrays.toString(STYLES.keySet().toArray()));
                 } else {
                     levelStyles.putAll(enumMap);
                 }
             } else {
                 final Level level = Level.valueOf(key);
                 if (level == null) {
-                    LOGGER.error("Unkown level name: " + key + ". Use one of " + Arrays.toString(DEFAULT_STYLES.keySet().toArray()));
+                    LOGGER.error("Unkown level name: " + key + ". Use one of " +
+                        Arrays.toString(DEFAULT_STYLES.keySet().toArray()));
                 } else {
                     levelStyles.put(level, value);
                 }
@@ -154,11 +176,10 @@ public final class HighlightConverter extends LogEventPatternConverter {
 
     /**
      * Gets an instance of the class.
-     * 
-     * @param config
-     *            The current Configuration.
-     * @param options
-     *            pattern options, may be null. If first element is "short", only the first line of the throwable will be formatted.
+     *
+     * @param config The current Configuration.
+     * @param options pattern options, may be null. If first element is "short", only the first line of the
+     *                throwable will be formatted.
      * @return instance of class.
      */
     public static HighlightConverter newInstance(final Configuration config, final String[] options) {
@@ -175,22 +196,6 @@ public final class HighlightConverter extends LogEventPatternConverter {
         return new HighlightConverter(formatters, createLevelStyleMap(options));
     }
 
-    private final List<PatternFormatter> formatters;
-
-    private final EnumMap<Level, String> levelStyles;
-
-    /**
-     * Construct the converter.
-     * 
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     */
-    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
-        super("style", "style");
-        this.formatters = formatters;
-        this.levelStyles = levelStyles;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -202,7 +207,8 @@ public final class HighlightConverter extends LogEventPatternConverter {
         }
 
         if (buf.length() > 0) {
-            toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).append(AnsiEscape.getDefaultStyle());
+            toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
+                append(AnsiEscape.getDefaultStyle());
         }
     }
 }

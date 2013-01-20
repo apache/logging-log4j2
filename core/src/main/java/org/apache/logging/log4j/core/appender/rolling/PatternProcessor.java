@@ -77,6 +77,7 @@ public class PatternProcessor {
      * Returns the next potential rollover time.
      * @param current The current time.
      * @param increment The increment to the next time.
+     * @param modulus If true the time will be rounded to occur on a boundary aligned with the increment.
      * @return the next potential rollover time and the timestamp for the target file.
      */
     public long getNextTime(final long current, final int increment, final boolean modulus) {

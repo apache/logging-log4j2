@@ -42,7 +42,8 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
      * @param username The userid to connect to the topic.
      * @param password The password to connect to the topic.
      */
-    public JMSTopicReceiver(final String tcfBindingName, final String topicBindingName, final String username, final String password) {
+    public JMSTopicReceiver(final String tcfBindingName, final String topicBindingName, final String username,
+                            final String password) {
         try {
             final Context ctx = new InitialContext();
             TopicConnectionFactory topicConnectionFactory;

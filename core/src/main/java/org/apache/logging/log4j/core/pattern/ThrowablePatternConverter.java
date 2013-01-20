@@ -32,6 +32,9 @@ import java.io.StringWriter;
 @ConverterKeys({"ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
+    /**
+     * Do not format the exception.
+     */
     protected static final String NONE = "none";
     /**
      * Format the whole stack trace.

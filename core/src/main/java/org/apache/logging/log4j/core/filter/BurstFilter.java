@@ -77,7 +77,8 @@ public final class BurstFilter extends AbstractFilter {
 
     private final Queue<LogDelay> available = new ConcurrentLinkedQueue<LogDelay>();
 
-    private BurstFilter(final Level level, final float rate, final long maxBurst, final Result onMatch, final Result onMismatch) {
+    private BurstFilter(final Level level, final float rate, final long maxBurst, final Result onMatch,
+                        final Result onMismatch) {
         super(onMatch, onMismatch);
         this.level = level;
         this.burstInterval = (long) (NANOS_IN_SECONDS * (maxBurst / rate));
@@ -87,17 +88,20 @@ public final class BurstFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
         return filter(level);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
         return filter(level);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         return filter(level);
     }
 

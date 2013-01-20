@@ -314,7 +314,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
-    public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger, final Appender appender) {
+    public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
+                                               final Appender appender) {
         final String name = logger.getName();
         appenders.putIfAbsent(name, appender);
         final LoggerConfig lc = getLoggerConfig(name);
@@ -362,7 +363,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
-    public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+    public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger,
+                                               final boolean additive) {
         final String name = logger.getName();
         final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {

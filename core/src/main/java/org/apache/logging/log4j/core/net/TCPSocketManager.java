@@ -42,7 +42,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     private static final int DEFAULT_PORT = 4560;
 
-    private static final TCPSocketManagerFactory factory = new TCPSocketManagerFactory();
+    private static final TCPSocketManagerFactory FACTORY = new TCPSocketManagerFactory();
 
     private final int reconnectionDelay;
 
@@ -62,8 +62,8 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @param port The port number on the host.
      * @param delay Reconnection interval.
      */
-    public TCPSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr, final String host, final int port,
-                            final int delay) {
+    public TCPSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr,
+                            final String host, final int port, final int delay) {
         super(name, os, addr, host, port);
         this.reconnectionDelay = delay;
         this.socket = sock;
@@ -93,7 +93,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, new FactoryData(host, port, delay), factory);
+        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, new FactoryData(host, port, delay), FACTORY);
     }
 
     @Override
@@ -136,9 +136,9 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     private class Reconnector extends Thread {
 
-        private boolean shutdown = false;
+        private CountDownLatch latch = new CountDownLatch(1);
 
-        public CountDownLatch latch = new CountDownLatch(1);
+        private boolean shutdown = false;
 
         private final Object owner;
 

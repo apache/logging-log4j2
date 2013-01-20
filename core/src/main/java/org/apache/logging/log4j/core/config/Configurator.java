@@ -73,7 +73,8 @@ public final class Configurator {
      * @param source The InputSource for the configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader, final ConfigurationFactory.ConfigurationSource source) {
+    public static LoggerContext initialize(final ClassLoader loader,
+                                           final ConfigurationFactory.ConfigurationSource source) {
 
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
@@ -95,5 +96,4 @@ public final class Configurator {
             ctx.setConfiguration(new DefaultConfiguration());
         }
     }
-
 }

@@ -60,7 +60,8 @@ public final class TimeFilter extends AbstractFilter {
     private final TimeZone timezone;
 
 
-    private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch, final Result onMismatch) {
+    private TimeFilter(final long start, final long end, final TimeZone tz, final Result onMatch,
+                       final Result onMismatch) {
         super(onMatch, onMismatch);
         this.start = start;
         this.end = end;

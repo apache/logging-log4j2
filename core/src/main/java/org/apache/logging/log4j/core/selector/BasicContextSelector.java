@@ -28,16 +28,16 @@ import java.util.List;
  */
 public class BasicContextSelector implements ContextSelector {
 
-    private static final LoggerContext context = new LoggerContext("Default");
+    private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        return ctx != null ? ctx : context;
+        return ctx != null ? ctx : CONTEXT;
     }
 
     public LoggerContext locateContext(final String name, final String configLocation) {
-        return context;
+        return CONTEXT;
     }
 
     public void removeContext(final LoggerContext context) {
@@ -46,7 +46,7 @@ public class BasicContextSelector implements ContextSelector {
 
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<LoggerContext>();
-        list.add(context);
+        list.add(CONTEXT);
         return Collections.unmodifiableList(list);
     }
 

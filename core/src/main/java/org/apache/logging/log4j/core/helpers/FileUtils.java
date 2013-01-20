@@ -36,7 +36,7 @@ public final class FileUtils {
 
     private static final String JBOSS_FILE = "vfsfile";
 
-    private static final Logger logger = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private FileUtils() {
     }
@@ -57,16 +57,16 @@ public final class FileUtils {
                 try {
                     uri = new File(uri.getPath()).toURI();
                 } catch (final Exception ex) {
-                    logger.warn("Invalid URI " + uri);
+                    LOGGER.warn("Invalid URI " + uri);
                     return null;
                 }
             }
             try {
                 return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
             } catch (final MalformedURLException ex) {
-                logger.warn("Invalid URL " + uri, ex);
+                LOGGER.warn("Invalid URL " + uri, ex);
             } catch (final UnsupportedEncodingException uee) {
-                logger.warn("Invalid encoding: UTF8", uee);
+                LOGGER.warn("Invalid encoding: UTF8", uee);
             }
             return null;
         }

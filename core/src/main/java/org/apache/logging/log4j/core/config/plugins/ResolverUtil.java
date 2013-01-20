@@ -276,8 +276,10 @@ public class ResolverUtil {
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
         //Do not remove the cast on the next line as removing it will cause a compile error on Java 7.
-        final BundleWiring wiring = (BundleWiring)FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
-        final Collection<String> list = wiring.listResources(packageName, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+        final BundleWiring wiring =
+            (BundleWiring) FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
+        final Collection<String> list = wiring.listResources(packageName, "*.class",
+            BundleWiring.LISTRESOURCES_RECURSE);
         for (final String name : list) {
             addIfMatching(test, name);
         }
@@ -349,7 +351,8 @@ public class ResolverUtil {
      * @param parent the parent package under which classes must be in order to be considered
      * @param stream The jar InputStream
      */
-    private void loadImplementationsInJar(final Test test, final String parent, final String path, final JarInputStream stream) {
+    private void loadImplementationsInJar(final Test test, final String parent, final String path,
+                                          final JarInputStream stream) {
 
         try {
             JarEntry entry;
@@ -423,7 +426,7 @@ public class ResolverUtil {
         boolean matches(URI resource);
 
         boolean doesMatchClass();
-        
+
         boolean doesMatchResource();
     }
 
@@ -438,7 +441,7 @@ public class ResolverUtil {
         public boolean doesMatchClass() {
             return true;
         }
-        
+
         public boolean doesMatchResource() {
             return false;
         }
@@ -455,7 +458,7 @@ public class ResolverUtil {
         public boolean doesMatchClass() {
             return false;
         }
-        
+
         public boolean doesMatchResource() {
             return true;
         }

@@ -35,8 +35,6 @@ import java.util.TimeZone;
  */
 final class CachedDateFormat extends DateFormat {
 
-    private static final long serialVersionUID = -1253877934598423628L;
-
     /**
      * Constant used to represent that there was no change
      * observed when changing the millisecond count.
@@ -48,6 +46,8 @@ final class CachedDateFormat extends DateFormat {
      * observed change, but was an expected change.
      */
     public static final int UNRECOGNIZED_MILLISECONDS = -1;
+
+    private static final long serialVersionUID = -1253877934598423628L;
 
     /**
      * Supported digit set.  If the wrapped DateFormat uses

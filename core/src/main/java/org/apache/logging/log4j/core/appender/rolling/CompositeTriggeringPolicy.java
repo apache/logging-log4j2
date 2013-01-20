@@ -78,7 +78,8 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * @return A CompositeTriggeringPolicy.
      */
     @PluginFactory
-    public static CompositeTriggeringPolicy createPolicy(@PluginElement("policies") final TriggeringPolicy... policies) {
+    public static CompositeTriggeringPolicy createPolicy(
+                                                @PluginElement("policies") final TriggeringPolicy... policies) {
         return new CompositeTriggeringPolicy(policies);
     }
 }

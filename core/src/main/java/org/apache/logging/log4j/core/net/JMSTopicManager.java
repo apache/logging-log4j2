@@ -34,7 +34,7 @@ import java.io.Serializable;
  */
 public class JMSTopicManager extends AbstractJMSManager {
 
-    private static final JMSTopicManagerFactory factory = new JMSTopicManagerFactory();
+    private static final JMSTopicManagerFactory FACTORY = new JMSTopicManagerFactory();
 
     private TopicInfo info;
     private final String factoryBindingName;
@@ -52,8 +52,9 @@ public class JMSTopicManager extends AbstractJMSManager {
      * @param password The credentials for the user.
      * @param info The Queue connection info.
      */
-    protected JMSTopicManager(final String name, final Context context, final String factoryBindingName, final String topicBindingName,
-                              final String userName, final String password, final TopicInfo info) {
+    protected JMSTopicManager(final String name, final Context context, final String factoryBindingName,
+                              final String topicBindingName, final String userName, final String password,
+                              final TopicInfo info) {
         super(name);
         this.context = context;
         this.factoryBindingName = factoryBindingName;
@@ -77,10 +78,11 @@ public class JMSTopicManager extends AbstractJMSManager {
      * @param password The password to use to create the Topic Connection.
      * @return A JMSTopicManager.
      */
-    public static JMSTopicManager getJMSTopicManager(final String factoryName, final String providerURL, final String urlPkgPrefixes,
-                                                     final String securityPrincipalName, final String securityCredentials,
-                                                     final String factoryBindingName, final String topicBindingName,
-                                                     final String userName, final String password) {
+    public static JMSTopicManager getJMSTopicManager(final String factoryName, final String providerURL,
+                                                     final String urlPkgPrefixes, final String securityPrincipalName,
+                                                     final String securityCredentials, final String factoryBindingName,
+                                                     final String topicBindingName, final String userName,
+                                                     final String password) {
 
         if (factoryBindingName == null) {
             LOGGER.error("No factory name provided for JMSTopicManager");
@@ -92,7 +94,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
 
         final String name = "JMSTopic:" + factoryBindingName + '.' + topicBindingName;
-        return getManager(name, factory, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
+        return getManager(name, FACTORY, new FactoryData(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password));
     }
 
@@ -150,8 +152,9 @@ public class JMSTopicManager extends AbstractJMSManager {
         private final String userName;
         private final String password;
 
-        public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes, final String securityPrincipalName,
-                           final String securityCredentials, final String factoryBindingName, final String topicBindingName,
+        public FactoryData(final String factoryName, final String providerURL, final String urlPkgPrefixes,
+                           final String securityPrincipalName, final String securityCredentials,
+                           final String factoryBindingName, final String topicBindingName,
                            final String userName, final String password) {
             this.factoryName = factoryName;
             this.providerURL = providerURL;
@@ -165,8 +168,9 @@ public class JMSTopicManager extends AbstractJMSManager {
         }
     }
 
-    private static TopicInfo connect(final Context context, final String factoryBindingName, final String queueBindingName,
-                                     final String userName, final String password, final boolean suppress) throws Exception {
+    private static TopicInfo connect(final Context context, final String factoryBindingName,
+                                     final String queueBindingName, final String userName, final String password,
+                                     final boolean suppress) throws Exception {
         try {
             final TopicConnectionFactory factory = (TopicConnectionFactory) lookup(context, factoryBindingName);
             TopicConnection conn;
@@ -194,6 +198,7 @@ public class JMSTopicManager extends AbstractJMSManager {
         return null;
     }
 
+    /** Topic connection information */
     private static class TopicInfo {
         private final TopicConnection conn;
         private final TopicSession session;

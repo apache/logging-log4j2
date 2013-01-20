@@ -354,6 +354,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Create the DefaultRolloverStrategy.
      * @param max The maximum number of files to keep.
      * @param min The minimum number of files to keep.
+     * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a
+     * smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
      * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
      */

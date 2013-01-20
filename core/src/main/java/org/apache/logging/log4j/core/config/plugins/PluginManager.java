@@ -47,7 +47,7 @@ public class PluginManager {
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> pluginTypeMap =
         new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
 
-    private static final CopyOnWriteArrayList<String> packages = new CopyOnWriteArrayList<String>();
+    private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
     private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
     private static final String FILENAME = "Log4j2Plugins.dat";
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
@@ -98,7 +98,7 @@ public class PluginManager {
      * @param p The package name.
      */
     public static void addPackage(final String p) {
-        packages.addIfAbsent(p);
+        PACKAGES.addIfAbsent(p);
     }
 
     /**
@@ -153,16 +153,16 @@ public class PluginManager {
         }
         if (plugins.size() == 0) {
             if (pkgs == null) {
-                packages.add(LOG4J_PACKAGES);
+                PACKAGES.add(LOG4J_PACKAGES);
             } else {
                 final String[] names = pkgs.split(",");
                 for (final String name : names) {
-                    packages.add(name);
+                    PACKAGES.add(name);
                 }
             }
         }
         final ResolverUtil.Test test = new PluginTest(clazz);
-        for (final String pkg : packages) {
+        for (final String pkg : PACKAGES) {
             resolver.findInPackage(test, pkg);
         }
         for (final Class<?> clazz : resolver.getClasses()) {
@@ -173,7 +173,8 @@ public class PluginManager {
             }
             final Map<String, PluginType> map = pluginTypeMap.get(pluginType);
             final String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            map.put(plugin.name().toLowerCase(), new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren()));
+            map.put(plugin.name().toLowerCase(), new PluginType(clazz, type, plugin.printObject(),
+                plugin.deferChildren()));
         }
         long elapsed = System.nanoTime() - start;
         plugins = pluginTypeMap.get(type);

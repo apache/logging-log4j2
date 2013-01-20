@@ -118,7 +118,8 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param params An array of parameters or null.
      * @return The Result of filtering.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
         return Result.NEUTRAL;
     }
 
@@ -131,7 +132,8 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
         return Result.NEUTRAL;
     }
 
@@ -144,7 +146,8 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         return Result.NEUTRAL;
     }
 

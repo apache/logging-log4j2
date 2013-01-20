@@ -37,6 +37,7 @@ public final class PropertiesPlugin {
     /**
      * Create the Properties component.
      * @param properties An array of Property elements.
+     * @param config The Configuration.
      * @return An Interpolator that includes the configuration properties.
      */
     @PluginFactory

@@ -31,10 +31,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
- * 
- * @param <T> The {@link Layout}'s {@link Serializable} type. 
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-public abstract class AbstractAppender<T extends Serializable> extends AbstractFilterable implements Appender<T>, LifeCycle {
+public abstract class AbstractAppender<T extends Serializable> extends AbstractFilterable
+    implements Appender<T>, LifeCycle {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -71,7 +72,8 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param handleException If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout, final boolean handleException) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout,
+                               final boolean handleException) {
         super(filter);
         this.name = name;
         this.layout = layout;

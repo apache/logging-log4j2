@@ -430,6 +430,9 @@ public abstract class ConfigurationFactory {
         }
     }
 
+    /**
+     * Represents the source for the logging configuration.
+     */
     public static class ConfigurationSource {
 
         private File file;

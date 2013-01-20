@@ -111,7 +111,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Returns the result that should be returned when the filter does not match the event.
-     * 
+     *
      * @return the Result that should be returned when the filter does not match the event.
      */
     public Result getOnMismatch() {
@@ -120,7 +120,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Returns the result that should be returned when the filter matches the event.
-     * 
+     *
      * @return the Result that should be returned when the filter matches the event.
      */
     public Result getOnMatch() {
@@ -129,7 +129,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Filter an event.
-     * 
+     *
      * @param logger
      *            The Logger.
      * @param level
@@ -142,7 +142,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            An array of parameters or null.
      * @return the Result.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
+                         final Object... params) {
         Result result = Result.NEUTRAL;
         for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, params);
@@ -155,7 +156,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Filter an event.
-     * 
+     *
      * @param logger
      *            The Logger.
      * @param level
@@ -168,7 +169,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
+                         final Throwable t) {
         Result result = Result.NEUTRAL;
         for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, t);
@@ -181,7 +183,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Filter an event.
-     * 
+     *
      * @param logger
      *            The Logger.
      * @param level
@@ -194,7 +196,8 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
+                         final Throwable t) {
         Result result = Result.NEUTRAL;
         for (final Filter filter : filters) {
             result = filter.filter(logger, level, marker, msg, t);
@@ -207,7 +210,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Filter an event.
-     * 
+     *
      * @param event
      *            The Event to filter on.
      * @return the Result.
@@ -242,14 +245,15 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
 
     /**
      * Create a CompositeFilter.
-     * 
+     *
      * @param filters
      *            An array of Filters to call.
      * @return The CompositeFilter.
      */
     @PluginFactory
     public static CompositeFilter createFilters(@PluginElement("filters") final Filter[] filters) {
-        final List<Filter> f = filters == null || filters.length == 0 ? new ArrayList<Filter>() : Arrays.asList(filters);
+        final List<Filter> f = filters == null || filters.length == 0 ?
+            new ArrayList<Filter>() : Arrays.asList(filters);
         return new CompositeFilter(f);
     }
 

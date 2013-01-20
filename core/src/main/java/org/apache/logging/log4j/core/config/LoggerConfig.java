@@ -265,7 +265,8 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      * @param data The Message.
      * @param t A Throwable or null.
      */
-    public void log(final String loggerName, final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+    public void log(final String loggerName, final Marker marker, final String fqcn, final Level level,
+                    final Message data, final Throwable t) {
         List<Property> props = null;
         if (properties != null) {
             props = new ArrayList<Property>(properties.size());
@@ -342,11 +343,12 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      * @param fqcn The fully qualified class name of the caller.
      * @param level The event Level.
      * @param data The Message.
+     * @param properties Properties to be added to the log event.
      * @param t An optional Throwable.
      * @return The LogEvent.
      */
-    public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn, final Level level, final Message data,
-                                final List<Property> properties, final Throwable t) {
+    public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn, final Level level,
+                                final Message data, final List<Property> properties, final Throwable t) {
         return new Log4jLogEvent(loggerName, marker, fqcn, level, data, properties, t);
     }
 
@@ -361,6 +363,8 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      * @param levelName The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
      * @param refs An array of Appender names.
+     * @param properties Properties to pass to the Logger.
+     * @param config The Configuration.
      * @param filter A Filter.
      * @return A new LoggerConfig.
      */

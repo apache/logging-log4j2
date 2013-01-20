@@ -24,9 +24,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * The default configuration writes all output to the Console using the default logging level. You configure default logging level by setting the
- * system property "org.apache.logging.log4j.level" to a level name. If you do not specify the property, Log4J uses the ERROR Level. Log
- * Events will be printed using the basic formatting provided by each Message.
+ * The default configuration writes all output to the Console using the default logging level. You configure default
+ * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
+ * specify the property, Log4J uses the ERROR Level. Log Events will be printed using the basic formatting provided
+ * by each Message.
  */
 public class DefaultConfiguration extends BaseConfiguration {
 

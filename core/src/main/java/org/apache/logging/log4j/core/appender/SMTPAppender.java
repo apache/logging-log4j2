@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
- *	  http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
 
 package org.apache.logging.log4j.core.appender;
@@ -47,7 +47,11 @@ import org.apache.logging.log4j.core.LogEvent;
  * appender.
  */
 @Plugin(name = "SMTP", type = "Core", elementType = "appender", printObject = true)
-public class SMTPAppender extends AbstractAppender {
+public final class SMTPAppender extends AbstractAppender {
+
+    private static final int DEFAULT_BUFFER_SIZE = 512;
+
+    /** The SMTP Manager */
     protected final SMTPManager manager;
 
     private SMTPAppender(final String name, final Filter filter, final Layout<?> layout, final SMTPManager manager,
@@ -71,9 +75,8 @@ public class SMTPAppender extends AbstractAppender {
      *            The email address of the sender.
      * @param replyTo
      *            The comma-separated list of reply-to email addresses.
-     * @param smtpProtocol
-     *            The SMTP transport protocol (such as "smtps", defaults to
-     *            "smtp").
+     * @param subject The subject of the email message.
+     * @param smtpProtocol The SMTP transport protocol (such as "smtps", defaults to "smtp").
      * @param smtpHost
      *            The SMTP hostname to send to.
      * @param smtpPortNum
@@ -123,7 +126,7 @@ public class SMTPAppender extends AbstractAppender {
         final boolean isHandleExceptions = suppressExceptions == null ? true : Boolean.valueOf(suppressExceptions);
         final int smtpPort = smtpPortNum == null ? 0 : Integer.parseInt(smtpPortNum);
         final boolean isSmtpDebug = smtpDebug == null ? false : Boolean.valueOf(smtpDebug);
-        final int bufferSize = bufferSizeNum == null ? 512 : Integer.valueOf(bufferSizeNum);
+        final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 
         if (layout == null) {
             layout = HTMLLayout.createLayout(null, null, null, null, null, null);
@@ -142,7 +145,9 @@ public class SMTPAppender extends AbstractAppender {
     }
 
     /**
-     * Capture all events in CyclicBuffer
+     * Capture all events in CyclicBuffer.
+     * @param event The Log event.
+     * @return true if the event should be filtered.
      */
     @Override
     public boolean isFiltered(final LogEvent event) {
@@ -150,13 +155,14 @@ public class SMTPAppender extends AbstractAppender {
         if (filtered) {
             manager.add(event);
         }
-		return filtered;
+        return filtered;
     }
 
     /**
      * Perform SMTPAppender specific appending actions, mainly adding the event
      * to a cyclic buffer and checking if the event triggers an e-mail to be
      * sent.
+     * @param event The Log event.
      */
     public void append(final LogEvent event) {
         manager.sendEvents(getLayout(), event);

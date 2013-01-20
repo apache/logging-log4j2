@@ -25,12 +25,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * that can format information from instances of LoggingEvent.
  */
 public abstract class LogEventPatternConverter extends AbstractPatternConverter {
-    
+
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
-    
+
     /**
      * Constructs an instance of LoggingEventPatternConverter.
      *

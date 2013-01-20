@@ -30,7 +30,7 @@ import java.util.Enumeration;
  */
 public final class NetUtils {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private NetUtils() {
     }

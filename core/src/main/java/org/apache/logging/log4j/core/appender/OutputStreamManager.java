@@ -40,6 +40,7 @@ public class OutputStreamManager extends AbstractManager {
      * @param name The name of the stream to manage.
      * @param data The data to pass to the Manager.
      * @param factory The factory to use to create the Manager.
+     * @param <T> The type of the OutputStreamManager.
      * @return An OutputStreamManager.
      */
     public static <T> OutputStreamManager getManager(final String name, final T data,
