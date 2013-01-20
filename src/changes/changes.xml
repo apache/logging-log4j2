@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="2.0-beta4" date="2012-01-19" description="Bug fixes and enhancements">
+    <release version="2.0-beta4" date="2012-01-20" description="Bug fixes and enhancements">
       <action issue="LOG4J2-152" dev="rgoers" type="fix" due-to="Remko Popma">
         RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified
         on the target file name.
