@@ -37,21 +37,19 @@ public final class LogManager {
     @Deprecated
     public static final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
 
-    static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
+    /**
+     * @deprecated This variable is for internal use only. It will
+     * become private in future versions.
+     * */
+    @Deprecated
+    public static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
 
     /**
      * @deprecated This variable is for internal use only. It will
      * become private in future versions.
      * */
     @Deprecated
-    public static final String DEFAULT_CONFIGURATION_KEY="log4j.configuration";
-
-    /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
-     * */
-    @Deprecated
-    public static final String CONFIGURATOR_CLASS_KEY="log4j.configuratorClass";
+    public static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
 
     /**
      * @deprecated This variable is for internal use only. It will
@@ -59,6 +57,8 @@ public final class LogManager {
      */
     @Deprecated
     public static final String DEFAULT_INIT_OVERRIDE_KEY = "log4j.defaultInitOverride";
+
+    static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
 
     private static final LoggerRepository REPOSITORY = new Repository();
 
@@ -114,7 +114,7 @@ public final class LogManager {
      * No-op implementation.
      * @param selector The RepositorySelector.
      * @param guard prevents calls at the incorrect time.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if a parameter is invalid.
      */
     public static void setRepositorySelector(final RepositorySelector selector, final Object guard)
         throws IllegalArgumentException {
@@ -124,6 +124,9 @@ public final class LogManager {
         return REPOSITORY;
     }
 
+    /**
+     * The Repository.
+     */
     private static class Repository implements LoggerRepository {
         public void addHierarchyEventListener(final HierarchyEventListener listener) {
 

@@ -144,6 +144,7 @@ public class Category {
 
      <p>The root category is <em>not</em> included in the returned
      {@link Enumeration}.
+     @return and Enumeration of the Categories.
 
      @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
@@ -295,7 +296,8 @@ public class Category {
 
     /**
      Is the appender passed as parameter attached to this category?
-     @param appender The Appender to add.
+     * @param appender The Appender to add.
+     * @return true if the appender is attached.
      */
     public boolean isAttached(final Appender appender) {
         return false;

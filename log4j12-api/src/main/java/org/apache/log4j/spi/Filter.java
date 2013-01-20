@@ -22,14 +22,6 @@ package org.apache.log4j.spi;
 public abstract class Filter {
 
     /**
-     * Points to the next filter in the filter chain.
-     *
-     * @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
-     */
-    @Deprecated
-    public Filter next;
-
-    /**
      * The log event must be dropped immediately without consulting
      * with the remaining filters, if any, in the chain.
      */
@@ -47,6 +39,13 @@ public abstract class Filter {
      */
     public static final int ACCEPT = 1;
 
+    /**
+     * Points to the next filter in the filter chain.
+     *
+     * @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
+     */
+    @Deprecated
+    public Filter next;
 
     /**
      * Usually filters options become active when set. We provide a
@@ -66,17 +65,19 @@ public abstract class Filter {
      * @param event The LoggingEvent to decide upon.
      * @return decision The decision of the filter.
      */
-    abstract public int decide(LoggingEvent event);
+    public abstract int decide(LoggingEvent event);
 
     /**
      * Set the next filter pointer.
+     * @param next The next Filter.
      */
     public void setNext(final Filter next) {
         this.next = next;
     }
 
     /**
-     * Return the pointer to the next filter;
+     * Return the pointer to the next filter.
+     * @return The next Filter.
      */
     public Filter getNext() {
         return next;

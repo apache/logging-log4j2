@@ -71,7 +71,7 @@ public class DOMConfigurator {
 
     }
 
-    public static Object parseElement(final Element element,final Properties props, final Class expectedClass)
+    public static Object parseElement(final Element element, final Properties props, final Class expectedClass)
         throws Exception {
         return null;
     }

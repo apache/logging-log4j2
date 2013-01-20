@@ -40,7 +40,7 @@ public interface LoggerRepository {
     /**
      * Add a {@link HierarchyEventListener} event to the repository.
      */
-    public void addHierarchyEventListener(HierarchyEventListener listener);
+    void addHierarchyEventListener(HierarchyEventListener listener);
 
     /**
      * Returns whether this repository is disabled for a given
@@ -55,42 +55,42 @@ public interface LoggerRepository {
      * threshold are immediately dropped. By default, the threshold is
      * set to <code>Level.ALL</code> which has the lowest possible rank.
      */
-    public void setThreshold(Level level);
+    void setThreshold(Level level);
 
     /**
      * Another form of {@link #setThreshold(Level)} accepting a string
      * parameter instead of a <code>Level</code>.
      */
-    public void setThreshold(String val);
+    void setThreshold(String val);
 
-    public void emitNoAppenderWarning(Category cat);
+    void emitNoAppenderWarning(Category cat);
 
     /**
      * Get the repository-wide threshold. See {@link
      * #setThreshold(Level)} for an explanation.
      */
-    public Level getThreshold();
+    Level getThreshold();
 
-    public Logger getLogger(String name);
+    Logger getLogger(String name);
 
-    public Logger getLogger(String name, LoggerFactory factory);
+    Logger getLogger(String name, LoggerFactory factory);
 
-    public Logger getRootLogger();
+    Logger getRootLogger();
 
-    public abstract Logger exists(String name);
+    abstract Logger exists(String name);
 
-    public abstract void shutdown();
+    abstract void shutdown();
 
-    public Enumeration getCurrentLoggers();
+    Enumeration getCurrentLoggers();
 
     /**
      * Deprecated. Please use {@link #getCurrentLoggers} instead.
      */
-    public Enumeration getCurrentCategories();
+    Enumeration getCurrentCategories();
 
 
-    public abstract void fireAddAppenderEvent(Category logger, Appender appender);
+    abstract void fireAddAppenderEvent(Category logger, Appender appender);
 
-    public abstract void resetConfiguration();
+    abstract void resetConfiguration();
 
 }

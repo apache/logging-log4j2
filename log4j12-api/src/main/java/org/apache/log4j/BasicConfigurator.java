@@ -33,6 +33,7 @@ public class BasicConfigurator {
 
     /**
      * No-op implementation.
+     * @param appender The appender.
      */
     public static void configure(final Appender appender) {
     }

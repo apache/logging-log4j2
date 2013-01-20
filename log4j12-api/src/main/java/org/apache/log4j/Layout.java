@@ -24,19 +24,20 @@ import org.apache.logging.log4j.core.helpers.Constants;
  */
 public abstract class Layout {
 
-    // Note that the line.separator property can be looked up even by
-    // applets.
-    public final static int LINE_SEP_LEN = Constants.LINE_SEP.length();
-
+    /** Note that the line.separator property can be looked up even by applets. */
+    public static final int LINE_SEP_LEN = Constants.LINE_SEP.length();
 
     /**
      * Implement this method to create your own layout format.
+     * @param event The LoggingEvent.
+     * @return The formatted LoggingEvent.
      */
     public abstract String format(LoggingEvent event);
 
     /**
      * Returns the content type output by this layout. The base class
      * returns "text/plain".
+     * @return the type of content rendered by the Layout.
      */
     public String getContentType() {
         return "text/plain";
@@ -45,6 +46,7 @@ public abstract class Layout {
     /**
      * Returns the header for the layout format. The base class returns
      * <code>null</code>.
+     * @return The header.
      */
     public String getHeader() {
         return null;
@@ -53,6 +55,7 @@ public abstract class Layout {
     /**
      * Returns the footer for the layout format. The base class returns
      * <code>null</code>.
+     * @return The footer.
      */
     public String getFooter() {
         return null;
@@ -70,6 +73,7 @@ public abstract class Layout {
      * <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
      * PatternLayout} all return {@code true}. The {@link
      * org.apache.log4j.xml.XMLLayout} returns {@code false}.
+     * @return true if the Layout ignores Throwables.
      *
      * @since 0.8.4
      */
