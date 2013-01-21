@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -39,6 +40,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     protected static final String SOURCE_NAME = "log4j-source";
 
     private static ManagerFactory factory = new FlumeManagerFactory();
+
+    private static final String FiLE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
 
     private final FlumeNode node;
 
@@ -205,8 +208,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.put(name + ".channels", "file");
                 props.put(name + ".channels.file.type", "file");
                 if (dataDir != null && dataDir.length() > 0) {
-                    if (!dataDir.endsWith(Constants.LINE_SEP)) {
-                        dataDir = dataDir + Constants.LINE_SEP;
+                    if (!dataDir.endsWith(FiLE_SEP)) {
+                        dataDir = dataDir + FiLE_SEP;
                     }
 
                     props.put(name + ".channels.file.checkpointDir", dataDir + "checkpoint");
