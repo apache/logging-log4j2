@@ -283,7 +283,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     /**
      * Returns a Map containing all the Appenders and their name.
-     * @return A Map containing each Appender's naem and the Appender object.
+     * @return A Map containing each Appender's name and the Appender object.
      */
     public Map<String, Appender<?>> getAppenders() {
         return appenders;
