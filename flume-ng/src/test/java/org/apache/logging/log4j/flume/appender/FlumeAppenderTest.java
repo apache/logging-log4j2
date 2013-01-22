@@ -381,8 +381,7 @@ public class FlumeAppenderTest {
     }
 
     private Appender getAppender(final Logger logger, final String name) {
-        final Map<String,Appender<?>> map = logger.getAppenders();
-        return map.get(name);
+        return logger.getAppenders().get(name);
     }
 
     private String getBody(final Event event) throws IOException {
