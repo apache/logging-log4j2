@@ -55,7 +55,7 @@ public interface Configuration extends Filterable {
 
     Map<String, LoggerConfig> getLoggers();
 
-    void addLoggerAppender(Logger logger, Appender appender);
+    void addLoggerAppender(Logger logger, Appender<?> appender);
 
     void addLoggerFilter(Logger logger, Filter filter);
 
