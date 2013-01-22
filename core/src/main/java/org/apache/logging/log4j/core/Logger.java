@@ -153,7 +153,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @return A Map containing the Appender's name as the key and the Appender as the value.
      */
-    public Map<String, Appender> getAppenders() {
+    public Map<String, Appender<?>> getAppenders() {
          return config.loggerConfig.getAppenders();
     }
 

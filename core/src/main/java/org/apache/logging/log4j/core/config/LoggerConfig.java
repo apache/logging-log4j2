@@ -56,7 +56,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     private static final long WAIT_TIME = 1000;
 
     private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
-    private final Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
+    private final Map<String, AppenderControl<?>> appenders = new ConcurrentHashMap<String, AppenderControl<?>>();
     private final String name;
     private LogEventFactory logEventFactory;
     private Level level;
@@ -168,9 +168,9 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      * Returns all Appenders as a Map.
      * @return a Map with the Appender name as the key and the Appender as the value.
      */
-    public Map<String, Appender> getAppenders() {
-        final Map<String, Appender> map = new HashMap<String, Appender>();
-        for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
+    public Map<String, Appender<?>> getAppenders() {
+        final Map<String, Appender<?>> map = new HashMap<String, Appender<?>>();
+        for (final Map.Entry<String, AppenderControl<?>> entry : appenders.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getAppender());
         }
         return map;
@@ -181,10 +181,10 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      */
     protected void clearAppenders() {
         waitForCompletion();
-        final Collection<AppenderControl> controls = appenders.values();
-        final Iterator<AppenderControl> iterator = controls.iterator();
+        final Collection<AppenderControl<?>> controls = appenders.values();
+        final Iterator<AppenderControl<?>> iterator = controls.iterator();
         while (iterator.hasNext()) {
-            final AppenderControl ctl = iterator.next();
+            final AppenderControl<?> ctl = iterator.next();
             iterator.remove();
             cleanupFilter(ctl);
         }

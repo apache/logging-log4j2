@@ -132,11 +132,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         String msg = "No Flume agents are available";
         if (client != null) {
             final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
-            avroEvent.body = ByteBuffer.wrap(event.getBody());
-            avroEvent.headers = new HashMap<CharSequence, CharSequence>();
+            avroEvent.setBody(ByteBuffer.wrap(event.getBody()));
+            avroEvent.setHeaders(new HashMap<CharSequence, CharSequence>());
 
             for (final Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
-                avroEvent.headers.put(entry.getKey(), entry.getValue());
+                avroEvent.getHeaders().put(entry.getKey(), entry.getValue());
             }
 
             final List<AvroFlumeEvent> batch = batchSize > 1 ? events.addAndGet(avroEvent, batchSize) : null;
