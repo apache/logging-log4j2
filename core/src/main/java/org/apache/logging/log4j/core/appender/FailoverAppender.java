@@ -71,7 +71,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         int errors = 0;
         if (map.containsKey(primaryRef)) {
             primary = new AppenderControl(map.get(primaryRef), null, null);

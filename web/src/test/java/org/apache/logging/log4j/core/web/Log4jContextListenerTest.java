@@ -61,7 +61,7 @@ public class Log4jContextListenerTest {
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
@@ -84,7 +84,7 @@ public class Log4jContextListenerTest {
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
@@ -106,7 +106,7 @@ public class Log4jContextListenerTest {
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);

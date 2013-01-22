@@ -78,7 +78,7 @@ public class JMSQueueAppenderTest {
     public void testConfiguration() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
-        final Map<String, Appender> appenders = config.getAppenders();
+        final Map<String, Appender<?>> appenders = config.getAppenders();
         assertTrue(appenders.containsKey("JMSQueue"));
     }
 }

@@ -92,7 +92,7 @@ public class XMLConfigurationTest {
     public void testConfiguredAppenders() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration c = ctx.getConfiguration();
-        final Map<String, Appender> apps = c.getAppenders();
+        final Map<String, Appender<?>> apps = c.getAppenders();
         assertNotNull(apps);
         assertEquals(apps.size(), 3);
     }
