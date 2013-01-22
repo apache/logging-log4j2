@@ -380,7 +380,7 @@ public class FlumeAppenderTest {
         }
     }
 
-    private Appender getAppender(final Logger logger, final String name) {
+    private Appender<?> getAppender(final Logger logger, final String name) {
         return logger.getAppenders().get(name);
     }
 
