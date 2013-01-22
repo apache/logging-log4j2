@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -25,11 +30,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
@@ -137,7 +137,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to add to the Logger.
      */
-    public void addAppender(final Appender appender) {
+    public void addAppender(final Appender<?> appender) {
         config.config.addLoggerAppender(this, appender);
     }
 
@@ -145,7 +145,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to remove from the Logger.
      */
-    public void removeAppender(final Appender appender) {
+    public void removeAppender(final Appender<?> appender) {
         config.loggerConfig.removeAppender(appender.getName());
     }
 
