@@ -17,14 +17,11 @@
 package org.apache.logging.log4j.flume.appender;
 
 import org.apache.flume.SourceRunner;
-import org.apache.flume.lifecycle.LifecycleController;
-import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.node.NodeConfiguration;
 import org.apache.flume.node.nodemanager.DefaultLogicalNodeManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -176,10 +173,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 final FlumeConfigurationBuilder builder = new FlumeConfigurationBuilder();
                 final NodeConfiguration conf = builder.load(data.name, props, nodeManager);
 
-                final FlumeNode node = new FlumeNode(nodeManager, conf);
+                final FlumeNode node = new FlumeNode(nodeManager, nodeManager, conf);
 
                 node.start();
-                LifecycleController.waitForOneOf(node, LifecycleState.START_OR_ERROR);
 
                 return new FlumeEmbeddedManager(name, data.name, node);
             } catch (final Exception ex) {

@@ -7,14 +7,14 @@
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
     </Flume>
     <Console name="STDOUT">
-      <PatternLayout pattern="%d [%p] %c %m%n"/>
+      <PatternLayout pattern="%d %t - [%p] %c %m%n"/>
     </Console>
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
       <appender-ref ref="eventLogger"/>
     </logger>
-    <root level="warn">
+    <root level="error">
       <appender-ref ref="STDOUT"/>
     </root>
   </loggers>

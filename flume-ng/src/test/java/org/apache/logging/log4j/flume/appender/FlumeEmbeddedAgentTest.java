@@ -148,12 +148,18 @@ public class FlumeEmbeddedAgentTest {
     public void teardown() throws Exception {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
-        primarySource.stop();
-        altSource.stop();
-        Assert.assertTrue("Reached stop or error",
-            LifecycleController.waitForOneOf(primarySource, LifecycleState.STOP_OR_ERROR));
-        Assert.assertEquals("Server is stopped", LifecycleState.STOP,
-            primarySource.getLifecycleState());
+        if (primarySource != null && primarySource.getLifecycleState() != null &&
+                !primarySource.getLifecycleState().equals(LifecycleState.STOP)) {
+            primarySource.stop();
+        }
+        if (altSource != null && altSource.getLifecycleState() != null &&
+                !altSource.getLifecycleState().equals(LifecycleState.STOP)) {
+            altSource.stop();
+            Assert.assertTrue("Reached stop or error",
+                    LifecycleController.waitForOneOf(primarySource, LifecycleState.STOP_OR_ERROR));
+            Assert.assertEquals("Server is stopped", LifecycleState.STOP,
+                    primarySource.getLifecycleState());
+        }
         final File file = new File("target/file-channel");
         final boolean result = deleteFiles(file);
         final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
