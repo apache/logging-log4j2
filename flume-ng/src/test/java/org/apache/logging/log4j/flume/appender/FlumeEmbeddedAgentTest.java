@@ -16,18 +16,16 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import org.apache.flume.Channel;
-import org.apache.flume.ChannelSelector;
-import org.apache.flume.Context;
+import com.google.common.base.Preconditions;
+import org.apache.avro.AvroRemoteException;
+import org.apache.avro.ipc.NettyServer;
+import org.apache.avro.ipc.Responder;
+import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.flume.Event;
-import org.apache.flume.Transaction;
-import org.apache.flume.channel.ChannelProcessor;
-import org.apache.flume.channel.MemoryChannel;
-import org.apache.flume.channel.ReplicatingChannelSelector;
-import org.apache.flume.conf.Configurables;
-import org.apache.flume.lifecycle.LifecycleController;
-import org.apache.flume.lifecycle.LifecycleState;
-import org.apache.flume.source.AvroSource;
+import org.apache.flume.event.EventBuilder;
+import org.apache.flume.source.avro.AvroFlumeEvent;
+import org.apache.flume.source.avro.AvroSourceProtocol;
+import org.apache.flume.source.avro.Status;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,9 +48,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -60,17 +64,11 @@ import java.util.zip.GZIPInputStream;
  */
 public class FlumeEmbeddedAgentTest {
     private static final String CONFIG = "default_embedded.xml";
+    private static final String HOSTNAME = "localhost";
     private static LoggerContext ctx;
 
-    private static final int testServerPort = 12345;
-
-    private AvroSource primarySource;
-    private AvroSource altSource;
-    private Channel primaryChannel;
-    private Channel alternateChannel;
-
-    private String testPort;
-    private String altPort;
+    private EventCollector primary;
+    private EventCollector alternate;
 
     @BeforeClass
     public static void setupClass() {
@@ -88,57 +86,19 @@ public class FlumeEmbeddedAgentTest {
 
     @Before
     public void setUp() throws Exception {
+
         final File file = new File("target/file-channel");
         final boolean result = deleteFiles(file);
-        primarySource = new AvroSource();
-        primarySource.setName("Primary");
-        altSource = new AvroSource();
-        altSource.setName("Alternate");
-        primaryChannel = new MemoryChannel();
-        primaryChannel.setName("Primary Memory");
-        alternateChannel = new MemoryChannel();
-        alternateChannel.setName("Alternate Memory");
-
-        Configurables.configure(primaryChannel, new Context());
-        Configurables.configure(alternateChannel, new Context());
 
         /*
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
-        Context context = new Context();
-        testPort = String.valueOf(testServerPort);
-        context.put("port", testPort);
-        context.put("bind", "localhost");
-        Configurables.configure(primarySource, context);
-
-        context = new Context();
-        altPort = String.valueOf(testServerPort + 1);
-        context.put("port", altPort);
-        context.put("bind", "localhost");
-        Configurables.configure(altSource, context);
-
-        final List<Channel> channels = new ArrayList<Channel>();
-        channels.add(primaryChannel);
-
-        final ChannelSelector primaryCS = new ReplicatingChannelSelector();
-        primaryCS.setChannels(channels);
-
-        final List<Channel> altChannels = new ArrayList<Channel>();
-        altChannels.add(alternateChannel);
-
-        final ChannelSelector alternateCS = new ReplicatingChannelSelector();
-        alternateCS.setChannels(altChannels);
-
-        primarySource.setChannelProcessor(new ChannelProcessor(primaryCS));
-        altSource.setChannelProcessor(new ChannelProcessor(alternateCS));
-
-        primarySource.start();
-        altSource.start();
-
-        Assert.assertTrue("Reached start or error", LifecycleController.waitForOneOf(
-            primarySource, LifecycleState.START_OR_ERROR));
-        Assert.assertEquals("Server is started", LifecycleState.START, primarySource.getLifecycleState());
+        int[] ports = findFreePorts(2);
+        System.setProperty("primaryPort", Integer.toString(ports[0]));
+        System.setProperty("alternatePort", Integer.toString(ports[1]));
+        primary = new EventCollector(ports[0]);
+        alternate = new EventCollector(ports[1]);
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
@@ -148,18 +108,8 @@ public class FlumeEmbeddedAgentTest {
     public void teardown() throws Exception {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
-        if (primarySource != null && primarySource.getLifecycleState() != null &&
-                !primarySource.getLifecycleState().equals(LifecycleState.STOP)) {
-            primarySource.stop();
-        }
-        if (altSource != null && altSource.getLifecycleState() != null &&
-                !altSource.getLifecycleState().equals(LifecycleState.STOP)) {
-            altSource.stop();
-            Assert.assertTrue("Reached stop or error",
-                    LifecycleController.waitForOneOf(primarySource, LifecycleState.STOP_OR_ERROR));
-            Assert.assertEquals("Server is stopped", LifecycleState.STOP,
-                    primarySource.getLifecycleState());
-        }
+        primary.stop();
+        alternate.stop();
         final File file = new File("target/file-channel");
         final boolean result = deleteFiles(file);
         final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -179,18 +129,11 @@ public class FlumeEmbeddedAgentTest {
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
 
-        final Transaction transaction = primaryChannel.getTransaction();
-        transaction.begin();
-
-        final Event event = primaryChannel.take();
+        final Event event = primary.poll();
         Assert.assertNotNull(event);
         final String body = getBody(event);
         Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("Test Log4j"));
-        transaction.commit();
-        transaction.close();
-
-        primarySource.stop();
     }
 
     @Test
@@ -201,20 +144,13 @@ public class FlumeEmbeddedAgentTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            final Transaction transaction = primaryChannel.getTransaction();
-            transaction.begin();
-
-            final Event event = primaryChannel.take();
-            Assert.assertNotNull("Missing event number " + i + 1, event);
+            final Event event = primary.poll();
+            Assert.assertNotNull(event);
             final String body = getBody(event);
             final String expected = "Test Multiple " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
                 body.endsWith(expected));
-            transaction.commit();
-            transaction.close();
         }
-
-        primarySource.stop();
     }
 
 
@@ -227,22 +163,18 @@ public class FlumeEmbeddedAgentTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            final Transaction transaction = primaryChannel.getTransaction();
-            transaction.begin();
-
-            final Event event = primaryChannel.take();
+            final Event event = primary.poll();
             Assert.assertNotNull(event);
             final String body = getBody(event);
             final String expected = "Test Primary " + i;
             Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
                 body.endsWith(expected));
-            transaction.commit();
-            transaction.close();
         }
 
         // Give the AvroSink time to receive notification and notify the channel.
         Thread.sleep(500);
-        primarySource.stop();
+
+        primary.stop();
 
 
         for (int i = 0; i < 10; ++i) {
@@ -250,10 +182,7 @@ public class FlumeEmbeddedAgentTest {
             EventLogger.logEvent(msg);
         }
         for (int i = 0; i < 10; ++i) {
-            final Transaction transaction = alternateChannel.getTransaction();
-            transaction.begin();
-
-            final Event event = alternateChannel.take();
+            final Event event = alternate.poll();
             Assert.assertNotNull(event);
             final String body = getBody(event);
             final String expected = "Test Alternate " + i;
@@ -261,8 +190,6 @@ public class FlumeEmbeddedAgentTest {
                the failover, which fails this test */
             Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
                 " Received: " + body, body.endsWith(expected));
-            transaction.commit();
-            transaction.close();
         }
     }
 
@@ -292,5 +219,80 @@ public class FlumeEmbeddedAgentTest {
         }
 
         return result &= file.delete();
+    }
+
+    private static class EventCollector implements AvroSourceProtocol {
+        private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<AvroFlumeEvent>();
+
+        private final NettyServer nettyServer;
+
+
+        public EventCollector(int port) {
+            Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
+            nettyServer = new NettyServer(responder, new InetSocketAddress(HOSTNAME, port));
+            nettyServer.start();
+        }
+
+        public void stop() {
+            nettyServer.close();
+        }
+
+        public Event poll() {
+
+            AvroFlumeEvent avroEvent = null;
+            try {
+                avroEvent = eventQueue.poll(30000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ie) {
+                // Ignore the exception.
+            }
+            if (avroEvent != null) {
+                return EventBuilder.withBody(avroEvent.getBody().array(),
+                    toStringMap(avroEvent.getHeaders()));
+            } else {
+                System.out.println("No Event returned");
+            }
+            return null;
+        }
+
+        public Status append(AvroFlumeEvent event) throws AvroRemoteException {
+            eventQueue.add(event);
+            return Status.OK;
+        }
+
+        public Status appendBatch(List<AvroFlumeEvent> events)
+            throws AvroRemoteException {
+            Preconditions.checkState(eventQueue.addAll(events));
+            return Status.OK;
+        }
+    }
+
+    private static Map<String, String> toStringMap(Map<CharSequence, CharSequence> charSeqMap) {
+        Map<String, String> stringMap = new HashMap<String, String>();
+        for (Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
+            stringMap.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return stringMap;
+    }
+
+    private static int[] findFreePorts(int count) throws IOException {
+        int[] ports = new int[count];
+        ServerSocket[] sockets = new ServerSocket[count];
+        try {
+            for (int i = 0; i < count; ++i) {
+                sockets[i] = new ServerSocket(0);
+                ports[i] = sockets[i].getLocalPort();
+            }
+        } finally {
+            for (int i = 0; i < count; ++i) {
+                if (sockets[i] != null) {
+                    try {
+                        sockets[i].close();
+                    } catch (Exception ex) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        }
+        return ports;
     }
 }

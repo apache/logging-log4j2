@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error" name="MyApp" packages="">
+<configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
       <Property name="channels">file</Property>
@@ -10,12 +10,12 @@
       <Property name="sinks.agent1.channel">file</Property>
       <Property name="sinks.agent1.type">avro</Property>
       <Property name="sinks.agent1.hostname">localhost</Property>
-      <Property name="sinks.agent1.port">12345</Property>
+      <Property name="sinks.agent1.port">${sys:primaryPort}</Property>
       <Property name="sinks.agent1.batch-size">1</Property>
       <Property name="sinks.agent2.channel">file</Property>
       <Property name="sinks.agent2.type">avro</Property>
       <Property name="sinks.agent2.hostname">localhost</Property>
-      <Property name="sinks.agent2.port">12346</Property>
+      <Property name="sinks.agent2.port">${sys:alternatePort}</Property>
       <Property name="sinks.agent2.batch-size">1</Property>
       <Property name="sinkgroups">group1</Property>
       <Property name="sinkgroups.group1.sinks">agent1 agent2</Property>
