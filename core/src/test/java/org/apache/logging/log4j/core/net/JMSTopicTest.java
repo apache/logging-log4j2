@@ -83,9 +83,9 @@ public class JMSTopicTest {
 
     @After
     public void teardown() {
-        final Map<String,Appender> map = root.getAppenders();
-        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
-            final Appender app = entry.getValue();
+        final Map<String,Appender<?>> map = root.getAppenders();
+        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
+            final Appender<?> app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }

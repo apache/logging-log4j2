@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true" dataDir="target/file-channel">
-      <Agent host="localhost" port="12345"/>
-      <Agent host="localhost" port="12346"/>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true" dataDir="InMemory">
+      <Agent host="localhost" port="${sys:primaryPort}"/>
+      <Agent host="localhost" port="${sys:alternatePort}"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
     </Flume>
     <Console name="STDOUT">
-      <PatternLayout pattern="%d [%p] %c %m%n"/>
+      <PatternLayout pattern="%d %t - [%p] %c %m%n"/>
     </Console>
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
       <appender-ref ref="eventLogger"/>
     </logger>
-    <root level="warn">
+    <root level="error">
       <appender-ref ref="STDOUT"/>
     </root>
   </loggers>

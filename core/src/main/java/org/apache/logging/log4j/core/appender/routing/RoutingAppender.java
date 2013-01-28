@@ -72,7 +72,7 @@ public final class RoutingAppender extends AbstractAppender {
 
     @Override
     public void start() {
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         // Register all the static routes.
         for (final Route route : routes.getRoutes()) {
             if (route.getAppenderRef() != null) {
@@ -91,7 +91,7 @@ public final class RoutingAppender extends AbstractAppender {
     @Override
     public void stop() {
         super.stop();
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         for (final Map.Entry<String, AppenderControl> entry : appenders.entrySet()) {
             final String name = entry.getValue().getAppender().getName();
             if (!map.containsKey(name)) {

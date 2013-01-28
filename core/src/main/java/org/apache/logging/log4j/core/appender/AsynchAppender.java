@@ -72,7 +72,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
 
     @Override
     public void start() {
-        final Map<String, Appender> map = config.getAppenders();
+        final Map<String, Appender<?>> map = config.getAppenders();
         final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
         for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {

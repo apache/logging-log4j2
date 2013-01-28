@@ -96,7 +96,7 @@ public class MapFilterTest {
         final Map<String, String> eventMap = new HashMap<String, String>();
         eventMap.put("eventId", "Login");
         logger.debug(new MapMessage(eventMap));
-        final Map<String,Appender> appenders = config.getAppenders();
+        final Map<String,Appender<?>> appenders = config.getAppenders();
         final Appender app = appenders.get("LIST");
         assertNotNull("No List appender", app);
         final List<String> msgs = ((ListAppender) app).getMessages();

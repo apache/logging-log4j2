@@ -19,9 +19,9 @@ package org.apache.logging.log4j.flume.appender;
 import com.google.common.base.Preconditions;
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
-import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.apache.flume.node.NodeConfiguration;
 import org.apache.flume.node.NodeManager;
+import org.apache.flume.node.nodemanager.NodeConfigurationAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,25 +34,23 @@ public class FlumeNode implements LifecycleAware {
 
     private LifecycleState lifecycleState;
     private final NodeManager nodeManager;
-    private final LifecycleSupervisor supervisor;
+    private final NodeConfigurationAware configurationAware;
     private final NodeConfiguration conf;
 
-    public FlumeNode(final NodeManager manager, final NodeConfiguration conf) {
+    public FlumeNode(final NodeConfigurationAware configurationAware, final NodeManager manager,
+                     final NodeConfiguration conf) {
         this.nodeManager = manager;
         this.conf = conf;
-        supervisor = new LifecycleSupervisor();
+        this.configurationAware = configurationAware;
     }
 
     public void start() {
 
         Preconditions.checkState(nodeManager != null, "Node manager can not be null");
 
-        supervisor.start();
-
         LOGGER.info("Flume node starting");
 
-        supervisor.supervise(nodeManager,
-            new LifecycleSupervisor.SupervisorPolicy.AlwaysRestartPolicy(), LifecycleState.START);
+        configurationAware.startAllComponents(conf);
 
         lifecycleState = LifecycleState.START;
     }
@@ -61,7 +59,7 @@ public class FlumeNode implements LifecycleAware {
 
         LOGGER.info("Flume node stopping");
 
-        supervisor.stop();
+        configurationAware.stopAllComponents();
 
         lifecycleState = LifecycleState.STOP;
     }
@@ -77,5 +75,4 @@ public class FlumeNode implements LifecycleAware {
     public LifecycleState getLifecycleState() {
         return lifecycleState;
     }
-
 }

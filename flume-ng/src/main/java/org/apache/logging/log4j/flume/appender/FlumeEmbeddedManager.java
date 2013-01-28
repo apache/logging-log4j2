@@ -17,15 +17,13 @@
 package org.apache.logging.log4j.flume.appender;
 
 import org.apache.flume.SourceRunner;
-import org.apache.flume.lifecycle.LifecycleController;
-import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.node.NodeConfiguration;
 import org.apache.flume.node.nodemanager.DefaultLogicalNodeManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -39,6 +37,10 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     protected static final String SOURCE_NAME = "log4j-source";
 
     private static ManagerFactory factory = new FlumeManagerFactory();
+
+    private static final String FiLE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
+
+    private static final String IN_MEMORY = "InMemory";
 
     private final FlumeNode node;
 
@@ -173,10 +175,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 final FlumeConfigurationBuilder builder = new FlumeConfigurationBuilder();
                 final NodeConfiguration conf = builder.load(data.name, props, nodeManager);
 
-                final FlumeNode node = new FlumeNode(nodeManager, conf);
+                final FlumeNode node = new FlumeNode(nodeManager, nodeManager, conf);
 
                 node.start();
-                LifecycleController.waitForOneOf(node, LifecycleState.START_OR_ERROR);
 
                 return new FlumeEmbeddedManager(name, data.name, node);
             } catch (final Exception ex) {
@@ -202,15 +203,26 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             if (agents != null && agents.length > 0) {
                 props.put(name + ".sources", FlumeEmbeddedManager.SOURCE_NAME);
                 props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", SOURCE_TYPE);
-                props.put(name + ".channels", "file");
-                props.put(name + ".channels.file.type", "file");
+
                 if (dataDir != null && dataDir.length() > 0) {
-                    if (!dataDir.endsWith(Constants.LINE_SEP)) {
-                        dataDir = dataDir + Constants.LINE_SEP;
+                    if (dataDir.equals(IN_MEMORY)) {
+                        props.put(name + ".channels", "primary");
+                        props.put(name + ".channels.primary.type", "memory");
+                    } else {
+                        props.put(name + ".channels", "primary");
+                        props.put(name + ".channels.primary.type", "file");
+
+                        if (!dataDir.endsWith(FiLE_SEP)) {
+                            dataDir = dataDir + FiLE_SEP;
+                        }
+
+                        props.put(name + ".channels.primary.checkpointDir", dataDir + "checkpoint");
+                        props.put(name + ".channels.primary.dataDirs", dataDir + "data");
                     }
 
-                    props.put(name + ".channels.file.checkpointDir", dataDir + "checkpoint");
-                    props.put(name + ".channels.file.dataDirs", dataDir + "data");
+                } else {
+                    props.put(name + ".channels", "primary");
+                    props.put(name + ".channels.primary.type", "file");
                 }
 
                 final StringBuilder sb = new StringBuilder();
@@ -220,7 +232,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
                     final String prefix = name + ".sinks.agent" + i;
-                    props.put(prefix + ".channel", "file");
+                    props.put(prefix + ".channel", "primary");
                     props.put(prefix + ".type", "avro");
                     props.put(prefix + ".hostname", agents[i].getHost());
                     props.put(prefix + ".port", Integer.toString(agents[i].getPort()));
@@ -232,7 +244,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.put(name + ".sinkgroups", "group1");
                 props.put(name + ".sinkgroups.group1.sinks", sb.toString());
                 props.put(name + ".sinkgroups.group1.processor.type", "failover");
-                final String sourceChannels = "file";
+                final String sourceChannels = "primary";
                 props.put(name + ".channels", sourceChannels);
                 props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".channels", sourceChannels);
             } else {
@@ -285,7 +297,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 String sourceChannels = channels;
 
                 if (channels == null) {
-                    sourceChannels = "file";
+                    sourceChannels = "primary";
                     props.put(name + ".channels", sourceChannels);
                 }
 

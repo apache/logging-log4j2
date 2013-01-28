@@ -85,7 +85,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private String name;
 
-    private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
+    private ConcurrentMap<String, Appender<?>> appenders = new ConcurrentHashMap<String, Appender<?>>();
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
 
@@ -176,7 +176,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 subst.setVariableResolver(new Interpolator(lookup));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
-                appenders = (ConcurrentMap<String, Appender>) child.getObject();
+                appenders = (ConcurrentMap<String, Appender<?>>) child.getObject();
             } else if (child.getObject() instanceof Filter) {
                 addFilter((Filter) child.getObject());
             } else if (child.getName().equalsIgnoreCase("loggers")) {
@@ -283,9 +283,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     /**
      * Returns a Map containing all the Appenders and their name.
-     * @return A Map containing each Appender's naem and the Appender object.
+     * @return A Map containing each Appender's name and the Appender object.
      */
-    public Map<String, Appender> getAppenders() {
+    public Map<String, Appender<?>> getAppenders() {
         return appenders;
     }
 

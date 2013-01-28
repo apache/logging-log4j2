@@ -49,7 +49,7 @@ public class AppenderRefLevelTest {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("LIST1")) {
                 app1 = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("LIST2")) {

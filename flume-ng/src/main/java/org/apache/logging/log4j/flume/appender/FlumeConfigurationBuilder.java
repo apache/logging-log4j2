@@ -111,7 +111,7 @@ public class FlumeConfigurationBuilder {
             loadSources(agentConf, conf);
             loadSinks(agentConf, conf);
 
-            configurationAware.startAllComponents(conf);
+            //configurationAware.startAllComponents(conf);
         } else {
             LOGGER.warn("No configuration found for: {}", name);
         }
