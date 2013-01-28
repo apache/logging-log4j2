@@ -22,6 +22,7 @@ o LOG4J2-133:  Allow custom message creation via a message factory.
 o Added Flume Appender samples. 
 
 Fixed Bugs:
+o LOG4J2-156:  LocalizedMessageTest fails on linux system. Thanks to Andreas Born. 
 o LOG4J2-152:  RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified
         on the target file name. Thanks to Remko Popma. 
 o LOG4J2-150:  Convert all System.getProperty calls to use PropertiesUtil to suppress SecurityExceptions. 
