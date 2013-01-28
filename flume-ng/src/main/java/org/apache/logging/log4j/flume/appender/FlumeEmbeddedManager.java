@@ -40,6 +40,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static final String FiLE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
 
+    private static final String IN_MEMORY = "InMemory";
+
     private final FlumeNode node;
 
     private NodeConfiguration conf;
@@ -201,15 +203,26 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             if (agents != null && agents.length > 0) {
                 props.put(name + ".sources", FlumeEmbeddedManager.SOURCE_NAME);
                 props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".type", SOURCE_TYPE);
-                props.put(name + ".channels", "file");
-                props.put(name + ".channels.file.type", "file");
+
                 if (dataDir != null && dataDir.length() > 0) {
-                    if (!dataDir.endsWith(FiLE_SEP)) {
-                        dataDir = dataDir + FiLE_SEP;
+                    if (dataDir.equals(IN_MEMORY)) {
+                        props.put(name + ".channels", "primary");
+                        props.put(name + ".channels.primary.type", "memory");
+                    } else {
+                        props.put(name + ".channels", "primary");
+                        props.put(name + ".channels.primary.type", "file");
+
+                        if (!dataDir.endsWith(FiLE_SEP)) {
+                            dataDir = dataDir + FiLE_SEP;
+                        }
+
+                        props.put(name + ".channels.primary.checkpointDir", dataDir + "checkpoint");
+                        props.put(name + ".channels.primary.dataDirs", dataDir + "data");
                     }
 
-                    props.put(name + ".channels.file.checkpointDir", dataDir + "checkpoint");
-                    props.put(name + ".channels.file.dataDirs", dataDir + "data");
+                } else {
+                    props.put(name + ".channels", "primary");
+                    props.put(name + ".channels.primary.type", "file");
                 }
 
                 final StringBuilder sb = new StringBuilder();
@@ -219,7 +232,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
                     final String prefix = name + ".sinks.agent" + i;
-                    props.put(prefix + ".channel", "file");
+                    props.put(prefix + ".channel", "primary");
                     props.put(prefix + ".type", "avro");
                     props.put(prefix + ".hostname", agents[i].getHost());
                     props.put(prefix + ".port", Integer.toString(agents[i].getPort()));
@@ -231,7 +244,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 props.put(name + ".sinkgroups", "group1");
                 props.put(name + ".sinkgroups.group1.sinks", sb.toString());
                 props.put(name + ".sinkgroups.group1.processor.type", "failover");
-                final String sourceChannels = "file";
+                final String sourceChannels = "primary";
                 props.put(name + ".channels", sourceChannels);
                 props.put(name + ".sources." + FlumeEmbeddedManager.SOURCE_NAME + ".channels", sourceChannels);
             } else {
@@ -284,7 +297,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 String sourceChannels = channels;
 
                 if (channels == null) {
-                    sourceChannels = "file";
+                    sourceChannels = "primary";
                     props.put(name + ".channels", sourceChannels);
                 }
 
