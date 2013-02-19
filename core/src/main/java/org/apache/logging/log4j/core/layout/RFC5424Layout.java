@@ -65,6 +65,10 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Match newlines in a platform-independent manner.
      */
     public static final Pattern NEWLINE_PATTERN = Pattern.compile("\\r?\\n");
+    /**
+     * Match characters which require escaping
+     */
+    public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
 
     private static final String DEFAULT_MDCID = "mdc";
     private static final int TWO_DIGITS = 10;
@@ -230,13 +234,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 text = msg.getFormattedMessage();
             }
             if (includeMDC) {
+                Map<String, String> map = event.getContextMap();
                 if (mdcRequired != null) {
-                    checkRequired(event.getContextMap());
+                    checkRequired(map);
                 }
                 final int ein = id == null || id.getEnterpriseNumber() < 0 ?
                     enterpriseNumber : id.getEnterpriseNumber();
                 final StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
-                formatStructuredElement(mdcSDID, event.getContextMap(), buf, checker);
+                formatStructuredElement(mdcSDID, map, buf, checker);
             }
             if (text != null && text.length() > 0) {
                 buf.append(" ").append(escapeNewlines(text, escapeNewLine));
@@ -385,10 +390,26 @@ public final class RFC5424Layout extends AbstractStringLayout {
         final SortedMap<String, String> sorted = new TreeMap<String, String>(map);
         for (final Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey()) && entry.getValue() != null) {
-                sb.append(" ");
-                sb.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+                sb
+                        .append(" ")
+                        .append(escapeNewlines(
+                        		escapeSDParams(
+                        				entry.getKey()),
+                                escapeNewLine))
+                        .append("=\"")
+                        .append(
+                                escapeNewlines(
+                                        escapeSDParams(
+                                                entry.getValue()),
+                                        escapeNewLine))
+                        .append("\"");
             }
         }
+    }
+
+    private String escapeSDParams(String value)
+    {
+        return PARAM_VALUE_ESCAPE_PATTERN.matcher(value).replaceAll("\\\\$0");
     }
 
     /**

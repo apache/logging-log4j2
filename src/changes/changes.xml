@@ -23,7 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
-
+      <action issue="LOG4J2-158" dev="rgoers" due-to="Scott Severtson">
+        Add RFC 5424 compliant escaping rules to RFC5424Layout.
+      </action>
     </release>
     <release version="2.0-beta4" date="2012-01-28" description="Bug fixes and enhancements">
       <action issue="LOG4J2-156" dev="ggregory" type="fix" due-to="Andreas Born">

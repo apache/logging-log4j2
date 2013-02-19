@@ -51,6 +51,10 @@ public class RFC5424LayoutTest {
     private static final String line4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+    private static final String lineEscaped3 = "ATM - - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc";
+    private static final String lineEscaped4 = 
+        "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
+        "[RequestContext@18060 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -132,6 +136,69 @@ public class RFC5424LayoutTest {
     }
 
     /**
+     * Test case for escaping newlines and other SD PARAM-NAME special characters.
+     */
+    @Test
+    public void testEscape() throws Exception {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        // set up appender
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+            "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+        
+        ThreadContext.put("loginId", "JohnDoe");
+
+        // output starting message
+        root.debug("starting mdc pattern test");
+
+        root.debug("empty mdc");
+
+        ThreadContext.put("escaped", "Testing escaping \n \" ] \"");
+
+        root.debug("filled mdc");
+
+        ThreadContext.put("ipAddress", "192.168.0.120");
+        ThreadContext.put("locale", Locale.US.getDisplayName());
+        try {
+            final StructuredDataMessage msg = new StructuredDataMessage("Transfer@18060", "Transfer Complete", "Audit");
+            msg.put("ToAccount", "123456");
+            msg.put("FromAccount", "123457");
+            msg.put("Amount", "200.00");
+            root.info(MarkerManager.getMarker("EVENT"), msg);
+
+            List<String> list = appender.getMessages();
+
+            assertTrue("Expected line 1 to end with: " + line1 + " Actual " + list.get(0), list.get(0).endsWith(line1));
+            assertTrue("Expected line 2 to end with: " + line2 + " Actual " + list.get(1), list.get(1).endsWith(line2));
+            assertTrue("Expected line 3 to end with: " + lineEscaped3 + " Actual " + list.get(2), list.get(2).endsWith(lineEscaped3));
+            assertTrue("Expected line 4 to end with: " + lineEscaped4 + " Actual " + list.get(3), list.get(3).endsWith(lineEscaped4));
+
+            appender.clear();
+
+            ThreadContext.remove("loginId");
+
+            root.debug("This is a test");
+
+            list = appender.getMessages();
+            assertTrue("No messages expected, found " + list.size(), list.size() == 0);
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+
+    }
+
+    /**
      * Test case for MDC conversion pattern.
      */
     @Test
@@ -169,5 +236,4 @@ public class RFC5424LayoutTest {
             appender.stop();
         }
     }
-
 }
