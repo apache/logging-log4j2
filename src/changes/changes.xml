@@ -27,7 +27,7 @@
         Add RFC 5424 compliant escaping rules to RFC5424Layout.
       </action>
     </release>
-    <release version="2.0-beta4" date="2012-01-28" description="Bug fixes and enhancements">
+    <release version="2.0-beta4" date="2013-01-28" description="Bug fixes and enhancements">
       <action issue="LOG4J2-156" dev="ggregory" type="fix" due-to="Andreas Born">
         LocalizedMessageTest fails on linux system.
       </action>
