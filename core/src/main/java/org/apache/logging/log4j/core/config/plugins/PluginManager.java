@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Component that loads and manages all the plugins.
+ * Loads and manages all the plugins.
  */
 public class PluginManager {
 
