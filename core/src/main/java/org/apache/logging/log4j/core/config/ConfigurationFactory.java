@@ -122,10 +122,10 @@ public abstract class ConfigurationFactory {
         return configFactory;
     }
 
+    @SuppressWarnings("unchecked")
     private static void addFactory(final String factoryClass) {
         try {
-            final Class clazz = Class.forName(factoryClass);
-            addFactory(clazz);
+            addFactory((Class<ConfigurationFactory>) Class.forName(factoryClass));
         } catch (final ClassNotFoundException ex) {
             LOGGER.error("Unable to load class " + factoryClass, ex);
         } catch (final Exception ex) {
@@ -133,9 +133,9 @@ public abstract class ConfigurationFactory {
         }
     }
 
-    private static void addFactory(final Class factoryClass) {
+    private static void addFactory(final Class<ConfigurationFactory> factoryClass) {
         try {
-            factories.add((ConfigurationFactory) factoryClass.newInstance());
+            factories.add(factoryClass.newInstance());
         } catch (final Exception ex) {
             LOGGER.error("Unable to create instance of " + factoryClass.getName(), ex);
         }
