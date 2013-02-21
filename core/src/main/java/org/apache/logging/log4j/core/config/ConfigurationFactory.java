@@ -374,7 +374,7 @@ public abstract class ConfigurationFactory {
         }
 
         private Configuration getConfiguration(final boolean isTest, final String name) {
-            final boolean named = (name != null && name.length() > 0);
+            final boolean named = name != null && name.length() > 0;
             final ClassLoader loader = this.getClass().getClassLoader();
             for (final ConfigurationFactory factory : factories) {
                 String configName;
