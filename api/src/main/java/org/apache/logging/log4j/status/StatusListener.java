@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.status;
 
 /**
- * Interface that allows implementors to be notified of events in the logging system.
+ * Interface that allows implementers to be notified of events in the logging system.
  */
 public interface StatusListener {
 

@@ -36,7 +36,7 @@ public class DefaultConfiguration extends BaseConfiguration {
      */
     public static final String DEFAULT_NAME = "Default";
     /**
-     * The System Proerty used to specify the logging level.
+     * The System Property used to specify the logging level.
      */
     public static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 

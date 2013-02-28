@@ -34,7 +34,7 @@
               <ul>
                 <li>aid in problem diagnosis in development without requiring a debug session</li>
                 <li>aid in problem diagnosis in production where no debugging is possible</li>
-                <li>help educate new deveopers in learning the application.</li>
+                <li>help educate new developers in learning the application.</li>
               </ul>
             </p>
             <p>
@@ -53,19 +53,19 @@
             </p>
             <p>
               The throwing() method can be used by an application when it is throwing an exception that is
-              unlikely to be handled, such as a RuntimeExcpetion. This will insure that proper diagnostics
+              unlikely to be handled, such as a RuntimeException. This will insure that proper diagnostics
               are available if needed. The logging event generated will have a level of ERROR and will have
               an associated Marker with a name of "THROWING" which is also an "EXCEPTION" Marker.
             </p>
             <p>
               The catching() method can be used by an application when it catches an Exception that it is not
-              going to rethrow, either explicitely or attached to another Exception. The logging event generated
+              going to rethrow, either explicitly or attached to another Exception. The logging event generated
               will have a level of ERROR and will have an associated Marker with a name of "CATCHING" which is
               also an "EXCEPTION" Marker.
             </p>
             <p>
               The following example shows a simple application using these methods in a fairly typcial manner. The
-              throwing() is not present since no Exceptions are explicitely thrown and not handled.
+              throwing() is not present since no Exceptions are explicitly thrown and not handled.
             </p>
 <pre class="prettyprint linenums">
 package com.test;

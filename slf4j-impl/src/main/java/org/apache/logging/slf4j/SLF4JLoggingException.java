@@ -17,7 +17,7 @@
 package org.apache.logging.slf4j;
 
 /**
- * Exception thrown when the SLF4J apapter encounters a problem.
+ * Exception thrown when the SLF4J adapter encounters a problem.
  *
  */
 public class SLF4JLoggingException extends RuntimeException {

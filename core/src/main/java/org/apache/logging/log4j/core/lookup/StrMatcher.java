@@ -218,10 +218,10 @@ public abstract class StrMatcher {
      * The API guarantees that <code>pos</code> is a valid index for <code>buffer</code>.
      * <p>
      * The character array may be larger than the active area to be matched.
-     * Only values in the buffer between the specifed indices may be accessed.
+     * Only values in the buffer between the specified indices may be accessed.
      * <p>
      * The matching code may check one character or many.
-     * It may check characters preceeding <code>pos</code> as well as those
+     * It may check characters preceding <code>pos</code> as well as those
      * after, so long as no checks exceed the bounds specified.
      * <p>
      * It must return zero for no match, or a positive number if a match was found.
@@ -245,7 +245,7 @@ public abstract class StrMatcher {
      * The API guarantees that <code>pos</code> is a valid index for <code>buffer</code>.
      * <p>
      * The matching code may check one character or many.
-     * It may check characters preceeding <code>pos</code> as well as those after.
+     * It may check characters preceding <code>pos</code> as well as those after.
      * <p>
      * It must return zero for no match, or a positive number if a match was found.
      * The number indicates the number of characters that matched.

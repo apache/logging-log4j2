@@ -45,7 +45,7 @@
           multithreaded applications and distributed applications at large.</p>
 
           <p>Experience indicates that logging was an important component of the
-          development cycle. It offeres several advantages. It provides precise
+          development cycle. It offers several advantages. It provides precise
           <em>context</em> about a run of the application. Once inserted into
           the code, the generation of logging output requires no human
           intervention.  Moreover, log output can be saved in persistent medium

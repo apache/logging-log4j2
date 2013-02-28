@@ -104,7 +104,7 @@ final class CachedDateFormat extends DateFormat {
     private int millisecondStart;
 
     /**
-     * Integral second preceding the previous convered Date.
+     * Integral second preceding the previous converted Date.
      */
     private long slotBegin;
 
@@ -313,7 +313,7 @@ final class CachedDateFormat extends DateFormat {
     /**
      * Formats a count of milliseconds (0-999) into a numeric representation.
      *
-     * @param millis Millisecond coun between 0 and 999.
+     * @param millis Millisecond count between 0 and 999.
      * @param buf    String buffer, may not be null.
      * @param offset Starting position in buffer, the length of the
      *               buffer must be at least offset + 3.

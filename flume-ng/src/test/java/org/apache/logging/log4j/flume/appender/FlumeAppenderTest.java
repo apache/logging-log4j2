@@ -163,7 +163,7 @@ public class FlumeAppenderTest {
         eventLogger.addAppender(avroAppender);
         eventLogger.setLevel(Level.ALL);
 
-        final StructuredDataMessage msg = new StructuredDataMessage("Transer", "Success", "Audit");
+        final StructuredDataMessage msg = new StructuredDataMessage("Tranfser", "Success", "Audit");
         msg.put("memo", "This is a memo");
         msg.put("acct", "12345");
         msg.put("amount", "100.00");
@@ -266,7 +266,7 @@ public class FlumeAppenderTest {
         try {
             avroLogger.info("message 1");
         } catch (final Throwable t) {
-            //logger.debug("Logging to a non-existant server failed (as expected)", t);
+            //logger.debug("Logging to a non-existent server failed (as expected)", t);
 
             caughtException = true;
         }

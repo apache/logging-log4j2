@@ -176,7 +176,7 @@ public abstract class NameAbbreviator {
         @Override
         public String abbreviate(final String buf) {
 
-            // We substract 1 from 'len' when assigning to 'end' to avoid out of
+            // We subtract 1 from 'len' when assigning to 'end' to avoid out of
             // bounds exception in return r.substring(end+1, len). This can happen if
             // precision is 1 and the category name ends with a dot.
             int end = buf.length() - 1;

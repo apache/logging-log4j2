@@ -42,7 +42,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringtOneArg() {
+    public void tesStringOneArg() {
         final String testMsg = "Test message %1s";
         final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();

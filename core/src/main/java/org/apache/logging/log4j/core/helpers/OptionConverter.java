@@ -42,7 +42,7 @@ public final class OptionConverter {
     private OptionConverter() {
     }
 
-    public static String[] concatanateArrays(final String[] l, final String[] r) {
+    public static String[] concatenateArrays(final String[] l, final String[] r) {
         final int len = l.length + r.length;
         final String[] a = new String[len];
 
@@ -245,7 +245,7 @@ public final class OptionConverter {
      * Perform variable substitution in string <code>val</code> from the
      * values of keys found in the system propeties.
      * <p/>
-     * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
+     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.
      * <p/>
      * <p>For example, if the System properties contains "key=value", then
      * the call
@@ -259,7 +259,7 @@ public final class OptionConverter {
      * <code>props</code> parameter is searched, if the value could not
      * be found there, then substitution defaults to the empty string.
      * <p/>
-     * <p>For example, if system propeties contains no value for the key
+     * <p>For example, if system properties contains no value for the key
      * "inexistentKey", then the call
      * <p/>
      * <pre>

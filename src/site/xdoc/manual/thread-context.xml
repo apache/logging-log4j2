@@ -30,7 +30,7 @@
           <p>Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It has been documented and
             discussed in numerous places including
             <a href="http://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
-            <a href="http://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/">Log4j and the Mappend Diagnostic Context</a>.
+            <a href="http://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/">Log4j and the Mapped Diagnostic Context</a>.
             In addition, Log4j 1.x provides support for a Nested Diagnostic Context or NDC. It too has been documented
             and discussed in various places such as
             <a href="http://lstierneyltd.com/blog/development/log4j-nested-diagnostic-contexts-ndc/">Log4j NDC</a>.
@@ -44,7 +44,7 @@
           </p>
           <h4>Fish Tagging</h4>
           <p>Most real-world systems have to deal with multiple clients simultaneously. In a typical multithreaded
-            implementation of such asystem, different threads will handle different clients. Logging is
+            implementation of such a system, different threads will handle different clients. Logging is
             especially well suited to trace and debug complex distributed applications. A common approach to
             differentiate the logging output of one client from another is to instantiate a new separate logger for
             each client. This promotes the proliferation of loggers and increases the management overhead of logging.

@@ -27,7 +27,7 @@
   <artifactId>log4j-web</artifactId>
   <packaging>jar</packaging>
   <name>Log4j Web Adapters</name>
-  <description>Log4j Adpaters for Web Applications</description>
+  <description>Log4j Adapters for Web Applications</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Web Application Documentation</docLabel>

@@ -127,9 +127,9 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
     }
 
     /**
-     * Some appenders need to propogate exceptions back to the application. When suppressException is false the
+     * Some appenders need to propagate exceptions back to the application. When suppressException is false the
      * AppenderControl will allow the exception to percolate.
-     * @return true if exceptions will be supressed, false otherwise.
+     * @return true if exceptions will be suppressed, false otherwise.
      */
     public boolean isExceptionSuppressed() {
         return handleException;

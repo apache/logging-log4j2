@@ -95,7 +95,7 @@ public class FailoverAppenderTest {
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         events = app.getEvents();
-        assertTrue("Did not recoever", events.size() == 0);
+        assertTrue("Did not recover", events.size() == 0);
         events = foApp.getEvents();
         assertTrue("No events in primary appender", events.size() == 1);
     }

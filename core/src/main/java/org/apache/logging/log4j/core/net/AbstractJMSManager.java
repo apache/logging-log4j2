@@ -100,7 +100,7 @@ public abstract class AbstractJMSManager extends AbstractManager {
             if (providerURL != null) {
                 props.put(Context.PROVIDER_URL, providerURL);
             } else {
-                LOGGER.warn("The InitalContext factory name has been provided without a ProviderURL. " +
+                LOGGER.warn("The InitialContext factory name has been provided without a ProviderURL. " +
                     "This is likely to cause problems");
             }
             if (urlPkgPrefixes != null) {

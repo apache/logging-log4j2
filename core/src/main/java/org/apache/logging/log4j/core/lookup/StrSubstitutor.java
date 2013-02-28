@@ -131,7 +131,7 @@ public class StrSubstitutor {
      */
     private StrMatcher suffixMatcher;
     /**
-     * Variable resolution is delegated to an implementor of VariableResolver.
+     * Variable resolution is delegated to an implementer of VariableResolver.
      */
     private StrLookup variableResolver;
     /**
@@ -241,7 +241,7 @@ public class StrSubstitutor {
 
     /**
      * Replaces all the occurrences of variables in the given source object with
-     * their matching values from the map. This method allows to specifiy a
+     * their matching values from the map. This method allows to specify a
      * custom variable prefix and suffix
      *
      * @param source  the source text containing the variables to substitute, null returns null
@@ -931,7 +931,7 @@ public class StrSubstitutor {
     /**
      * Gets the variable prefix matcher currently in use.
      * <p>
-     * The variable prefix is the characer or characters that identify the
+     * The variable prefix is the character or characters that identify the
      * start of a variable. This prefix is expressed in terms of a matcher
      * allowing advanced prefix matches.
      *
@@ -944,7 +944,7 @@ public class StrSubstitutor {
     /**
      * Sets the variable prefix matcher currently in use.
      * <p>
-     * The variable prefix is the characer or characters that identify the
+     * The variable prefix is the character or characters that identify the
      * start of a variable. This prefix is expressed in terms of a matcher
      * allowing advanced prefix matches.
      *
@@ -977,7 +977,7 @@ public class StrSubstitutor {
     /**
      * Sets the variable prefix to use.
      * <p>
-     * The variable prefix is the characer or characters that identify the
+     * The variable prefix is the character or characters that identify the
      * start of a variable. This method allows a string prefix to be easily set.
      *
      * @param prefix  the prefix for variables, not null
@@ -996,7 +996,7 @@ public class StrSubstitutor {
     /**
      * Gets the variable suffix matcher currently in use.
      * <p>
-     * The variable suffix is the characer or characters that identify the
+     * The variable suffix is the character or characters that identify the
      * end of a variable. This suffix is expressed in terms of a matcher
      * allowing advanced suffix matches.
      *
@@ -1009,7 +1009,7 @@ public class StrSubstitutor {
     /**
      * Sets the variable suffix matcher currently in use.
      * <p>
-     * The variable suffix is the characer or characters that identify the
+     * The variable suffix is the character or characters that identify the
      * end of a variable. This suffix is expressed in terms of a matcher
      * allowing advanced suffix matches.
      *
@@ -1028,7 +1028,7 @@ public class StrSubstitutor {
     /**
      * Sets the variable suffix to use.
      * <p>
-     * The variable suffix is the characer or characters that identify the
+     * The variable suffix is the character or characters that identify the
      * end of a variable. This method allows a single character suffix to
      * be easily set.
      *

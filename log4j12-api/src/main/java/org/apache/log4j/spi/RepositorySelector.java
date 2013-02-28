@@ -35,7 +35,7 @@ public interface RepositorySelector {
 
     /**
      * Returns a {@link org.apache.log4j.spi.LoggerRepository} depending on the
-     * context. Implementors must make sure that a valid (non-null)
+     * context. Implementers must make sure that a valid (non-null)
      * LoggerRepository is returned.
      * @return a LoggerRepository.
      */

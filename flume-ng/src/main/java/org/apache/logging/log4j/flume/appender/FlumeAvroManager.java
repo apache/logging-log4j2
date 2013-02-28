@@ -64,7 +64,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * Constructor
      * @param name The unique name of this manager.
      * @param agents An array of Agents.
-     * @param batchSize The number of evetns to include in a batch.
+     * @param batchSize The number of events to include in a batch.
      */
     protected FlumeAvroManager(final String name, final String shortName, final Agent[] agents, final int batchSize) {
         super(name);

@@ -64,8 +64,8 @@ public interface ErrorHandler {
     /**
      * This method is invoked to handle the error.
      *
-     * @param message   The message assoicated with the error.
-     * @param e         The Exption that was thrown when the error occured.
+     * @param message   The message associated with the error.
+     * @param e         The Exception that was thrown when the error occurred.
      * @param errorCode The error code associated with the error.
      * @param event     The logging event that the failing appender is asked
      *                  to log.
@@ -82,7 +82,7 @@ public interface ErrorHandler {
     void setAppender(Appender appender);
 
     /**
-     * Set the appender to falkback upon in case of failure.
+     * Set the appender to fallback upon in case of failure.
      *
      * @since 1.2
      */

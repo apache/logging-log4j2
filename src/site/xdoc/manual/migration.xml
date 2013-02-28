@@ -44,7 +44,7 @@
               made.
               <ol>
                 <li>Calls to Logger.getLogger must be modified to LogManager.getLogger.</li>
-                <li>Calls to Logger.getRootLogger or LogManager.getRootLogger must be replaced woth
+                <li>Calls to Logger.getRootLogger or LogManager.getRootLogger must be replaced with
                   LogManager.getLogger("").</li>
                 <li>Calls to LogManager.getLogger that accept a LoggerFactory must remove the LoggerFactory and
                   use one of Log4j 2's other extension mechanisms.</li>

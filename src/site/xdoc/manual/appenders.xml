@@ -286,7 +286,7 @@
               <td>append</td>
               <td>boolean</td>
               <td>When true - the default, records will be appended to the end of the file. When set to false,
-                the file will be cleared before new reocrds are written.</td>
+                the file will be cleared before new records are written.</td>
             </tr>
             <tr>
               <td>bufferedIO</td>

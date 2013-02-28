@@ -45,7 +45,7 @@
           developer-chosen criteria.
         </p>
         <p>In Log4j 1.x the Logger Hierarchy was maintained through a relationship between Loggers.
-          In Log4j 2 this relationship no longers exists. Instead, the hierarchy is maintained
+          In Log4j 2 this relationship no longer exists. Instead, the hierarchy is maintained
           in the relationship between LoggerConfig objects.
         </p>
 
@@ -84,7 +84,7 @@
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
           </a>
-          static method and passing the name of the desired Logger. Further informaiton on the Logging
+          static method and passing the name of the desired Logger. Further information on the Logging
           API can be found at<a href="../log4j-api/api.html">Log4j 2 API</a>.
         </p>
         <h4>LoggerContext</h4>
@@ -100,7 +100,7 @@
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html">
             Configuration</a>.
           The Configuration contains all the Appenders,
-          context-wide Filtes, LoggerConfigs and contains the reference to the StrSubstitutor. During
+          context-wide Filters, LoggerConfigs and contains the reference to the StrSubstitutor. During
           reconfiguration two Configuration objects will exist. Once all Loggers have been redirected to
           the new Configuration, the old Configuration will be stopped and discarded.
         </p>

@@ -27,7 +27,7 @@
       <a name="Messages"/>
       <subsection name="Messages">
         <p>
-          Although Log4j 2 provides Logger methods that accept Strings and Objects, all of these are ulitmately
+          Although Log4j 2 provides Logger methods that accept Strings and Objects, all of these are ultimately
           captured in Message objects that are then associated with the log event. Applications are free to
           construct Messages of their own and pass them to the Logger. Although it may seem more expensive than
           passing the message format and parameters directly to the event, testing has shown that with modern

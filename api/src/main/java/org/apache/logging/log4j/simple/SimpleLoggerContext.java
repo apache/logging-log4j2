@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class SimpleLoggerContext implements LoggerContext {
 
-    /** The default format to use when formating dates */
+    /** The default format to use when formatting dates */
     protected static final String DEFAULT_DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS zzz";
 
     /** All system properties used by <code>SimpleLog</code> start with this */

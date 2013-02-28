@@ -85,7 +85,7 @@ public class PatternParserTest {
     }
 
     /**
-     * Test the custome pattern
+     * Test the custom pattern
      */
     @Test
     public void testCustomPattern() {

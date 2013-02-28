@@ -47,7 +47,7 @@ public interface MessageFactory {
      * Creates a new parameterized message.
      *
      * @param message
-     *            a message template, the kind of message template depends on the implementaion.
+     *            a message template, the kind of message template depends on the implementation.
      * @param params
      *            the message parameters
      * @return a new message

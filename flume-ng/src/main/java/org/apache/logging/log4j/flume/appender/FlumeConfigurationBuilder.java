@@ -274,7 +274,7 @@ public class FlumeConfigurationBuilder {
                 conf.getSinkRunners().put(comp.getComponentName(), new SinkRunner(group.getProcessor()));
             }
         }
-        // add any unasigned sinks to solo collectors
+        // add any unassigned sinks to solo collectors
         for (final Map.Entry<String, Sink> entry : sinks.entrySet()) {
             if (!usedSinks.containsValue(entry.getKey())) {
                 final SinkProcessor pr = new DefaultSinkProcessor();

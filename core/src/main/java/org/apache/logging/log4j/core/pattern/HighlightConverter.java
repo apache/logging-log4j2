@@ -156,7 +156,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
             if (STYLE_KEY.equalsIgnoreCase(key)) {
                 final EnumMap<Level, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
-                    LOGGER.error("Unkown level style: " + value + ". Use one of " +
+                    LOGGER.error("Unknown level style: " + value + ". Use one of " +
                         Arrays.toString(STYLES.keySet().toArray()));
                 } else {
                     levelStyles.putAll(enumMap);
@@ -164,7 +164,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
             } else {
                 final Level level = Level.valueOf(key);
                 if (level == null) {
-                    LOGGER.error("Unkown level name: " + key + ". Use one of " +
+                    LOGGER.error("Unknown level name: " + key + ". Use one of " +
                         Arrays.toString(DEFAULT_STYLES.keySet().toArray()));
                 } else {
                     levelStyles.put(level, value);

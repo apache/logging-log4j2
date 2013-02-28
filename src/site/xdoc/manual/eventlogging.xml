@@ -27,7 +27,7 @@
           <a name="EventLogging"/>
           <subsection name="Event Logging">
             <p>
-              The EventLogger class provides a simple mechansim for logging events that occur in an application.
+              The EventLogger class provides a simple mechanism for logging events that occur in an application.
               While the EventLogger is useful as a way of initiating events that should be processed by an audit
               Logging system, by itself it does not implement any of the features an audit logging system would require
               such as guaranteed delivery.

@@ -108,7 +108,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * Create a Flume Avro Appender.
      * @param agents An array of Agents.
      * @param properties Properties to pass to the embedded agent.
-     * @param embedded true if the embedded agent manager should be used. otherwise the Avro mangaer will be used.
+     * @param embedded true if the embedded agent manager should be used. otherwise the Avro manager will be used.
      * @param dataDir The directory where the Flume FileChannel should write its data.
      * @param delay The amount of time in milliseconds to wait between retries.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
