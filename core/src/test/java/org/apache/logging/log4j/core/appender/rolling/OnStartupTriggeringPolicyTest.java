@@ -52,7 +52,7 @@ public class OnStartupTriggeringPolicyTest {
 
         public MyRollingManager(final TriggeringPolicy policy, final RolloverStrategy strategy) {
             super("testfile", "target/rolling1/test1-%i.log.gz", new ByteArrayOutputStream(),
-                false, 0, System.currentTimeMillis(), policy, strategy);
+                false, 0, System.currentTimeMillis(), policy, strategy, null);
         }
 
         public void setFileTime(final long timestamp) {

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -111,7 +113,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      * Format as a String.
      *
      * @param event The Logging Event.
-     * @return A String containging the LogEvent as HTML.
+     * @return A String containing the LogEvent as HTML.
      */
     public String toSerializable(final LogEvent event) {
         final StringBuilder sbuf = new StringBuilder(BUF_SIZE);
@@ -188,6 +190,15 @@ public final class HTMLLayout extends AbstractStringLayout {
         }
 
         return sbuf.toString();
+    }
+
+    /**
+     * HTMLLayout's format is sufficiently specified via the content type.  The format could be defined via a DTD, 
+     * but isn't at this time - returning empty Map/unspecified.
+     * @return empty Map
+     */
+    public Map<String, String> getContentFormat() {
+        return new HashMap<String, String>();
     }
 
     @Override

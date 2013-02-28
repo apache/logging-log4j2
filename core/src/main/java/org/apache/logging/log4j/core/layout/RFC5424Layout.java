@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -182,6 +183,20 @@ public final class RFC5424Layout extends AbstractStringLayout {
             parser = (PatternParser) config.getComponent(COMPONENT_KEY);
         }
         return parser;
+    }
+
+    /**
+     * RFC5424Layout's content format is specified by:<p/>
+     * Key: "structured" Value: "true"<p/>
+     * Key: "format" Value: "RFC5424"<p/>
+     * @return Map of content format keys supporting RFC5424Layout
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("structured", "true");
+        result.put("formatType", "RFC5424");
+        return result;
     }
 
     /**

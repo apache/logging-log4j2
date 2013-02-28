@@ -46,8 +46,8 @@ public class RollingFileManager extends FileManager {
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
                                  final boolean append, final long size, final long time, final TriggeringPolicy policy,
-                                 final RolloverStrategy strategy) {
-        super(fileName, os, append, false);
+                                 final RolloverStrategy strategy, String advertiseURI) {
+        super(fileName, os, append, false, advertiseURI);
         this.size = size;
         this.initialTime = time;
         this.policy = policy;
@@ -64,14 +64,15 @@ public class RollingFileManager extends FileManager {
      * @param bufferedIO true if data should be buffered.
      * @param policy The TriggeringPolicy.
      * @param strategy The RolloverStrategy.
+     * @param advertiseURI the URI to use when advertising the file
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
                                                     final boolean bufferedIO, final TriggeringPolicy policy,
-                                                    final RolloverStrategy strategy) {
+                                                    final RolloverStrategy strategy, String advertiseURI) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
-            bufferedIO, policy, strategy), factory);
+            bufferedIO, policy, strategy, advertiseURI), factory);
     }
 
     @Override
@@ -228,20 +229,23 @@ public class RollingFileManager extends FileManager {
         private final boolean bufferedIO;
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
+        private final String advertiseURI;
 
         /**
          * Create the data for the factory.
          * @param pattern The pattern.
          * @param append The append flag.
          * @param bufferedIO The bufferedIO flag.
+         * @param advertiseURI
          */
         public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
-                           final TriggeringPolicy policy, final RolloverStrategy strategy) {
+                           final TriggeringPolicy policy, final RolloverStrategy strategy, String advertiseURI) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
             this.policy = policy;
             this.strategy = strategy;
+            this.advertiseURI = advertiseURI;
         }
     }
 
@@ -278,7 +282,7 @@ public class RollingFileManager extends FileManager {
                     os = new BufferedOutputStream(os);
                 }
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
-                    data.strategy);
+                    data.strategy, data.advertiseURI);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

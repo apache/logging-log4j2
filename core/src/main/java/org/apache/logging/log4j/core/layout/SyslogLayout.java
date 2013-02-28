@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -67,7 +69,7 @@ public class SyslogLayout extends AbstractStringLayout {
     }
 
     /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the BSD Log record format.
      *
      * @param event The LogEvent
      * @return the event formatted as a String.
@@ -119,6 +121,24 @@ public class SyslogLayout extends AbstractStringLayout {
         if (buf.charAt(index) == '0') {
             buf.setCharAt(index, ' ');
         }
+    }
+
+    /**
+     * SyslogLayout's content format is specified by:<p/>
+     * Key: "structured" Value: "false"<p/>
+     * Key: "dateFormat" Value: "MMM dd HH:mm:ss "<p/>
+     * Key: "format" Value: "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE"<p/>
+     * Key: "formatType" Value: "logfilepatternreceiver" (format uses the keywords supported by LogFilePatternReceiver)
+     * @return Map of content format keys supporting SyslogLayout
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("structured", "false");
+        result.put("formatType", "logfilepatternreceiver");
+        result.put("dateFormat", dateFormat.toPattern());
+        result.put("format", "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE");
+        return result;
     }
 
     /**

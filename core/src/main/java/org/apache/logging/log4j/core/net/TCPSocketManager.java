@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
@@ -132,7 +134,20 @@ public class TCPSocketManager extends AbstractSocketManager {
     }
 
     /**
-     * Handles recoonecting to a Thread.
+     * TCPSocketManager's content format is specified by:<p/>
+     * Key: "protocol" Value: "tcp"
+     * @return Map of content format keys supporting TCPSocketManager
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        result.put("protocol", "tcp");
+        result.put("direction", "out");
+        return result;
+    }
+    
+    /**
+     * Handles reconnecting to a Thread.
      */
     private class Reconnector extends Thread {
 
@@ -214,7 +229,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         public TCPSocketManager createManager(final String name, final FactoryData data) {
 
             InetAddress address;
-            OutputStream os = null;
+            OutputStream os;
             try {
                 address = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {

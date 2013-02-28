@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Lays out a {@linkplain LogEvent} in different formats.
@@ -26,7 +27,7 @@ import java.io.Serializable;
  * <li>
  * {@code byte[]}</li>
  * <li>
- * an implementor of {@linkplain Serializable}, like {@code byte[]}</li>
+ * an implementer of {@linkplain Serializable}, like {@code byte[]}</li>
  * <li>
  * {@linkplain String}</li>
  * <li>
@@ -83,4 +84,12 @@ public interface Layout<T extends Serializable> {
      * @return the content type.
      */
     String getContentType();
+
+    /**
+     * Returns a description of the content format.
+     *
+     * @return a Map of key/value pairs describing the Layout-specific content format, or an empty Map if no content format descriptors are specified. 
+     * 
+     */
+    Map<String, String> getContentFormat();
 }

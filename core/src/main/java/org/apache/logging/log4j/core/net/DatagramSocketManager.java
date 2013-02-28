@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 import java.io.OutputStream;
@@ -29,13 +33,14 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
     /**
      * The Constructor.
-     * @param os The OutputStream.
      * @param name The unique name of the connection.
+     * @param os The OutputStream.
+     * @param address
      * @param host The host to connect to.
      * @param port The port on the host.
      */
-    protected DatagramSocketManager(final OutputStream os, final String name, final String host, final int port) {
-        super(name, os, null, host, port);
+    protected DatagramSocketManager(final String name, final OutputStream os, InetAddress address, final String host, final int port) {
+        super(name, os, address, host, port);
     }
 
     /**
@@ -53,6 +58,20 @@ public class DatagramSocketManager extends AbstractSocketManager {
         }
         return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port), FACTORY
         );
+    }
+
+    /**
+     * DatagramSocketManager's content format is specified by:<p/>
+     * Key: "protocol" Value: "udp"
+     * @return Map of content format keys supporting DatagramSocketManager
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        result.put("protocol", "udp");
+        result.put("direction", "out");
+
+        return result;
     }
 
     /**
@@ -74,8 +93,15 @@ public class DatagramSocketManager extends AbstractSocketManager {
     private static class DatagramSocketManagerFactory implements ManagerFactory<DatagramSocketManager, FactoryData> {
 
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
+            InetAddress address;
             final OutputStream os = new DatagramOutputStream(data.host, data.port);
-            return new DatagramSocketManager(os, name, data.host, data.port);
+            try {
+                address = InetAddress.getByName(data.host);
+            } catch (final UnknownHostException ex) {
+                LOGGER.error("Could not find address of " + data.host, ex);
+                return null;
+            }
+            return new DatagramSocketManager(name, os, address, data.host, data.port);
         }
     }
 }

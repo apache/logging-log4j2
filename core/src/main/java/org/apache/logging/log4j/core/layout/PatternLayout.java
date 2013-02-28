@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -122,6 +124,22 @@ public final class PatternLayout extends AbstractStringLayout {
         }
         final PatternParser parser = createPatternParser(this.config);
         formatters = parser.parse(pattern);
+    }
+
+    /**
+     * PatternLayout's content format is specified by:<p/>
+     * Key: "structured" Value: "false"<p/>
+     * Key: "formatType" Value: "conversion" (format uses the keywords supported by OptionConverter)<p/>
+     * Key: "format" Value: provided "conversionPattern" param
+     * @return Map of content format keys supporting PatternLayout
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("structured", "false");
+        result.put("formatType", "conversion");
+        result.put("format", conversionPattern);
+        return result;
     }
 
     /**

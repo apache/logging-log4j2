@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.Advertiser;
 
 import java.util.Map;
 
@@ -79,5 +80,11 @@ public interface Configuration extends Filterable {
 
     void addComponent(String name, Object object);
 
+    void setConfigurationMonitor(ConfigurationMonitor monitor);
+    
     ConfigurationMonitor getConfigurationMonitor();
+    
+    void setAdvertiser(Advertiser advertiser);
+    
+    Advertiser getAdvertiser();
 }

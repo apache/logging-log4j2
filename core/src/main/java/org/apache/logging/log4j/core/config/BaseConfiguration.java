@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -82,6 +83,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * The ConfigurationMonitor that checks for configuration changes.
      */
     protected ConfigurationMonitor monitor = new DefaultConfigurationMonitor();
+
+    /**
+     * The Advertiser which exposes appender configurations to external systems.
+     */
+    protected Advertiser advertiser = new DefaultAdvertiser();
 
     private String name;
 
@@ -301,8 +307,20 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         return subst;
     }
 
+    public void setConfigurationMonitor(ConfigurationMonitor monitor) {
+        this.monitor = monitor;
+    }
+    
     public ConfigurationMonitor getConfigurationMonitor() {
         return monitor;
+    }
+
+    public void setAdvertiser(Advertiser advertiser) {
+        this.advertiser = advertiser;
+    }
+    
+    public Advertiser getAdvertiser() {
+        return advertiser;
     }
 
     /**
@@ -379,7 +397,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     /**
-     * Remove an Appender. First removes any associations between LoggerContigs and the Appender, removes
+     * Remove an Appender. First removes any associations between LoggerConfigs and the Appender, removes
      * the Appender from this appender list and then stops the appender. This method is synchronized in
      * case an Appender with the same name is being added during the removal.
      * @param name the name of the appender to remove.

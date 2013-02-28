@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
 import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -114,6 +115,11 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                     final int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
+                    }
+                } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
+                    final String advertiserString = getSubst().replace(entry.getValue());
+                    if (advertiserString != null) {
+                        advertiser = (Advertiser) Class.forName(advertiserString).newInstance();
                     }
                 }
             }

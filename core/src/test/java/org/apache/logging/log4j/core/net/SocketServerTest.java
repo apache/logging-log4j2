@@ -92,7 +92,7 @@ public class SocketServerTest {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
-            "Test", null, null, null, socketFilter);
+            "Test", null, null, null, socketFilter, null, null);
         appender.start();
         final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         listApp.start();

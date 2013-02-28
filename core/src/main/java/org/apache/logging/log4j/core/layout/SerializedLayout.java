@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -48,7 +50,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     }
 
     /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the log4j.dtd.
+     * Formats a {@link org.apache.logging.log4j.core.LogEvent} as a serialized byte array of the LogEvent object.
      *
      * @param event The LogEvent.
      * @return the formatted LogEvent.
@@ -92,6 +94,14 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     @Override
     public byte[] getHeader() {
         return header;
+    }
+
+    /**
+     * SerializedLayout's format is sufficiently specified via the content type, use empty Map/unspecified.
+     * @return empty Map
+     */
+    public Map<String, String> getContentFormat() {
+        return new HashMap<String, String>();    
     }
 
     /**

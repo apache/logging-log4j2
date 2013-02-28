@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 import java.io.OutputStream;
@@ -55,4 +57,18 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
         this.port = port;
     }
 
+    /**
+     * AbstractSocketManager's content format is specified by:<p/>
+     * Key: "port" Value: provided "port" param<p/>
+     * Key: "address" Value: provided "address" param
+     * @return Map of content format keys supporting AbstractSocketManager
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        result.put("port", Integer.toString(port));
+        result.put("address", address.getHostAddress());
+        
+        return result;
+    }
 }

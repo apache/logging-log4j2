@@ -16,13 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.Advertiser;
 
 /**
  * File Appender.
@@ -31,11 +36,30 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 public final class FileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
+    private final Advertiser advertiser;
+    private Object advertisement;
 
     private FileAppender(final String name, final Layout layout, final Filter filter, final FileManager manager,
-                         final String filename, final boolean handleException, final boolean immediateFlush) {
+                         final String filename, final boolean handleException, final boolean immediateFlush, Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
+        if (advertiser != null)
+        {
+            Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
+            configuration.putAll(manager.getContentFormat());
+            configuration.put("contentType", layout.getContentType());
+            configuration.put("name", name);
+            advertisement = advertiser.advertise(configuration);
+        }
         this.fileName = filename;
+        this.advertiser = advertiser;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (advertiser != null) {
+            advertiser.unadvertise(advertisement);
+        }
     }
 
     /**
@@ -61,6 +85,9 @@ public final class FileAppender extends AbstractOutputStreamAppender {
      * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout
      * will be used.
      * @param filter The filter, if any, to use.
+     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
+     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
+     * @param config The Configuration               
      * @return The FileAppender.
      */
     @PluginFactory
@@ -72,14 +99,18 @@ public final class FileAppender extends AbstractOutputStreamAppender {
                                               @PluginAttr("suppressExceptions") final String suppress,
                                               @PluginAttr("bufferedIO") final String bufferedIO,
                                               @PluginElement("layout") Layout layout,
-                                              @PluginElement("filters") final Filter filter) {
+                                              @PluginElement("filters") final Filter filter,
+                                              @PluginAttr("advertise") final String advertise,
+                                              @PluginAttr("advertiseURI") final String advertiseURI,
+                                              @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = append == null ? true : Boolean.valueOf(append);
         final boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
         boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
+        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
-                LOGGER.warn("Locking and buffering are mutually exclusive. No buffereing will occur for " + fileName);
+                LOGGER.warn("Locking and buffering are mutually exclusive. No buffering will occur for " + fileName);
             }
             isBuffered = false;
         }
@@ -96,13 +127,14 @@ public final class FileAppender extends AbstractOutputStreamAppender {
             return null;
         }
 
-        final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered);
+        final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseURI);
         if (manager == null) {
             return null;
         }
         if (layout == null) {
             layout = PatternLayout.createLayout(null, null, null, null);
         }
-        return new FileAppender(name, layout, filter, manager, fileName, handleExceptions, isFlush);
+
+        return new FileAppender(name, layout, filter, manager, fileName, handleExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
     }
 }

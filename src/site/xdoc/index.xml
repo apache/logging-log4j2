@@ -21,6 +21,7 @@
         <title>Log4J2 Guide</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
         <author email="ggregory@apache.org">Gary Gregory</author>
+        <author email="sdeboy@apache.org">Scott Deboy</author>
     </properties>
 
     <body>

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,23 +32,43 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.Advertiser;
 
 /**
- * An appender that writes to files andd can roll over at intervals.
+ * An appender that writes to files and can roll over at intervals.
  */
 @Plugin(name = "RollingFile", type = "Core", elementType = "appender", printObject = true)
 public final class RollingFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final String filePattern;
+    private Object advertisement;
+    private final Advertiser advertiser;
 
 
     private RollingFileAppender(final String name, final Layout layout, final Filter filter,
                                 final RollingFileManager manager, final String fileName,
-                                final String filePattern, final boolean handleException, final boolean immediateFlush) {
+                                final String filePattern, final boolean handleException, final boolean immediateFlush,
+                                Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
+        if (advertiser != null)
+        {
+            Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
+            configuration.put("contentType", layout.getContentType());
+            configuration.put("name", name);
+            advertisement = advertiser.advertise(configuration);
+        }
         this.fileName = fileName;
         this.filePattern = filePattern;
+        this.advertiser = advertiser;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (advertiser != null) {
+            advertiser.unadvertise(advertisement);
+        }
     }
 
     /**
@@ -91,6 +113,8 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
+     * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
+     * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
      * @return A RollingFileAppender.
      */
@@ -106,13 +130,15 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filter") final Filter filter,
                                               @PluginAttr("suppressExceptions") final String suppress,
+                                              @PluginAttr("advertise") final String advertise,
+                                              @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = append == null ? true : Boolean.valueOf(append);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-
+        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
             return null;
@@ -138,7 +164,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
         }
 
         final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
-            isBuffered, policy, strategy);
+            isBuffered, policy, strategy, advertiseURI);
         if (manager == null) {
             return null;
         }
@@ -148,6 +174,6 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender {
         }
 
         return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
-            handleExceptions, isFlush);
+            handleExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
     }
 }

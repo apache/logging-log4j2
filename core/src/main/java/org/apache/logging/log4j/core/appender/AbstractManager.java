@@ -95,7 +95,7 @@ public abstract class AbstractManager {
     }
 
     /**
-     * May be overriden by Managers to perform processing while the Manager is being released and the
+     * May be overridden by Managers to perform processing while the Manager is being released and the
      * lock is held.
      */
     protected void releaseSub() {
@@ -128,5 +128,15 @@ public abstract class AbstractManager {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Provide a description of the content format supported by this Manager.  Default implementation returns an empty (unspecified) Map.
+     *
+     * @return a Map of key/value pairs describing the Manager-specific content format, or an empty Map if no content format descriptors are specified. 
+     *
+     */
+    public Map<String, String> getContentFormat() {
+        return new HashMap<String, String>();
     }
 }

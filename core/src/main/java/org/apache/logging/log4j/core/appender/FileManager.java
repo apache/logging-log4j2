@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -35,11 +37,13 @@ public class FileManager extends OutputStreamManager {
 
     private final boolean isAppend;
     private final boolean isLocking;
+    private final String advertiseURI;
 
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking) {
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking, String advertiseURI) {
         super(os, fileName);
         this.isAppend = append;
         this.isLocking = locking;
+        this.advertiseURI = advertiseURI;
     }
 
     /**
@@ -48,15 +52,16 @@ public class FileManager extends OutputStreamManager {
      * @param append true if the file should be appended to, false if it should be overwritten.
      * @param locking true if the file should be locked while writing, false otherwise.
      * @param bufferedIO true if the contents should be buffered as they are written.
+     * @param advertiseURI the URI to use when advertising the file
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-                                             final boolean bufferedIO) {
+                                             final boolean bufferedIO, String advertiseURI) {
 
         if (locking && bufferedIO) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO), FACTORY);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO, advertiseURI), FACTORY);
     }
 
     @Override
@@ -112,23 +117,38 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
+     * FileManager's content format is specified by:<p/>
+     * Key: "fileURI" Value: provided "advertiseURI" param
+     * @return Map of content format keys supporting FileManager
+     */
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        result.put("fileURI", advertiseURI);
+        return result;
+    }
+
+    /**
      * Factory Data.
      */
     private static class FactoryData {
         private final boolean append;
         private final boolean locking;
         private final boolean bufferedIO;
+        private final String advertiseURI;
 
         /**
          * Constructor.
          * @param append Append status.
          * @param locking Locking status.
          * @param bufferedIO Buffering flag.
+         * @param advertiseURI the URI to use when advertising the file
          */
-        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO) {
+        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, String advertiseURI) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
+            this.advertiseURI = advertiseURI;
         }
     }
 
@@ -156,7 +176,7 @@ public class FileManager extends OutputStreamManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new FileManager(name, os, data.append, data.locking);
+                return new FileManager(name, os, data.append, data.locking, data.advertiseURI);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

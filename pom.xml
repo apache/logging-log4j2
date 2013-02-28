@@ -51,6 +51,11 @@
       <email>ggregory@apache.org</email>
       <organization>Rocket Software</organization>
     </developer>
+    <developer>
+      <id>sdeboy</id>
+      <name>Scott Deboy</name>
+      <email>sdeboy@apache.org</email>
+    </developer>
   </developers>
   <mailingLists>
     <mailingList>

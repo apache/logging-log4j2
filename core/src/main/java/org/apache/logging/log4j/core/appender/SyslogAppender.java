@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
+import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Protocol;
 
 /**
@@ -40,8 +41,8 @@ public class SyslogAppender extends SocketAppender {
     private static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout layout, final Filter filter, final boolean handleException,
-                             final boolean immediateFlush, final AbstractSocketManager manager) {
-        super(name, layout, filter, manager, handleException, immediateFlush);
+                             final boolean immediateFlush, final AbstractSocketManager manager, Advertiser advertiser) {
+        super(name, layout, filter, manager, handleException, immediateFlush, advertiser);
 
     }
 
@@ -100,12 +101,14 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginConfiguration final Configuration config,
                                                 @PluginAttr("charset") final String charsetName,
-                                                @PluginAttr("exceptionPattern") final String exceptionPattern) {
+                                                @PluginAttr("exceptionPattern") final String exceptionPattern,
+                                                @PluginAttr("advertise") final String advertise) {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
+        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final Layout<String> layout = RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
                 msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
@@ -121,6 +124,6 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
 
-        return new SyslogAppender(name, layout, filter, handleExceptions, isFlush, manager);
+        return new SyslogAppender(name, layout, filter, handleExceptions, isFlush, manager, isAdvertise ? config.getAdvertiser() : null);
     }
 }
