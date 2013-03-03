@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.net.URI;
+
 /**
  * Implemented by factories that create {@link LoggerContext} objects.
  */
@@ -31,4 +33,16 @@ public interface LoggerContextFactory {
      * @return The LoggerContext.
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext);
+
+    /**
+     * Creates a {@link LoggerContext}.
+     *
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param configLocation The location of the configuration for the LoggerContext.
+     * @return The LoggerContext.
+     */
+    LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation);
 }

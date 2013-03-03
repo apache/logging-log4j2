@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 
+import java.net.URI;
+
 /**
  * ContextSelectors that have a name.
  */
@@ -29,7 +31,7 @@ public interface NamedContextSelector extends ContextSelector {
      * @param configLocation The location of the configuration.
      * @return A LoggerContext.
      */
-    LoggerContext locateContext(String name, String configLocation);
+    LoggerContext locateContext(String name, URI configLocation);
 
     /**
      * Locate the LoggerContext with the specified name using the default configuration.

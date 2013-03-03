@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j;
 
+import java.net.URI;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.sun.xml.internal.xsom.impl.UnionSimpleTypeImpl;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
@@ -163,6 +165,22 @@ public class LogManager {
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext) {
         return factory.getContext(LogManager.class.getName(), loader, currentContext);
+    }
+
+    /**
+     * Returns a LoggerContext.
+     *
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @return a LoggerContext.
+     */
+    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
+                                           URI configLocation) {
+        return factory.getContext(LogManager.class.getName(), loader, currentContext, configLocation);
     }
 
     /**

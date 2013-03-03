@@ -33,6 +33,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * ServletFilter than may be used to set up a LoggerContext for each web application.
@@ -54,7 +55,16 @@ public class JNDIContextFilter implements Filter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         context = filterConfig.getServletContext();
         name = filterConfig.getInitParameter(CONTEXT_NAME);
-        final String configLocn = filterConfig.getInitParameter(CONFIG_LOCATION);
+        URI configLocation = null;
+        String configLocn = filterConfig.getInitParameter(CONFIG_LOCATION);
+        if (configLocn != null) {
+            try {
+                configLocation = new URI(configLocn);
+            } catch (Exception ex) {
+                context.log("Unable to convert config location " + configLocn + " to a URI: " + ex.getMessage());
+            }
+        }
+
         if (name == null) {
             throw new UnavailableException("A context-name attribute is required");
         }
@@ -65,7 +75,7 @@ public class JNDIContextFilter implements Filter {
                 final ContextSelector sel = ((Log4jContextFactory) factory).getSelector();
                 if (sel instanceof NamedContextSelector) {
                     selector = (NamedContextSelector) sel;
-                    ctx = selector.locateContext(name, configLocn);
+                    ctx = selector.locateContext(name, configLocation);
                 } else {
                     return;
                 }

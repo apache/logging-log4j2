@@ -57,7 +57,7 @@ public final class Configurator {
     public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation) {
 
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false, configLocation);
             final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
             ctx.setConfiguration(config);
             return ctx;
@@ -77,7 +77,13 @@ public final class Configurator {
                                            final ConfigurationFactory.ConfigurationSource source) {
 
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false);
+            URI configLocation = null;
+            try {
+                configLocation = source.getLocation() == null ? null : new URI(source.getLocation());
+            } catch (Exception ex) {
+                // Invalid source location.
+            }
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false, configLocation);
             final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
             ctx.setConfiguration(config);
             return ctx;

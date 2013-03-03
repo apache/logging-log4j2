@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.core.LoggerContext;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -34,6 +35,17 @@ public interface ContextSelector {
      * @return The LoggerContext.
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext);
+
+    /**
+     * Returns the LoggerContext.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader ClassLoader to use or null.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param configLocation The location of the configuration for the LoggerContext.
+     * @return The LoggerContext.
+     */
+    LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation);
 
     /**
      * Returns a List of all the available LoggerContexts.

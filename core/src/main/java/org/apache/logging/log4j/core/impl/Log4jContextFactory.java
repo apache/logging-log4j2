@@ -25,6 +25,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.net.URI;
+
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.
  */
@@ -72,6 +74,25 @@ public class Log4jContextFactory implements LoggerContextFactory {
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
+        if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
+            ctx.start();
+        }
+        return ctx;
+    }
+
+
+    /**
+     * Load the LoggerContext using the ContextSelector.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param configLocation The location of the configuration for the LoggerContext.
+     * @return The LoggerContext.
+     */
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                                    URI configLocation) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
         }

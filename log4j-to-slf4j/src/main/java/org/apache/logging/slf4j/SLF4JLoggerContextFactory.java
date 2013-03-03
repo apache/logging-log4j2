@@ -19,6 +19,8 @@ package org.apache.logging.slf4j;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
+import java.net.URI;
+
 /**
  *
  */
@@ -26,6 +28,11 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     private static LoggerContext context = new SLF4JLoggerContext();
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        return context;
+    }
+
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                                    URI configLocation) {
         return context;
     }
 }

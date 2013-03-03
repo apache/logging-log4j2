@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.selector;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,14 @@ public class BasicContextSelector implements ContextSelector {
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+
+        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        return ctx != null ? ctx : CONTEXT;
+    }
+
+
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                                    URI configLocation) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : CONTEXT;

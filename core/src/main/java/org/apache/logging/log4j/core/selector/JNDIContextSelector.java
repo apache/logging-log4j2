@@ -25,6 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -94,6 +95,11 @@ public class JNDIContextSelector implements NamedContextSelector {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        return getContext(fqcn, loader, currentContext, null);
+    }
+
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+                                    URI configLocation) {
 
         final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
@@ -109,10 +115,10 @@ public class JNDIContextSelector implements NamedContextSelector {
             LOGGER.error("Unable to lookup " + Constants.JNDI_CONTEXT_NAME, ne);
         }
 
-        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null);
+        return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, configLocation);
     }
 
-    public LoggerContext locateContext(final String name, final String configLocation) {
+    public LoggerContext locateContext(final String name, final URI configLocation) {
         if (name == null) {
             LOGGER.error("A context name is required to locate a LoggerContext");
             return null;
