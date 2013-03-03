@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +88,7 @@ public abstract class ConfigurationFactory {
      */
     protected static final String DEFAULT_PREFIX = "log4j2";
 
-    private static List<ConfigurationFactory> factories = new ArrayList<ConfigurationFactory>();
+    private static volatile List<ConfigurationFactory> factories = null;
 
     private static ConfigurationFactory configFactory = new Factory();
 
@@ -96,36 +97,45 @@ public abstract class ConfigurationFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
-        final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
-        if (factoryClass != null) {
-            addFactory(factoryClass);
-        }
-        final PluginManager manager = new PluginManager("ConfigurationFactory");
-        manager.collectPlugins();
-        final Map<String, PluginType> plugins = manager.getPlugins();
-        final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
-        for (final PluginType type : plugins.values()) {
-            try {
-                final Class<ConfigurationFactory> clazz = type.getPluginClass();
-                final Order o = clazz.getAnnotation(Order.class);
-                final Integer weight = o.value();
-                if (o != null) {
-                    ordered.add(new WeightedFactory(weight, clazz));
+        if (factories == null) {
+            synchronized(TEST_PREFIX) {
+                if (factories == null) {
+                    List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
+                    final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
+                    if (factoryClass != null) {
+                        addFactory(list, factoryClass);
+                    }
+                    final PluginManager manager = new PluginManager("ConfigurationFactory");
+                    manager.collectPlugins();
+                    final Map<String, PluginType> plugins = manager.getPlugins();
+                    final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
+                    for (final PluginType type : plugins.values()) {
+                        try {
+                            final Class<ConfigurationFactory> clazz = type.getPluginClass();
+                            final Order o = clazz.getAnnotation(Order.class);
+                            final Integer weight = o.value();
+                            if (o != null) {
+                                ordered.add(new WeightedFactory(weight, clazz));
+                            }
+                        } catch (final Exception ex) {
+                            LOGGER.warn("Unable to add class " + type.getPluginClass());
+                        }
+                    }
+                    for (final WeightedFactory wf : ordered) {
+                        addFactory(list, wf.factoryClass);
+                    }
+                    factories = Collections.unmodifiableList(list);
                 }
-            } catch (final Exception ex) {
-              LOGGER.warn("Unable to add class " + type.getPluginClass());
             }
         }
-        for (final WeightedFactory wf : ordered) {
-            addFactory(wf.factoryClass);
-        }
+
         return configFactory;
     }
 
     @SuppressWarnings("unchecked")
-    private static void addFactory(final String factoryClass) {
+    private static void addFactory(final List<ConfigurationFactory> list, final String factoryClass) {
         try {
-            addFactory((Class<ConfigurationFactory>) Class.forName(factoryClass));
+            addFactory(list, (Class<ConfigurationFactory>) Class.forName(factoryClass));
         } catch (final ClassNotFoundException ex) {
             LOGGER.error("Unable to load class " + factoryClass, ex);
         } catch (final Exception ex) {
@@ -133,16 +143,17 @@ public abstract class ConfigurationFactory {
         }
     }
 
-    private static void addFactory(final Class<ConfigurationFactory> factoryClass) {
+    private static void addFactory(final List<ConfigurationFactory> list,
+                                   final Class<ConfigurationFactory> factoryClass) {
         try {
-            factories.add(factoryClass.newInstance());
+            list.add(factoryClass.newInstance());
         } catch (final Exception ex) {
             LOGGER.error("Unable to create instance of " + factoryClass.getName(), ex);
         }
     }
 
     /**
-     * Set the configuration factory.
+     * Set the configuration factory. This method is not intended for general use and may not be thread safe.
      * @param factory the ConfigurationFactory.
      */
     public static void setConfigurationFactory(final ConfigurationFactory factory) {
@@ -150,18 +161,21 @@ public abstract class ConfigurationFactory {
     }
 
     /**
-     * Reset the ConfigurationFactory to the default.
+     * Reset the ConfigurationFactory to the default. This method is not intended for general use and may
+     * not be thread safe.
      */
     public static void resetConfigurationFactory() {
         configFactory = new Factory();
     }
 
     /**
-     * Remove the ConfigurationFactory.
+     * Remove the ConfigurationFactory. This method is not intended for general use and may not be thread safe.
      * @param factory The factory to remove.
      */
     public static void removeConfigurationFactory(final ConfigurationFactory factory) {
-        factories.remove(factory);
+        if (configFactory == factory) {
+            configFactory = new Factory();
+        }
     }
 
     protected abstract String[] getSupportedTypes();

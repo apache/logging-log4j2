@@ -23,7 +23,10 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-161" dev="rgoers">
+      <action issue="LOG4J2-169" dev="rgoers" type="fix">
+        ConfigurationFactory was adding factories on every call.
+      </action>
+      <action issue="LOG4J2-161" dev="rgoers" type="fix">
         Modify ClassLoaderContextSelector to use the first ClassLoader in the child parent hierarchy that
         has a Context with a configuration to allow JSPs to use the WebApp's context and configuration.
       </action>
