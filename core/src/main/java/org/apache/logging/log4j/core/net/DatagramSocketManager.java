@@ -62,7 +62,8 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
     /**
      * DatagramSocketManager's content format is specified by:<p/>
-     * Key: "protocol" Value: "udp"
+     * Key: "protocol" Value: "udp"<p/>
+     * Key: "direction" Value: "out"
      * @return Map of content format keys supporting DatagramSocketManager
      */
     public Map<String, String> getContentFormat()

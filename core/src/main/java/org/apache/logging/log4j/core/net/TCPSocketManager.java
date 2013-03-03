@@ -135,7 +135,8 @@ public class TCPSocketManager extends AbstractSocketManager {
 
     /**
      * TCPSocketManager's content format is specified by:<p/>
-     * Key: "protocol" Value: "tcp"
+     * Key: "protocol" Value: "tcp"<p/>
+     * Key: "direction" Value: "out"
      * @return Map of content format keys supporting TCPSocketManager
      */
     public Map<String, String> getContentFormat()
