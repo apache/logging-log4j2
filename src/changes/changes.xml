@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-167" dev="rgoers" type="fix">
+        Configurator throws a ClassCastException if LogManager returns a SimpleLoggerContext.
+      </action>
       <action issue="LOG4J2-169" dev="rgoers" type="fix">
         ConfigurationFactory was adding factories on every call.
       </action>

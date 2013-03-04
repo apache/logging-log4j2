@@ -17,14 +17,21 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Initializes and configure the Logging system.
  */
 public final class Configurator {
+
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private Configurator() {
     }
@@ -57,10 +64,16 @@ public final class Configurator {
     public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation) {
 
         try {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false, configLocation);
-            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
-            ctx.setConfiguration(config);
-            return ctx;
+            org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            if (context instanceof LoggerContext) {
+                final LoggerContext ctx = (LoggerContext) context;
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+                ctx.setConfiguration(config);
+                return ctx;
+            } else {
+                LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
+                    context.getClass().getName(), LoggerContext.class.getName());
+            }
         } catch (final Exception ex) {
             ex.printStackTrace();
         }
@@ -83,10 +96,16 @@ public final class Configurator {
             } catch (Exception ex) {
                 // Invalid source location.
             }
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext(loader, false, configLocation);
-            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
-            ctx.setConfiguration(config);
-            return ctx;
+            org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            if (context instanceof LoggerContext) {
+                final LoggerContext ctx = (LoggerContext) context;
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+                ctx.setConfiguration(config);
+                return ctx;
+            } else {
+                LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
+                    context.getClass().getName(), LoggerContext.class.getName());
+            }
         } catch (final Exception ex) {
             ex.printStackTrace();
         }
