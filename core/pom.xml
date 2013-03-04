@@ -148,6 +148,44 @@
           </arguments>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <!--
+            dummy entry to stop bundle plugin from picking up jar config and reporting
+            WARNING: Duplicate name in Manifest
+            See http://markmail.org/message/mpkl24wk3jrjhhjg
+          -->
+          <archive>
+            <forced>true</forced>
+          </archive>
+          <excludeDependencies>true</excludeDependencies>
+          <manifestLocation>target/osgi</manifestLocation>
+          <instructions>
+            <!-- stops the "uses" clauses being added to "Export-Package" manifest entry -->
+            <_nouses>true</_nouses>
+            <!-- Stop the JAVA_1_n_HOME variables from being treated as headers by Bnd -->
+            <_removeheaders>JAVA_1_3_HOME,JAVA_1_4_HOME,JAVA_1_5_HOME,JAVA_1_6_HOME,JAVA_1_7_HOME</_removeheaders>
+            <Bundle-SymbolicName>${osgi.symbolicName}</Bundle-SymbolicName>
+            <Export-Package>${osgi.export}</Export-Package>
+            <Private-Package>${osgi.private}</Private-Package>
+            <Import-Package>${osgi.import}</Import-Package>
+            <DynamicImport-Package>${osgi.dynamicImport}</DynamicImport-Package>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+            <Fragment-Host>org.apache.commons.log4j-api;bundle-version=${project.version}</Fragment-Host>
+          </instructions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <reporting>
