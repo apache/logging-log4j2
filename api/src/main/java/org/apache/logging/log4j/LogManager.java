@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.sun.xml.internal.xsom.impl.UnionSimpleTypeImpl;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
