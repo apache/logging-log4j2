@@ -22,12 +22,14 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Advertise an entity via ZeroConf/MulticastDNS and the JmDNS library.
  *
  */
+@Plugin(name = "multicastdns", type = "Core", elementType = "advertiser", printObject = false)
 public class MulticastDNSAdvertiser implements Advertiser {
     protected static final Logger LOGGER = StatusLogger.getLogger();
     private static Object jmDNS = initializeJMDNS();

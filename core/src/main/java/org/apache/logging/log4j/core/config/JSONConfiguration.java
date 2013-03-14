@@ -118,8 +118,14 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                     }
                 } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
                     final String advertiserString = getSubst().replace(entry.getValue());
-                    if (advertiserString != null) {
-                        advertiser = (Advertiser) Class.forName(advertiserString).newInstance();
+                    if (advertiserString != null)
+                    {
+                        final PluginType type = getPluginManager().getPluginType(advertiserString);
+                        if (type != null)
+                        {
+                            final Class<Advertiser> clazz = type.getPluginClass();
+                            advertiser = clazz.newInstance();
+                        }
                     }
                 }
             }

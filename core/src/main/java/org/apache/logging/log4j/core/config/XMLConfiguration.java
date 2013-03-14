@@ -142,15 +142,19 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                     }
                 } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
                     final String advertiserString = getSubst().replace(entry.getValue());
-                    if (advertiserString != null) {
-                        try {
-                            advertiser = (Advertiser) Class.forName(advertiserString).newInstance();
-                        } catch (InstantiationException e) {
-                            System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
-                        } catch (IllegalAccessException e) {
-                            System.err.println("IllegalAccessException attempting to instantiate advertiser: " + advertiserString);
-                        } catch (ClassNotFoundException e) {
-                            System.err.println("ClassNotFoundException attempting to instantiate advertiser: " + advertiserString);
+                    if (advertiserString != null)
+                    {
+                        final PluginType type = getPluginManager().getPluginType(advertiserString);
+                        if (type != null)
+                        {
+                            final Class<Advertiser> clazz = type.getPluginClass();
+                            try {
+                                advertiser = clazz.newInstance();
+                            } catch (InstantiationException e) {
+                                System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
+                            } catch (IllegalAccessException e) {
+                                System.err.println("IllegalAccessException attempting to instantiate advertiser: " + advertiserString);
+                            }
                         }
                     }
                 }

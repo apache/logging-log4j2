@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * The default advertiser does not do anything.
  */
+@Plugin(name = "default", type = "Core", elementType = "advertiser", printObject = false)
 public class DefaultAdvertiser implements Advertiser {
     /**
      * Does nothing.
