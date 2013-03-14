@@ -98,7 +98,11 @@ public class PluginManager {
      * @param p The package name.
      */
     public static void addPackage(final String p) {
-        PACKAGES.addIfAbsent(p);
+        if (PACKAGES.addIfAbsent(p))
+        {
+            //set of available plugins could have changed, reset plugin cache for newly-retrieved managers
+            pluginTypeMap.clear();
+        }
     }
 
     /**

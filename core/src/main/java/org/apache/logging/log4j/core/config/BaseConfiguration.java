@@ -69,11 +69,6 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected Node rootNode;
 
     /**
-     * The Plugin Manager.
-     */
-    protected PluginManager pluginManager;
-
-    /**
      * Listeners for configuration changes.
      */
     protected final List<ConfigurationListener> listeners =
@@ -109,7 +104,6 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Constructor.
      */
     protected BaseConfiguration() {
-        pluginManager = new PluginManager("Core");
         rootNode = new Node();
     }
 
@@ -121,7 +115,6 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Initialize the configuration.
      */
     public void start() {
-        pluginManager.collectPlugins();
         setup();
         doConfigure();
         for (final LoggerConfig logger : loggers.values()) {
@@ -243,7 +236,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     protected PluginManager getPluginManager() {
-        return pluginManager;
+        //don't cache a pluginmanager instance - packages may be updated, requiring 
+        // re-discovery of plugins
+        PluginManager mgr = new PluginManager("Core");
+        mgr.collectPlugins();
+        return mgr;
     }
 
     /**
