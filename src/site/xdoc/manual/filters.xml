@@ -594,7 +594,7 @@
           </p>
           <p>
             The ThreadContextMapFilter can also be applied to a logger for filtering:
-            <source><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -616,7 +616,7 @@
     </root>
   </loggers>
 </configuration>
-  ]]></source>
+  ]]></pre>
           </p>
         </subsection>
         <a name="ThresholdFilter"/>
