@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-175" dev="sdeboy" type="fix">
+        Plugin cache should be reset when addPackages is called.
+      </action>
+      <action issue="LOG4J2-155" dev="sdeboy" type="add">
+        Expose file appender configuration details via an advertisement mechanism.
+      </action>
       <action issue="LOG4J2-159" dev="rgoers" type="fix" due-to="Jan Winter">
         Add Fragment-Host to MANIFEST.MF for log4j2-core.
       </action>
