@@ -20,6 +20,7 @@ import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Transceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
+import org.apache.flume.event.SimpleEvent;
 import org.apache.flume.source.avro.AvroFlumeEvent;
 import org.apache.flume.source.avro.AvroSourceProtocol;
 import org.apache.flume.source.avro.Status;
@@ -119,7 +120,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     }
 
     @Override
-    public synchronized void send(final FlumeEvent event, int delay, int retries)  {
+    public synchronized void send(final SimpleEvent event, int delay, int retries)  {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
@@ -158,7 +159,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                     return;
                 } catch (final Exception ex) {
                     if (i == retries - 1) {
-                        msg = "Error writing to " + getName() + " at " + agents[current].getHost() + ":" +
+                        msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                             agents[current].getPort();
                         LOGGER.warn(msg, ex);
                         break;
@@ -191,7 +192,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                         return;
                     } catch (final Exception ex) {
                         if (i == retries - 1) {
-                            final String warnMsg = "Error writing to " + getName() + " at " + agent.getHost() + ":" +
+                            final String warnMsg = "Unable to write to " + getName() + " at " + agent.getHost() + ":" +
                                 agent.getPort();
                             LOGGER.warn(warnMsg, ex);
                             break;

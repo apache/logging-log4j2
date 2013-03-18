@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -74,5 +75,26 @@ public final class FileUtils {
 
     public static boolean isFile(final URL url) {
         return url != null && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
+    }
+
+    /**
+     * Asserts that the given directory exists and creates it if necessary.
+     * @param dir the directory that shall exist
+     * @param createDirectoryIfNotExisting specifies if the directory shall be created if it does not exist.
+     * @throws java.io.IOException thrown if the directory could not be created.
+     */
+    public static void mkdir(final File dir, final boolean createDirectoryIfNotExisting ) throws IOException {
+        // commons io FileUtils.forceMkdir would be useful here, we just want to omit this dependency
+        if (!dir.exists()) {
+            if(!createDirectoryIfNotExisting) {
+                throw new IOException( "The directory " + dir.getAbsolutePath() + " does not exist." );
+            }
+            if(!dir.mkdirs()) {
+                throw new IOException( "Could not create directory " + dir.getAbsolutePath() );
+            }
+        }
+        if (!dir.isDirectory()) {
+            throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
+        }
     }
 }

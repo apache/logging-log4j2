@@ -34,6 +34,36 @@
               transitive dependencies necessary for the remote Agent to function to be included.
             </p>
           </subsection>
+          <subsection name="Persistent Agent">
+            <p>
+              The persistent agent uses Berkeley DB. The following dependency should be added to your pom.xml
+              in addition to the log4j-flume-ng dependency.
+            </p>
+            <source><![CDATA[
+            <dependencyManagement>
+              <dependencies>
+                <dependency>
+                  <groupId>com.sleepycat</groupId>
+                  <artifactId>je</artifactId>
+                  <version>5.0.73</version>
+                  </dependency>
+              </dependencies>
+            </dependencyManagement>
+            <dependencies>
+              <dependency>
+                <groupId>com.sleepycat</groupId>
+                <artifactId>je</artifactId>
+              </dependency>
+            </dependencies>
+            <repositories>
+              <repository>
+                <id>oracleReleases</id>
+                <name>Oracle Released Java Packages</name>
+                <url>http://download.oracle.com/maven</url>
+                <layout>default</layout>
+              </repository>
+            </repositories>]]></source>
+          </subsection>
 
           <subsection name="Embedded Agent">
             <p>

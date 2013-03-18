@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action dev="rgoers" type="add">
+        Added FlumePersistentManager which writes to BerkeleyDB and then writes to Flume asynchronously.
+      </action>
       <action issue="LOG4J2-175" dev="sdeboy" type="fix">
         Plugin cache should be reset when addPackages is called.
       </action>

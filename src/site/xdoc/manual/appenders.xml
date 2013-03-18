@@ -370,11 +370,13 @@
             from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
             them to a Flume agent as serialized Avro events for consumption.</p>
           <p>
-            The Flume Appender supports two modes of operation.
+            The Flume Appender supports three modes of operation.
             <ol>
               <li>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured
               with an Avro Source.</li>
               <li>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</li>
+              <li>It can persist events to a local BerkeleyDB datastore and then asynchronously send the events to
+              Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</li>
             </ol>
             Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
             control will be immediately returned to the application. All interaction with remote agents will occur
@@ -418,13 +420,6 @@
               <td>String</td>
               <td>Directory where the Flume write ahead log should be written. Valid only when embedded is set
                 to true and Agent elements are used instead of Property elements.</td>
-            </tr>
-            <tr>
-              <td>embedded</td>
-              <td>boolean</td>
-              <td>When set to true the embedded Flume agent will be used. When Agent elements are used the events
-                will be sent to a file channel and then routed to a FailoverSinkProcessor which will use
-                each configured agent in the order they are declared.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -482,10 +477,16 @@
             <tr>
               <td>properties</td>
               <td>Property[]</td>
-              <td>One or more Property elements that are used to configure the Flume Agent. The properties must be
+              <td><p>One or more Property elements that are used to configure the Flume Agent. The properties must be
                 configured without the agent name (the appender name is used for this) and no sources can be
                 configured. All other Flume configuration properties are allowed. Specifying both Agent and Property
-                elements will result in an error.</td>
+                elements will result in an error.</p>
+                <p>When used to configure in Persistent mode the valid properties are:
+                  <ol>
+                  <li>"password" to specfify that
+                the data should be encrypted when written to disk.</li>
+                </ol></p>
+              </td>
             </tr>
             <tr>
               <td>reconnectionDelay</td>
@@ -500,7 +501,12 @@
               <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
                 false exceptions will be percolated to the caller.</td>
             </tr>
-            <caption align="top">FlumeAvroAppender Parameters</caption>
+            <tr>
+              <td>type</td>
+              <td>enumeration</td>
+              <td>One of "Avro", "Embedded", or "Persistent" to indicate which variation of the Appender is desired.</td>
+            </tr>
+            <caption align="top">FlumeAppender Parameters</caption>
           </table>
             <p>
               A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
@@ -524,13 +530,34 @@
           </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
+            compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="persistent" dataDir="./logData">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+      <Property name="password">Test123!!</Property>
+    </Flume>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="eventLogger"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
             compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume
             Agent.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
@@ -556,7 +583,7 @@
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="error" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" embedded="true">
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
       <Property name="channels">file</Property>
       <Property name="channels.file.type">file</Property>
       <Property name="channels.file.checkpointDir">target/file-channel/checkpoint</Property>

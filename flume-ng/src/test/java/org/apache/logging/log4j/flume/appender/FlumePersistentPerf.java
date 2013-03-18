@@ -53,7 +53,6 @@ import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +61,8 @@ import java.util.zip.GZIPInputStream;
 /**
  *
  */
-public class FlumeEmbeddedAppenderTest {
-    private static final String CONFIG = "embedded.xml";
+public class FlumePersistentPerf {
+    private static final String CONFIG = "persistent.xml";
     private static final String HOSTNAME = "localhost";
     private static LoggerContext ctx;
 
@@ -87,7 +86,7 @@ public class FlumeEmbeddedAppenderTest {
     @Before
     public void setUp() throws Exception {
 
-        final File file = new File("target/file-channel");
+        final File file = new File("target/persistent");
         final boolean result = deleteFiles(file);
 
         /*
@@ -124,76 +123,6 @@ public class FlumeEmbeddedAppenderTest {
     }
 
     @Test
-    public void testLog4Event() throws InterruptedException, IOException {
-
-        final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
-        EventLogger.logEvent(msg);
-
-        final Event event = primary.poll();
-   	    Assert.assertNotNull(event);
-        final String body = getBody(event);
-  	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-            body.endsWith("Test Log4j"));
-    }
-
-    @Test
-    public void testMultiple() throws InterruptedException, IOException {
-
-        for (int i = 0; i < 10; ++i) {
-            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
-            EventLogger.logEvent(msg);
-        }
-        for (int i = 0; i < 10; ++i) {
-            final Event event = primary.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Multiple " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
-        }
-    }
-
-
-    @Test
-    public void testFailover() throws InterruptedException, IOException {
-        final Logger logger = LogManager.getLogger("testFailover");
-        logger.debug("Starting testFailover");
-        for (int i = 0; i < 10; ++i) {
-            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
-            EventLogger.logEvent(msg);
-        }
-        for (int i = 0; i < 10; ++i) {
-            final Event event = primary.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Primary " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
-        }
-
-        // Give the AvroSink time to receive notification and notify the channel.
-        Thread.sleep(500);
-
-        primary.stop();
-
-
-        for (int i = 0; i < 10; ++i) {
-            final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
-            EventLogger.logEvent(msg);
-        }
-        for (int i = 0; i < 10; ++i) {
-            final Event event = alternate.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Alternate " + i;
-            /* When running in Gump Flume consistently returns the last event from the primary channel after
-               the failover, which fails this test */
-            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
-                " Received: " + body, body.endsWith(expected));
-        }
-    }
-
-    @Test
     public void testPerformance() throws Exception {
         long start = System.currentTimeMillis();
         int count = 10000;
@@ -209,12 +138,12 @@ public class FlumeEmbeddedAppenderTest {
 
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
-            int n = 0;
-            while (-1 != (n = is.read())) {
-                baos.write(n);
-            }
-            return new String(baos.toByteArray());
+        final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
+        int n = 0;
+        while (-1 != (n = is.read())) {
+            baos.write(n);
+        }
+        return new String(baos.toByteArray());
 
     }
 

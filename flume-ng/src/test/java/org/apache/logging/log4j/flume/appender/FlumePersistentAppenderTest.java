@@ -50,10 +50,10 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +62,8 @@ import java.util.zip.GZIPInputStream;
 /**
  *
  */
-public class FlumeEmbeddedAppenderTest {
-    private static final String CONFIG = "embedded.xml";
+public class FlumePersistentAppenderTest {
+    private static final String CONFIG = "persistent.xml";
     private static final String HOSTNAME = "localhost";
     private static LoggerContext ctx;
 
@@ -87,7 +87,7 @@ public class FlumeEmbeddedAppenderTest {
     @Before
     public void setUp() throws Exception {
 
-        final File file = new File("target/file-channel");
+        final File file = new File("target/persistent");
         final boolean result = deleteFiles(file);
 
         /*
@@ -130,9 +130,9 @@ public class FlumeEmbeddedAppenderTest {
         EventLogger.logEvent(msg);
 
         final Event event = primary.poll();
-   	    Assert.assertNotNull(event);
+        Assert.assertNotNull(event);
         final String body = getBody(event);
-  	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
+        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("Test Log4j"));
     }
 
@@ -141,15 +141,24 @@ public class FlumeEmbeddedAppenderTest {
 
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Multiple " + i, "Test");
+            msg.put("counter", Integer.toString(i));
             EventLogger.logEvent(msg);
         }
+        boolean[] fields = new boolean[10];
         for (int i = 0; i < 10; ++i) {
             final Event event = primary.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Multiple " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
+            Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
+            final String value = event.getHeaders().get("counter");
+            Assert.assertNotNull("Missing counter", value);
+            final int counter = Integer.parseInt(value);
+            if (fields[counter]) {
+                Assert.fail("Duplicate event");
+            } else {
+                fields[counter] = true;
+            }
+        }
+        for (int i = 0; i < 10; ++i) {
+            Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
     }
 
@@ -160,15 +169,24 @@ public class FlumeEmbeddedAppenderTest {
         logger.debug("Starting testFailover");
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
+            msg.put("counter", Integer.toString(i));
             EventLogger.logEvent(msg);
         }
+        boolean[] fields = new boolean[10];
         for (int i = 0; i < 10; ++i) {
             final Event event = primary.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Primary " + i;
-            Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
-                body.endsWith(expected));
+            Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
+            final String value = event.getHeaders().get("counter");
+            Assert.assertNotNull("Missing counter", value);
+            final int counter = Integer.parseInt(value);
+            if (fields[counter]) {
+                Assert.fail("Duplicate event");
+            } else {
+                fields[counter] = true;
+            }
+        }
+        for (int i = 0; i < 10; ++i) {
+            Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
 
         // Give the AvroSink time to receive notification and notify the channel.
@@ -176,27 +194,33 @@ public class FlumeEmbeddedAppenderTest {
 
         primary.stop();
 
-
         for (int i = 0; i < 10; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Alternate " + i, "Test");
+            msg.put("cntr", Integer.toString(i));
             EventLogger.logEvent(msg);
         }
+        fields = new boolean[10];
         for (int i = 0; i < 10; ++i) {
             final Event event = alternate.poll();
-            Assert.assertNotNull(event);
-            final String body = getBody(event);
-            final String expected = "Test Alternate " + i;
-            /* When running in Gump Flume consistently returns the last event from the primary channel after
-               the failover, which fails this test */
-            Assert.assertTrue("Channel contained event, but not expected message. Expected: " + expected +
-                " Received: " + body, body.endsWith(expected));
+            Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
+            final String value = event.getHeaders().get("cntr");
+            Assert.assertNotNull("Missing counter", value);
+            final int counter = Integer.parseInt(value);
+            if (fields[counter]) {
+                Assert.fail("Duplicate event");
+            } else {
+                fields[counter] = true;
+            }
+        }
+        for (int i = 0; i < 10; ++i) {
+            Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
     }
 
     @Test
     public void testPerformance() throws Exception {
         long start = System.currentTimeMillis();
-        int count = 10000;
+        int count = 1000;
         for (int i = 0; i < count; ++i) {
             final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Primary " + i, "Test");
             msg.put("counter", Integer.toString(i));
@@ -209,12 +233,12 @@ public class FlumeEmbeddedAppenderTest {
 
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
-            int n = 0;
-            while (-1 != (n = is.read())) {
-                baos.write(n);
-            }
-            return new String(baos.toByteArray());
+        final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
+        int n = 0;
+        while (-1 != (n = is.read())) {
+            baos.write(n);
+        }
+        return new String(baos.toByteArray());
 
     }
 
