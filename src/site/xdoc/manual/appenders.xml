@@ -402,7 +402,8 @@
             <tr>
               <td>agentRetries</td>
               <td>integer</td>
-              <td>The number of times the agent should be retried before failing to a secondary.</td>
+              <td>The number of times the agent should be retried before failing to a secondary. This paramenter is
+                ignored when type="persistent" is specified (agents are tried once before failing to the next).</td>
             </tr>
             <tr>
               <td>batchSize</td>
@@ -492,7 +493,9 @@
               <td>reconnectionDelay</td>
               <td>integer</td>
               <td>The number of milliseconds the application should wait before trying again to connect to the
-                agent.</td>
+                agent. When type="persistent" is specified this represents the frequency between retries when no
+                remote Flume agents are available (the persistent agent will continue to write to its database in
+                the interim).</td>
             </tr>
 
             <tr>
