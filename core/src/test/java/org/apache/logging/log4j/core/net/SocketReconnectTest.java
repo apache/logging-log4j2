@@ -33,6 +33,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -71,6 +72,21 @@ public class SocketReconnectTest {
             assertEquals(message, reader.readLine());
 
             closeQuietly(testServer);
+            executor.shutdown();
+            try {
+                // Wait a while for existing tasks to terminate
+                if (!executor.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                    executor.shutdownNow();
+                    if (!executor.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                        System.err.println("Pool did not terminate");
+                    }
+                }
+            } catch (InterruptedException ie) {
+                // (Re-)Cancel if current thread also interrupted
+                executor.shutdownNow();
+                // Preserve interrupt status
+                Thread.currentThread().interrupt();
+            }
 
             message = "Log #2";
             logger.error(message);
@@ -83,6 +99,7 @@ public class SocketReconnectTest {
             }
 
             //System.err.println("Re-initializing server");
+            executor = Executors.newSingleThreadExecutor();
             testServer = new TestSocketServer();
             futureIn = executor.submit(testServer);
             Thread.sleep(500);
