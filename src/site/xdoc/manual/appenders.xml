@@ -484,8 +484,7 @@
                 elements will result in an error.</p>
                 <p>When used to configure in Persistent mode the valid properties are:
                   <ol>
-                  <li>"password" to specfify that
-                the data should be encrypted when written to disk.</li>
+                  <li>"keyProvider" to specify the name of the plugin to provide the secret key for encryption.</li>
                 </ol></p>
               </td>
             </tr>
@@ -542,7 +541,7 @@
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
-      <Property name="password">Test123!!</Property>
+      <Property name="keyProvider">MySecretProvider</Property>
     </Flume>
   </appenders>
   <loggers>

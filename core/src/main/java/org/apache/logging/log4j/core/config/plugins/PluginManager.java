@@ -155,9 +155,11 @@ public class PluginManager {
                 LOGGER.warn("Plugin preloads not available");
             }
         }
-        if (plugins.size() == 0) {
+        if (plugins == null || plugins.size() == 0) {
             if (pkgs == null) {
-                PACKAGES.add(LOG4J_PACKAGES);
+                if (!PACKAGES.contains(LOG4J_PACKAGES)) {
+                    PACKAGES.add(LOG4J_PACKAGES);
+                }
             } else {
                 final String[] names = pkgs.split(",");
                 for (final String name : names) {

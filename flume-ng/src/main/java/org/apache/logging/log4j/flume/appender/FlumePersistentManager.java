@@ -29,7 +29,10 @@ import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -58,7 +61,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class FlumePersistentManager extends FlumeAvroManager {
 
-    public static final String PASSWORD = "password";
+    public static final String KEY_PROVIDER = "keyProvider";
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -232,7 +235,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
          */
         public FlumePersistentManager createManager(final String name, final FactoryData data) {
             SecretKey secretKey = null;
-            byte[] salt;
 
             Database database;
 
@@ -261,37 +263,44 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
 
             try {
-                if (properties.containsKey(PASSWORD)) {
-                    String password = properties.get(PASSWORD);
-                    salt = new byte[20];
-                    File saltFile = new File(data.dataDir + "/salt.dat");
-                    boolean needSalt = true;
-                    if (saltFile.exists()) {
-                        FileInputStream fis = new FileInputStream(saltFile);
-                        if (fis.read(salt) == 20) {
-                            needSalt = false;
-                        }
-                        fis.close();
+                String key = null;
+                for (Map.Entry<String, String> entry : properties.entrySet()) {
+                    if (entry.getKey().equalsIgnoreCase(KEY_PROVIDER)) {
+                        key = entry.getValue();
                     }
-                    if (needSalt) {
-                        Random r = new SecureRandom();
-                        r.nextBytes(salt);
-                        FileOutputStream fos = new FileOutputStream(saltFile);
-                        fos.write(salt);
-                        fos.close();
-                    }
-                    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-                    KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
-                    SecretKey tmp = factory.generateSecret(spec);
-                    secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
                 }
-                return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.reconnectionDelay,
-                    database, secretKey);
+                if (key != null) {
+                    final PluginManager manager = new PluginManager("KeyProvider", SecretKeyProvider.class);
+                    manager.collectPlugins();
+                    final Map<String, PluginType> plugins = manager.getPlugins();
+                    if (plugins != null) {
+                        boolean found = false;
+                        for (Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+                            if (entry.getKey().equalsIgnoreCase(key)) {
+                                found = true;
+                                Class cl = entry.getValue().getPluginClass();
+                                try {
+                                    SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
+                                    secretKey = provider.getSecretKey();
+                                } catch (Exception ex) {
+                                    LOGGER.error("Unable to create SecretKeyProvider {}, encryption will be disabled",
+                                        cl.getName());
+                                }
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            LOGGER.error("Unable to locate SecretKey provider {}, encryption will be disabled", key);
+                        }
+                    } else {
+                        LOGGER.error("Unable to locate SecretKey provider {}, encryption will be disabled", key);
+                    }
+                }
             } catch (Exception ex) {
                 LOGGER.warn("Error setting up encryption - encryption will be disabled", ex);
-
             }
-            return null;
+            return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.reconnectionDelay,
+                database, secretKey);
         }
     }
 

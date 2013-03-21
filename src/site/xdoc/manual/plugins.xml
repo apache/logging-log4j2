@@ -89,6 +89,13 @@
             RollingFileAppender to construct the name of the file to log to.
           </p>
         </subsection>
+        <a name="KeyProviders"/>
+        <subsection name="KeyProviders">
+          Some components within Log4j may provide the ability to perform data encryption. These components require
+          a secret key to perform the encryption. Applications may provide the key by creating a class that
+          implements the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/helpers/SecretKeyProvider.html">SecretKeyProvider</a>
+          interface.
+        </subsection>
         <a name="Lookups"/>
         <subsection name="Lookups">
           <p>
