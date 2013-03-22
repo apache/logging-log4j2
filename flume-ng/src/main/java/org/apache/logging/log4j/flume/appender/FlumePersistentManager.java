@@ -69,7 +69,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static ManagerFactory factory = new  BDBManagerFactory();
+    private static ManagerFactory factory = new BDBManagerFactory();
 
     private Database database;
 
