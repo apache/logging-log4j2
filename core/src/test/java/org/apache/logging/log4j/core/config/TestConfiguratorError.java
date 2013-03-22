@@ -16,19 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *

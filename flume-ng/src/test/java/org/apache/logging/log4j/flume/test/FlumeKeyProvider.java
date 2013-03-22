@@ -20,13 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
 
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.FileOutputStream;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
-import java.util.Random;
 
 /**
  *
