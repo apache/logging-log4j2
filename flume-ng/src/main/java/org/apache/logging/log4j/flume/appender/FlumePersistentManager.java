@@ -69,7 +69,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
-    private static ManagerFactory factory = new BDBManagerFactory();
+    private static BDBManagerFactory factory = new BDBManagerFactory();
 
     private Database database;
 
@@ -134,7 +134,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
         sb.append("]");
         sb.append(" ").append(dataDirectory);
-        return (FlumePersistentManager) getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize,
+        return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize,
             reconnectionDelay, dataDir, properties));
     }
 
