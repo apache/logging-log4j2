@@ -112,9 +112,9 @@ public abstract class ConfigurationFactory {
                     for (final PluginType type : plugins.values()) {
                         try {
                             final Class<ConfigurationFactory> clazz = type.getPluginClass();
-                            final Order o = clazz.getAnnotation(Order.class);
-                            final Integer weight = o.value();
-                            if (o != null) {
+                            final Order order = clazz.getAnnotation(Order.class);
+                            final Integer weight = order.value();
+                            if (order != null) {
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {
