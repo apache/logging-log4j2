@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-181" dev="rgoers" type="fix">
+        OutputStreamManager now adds the layout header whenever the OutputStream is set.
+      </action>
+      <action issue="LOG4J2-177" dev="rgoers" type="fix" due-to="Remko Popma">
+        Fix NullPointerException in DatagramOutputStream when flush is called from multiple threads.
+      </action>
       <action dev="rgoers" type="add">
         Added FlumePersistentManager which writes to BerkeleyDB and then writes to Flume asynchronously.
       </action>

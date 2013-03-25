@@ -28,6 +28,7 @@ public class OutputStreamManager extends AbstractManager {
     private OutputStream os;
 
     private byte[] footer = null;
+    private byte[] header = null;
 
     protected OutputStreamManager(final OutputStream os, final String streamName) {
         super(streamName);
@@ -54,6 +55,7 @@ public class OutputStreamManager extends AbstractManager {
      */
     public synchronized void setHeader(final byte[] header) {
         if (header != null) {
+            this.header = header;
             try {
                 this.os.write(header, 0, header.length);
             } catch (final IOException ioe) {
@@ -97,6 +99,13 @@ public class OutputStreamManager extends AbstractManager {
 
     protected void setOutputStream(final OutputStream os) {
         this.os = os;
+        if (header != null) {
+            try {
+                this.os.write(header, 0, header.length);
+            } catch (final IOException ioe) {
+                LOGGER.error("Unable to write header", ioe);
+            }
+        }
     }
 
     /**

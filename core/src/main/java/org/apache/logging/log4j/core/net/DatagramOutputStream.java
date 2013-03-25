@@ -89,7 +89,7 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void flush() throws IOException {
-        if (this.ds != null && this.address != null) {
+        if (this.data != null && this.ds != null && this.address != null) {
             final DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
             ds.send(packet);
         }

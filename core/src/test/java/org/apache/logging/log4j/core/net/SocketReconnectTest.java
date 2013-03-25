@@ -29,14 +29,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class SocketReconnectTest {
     private static final int SOCKET_PORT = 5514;
@@ -50,120 +51,125 @@ public class SocketReconnectTest {
 
     @Test
     public void testReconnect() throws Exception {
-        TestSocketServer testServer = null;
-        ExecutorService executor = null;
-        Future<InputStream> futureIn;
-        final InputStream in;
 
-        try {
-            executor = Executors.newSingleThreadExecutor();
-            System.err.println("Initializing server");
-            testServer = new TestSocketServer();
-            futureIn = executor.submit(testServer);
-            Thread.sleep(300);
+        List<String> list = new ArrayList<String>();
+        TestSocketServer server = new TestSocketServer(list);
+        server.start();
+        Thread.sleep(300);
 
-            //System.err.println("Initializing logger");
-            final Logger logger = LogManager.getLogger(SocketReconnectTest.class);
+        //System.err.println("Initializing logger");
+        final Logger logger = LogManager.getLogger(SocketReconnectTest.class);
 
-            String message = "Log #1";
-            logger.error(message);
+        String message = "Log #1";
+        logger.error(message);
+        String expectedHeader = "Header";
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(futureIn.get()));
-            assertEquals(message, reader.readLine());
-
-            closeQuietly(testServer);
-            executor.shutdown();
-            try {
-                // Wait a while for existing tasks to terminate
-                if (!executor.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    executor.shutdownNow();
-                    if (!executor.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                        System.err.println("Pool did not terminate");
-                    }
-                }
-            } catch (InterruptedException ie) {
-                // (Re-)Cancel if current thread also interrupted
-                executor.shutdownNow();
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
+        String msg = null;
+        String header = null;
+        for (int i = 0; i < 5; ++i) {
+            Thread.sleep(100);
+            if (list.size() > 1) {
+                header = list.get(0);
+                msg = list.get(1);
+                break;
             }
+        }
+        assertNotNull("No header", header);
+        assertEquals(expectedHeader, header);
+        assertNotNull("No message", msg);
+        assertEquals(message, msg);
 
-            message = "Log #2";
-            logger.error(message);
+        server.shutdown();
+        server.join();
 
-            message = "Log #3";
+        list.clear();
+
+        message = "Log #2";
+        boolean exceptionCaught = false;
+
+        for (int i = 0; i < 5; ++i) {
             try {
                 logger.error(message);
             } catch (final AppenderRuntimeException e) {
+                exceptionCaught = true;
+                break;
                 // System.err.println("Caught expected exception");
             }
-
-            //System.err.println("Re-initializing server");
-            executor = Executors.newSingleThreadExecutor();
-            testServer = new TestSocketServer();
-            futureIn = executor.submit(testServer);
-            Thread.sleep(500);
-
-            try {
-                logger.error(message);
-                reader = new BufferedReader(new InputStreamReader(futureIn.get()));
-                assertEquals(message, reader.readLine());
-            } catch (final AppenderRuntimeException e) {
-                e.printStackTrace();
-                fail("Unexpected Exception");
-            }
-            //System.err.println("Sleeping to demonstrate repeated re-connections");
-            //Thread.sleep(5000);
-        } finally {
-            closeQuietly(testServer);
-            closeQuietly(executor);
         }
+        assertTrue("No Exception thrown", exceptionCaught);
+        message = "Log #3";
+
+
+        server = new TestSocketServer(list);
+        server.start();
+        Thread.sleep(300);
+
+        msg = null;
+        header = null;
+        logger.error(message);
+        for (int i = 0; i < 5; ++i) {
+            Thread.sleep(100);
+            if (list.size() > 1) {
+                header = list.get(0);
+                msg = list.get(1);
+                break;
+            }
+        }
+        assertNotNull("No header", header);
+        assertEquals(expectedHeader, header);
+        assertNotNull("No message", msg);
+        assertEquals(message, msg);
+        server.shutdown();
+        server.join();
     }
 
 
-    private static class TestSocketServer implements Callable<InputStream> {
-        private ServerSocket server;
+    private static class TestSocketServer extends Thread {
+        private volatile boolean shutdown = false;
+        private List<String> list;
         private Socket client;
 
-        public InputStream call() throws Exception {
-            server = new ServerSocket(SOCKET_PORT);
-            client = server.accept();
-            return client.getInputStream();
+        public TestSocketServer(List<String> list) {
+            this.list = list;
         }
 
-        public void close() {
-            closeQuietly(client);
-            closeQuietly(server);
-        }
-
-        private void closeQuietly(final ServerSocket socket) {
-            if (null != socket) {
-                try {
-                    socket.close();
-                } catch (final IOException ignore) {
+        public void run() {
+            ServerSocket server = null;
+            client = null;
+            try {
+                server = new ServerSocket(SOCKET_PORT);
+                client = server.accept();
+                while (!shutdown) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                    list.add(reader.readLine());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                if (client != null) {
+                    try {
+                        client.close();
+                    } catch (Exception ex) {
+                        System.out.println("Unable to close socket " + ex.getMessage());
+                    }
+                }
+                if (server != null) {
+                    try {
+                        server.close();
+                    } catch (Exception ex) {
+                        System.out.println("Unable to close server socket " + ex.getMessage());
+                    }
                 }
             }
         }
 
-        private void closeQuietly(final Socket socket) {
-            if (null != socket) {
-                try {
-                    socket.close();
-                } catch (final IOException ignore) {
-                }
+        public void shutdown() {
+            shutdown = true;
+            try {
+                client.shutdownInput();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        }
-    }
-
-    private static void closeQuietly(final ExecutorService executor) {
-        if (null != executor) {
-            executor.shutdownNow();
-        }
-    }
-
-    private static void closeQuietly(final TestSocketServer testServer) {
-        if (null != testServer) {
-            testServer.close();
         }
     }
 }
