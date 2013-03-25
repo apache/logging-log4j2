@@ -30,6 +30,19 @@ import static org.junit.Assert.*;
  */
 public class AbstractLoggerTest extends AbstractLogger {
 
+    private static class LogEvent {
+
+        String markerName;
+        Message data;
+        Throwable t;
+
+        public LogEvent(final String markerName, final Message data, final Throwable t) {
+            this.markerName = markerName;
+            this.data = data;
+            this.t = t;
+        }
+    }
+
     private static Level currentLevel;
 
     private LogEvent currentEvent;
@@ -37,13 +50,13 @@ public class AbstractLoggerTest extends AbstractLogger {
     private static Throwable t = new UnsupportedOperationException("Test");
 
     private static Class<AbstractLogger> obj = AbstractLogger.class;
-
     private static String pattern = "{}, {}";
     private static String p1 = "Long Beach";
-    private static String p2 = "California";
 
+    private static String p2 = "California";
     private static Message simple = new SimpleMessage("Hello");
     private static Message object = new ObjectMessage(obj);
+
     private static Message param = new ParameterizedMessage(pattern, p1, p2);
 
     private static String marker = "TEST";
@@ -70,46 +83,113 @@ public class AbstractLoggerTest extends AbstractLogger {
 
     };
 
-    @Test
-    public void testTrace() {
-        currentLevel = Level.TRACE;
+    @Override
+    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
+        if (marker == null) {
+            if (currentEvent.markerName != null) {
+                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
+            }
+        } else {
+            if (currentEvent.markerName == null) {
+                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
+            } else {
+                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
+                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
+            }
+        }
+        if (data == null) {
+            if (currentEvent.data != null) {
+                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
+            }
+        } else {
+            if (currentEvent.data == null) {
+                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
+            } else {
+                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
+                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
+                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
+                    data.getFormattedMessage(),
+                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
+            }
+        }
+        if (t == null) {
+            if (currentEvent.t != null) {
+                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
+            }
+        } else {
+            if (currentEvent.t == null) {
+                fail("Incorrect Throwable. Expected null. Actual is " + t);
+            } else {
+                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
+                    currentEvent.t.equals(t));
+            }
+        }
+        return true;
+    }
 
-        currentEvent = events[0];
-        trace("Hello");
-        trace(null, "Hello");
-        currentEvent = events[1];
-        trace(MarkerManager.getMarker("TEST"), "Hello");
-        currentEvent = events[2];
-        trace("Hello", t);
-        trace(null, "Hello", t);
-        currentEvent = events[3];
-        trace(MarkerManager.getMarker("TEST"), "Hello", t);
-        currentEvent = events[4];
-        trace(obj);
-        currentEvent = events[5];
-        trace(MarkerManager.getMarker("TEST"), obj);
-        currentEvent = events[6];
-        trace(obj, t);
-        trace(null, obj, t);
-        currentEvent = events[7];
-        trace(MarkerManager.getMarker("TEST"), obj, t);
-        currentEvent = events[8];
-        trace(pattern, p1, p2);
-        currentEvent = events[9];
-        trace(MarkerManager.getMarker("TEST"), pattern, p1, p2);
-        currentEvent = events[10];
-        trace(simple);
-        trace(null, simple);
-        trace(null, simple, null);
-        currentEvent = events[11];
-        trace(simple, t);
-        trace(null, simple, t);
-        currentEvent = events[12];
-        trace(MarkerManager.getMarker("TEST"), simple, null);
-        currentEvent = events[13];
-        trace(MarkerManager.getMarker("TEST"), simple, t);
-        currentEvent = events[14];
-        trace(MarkerManager.getMarker("TEST"), simple);
+    @Override
+    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+        return isEnabled(level, marker, new ObjectMessage(data), t);
+    }
+
+    @Override
+    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
+        return isEnabled(level, marker, new SimpleMessage(data), null);
+    }
+
+    @Override
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+        return isEnabled(level, marker, new ParameterizedMessage(data, p1), null);
+    }
+
+    @Override
+    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
+        return isEnabled(level, marker, new SimpleMessage(data), t);
+    }
+
+    @Override
+    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
+        if (marker == null) {
+            if (currentEvent.markerName != null) {
+                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
+            }
+        } else {
+            if (currentEvent.markerName == null) {
+                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
+            } else {
+                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
+                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
+            }
+        }
+        if (data == null) {
+            if (currentEvent.data != null) {
+                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
+            }
+        } else {
+            if (currentEvent.data == null) {
+                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
+            } else {
+                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
+                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
+                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
+                    data.getFormattedMessage(),
+                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
+            }
+        }
+        if (t == null) {
+            if (currentEvent.t != null) {
+                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
+            }
+        } else {
+            if (currentEvent.t == null) {
+                fail("Incorrect Throwable. Expected null. Actual is " + t);
+            } else {
+                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
+                    currentEvent.t.equals(t));
+            }
+        }
     }
 
     @Test
@@ -152,90 +232,6 @@ public class AbstractLoggerTest extends AbstractLogger {
         debug(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         debug(MarkerManager.getMarker("TEST"), simple);
-    }
-
-    @Test
-    public void testInfo() {
-        currentLevel = Level.INFO;
-
-        currentEvent = events[0];
-        info("Hello");
-        info(null, "Hello");
-        currentEvent = events[1];
-        info(MarkerManager.getMarker("TEST"), "Hello");
-        currentEvent = events[2];
-        info("Hello", t);
-        info(null, "Hello", t);
-        currentEvent = events[3];
-        info(MarkerManager.getMarker("TEST"), "Hello", t);
-        currentEvent = events[4];
-        info(obj);
-        currentEvent = events[5];
-        info(MarkerManager.getMarker("TEST"), obj);
-        currentEvent = events[6];
-        info(obj, t);
-        info(null, obj, t);
-        currentEvent = events[7];
-        info(MarkerManager.getMarker("TEST"), obj, t);
-        currentEvent = events[8];
-        info(pattern, p1, p2);
-        currentEvent = events[9];
-        info(MarkerManager.getMarker("TEST"), pattern, p1, p2);
-        currentEvent = events[10];
-        info(simple);
-        info(null, simple);
-        info(null, simple, null);
-        currentEvent = events[11];
-        info(simple, t);
-        info(null, simple, t);
-        currentEvent = events[12];
-        info(MarkerManager.getMarker("TEST"), simple, null);
-        currentEvent = events[13];
-        info(MarkerManager.getMarker("TEST"), simple, t);
-        currentEvent = events[14];
-        info(MarkerManager.getMarker("TEST"), simple);
-    }
-
-    @Test
-    public void testWarn() {
-        currentLevel = Level.WARN;
-
-        currentEvent = events[0];
-        warn("Hello");
-        warn(null, "Hello");
-        currentEvent = events[1];
-        warn(MarkerManager.getMarker("TEST"), "Hello");
-        currentEvent = events[2];
-        warn("Hello", t);
-        warn(null, "Hello", t);
-        currentEvent = events[3];
-        warn(MarkerManager.getMarker("TEST"), "Hello", t);
-        currentEvent = events[4];
-        warn(obj);
-        currentEvent = events[5];
-        warn(MarkerManager.getMarker("TEST"), obj);
-        currentEvent = events[6];
-        warn(obj, t);
-        warn(null, obj, t);
-        currentEvent = events[7];
-        warn(MarkerManager.getMarker("TEST"), obj, t);
-        currentEvent = events[8];
-        warn(pattern, p1, p2);
-        currentEvent = events[9];
-        warn(MarkerManager.getMarker("TEST"), pattern, p1, p2);
-        currentEvent = events[10];
-        warn(simple);
-        warn(null, simple);
-        warn(null, simple, null);
-        currentEvent = events[11];
-        warn(simple, t);
-        warn(null, simple, t);
-        currentEvent = events[12];
-        warn(MarkerManager.getMarker("TEST"), simple, null);
-        currentEvent = events[13];
-        warn(MarkerManager.getMarker("TEST"), simple, t);
-        currentEvent = events[14];
-        warn(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -322,126 +318,130 @@ public class AbstractLoggerTest extends AbstractLogger {
         fatal(MarkerManager.getMarker("TEST"), simple);
     }
 
-    @Override
-    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
-        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
-        if (marker == null) {
-            if (currentEvent.markerName != null) {
-                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
-            }
-        } else {
-            if (currentEvent.markerName == null) {
-                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
-            } else {
-                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
-            }
-        }
-        if (data == null) {
-            if (currentEvent.data != null) {
-                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
-            }
-        } else {
-            if (currentEvent.data == null) {
-                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
-            } else {
-                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
-                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
-                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                    data.getFormattedMessage(),
-                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
-            }
-        }
-        if (t == null) {
-            if (currentEvent.t != null) {
-                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
-            }
-        } else {
-            if (currentEvent.t == null) {
-                fail("Incorrect Throwable. Expected null. Actual is " + t);
-            } else {
-                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
-                    currentEvent.t.equals(t));
-            }
-        }
+    @Test
+    public void testInfo() {
+        currentLevel = Level.INFO;
+
+        currentEvent = events[0];
+        info("Hello");
+        info(null, "Hello");
+        currentEvent = events[1];
+        info(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        info("Hello", t);
+        info(null, "Hello", t);
+        currentEvent = events[3];
+        info(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        info(obj);
+        currentEvent = events[5];
+        info(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        info(obj, t);
+        info(null, obj, t);
+        currentEvent = events[7];
+        info(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        info(pattern, p1, p2);
+        currentEvent = events[9];
+        info(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        info(simple);
+        info(null, simple);
+        info(null, simple, null);
+        currentEvent = events[11];
+        info(simple, t);
+        info(null, simple, t);
+        currentEvent = events[12];
+        info(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        info(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        info(MarkerManager.getMarker("TEST"), simple);
     }
 
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
-        return isEnabled(level, marker, new SimpleMessage(data), null);
-    }
+    @Test
+    public void testTrace() {
+        currentLevel = Level.TRACE;
 
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
-        return isEnabled(level, marker, new SimpleMessage(data), t);
-    }
-
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
-        return isEnabled(level, marker, new ParameterizedMessage(data, p1), null);
-    }
-
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
-        return isEnabled(level, marker, new ObjectMessage(data), t);
-    }
-
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
-        assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
-        if (marker == null) {
-            if (currentEvent.markerName != null) {
-                fail("Incorrect marker. Expected " + currentEvent.markerName + ", actual is null");
-            }
-        } else {
-            if (currentEvent.markerName == null) {
-                fail("Incorrect marker. Expected null. Actual is " + marker.getName());
-            } else {
-                assertTrue("Incorrect marker. Expected " + currentEvent.markerName + ", actual " +
-                    marker.getName(), currentEvent.markerName.equals(marker.getName()));
-            }
-        }
-        if (data == null) {
-            if (currentEvent.data != null) {
-                fail("Incorrect message. Expected " + currentEvent.data + ", actual is null");
-            }
-        } else {
-            if (currentEvent.data == null) {
-                fail("Incorrect message. Expected null. Actual is " + data.getFormattedMessage());
-            } else {
-                assertTrue("Incorrect message type. Expected " + currentEvent.data + ", actual " + data,
-                    data.getClass().isAssignableFrom(currentEvent.data.getClass()));
-                assertTrue("Incorrect message. Expected " + currentEvent.data.getFormattedMessage() + ", actual " +
-                    data.getFormattedMessage(),
-                    currentEvent.data.getFormattedMessage().equals(data.getFormattedMessage()));
-            }
-        }
-        if (t == null) {
-            if (currentEvent.t != null) {
-                fail("Incorrect Throwable. Expected " + currentEvent.t + ", actual is null");
-            }
-        } else {
-            if (currentEvent.t == null) {
-                fail("Incorrect Throwable. Expected null. Actual is " + t);
-            } else {
-                assertTrue("Incorrect Throwable. Expected " + currentEvent.t + ", actual " + t,
-                    currentEvent.t.equals(t));
-            }
-        }
-        return true;
+        currentEvent = events[0];
+        trace("Hello");
+        trace(null, "Hello");
+        currentEvent = events[1];
+        trace(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        trace("Hello", t);
+        trace(null, "Hello", t);
+        currentEvent = events[3];
+        trace(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        trace(obj);
+        currentEvent = events[5];
+        trace(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        trace(obj, t);
+        trace(null, obj, t);
+        currentEvent = events[7];
+        trace(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        trace(pattern, p1, p2);
+        currentEvent = events[9];
+        trace(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        trace(simple);
+        trace(null, simple);
+        trace(null, simple, null);
+        currentEvent = events[11];
+        trace(simple, t);
+        trace(null, simple, t);
+        currentEvent = events[12];
+        trace(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        trace(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        trace(MarkerManager.getMarker("TEST"), simple);
     }
 
 
-    private static class LogEvent {
+    @Test
+    public void testWarn() {
+        currentLevel = Level.WARN;
 
-        String markerName;
-        Message data;
-        Throwable t;
-
-        public LogEvent(final String markerName, final Message data, final Throwable t) {
-            this.markerName = markerName;
-            this.data = data;
-            this.t = t;
-        }
+        currentEvent = events[0];
+        warn("Hello");
+        warn(null, "Hello");
+        currentEvent = events[1];
+        warn(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        warn("Hello", t);
+        warn(null, "Hello", t);
+        currentEvent = events[3];
+        warn(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        warn(obj);
+        currentEvent = events[5];
+        warn(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        warn(obj, t);
+        warn(null, obj, t);
+        currentEvent = events[7];
+        warn(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        warn(pattern, p1, p2);
+        currentEvent = events[9];
+        warn(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        warn(simple);
+        warn(null, simple);
+        warn(null, simple, null);
+        currentEvent = events[11];
+        warn(simple, t);
+        warn(null, simple, t);
+        currentEvent = events[12];
+        warn(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        warn(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        warn(MarkerManager.getMarker("TEST"), simple);
     }
 }
