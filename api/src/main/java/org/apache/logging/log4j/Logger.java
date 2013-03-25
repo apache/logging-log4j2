@@ -156,8 +156,8 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void debug(String message, Throwable t);
-
-   /**
+  
+  /**
    * Logs entry to a method.
    */
   void entry();
@@ -278,7 +278,7 @@ public interface Logger {
    */
   void error(String message);
 
-  /**
+   /**
    * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
    *
    * @param message the message to log; the format depends on the message factory.
@@ -465,6 +465,7 @@ public interface Logger {
    * @param msg    the message string to be logged
    */
   void info(Marker marker, Message msg);
+
   /**
    * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
@@ -556,7 +557,7 @@ public interface Logger {
    */
   void info(Object message, Throwable t);
 
- /**
+  /**
    * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param message the message object to log.
@@ -593,7 +594,6 @@ public interface Logger {
    *         DEBUG, {@code false} otherwise.
    */
   boolean isDebugEnabled();
-
   /**
    * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
    *
@@ -681,7 +681,7 @@ public interface Logger {
    */
   boolean isTraceEnabled(Marker marker);
 
-  /**
+ /**
    * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
    *
    * @return boolean - {@code true} if this Logger is enabled for level
@@ -697,6 +697,139 @@ public interface Logger {
    *         {@link Level#WARN WARN}, {@code false} otherwise.
    */
   boolean isWarnEnabled(Marker marker);
+
+  /**
+   * Logs a message with the specific Marker at the given level.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param msg the message string to be logged
+   */
+  void log(Level level, Marker marker, Message msg);
+
+  /**
+   * Logs a message with the specific Marker at the given level.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param msg the message string to be logged
+   * @param t A Throwable or null.
+   */
+  void log(Level level, Marker marker, Message msg, Throwable t);
+
+  /**
+   * Logs a message object with the given level.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void log(Level level, Marker marker, Object message);
+
+  /**
+   * Logs a message at the given level including the
+   * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  void log(Level level, Marker marker, Object message, Throwable t);
+
+  /**
+   * Logs a message object with the given level.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param message the message object to log.
+   */
+  void log(Level level, Marker marker, String message);
+
+  /**
+   * Logs a message with parameters at the given level.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log; the format depends on the message factory.
+   * @param params parameters to the message.
+   * @see #getMessageFactory()
+   */
+  void log(Level level, Marker marker, String message, Object... params);
+
+  /**
+   * Logs a message at the given level including the
+   * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+   *
+   * @param level the logging level
+   * @param marker the marker data specific to this log statement
+   * @param message the message to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  void log(Level level, Marker marker, String message, Throwable t);
+
+  /**
+   * Logs a message with the specific Marker at the given level.
+   *
+   * @param level the logging level
+   * @param msg the message string to be logged
+   */
+  void log(Level level, Message msg);
+
+  /**
+   * Logs a message with the specific Marker at the given level.
+   *
+   * @param level the logging level
+   * @param msg the message string to be logged
+   * @param t A Throwable or null.
+   */
+  void log(Level level, Message msg, Throwable t);
+
+  /**
+   * Logs a message object with the given level.
+   *
+   * @param level the logging level
+   * @param message the message object to log.
+   */
+  void log(Level level, Object message);
+
+  /**
+   * Logs a message at the given level including the
+   * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+   *
+   * @param level the logging level
+   * @param message the message to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  void log(Level level, Object message, Throwable t);
+
+  /**
+   * Logs a message object with the given level.
+   *
+   * @param level the logging level
+   * @param message the message object to log.
+   */
+  void log(Level level, String message);
+
+  /**
+   * Logs a message with parameters at the given level.
+   *
+   * @param level the logging level
+   * @param message the message to log; the format depends on the message factory.
+   * @param params parameters to the message.
+   * @see #getMessageFactory()
+   */
+  void log(Level level, String message, Object... params);
+
+  /**
+   * Logs a message at the given level including the
+   * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+   *
+   * @param level the logging level
+   * @param message the message to log.
+   * @param t the exception to log, including its stack trace.
+   */
+  void log(Level level, String message, Throwable t);
 
   /**
    * Logs an exception or error to be thrown. This may be coded as <br />

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  */
 public abstract class AbstractLogger implements Logger {
+
     /**
      * Marker for flow tracing.
      */
@@ -44,6 +45,7 @@ public abstract class AbstractLogger implements Logger {
      * Marker for method exit tracing.
      */
     public static final Marker EXIT_MARKER = MarkerManager.getMarker("EXIT", FLOW_MARKER);
+
 
     /**
      * Marker for exception tracing.
@@ -203,7 +205,6 @@ public abstract class AbstractLogger implements Logger {
             log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
         }
     }
-
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the
@@ -383,6 +384,7 @@ public abstract class AbstractLogger implements Logger {
         return messageFactory.newMessage(sb.toString());
     }
 
+
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
@@ -496,6 +498,7 @@ public abstract class AbstractLogger implements Logger {
             log(null, FQCN, Level.ERROR, msg, t);
         }
     }
+
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
@@ -670,7 +673,6 @@ public abstract class AbstractLogger implements Logger {
             log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
         }
     }
-
     /**
      * Logs a message with the specific Marker at the FATAL level.
      *
@@ -728,7 +730,6 @@ public abstract class AbstractLogger implements Logger {
             log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
         }
     }
-
 
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
@@ -897,6 +898,7 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
+
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the
      * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
@@ -967,7 +969,6 @@ public abstract class AbstractLogger implements Logger {
     public boolean isDebugEnabled(final Marker marker) {
         return isEnabled(Level.DEBUG, marker, (Object) null, null);
     }
-
 
     /**
      * Checks whether this Logger is enabled for the the given Level.
@@ -1113,6 +1114,7 @@ public abstract class AbstractLogger implements Logger {
         return isEnabled(Level.TRACE, marker, (Object) null, null);
     }
 
+
     /**
      * Checks whether this Logger is enabled for the WARN Level.
      *
@@ -1123,7 +1125,6 @@ public abstract class AbstractLogger implements Logger {
         return isEnabled(Level.WARN, null, (Object) null, null);
     }
 
-
     /**
      * Checks whether this Logger is enabled for the WARN Level.
      *
@@ -1133,6 +1134,196 @@ public abstract class AbstractLogger implements Logger {
      */
     public boolean isWarnEnabled(final Marker marker) {
         return isEnabled(Level.WARN, marker, (Object) null, null);
+    }
+
+    /**
+     * Logs a message with the specific Marker at the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    public void log(Level level, final Marker marker, final Message msg) {
+        if (isEnabled(level, marker, msg, null)) {
+            log(marker, FQCN, level, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    public void log(Level level, final Marker marker, final Message msg, final Throwable t) {
+        if (isEnabled(level, marker, msg, t)) {
+            log(marker, FQCN, level, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void log(Level level, final Marker marker, final Object message) {
+        if (isEnabled(level, marker, message, null)) {
+            log(marker, FQCN, level, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the given level including the
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    public void log(Level level, final Marker marker, final Object message, final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            log(marker, FQCN, level, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    public void log(Level level, final Marker marker, final String message) {
+        if (isEnabled(level, marker, message)) {
+            log(marker, FQCN, level, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the given level.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    public void log(Level level, final Marker marker, final String message, final Object... params) {
+        if (isEnabled(level, marker, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(marker, FQCN, level, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the given level including the
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     *
+     * @param level the logging level
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    public void log(Level level, final Marker marker, final String message, final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            log(marker, FQCN, level, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the given level.
+     *
+     * @param level the logging level
+     * @param msg the message string to be logged
+     */
+    public void log(Level level, final Message msg) {
+        if (isEnabled(level, null, msg, null)) {
+            log(null, FQCN, level, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the given level.
+     *
+     * @param level the logging level
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    public void log(Level level, final Message msg, final Throwable t) {
+        if (isEnabled(level, null, msg, t)) {
+            log(null, FQCN, level, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the given level.
+     *
+     * @param level the logging level
+     * @param message the message object to log.
+     */
+    public void log(Level level, final Object message) {
+        if (isEnabled(level, null, message, null)) {
+            log(null, FQCN, level, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the given level including the
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     *
+     * @param level the logging level
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    public void log(Level level, final Object message, final Throwable t) {
+        if (isEnabled(level, null, message, t)) {
+            log(null, FQCN, level, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the given level.
+     *
+     * @param level the logging level
+     * @param message the message object to log.
+     */
+    public void log(Level level, final String message) {
+        if (isEnabled(level, null, message)) {
+            log(null, FQCN, level, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the given level.
+     *
+     * @param level the logging level
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    public void log(Level level, final String message, final Object... params) {
+        if (isEnabled(level, null, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(null, FQCN, level, msg, msg.getThrowable());
+        }
+    }
+
+
+    /**
+     * Logs a message at the given level including the
+     * stack trace of the {@link Throwable} <code>t</code> passed as parameter.
+     *
+     * @param level the logging level
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    public void log(Level level, final String message, final Throwable t) {
+        if (isEnabled(level, null, message, t)) {
+            log(null, FQCN, level, messageFactory.newMessage(message), t);
+        }
     }
 
     /**

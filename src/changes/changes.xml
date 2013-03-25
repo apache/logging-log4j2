@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-179" dev="ggregory" type="add">
+        Add Logger interface APIs to log at given levels.
+      </action>
       <action issue="LOG4J2-181" dev="rgoers" type="fix">
         OutputStreamManager now adds the layout header whenever the OutputStream is set.
       </action>
