@@ -445,6 +445,13 @@ public interface Logger {
   void fatal(String message, Throwable t);
 
   /**
+   * Gets the message factory used to convert message Objects and Strings into actual log Messages.
+   *
+   * @return the message factory.
+   */
+  MessageFactory getMessageFactory();
+
+  /**
    * Gets the logger name.
    *
    * @return the logger name.
@@ -458,7 +465,6 @@ public interface Logger {
    * @param msg    the message string to be logged
    */
   void info(Marker marker, Message msg);
-
   /**
    * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
@@ -467,6 +473,7 @@ public interface Logger {
    * @param t      A Throwable or null.
    */
   void info(Marker marker, Message msg, Throwable t);
+
   /**
    * Logs a message object with the {@link Level#INFO INFO} level.
    *
@@ -549,14 +556,14 @@ public interface Logger {
    */
   void info(Object message, Throwable t);
 
-  /**
+ /**
    * Logs a message object with the {@link Level#INFO INFO} level.
    *
    * @param message the message object to log.
    */
   void info(String message);
 
- /**
+  /**
    * Logs a message with parameters at the {@link Level#INFO INFO} level.
    *
    * @param message the message to log; the format depends on the message factory.
@@ -845,6 +852,7 @@ public interface Logger {
    */
   void trace(String message, Throwable t);
 
+
   /**
    * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
    *
@@ -852,7 +860,6 @@ public interface Logger {
    * @param msg    the message string to be logged
    */
   void warn(Marker marker, Message msg);
-
 
   /**
    * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.
@@ -973,11 +980,4 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void warn(String message, Throwable t);
-
-  /**
-   * Gets the message factory used to convert message Objects and Strings into actual log Messages.
-   *
-   * @return the message factory.
-   */
-  MessageFactory getMessageFactory();
 }
