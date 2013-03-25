@@ -122,7 +122,7 @@
           <br/>
           <p>This is the cost of formatting the log output and sending it to its target destination. Here again,
             a serious effort was made to make layouts (formatters) perform as quickly as possible. The same
-            is true for appenders. One of the fundamental tenants of Log4j 2 is to use immutable objects whenever
+            is true for appenders. One of the fundamental tenets of Log4j 2 is to use immutable objects whenever
             possible and to lock at the lowest granularity possible. However, the cost of actually formatting and
             delivering log events will never be insignificant. For example, the results of writing to a simple log
             file using the same format using Log4j, Logback and Log4j 2 are:
