@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,6 +36,13 @@ public class SocketReconnectTest {
     private static final int SOCKET_PORT = 5514;
 
     private static final String CONFIG = "log4j-socket.xml";
+
+    private static final String SHUTDOWN = "Shutdown" + Constants.LINE_SEP +
+        "................................................................" + Constants.LINE_SEP +
+        "................................................................" + Constants.LINE_SEP +
+        "................................................................" + Constants.LINE_SEP +
+        "................................................................" + Constants.LINE_SEP;
+
 
     @BeforeClass
     public static void before() {
@@ -71,7 +79,7 @@ public class SocketReconnectTest {
         assertNotNull("No message", msg);
         assertEquals(message, msg);
 
-        server.shutdown();
+        logger.error(SHUTDOWN);
         server.join();
 
         list.clear();
@@ -79,7 +87,7 @@ public class SocketReconnectTest {
         message = "Log #2";
         boolean exceptionCaught = false;
 
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 100; ++i) {
             try {
                 logger.error(message);
             } catch (final AppenderRuntimeException e) {
@@ -111,7 +119,7 @@ public class SocketReconnectTest {
         assertEquals(expectedHeader, header);
         assertNotNull("No message", msg);
         assertEquals(message, msg);
-        server.shutdown();
+        logger.error(SHUTDOWN);
         server.join();
     }
 
@@ -133,7 +141,12 @@ public class SocketReconnectTest {
                 client = server.accept();
                 while (!shutdown) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                    list.add(reader.readLine());
+                    String line = reader.readLine();
+                    if (line.equals("Shutdown")) {
+                        shutdown = true;
+                    } else {
+                        list.add(line);
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -152,15 +165,6 @@ public class SocketReconnectTest {
                         System.out.println("Unable to close server socket " + ex.getMessage());
                     }
                 }
-            }
-        }
-
-        public void shutdown() {
-            shutdown = true;
-            try {
-                client.shutdownInput();
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
     }
