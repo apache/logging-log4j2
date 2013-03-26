@@ -226,9 +226,12 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
             // Process any remaining items in the queue.
             while (!queue.isEmpty()) {
                 try {
-                    final Log4jLogEvent event = Log4jLogEvent.deserialize(queue.take());
-                    for (final AppenderControl control : appenders) {
-                        control.callAppender(event);
+                    Serializable s = queue.take();
+                    if (s instanceof Log4jLogEvent) {
+                        final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
+                        for (final AppenderControl control : appenders) {
+                            control.callAppender(event);
+                        }
                     }
                 } catch (final InterruptedException ex) {
                     // May have been interrupted to shut down.
