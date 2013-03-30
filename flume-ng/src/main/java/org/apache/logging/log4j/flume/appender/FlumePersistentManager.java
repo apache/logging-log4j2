@@ -330,6 +330,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             while (!shutdown) {
                 if (database.count() >= batchSize ||
                     database.count() > 0 && lastBatch + manager.reconnectionDelay > System.currentTimeMillis()) {
+                    lastBatch = System.currentTimeMillis();
                     try {
                         boolean errors = false;
                         DatabaseEntry key = new DatabaseEntry();
@@ -351,7 +352,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     }
                                     try {
                                         manager.send(batch);
-                                        lastBatch = System.currentTimeMillis();
                                     } catch (Exception ioe) {
                                         LOGGER.error("Error sending events", ioe);
                                         break;
