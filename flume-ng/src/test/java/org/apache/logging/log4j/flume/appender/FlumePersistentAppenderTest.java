@@ -215,7 +215,7 @@ public class FlumePersistentAppenderTest {
             Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
     }
-
+    /*
     @Test
     public void testPerformance() throws Exception {
         long start = System.currentTimeMillis();
@@ -227,7 +227,7 @@ public class FlumePersistentAppenderTest {
         }
         long elapsed = System.currentTimeMillis() - start;
         System.out.println("Time to log " + count + " events " + elapsed + "ms");
-    }
+    }    */
 
 
     private String getBody(final Event event) throws IOException {
@@ -292,12 +292,15 @@ public class FlumePersistentAppenderTest {
 
         public Status append(AvroFlumeEvent event) throws AvroRemoteException {
             eventQueue.add(event);
+            //System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             return Status.OK;
         }
 
-        public Status appendBatch(List<AvroFlumeEvent> events)
-            throws AvroRemoteException {
+        public Status appendBatch(List<AvroFlumeEvent> events) throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));
+            for (AvroFlumeEvent event : events) {
+               // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
+            }
             return Status.OK;
         }
     }

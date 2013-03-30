@@ -45,6 +45,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -88,7 +89,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                      SecretKey secretKey) {
         super(name, shortName, agents, batchSize);
         this.database = database;
-        this.worker = new WriterThread(database, this, queue, secretKey);
+        this.worker = new WriterThread(database, this, queue, batchSize, secretKey);
         this.worker.start();
         this.reconnectionDelay = reconnectionDelay <= 0 ? DEFAULT_DELAY : reconnectionDelay;
         this.secretKey = secretKey;
@@ -113,7 +114,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
         String dataDirectory = dataDir == null || dataDir.length() == 0 ? DEFAULT_DATA_DIR : dataDir;
 
-        final StringBuilder sb = new StringBuilder("FlumeKrati[");
+        final StringBuilder sb = new StringBuilder("FlumePersistent[");
         boolean first = true;
         for (final Agent agent : agents) {
             if (!first) {
@@ -300,12 +301,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final FlumePersistentManager manager;
         private final LinkedBlockingQueue<byte[]> queue;
         private final SecretKey secretKey;
+        private final int batchSize;
 
         public WriterThread(Database database, FlumePersistentManager manager, LinkedBlockingQueue<byte[]> queue,
-                            SecretKey secretKey) {
+                            int batchsize, SecretKey secretKey) {
             this.database = database;
             this.manager = manager;
             this.queue = queue;
+            this.batchSize = batchsize;
             this.secretKey = secretKey;
         }
 
@@ -323,92 +326,129 @@ public class FlumePersistentManager extends FlumeAvroManager {
         @Override
         public void run() {
             LOGGER.trace("WriterThread started");
+            long lastBatch = System.currentTimeMillis();
             while (!shutdown) {
-                try {
-                    boolean errors = false;
-                    final DatabaseEntry key = new DatabaseEntry();
-                    final DatabaseEntry data = new DatabaseEntry();
-                    final Cursor cursor = database.openCursor(null, null);
+                if (database.count() >= batchSize ||
+                    database.count() > 0 && lastBatch + manager.reconnectionDelay > System.currentTimeMillis()) {
                     try {
-                        queue.clear();
-                        OperationStatus status;
+                        boolean errors = false;
+                        DatabaseEntry key = new DatabaseEntry();
+                        final DatabaseEntry data = new DatabaseEntry();
+                        final Cursor cursor = database.openCursor(null, null);
                         try {
-                            status = cursor.getFirst(key, data, LockMode.RMW);
-
-                            while (status == OperationStatus.SUCCESS) {
-                                SimpleEvent event = new SimpleEvent();
-                                try {
-                                    byte[] eventData = data.getData();
-                                    if (secretKey != null) {
-                                        Cipher cipher = Cipher.getInstance("AES");
-                                        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-                                        eventData = cipher.doFinal(eventData);
+                            queue.clear();
+                            OperationStatus status;
+                            try {
+                                status = cursor.getFirst(key, data, LockMode.RMW);
+                                if (batchSize > 1) {
+                                    BatchEvent batch = new BatchEvent();
+                                    while (status == OperationStatus.SUCCESS) {
+                                        SimpleEvent event = createEvent(data);
+                                        if (event != null) {
+                                            batch.addEvent(event);
+                                        }
+                                        status = cursor.getNext(key, data, LockMode.RMW);
                                     }
-                                    ByteArrayInputStream bais = new ByteArrayInputStream(eventData);
-                                    DataInputStream dais = new DataInputStream(bais);
-                                    int length = dais.readInt();
-                                    byte[] bytes = new byte[length];
-                                    dais.read(bytes, 0, length);
-                                    event.setBody(bytes);
-                                    length = dais.readInt();
-                                    Map<String, String> map = new HashMap<String, String>(length);
-                                    for (int i = 0; i < length; ++i) {
-                                        String headerKey = dais.readUTF();
-                                        String value = dais.readUTF();
-                                        map.put(headerKey, value);
-                                    }
-                                    event.setHeaders(map);
-                                } catch (Exception ex) {
-                                    errors = true;
-                                    LOGGER.error("Error retrieving event", ex);
-                                    continue;
-                                }
-                                try {
-                                    manager.doSend(event);
-                                } catch (Exception ioe) {
-                                    errors = true;
-                                    LOGGER.error("Error sending event", ioe);
-                                    break;
-                                }
-                                if (!errors) {
                                     try {
-                                        cursor.delete();
-                                    } catch (Exception ex) {
-                                        LOGGER.error("Unable to delete event", ex);
+                                        manager.send(batch);
+                                        lastBatch = System.currentTimeMillis();
+                                    } catch (Exception ioe) {
+                                        LOGGER.error("Error sending events", ioe);
+                                        break;
+                                    }
+                                    for (SimpleEvent event : batch.getEvents()) {
+                                        try {
+                                            Map<String, String> headers = event.getHeaders();
+                                            key = new DatabaseEntry(headers.get(FlumeEvent.GUID).getBytes(UTF8));
+                                            database.delete(null, key);
+                                        } catch (Exception ex) {
+                                            LOGGER.error("Error deleting key from database", ex);
+                                        }
+                                    }
+                                } else {
+                                    while (status == OperationStatus.SUCCESS) {
+                                        SimpleEvent event = createEvent(data);
+                                        if (event != null) {
+                                            try {
+                                                manager.doSend(event);
+                                            } catch (Exception ioe) {
+                                                errors = true;
+                                                LOGGER.error("Error sending event", ioe);
+                                                break;
+                                            }
+                                            if (!errors) {
+                                                try {
+                                                    cursor.delete();
+                                                } catch (Exception ex) {
+                                                    LOGGER.error("Unable to delete event", ex);
+                                                }
+                                            }
+                                        }
+                                        status = cursor.getNext(key, data, LockMode.RMW);
                                     }
                                 }
-                                status = cursor.getNext(key, data, LockMode.RMW);
+                            } catch (Exception ex) {
+                                LOGGER.error("Error reading database", ex);
+                                shutdown = true;
+                                break;
                             }
-                        } catch (Exception ex) {
-                            LOGGER.error("Error reading database", ex);
-                            shutdown = true;
-                            break;
-                        }
 
-                    } finally {
-                        cursor.close();
+                        } finally {
+                            cursor.close();
+                        }
+                        if (errors) {
+                            Thread.sleep(manager.reconnectionDelay);
+                            continue;
+                        }
+                    } catch (Exception ex) {
+                        LOGGER.warn("WriterThread encountered an exception. Continuing.", ex);
                     }
-                    if (errors) {
-                        Thread.sleep(manager.reconnectionDelay);
-                        continue;
+                } else {
+                    try {
+                        if (database.count() >= batchSize) {
+                            continue;
+                        }
+                        queue.poll(manager.reconnectionDelay, TimeUnit.MILLISECONDS);
+                        LOGGER.debug("WriterThread notified of work");
+                    } catch (InterruptedException ie) {
+                        LOGGER.warn("WriterThread interrupted, continuing");
+                    } catch (Exception ex) {
+                        LOGGER.error("WriterThread encountered an exception waiting for work", ex);
+                        break;
                     }
-                } catch (Exception ex) {
-                    LOGGER.warn("WriterThread encountered an exception. Continuing.", ex);
-                }
-                try {
-                    if (database.count() > 0) {
-                        continue;
-                    }
-                    queue.take();
-                    LOGGER.debug("WriterThread notified of work");
-                } catch (InterruptedException ie) {
-                    LOGGER.warn("WriterThread interrupted, continuing");
-                } catch (Exception ex) {
-                    LOGGER.error("WriterThread encountered an exception waiting for work", ex);
-                    break;
                 }
             }
             LOGGER.trace("WriterThread exiting");
+        }
+
+        private SimpleEvent createEvent(DatabaseEntry data) {
+            SimpleEvent event = new SimpleEvent();
+            try {
+                byte[] eventData = data.getData();
+                if (secretKey != null) {
+                    Cipher cipher = Cipher.getInstance("AES");
+                    cipher.init(Cipher.DECRYPT_MODE, secretKey);
+                    eventData = cipher.doFinal(eventData);
+                }
+                ByteArrayInputStream bais = new ByteArrayInputStream(eventData);
+                DataInputStream dais = new DataInputStream(bais);
+                int length = dais.readInt();
+                byte[] bytes = new byte[length];
+                dais.read(bytes, 0, length);
+                event.setBody(bytes);
+                length = dais.readInt();
+                Map<String, String> map = new HashMap<String, String>(length);
+                for (int i = 0; i < length; ++i) {
+                    String headerKey = dais.readUTF();
+                    String value = dais.readUTF();
+                    map.put(headerKey, value);
+                }
+                event.setHeaders(map);
+                return event;
+            } catch (Exception ex) {
+                LOGGER.error("Error retrieving event", ex);
+                return null;
+            }
         }
 
     }

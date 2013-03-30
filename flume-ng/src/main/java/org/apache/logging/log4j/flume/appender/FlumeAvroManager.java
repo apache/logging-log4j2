@@ -119,6 +119,67 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         return current;
     }
 
+    public synchronized void send(final BatchEvent events) {
+        if (client == null) {
+            client = connect(agents);
+        }
+
+        if (client != null) {
+            final List<SimpleEvent> list = events.getEvents();
+            final List<AvroFlumeEvent> batch = new ArrayList<AvroFlumeEvent>(list.size());
+            for (SimpleEvent event : list) {
+                final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
+                avroEvent.setBody(ByteBuffer.wrap(event.getBody()));
+                avroEvent.setHeaders(new HashMap<CharSequence, CharSequence>());
+
+                for (final Map.Entry<String, String> entry : event.getHeaders().entrySet()) {
+                    avroEvent.getHeaders().put(entry.getKey(), entry.getValue());
+                }
+                batch.add(avroEvent);
+            }
+
+            try {
+                final Status status = client.appendBatch(batch);
+                if (status.equals(Status.OK)) {
+                    return;
+                } else {
+                    LOGGER.warn("RPC communication failed to " + agents[current].getHost() +
+                        ":" + agents[current].getPort());
+                }
+            } catch (final Exception ex) {
+                String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                    agents[current].getPort();
+                LOGGER.warn(msg, ex);
+            }
+
+            for (int index = 0; index < agents.length; ++index) {
+                if (index == current) {
+                    continue;
+                }
+                final Agent agent = agents[index];
+                try {
+                    transceiver = null;
+                    final AvroSourceProtocol c = connect(agent.getHost(), agent.getPort());
+                    final Status status = c.appendBatch(batch);
+                    if (!status.equals(Status.OK)) {
+                        final String warnMsg = "RPC communication failed to " + getName() + " at " +
+                            agent.getHost() + ":" + agent.getPort();
+                        LOGGER.warn(warnMsg);
+                        continue;
+                    }
+                    client = c;
+                    current = index;
+                    return;
+                } catch (final Exception ex) {
+                    final String warnMsg = "Unable to write to " + getName() + " at " + agent.getHost() + ":" +
+                        agent.getPort();
+                    LOGGER.warn(warnMsg, ex);
+                }
+            }
+        }
+        throw new AppenderRuntimeException("No Flume agents are available");
+    }
+
     @Override
     public synchronized void send(final SimpleEvent event, int delay, int retries)  {
         if (delay == 0) {
@@ -188,7 +249,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                             continue;
                         }
                         client = c;
-                        current = i;
+                        current = index;
                         return;
                     } catch (final Exception ex) {
                         if (i == retries - 1) {
