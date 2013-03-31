@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-189" dev="rgoers" type="fix" due-to="Werner">
+        The blocking parameter did not work properly on AsynchAppender.
+      </action>
+      <action issue="LOG4J2-188" dev="rgoers" type="fix" due-to="Werner">
+        appender-refs on AsynchAppender didn't support the level and filter elements.
+      </action>
       <action issue="LOG4J2-176" dev="rgoers" type="fix" due-to="Remko Popma">
         Avoid IllegalArgumentException in AsynchAppender.
       </action>

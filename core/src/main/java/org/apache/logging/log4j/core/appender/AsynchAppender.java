@@ -76,7 +76,8 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
         final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
         for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {
-                appenders.add(new AppenderControl(map.get(appenderRef.getRef()), null, null));
+                appenders.add(new AppenderControl(map.get(appenderRef.getRef()), appenderRef.getLevel(),
+                    appenderRef.getFilter()));
             } else {
                 LOGGER.error("No appender named {} was configured", appenderRef);
             }
@@ -119,18 +120,21 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
             throw new IllegalStateException("AsynchAppender " + getName() + " is not active");
         }
         if (event instanceof Log4jLogEvent) {
-            if (blocking && queue.remainingCapacity() > 0) {
+            boolean appendSuccessful = false;
+            if (blocking){
                 try {
-                    queue.add(Log4jLogEvent.serialize((Log4jLogEvent) event));
-                    return;
-                } catch (final IllegalStateException ex) {
+                    queue.put(Log4jLogEvent.serialize((Log4jLogEvent) event)); // wait for free slots in the queue
+                    appendSuccessful = true;
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Interrupted while waiting for a free slots in the LogEvent-queue at the AsynchAppender {}", getName());
+                }
+            } else {
+                appendSuccessful = queue.offer(Log4jLogEvent.serialize((Log4jLogEvent) event));
+                if (!appendSuccessful) {
                     error("Appender " + getName() + " is unable to write primary appenders. queue is full");
                 }
             }
-            if (errorAppender != null) {
-                if (!blocking) {
-                    error("Appender " + getName() + " is unable to write primary appenders. queue is full");
-                }
+            if ((!appendSuccessful) && (errorAppender != null)){
                 errorAppender.callAppender(event);
             }
         }
