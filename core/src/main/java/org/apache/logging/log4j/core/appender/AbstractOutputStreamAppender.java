@@ -113,7 +113,7 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
             final byte[] bytes = getLayout().toByteArray(event);
             if (bytes.length > 0) {
                 manager.write(bytes);
-                if (this.immediateFlush) {
+                if (this.immediateFlush || event.isEndOfBatch()) {
                     manager.flush();
                 }
             }
