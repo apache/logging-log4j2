@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,28 +35,9 @@ import java.io.StringWriter;
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     /**
-     * Do not format the exception.
-     */
-    protected static final String NONE = "none";
-    /**
-     * Format the whole stack trace.
-     */
-    protected static final String FULL = "full";
-    /**
-     * Format only the first line of the throwable.
-     */
-    protected static final String SHORT = "short";
-    /**
-     * If "short", only first line of throwable report will be formatted.<br>
-     * If "full", the whole stack trace will be formatted.<br>
-     * If "numeric" the output will be limited to the specified number of lines.
-     */
-    protected final String option;
-
-    /**
      * The number of lines to write.
      */
-    protected final int lines;
+    protected final ThrowableFormatOptions options;
 
     /**
      * Constructor.
@@ -64,22 +47,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
      */
     protected ThrowablePatternConverter(final String name, final String style, final String[] options) {
         super(name, style);
-        int count = Integer.MAX_VALUE;
-        if (options != null && options.length > 0) {
-            option = options[0];
-            if (option == null) {
-            } else if (option.equalsIgnoreCase(NONE)) {
-                count = 0;
-            } else if (option.equalsIgnoreCase(SHORT)) {
-                count = 2;
-            } else if (!option.equalsIgnoreCase(FULL)) {
-                count = Integer.parseInt(option);
-            }
-
-        } else {
-            option = null;
-        }
-        lines = count;
+        this.options = ThrowableFormatOptions.newInstance(options);
     }
 
     /**
@@ -100,19 +68,22 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Throwable t = event.getThrown();
 
-        if (t != null && lines > 0) {
+        if (t != null && options.anyLines()) {
             final StringWriter w = new StringWriter();
             t.printStackTrace(new PrintWriter(w));
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
             }
-            if (lines != Integer.MAX_VALUE) {
+            if (!options.allLines() || !Constants.LINE_SEP.equals(options.getSeparator())) {
                 final StringBuilder sb = new StringBuilder();
-                final String[] array = w.toString().split("\n");
-                final int limit = lines > array.length ? array.length : lines;
-                for (int i = 0; i < limit; ++i) {
-                    sb.append(array[i]).append("\n");
+                final String[] array = w.toString().split(Constants.LINE_SEP);
+                final int limit = options.minLines(array.length) - 1;
+                for (int i = 0; i <= limit; ++i) {
+                    sb.append(array[i]);
+                    if (i < limit) {
+                        sb.append(options.getSeparator());
+                    }
                 }
                 toAppendTo.append(sb.toString());
 

@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-160" dev="rgoers" type="update" due-to="Joanne Polsky">
+        Move Throwable pattern converter options processing to ThrowableFormatOptions class.
+      </action>
       <action issue="LOG4J2-157" dev="rgoers" type="update" due-to="Remko Popma">
         Allowed Loggers access to the properties in the LoggerConfig.
       </action>
