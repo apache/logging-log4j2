@@ -94,5 +94,19 @@ public class DateLookupTest {
         public String getFQCN() {
             return null;
         }
+
+        public boolean isEndOfBatch() {
+            return false;
+        }
+
+        public void setEndOfBatch(boolean endOfBatch) {
+        }
+
+        public boolean isIncludeLocation() {
+            return false;
+        }
+
+        public void setIncludeLocation(boolean locationRequired) {
+        }
     }
 }

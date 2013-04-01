@@ -234,8 +234,9 @@ public class Logger extends AbstractLogger {
      * The binding between a Logger and its configuration.
      */
     protected class PrivateConfig {
-        private final LoggerConfig loggerConfig;
-        private final Configuration config;
+        // config fields are public to make them visible to Logger subclasses
+        public final LoggerConfig loggerConfig;
+        public final Configuration config;
         private final Level level;
         private final int intLevel;
         private final Logger logger;
@@ -264,7 +265,8 @@ public class Logger extends AbstractLogger {
             this.logger = pc.logger;
         }
 
-        protected void logEvent(final LogEvent event) {
+        // LOG4J2-151: changed visibility to public
+        public void logEvent(LogEvent event) {
             config.getConfigurationMonitor().checkConfiguration();
             loggerConfig.log(event);
         }

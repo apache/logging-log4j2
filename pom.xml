@@ -115,8 +115,8 @@
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
     <surefire.plugin.version>2.12.4</surefire.plugin.version>
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
-    <maven.compile.source>1.5</maven.compile.source>
-    <maven.compile.target>1.5</maven.compile.target>
+    <maven.compile.source>1.6</maven.compile.source>
+    <maven.compile.target>1.6</maven.compile.target>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
   </properties>
@@ -556,6 +556,7 @@
     <module>flume-ng</module>
     <module>web</module>
     <module>samples</module>
+    <module>log4j-async</module>
   </modules>
   <profiles>
     <profile>

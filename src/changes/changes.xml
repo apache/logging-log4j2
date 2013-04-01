@@ -23,6 +23,21 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-157" dev="rgoers" type="update" due-to="Remko Popma">
+        Allowed Loggers access to the properties in the LoggerConfig.
+      </action>
+      <action issue="LOG4J2-153" dev="rgoers" type="update" due-to="Remko Popma">
+        Added ability to include or exclude location information.
+      </action>
+      <action issue="LOG4J2-151" dev="rgoers" type="update" due-to="Remko Popma">
+        Allow Logger and LoggerContext to be subclassed.
+      </action>
+      <action issue="LOG4J2-164" dev="rgoers" type="add" due-to="Remko Popma">
+        Add methods is/setEndOfBatch to LogEvent.
+      </action>
+      <action issue="LOG4J2-163" dev="rgoers" type="add" due-to="Remko Popma">
+        Add support for asynchronous loggers.
+      </action>
       <action issue="LOG4J2-189" dev="rgoers" type="fix" due-to="Werner">
         The blocking parameter did not work properly on AsynchAppender.
       </action>

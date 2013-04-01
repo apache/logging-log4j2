@@ -67,7 +67,7 @@
               <td>blocking</td>
               <td>boolean</td>
               <td>If true, the appender will wait until there are free slots in the queue. If false, the event
-                will be written to the error appender if the queue is full.</td>
+                will be written to the error appender if the queue is full. The default is true.</td>
             </tr>
             <tr>
               <td>bufferSize</td>
@@ -96,6 +96,14 @@
               <td>boolean</td>
               <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
                 false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>includeLocation</td>
+              <td>boolean</td>
+              <td>Extracting location is an expensive operation (it can make  
+              logging 5 - 20 times slower). To improve performance, location is
+              not included by default when adding a log event to the queue.
+              You can change this by setting includeLocation="true".</td>
             </tr>
             <caption align="top">AsynchAppender Parameters</caption>
           </table>

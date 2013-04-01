@@ -49,6 +49,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     private final ThreadContext.ContextStack ndc;
     private String threadName = null;
     private StackTraceElement location;
+    private boolean includeLocation;
+    private boolean endOfBatch = false;
 
     /**
      * Constructor.
@@ -222,31 +224,54 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @return the StackTraceElement for the caller.
      */
     public StackTraceElement getSource() {
+        if (location != null) {
+            return location;
+        }
+        if (fqcnOfLogger == null || !includeLocation) {
+            return null;
+        }
+        location = calcLocation(fqcnOfLogger);
+        return location;
+    }
+
+    public static StackTraceElement calcLocation(String fqcnOfLogger) {
         if (fqcnOfLogger == null) {
             return null;
         }
-        if (location == null) {
-            final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            boolean next = false;
-            for (final StackTraceElement element : stackTrace) {
-                final String className = element.getClassName();
-                if (next) {
-                    if (fqcnOfLogger.equals(className)) {
-                        continue;
-                    }
-                    location = element;
-                    break;
-                }
-
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        boolean next = false;
+        for (final StackTraceElement element : stackTrace) {
+            final String className = element.getClassName();
+            if (next) {
                 if (fqcnOfLogger.equals(className)) {
-                    next = true;
-                } else if (NOT_AVAIL.equals(className)) {
-                    break;
+                    continue;
                 }
+                return element;
+            }
+
+            if (fqcnOfLogger.equals(className)) {
+                next = true;
+            } else if (NOT_AVAIL.equals(className)) {
+                break;
             }
         }
+        return null;
+    }
 
-        return location;
+    public boolean isIncludeLocation() {
+        return includeLocation;
+    }
+
+    public void setIncludeLocation(boolean includeLocation) {
+        this.includeLocation = includeLocation;
+    }
+
+    public boolean isEndOfBatch() {
+        return endOfBatch;
+    }
+
+    public void setEndOfBatch(boolean endOfBatch) {
+        this.endOfBatch = endOfBatch;
     }
 
     /**
@@ -254,11 +279,12 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * @return a LogEventProxy.
      */
     protected Object writeReplace() {
-        return new LogEventProxy(this);
+        return new LogEventProxy(this, this.includeLocation);
     }
 
-    public static Serializable serialize(final Log4jLogEvent event) {
-        return new LogEventProxy(event);
+    public static Serializable serialize(final Log4jLogEvent event, 
+            final boolean includeLocation) {
+        return new LogEventProxy(event, includeLocation);
     }
 
     public static Log4jLogEvent deserialize(final Serializable event) {
@@ -267,8 +293,13 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         }
         if (event instanceof LogEventProxy) {
             final LogEventProxy proxy = (LogEventProxy) event;
-            return new Log4jLogEvent(proxy.name, proxy.marker, proxy.fqcnOfLogger, proxy.level, proxy.message,
-                proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName, proxy.location, proxy.timestamp);
+            Log4jLogEvent result = new Log4jLogEvent(proxy.name, proxy.marker, 
+                    proxy.fqcnOfLogger, proxy.level, proxy.message, 
+                    proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName, 
+                    proxy.location, proxy.timestamp);
+            result.setEndOfBatch(proxy.isEndOfBatch);
+            result.setIncludeLocation(proxy.isLocationRequired);
+            return result;
         }
         throw new IllegalArgumentException("Event is not a serialized LogEvent: " + event.toString());
     }
@@ -304,8 +335,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         private final ThreadContext.ContextStack ndc;
         private final String threadName;
         private final StackTraceElement location;
+        private final boolean isLocationRequired;
+        private final boolean isEndOfBatch;
 
-        public LogEventProxy(final Log4jLogEvent event) {
+        public LogEventProxy(final Log4jLogEvent event, boolean includeLocation) {
             this.fqcnOfLogger = event.fqcnOfLogger;
             this.marker = event.marker;
             this.level = event.level;
@@ -315,8 +348,10 @@ public class Log4jLogEvent implements LogEvent, Serializable {
             this.throwable = event.throwable;
             this.mdc = event.mdc;
             this.ndc = event.ndc;
-            this.location = event.getSource();
+            this.location = includeLocation ? event.getSource() : null;
             this.threadName = event.getThreadName();
+            this.isLocationRequired = includeLocation;
+            this.isEndOfBatch = event.endOfBatch;
         }
 
         /**
@@ -324,10 +359,12 @@ public class Log4jLogEvent implements LogEvent, Serializable {
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            return new Log4jLogEvent(name, marker, fqcnOfLogger, level, message, throwable, mdc, ndc, threadName,
-                                     location, timestamp);
+            Log4jLogEvent result = new Log4jLogEvent(name, marker, fqcnOfLogger, 
+                    level, message, throwable, mdc, ndc, threadName, location, 
+                    timestamp);
+            result.setEndOfBatch(isEndOfBatch);
+            result.setIncludeLocation(isLocationRequired);
+            return result;
         }
-
     }
-
 }

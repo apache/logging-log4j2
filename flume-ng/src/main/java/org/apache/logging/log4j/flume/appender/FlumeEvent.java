@@ -277,4 +277,24 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     public ThreadContext.ContextStack getContextStack() {
         return event.getContextStack();
     }
+
+    @Override
+    public boolean isIncludeLocation() {
+        return event.isIncludeLocation();
+    }
+
+    @Override
+    public void setIncludeLocation(boolean includeLocation) {
+        event.setIncludeLocation(includeLocation);
+    }
+
+    @Override
+    public boolean isEndOfBatch() {
+        return event.isEndOfBatch();
+    }
+
+    @Override
+    public void setEndOfBatch(boolean endOfBatch) {
+        event.setEndOfBatch(endOfBatch);
+    }
 }

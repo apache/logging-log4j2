@@ -326,8 +326,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
     }
 
-
-    private Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
+    // LOG4J2-151: changed visibility from private to protected
+    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
     }
 

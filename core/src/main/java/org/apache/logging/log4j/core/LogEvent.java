@@ -104,4 +104,47 @@ public interface LogEvent extends Serializable {
      */
     String getFQCN();
 
+    /**
+     * Returns whether the source of the logging request is required downstream.
+     * Asynchronous Loggers and Appenders use this flag to determine whether
+     * to take a {@code StackTrace} snapshot or not before handing off this
+     * event to another thread.
+     * @return {@code true} if the source of the logging request is required 
+     *          downstream, {@code false} otherwise.
+     * @see #getSource()
+     */
+    // see also LOG4J2-153
+    boolean isIncludeLocation();
+
+    /**
+     * Sets whether the source of the logging request is required downstream.
+     * Asynchronous Loggers and Appenders use this flag to determine whether
+     * to take a {@code StackTrace} snapshot or not before handing off this
+     * event to another thread.
+     * @param locationRequired {@code true} if the source of the logging request 
+     *           is required downstream, {@code false} otherwise.
+     * @see #getSource()
+     */
+    void setIncludeLocation(boolean locationRequired);
+    
+    /**
+     * Returns {@code true} if this event is the last one in a batch, 
+     * {@code false} otherwise. Used by asynchronous Loggers and Appenders to
+     * signal to buffered downstream components when to flush to disk, as a
+     * more efficient alternative to the {@code immediateFlush=true} 
+     * configuration.
+     * @return whether this event is the last one in a batch.
+     */
+    // see also LOG4J2-164
+    boolean isEndOfBatch();
+    
+    /**
+     * Sets whether this event is the last one in a batch.
+     * Used by asynchronous Loggers and Appenders to signal to buffered 
+     * downstream components when to flush to disk, as a more efficient 
+     * alternative to the {@code immediateFlush=true} configuration.
+     * @param endOfBatch {@code true} if this event is the last one in a batch, 
+     * {@code false} otherwise.
+     */
+    void setEndOfBatch(boolean endOfBatch);
 }

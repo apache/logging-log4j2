@@ -56,18 +56,21 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
+    private final boolean includeLocation;
     private AppenderControl errorAppender;
     private AsynchThread thread;
 
     private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                            final String errorRef, final int queueSize, final boolean blocking,
-                           final boolean handleExceptions, final Configuration config) {
+                           final boolean handleExceptions, final Configuration config,
+                           final boolean includeLocation) {
         super(name, filter, null, handleExceptions);
         this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
         this.blocking = blocking;
         this.config = config;
         this.appenderRefs = appenderRefs;
         this.errorRef = errorRef;
+        this.includeLocation = includeLocation;
     }
 
     @Override
@@ -123,13 +126,14 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
             boolean appendSuccessful = false;
             if (blocking){
                 try {
-                    queue.put(Log4jLogEvent.serialize((Log4jLogEvent) event)); // wait for free slots in the queue
+                    // wait for free slots in the queue
+                    queue.put(Log4jLogEvent.serialize((Log4jLogEvent) event, includeLocation));
                     appendSuccessful = true;
                 } catch (InterruptedException e) {
                     LOGGER.warn("Interrupted while waiting for a free slots in the LogEvent-queue at the AsynchAppender {}", getName());
                 }
             } else {
-                appendSuccessful = queue.offer(Log4jLogEvent.serialize((Log4jLogEvent) event));
+                appendSuccessful = queue.offer(Log4jLogEvent.serialize((Log4jLogEvent) event, includeLocation));
                 if (!appendSuccessful) {
                     error("Appender " + getName() + " is unable to write primary appenders. queue is full");
                 }
@@ -147,6 +151,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
      * @param blocking True if the Appender should wait when the queue is full. The default is true.
      * @param size The size of the event queue. The default is 128.
      * @param name The name of the Appender.
+     * @param includeLocation whether to include location information. The default is false.
      * @param filter The Filter or null.
      * @param config The Configuration.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
@@ -156,14 +161,15 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
      */
     @PluginFactory
     public static <S extends Serializable> AsynchAppender<S> createAppender(
-                                                @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
-                                                @PluginAttr("error-ref") final String errorRef,
-                                                @PluginAttr("blocking") final String blocking,
-                                                @PluginAttr("bufferSize") final String size,
-                                                @PluginAttr("name") final String name,
-                                                @PluginElement("filter") final Filter filter,
-                                                @PluginConfiguration final Configuration config,
-                                                @PluginAttr("suppressExceptions") final String suppress) {
+                @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+                @PluginAttr("error-ref") final String errorRef,
+                @PluginAttr("blocking") final String blocking,
+                @PluginAttr("bufferSize") final String size,
+                @PluginAttr("name") final String name,
+                @PluginAttr("includeLocation") final String includeLocation,
+                @PluginElement("filter") final Filter filter,
+                @PluginConfiguration final Configuration config,
+                @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
             LOGGER.error("No name provided for AsynchAppender");
             return null;
@@ -174,11 +180,13 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
 
         final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
         final int queueSize = size == null ? DEFAULT_QUEUE_SIZE : Integer.parseInt(size);
+        final boolean isIncludeLocation = includeLocation == null ? false :
+                Boolean.parseBoolean(includeLocation);
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new AsynchAppender<S>(name, filter, appenderRefs, errorRef, queueSize, isBlocking, handleExceptions,
-                                  config);
+        return new AsynchAppender<S>(name, filter, appenderRefs, errorRef, 
+                queueSize, isBlocking, handleExceptions, config, isIncludeLocation);
     }
 
     /**
@@ -210,8 +218,9 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
                     continue;
                 }
                 final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
+                event.setEndOfBatch(queue.isEmpty());
                 boolean success = false;
-                for (final AppenderControl control : appenders) {
+                for (final AppenderControl<?> control : appenders) {
                     try {
                         control.callAppender(event);
                         success = true;
@@ -233,7 +242,8 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
                     Serializable s = queue.take();
                     if (s instanceof Log4jLogEvent) {
                         final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
-                        for (final AppenderControl control : appenders) {
+                        event.setEndOfBatch(queue.isEmpty());
+                        for (final AppenderControl<?> control : appenders) {
                             control.callAppender(event);
                         }
                     }
