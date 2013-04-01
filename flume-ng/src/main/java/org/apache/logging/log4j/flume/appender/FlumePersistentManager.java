@@ -343,7 +343,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 status = cursor.getFirst(key, data, LockMode.RMW);
                                 if (batchSize > 1) {
                                     BatchEvent batch = new BatchEvent();
-                                    while (status == OperationStatus.SUCCESS) {
+                                    for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
                                         SimpleEvent event = createEvent(data);
                                         if (event != null) {
                                             batch.addEvent(event);
