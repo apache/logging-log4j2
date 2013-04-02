@@ -236,7 +236,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     protected PluginManager getPluginManager() {
-        //don't cache a pluginmanager instance - packages may be updated, requiring 
+        //don't cache a pluginmanager instance - packages may be updated, requiring
         // re-discovery of plugins
         PluginManager mgr = new PluginManager("Core");
         mgr.collectPlugins();
@@ -307,7 +307,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     public void setConfigurationMonitor(ConfigurationMonitor monitor) {
         this.monitor = monitor;
     }
-    
+
     public ConfigurationMonitor getConfigurationMonitor() {
         return monitor;
     }
@@ -315,7 +315,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     public void setAdvertiser(Advertiser advertiser) {
         this.advertiser = advertiser;
     }
-    
+
     public Advertiser getAdvertiser() {
         return advertiser;
     }
@@ -332,7 +332,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
                                                final Appender appender) {
         final String name = logger.getName();
-        appenders.putIfAbsent(name, appender);
+        appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(name);
         if (lc.getName().equals(name)) {
             lc.addAppender(appender, null, null);
