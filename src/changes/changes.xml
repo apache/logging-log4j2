@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-194" dev="rgoers" type="fix" due-to="Remko Popma">
+        ThrowableFormatOptionsTest failed on Windows due to CR/LF issue.
+      </action>
       <action issue="LOG4J2-190" dev="rgoers" type="fix" due-to="Werner">
         BaseConfiguration addLoggerAppender saved appender using the Logger name.
       </action>
