@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastRollingFile name="FastRollingFile" fileName="FastRollingFileAppenderLocationTest.log"
+    <FastRollingFile name="FastRollingFile" fileName="target/FastRollingFileAppenderLocationTest.log"
                  filePattern="test-%d{MM-dd-yyyy}-%i.log.gz" append="false"
                  immediateFlush="false">
       <PatternLayout>

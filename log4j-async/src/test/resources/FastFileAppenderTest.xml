@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastFile name="FastFile" fileName="FastFileAppenderTest.log" immediateFlush="false" append="false">
+    <FastFile name="FastFile" fileName="target/FastFileAppenderTest.log" immediateFlush="false" append="false">
       <PatternLayout>
         <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
         <!--  
