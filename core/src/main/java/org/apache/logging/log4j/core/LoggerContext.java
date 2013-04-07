@@ -249,7 +249,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Removes a Filter from the current Configuration.
      * @param filter The Filter to remove.
      */
-    public void removeFiler(final Filter filter) {
+    public void removeFilter(final Filter filter) {
         config.removeFilter(filter);
     }
 
