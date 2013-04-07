@@ -80,12 +80,6 @@ public final class FastFileAppender extends AbstractOutputStreamAppender {
         // From a user's point of view, this means that all log events are
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
-        //
-        // without LOG4J2-164:
-        // if (event.getClass() == RingBufferLogEvent.class) {
-        // boolean isEndOfBatch = ((RingBufferLogEvent) event).isEndOfBatch();
-        // ((FastFileManager) getManager()).setEndOfBatch(isEndOfBatch);
-        // }
         ((FastFileManager) getManager()).setEndOfBatch(event.isEndOfBatch());
         super.append(event);
     }

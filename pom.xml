@@ -57,6 +57,18 @@
       <email>sdeboy@apache.org</email>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>Remko Popma</name>
+      <email>remkop@yahoo.com</email>
+      <roles>
+        <role>log4j-async module development, testing and documentation</role>
+      </roles>
+      <timezone>+9</timezone>
+      <properties>
+      </properties>
+    </contributor>
+  </contributors>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>

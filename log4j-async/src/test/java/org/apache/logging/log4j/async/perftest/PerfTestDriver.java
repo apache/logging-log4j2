@@ -165,16 +165,16 @@ public class PerfTestDriver {
     private static Setup s(String config, String runner, String name,
             String... systemProperties) throws IOException {
         WaitStrategy wait = WaitStrategy.valueOf(System.getProperty(
-                "WaitStrategy", "Block"));
+                "WaitStrategy", "Sleep"));
         return new Setup(PerfTest.class, runner, name, config, 1, wait,
                 systemProperties);
     }
 
-    // single-threaded performance test
+    // multi-threaded performance test
     private static Setup m(String config, String runner, String name,
             int threadCount, String... systemProperties) throws IOException {
         WaitStrategy wait = WaitStrategy.valueOf(System.getProperty(
-                "WaitStrategy", "Block"));
+                "WaitStrategy", "Sleep"));
         return new Setup(MTPerfTest.class, runner, name, config, threadCount,
                 wait, systemProperties);
     }
@@ -189,161 +189,73 @@ public class PerfTestDriver {
 
         long start = System.nanoTime();
         List<Setup> tests = new ArrayList<PerfTestDriver.Setup>();
+        // includeLocation=false
         tests.add(s("perf-logback.xml", LOGBK, "Sync"));
         tests.add(s("perf-log4j12.xml", LOG12, "Sync"));
         tests.add(s("perf3PlainNoLoc.xml", LOG20, "Sync"));
+        tests.add(s("perf3PlainNoLoc.xml", LOG20, "Loggers all async",
+                ALL_ASYNC, SYSCLOCK));
+        tests.add(s("perf7MixedNoLoc.xml", LOG20, "Loggers mixed sync/async"));
         tests.add(s("perf-logback-async.xml", LOGBK, "Async Appender"));
         tests.add(s("perf-log4j12-async.xml", LOG12, "Async Appender"));
-        tests.add(s("perf5AsyncApndNoLoc.xml", LOG20,
-                "Async Appender no location"));
-        tests.add(s("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock",
-                ALL_ASYNC, SYSCLOCK));
-        tests.add(s("perf7MixedNoLoc.xml", LOG20, "Mixed async no location"));
+        tests.add(s("perf5AsyncApndNoLoc.xml", LOG20, "Async Appender"));
 
-        for (int i = 32; i <= 64; i *= 2) {
+        // includeLocation=true
+        // tests.add(s("perf6AsyncApndLoc.xml", LOG20,
+        // "Async Appender includeLocation"));
+        // tests.add(s("perf8MixedLoc.xml", LOG20,
+        // "Mixed sync/async includeLocation"));
+        // tests.add(s("perf4PlainLocation.xml", LOG20,
+        // "Loggers all async includeLocation", ALL_ASYNC));
+        // tests.add(s("perf4PlainLocation.xml", LOG20,
+        // "Loggers all async includeLocation CachedClock", ALL_ASYNC,
+        // CACHEDCLOCK));
+        // tests.add(s("perf4PlainLocation.xml", LOG20,
+        // "Sync includeLocation"));
+
+        // appenders
+        // tests.add(s("perf1syncFile.xml", LOG20, "FileAppender"));
+        // tests.add(s("perf1syncFastFile.xml", LOG20, "FastFileAppender"));
+        // tests.add(s("perf2syncRollFile.xml", LOG20, "RollFileAppender"));
+        // tests.add(s("perf2syncRollFastFile.xml", LOG20,
+        // "RollFastFileAppender"));
+
+        final int MAX_THREADS = 16; // 64 takes a LONG time
+        for (int i = 2; i <= MAX_THREADS; i *= 2) {
+            // includeLocation = false
             tests.add(m("perf-logback.xml", LOGBK, "Sync", i));
             tests.add(m("perf-log4j12.xml", LOG12, "Sync", i));
             tests.add(m("perf3PlainNoLoc.xml", LOG20, "Sync", i));
             tests.add(m("perf-logback-async.xml", LOGBK, "Async Appender", i));
             tests.add(m("perf-log4j12-async.xml", LOG12, "Async Appender", i));
-            tests.add(m("perf5AsyncApndNoLoc.xml", LOG20,
-                    "Async Appender no location", i));
-            tests.add(m("perf3PlainNoLoc.xml", LOG20,
-                    "All async no loc SysClock", i, ALL_ASYNC, SYSCLOCK));
+            tests.add(m("perf5AsyncApndNoLoc.xml", LOG20, "Async Appender", i));
+            tests.add(m("perf3PlainNoLoc.xml", LOG20, "Loggers all async", i,
+                    ALL_ASYNC, SYSCLOCK));
             tests.add(m("perf7MixedNoLoc.xml", LOG20,
-                    "Mixed async no location", i));
+                    "Loggers mixed sync/async", i));
+
+            // includeLocation=true
+            // tests.add(m("perf6AsyncApndLoc.xml", LOG20,
+            // "Async Appender includeLocation", i));
+            // tests.add(m("perf8MixedLoc.xml", LOG20,
+            // "Mixed sync/async includeLocation", i));
+            // tests.add(m("perf4PlainLocation.xml", LOG20,
+            // "Loggers all async includeLocation", i, ALL_ASYNC));
+            // tests.add(m("perf4PlainLocation.xml", LOG20,
+            // "Loggers all async includeLocation CachedClock", i,
+            // ALL_ASYNC, CACHEDCLOCK));
+            // tests.add(m("perf4PlainLocation.xml", LOG20,
+            // "Sync includeLocation", i));
+
+            // appenders
+            // tests.add(m("perf1syncFile.xml", LOG20, "FileAppender", i));
+            // tests.add(m("perf1syncFastFile.xml", LOG20, "FastFileAppender",
+            // i));
+            // tests.add(m("perf2syncRollFile.xml", LOG20, "RollFileAppender",
+            // i));
+            // tests.add(m("perf2syncRollFastFile.xml", LOG20,
+            // "RollFastFileAppender", i));
         }
-
-        // Setup[] tests = new Setup[] { //
-        // s("perf-logback.xml", LOGBK, "Sync"), //
-        // s("perf-log4j12.xml", LOG12, "Sync"), //
-        // s("perf3PlainNoLoc.xml", LOG20, "Sync"), //
-        // s("perf-logback-async.xml", LOGBK, "Async Appender"), //
-        // s("perf-log4j12-async.xml", LOG12, "Async Appender"), //
-        // s("perf5AsyncApndNoLoc.xml", LOG20,
-        // "Async Appender no location"),
-        // s("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock",
-        // ALL_ASYNC, SYSCLOCK), //
-        // s("perf7MixedNoLoc.xml", LOG20, "Mixed async no location"), //
-        //
-        // m("perf-log4j12-async.xml", LOG12, "Async Appender", 2), //
-        // m("perf-log4j12.xml", LOG12, "Sync", 2), //
-        // m("perf-logback.xml", LOGBK, "Sync", 2), //
-        // m("perf-logback-async.xml", LOGBK, "Async Appender", 2), //
-        // m("perf3PlainNoLoc.xml", LOG20, "Sync", 2), //
-        // m("perf3PlainNoLoc.xml", LOG20, "All async no loc CachedClock",
-        // 2, ALL_ASYNC, CACHEDCLOCK), //
-        // m("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock", 2,
-        // ALL_ASYNC, SYSCLOCK), //
-        //
-        // m("perf-log4j12-async.xml", LOG12, "Async Appender", 4), //
-        // m("perf-log4j12.xml", LOG12, "Sync", 4), //
-        // m("perf-logback.xml", LOGBK, "Sync", 4), //
-        // m("perf-logback-async.xml", LOGBK, "Async Appender", 4), //
-        // m("perf3PlainNoLoc.xml", LOG20, "Sync", 4), //
-        // m("perf3PlainNoLoc.xml", LOG20,
-        // "All async no loc CachedClock",
-        // 4, ALL_ASYNC, CACHEDCLOCK), //
-        // m("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock",
-        // 4,
-        // ALL_ASYNC, SYSCLOCK), //
-        //
-        // m("perf-log4j12-async.xml", LOG12, "Async Appender", 8), //
-        // m("perf-log4j12.xml", LOG12, "Sync", 8), //
-        // m("perf-logback.xml", LOGBK, "Sync", 8), //
-        // m("perf-logback-async.xml", LOGBK, "Async Appender", 8), //
-        // m("perf3PlainNoLoc.xml", LOG20, "Sync", 8), //
-        // m("perf3PlainNoLoc.xml", LOG20,
-        // "All async no loc CachedClock",
-        // 8, ALL_ASYNC, CACHEDCLOCK), //
-        // m("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock",
-        // 8,
-        // ALL_ASYNC, SYSCLOCK), //
-
-        // 2 threads
-        // m("perf5AsyncApndNoLoc.xml", LOG20,"Async Appender no location",
-        // 2), //
-        // m("perf6AsyncApndLoc.xml",
-        // LOG12,"Async Appender with location",
-        // 2), //
-        // m("perf7MixedNoLoc.xml", "Mixed async no location", 2), //
-        // m("perf8MixedLoc.xml", "Mixed async with location", 2), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location SysClock",
-        // 2, ALL_ASYNC), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location CachedClock", 2, ALL_ASYNC,
-        // CACHEDCLOCK), //
-        // m("perf4PlainLocation.xml", "All sync with location", 2), //
-        // m("perf1syncFile.xml", "FileAppender", 2), //
-        // m("perf1syncFastFile.xml", "FastFileAppender", 2), //
-        // m("perf2syncRollFile.xml", "RollFileAppender", 2), //
-        // m("perf2syncRollFastFile.xml", "RollFastFileAppender", 2), //
-
-        // 4 threads
-        // m("perf5AsyncApndNoLoc.xml", LOG20,"Async Appender no location",
-        // 4), //
-        // m("perf6AsyncApndLoc.xml", "Async Appender with location",
-        // 4), //
-        // m("perf7MixedNoLoc.xml", "Mixed async no location", 4), //
-        // m("perf8MixedLoc.xml", "Mixed async with location", 4), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location SysClock",
-        // 4, ALL_ASYNC), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location CachedClock", 4, ALL_ASYNC,
-        // CACHEDCLOCK), //
-        // m("perf4PlainLocation.xml", "All sync with location", 4), //
-        // m("perf1syncFile.xml", "FileAppender", 4), //
-        // m("perf1syncFastFile.xml", "FastFileAppender", 4), //
-        // m("perf2syncRollFile.xml", "RollFileAppender", 4), //
-        // m("perf2syncRollFastFile.xml", "RollFastFileAppender", 4), //
-
-        // 8 threads
-        // m("perf5AsyncApndNoLoc.xml", LOG20,
-        // "Async Appender no location", 8), //
-        // m("perf6AsyncApndLoc.xml", "Async Appender with location",
-        // 8), //
-        // m("perf7MixedNoLoc.xml", "Mixed async no location", 8), //
-        // m("perf8MixedLoc.xml", "Mixed async with location", 8), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location SysClock",
-        // 8, ALL_ASYNC), //
-        // m("perf4PlainLocation.xml",
-        // "All async with location CachedClock", 8, ALL_ASYNC,
-        // CACHEDCLOCK), //
-        // m("perf4PlainLocation.xml", "All sync with location", 8), //
-        // m("perf1syncFile.xml", "FileAppender", 8), //
-        // m("perf1syncFastFile.xml", "FastFileAppender", 8), //
-        // m("perf2syncRollFile.xml", "RollFileAppender", 8), //
-        // m("perf2syncRollFastFile.xml", "RollFastFileAppender", 8), //
-
-        // s("perf-log4j12-async.xml", LOG12, "Async Appender"), //
-        // s("perf-log4j12.xml", LOG12, "Sync"), //
-        // s("perf-logback.xml", LOGBK, "Sync"), //
-        // s("perf-logback-async.xml", LOGBK, "Async Appender"), //
-        // s("perf3PlainNoLoc.xml", LOG20, "Sync"), //
-        // s("perf3PlainNoLoc.xml", LOG20, "All async no loc CachedClock",
-        // ALL_ASYNC, CACHEDCLOCK), //
-        // s("perf3PlainNoLoc.xml", LOG20, "All async no loc SysClock",
-        // ALL_ASYNC, SYSCLOCK), //
-        // s("perf5AsyncApndNoLoc.xml", LOG20,
-        // "Async Appender no location"),
-        //
-        // s("perf6AsyncApndLoc.xml", "Async Appender with location"), //
-        // s("perf7MixedNoLoc.xml", "Mixed async no location"), //
-        // s("perf8MixedLoc.xml", "Mixed async with location"), //
-        // s("perf4PlainLocation.xml", "All async with location SysClock",
-        // ALL_ASYNC), //
-        // s("perf4PlainLocation.xml",
-        // "All async with location CachedClock", ALL_ASYNC,
-        // CACHEDCLOCK), //
-        // s("perf4PlainLocation.xml", "All sync with location"), //
-        // s("perf1syncFile.xml", "FileAppender"), //
-        // s("perf1syncFastFile.xml", "FastFileAppender"), //
-        // s("perf2syncRollFile.xml", "RollFileAppender"), //
-        // s("perf2syncRollFastFile.xml", "RollFastFileAppender"), //
-        // };
 
         String java = args.length > 0 ? args[0] : "java";
         int repeat = args.length > 1 ? Integer.parseInt(args[1]) : 5;

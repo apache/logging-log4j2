@@ -33,7 +33,7 @@ public class FastRollingFileManager extends RollingFileManager {
     private static FastRollingFileManagerFactory factory = new FastRollingFileManagerFactory();
 
     private final boolean isImmediateFlush;
-    private final RandomAccessFile randomAccessFile;
+    private RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
     private ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
@@ -79,6 +79,14 @@ public class FastRollingFileManager extends RollingFileManager {
     }
 
     @Override
+    protected void createFileAfterRollover() throws IOException {
+        this.randomAccessFile = new RandomAccessFile(getFileName(), "rw");
+        if (isAppend()) {
+            randomAccessFile.seek(randomAccessFile.length());
+        }
+    }
+
+    @Override
     public void flush() {
         buffer.flip();
         try {
@@ -88,6 +96,16 @@ public class FastRollingFileManager extends RollingFileManager {
             throw new AppenderRuntimeException(msg, ex);
         }
         buffer.clear();
+    }
+    
+    @Override
+    public void close() {
+    	flush();
+        try {
+        	randomAccessFile.close();
+        } catch (final IOException ex) {
+            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". " + ex);
+        }
     }
 
     /**

@@ -85,7 +85,7 @@ public class FastRollingFileAppenderRolloverTest {
         String old2 = reader.readLine();
         assertTrue("renamed file line 2", old2.contains(exceed));
         String line = reader.readLine();
-    //    assertNull("No more lines", line);
+        assertNull("No more lines", line);
         reader.close();
         after1.delete();
     }

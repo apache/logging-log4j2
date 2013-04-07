@@ -106,12 +106,16 @@ public class RollingFileManager extends FileManager {
             try {
                 size = 0;
                 initialTime = System.currentTimeMillis();
-                final OutputStream os = new FileOutputStream(getFileName(), isAppend());
-                setOutputStream(os);
-            } catch (final FileNotFoundException ex) {
+                createFileAfterRollover();
+            } catch (final IOException ex) {
                 LOGGER.error("FileManager (" + getFileName() + ") " + ex);
             }
         }
+    }
+
+    protected void createFileAfterRollover() throws IOException {
+        final OutputStream os = new FileOutputStream(getFileName(), isAppend());
+        setOutputStream(os);
     }
 
     /**

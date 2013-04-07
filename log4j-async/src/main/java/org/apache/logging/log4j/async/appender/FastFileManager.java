@@ -102,6 +102,16 @@ public class FastFileManager extends OutputStreamManager {
         }
         buffer.clear();
     }
+    
+    @Override
+    public void close() {
+    	flush();
+        try {
+        	randomAccessFile.close();
+        } catch (final IOException ex) {
+            LOGGER.error("Unable to close RandomAccessFile " + getName() + ". " + ex);
+        }
+    }
 
     /**
      * Returns the name of the File being managed.

@@ -79,7 +79,8 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
      */
     @Override
     public void append(final LogEvent event) {
-        ((RollingFileManager) getManager()).checkRollover(event);
+    	FastRollingFileManager manager = (FastRollingFileManager) getManager();
+    	manager.checkRollover(event);
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
         // we can signal the file manager that it needs to flush the buffer
@@ -87,13 +88,7 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
         // From a user's point of view, this means that all log events are
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
-        //
-        // without LOG4J2-164:
-        // if (event.getClass() == RingBufferLogEvent.class) {
-        // boolean isEndOfBatch = ((RingBufferLogEvent) event).isEndOfBatch();
-        // ((FastRollingFileManager) getManager()).setEndOfBatch(isEndOfBatch);
-        // }
-        ((FastRollingFileManager) getManager()).setEndOfBatch(event.isEndOfBatch());
+    	manager.setEndOfBatch(event.isEndOfBatch());
         super.append(event);
     }
 
@@ -133,20 +128,21 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
      * @return A FastRollingFileAppender.
      */
     @PluginFactory
-    public static FastRollingFileAppender createAppender(@PluginAttr("fileName") final String fileName,
-                                              @PluginAttr("filePattern") final String filePattern,
-                                              @PluginAttr("append") final String append,
-                                              @PluginAttr("name") final String name,
-                                              @PluginAttr("immediateFlush") final String immediateFlush,
-                                              @PluginElement("policy") final TriggeringPolicy policy,
-                                              @PluginElement("strategy") RolloverStrategy strategy,
-                                              @PluginElement("layout") Layout<?> layout,
-                                              @PluginElement("filter") final Filter filter,
-                                              @PluginAttr("suppressExceptions") final String suppress,
-                                              @PluginAttr("advertise") final String advertise,
-                                              @PluginAttr("advertiseURI") final String advertiseURI,
-                                              @PluginConfiguration final Configuration config) {
-
+    public static FastRollingFileAppender createAppender(
+            @PluginAttr("fileName") final String fileName,
+            @PluginAttr("filePattern") final String filePattern,
+            @PluginAttr("append") final String append,
+            @PluginAttr("name") final String name,
+            @PluginAttr("immediateFlush") final String immediateFlush,
+            @PluginElement("policy") final TriggeringPolicy policy,
+            @PluginElement("strategy") RolloverStrategy strategy,
+            @PluginElement("layout") Layout<?> layout,
+            @PluginElement("filter") final Filter filter,
+            @PluginAttr("suppressExceptions") final String suppress,
+            @PluginAttr("advertise") final String advertise,
+            @PluginAttr("advertiseURI") final String advertiseURI,
+            @PluginConfiguration final Configuration config) {
+  
         final boolean isAppend = append == null ? true : Boolean.valueOf(append);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);

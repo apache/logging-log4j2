@@ -479,7 +479,7 @@
 					<tt>ByteBuffer + RandomAccessFile</tt>
 					instead of a
 					<tt>BufferedOutputStream</tt>.
-					We saw a 10-30% performance improvement compared to
+					We saw a 20-200% performance improvement compared to
 					FileAppender with "bufferedIO=true" in our 
 					<a href="#FastFileAppenderPerformance">measurements</a>.
 					Similar to the FileAppender,
@@ -589,12 +589,11 @@
 					<tt>ByteBuffer + RandomAccessFile</tt>
 					instead of a
 					<tt>BufferedOutputStream</tt>.
-					<!-- 
-					We saw a 10-30% performance improvement compared to
+					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
 					in our 
 					<a href="#FastFileAppenderPerformance">measurements</a>.
-					-->
+					
 					The FastRollingFileAppender writes
 					to the File named in the
 					fileName parameter
@@ -843,11 +842,14 @@
 				</p>
 			</subsection>
 			<a name="Performance" />
-			<subsection name="Performance Measurements">
+			<subsection name="Asynchronous Logging Performance">
 				<p>
-					This section shows the results of our performance tests.
-					The
-					methodology used was the same for all tests:
+					The performance results below were all derived from running the 
+					PerfTest, MTPerfTest and PerfTestDriver classes which can be found 
+					in the Log4j 2 unit test source directory.
+					All tests were done using the 
+					default settings (SystemClock and SleepingWaitStrategy).
+					The methodology used was the same for all tests:
 				</p>
 				<ul>
 					<li>First, warm up the JVM by logging 200,000 log messages of 500
@@ -858,10 +860,42 @@
 					Pause for 10 microseconds * threadCount between measurements.
 					Repeat this 5 million times, and measure average latency,
 					latency of 99% of observations and 99.99% of observations.</li>
-					<li>Throughput test: measure how long it takes to log 256 *
-						1024 / threadCount messages of 500 characters.</li>
+					<li>Throughput test: measure how long it takes to execute 256 *
+						1024 / threadCount calls to Logger.log and express the
+						result in messages per second.</li>
+					<li>Repeat the test 5 times and average the results.</li>
 				</ul>
 				<h4>Logging Throughput</h4>
+				<p>
+				The graph below compares the throughput of synchronous loggers,
+				asynchronous appenders and asynchronous loggers. This
+				is the total throughput of all threads together. 
+				In the test with 64 threads, asynchronous loggers are 12 times 
+				faster than asynchronous appenders, and 68 times faster than 
+				synchronous loggers.
+				</p>
+				<p>
+				Asynchronous loggers' throughput increases with the number of threads,
+				whereas both synchronous loggers and asynchronous appenders 
+				have more or less constant throughput regardless of the number of
+				threads that are doing the logging.
+				</p>
+				<p><img src="../images/async-vs-sync-throughput.png" /></p>
+				
+				<h4>Asynchronous Throughput Comparison with Other Logging Packages</h4>
+				<p>
+				We also compared throughput of asynchronous loggers to
+				the synchronous loggers and asynchronous appenders available
+				in other logging packages, specifically log4j-1.2.17 and 
+				logback-1.0.10, with similar results. 
+				For asynchronous appenders, total logging throughput of all 
+				threads together remains roughly constant when adding more threads.
+				Asynchronous loggers make more effective use of the multiple cores
+				available on the machine in multi-threaded scenarios.
+				</p>
+				<p>
+				<img src="../images/async-throughput-comparison.png" />
+				</p>
 				<p>On Windows 7 (64bit) with JDK1.7.0_11, 2-core Intel i5-3317u CPU
 					@1.70Ghz with hyperthreading switched on (4 virtual cores):</p>
 				<table>
@@ -876,7 +910,7 @@
 				 </tr>
 				 <tr>
 				  <td>Log4j2: Loggers all asynchronous</td>
-				  <td align="right">1,655,952</td>
+				  <td align="right">1,715,344</td>
 				  <td align="right">928,951</td>
 				  <td align="right">1,045,265</td>
 				  <td align="right">1,509,109</td>
@@ -885,7 +919,7 @@
 				 </tr>
 				 <tr>
 				  <td>Log4j2: Loggers mixed sync/async</td>
-				  <td align="right">534,592</td>
+				  <td align="right">571,099</td>
 				  <td align="right">1,204,774</td>
 				  <td align="right">1,632,204</td>
 				  <td align="right">1,368,041</td>
@@ -894,7 +928,7 @@
 				 </tr>
 				 <tr>
 				  <td>Log4j2: Async Appender</td>
-				  <td align="right">1,091,563</td>
+				  <td align="right">1,236,548</td>
 				  <td align="right">1,006,287</td>
 				  <td align="right">511,571</td>
 				  <td align="right">302,230</td>
@@ -903,7 +937,7 @@
 				 </tr>
 				 <tr>
 				  <td>Log4j1: Async Appender</td>
-				  <td align="right">1,336,667</td>
+				  <td align="right">1,373,195</td>
 				  <td align="right">911,657</td>
 				  <td align="right">636,899</td>
 				  <td align="right">406,405</td>
@@ -912,7 +946,7 @@
 				 </tr>
 				 <tr>
 				  <td>Logback: Async Appender</td>
-				  <td align="right">2,231,044</td>
+				  <td align="right">1,979,515</td>
 				  <td align="right">783,722</td>
 				  <td align="right">582,935</td>
 				  <td align="right">289,905</td>
@@ -1046,26 +1080,13 @@
 					<caption align="top">Throughput per thread in messages/second
 					</caption>
 				</table>
-				<p>
-				In the above two environments, with the 
-				default settings (SystemClock and SleepingWaitStrategy),
-				asynchronous logging 
-				processes 6 - 68 times the number of log events in the same time
-				as synchronous logging. These numbers may also give you an
-				idea of the performance trade-off when choosing between
-				<a href="#AllAsync">All Async</a> and the more flexible 
-				<a href="#MixedSync-Async">Mixed Async</a> logging.
-				</p>
-				<p>Note that the numbers above are throughput <i>per thread</i>.
-				The graph below shows the total throughput of all threads together.
-				<img src="../images/async-throughput-comparison.png" /></p>
 
 				<h4>Throughput of Logging With Location (includeLocation="true")</h4>
 				<p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
 						@2.93Ghz with hyperthreading switched off (8 virtual cores):</p>
 				<table>
 					<tr>
-						<th>Logger</th>
+						<th>Logger (Log4j 2)</th>
 						<th>1 thread</th>
 						<th>2 threads</th>
 						<th>4 threads</th>
@@ -1171,10 +1192,10 @@
 					</tr>
 					<tr>
 						<td>RollingFastFileAppender</td>
-						<td align="right">104,254</td>
-						<td align="right">39,345</td>
-						<td align="right">16,971</td>
-						<td align="right">9,465</td>
+						<td align="right">278,369</td>
+						<td align="right">213,176</td>
+						<td align="right">125,300</td>
+						<td align="right">63,103</td>
 					</tr>
 					<tr>
 						<td>RollingFileAppender</td>
@@ -1183,11 +1204,11 @@
 						<td align="right">55,147</td>
 						<td align="right">28,153</td>
 					</tr>
-					<caption align="top">Throughput per thread in operations/second
+					<caption align="top">Throughput per thread in messages/second
 					</caption>
 				</table>
-				<p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 CPU 
-				@2.93GHz with hyperthreading switched on (8 virtual cores):</p>
+				<p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core dual Xeon X5570 CPU 
+				@2.93GHz with hyperthreading switched off (8 virtual cores):</p>
 				<table>
 					<tr>
 						<th>Appender</th>
@@ -1212,10 +1233,10 @@
 					</tr>
 					<tr>
 						<td>RollingFastFileAppender</td>
-						<td align="right">78,715</td>
-						<td align="right">31,426</td>
-						<td align="right">17,881</td>
-						<td align="right">8,727</td>
+						<td align="right">228,491</td>
+						<td align="right">135,355</td>
+						<td align="right">69,277</td>
+						<td align="right">32,484</td>
 					</tr>
 					<tr>
 						<td>RollingFileAppender</td>
@@ -1224,7 +1245,7 @@
 						<td align="right">55,766</td>
 						<td align="right">25,097</td>
 					</tr>
-					<caption align="top">Throughput per thread in operations/second
+					<caption align="top">Throughput per thread in messages/second
 					</caption>
 				</table>
 			</subsection>
