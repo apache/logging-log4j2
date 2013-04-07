@@ -180,6 +180,10 @@
 	#if ( $alignedFileName == $currentItemHref )
 	#set ($active = " active")
 	#end
+	#set ( $thisProjectDir = "../${project.artifactId}" )
+	#if ($thisProjectDir == $PathTool.getDirectoryComponent( $item.href ))
+	#set ($active = " active")
+	#end
 	<li class="$collapse$active">
 	#link($currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )
 	#if ( $item && $item.items && $item.items.size() > 0 )
