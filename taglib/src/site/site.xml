@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<project name="Log4j Web">
+<project name="Log4j Tag Library">
   <bannerLeft>
     <name>Logging Services</name>
     <src>../images/ls-logo.jpg</src>

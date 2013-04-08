@@ -143,9 +143,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      */
     public void catching(final Level level, final Throwable t) {
-        if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
-            log(CATCHING_MARKER, FQCN, level, messageFactory.newMessage(CATCHING), t);
-        }
+        catching(FQCN, level, t);
     }
 
     /**
@@ -154,8 +152,19 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      */
     public void catching(final Throwable t) {
-        if (isEnabled(Level.ERROR, CATCHING_MARKER, (Object) null, null)) {
-            log(CATCHING_MARKER, FQCN, Level.ERROR, messageFactory.newMessage(CATCHING), t);
+        catching(FQCN, Level.ERROR, t);
+    }
+
+    /**
+     * Logs a Throwable that has been caught with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param level The logging level.
+     * @param t The Throwable.
+     */
+    protected void catching(String fqcn, final Level level, final Throwable t) {
+        if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
+            log(CATCHING_MARKER, fqcn, level, messageFactory.newMessage(CATCHING), t);
         }
     }
 
@@ -348,9 +357,7 @@ public abstract class AbstractLogger implements Logger {
      * Logs entry to a method.
      */
     public void entry() {
-        if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            log(ENTRY_MARKER, FQCN, Level.TRACE, messageFactory.newMessage(" entry"), null);
-        }
+        entry(FQCN);
     }
 
     /**
@@ -359,8 +366,18 @@ public abstract class AbstractLogger implements Logger {
      * @param params The parameters to the method.
      */
     public void entry(final Object... params) {
+        entry(FQCN, params);
+    }
+
+    /**
+     * Logs entry to a method with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param params The parameters to the method.
+     */
+    protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            log(ENTRY_MARKER, FQCN, Level.TRACE, entryMsg(params.length, params), null);
+            log(ENTRY_MARKER, fqcn, Level.TRACE, entryMsg(params.length, params), null);
         }
     }
 
@@ -564,9 +581,7 @@ public abstract class AbstractLogger implements Logger {
      * Logs exit from a method.
      */
     public void exit() {
-        if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, FQCN, Level.TRACE, toExitMsg(null), null);
-        }
+        exit(FQCN, null);
     }
 
     /**
@@ -577,8 +592,19 @@ public abstract class AbstractLogger implements Logger {
      * @return the Throwable.
      */
     public <R> R exit(final R result) {
+        return exit(FQCN, result);
+    }
+
+    /**
+     * Logs exiting from a method with the result and location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param <R> The type of the parameter and object being returned.
+     * @param result The result being returned from the method call.
+     */
+    protected <R> R exit(final String fqcn, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, FQCN, Level.TRACE, toExitMsg(result), null);
+            log(EXIT_MARKER, fqcn, Level.TRACE, toExitMsg(result), null);
         }
         return result;
     }
@@ -1346,10 +1372,7 @@ public abstract class AbstractLogger implements Logger {
      * @return the Throwable.
      */
     public <T extends Throwable> T throwing(final Level level, final T t) {
-        if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, level, messageFactory.newMessage(THROWING), t);
-        }
-        return t;
+        return throwing(FQCN, level, t);
     }
 
     /**
@@ -1360,8 +1383,21 @@ public abstract class AbstractLogger implements Logger {
      * @return the Throwable.
      */
     public <T extends Throwable> T throwing(final T t) {
-        if (isEnabled(Level.ERROR, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, FQCN, Level.ERROR, messageFactory.newMessage(THROWING), t);
+        return throwing(FQCN, Level.ERROR, t);
+    }
+
+    /**
+     * Logs a Throwable to be thrown with location information.
+     *
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param <T> the type of the Throwable.
+     * @param level The logging Level.
+     * @param t The Throwable.
+     * @return the Throwable.
+     */
+    protected <T extends Throwable> T throwing(String fqcn, final Level level, final T t) {
+        if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
+            log(THROWING_MARKER, fqcn, level, messageFactory.newMessage(THROWING), t);
         }
         return t;
     }

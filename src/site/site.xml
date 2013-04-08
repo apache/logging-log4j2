@@ -139,6 +139,7 @@
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Web" href="log4j-web/index.html"/>
+      <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
     </menu>
 
     <menu name="Project Information" img="icon-info-sign">

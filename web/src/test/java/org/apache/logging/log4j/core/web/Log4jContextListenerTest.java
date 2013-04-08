@@ -225,5 +225,9 @@ public class Log4jContextListenerTest {
         public String getServletContextName() {
             return null;
         }
+
+        public String getContextPath() {
+            return null;
+        }
     }
 }

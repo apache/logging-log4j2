@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -55,7 +55,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j web components require at least Java 5.
+             The Log4j web components require at least Java 5 and at least Servlet 2.5 (or Java EE 5).
           </p>
         </section>
 
