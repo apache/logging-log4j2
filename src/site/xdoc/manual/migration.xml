@@ -18,12 +18,12 @@
 
 <document>
     <properties>
-        <title>Migration from Log4j 1.x</title>
+        <title>Migrating from Log4j 1.x</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Migration from Log4j 1.x">
+        <section name="Migrating from Log4j 1.x">
           <a name="The Log4j 1.x bridge"/>
           <subsection name="The Log4j 1.x bridge">
             <p>
