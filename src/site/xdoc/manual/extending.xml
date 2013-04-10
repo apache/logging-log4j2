@@ -282,7 +282,7 @@ public final class ThresholdFilter extends AbstractFilter {
             <p>
               Most Appenders use Managers. A manager actually "owns" the resources, such as an OutputStream or
               socket. When a reconfiguration occurs a new Appender will be created. However, if nothing significant
-              in the previous Manager has change the new Appender will simply reference it instead of creating a
+              in the previous Manager has changed, the new Appender will simply reference it instead of creating a
               new one. This insures that events are not lost while a reconfiguration is taking place without
               requiring that logging pause while the reconfiguration takes place.
             </p>
