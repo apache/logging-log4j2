@@ -19,11 +19,11 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>Build and Install</title>
+		<title>Build and Use</title>
 	</properties>
 
 	<body>
-		<section name="Building and Installing Log4j 2.x">
+		<section name="Building and Using Log4j 2.x">
 
       <subsection name="Building">
         <p>
@@ -34,14 +34,27 @@
         </p>
         <p>
           Log4j 2.x uses Maven 2 or 3 as its build tool. To build Log4j simply run "mvn install" from the root
-          directory. Then to build the site, run "mvn site". To rebuild only what's changed and execute the tests, run "mvn test".
-		  To rebuild from scratch, add "clean", for example: "mvn clean test".
+          directory. Then to build the site, run "mvn site". To rebuild only what's changed and execute the tests, run
+          "mvn test". To rebuild from scratch, add "clean", for example: "mvn clean test".
         </p>
       </subsection>
-      <subsection name="Using In Applications">
+      <subsection name="Using Log4J on your classpath">
        <p>
          To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
-         classpath. With Maven add the dependencies listed below to your pom.xml.
+         classpath. Add the dependencies listed below to your classpath. 
+       </p>
+       <ul>
+         <li><code>log4j-api-${Log4jReleaseVersion}.jar</code></li>
+         <li><code>log4j-core-${Log4jReleaseVersion}.jar</code></li>
+       </ul>
+       <p>
+         You can do this from the command line or a manifest file.
+       </p>
+      </subsection>
+      <subsection name="Using Log4J in your Apache Maven build">
+       <p>
+         To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your 
+         <code>pom.xml</code> file.
        </p>
 <pre class="prettyprint linenums"><![CDATA[
 <dependencies>
@@ -55,6 +68,18 @@
     <artifactId>log4j-core</artifactId>
     <version>${Log4jReleaseVersion}</version>
   </dependency>
+</dependecies>
+]]></pre>
+      </subsection>
+      <subsection name="Using Log4J in your Apache Ivy build">
+       <p>
+         To build with <a href="https://ant.apache.org/ivy/">Apache Ivy</a>, add the dependencies listed below to your
+         <code>ivy.xml</code> file.
+       </p>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${Log4jReleaseVersion}" />
 </dependecies>
 ]]></pre>
       </subsection>
