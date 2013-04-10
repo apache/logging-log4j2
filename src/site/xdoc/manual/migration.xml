@@ -28,13 +28,15 @@
           <subsection name="The Log4j 1.x bridge">
             <p>
               Perhaps the simplest way to convert to using Log4j 2 is to replace the log4j 1.x jar file with
-              Log4j 2's log4j-1.2-api jar. However, to use this successfully applications must meet the
+              Log4j 2's <code>log4j-1.2-api.jar</code>. However, to use this successfully applications must meet the
               following requirements:
               <ol>
                 <li>They must not access methods and classes internal to the Log4j 1.x implementation such
-                as Appenders, LoggerRepository or Logger's callAppenders method.</li>
+                  as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s 
+                  <code>callAppenders</code> method.</li>
                 <li>They must not programmatically configure Log4j.</li>
-                <li>They must not be configuring by calling DomConfigurator or the PropertiesConfigurator.</li>
+                <li>They must not configure by calling the classes <code>DomConfigurator</code> or 
+                  <code>PropertiesConfigurator</code>.</li>
               </ol>
             </p>
           </subsection>
@@ -43,17 +45,15 @@
               of the log statements will require no modification. However, where necessary the following changes must be
               made.
               <ol>
-                <li>Calls to Logger.getLogger must be modified to LogManager.getLogger.</li>
-                <li>Calls to Logger.getRootLogger or LogManager.getRootLogger must be replaced with
-                  LogManager.getLogger("").</li>
-                <li>Calls to LogManager.getLogger that accept a LoggerFactory must remove the LoggerFactory and
-                  use one of Log4j 2's other extension mechanisms.</li>
-                <li>Calls to logger.setLevel or similar methods are not supported in the API. Applications
-                  should remove these. Equivalent functionality is provided in the Log4j 2 implementation
+                <li>Calls to <code>Logger.getLogger()</code> must be modified to <code>LogManager.getLogger()</code>.
+                </li>
+                <li>Calls to <code>Logger.getRootLogger()</code> or <code>LogManager.getRootLogger()</code> must be 
+                  replaced with <code>LogManager.getLogger("")</code>.</li>
+                <li>Calls to <code>LogManager.getLogger</code> that accept a <code>LoggerFactory</code> must remove the
+                  <code>LoggerFactory</code> and use one of Log4j 2's other extension mechanisms.</li>
+                <li>Calls to <code>logger.setLevel()</code> or similar methods are not supported in the API. 
+                  Applications should remove these. Equivalent functionality is provided in the Log4j 2 implementation
                   classes but may leave the application susceptible to changes in Log4j 2 internals.</li>
-                <li>The Log4j 2 API methods accept String messages instead of Objects. Applications that
-                  wish to log Objects should either wrap the Object in an ObjectMessage or create a
-                  custom Message for the Object.</li>
                 <li>Where appropriate, applications should convert to use parameterized messages instead of
                   String concatenation.</li>
               </ol>
