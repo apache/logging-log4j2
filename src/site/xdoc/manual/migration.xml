@@ -25,7 +25,7 @@
     <body>
         <section name="Migrating from Log4j 1.x">
           <a name="The Log4j 1.x bridge"/>
-          <subsection name="The Log4j 1.x bridge">
+          <subsection name="Using the Log4j 1.x bridge">
             <p>
               Perhaps the simplest way to convert to using Log4j 2 is to replace the log4j 1.x jar file with
               Log4j 2's <code>log4j-1.2-api.jar</code>. However, to use this successfully applications must meet the
@@ -59,7 +59,7 @@
               </ol>
             </p>
           </subsection>
-          <subsection name="Configuration">
+          <subsection name="Configuring Log4J 2">
             <p>
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
               the same functionality is available. Below are the example configurations for Log4j 1.x and their
