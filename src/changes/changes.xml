@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-207" dev="ggregory" type="fix">
+        Use the Maven group ID org.apache.logging.log4j for all artifacts.
+      </action>
       <action issue="LOG4J2-187" dev="rgoers" type="add" due-to="Nick Williams">
         Add tag library.
       </action>
