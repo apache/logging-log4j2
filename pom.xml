@@ -190,17 +190,17 @@
         <type>test-jar</type>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j.adapters</groupId>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>

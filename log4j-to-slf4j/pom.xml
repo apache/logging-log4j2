@@ -23,7 +23,7 @@
     <version>2.0-beta5-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j.adapters</groupId>
+  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-to-slf4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j to SLF4J Adapter</name>

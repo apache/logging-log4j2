@@ -57,7 +57,7 @@
       <version>3.0.0.beta3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.adapters</groupId>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
       <scope>test</scope>
     </dependency>

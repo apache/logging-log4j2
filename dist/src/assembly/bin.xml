@@ -31,9 +31,9 @@ limitations under the License.
         <dependencySet>
             <includes>
                 <include>org.apache.logging.log4j:log4j-*</include>
-                <include>org.apache.logging.log4j.adapters:log4j-*</include>
-                <include>org.apache.logging.log4j.adapters:slf4j-*</include>
-                <include>org.apache.logging.log4j.adapters:log4j12-*</include>
+                <include>org.apache.logging.log4j:log4j-*</include>
+                <include>org.apache.logging.log4j:slf4j-*</include>
+                <include>org.apache.logging.log4j:log4j12-*</include>
             </includes>
             <excludes>
                 <exclude>org.apache.logging.log4j:log4j-distribution</exclude>

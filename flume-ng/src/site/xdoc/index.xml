@@ -103,7 +103,7 @@
                     <version>${log4j2_version}</version>
                   </dependency>
                   <dependency>
-                    <groupId>org.apache.logging.log4j.adapters</groupId>
+                    <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-1.2-api</artifactId>
                     <version>${log4j2_version}</version>
                   </dependency>
@@ -113,22 +113,22 @@
                     <version>${log4j2_version}</version>
                   </dependency>
                   <dependency>
-                    <groupId>org.apache.logging.log4j.adapters</groupId>
+                    <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-flume-ng</artifactId>
                     <version>${log4j2_version}</version>
                   </dependency>
                   <dependency>
-                    <groupId>org.apache.logging.log4j.adapters</groupId>
+                    <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-slf4j-impl</artifactId>
                     <version>${log4j2_version}</version>
                   </dependency>
                   <dependency>
-                    <groupId>org.apache.logging.log4j.adapters</groupId>
+                    <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-jcl</artifactId>
                     <version>${log4j2_version}</version>
                   </dependency>
                   <dependency>
-                    <groupId>org.apache.logging.log4j.adapters</groupId>
+                    <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-web</artifactId>
                     <version>${log4j2_version}</version>
                   </dependency>
@@ -163,7 +163,7 @@
                 </dependency>
                 <!-- Log4j 1.x API -->
                 <dependency>
-                  <groupId>org.apache.logging.log4j.adapters</groupId>
+                  <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j12-api</artifactId>
                 </dependency>
                 <!-- Log4j 2 implementation -->
@@ -173,7 +173,7 @@
                 </dependency>
                 <!-- SLF4J to Log4j 2 binding -->
                 <dependency>
-                  <groupId>org.apache.logging.log4j.adapters</groupId>
+                  <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>slf4j-impl</artifactId>
                 </dependency>
                 <!-- SLF4J API -->
@@ -188,12 +188,12 @@
                 </dependency>
                 <!-- Commson Logging to Log4j 2 binding -->
                 <dependency>
-                  <groupId>org.apache.logging.log4j.adapters</groupId>
+                  <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j-jcl</artifactId>
                 </dependency>
                 <!-- Log4j 2 Servlet Context Listener -->
                 <dependency>
-                  <groupId>org.apache.logging.log4j.adapters</groupId>
+                  <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j-web</artifactId>
                 </dependency>
                 <!-- Avro transport protocol - required for Flume -->
