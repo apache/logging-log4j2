@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-210" dev="rgoers" type="fix" due-to="Arkin Yetis">
+        MapMessage was not enclosing key value in quotes when generating XML.
+      </action>
       <action issue="LOG4J2-198" dev="rgoers" type="fix">
         FlumeAvroManager now uses Flume RPCClient.
       </action>
