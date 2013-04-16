@@ -32,7 +32,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Flume Documentation</docLabel>
     <projectDir>/flume-ng</projectDir>
-    <flumeVersion>1.2.0</flumeVersion>
+    <flumeVersion>1.3.1</flumeVersion>
   </properties>
   <dependencies>
     <dependency>

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import org.apache.flume.event.SimpleEvent;
+import org.apache.flume.Event;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 
 /**
@@ -28,5 +28,5 @@ public abstract class AbstractFlumeManager extends AbstractManager {
         super(name);
     }
 
-    public abstract void send(SimpleEvent event, int delay, int retries);
+    public abstract void send(Event event);
 }

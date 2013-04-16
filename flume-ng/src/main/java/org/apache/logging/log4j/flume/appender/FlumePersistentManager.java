@@ -25,6 +25,7 @@ import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.StatsConfig;
+import org.apache.flume.Event;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -66,16 +67,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private final WriterThread worker;
 
-    private final int reconnectionDelay;
-
     private final LinkedBlockingQueue<byte []> queue = new LinkedBlockingQueue<byte[]>();
 
     private final SecretKey secretKey;
 
-    /**
-     The default reconnection delay (5 minutes).
-     */
-    public static final int DEFAULT_DELAY = 1000 * 60 * 5;
+    private final int delay;
 
     /**
      * Constructor
@@ -85,13 +81,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param database The database to write to.
      */
     protected FlumePersistentManager(final String name, final String shortName, final Agent[] agents,
-                                     final int batchSize, final int reconnectionDelay, final Database database,
+                                     final int batchSize, final int retries, final int connectionTimeout,
+                                     final int requestTimeout, final int delay, final Database database,
                                      SecretKey secretKey) {
-        super(name, shortName, agents, batchSize);
+        super(name, shortName, agents, batchSize, retries, connectionTimeout, requestTimeout);
+        this.delay = delay;
         this.database = database;
         this.worker = new WriterThread(database, this, queue, batchSize, secretKey);
         this.worker.start();
-        this.reconnectionDelay = reconnectionDelay <= 0 ? DEFAULT_DELAY : reconnectionDelay;
         this.secretKey = secretKey;
     }
 
@@ -104,7 +101,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @return A FlumeAvroManager.
      */
     public static FlumePersistentManager getManager(final String name, final Agent[] agents, Property[] properties,
-                                                    int batchSize, final int reconnectionDelay, final String dataDir) {
+                                                    int batchSize, final int retries, final int connectionTimeout,
+                                                    final int requestTimeout, final int delay, final String dataDir) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -125,12 +123,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
         sb.append("]");
         sb.append(" ").append(dataDirectory);
-        return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize,
-            reconnectionDelay, dataDir, properties));
+        return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
+            connectionTimeout, requestTimeout, delay, dataDir, properties));
     }
 
     @Override
-    public synchronized void send(final SimpleEvent event, int delay, int retries)  {
+    public synchronized void send(final Event event)  {
         if (worker.isShutdown()) {
             throw new LoggingException("Unable to record event");
         }
@@ -181,7 +179,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private void doSend(final SimpleEvent event) {
         LOGGER.debug("Sending event to Flume");
-        super.send(event, 1, 1);
+        super.send(event);
     }
 
     /**
@@ -192,7 +190,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final Agent[] agents;
         private final int batchSize;
         private final String dataDir;
-        private final int reconnectionDelay;
+        private final int retries;
+        private final int connectionTimeout;
+        private final int requestTimeout;
+        private final int delay;
         private final Property[] properties;
 
         /**
@@ -202,13 +203,17 @@ public class FlumePersistentManager extends FlumeAvroManager {
          * @param batchSize The number of events to include in a batch.
          * @param dataDir The directory for data.
          */
-        public FactoryData(final String name, final Agent[] agents, final int batchSize, final int reconnectionDelay,
+        public FactoryData(final String name, final Agent[] agents, final int batchSize, final int retries,
+                           final int connectionTimeout, final int requestTimeout, final int delay,
                            final String dataDir, final Property[] properties) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
             this.dataDir = dataDir;
-            this.reconnectionDelay = reconnectionDelay;
+            this.retries = retries;
+            this.connectionTimeout = connectionTimeout;
+            this.requestTimeout = requestTimeout;
+            this.delay = delay;
             this.properties = properties;
         }
     }
@@ -290,8 +295,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
             } catch (Exception ex) {
                 LOGGER.warn("Error setting up encryption - encryption will be disabled", ex);
             }
-            return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.reconnectionDelay,
-                database, secretKey);
+            return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.retries,
+                data.connectionTimeout, data.requestTimeout, data.delay, database, secretKey);
         }
     }
 
@@ -329,7 +334,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             long lastBatch = System.currentTimeMillis();
             while (!shutdown) {
                 if (database.count() >= batchSize ||
-                    database.count() > 0 && lastBatch + manager.reconnectionDelay > System.currentTimeMillis()) {
+                    database.count() > 0 && lastBatch + manager.delay > System.currentTimeMillis()) {
                     lastBatch = System.currentTimeMillis();
                     try {
                         boolean errors = false;
@@ -356,7 +361,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                         LOGGER.error("Error sending events", ioe);
                                         break;
                                     }
-                                    for (SimpleEvent event : batch.getEvents()) {
+                                    for (Event event : batch.getEvents()) {
                                         try {
                                             Map<String, String> headers = event.getHeaders();
                                             key = new DatabaseEntry(headers.get(FlumeEvent.GUID).getBytes(UTF8));
@@ -397,7 +402,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             cursor.close();
                         }
                         if (errors) {
-                            Thread.sleep(manager.reconnectionDelay);
+                            Thread.sleep(manager.delay);
                             continue;
                         }
                     } catch (Exception ex) {
@@ -408,7 +413,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                         if (database.count() >= batchSize) {
                             continue;
                         }
-                        queue.poll(manager.reconnectionDelay, TimeUnit.MILLISECONDS);
+                        queue.poll(manager.delay, TimeUnit.MILLISECONDS);
                         LOGGER.debug("WriterThread notified of work");
                     } catch (InterruptedException ie) {
                         LOGGER.warn("WriterThread interrupted, continuing");

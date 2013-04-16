@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import org.apache.flume.Event;
 import org.apache.flume.SourceRunner;
-import org.apache.flume.event.SimpleEvent;
 import org.apache.flume.node.NodeConfiguration;
 import org.apache.flume.node.nodemanager.DefaultLogicalNodeManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -119,7 +119,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     }
 
     @Override
-    public void send(final SimpleEvent event, final int delay, final int retries) {
+    public void send(final Event event) {
         source.send(event);
     }
 

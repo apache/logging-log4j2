@@ -47,10 +47,6 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private final boolean compressBody;
 
-    private final int reconnectDelay;
-
-    private final int retries;
-
     private final FlumeEventFactory factory;
 
     private enum ManagerType {
@@ -63,7 +59,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
     private FlumeAppender(final String name, final Filter filter, final Layout layout, final boolean handleException,
                           final String includes, final String excludes, final String required, final String mdcPrefix,
-                          final String eventPrefix, final boolean compress, final int delay, final int retries,
+                          final String eventPrefix, final boolean compress,
                           final FlumeEventFactory factory, final AbstractFlumeManager manager) {
         super(name, filter, layout, handleException);
         this.manager = manager;
@@ -73,8 +69,6 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         this.eventPrefix = eventPrefix;
         this.mdcPrefix = mdcPrefix;
         this.compressBody = compress;
-        this.reconnectDelay = delay;
-        this.retries = retries;
         this.factory = factory == null ? this : factory;
     }
 
@@ -87,7 +81,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
-        manager.send(flumeEvent, reconnectDelay, retries);
+        manager.send(flumeEvent);
     }
 
     @Override
@@ -122,8 +116,11 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * <b>Note: </b><i>The embedded attribute is deprecated in favor of specifying the type attribute.</i>
      * @param type Avro (default), Embedded, or Persistent.
      * @param dataDir The directory where the Flume FileChannel should write its data.
-     * @param delay The amount of time in milliseconds to wait between retries.
+     * @param connectionTimeout The amount of time in milliseconds to wait before a connection times out. Minimum is
+     *                          1000.
+     * @param requestTimeout The amount of time in milliseconds to wait before a request times out. Minimum is 1000.
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
+     * @param maxDelay The maximum number of seconds to wait for a complete batch.
      * @param name The name of the Appender.
      * @param suppress If true exceptions will be handled in the appender.
      * @param excludes A comma separated list of MDC elements to exclude.
@@ -144,8 +141,10 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                    @PluginAttr("embedded") final String embedded,
                                                    @PluginAttr("type") final String type,
                                                    @PluginAttr("dataDir") final String dataDir,
-                                                   @PluginAttr("reconnectionDelay") final String delay,
+                                                   @PluginAttr("connectTimeout") final String connectionTimeout,
+                                                   @PluginAttr("requestTimeout") final String requestTimeout,
                                                    @PluginAttr("agentRetries") final String agentRetries,
+                                                   @PluginAttr("maxDelay") final String maxDelay,
                                                    @PluginAttr("name") final String name,
                                                    @PluginAttr("suppressExceptions") final String suppress,
                                                    @PluginAttr("mdcExcludes") final String excludes,
@@ -165,7 +164,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
         ManagerType managerType;
         if (type != null) {
-            if (embed) {
+            if (embed && embedded != null) {
                 try {
                     managerType = ManagerType.getType(type);
                     LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
@@ -188,8 +187,11 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
 
         final int batchCount = batchSize == null ? 1 : Integer.parseInt(batchSize);
-        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final int connectTimeout = connectionTimeout == null ? 0 : Integer.parseInt(connectionTimeout);
+        final int reqTimeout = requestTimeout == null ? 0 : Integer.parseInt(requestTimeout);
         final int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
+        final int delay = maxDelay == null ? 60000 : Integer.parseInt(maxDelay);
+
 
         if (layout == null) {
             layout = RFC5424Layout.createLayout(null, null, null, "True", null, null, null, null, excludes,
@@ -212,14 +214,15 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeout, reqTimeout);
                 break;
             case PERSISTENT:
                 if (agents == null || agents.length == 0) {
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, reconnectDelay, dataDir);
+                manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
+                    connectTimeout, reqTimeout, delay, dataDir);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");
@@ -227,7 +230,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     LOGGER.debug("No agents provided, using defaults");
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
-                manager = FlumeAvroManager.getManager(name, agents, batchCount);
+                manager = FlumeAvroManager.getManager(name, agents, batchCount, retries, connectTimeout, reqTimeout);
         }
 
         if (manager == null) {
@@ -235,6 +238,6 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
 
         return new FlumeAppender(name, filter, layout,  handleExceptions, includes,
-            excludes, required, mdcPrefix, eventPrefix, compress, reconnectDelay, retries, factory, manager);
+            excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
     }
 }

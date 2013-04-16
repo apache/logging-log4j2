@@ -100,7 +100,7 @@
             <tr>
               <td>includeLocation</td>
               <td>boolean</td>
-              <td>Extracting location is an expensive operation (it can make  
+              <td>Extracting location is an expensive operation (it can make
               logging 5 - 20 times slower). To improve performance, location is
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
@@ -388,7 +388,7 @@
             </ol>
             Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
             control will be immediately returned to the application. All interaction with remote agents will occur
-            asynchronously. Setting the "embedded" attribute to "true" will force the use of the embedded agent. In
+            asynchronously. Setting the "type" attribute to "Embedded" will force the use of the embedded agent. In
             addition, configuring agent properties in the appender configuration will also cause the embedded agent
             to be used.
           </p>
@@ -425,6 +425,11 @@
               <td>When set to true the message body will be compressed using gzip</td>
             </tr>
             <tr>
+              <td>connectTimeout</td>
+              <td>integer</td>
+              <td>The number of milliseconds Flume will wait before timing out the connection.</td>
+            </tr>
+            <tr>
               <td>dataDir</td>
               <td>String</td>
               <td>Directory where the Flume write ahead log should be written. Valid only when embedded is set
@@ -452,6 +457,11 @@
               <td>layout</td>
               <td>Layout</td>
               <td>The Layout to use to format the LogEvent. If no layout is specified RFC5424Layout will be used.</td>
+            </tr>
+            <tr>
+              <td>maxDelay</td>
+              <td>integer</td>
+              <td>The maximum number of seconds to wait for batchSize events before publishing the batch.</td>
             </tr>
             <tr>
               <td>mdcExcludes</td>
@@ -497,12 +507,9 @@
               </td>
             </tr>
             <tr>
-              <td>reconnectionDelay</td>
+              <td>requestTimeout</td>
               <td>integer</td>
-              <td>The number of milliseconds the application should wait before trying again to connect to the
-                agent. When type="persistent" is specified this represents the frequency between retries when no
-                remote Flume agents are available (the persistent agent will continue to write to its database in
-                the interim).</td>
+              <td>The number of milliseconds Flume will wait before timing out the request.</td>
             </tr>
 
             <tr>

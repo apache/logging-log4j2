@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import org.apache.flume.event.SimpleEvent;
+import org.apache.flume.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,13 @@ import java.util.List;
  */
 public class BatchEvent {
 
-    private List<SimpleEvent> events = new ArrayList<SimpleEvent>();
+    private List<Event> events = new ArrayList<Event>();
 
-    public void addEvent(SimpleEvent event) {
+    public void addEvent(Event event) {
         events.add(event);
     }
 
-    public List<SimpleEvent> getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 }

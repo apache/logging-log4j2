@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.flume.appender;
 
 import org.apache.flume.ChannelException;
+import org.apache.flume.Event;
 import org.apache.flume.EventDrivenSource;
-import org.apache.flume.event.SimpleEvent;
 import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractSource;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class Log4jEventSource extends AbstractSource implements EventDrivenSourc
     }
 
 
-    public void send(final SimpleEvent event) {
+    public void send(final Event event) {
         sourceCounter.incrementAppendReceivedCount();
         sourceCounter.incrementEventReceivedCount();
         try {

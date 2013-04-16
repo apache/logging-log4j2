@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-198" dev="rgoers" type="fix">
+        FlumeAvroManager now uses Flume RPCClient.
+      </action>
+      <action issue="LOG4J2-196" dev="rgoers" type="fix">
+        FlumeAvroManager now uses Flume RPCClient.
+      </action>
       <action issue="LOG4J2-207" dev="ggregory" type="fix">
         Use the Maven group ID org.apache.logging.log4j for all artifacts.
       </action>
