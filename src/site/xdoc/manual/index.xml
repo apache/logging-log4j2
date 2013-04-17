@@ -88,11 +88,13 @@
               Logback exceptions in Appenders are never visible to the application. In
               Log4j 2 Appenders can be configured to allow the exception to percolate
               to the application</li>
+            <li>Log4j 2 contains next-generation Asynchronous Loggers based
+              on the LMAX Disruptor library. In multi-threaded scenarios
+              Asynchronous Loggers have 10 times higher throughput and 
+              orders of magnitude lower latency than Log4j 1.x and Logback.</li>
             <li>Log4j 2 uses a Plugin system that makes it extremely easy to extend the
               framework by adding new Appenders, Filters, Layouts, Lookups,
               and Pattern Converters without requiring any changes to Log4j.</li>
-            <li>The performance of Log4j 2 is similar to that of Logback. It is slightly
-              slower in some tests and faster in others.</li>
             <li>Due to the Plugin system configuration is simpler. Entries in the configuration
               do not require a class name to be specified.</li>
             <li>Support for Message objects. Messages allow support for interesting and

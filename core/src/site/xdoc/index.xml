@@ -26,18 +26,27 @@
         <section name="Log4j 2 Implementation">
 
             <p>
-              The Log4Jj 2 implementation provides the functional components of the logging system. Users are
-              free to create their own plugins and include them in the logging configuration.
+              The Log4Jj 2 implementation provides the functional components 
+              of the logging system. 
+              Users are free to create their own plugins and include them 
+              in the logging configuration.
             </p>
 
         </section>
 
         <section name="Requirements">
            <p>
-             Log4j 2 requires Java 5 but has will take advantage of enhancements in Java 6 to improve performance.
-             Some features may require optional dependencies. These dependencies are
+             Log4j 2 requires Java 6.
+             Some features may require optional 
+             <a href="dependencies.html">dependencies</a>. These dependencies are
              specified in the documentation for those features.
           </p>
+          <ul>
+          <li>JSON configuration requires the Jackson JSON-processor.</li>
+          <li>Async Loggers require the LMAX Disruptor.</li>
+          <li>SMTPAppender requires Javax Mail.</li>
+          <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like geronimo-jms.</li>
+          </ul>
         </section>
 
     </body>

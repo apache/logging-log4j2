@@ -44,7 +44,14 @@
             </dd>
             <dt>Improved Performance</dt>
             <dd>
-              Log4j 2 performs faster than Log4j 1.x in critical areas and similarly to Logback under most circumstances.
+              Log4j 2 contains next-generation Asynchronous Loggers based
+              on the LMAX Disruptor library. In multi-threaded scenarios
+              Asynchronous Loggers have 10 times higher throughput and 
+              orders of magnitude lower latency than Log4j 1.x and Logback.
+              See <a href="manual/async.html#Performance">Asynchronous Logging Performance</a>
+              for details.
+              Otherwise, Log4j 2 performs faster than Log4j 1.x in critical areas 
+              and similarly to Logback under most circumstances.
               See <a href="performance.html">Performance</a> for more information.
             </dd>
             <dt>Support for multiple APIs</dt>

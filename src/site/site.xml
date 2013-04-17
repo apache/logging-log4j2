@@ -73,6 +73,8 @@
         <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
+        <item name="FastFile" href="/manual/appenders.html#FastFileAppender"/>
+        <item name="FastRollingFile" href="/manual/appenders.html#FastRollingFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
@@ -101,13 +103,11 @@
         <item name="Time" href="/manual/filters.html#TimeFilter"/>
       </item>
 
-      <item name="Async" href="/manual/async.html" collapse="true">
+      <item name="Async Loggers" href="/manual/async.html" collapse="true">
         <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>
         <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>
         <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>
         <item name="Location" href="/manual/async.html#Location"/>
-        <item name="FastFileAppender" href="/manual/async.html#FastFileAppender"/>
-        <item name="FastRollingFileAppender" href="/manual/async.html#FastRollingFileAppender"/>
         <item name="Performance" href="/manual/async.html#Performance"/>
         <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
       </item>
@@ -132,7 +132,6 @@
     <menu name="Components" inherit="top" img="icon-cog">
       <item name="API" href="log4j-api/index.html"/>
       <item name="Implementation" href="log4j-core/index.html"/>
-      <item name="Async" href="log4j-async/index.html"/>
       <item name="Commons Logging Bridge" href="log4j-jcl/index.html"/>
       <item name="Log4J 1.2 API" href="log4j-1.2-api/index.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>

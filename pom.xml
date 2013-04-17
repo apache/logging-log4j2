@@ -62,7 +62,7 @@
       <name>Remko Popma</name>
       <email>remkop@yahoo.com</email>
       <roles>
-        <role>log4j-async module development, testing and documentation</role>
+        <role>Async Low-Latency Loggers, log4j JMX support</role>
       </roles>
       <timezone>+9</timezone>
       <properties>
@@ -116,6 +116,7 @@
     <Log4jReleaseVersion>2.0-beta5</Log4jReleaseVersion>
     <Log4jReleaseCount>seventh</Log4jReleaseCount>
     <jackson.version>1.9.2</jackson.version>
+    <disruptor.version>3.0.0</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
@@ -261,6 +262,11 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.lmax</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${disruptor.version}</version>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.7</version>
@@ -386,6 +392,8 @@
           </dependency>
         </dependencies>
         <configuration>
+         <!-- only build English site even on other language OS -->
+         <locales>en</locales>
           <!-- Exclude the navigation file for Maven 1 sites
                and the changes file used by the changes-plugin,
                as they interfere with the site generation. -->
@@ -569,7 +577,6 @@
     <module>web</module>
     <module>taglib</module>
     <module>samples</module>
-    <module>log4j-async</module>
   </modules>
   <profiles>
     <profile>

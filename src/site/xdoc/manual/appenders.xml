@@ -1361,6 +1361,380 @@
 </configuration>]]></pre>
           </p>
         </subsection>
+			<a name="FastFileAppender" />
+			<subsection name="FastFileAppender">
+			<p><i>Experimental, may replace FileAppender in a future release.</i></p>
+				<p>
+					The FastFileAppender is similar to the standard
+					<a href="#FileAppender">FileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					FileAppender with "bufferedIO=true" in our 
+					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
+					Similar to the FileAppender,
+					FastFileAppender uses a FastFileManager to actually perform the
+					file I/O. While FastFileAppender
+					from different Configurations
+					cannot be shared, the FastFileManagers can be if the Manager is
+					accessible. For example, two webapps in a
+					servlet container can have
+					their own configuration and safely
+					write to the same file if Log4j
+					is in a ClassLoader that is common to
+					both of them.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filters</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+						<td>When set to true, each write will be followed by a flush.
+							This will guarantee the data is written
+							to disk but could impact performance.
+							This option is only useful when using this
+							appender with synchronous loggers. Asynchronous loggers will
+							automatically flush at the end of a batch, which also guarantees
+							the data is written to disk but is more efficient.
+						</td>
+					</tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+					<tr>
+						<td>suppressExceptions</td>
+						<td>boolean</td>
+						<td>The default is true, causing exceptions to be internally
+							logged and then ignored. When set to
+							false exceptions will be
+							percolated to the caller.
+						</td>
+					</tr>
+					<caption align="top">FastFileAppender Parameters</caption>
+				</table>
+				<p>
+					Here is a sample FastFile configuration:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastFile name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </FastFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="MyFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+			</subsection>
+			<a name="FastRollingFileAppender" />
+			<subsection name="FastRollingFileAppender">
+			<p><i>Experimental, may replace RollingFileAppender in a future release.</i></p>
+				<p>
+					The FastRollingFileAppender is similar to the standard
+					<a href="#RollingFileAppender">RollingFileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and
+					internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					RollingFileAppender with "bufferedIO=true"
+					in our 
+					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
+					
+					The FastRollingFileAppender writes
+					to the File named in the
+					fileName parameter
+					and rolls the file over according the
+					TriggeringPolicy
+					and the RolloverPolicy.
+
+					Similar to the RollingFileAppender,
+					FastRollingFileAppender uses a FastRollingFileManager 
+					to actually perform the
+					file I/O and perform the rollover. While FastRollingFileAppender
+					from different Configurations cannot be
+					shared, the FastRollingFileManagers can be
+					if the Manager is accessible.
+					For example, two webapps in a servlet
+					container can have their own configuration and safely write to the
+					same file if Log4j is in a ClassLoader that is common to both of them.
+				</p>
+				<p>
+					A FastRollingFileAppender requires a
+					<a href="#TriggeringPolicies">TriggeringPolicy</a>
+					and a
+					<a href="#RolloverStrategies">RolloverStrategy</a>.
+					The triggering policy determines if a rollover should
+					be performed
+					while the RolloverStrategy defines how the rollover
+					should be done.
+					If no RolloverStrategy
+					is configured, FastRollingFileAppender will
+					use the
+					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+				</p>
+				<p>
+					File locking is not supported by the FastRollingFileAppender.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>filter</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a
+							CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filePattern</td>
+						<td>String</td>
+						<td>
+							The pattern of the file name of the archived log file. The format
+							of the pattern should is
+							dependent on the RolloverPolicy that is
+							used. The DefaultRolloverPolicy
+							will accept both
+							a date/time
+							pattern compatible with
+							<a
+								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+								SimpleDateFormat</a>
+							
+							and/or a %i which represents an integer counter. The pattern
+							also supports interpolation at
+							runtime so any of the Lookups (such
+							as the
+							<a href="./lookups.html#DateLookup">DateLookup</a>
+							can
+							be included in the pattern.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+						<td>When set to true, each write will be followed by a flush. This
+							will guarantee the data is written
+							to disk but could impact
+							performance.
+							This option is only useful when using this
+							appender with
+							synchronous loggers. Asynchronous loggers will
+							automatically
+							flush at the end of a batch, which also guarantees
+							the data
+							is written to disk but is more efficient.
+						</td>
+					</tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+					<tr>
+						<td>policy</td>
+						<td>TriggeringPolicy</td>
+						<td>The policy to use to determine if a rollover should occur.
+						</td>
+					</tr>
+					<tr>
+						<td>strategy</td>
+						<td>RolloverStrategy</td>
+						<td>The strategy to use to determine the name and location of the
+							archive file.
+						</td>
+					</tr>
+					<tr>
+						<td>suppressExceptions</td>
+						<td>boolean</td>
+						<td>The default is true, causing exceptions to be internally
+							logged and then ignored. When set to
+							false exceptions will be
+							percolated to the caller.
+						</td>
+					</tr>
+					<caption align="top">FastRollingFileAppender Parameters</caption>
+				</table>
+				<a name="FRFA_TriggeringPolicies" />
+				<h4>Triggering Policies</h4>
+				<p>
+					See
+					<a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.
+				</p>
+				<a name="FRFA_RolloverStrategies" />
+				<h4>Rollover Strategies</h4>
+				<p>
+					See
+					<a href="#RolloverStrategies">RollingFileAppender Rollover Strategies</a>.
+				</p>
+
+				<p>
+					Below is a sample configuration that uses a FastRollingFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+				<p>
+					This second example shows a rollover strategy that will keep up to
+					20 files before removing them.
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+				<p>
+					Below is a sample configuration that uses a FastRollingFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip and will roll every 6 hours when the hour is
+					divisible
+					by 6:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+			</subsection>
         <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">
            <p>

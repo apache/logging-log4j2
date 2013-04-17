@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
@@ -477,7 +478,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     // for synchronous loggers, includeLocation default is TRUE.
     private static boolean includeLocation(String includeLocationConfigValue) {
         if (includeLocationConfigValue == null) {
-            final boolean sync = !"org.apache.logging.log4j.async.AsyncLoggerContextSelector"
+            final boolean sync = !AsyncLoggerContextSelector.class.getName()
                     .equals(System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR));
             return sync;
         }
