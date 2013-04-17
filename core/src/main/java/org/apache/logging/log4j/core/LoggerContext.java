@@ -59,6 +59,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     private final URI configLocation;
 
+    private ShutdownThread shutdownThread = null;
+
     /**
      * Status of the LoggerContext.
      */
@@ -137,6 +139,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                 if (status == Status.INITIALIZED) {
                     status = Status.STARTING;
                     reconfigure();
+                    shutdownThread = new ShutdownThread(this);
+                    try {
+                        Runtime.getRuntime().addShutdownHook(shutdownThread);
+                    } catch (SecurityException se) {
+                        LOGGER.warn("Unable to register shutdown hook due to security restrictions");
+                        shutdownThread = null;
+                    }
                     status = Status.STARTED;
                 }
             } finally {
@@ -149,6 +158,10 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         configLock.lock();
         try {
             status = Status.STOPPING;
+            if (shutdownThread != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdownThread);
+                shutdownThread = null;
+            }
             updateLoggers(new NullConfiguration());
             config.stop();
             externalContext = null;
@@ -329,6 +342,20 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
+    }
+
+    private class ShutdownThread extends Thread {
+
+        private final LoggerContext context;
+
+        public ShutdownThread(LoggerContext context) {
+            this.context = context;
+        }
+
+        public void run() {
+            context.shutdownThread = null;
+            context.stop();
+        }
     }
 
 }

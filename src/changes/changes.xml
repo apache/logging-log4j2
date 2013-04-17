@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-212" dev="rgoers" type="fix">
+        Call LoggerContext.stop when the application is shutdown.
+      </action>
       <action issue="LOG4J2-210" dev="rgoers" type="fix" due-to="Arkin Yetis">
         MapMessage was not enclosing key value in quotes when generating XML.
       </action>

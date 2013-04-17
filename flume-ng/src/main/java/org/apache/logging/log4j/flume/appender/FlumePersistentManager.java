@@ -162,6 +162,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     @Override
     protected void releaseSub() {
+        LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
         try {
             worker.join();
@@ -315,9 +316,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.queue = queue;
             this.batchSize = batchsize;
             this.secretKey = secretKey;
+            this.setDaemon(true);
         }
 
         public void shutdown() {
+            LOGGER.debug("Writer thread shutting down");
             this.shutdown = true;
             if (queue.size() == 0) {
                 queue.add(SHUTDOWN.getBytes(UTF8));
