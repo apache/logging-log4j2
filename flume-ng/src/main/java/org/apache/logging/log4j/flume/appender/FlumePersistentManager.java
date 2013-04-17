@@ -279,6 +279,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 try {
                                     SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
                                     secretKey = provider.getSecretKey();
+                                    LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
                                 } catch (Exception ex) {
                                     LOGGER.error("Unable to create SecretKeyProvider {}, encryption will be disabled",
                                         cl.getName());
