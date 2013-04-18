@@ -180,7 +180,6 @@ public class FlumeAppenderTest {
         Assert.assertNotNull(event);
         Assert.assertTrue("Channel contained event, but not expected message",
             getBody(event).endsWith("Success"));
-        System.out.println(getBody(event));
         transaction.commit();
         transaction.close();
 
