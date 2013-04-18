@@ -156,14 +156,14 @@ public class FlumeAppenderTest {
     public void testStructured() throws InterruptedException, IOException {
         final Agent[] agents = new Agent[] {Agent.createAgent("localhost", testPort)};
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents, null, "false", "Avro", null, "1000",
-            "1000", "1", "1000", "avro", "false", null, null, null, null, null, "true", "1", null, null, null);
+            "1000", "1", "1000", "avro", "false", null, null, null, "ReqCtx_", null, "true", "1", null, null, null);
         avroAppender.start();
         final Logger eventLogger = (Logger) LogManager.getLogger("EventLogger");
         Assert.assertNotNull(eventLogger);
         eventLogger.addAppender(avroAppender);
         eventLogger.setLevel(Level.ALL);
 
-        final StructuredDataMessage msg = new StructuredDataMessage("Tranfser", "Success", "Audit");
+        final StructuredDataMessage msg = new StructuredDataMessage("Transfer", "Success", "Audit");
         msg.put("memo", "This is a memo");
         msg.put("acct", "12345");
         msg.put("amount", "100.00");
@@ -180,6 +180,7 @@ public class FlumeAppenderTest {
         Assert.assertNotNull(event);
         Assert.assertTrue("Channel contained event, but not expected message",
             getBody(event).endsWith("Success"));
+        System.out.println(getBody(event));
         transaction.commit();
         transaction.close();
 

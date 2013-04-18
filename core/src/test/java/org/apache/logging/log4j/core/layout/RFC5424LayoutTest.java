@@ -52,7 +52,7 @@ public class RFC5424LayoutTest {
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     private static final String lineEscaped3 = "ATM - - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc";
-    private static final String lineEscaped4 = 
+    private static final String lineEscaped4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
         "[RequestContext@18060 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
 
@@ -81,7 +81,7 @@ public class RFC5424LayoutTest {
         }
         // set up appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -145,7 +145,7 @@ public class RFC5424LayoutTest {
         }
         // set up appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
+            null, null, "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -153,7 +153,7 @@ public class RFC5424LayoutTest {
         // set appender on root and set level to debug
         root.addAppender(appender);
         root.setLevel(Level.DEBUG);
-        
+
         ThreadContext.put("loginId", "JohnDoe");
 
         // output starting message
@@ -208,7 +208,7 @@ public class RFC5424LayoutTest {
         }
         // set up appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, "%xEx", null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, "%xEx", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 

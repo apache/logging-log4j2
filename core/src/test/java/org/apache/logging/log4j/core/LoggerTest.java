@@ -255,5 +255,11 @@ public class LoggerTest {
         assertNotNull("No configuration", cfg);
         assertTrue("Reconfiguration failed", cfg != config);
     }
+
+    @Test
+    public void testAdditivity() throws Exception {
+        Logger localLogger = (Logger) LogManager.getLogger("org.apache.test");
+
+    }
 }
 

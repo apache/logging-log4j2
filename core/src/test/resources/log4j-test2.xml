@@ -72,8 +72,8 @@
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <appender-ref ref="File"/>
-    </logger>>
-
+    </logger>
+    <logger name="org" level="error" additivity="true"/>
     <root level="trace">
       <appender-ref ref="List"/>
     </root>

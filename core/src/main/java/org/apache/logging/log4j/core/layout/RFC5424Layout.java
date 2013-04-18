@@ -88,6 +88,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private final String appName;
     private final String messageId;
     private final String configName;
+    private final String mdcPrefix;
+    private final String eventPrefix;
     private final List<String> mdcExcludes;
     private final List<String> mdcIncludes;
     private final List<String> mdcRequired;
@@ -103,6 +105,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private RFC5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
                           final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+                          final String mdcPrefix, final String eventPrefix,
                           final String appName, final String messageId, final String excludes, final String includes,
                           final String required, final Charset charset, final String exceptionPattern) {
         super(charset);
@@ -115,6 +118,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
         this.mdcId = mdcId;
+        this.mdcPrefix = mdcPrefix;
+        this.eventPrefix = eventPrefix;
         this.appName = appName;
         this.messageId = messageId;
         this.localHostName = NetUtils.getLocalHostname();
@@ -243,7 +248,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 final StructuredDataMessage data = (StructuredDataMessage) msg;
                 final Map<String, String> map = data.getData();
                 id = data.getId();
-                formatStructuredElement(id, map, buf, noopChecker);
+                formatStructuredElement(id, eventPrefix, map, buf, noopChecker);
                 text = data.getFormat();
             } else {
                 text = msg.getFormattedMessage();
@@ -256,7 +261,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 final int ein = id == null || id.getEnterpriseNumber() < 0 ?
                     enterpriseNumber : id.getEnterpriseNumber();
                 final StructuredDataId mdcSDID = new StructuredDataId(mdcId, ein, null, null);
-                formatStructuredElement(mdcSDID, map, buf, checker);
+                formatStructuredElement(mdcSDID, mdcPrefix, map, buf, checker);
             }
             if (text != null && text.length() > 0) {
                 buf.append(" ").append(escapeNewlines(text, escapeNewLine));
@@ -363,14 +368,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
         buf.append(Integer.toString(val));
     }
 
-    private void formatStructuredElement(final StructuredDataId id, final Map<String, String> data,
+    private void formatStructuredElement(final StructuredDataId id, final String prefix, final Map<String, String> data,
                                          final StringBuilder sb, final ListChecker checker) {
         if (id == null && defaultId == null) {
             return;
         }
         sb.append("[");
         sb.append(getId(id));
-        appendMap(data, sb, checker);
+        appendMap(prefix, data, sb, checker);
         sb.append("]");
     }
 
@@ -400,24 +405,18 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
-    private void appendMap(final Map<String, String> map, final StringBuilder sb, final ListChecker checker)
+    private void appendMap(final String prefix, final Map<String, String> map, final StringBuilder sb,
+                           final ListChecker checker)
     {
         final SortedMap<String, String> sorted = new TreeMap<String, String>(map);
         for (final Map.Entry<String, String> entry : sorted.entrySet()) {
             if (checker.check(entry.getKey()) && entry.getValue() != null) {
-                sb
-                        .append(" ")
-                        .append(escapeNewlines(
-                        		escapeSDParams(
-                        				entry.getKey()),
-                                escapeNewLine))
-                        .append("=\"")
-                        .append(
-                                escapeNewlines(
-                                        escapeSDParams(
-                                                entry.getValue()),
-                                        escapeNewLine))
-                        .append("\"");
+                sb.append(" ");
+                if (prefix != null) {
+                    sb.append(prefix);
+                }
+                sb.append(escapeNewlines(escapeSDParams(entry.getKey()),escapeNewLine)).append("=\"")
+                  .append(escapeNewlines(escapeSDParams(entry.getValue()),escapeNewLine)).append("\"");
             }
         }
     }
@@ -482,6 +481,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event key names.
      * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
      * @param escapeNL String that should be used to replace newlines within the message text.
      * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
@@ -500,6 +501,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("enterpriseNumber") final String ein,
                                              @PluginAttr("includeMDC") final String includeMDC,
                                              @PluginAttr("mdcId") String mdcId,
+                                             @PluginAttr("mdcPrefix") String mdcPrefix,
+                                             @PluginAttr("eventPrefix") String eventPrefix,
                                              @PluginAttr("newLine") final String includeNL,
                                              @PluginAttr("newLineEscape") final String escapeNL,
                                              @PluginAttr("appName") final String appName,
@@ -523,7 +526,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             mdcId = DEFAULT_MDCID;
         }
 
-        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, appName,
-                                 msgId, excludes, includes, required, charset, exceptionPattern);
+        return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, mdcPrefix,
+                                 eventPrefix, appName, msgId, excludes, includes, required, charset, exceptionPattern);
     }
 }

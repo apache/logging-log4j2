@@ -125,8 +125,10 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         }
+        final String guid =  UUIDUtil.getTimeBasedUUID().toString();
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
+            ((MapMessage) message).put(GUID, guid);
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
             }
@@ -134,8 +136,6 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
 
         addContextData(mdcPrefix, headers, ctx);
-
-        addGuid(headers);
     }
 
     protected void addStructuredData(final String prefix, final Map<String, String> fields,
@@ -159,10 +159,6 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 fields.put(prefix + entry.getKey(), entry.getValue());
             }
         }
-    }
-
-    protected void addGuid(final Map<String, String> fields) {
-        fields.put(GUID, UUIDUtil.getTimeBasedUUID().toString());
     }
 
     /**

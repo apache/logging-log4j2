@@ -62,6 +62,8 @@ public class SyslogAppender extends SocketAppender {
      * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
      * record. Defaults to "true:.
      * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event key names.
      * @param includeNL If true, a newline will be appended to the end of the syslog record. The default is false.
      * @param escapeNL String that should be used to replace newlines within the message text.
      * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
@@ -90,6 +92,8 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("enterpriseNumber") final String ein,
                                                 @PluginAttr("includeMDC") final String includeMDC,
                                                 @PluginAttr("mdcId") final String mdcId,
+                                                @PluginAttr("mdcPrefix") final String mdcPrefix,
+                                                @PluginAttr("eventPrefix") final String eventPrefix,
                                                 @PluginAttr("newLine") final String includeNL,
                                                 @PluginAttr("newLineEscape") final String escapeNL,
                                                 @PluginAttr("appName") final String appName,
@@ -110,8 +114,8 @@ public class SyslogAppender extends SocketAppender {
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final Layout<String> layout = RFC5424.equalsIgnoreCase(format) ?
-            RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, includeNL, escapeNL, appName,
-                msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
+            RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
+                escapeNL, appName, msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
 
         if (name == null) {
