@@ -41,7 +41,7 @@
       <subsection name="Using Log4J on your classpath">
        <p>
          To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
-         classpath. Add the dependencies listed below to your classpath. 
+         classpath. Add the dependencies listed below to your classpath.
        </p>
        <ul>
          <li><code>log4j-api-${Log4jReleaseVersion}.jar</code></li>
@@ -53,7 +53,7 @@
       </subsection>
       <subsection name="Using Log4J in your Apache Maven build">
        <p>
-         To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your 
+         To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
          <code>pom.xml</code> file.
        </p>
 <pre class="prettyprint linenums"><![CDATA[
@@ -68,7 +68,7 @@
     <artifactId>log4j-core</artifactId>
     <version>${Log4jReleaseVersion}</version>
   </dependency>
-</dependecies>
+</dependencies>
 ]]></pre>
       </subsection>
       <subsection name="Using Log4J in your Apache Ivy build">
@@ -80,7 +80,7 @@
 <dependencies>
   <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
   <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${Log4jReleaseVersion}" />
-</dependecies>
+</dependencies>
 ]]></pre>
       </subsection>
       <subsection name="Optional Components">
@@ -112,7 +112,7 @@
     <artifactId>log4j-jcl</artifactId>
     <version>${Log4jReleaseVersion}</version>
   </dependency>
-</dependecies>
+</dependencies>
 ]]></pre>
           <h4>SLF4J</h4>
           <p>SLF4J is another popular logging API that may be bound to Log4j 2 by including the following
@@ -125,7 +125,21 @@
     <artifactId>log4j-slf4j-impl</artifactId>
     <version>${Log4jReleaseVersion}</version>
   </dependency>
-</dependecies>
+</dependencies>
+]]></pre>
+          <h4>Tag Library</h4>
+          <p>The Log4j Log Tag Library creates the capability of inserting log statements in JSPs without
+             the use of Java scripting. It uses the standard Log4j 2 API to log messages according to
+             your Log4j configuration.
+          </p>
+<pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-taglib</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
 ]]></pre>
       </subsection>
 		</section>

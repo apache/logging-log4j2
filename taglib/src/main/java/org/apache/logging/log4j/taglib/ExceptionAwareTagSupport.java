@@ -22,6 +22,8 @@ package org.apache.logging.log4j.taglib;
  * @since 2.0
  */
 abstract class ExceptionAwareTagSupport extends LoggerAwareTagSupport {
+    private static final long serialVersionUID = 1L;
+
     private Throwable exception;
 
     @Override

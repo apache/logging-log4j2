@@ -17,17 +17,16 @@
 package org.apache.logging.log4j.taglib;
 
 import org.apache.logging.log4j.Level;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * This class implements the {@code <log:error>} tag.
  *
- * @since 2.0
  */
-public class ErrorTag extends LoggingMessageTagSupport {
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    protected Level getLevel() {
-        return Level.ERROR;
+public class TraceTagTest {
+    @Test
+    public void testGetLevel() {
+        assertEquals("The logging level is not correct.", Level.TRACE, new TraceTag().getLevel());
     }
 }

@@ -29,6 +29,8 @@ import java.util.Enumeration;
  * @since 2.0
  */
 public class DumpTag extends TagSupport {
+    private static final long serialVersionUID = 1L;
+
     private int scope;
 
     public DumpTag() {
@@ -55,7 +57,7 @@ public class DumpTag extends TagSupport {
         try {
             Enumeration<String> names = this.pageContext.getAttributeNamesInScope(this.scope);
             this.pageContext.getOut().write("<dl>");
-            while (names.hasMoreElements()) {
+            while (names != null && names.hasMoreElements()) {
                 String name = names.nextElement();
                 Object value = this.pageContext.getAttribute(name, this.scope);
 

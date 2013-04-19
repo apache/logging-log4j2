@@ -26,8 +26,11 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * @since 2.0
  */
 abstract class LoggerAwareTagSupport extends BodyTagSupport {
-    private Log4jTaglibLoggerContext loggerContext;
-    private Object logger;
+    private static final long serialVersionUID = 1L;
+
+    private transient Log4jTaglibLoggerContext loggerContext;
+
+    private transient Object logger;
 
     protected LoggerAwareTagSupport() {
         this.init();
@@ -44,7 +47,7 @@ abstract class LoggerAwareTagSupport extends BodyTagSupport {
     }
 
     @Override
-    public void setPageContext(PageContext pageContext) {
+    public final void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         this.loggerContext = Log4jTaglibLoggerContext.getInstance(pageContext.getServletContext());
     }

@@ -24,8 +24,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 import javax.servlet.ServletContext;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.WeakHashMap;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -34,11 +33,13 @@ import java.util.concurrent.ConcurrentMap;
  * @since 2.0
  */
 final class Log4jTaglibLoggerContext implements LoggerContext {
-    private static final ConcurrentMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS =
-            new ConcurrentHashMap<ServletContext, Log4jTaglibLoggerContext>();
+    // These were change to WeakHashMaps to avoid ClassLoader (memory) leak, something that's particularly
+    // important in Servlet containers.
+    private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS =
+            new WeakHashMap<ServletContext, Log4jTaglibLoggerContext>();
 
-    private final ConcurrentMap<String, Log4jTaglibLogger> loggers =
-            new ConcurrentHashMap<String, Log4jTaglibLogger>();
+    private final WeakHashMap<String, Log4jTaglibLogger> loggers =
+            new WeakHashMap<String, Log4jTaglibLogger>();
 
     private final ServletContext servletContext;
 
@@ -61,15 +62,22 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
             return logger;
         }
 
-        // wrap a logger from an underlying implementation
-        Logger original = factory == null ? LogManager.getLogger(name) : LogManager.getLogger(name, factory);
-        if (original instanceof AbstractLogger) {
-            logger = new Log4jTaglibLogger((AbstractLogger) original, name, original.getMessageFactory());
-            Log4jTaglibLogger existing = this.loggers.putIfAbsent(name, logger);
-            return existing == null ? logger : existing;
+        synchronized (this.loggers) {
+            logger = this.loggers.get(name);
+            if (logger == null) {
+                Logger original = factory == null ? LogManager.getLogger(name) : LogManager.getLogger(name, factory);
+                if (!(original instanceof AbstractLogger)) {
+                    throw new LoggingException(
+                            "Log4j Tag Library requires base logging system to extend Log4j AbstractLogger."
+                    );
+                }
+                // wrap a logger from an underlying implementation
+                logger = new Log4jTaglibLogger((AbstractLogger) original, name, original.getMessageFactory());
+                this.loggers.put(name, logger);
+            }
         }
 
-        throw new LoggingException("Log4j Tag Library requires base logging system to extend Log4j AbstractLogger.");
+        return logger;
     }
 
     public boolean hasLogger(String name) {
@@ -77,12 +85,19 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     }
 
     static synchronized Log4jTaglibLoggerContext getInstance(ServletContext servletContext) {
-        if (CONTEXTS.containsKey(servletContext)) {
-            return CONTEXTS.get(servletContext);
+        Log4jTaglibLoggerContext loggerContext = CONTEXTS.get(servletContext);
+        if (loggerContext != null) {
+            return loggerContext;
         }
 
-        Log4jTaglibLoggerContext context = new Log4jTaglibLoggerContext(servletContext);
-        Log4jTaglibLoggerContext existing = CONTEXTS.putIfAbsent(servletContext, context);
-        return existing == null ? context : existing;
+        synchronized (CONTEXTS) {
+            loggerContext = CONTEXTS.get(servletContext);
+            if (loggerContext == null) {
+                loggerContext = new Log4jTaglibLoggerContext(servletContext);
+                CONTEXTS.put(servletContext, loggerContext);
+            }
+        }
+
+        return loggerContext;
     }
 }

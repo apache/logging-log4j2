@@ -33,9 +33,11 @@ import java.util.List;
  * @since 2.0
  */
 abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport implements DynamicAttributes {
+    private static final long serialVersionUID = 1L;
+
     private static final String FQCN = LoggingMessageTagSupport.class.getName();
 
-    private Object message;
+    private transient Object message;
 
     private Marker marker;
 

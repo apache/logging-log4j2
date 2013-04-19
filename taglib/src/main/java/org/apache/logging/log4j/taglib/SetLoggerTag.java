@@ -29,11 +29,13 @@ import javax.servlet.jsp.tagext.Tag;
  * @since 2.0
  */
 public class SetLoggerTag extends BodyTagSupport {
-    private Log4jTaglibLoggerContext loggerContext;
+    private static final long serialVersionUID = 1L;
 
-    private Object logger;
+    private transient Log4jTaglibLoggerContext loggerContext;
 
-    private MessageFactory factory;
+    private transient Object logger;
+
+    private transient MessageFactory factory;
 
     private String var;
 

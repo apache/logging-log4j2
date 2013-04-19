@@ -24,6 +24,8 @@ import org.apache.logging.log4j.Level;
  * @since 2.0
  */
 public class LogTag extends LoggingMessageTagSupport {
+    private static final long serialVersionUID = 1L;
+
     private Level level;
 
     @Override

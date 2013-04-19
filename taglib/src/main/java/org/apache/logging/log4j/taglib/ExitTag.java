@@ -27,9 +27,11 @@ import javax.servlet.jsp.tagext.Tag;
  * @since 2.0
  */
 public class ExitTag extends LoggerAwareTagSupport {
+    private static final long serialVersionUID = 1L;
+
     private static final String FQCN = ExitTag.class.getName();
 
-    private Object result;
+    private transient Object result;
 
     @Override
     protected void init() {

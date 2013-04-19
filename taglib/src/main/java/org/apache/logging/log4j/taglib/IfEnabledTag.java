@@ -28,7 +28,9 @@ import javax.servlet.jsp.tagext.Tag;
  * @since 2.0
  */
 public class IfEnabledTag extends LoggerAwareTagSupport {
-    private Object level;
+    private static final long serialVersionUID = 1L;
+
+    private transient Object level;
 
     private Marker marker;
 

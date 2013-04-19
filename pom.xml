@@ -321,10 +321,18 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
         <configuration>
           <source>${maven.compile.source}</source>
           <target>${maven.compile.target}</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <compilerArguments>
+            <Xmaxwarns>10000</Xmaxwarns>
+            <Xlint />
+          </compilerArguments>
         </configuration>
       </plugin>
       <plugin>

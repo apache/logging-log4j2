@@ -27,6 +27,8 @@ import javax.servlet.jsp.tagext.Tag;
  * @since 2.0
  */
 public class CatchingTag extends ExceptionAwareTagSupport {
+    private static final long serialVersionUID = 1L;
+
     private static final String FQCN = CatchingTag.class.getName();
 
     private Level level;

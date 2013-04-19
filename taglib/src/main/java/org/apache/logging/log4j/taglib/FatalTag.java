@@ -24,6 +24,8 @@ import org.apache.logging.log4j.Level;
  * @since 2.0
  */
 public class FatalTag extends LoggingMessageTagSupport {
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected Level getLevel() {
         return Level.FATAL;
