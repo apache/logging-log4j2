@@ -34,7 +34,7 @@
   </Appenders>
 
   <loggers>
-    <logger name="Once" level="error" additvity="false">
+    <logger name="Once" level="error" additivity="false">
       <appender-ref ref="FailoverOnce"/>
     </logger>
     <root level="error">

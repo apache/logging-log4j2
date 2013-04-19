@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-212" dev="rgoers" type="fix">
+        Loggers without a "." had no parent logger.
+      </action>
       <action issue="LOG4J2-208" dev="rgoers" type="update" due-to="Remko Popma">
         Move async subproject into core.
       </action>

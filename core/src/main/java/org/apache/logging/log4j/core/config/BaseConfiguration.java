@@ -780,6 +780,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         parent = root;
                     }
                     logger.setParent(parent);
+                } else {
+                    logger.setParent(root);
                 }
             }
         }

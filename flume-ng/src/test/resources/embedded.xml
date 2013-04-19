@@ -27,7 +27,7 @@
     </Console>
   </appenders>
   <loggers>
-    <logger name="EventLogger" level="info">
+    <logger name="EventLogger" level="info" additivity="false">
       <appender-ref ref="eventLogger"/>
     </logger>
     <root level="warn">
