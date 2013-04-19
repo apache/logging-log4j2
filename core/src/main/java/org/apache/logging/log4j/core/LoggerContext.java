@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,32 +35,34 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.helpers.NetUtils;
+import org.apache.logging.log4j.core.jmx.Assert;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
- * applications and a reference to the Configuration. The Configuration will contain the configured loggers, appenders,
- * filters, etc and will be atomically updated whenever a reconfigure occurs.
+ * The LoggerContext is the anchor for the logging system. It maintains a list
+ * of all the loggers requested by applications and a reference to the
+ * Configuration. The Configuration will contain the configured loggers,
+ * appenders, filters, etc and will be atomically updated whenever a reconfigure
+ * occurs.
  */
 public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext, ConfigurationListener, LifeCycle {
 
+    public static final String PROPERTY_CONFIG = "config";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
 
     /**
-     * The Configuration is volatile to guarantee that initialization of the Configuration has completed before
-     * the reference is updated.
+     * The Configuration is volatile to guarantee that initialization of the
+     * Configuration has completed before the reference is updated.
      */
     private volatile Configuration config = new DefaultConfiguration();
-
     private Object externalContext;
-
     private final String name;
-
-    private final URI configLocation;
+    private URI configLocation;
 
     private ShutdownThread shutdownThread = null;
 
@@ -111,8 +116,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * Constructor taking a name external context and a configuration location String. The location
-     * must be resolvable to a File.
+     * Constructor taking a name external context and a configuration location
+     * String. The location must be resolvable to a File.
+     * 
      * @param name The configuration location.
      * @param externalContext The external context.
      * @param configLocn The configuration location.
@@ -216,8 +222,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Obtain a Logger from the Context.
      * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
+     * @param messageFactory The message factory is used only when creating a
+     *            logger, subsequent use does not change the logger but will log
+     *            a warning if mismatched.
      * @return The Logger.
      */
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
@@ -242,7 +249,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
+     * Returns the current Configuration. The Configuration will be replaced
+     * when a reconfigure occurs.
+     * 
      * @return The Configuration.
      */
     public Configuration getConfiguration() {
@@ -288,22 +297,43 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             prev.removeListener(this);
             prev.stop();
         }
+
+        // notify listeners
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config);
+        for (PropertyChangeListener listener : propertyChangeListeners) {
+            listener.propertyChange(evt);
+        }
         return prev;
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeListeners.add(Assert.isNotNull(listener, "listener"));
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeListeners.remove(listener);
+    }
+
+    public synchronized URI getConfigLocation() {
+        return configLocation;
+    }
+
+    public synchronized void setConfigLocation(URI configLocation) {
+        this.configLocation = configLocation;
+        reconfigure();
+    }
+
     /**
-     *  Reconfigure the context.
+     * Reconfigure the context.
      */
     public synchronized void reconfigure() {
         LOGGER.debug("Reconfiguration started for context " + name);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
-        /*instance.start();
-        Configuration old = setConfiguration(instance);
-        updateLoggers();
-        if (old != null) {
-            old.stop();
-        } */
+        /*
+         * instance.start(); Configuration old = setConfiguration(instance);
+         * updateLoggers(); if (old != null) { old.stop(); }
+         */
         LOGGER.debug("Reconfiguration completed");
     }
 
@@ -325,7 +355,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     }
 
     /**
-     * Cause a reconfiguration to take place when the underlying configuration file changes.
+     * Cause a reconfiguration to take place when the underlying configuration
+     * file changes.
+     * 
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     public synchronized void onChange(final Reconfigurable reconfigurable) {

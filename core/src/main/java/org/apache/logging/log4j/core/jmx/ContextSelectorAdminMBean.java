@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.status.StatusData;
-
-import java.util.List;
-
 /**
- *
+ * The MBean interface for monitoring and managing the {@code ContextSelector}.
  */
-public interface Log4jManagerMBean {
+public interface ContextSelectorAdminMBean {
+    /** Object name of this MBean. */
+    String NAME = "org.apache.logging.log4j2:type=ContextSelector";
 
-    List<LoggerContext> getLoggerContexts();
-
-    List<StatusData> getStatusData();
+    /**
+     * Returns the name of the class implementing the {@code ContextSelector}
+     * interface.
+     * 
+     * @return the name of the {@code ContextSelector} implementation class.
+     */
+    String getImplementationClassName();
 }

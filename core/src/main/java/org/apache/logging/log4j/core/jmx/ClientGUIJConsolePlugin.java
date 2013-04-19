@@ -16,29 +16,34 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+
+import com.sun.tools.jconsole.JConsolePlugin;
 
 /**
- * Preliminary implementation for testing with JBoss.
+ * Adapts the {@code ClientGUI} to the {@code JConsolePlugin} API.
  */
-public class Log4jManager {
+public class ClientGUIJConsolePlugin extends JConsolePlugin {
 
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
-
-    public List<LoggerContext> getLoggerContexts() {
-        final Log4jContextFactory factory = (Log4jContextFactory) LogManager.getFactory();
-        final ContextSelector selector = factory.getSelector();
-        return selector.getLoggerContexts();
+    @Override
+    public Map<String, JPanel> getTabs() {
+        try {
+            Client client = new Client(getContext().getMBeanServerConnection());
+            ClientGUI gui = new ClientGUI(client);
+            Map<String, JPanel> result = new HashMap<String, JPanel>();
+            result.put("Log4j2", gui);
+            return result;
+        } catch (Throwable ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
-    public List<StatusData> getStatusData() {
-        return LOGGER.getStatusData();
+    @Override
+    public SwingWorker<?, ?> newSwingWorker() {
+        return null;
     }
 }

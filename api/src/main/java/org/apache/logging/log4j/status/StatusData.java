@@ -21,22 +21,20 @@ import org.apache.logging.log4j.message.Message;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * The Status data.
  */
-public class StatusData {
+public class StatusData implements Serializable {
+    private static final long serialVersionUID = -4341916115118014017L;
 
     private final long timestamp;
-
     private final StackTraceElement caller;
-
     private final Level level;
-
     private final Message msg;
-
     private final Throwable throwable;
 
     /**

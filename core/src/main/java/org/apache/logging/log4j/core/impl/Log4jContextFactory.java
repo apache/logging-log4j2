@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.net.URI;
 
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.
@@ -43,17 +44,22 @@ public class Log4jContextFactory implements LoggerContextFactory {
         final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         if (sel != null) {
             try {
-                final Class clazz = Loader.loadClass(sel);
+                final Class<?> clazz = Loader.loadClass(sel);
                 if (clazz != null && ContextSelector.class.isAssignableFrom(clazz)) {
                     selector = (ContextSelector) clazz.newInstance();
-                    return;
                 }
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create context " + sel, ex);
             }
-
         }
-        selector = new ClassLoaderContextSelector();
+        if (selector == null) {
+            selector = new ClassLoaderContextSelector();
+        }
+        try {
+            Server.registerMBeans(selector);
+        } catch (Exception ex) {
+            LOGGER.error("Could not start JMX", ex);
+        }
     }
 
     /**
@@ -80,7 +86,6 @@ public class Log4jContextFactory implements LoggerContextFactory {
         return ctx;
     }
 
-
     /**
      * Load the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
@@ -91,7 +96,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * @return The LoggerContext.
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    URI configLocation) {
+            URI configLocation) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();

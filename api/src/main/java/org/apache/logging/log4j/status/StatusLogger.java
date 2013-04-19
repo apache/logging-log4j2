@@ -73,6 +73,10 @@ public final class StatusLogger extends AbstractLogger {
     public static StatusLogger getLogger() {
         return STATUS_LOGGER;
     }
+    
+    public Level getLevel() {
+        return logger.getLevel();
+    }
 
     public void setLevel(final Level level) {
         logger.setLevel(level);
