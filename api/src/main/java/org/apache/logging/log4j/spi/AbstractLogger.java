@@ -383,9 +383,9 @@ public abstract class AbstractLogger implements Logger {
 
     private Message entryMsg(final int count, final Object... params) {
         if (count == 0) {
-            return messageFactory.newMessage(" entry");
+            return messageFactory.newMessage("entry");
         }
-        final StringBuilder sb = new StringBuilder(" entry parms(");
+        final StringBuilder sb = new StringBuilder("entry params(");
         int i = 0;
         for (final Object parm : params) {
             if (parm != null) {
@@ -1404,9 +1404,9 @@ public abstract class AbstractLogger implements Logger {
 
     private Message toExitMsg(final Object result) {
         if (result == null) {
-            return messageFactory.newMessage(" exit");
+            return messageFactory.newMessage("exit");
         }
-        return messageFactory.newMessage(" exit with (" + result + ")");
+        return messageFactory.newMessage("exit with(" + result + ")");
     }
 
     /**

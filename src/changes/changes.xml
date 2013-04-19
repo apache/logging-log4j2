@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta5" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-211" dev="rgoers" type="fix" due-to="Nick Williams">
+        Removing extra spaces in entry and exit method output.
+      </action>
       <action issue="LOG4J2-214" dev="rgoers" type="update" due-to="Remko Popma">
         Async documentation update.
       </action>

@@ -39,11 +39,11 @@ public class LoggerTest {
     private static class TestParameterizedMessageFactory {
         // empty
     }
-    
+
     private static class TestStringFormatterMessageFactory {
         // empty
     }
-    
+
     TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
     List<String> results = logger.getEntries();
 
@@ -52,8 +52,8 @@ public class LoggerTest {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertTrue("Incorrect Entry", results.get(0).startsWith(" TRACE  entry"));
-        assertTrue("incorrect Exit", results.get(1).startsWith(" TRACE  exit"));
+        assertTrue("Incorrect Entry", results.get(0).startsWith(" TRACE entry"));
+        assertTrue("incorrect Exit", results.get(1).startsWith(" TRACE exit"));
 
     }
 
@@ -232,7 +232,7 @@ public class LoggerTest {
                 ParameterizedMessageFactory.INSTANCE);
         //TODO: How to test?
         //This test context always creates new loggers, other test context impls I tried fail other tests.
-        //assertEquals(messageFactory, testLogger2.getMessageFactory());        
+        //assertEquals(messageFactory, testLogger2.getMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
