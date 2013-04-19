@@ -761,25 +761,101 @@
 
 				<a name="Latency" />
 				<h4>Latency</h4>
-				<p>The latency comparison below is done by logging at
+				<p>Latency tests are done by logging at
 				less than saturation, measuring how long a call to Logger.log
 				takes to return. After each call to Logger.log, the test waits
 				for 10 microseconds * threadCount before continuing. 
 				Each thread logs 5 million messages.
 				</p>
+				<p>All the latency measurements below are results of tests run
+				on Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
+				@2.93Ghz with hyperthreading switched on (16 virtual cores).</p>
+				<p><img src="../images/async-latency-histogram-64-threads.png" /></p>
+				<p>Note that this is log-scale, not linear. 
+				The above graph compares the latency distributions of 
+				an asynchronous logger and a Log4j 1.2.17 Async Appender.
+				This shows the latency of one thread
+				during a test where 64 threads are logging in parallel.
+				The test was run once for the async logger and once for the
+				async appender.</p>
+			<table>
+			 <tr>
+			  <th></th>
+			  <th colspan="2" >Average latency</th>
+			  <th colspan="2">99% observations
+			  less than</th>
+			  <th colspan="2">99.99%
+			  observations less than</th>
+			 </tr>
+			 <tr>
+			  <th></th>
+			  <th>1 thread</th>
+			  <th>64 threads</th>
+			  <th>1 thread</th>
+			  <th>64 threads</th>
+			  <th>1 thread</th>
+			  <th>64 threads</th>
+			 </tr>
+			 <tr>
+			  <td>Log4j2: Loggers all async</td>
+			  <td align="right">677</td>
+			  <td align="right">4,135</td>
+			  <td align="right">1,638</td>
+			  <td align="right">4,096</td>
+			  <td align="right">8,192</td>
+			  <td align="right">16,128</td>
+			 </tr>
+			 <tr>
+			  <td>Log4j2: Loggers mixed
+			  sync/async</td>
+			  <td align="right">648</td>
+			  <td align="right">4,873</td>
+			  <td align="right">1,228</td>
+			  <td align="right">4,096</td>
+			  <td align="right">8,192</td>
+			  <td align="right">16,384</td>
+			 </tr>
+			 <tr>
+			  <td>Log4j2: Async Appender</td>
+			  <td align="right">2,423</td>
+			  <td align="right">2,117,722</td>
+			  <td align="right">4,096</td>
+			  <td align="right">67,108,864</td>
+			  <td align="right">16,384</td>
+			  <td align="right">268,435,456</td>
+			 </tr>
+			 <tr>
+			  <td>Log4j1: Async Appender</td>
+			  <td align="right">1,562</td>
+			  <td align="right">1,781,404</td>
+			  <td align="right">4,096</td>
+			  <td align="right">109,051,904</td>
+			  <td align="right">16,384</td>
+			  <td align="right">268,435,456</td>
+			 </tr>
+			 <tr>
+			  <td>Logback: Async Appender</td>
+			  <td align="right">2,123</td>
+			  <td align="right">2,079,020</td>
+			  <td align="right">3,276</td>
+			  <td align="right">67,108,864</td>
+			  <td align="right">14,745</td>
+			  <td align="right">268,435,456</td>
+			 </tr>
+			<caption align="top">Latency of a call to Logger.log() in nanoseconds</caption>
+			</table>
 				<p>
-				<img src="../images/async-average-latency.png" />
-				</p>
-				<p>
-				Note that the scale of the latency comparison graphs is 
-				logarithmic, not linear.
-				That makes it a bit difficult to see, but the average latency of
-				asynchronous loggers is half to one third of the latency of
-				ArrayBlockingQueue-based asynchronous appenders in scenarios
-				up to 8 threads. With more threads, the average latency of
+				The latency comparison graph below is also log-scale, 
+				and shows the average latency of asynchronous loggers and 
+				ArrayBlockingQueue-based asynchronous appenders
+				in scenarios with more and more threads running in parallel.
+				Up to 8 threads asynchronous appenders have comparable
+				average latency, two or three times that of asynchronous loggers.
+				With more threads, the average latency of
 				asynchronous appenders is orders of magnitude larger than
 				asynchronous loggers.
 				</p>
+				<p><img src="../images/async-average-latency.png" /></p>
 				<p>
 				Applications interested in low latency often care not only about 
 				average latency, but also about worst-case latency. 
@@ -787,9 +863,9 @@
 				better when comparing the maximum latency of 99.99% of  
 				observations with other logging methods.
 				When increasing the number of threads
-				the worst case latency of asynchronous loggers remains more or
-				less the same (around 10-20 microseconds) 
-				where Asynchronous Appenders start experiencing worst-case
+				the vast majority of latency measurements for asynchronous 
+				loggers stay in the 10-20 microseconds range
+				where Asynchronous Appenders start experiencing many
 				latency spikes in the 100 millisecond range, a difference of
 				four orders of magnitude.
 				</p>
