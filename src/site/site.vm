@@ -156,7 +156,7 @@
 	#end
 #end
 ##
-#macro ( menuItem $item )
+#macro ( menuItem $item $isComponentDocumentation )
 	#set ( $collapse = "none" )
 	#set ( $currentItemHref = $PathTool.calculateLink( $item.href, $relativePath ) )
 	#set ( $currentItemHref = $currentItemHref.replaceAll( '\\', '/' ) )
@@ -184,33 +184,51 @@
 	#if ($thisProjectDir == $PathTool.getDirectoryComponent( $item.href ))
 	#set ($active = " active")
 	#end
-	<li class="$collapse$active">
-	#link($currentItemHref $item.name $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )
-	#if ( $item && $item.items && $item.items.size() > 0 )
-		#if ( $collapse == "expanded" )
-			<ul>
-				#foreach( $subitem in $item.items )
-					#menuItem( $subitem )
-				#end
-			</ul>
+	#if (${project.artifactId} != "log4j" && $isComponentDocumentation && 
+				($item.href == "team-list.html" || $item.href == "mail-lists.html" 
+				|| $item.href == "issue-tracking.html" || $item.href == "license.html" 
+				|| $item.href == "source-repository.html"))
+	<!-- Removing overall project item $item.name from component-specific menu -->
+	#else
+		#set ($thisItemName = $item.name)
+		#if (${project.artifactId} != "log4j" && $isComponentDocumentation )
+		#set ($thisItemName = $item.name.replace("Project Information", "Component Project"))
+		#set ($thisItemName = $item.name.replace("Project", "Component"))
 		#end
-	#end
-	</li>
+		<li class="$collapse$active">
+		#link($currentItemHref $thisItemName $item.target $item.img $item.position $item.alt $item.border $item.width $item.height )
+		#if ( $item && $item.items && $item.items.size() > 0 )
+			#if ( $collapse == "expanded" )
+				<ul>
+					#foreach( $subitem in $item.items )
+						#menuItem( $subitem $isComponentDocumentation )
+					#end
+				</ul>
+			#end
+		#end
+		</li>
+ 	#end
 #end
 ##
 #macro ( mainMenu $menus )
 	#foreach( $menu in $menus )
 		<ul class="nav nav-list">
-		#if ( $menu.name )
+		#set ($isComponentDocumentation = false)
+ 		#if ( $menu.name )
+			#set ( $menuName = $menu.name )
+			#if ( $menuName == "Project Documentation" )
+			#set ( $menuName = "Component Documentation" )
+			#set ($isComponentDocumentation = true)
+			#end
 			#if ( $menu.img )
-			 <li class="nav-header"><i class="$menu.img"></i>$menu.name</li>
+			 <li class="nav-header"><i class="$menu.img"></i>$menuName</li>
 			#else
-			 <li class="nav-header">$menu.name</li>
+			 <li class="nav-header">$menuName</li>
 			#end
 		#end
 		#if ( $menu.items && $menu.items.size() > 0 )
 			#foreach( $item in $menu.items )
-				#menuItem( $item )
+				#menuItem( $item $isComponentDocumentation )
 			#end
 		#end
 		</ul>
