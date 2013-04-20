@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -51,7 +52,10 @@ public class SocketAppenderTest {
 
     private static final String HOST = "localhost";
     private static final String PORT = "8199";
-    private static final int PORTNUM = Integer.parseInt(PORT);
+    private static final String DYN_PORT = "8300";
+    private static final String ERROR_PORT = "8301";
+    private static final int PORTNUM1 = Integer.parseInt(PORT);
+    private static final int PORTNUM2 = Integer.parseInt(DYN_PORT);
 
     private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<LogEvent>(10);
 
@@ -66,7 +70,7 @@ public class SocketAppenderTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
-        tcp = new TCPSocketServer();
+        tcp = new TCPSocketServer(PORTNUM1);
         tcp.start();
         udp = new UDPSocketServer();
         udp.start();
@@ -97,7 +101,7 @@ public class SocketAppenderTest {
     public void testTCPAppender() throws Exception {
 
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
-            "Test", null, null, null, null, null, null);
+            "false", "Test", null, null, null, null, null, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -125,7 +129,7 @@ public class SocketAppenderTest {
     public void testUDPAppender() throws Exception {
 
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "udp", "-1",
-            "Test", null, null, null, null, null, null);
+            "false", "Test", null, null, null, null, null, null);
         appender.start();
 
         // set appender on root and set level to debug
@@ -139,13 +143,52 @@ public class SocketAppenderTest {
         assertTrue("Message not delivered via UDP", udpCount > 0);
     }
 
+    @Test
+    public void testTcpAppenderDeadlock() throws Exception {
+
+        final SocketAppender appender = SocketAppender.createAppender("localhost", DYN_PORT, "tcp", "10000",
+                "false", "Test", null, null, null, null, null, null);
+            appender.start();
+            // set appender on root and set level to debug
+            root.addAppender(appender);
+            root.setAdditive(false);
+            root.setLevel(Level.DEBUG);
+
+            new TCPSocketServer(PORTNUM2).start();
+
+            root.debug("This message is written because a deadlock never.");
+
+            LogEvent event = list.poll(3, TimeUnit.SECONDS);
+            assertNotNull("No event retrieved", event);
+    }
+
+    @Test
+    public void testTcpAppenderNoWait() throws Exception {
+
+        final SocketAppender appender = SocketAppender.createAppender("localhost", ERROR_PORT, "tcp", "10000",
+            "true", "Test", null, "false", null, null, null, null);
+        appender.start();
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setAdditive(false);
+        root.setLevel(Level.DEBUG);
+
+        try {
+            root.debug("This message is written because a deadlock never.");
+            fail("No Exception was thrown");
+        } catch (Exception ex) {
+            // Failure is expected.
+        }
+    }
+
+
     public static class UDPSocketServer extends Thread {
         private final DatagramSocket sock;
         private boolean shutdown = false;
         private Thread thread;
 
         public UDPSocketServer() throws IOException {
-            this.sock = new DatagramSocket(PORTNUM);
+            this.sock = new DatagramSocket(PORTNUM1);
         }
 
         public void shutdown() {
@@ -178,8 +221,8 @@ public class SocketAppenderTest {
         private final ServerSocket sock;
         private boolean shutdown = false;
 
-        public TCPSocketServer() throws IOException {
-            this.sock = new ServerSocket(PORTNUM);
+        public TCPSocketServer(int port) throws IOException {
+            this.sock = new ServerSocket(port);
         }
 
         public void shutdown() {

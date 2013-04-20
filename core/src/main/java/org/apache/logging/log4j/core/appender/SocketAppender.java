@@ -71,6 +71,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @param portNum The port to connect to on the target host.
      * @param protocol The Protocol to use.
      * @param delay The interval in which failed writes should be retried.
+     * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
@@ -78,7 +79,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
-     * @param config The Configuration               
+     * @param config The Configuration
      * @return A SocketAppender.
      */
     @PluginFactory
@@ -86,6 +87,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
+                                                @PluginAttr("immediateFail") final String immediateFail,
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
                                                 @PluginAttr("suppressExceptions") final String suppress,
@@ -97,6 +99,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         if (layout == null) {
@@ -110,7 +113,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
 
         final String prot = protocol != null ? protocol : Protocol.TCP.name();
 
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay);
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail);
         if (manager == null) {
             return null;
         }
@@ -119,11 +122,11 @@ public class SocketAppender extends AbstractOutputStreamAppender {
     }
 
     protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port,
-                                                               final int delay) {
+                                                               final int delay, final boolean immediateFail) {
         final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:
-                return TCPSocketManager.getSocketManager(host, port, delay);
+                return TCPSocketManager.getSocketManager(host, port, delay, immediateFail);
             case UDP:
                 return DatagramSocketManager.getSocketManager(host, port);
             default:

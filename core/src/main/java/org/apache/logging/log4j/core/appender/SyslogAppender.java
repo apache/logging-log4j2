@@ -52,6 +52,7 @@ public class SyslogAppender extends SocketAppender {
      * @param portNum The port to connect to on the target host.
      * @param protocol The Protocol to use.
      * @param delay The interval in which failed writes should be retried.
+     * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
@@ -84,6 +85,7 @@ public class SyslogAppender extends SocketAppender {
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
+                                                @PluginAttr("immediateFail") final String immediateFail,
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
                                                 @PluginAttr("suppressExceptions") final String suppress,
@@ -111,6 +113,7 @@ public class SyslogAppender extends SocketAppender {
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final Layout<String> layout = RFC5424.equalsIgnoreCase(format) ?
@@ -123,7 +126,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
         final String prot = protocol != null ? protocol : Protocol.UDP.name();
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay);
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail);
         if (manager == null) {
             return null;
         }

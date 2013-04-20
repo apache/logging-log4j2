@@ -54,6 +54,8 @@ public class TCPSocketManager extends AbstractSocketManager {
 
     private final boolean retry;
 
+    private final boolean immediateFail;
+
     /**
      * The Constructor.
      * @param name The unique name of this connection.
@@ -65,10 +67,11 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @param delay Reconnection interval.
      */
     public TCPSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr,
-                            final String host, final int port, final int delay) {
+                            final String host, final int port, final int delay, final boolean immediateFail) {
         super(name, os, addr, host, port);
         this.reconnectionDelay = delay;
         this.socket = sock;
+        this.immediateFail = immediateFail;
         retry = delay > 0;
         if (sock == null) {
             connector = new Reconnector(this);
@@ -85,7 +88,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @param delay The interval to pause between retries.
      * @return A TCPSocketManager.
      */
-    public static TCPSocketManager getSocketManager(final String host, int port, int delay) {
+    public static TCPSocketManager getSocketManager(final String host, int port, int delay, boolean immediateFail) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -95,13 +98,14 @@ public class TCPSocketManager extends AbstractSocketManager {
         if (delay == 0) {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
-        return (TCPSocketManager) getManager("TCP:" + host + ":" + port, new FactoryData(host, port, delay), FACTORY);
+        return (TCPSocketManager) getManager("TCP:" + host + ":" + port,
+            new FactoryData(host, port, delay, immediateFail), FACTORY);
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
+    protected void write(final byte[] bytes, final int offset, final int length)  {
         if (socket == null) {
-            if (connector != null) {
+            if (connector != null && !immediateFail) {
                 connector.latch();
             }
             if (socket == null) {
@@ -109,17 +113,19 @@ public class TCPSocketManager extends AbstractSocketManager {
                 throw new AppenderRuntimeException(msg);
             }
         }
-        try {
-            getOutputStream().write(bytes, offset, length);
-        } catch (final IOException ex) {
-            if (retry && connector == null) {
-                connector = new Reconnector(this);
-                connector.setDaemon(true);
-                connector.setPriority(Thread.MIN_PRIORITY);
-                connector.start();
+        synchronized (this) {
+            try {
+                getOutputStream().write(bytes, offset, length);
+            } catch (final IOException ex) {
+                if (retry && connector == null) {
+                    connector = new Reconnector(this);
+                    connector.setDaemon(true);
+                    connector.setPriority(Thread.MIN_PRIORITY);
+                    connector.start();
+                }
+                final String msg = "Error writing to " + getName();
+                throw new AppenderRuntimeException(msg, ex);
             }
-            final String msg = "Error writing to " + getName();
-            throw new AppenderRuntimeException(msg, ex);
         }
     }
 
@@ -146,7 +152,7 @@ public class TCPSocketManager extends AbstractSocketManager {
         result.put("direction", "out");
         return result;
     }
-    
+
     /**
      * Handles reconnecting to a Thread.
      */
@@ -214,11 +220,13 @@ public class TCPSocketManager extends AbstractSocketManager {
         private final String host;
         private final int port;
         private final int delay;
+        private final boolean immediateFail;
 
-        public FactoryData(final String host, final int port, final int delay) {
+        public FactoryData(final String host, final int port, final int delay, final boolean immediateFail) {
             this.host = host;
             this.port = port;
             this.delay = delay;
+            this.immediateFail = immediateFail;
         }
     }
 
@@ -240,7 +248,8 @@ public class TCPSocketManager extends AbstractSocketManager {
             try {
                 final Socket socket = new Socket(data.host, data.port);
                 os = socket.getOutputStream();
-                return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay);
+                return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay,
+                    data.immediateFail);
             } catch (final IOException ex) {
                 LOGGER.error("TCPSocketManager (" + name + ") " + ex);
                 os = new ByteArrayOutputStream();
@@ -248,7 +257,7 @@ public class TCPSocketManager extends AbstractSocketManager {
             if (data.delay == 0) {
                 return null;
             }
-            return new TCPSocketManager(name, os, null, address, data.host, data.port, data.delay);
+            return new TCPSocketManager(name, os, null, address, data.host, data.port, data.delay, data.immediateFail);
         }
     }
 }

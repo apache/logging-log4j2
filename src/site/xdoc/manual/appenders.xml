@@ -1373,7 +1373,7 @@
 					instead of a
 					<tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
-					FileAppender with "bufferedIO=true" in our 
+					FileAppender with "bufferedIO=true" in our
 					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
 					Similar to the FileAppender,
 					FastFileAppender uses a FastFileManager to actually perform the
@@ -1485,9 +1485,9 @@
 					<tt>BufferedOutputStream</tt>.
 					We saw a 20-200% performance improvement compared to
 					RollingFileAppender with "bufferedIO=true"
-					in our 
+					in our
 					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
-					
+
 					The FastRollingFileAppender writes
 					to the File named in the
 					fileName parameter
@@ -1496,7 +1496,7 @@
 					and the RolloverPolicy.
 
 					Similar to the RollingFileAppender,
-					FastRollingFileAppender uses a FastRollingFileManager 
+					FastRollingFileAppender uses a FastRollingFileManager
 					to actually perform the
 					file I/O and perform the rollover. While FastRollingFileAppender
 					from different Configurations cannot be
@@ -1569,7 +1569,7 @@
 							<a
 								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
 								SimpleDateFormat</a>
-							
+
 							and/or a %i which represents an integer counter. The pattern
 							also supports interpolation at
 							runtime so any of the Lookups (such
@@ -1980,6 +1980,12 @@
               <td>The name or address of the system that is listening for log events. This parameter is required.</td>
             </tr>
             <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              socket is not available.</td>
+            </tr>
+            <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
               <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
@@ -2100,6 +2106,12 @@
               <td>String</td>
               <td>The default structured data id to use when formatting according to RFC 5424. If the LogEvent contains
                 a StructuredDataMessage the id from the Message will be used instead of this value.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+                socket is not available.</td>
             </tr>
             <tr>
               <td>immediateFlush</td>
