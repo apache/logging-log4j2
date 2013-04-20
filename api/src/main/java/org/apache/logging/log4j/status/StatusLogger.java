@@ -73,7 +73,7 @@ public final class StatusLogger extends AbstractLogger {
     public static StatusLogger getLogger() {
         return STATUS_LOGGER;
     }
-    
+
     public Level getLevel() {
         return logger.getLevel();
     }
@@ -224,7 +224,8 @@ public final class StatusLogger extends AbstractLogger {
         return isEnabled(level, marker);
     }
 
-    protected boolean isEnabled(final Level level, final Marker marker) {
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker) {
         if (listeners.size() > 0) {
             return true;
         }

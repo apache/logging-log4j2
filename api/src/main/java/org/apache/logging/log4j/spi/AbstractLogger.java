@@ -1162,6 +1162,10 @@ public abstract class AbstractLogger implements Logger {
         return isEnabled(Level.WARN, marker, (Object) null, null);
     }
 
+    public boolean isEnabled(final Level level, final Marker marker) {
+        return isEnabled(level, marker, (Object) null, null);
+    }
+
     /**
      * Logs a message with the specific Marker at the given level.
      *

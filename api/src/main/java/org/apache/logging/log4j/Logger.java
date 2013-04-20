@@ -156,7 +156,7 @@ public interface Logger {
    * @param t       the exception to log, including its stack trace.
    */
   void debug(String message, Throwable t);
-  
+
   /**
    * Logs entry to a method.
    */
@@ -697,6 +697,15 @@ public interface Logger {
    *         {@link Level#WARN WARN}, {@code false} otherwise.
    */
   boolean isWarnEnabled(Marker marker);
+
+    /**
+     * Checks whether this logger is enabled at the specified level and an optional Marker.
+     * @param level The Level to check.
+     * @param marker The marker data specific to this log statement.
+     * @return boolean - {@code true} if this Logger is enabled for level
+     *         {@link Level#WARN WARN}, {@code false} otherwise.
+     */
+  boolean isEnabled(Level level, Marker marker);
 
   /**
    * Logs a message with the specific Marker at the given level.
