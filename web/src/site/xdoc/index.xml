@@ -55,7 +55,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j web components require at least Java 5 and at least Servlet 2.5 (or Java EE 5).
+             The Log4j web components require at least Java 6 and at least Servlet 2.5 (or Java EE 5).
           </p>
         </section>
 

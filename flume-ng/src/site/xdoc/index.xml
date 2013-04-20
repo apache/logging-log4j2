@@ -246,7 +246,7 @@
 
         <section name="Requirements">
            <p>
-             The Flume NG Appender requires at least Java 5.
+             The Flume NG Appender requires at least Java 6.
           </p>
         </section>
 

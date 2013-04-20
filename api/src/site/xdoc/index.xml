@@ -34,7 +34,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2 API requires at least Java 5.
+             The Log4j 2 API requires at least Java 6.
           </p>
         </section>
 
