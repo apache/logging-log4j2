@@ -89,7 +89,7 @@ public class SimpleLogger extends AbstractLogger {
     public void setStream(final PrintStream stream) {
         this.stream = stream;
     }
-    
+
     public Level getLevel() {
         return level;
     }

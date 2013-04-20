@@ -175,6 +175,7 @@ public class LogManager {
      * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
      * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
      * returned. If true then only a single LoggerContext will be returned.
+     * @param configLocation The URI for the configuration to use.
      * @return a LoggerContext.
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
