@@ -7,6 +7,14 @@ To build the site, from a command line, run:
 mvn clean install
 mvn site
 
+On Windows, use a local staging directory, for example:
+
+mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
+
+On UNIX, use a local staging directory, for example:
+
+mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j
+
 To test, run:
 
 mvn test
