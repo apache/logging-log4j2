@@ -19,13 +19,13 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>Build and Use</title>
+		<title>Building and Using Log4J</title>
 	</properties>
 
 	<body>
-		<section name="Building and Using Log4j 2.x">
+		<section name="Building and Using Log4j">
 
-      <subsection name="Building">
+      <subsection name="Building Log4J">
         <p>
           Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
           most current source code can be found at
@@ -33,9 +33,31 @@
           obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
         </p>
         <p>
-          Log4j 2.x uses Maven 2 or 3 as its build tool. To build Log4j simply run "mvn install" from the root
-          directory. Then to build the site, run "mvn site". To rebuild only what's changed and execute the tests, run
-          "mvn test". To rebuild from scratch, add "clean", for example: "mvn clean test".
+          Log4j 2.x uses Maven 2 or 3 as its build tool. To build and install Log4j in your local Maven cache, from 
+          the root directory run:
+        </p>
+        <p>
+          <pre>mvn install</pre>
+        </p>
+        <p>
+          Then to build the full site, you must use a local staging directory:
+        </p>
+        <p>
+          <pre>mvn site
+[Windows] mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
+[Unix] mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j</pre>
+        </p>
+        <p>
+          To rebuild only what's changed and execute the tests, run:
+        </p>
+        <p>
+          <pre>mvn test</pre>
+        </p>
+        <p>
+          To rebuild from scratch, add "clean", for example:
+        </p>
+        <p>
+          <pre>mvn clean test</pre>
         </p>
       </subsection>
       <subsection name="Using Log4J on your classpath">
