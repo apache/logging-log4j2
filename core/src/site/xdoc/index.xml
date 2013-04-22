@@ -45,7 +45,8 @@
           <li>JSON configuration requires the Jackson JSON-processor.</li>
           <li>Async Loggers require the LMAX Disruptor.</li>
           <li>SMTPAppender requires Javax Mail.</li>
-          <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like geronimo-jms.</li>
+          <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like  
+             <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
           <li>Windows color support requires Jansi.</li>
           </ul>
         </section>
