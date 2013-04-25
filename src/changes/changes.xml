@@ -22,6 +22,8 @@
   </properties>
 
   <body>
+    <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
+    </release>
     <release version="2.0-beta5" date="2013-04-20" description="Bug fixes and enhancements">
       <action issue="LOG4J2-205" dev="rgoers" type="fix">
         Fix deadlock in SocketAppender. Added option to not wait for socket reconnect.
