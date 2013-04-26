@@ -206,12 +206,13 @@ public class PluginManager {
         final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
             new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
         while (resources.hasMoreElements()) {
+            DataInputStream dis = null;
             try {
                 final URL url = resources.nextElement();
                 LOGGER.debug("Found Plugin Map at {}", url.toExternalForm());
                 final InputStream is = url.openStream();
                 final BufferedInputStream bis = new BufferedInputStream(is);
-                final DataInputStream dis = new DataInputStream(bis);
+                dis = new DataInputStream(bis);
                 final int count = dis.readInt();
                 for (int j = 0; j < count; ++j) {
                     final String type = dis.readUTF();
@@ -231,10 +232,15 @@ public class PluginManager {
                     }
                     map.putIfAbsent(type, types);
                 }
-                dis.close();
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to preload plugins", ex);
                 return null;
+            } finally {
+                try {
+                    dis.close();
+                } catch (Exception ignored) {
+                    // nothing we can do here...
+                }
             }
         }
         return map.size() == 0 ? null : map;
@@ -242,12 +248,13 @@ public class PluginManager {
 
     private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
         final String fileName = rootDir + PATH + FILENAME;
+        DataOutputStream dos = null;
         try {
             final File file = new File(rootDir + PATH);
             file.mkdirs();
             final FileOutputStream fos = new FileOutputStream(fileName);
             final BufferedOutputStream bos = new BufferedOutputStream(fos);
-            final DataOutputStream dos = new DataOutputStream(bos);
+            dos = new DataOutputStream(bos);
             dos.writeInt(map.size());
             for (final Map.Entry<String, ConcurrentMap<String, PluginType>> outer : map.entrySet()) {
                 dos.writeUTF(outer.getKey());
@@ -261,9 +268,14 @@ public class PluginManager {
                     dos.writeBoolean(pt.isDeferChildren());
                 }
             }
-            dos.close();
         } catch (final Exception ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                dos.close();
+            } catch (Exception ignored) {
+                // nothing we can do here...
+            }
         }
     }
 
