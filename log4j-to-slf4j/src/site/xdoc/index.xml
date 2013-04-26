@@ -36,9 +36,7 @@
 
         <section name="Requirements">
            <p>
-             The Log4j 2 to SLF4J adapter requires at least Java 5. Use of this adapter together with the
-             SLF4J bridge should never be attempted as it will cause a events to endlessly be routed between
-             SLF4J and Log4j 2.
+             The Log4j 2 to SLF4J adapter requires at least Java 6.
           </p>
         </section>
 
@@ -47,6 +45,12 @@
           Include this jar, the SLF4J jar(s) and an SLF4J logging implementation jar together. Configure
           the logging implementation as required.
         </p>
+           <p>
+             <b><em>Use of the SLF4J adapter (log4j-to-slf4j-2.0.jar) together with 
+             the SLF4J bridge (log4j-slf4j-impl-2.0.jar) should 
+             never be attempted as it will cause events to endlessly be routed between
+             SLF4J and Log4j 2.</em></b>
+          </p>
       </section>
 
     </body>

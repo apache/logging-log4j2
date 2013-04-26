@@ -60,7 +60,7 @@
 				</li>
 				<li><b>LMAX Disruptor technology</b>. The Asynchronous Loggers
 				internally
-				use the <a href="#UnderTheHood">Disruptor</a> inter-thread
+				use the <a href="#UnderTheHood">Disruptor</a> lock-free inter-thread
 				communication library instead of queues, resulting in higher
 				throughput and lower latency.</li>
 			</ul>
@@ -126,7 +126,7 @@
 				<p>
 					This is simplest to configure and gives the best performance.
 					To make all loggers asynchronous,
-					add disruptor-3.0.0.jar to the classpath
+					add disruptor-3.0.0.jar or higher to the classpath
 					and set the system property <tt>Log4jContextSelector</tt>
 					to
 					<tt>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</tt>.
@@ -302,7 +302,7 @@
 			</subsection>
 			<a name="MixedSync-Async" />
 			<subsection name="Mixing Synchronous and Asynchronous Loggers">
-			<p><i>Requires disruptor-3.0.0.jar on the classpath.</i></p>
+			<p><i>Requires disruptor-3.0.0.jar or higher on the classpath.</i></p>
 				<p>
 					Synchronous and asynchronous loggers can be combined in
 					configuration. This gives you more flexibility at the cost
