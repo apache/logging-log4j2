@@ -116,7 +116,7 @@
     <Log4jReleaseVersion>2.0-beta5</Log4jReleaseVersion>
     <Log4jReleaseCount>seventh</Log4jReleaseCount>
     <jackson.version>1.9.2</jackson.version>
-    <disruptor.version>3.0.0</disruptor.version>
+    <disruptor.version>3.0.1</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
     <osgi.export>org.apache.logging.log4j.*;version=${project.version};-noimport:=true</osgi.export>
