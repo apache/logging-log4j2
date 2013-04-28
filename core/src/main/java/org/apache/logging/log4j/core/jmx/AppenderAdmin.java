@@ -50,7 +50,12 @@ public class AppenderAdmin implements AppenderAdminMBean {
         }
     }
 
-    /** @see AppenderAdminMBean#PATTERN */
+    /**
+     * Returns the {@code ObjectName} of this mbean.
+     * 
+     * @return the {@code ObjectName}
+     * @see AppenderAdminMBean#PATTERN
+     */
     public ObjectName getObjectName() {
         return objectName;
     }

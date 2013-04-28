@@ -43,7 +43,12 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
         }
     }
 
-    /** @see ContextSelectorAdminMBean#NAME */
+    /**
+     * Returns the {@code ObjectName} of this mbean.
+     * 
+     * @return the {@code ObjectName}
+     * @see ContextSelectorAdminMBean#NAME
+     */
     public ObjectName getObjectName() {
         return objectName;
     }

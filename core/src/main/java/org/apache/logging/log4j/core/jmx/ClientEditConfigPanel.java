@@ -40,6 +40,8 @@ import javax.swing.JTextField;
  */
 public class ClientEditConfigPanel extends JPanel {
     private static final long serialVersionUID = -7544651740950723394L;
+    private static final int HORIZONTAL_GAP = 20;
+    private static final int ERR_MSG_INITIAL_BUFFER_SIZE = 2048;
     private static final int LOCATION_TEXT_COLS = 50;
     private static final int CONFIG_TEXT_COLS = 60;
     private static final int CONFIG_TEXT_ROWS = 20;
@@ -86,6 +88,12 @@ public class ClientEditConfigPanel extends JPanel {
         }
     };
 
+    public ClientEditConfigPanel(LoggerContextAdminMBean contextAdmin) {
+        this.contextAdmin = contextAdmin;
+        createWidgets();
+        populateWidgets();
+    }
+
     private void handle(String msg, Exception ex) {
         StringWriter sr = new StringWriter(BUFFER_SIZE);
         PrintWriter pw = new PrintWriter(sr);
@@ -101,17 +109,11 @@ public class ClientEditConfigPanel extends JPanel {
                 "Reconfiguration complete", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public ClientEditConfigPanel(LoggerContextAdminMBean contextAdmin) {
-        this.contextAdmin = contextAdmin;
-        createWidgets();
-        populateWidgets();
-    }
-
     private void populateWidgets() {
         try {
             configTextArea.setText(contextAdmin.getConfigText());
         } catch (Exception ex) {
-            StringWriter sw = new StringWriter(2048);
+            StringWriter sw = new StringWriter(ERR_MSG_INITIAL_BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));
             configTextArea.setText(sw.toString());
         }
@@ -139,7 +141,7 @@ public class ClientEditConfigPanel extends JPanel {
         north.add(locationLabel);
         north.add(locationTextField);
         north.add(buttonSendLocation);
-        north.add(Box.createRigidArea(new Dimension(20, 0)));
+        north.add(Box.createRigidArea(new Dimension(HORIZONTAL_GAP, 0)));
         north.add(buttonSendConfigText);
 
         this.setLayout(new BorderLayout());

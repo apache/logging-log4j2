@@ -43,7 +43,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
      * 
-     * @param executor
+     * @param executor used to send notifications asynchronously
      */
     public StatusLoggerAdmin(Executor executor) {
         super(executor, createNotificationInfo());
@@ -56,8 +56,8 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        String[] notifTypes = new String[] { NOTIF_TYPE_DATA,
-                NOTIF_TYPE_MESSAGE };
+        String[] notifTypes = new String[] {//
+        NOTIF_TYPE_DATA, NOTIF_TYPE_MESSAGE };
         String name = Notification.class.getName();
         String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
@@ -107,7 +107,12 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
         sendNotification(notifData);
     }
 
-    /** @see StatusLoggerAdminMBean#NAME */
+    /**
+     * Returns the {@code ObjectName} of this mbean.
+     * 
+     * @return the {@code ObjectName}
+     * @see StatusLoggerAdminMBean#NAME
+     */
     public ObjectName getObjectName() {
         return objectName;
     }
