@@ -58,7 +58,7 @@ public class MyApp {
         logger.entry(param);
 
         if (logger.isDebugEnabled()) {
-          logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols);
+          logger.debug(UPDATE_MARKER, "UPDATE {} SET {}", table, formatCols());
 
         return logger.exit();
     }
