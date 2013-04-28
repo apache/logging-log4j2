@@ -44,6 +44,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import org.apache.logging.log4j.core.helpers.Assert;
+
 /**
  * GUI that connects to a Java process via JMX and allows the user to view and
  * modify the log4j2 configuration, as well as monitor status logs.

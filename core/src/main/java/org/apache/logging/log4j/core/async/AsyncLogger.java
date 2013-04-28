@@ -26,6 +26,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.helpers.Clock;
+import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;

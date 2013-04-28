@@ -274,13 +274,13 @@
 						</td>
 					</tr>
 					<tr>
-						<td>AsyncLogger.Clock</td>
+						<td>log4j.Clock</td>
 						<td>
 							<tt>SystemClock</tt>
 						</td>
 						<td>
 							Implementation of the
-							<tt>org.apache.logging.log4j.core.async.Clock</tt>
+							<tt>org.apache.logging.log4j.core.helpers.Clock</tt>
 							interface that is used for timestamping the log 
 							events when all loggers are asynchronous.
 							<br />
