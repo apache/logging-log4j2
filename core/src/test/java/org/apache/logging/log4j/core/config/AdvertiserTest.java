@@ -92,7 +92,7 @@ public class AdvertiserTest {
     public void testAdvertisementsFound() {
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
     }
-    
+
     @Test
     public void testAdvertisementsRemovedOnConfigStop() {
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
@@ -102,9 +102,9 @@ public class AdvertiserTest {
 
         Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
         assertTrue("Entries found: " + entries, entries.isEmpty());
-        
+
         //reconfigure for subsequent testing
-        ctx.reconfigure();
+        ctx.start();
     }
 
     @Test
@@ -116,8 +116,8 @@ public class AdvertiserTest {
 
         Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
         assertTrue("Entries found: " + entries, entries.isEmpty());
-        
-        ctx.reconfigure();
+
+        ctx.start();
 
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
     }
