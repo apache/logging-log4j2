@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.web;
 
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.lang.reflect.Method;
 
 /**
  * Saves the LoggerContext into the ServletContext as an attribute.
@@ -72,23 +71,12 @@ public class Log4jContextListener implements ServletContextListener {
     }
 
     private ClassLoader getClassLoader(final ServletContext context) {
-        final Method[] methods = context.getClass().getMethods();
-        Method getClassLoader = null;
-        for (final Method method : methods) {
-            if (method.getName().equals("getClassLoader")) {
-                getClassLoader = method;
-                break;
-            }
+        try {
+            // if container is Servlet 3.0, use its getClassLoader method
+            return (ClassLoader)context.getClass().getMethod("getClassLoader").invoke(context);
+        } catch (Exception ignore) {
+            // otherwise, use this class's class loader
+            return Log4jContextListener.class.getClassLoader();
         }
-
-        if (getClassLoader != null) {
-            try {
-                return (ClassLoader) getClassLoader.invoke(context, null);
-            } catch (final Exception ex) {
-                // Ignore the exception
-            }
-        }
-
-        return Log4jContextListener.class.getClassLoader();
     }
 }

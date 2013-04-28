@@ -38,7 +38,7 @@ public class TimeFilterTest {
         filter.start();
         assertTrue(filter.isStarted());
         final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("America/LosAngeles"));
-        cal.set(Calendar.HOUR_OF_DAY, 02);
+        cal.set(Calendar.HOUR_OF_DAY, 2);
         long tod = cal.getTimeInMillis();
         LogEvent event = new Log4jLogEvent(null, null, null, null, null, null, null, null, null, null, tod);
         assertTrue(filter.filter(null, Level.ERROR, null, null, (Throwable)null) == Filter.Result.NEUTRAL);
@@ -47,7 +47,7 @@ public class TimeFilterTest {
         tod = cal.getTimeInMillis();
         event = new Log4jLogEvent(null, null, null, null, null, null, null, null, null, null, tod);
         assertTrue(filter.filter(event) == Filter.Result.NEUTRAL);
-        cal.set(Calendar.HOUR_OF_DAY, 04);
+        cal.set(Calendar.HOUR_OF_DAY, 4);
         tod = cal.getTimeInMillis();
         event = new Log4jLogEvent(null, null, null, null, null, null, null, null, null, null, tod);
         assertTrue(filter.filter(event) == Filter.Result.DENY);

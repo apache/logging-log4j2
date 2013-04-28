@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-221" dev-"rgoers" type="fix" due-to="Nick Williams">
+        Remove hundreds of compiler warnings.
+      </action>
       <action issue="LOG4J2-215" dev="rpopma" type="fix">
         Various small documentation fixes.
       </action>

@@ -24,10 +24,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,8 +35,6 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,11 +44,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class SocketServerTest {
 
-    private static final String HOST = "localhost";
     private static final String PORT = "8199";
     private static final int PORTNUM = Integer.parseInt(PORT);
-
-    private static BlockingQueue<LogEvent> list = new ArrayBlockingQueue<LogEvent>(10);
 
     private static SocketServer tcp;
     private static Thread thread;
@@ -94,7 +89,7 @@ public class SocketServerTest {
         final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
             null, "Test", null, null, null, socketFilter, null, null);
         appender.start();
-        final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
+        final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilter, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");

@@ -30,18 +30,21 @@ import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Protocol;
 
+import java.io.Serializable;
+
 /**
  * The Syslog Appender.
  */
 @Plugin(name = "Syslog", type = "Core", elementType = "appender", printObject = true)
-public class SyslogAppender extends SocketAppender {
+public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
     private static final String BSD = "bsd";
 
     private static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(final String name, final Layout layout, final Filter filter, final boolean handleException,
-                             final boolean immediateFlush, final AbstractSocketManager manager, Advertiser advertiser) {
+    protected SyslogAppender(final String name, final Layout<T> layout, final Filter filter,
+                             final boolean handleException, final boolean immediateFlush,
+                             final AbstractSocketManager manager, Advertiser advertiser) {
         super(name, layout, filter, manager, handleException, immediateFlush, advertiser);
 
     }
@@ -81,7 +84,7 @@ public class SyslogAppender extends SocketAppender {
      * @return A SyslogAppender.
      */
     @PluginFactory
-    public static SyslogAppender createAppender(@PluginAttr("host") final String host,
+    public static <S extends Serializable> SyslogAppender<S> createAppender(@PluginAttr("host") final String host,
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
@@ -116,10 +119,11 @@ public class SyslogAppender extends SocketAppender {
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
-        final Layout<String> layout = RFC5424.equalsIgnoreCase(format) ?
+        @SuppressWarnings("unchecked")
+        final Layout<S> layout = (Layout<S>)(RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
                 escapeNL, appName, msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
-            SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName);
+            SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
 
         if (name == null) {
             LOGGER.error("No name provided for SyslogAppender");
@@ -131,6 +135,7 @@ public class SyslogAppender extends SocketAppender {
             return null;
         }
 
-        return new SyslogAppender(name, layout, filter, handleExceptions, isFlush, manager, isAdvertise ? config.getAdvertiser() : null);
+        return new SyslogAppender<S>(name, layout, filter, handleExceptions, isFlush, manager,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 }

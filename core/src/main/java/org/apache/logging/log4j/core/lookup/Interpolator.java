@@ -46,6 +46,7 @@ public class Interpolator implements StrLookup {
         final Map<String, PluginType> plugins = manager.getPlugins();
 
         for (final Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+            @SuppressWarnings("unchecked")
             final Class<StrLookup> clazz = entry.getValue().getPluginClass();
             try {
                 lookups.put(entry.getKey(), clazz.newInstance());
@@ -72,6 +73,7 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
+    @Override
     public String lookup(final String var) {
         return lookup(null, var);
     }
@@ -89,6 +91,7 @@ public class Interpolator implements StrLookup {
      * @return the value of this variable or <b>null</b> if it cannot be
      * resolved
      */
+    @Override
     public String lookup(final LogEvent event, String var) {
         if (var == null) {
             return null;

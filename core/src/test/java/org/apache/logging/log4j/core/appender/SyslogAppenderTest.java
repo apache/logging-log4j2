@@ -49,7 +49,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class SyslogAppenderTest {
 
-    private static final String HOST = "localhost";
     private static final String PORT = "8199";
     private static final int PORTNUM = Integer.parseInt(PORT);
 
@@ -272,7 +271,6 @@ public class SyslogAppenderTest {
                     final byte[] buffer = new byte[4096];
                     final Socket socket = sock.accept();
                     socket.setSoLinger(true, 0);
-                    final StringBuilder sb = new StringBuilder();
                     if (socket != null) {
                         final InputStream in = socket.getInputStream();
                         int i = in.read(buffer, 0, buffer.length);

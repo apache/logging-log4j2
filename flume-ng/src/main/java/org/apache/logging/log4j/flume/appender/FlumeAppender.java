@@ -27,13 +27,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
  */
 @Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
-public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
+public final class FlumeAppender<T extends Serializable> extends AbstractAppender<T> implements FlumeEventFactory {
 
     private final AbstractFlumeManager manager;
 
@@ -57,7 +58,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
     }
 
-    private FlumeAppender(final String name, final Filter filter, final Layout layout, final boolean handleException,
+    private FlumeAppender(final String name, final Filter filter, final Layout<T> layout, final boolean handleException,
                           final String includes, final String excludes, final String required, final String mdcPrefix,
                           final String eventPrefix, final boolean compress,
                           final FlumeEventFactory factory, final AbstractFlumeManager manager) {
@@ -136,7 +137,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static FlumeAppender createAppender(@PluginElement("agents") Agent[] agents,
+    public static <S extends Serializable> FlumeAppender<S> createAppender(@PluginElement("agents") Agent[] agents,
                                                    @PluginElement("properties") final Property[] properties,
                                                    @PluginAttr("embedded") final String embedded,
                                                    @PluginAttr("type") final String type,
@@ -155,7 +156,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                                                    @PluginAttr("compress") final String compressBody,
                                                    @PluginAttr("batchSize") final String batchSize,
                                                    @PluginElement("flumeEventFactory") final FlumeEventFactory factory,
-                                                   @PluginElement("layout") Layout layout,
+                                                   @PluginElement("layout") Layout<S> layout,
                                                    @PluginElement("filters") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.valueOf(embedded) :
@@ -192,10 +193,11 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
         final int delay = maxDelay == null ? 60000 : Integer.parseInt(maxDelay);
 
-
         if (layout == null) {
-            layout = RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix, null, null,
-                null, excludes, includes, required, null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
+                    null, null, null, excludes, includes, required, null, null, null, null);
+            layout = l;
         }
 
         if (name == null) {
@@ -237,7 +239,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             return null;
         }
 
-        return new FlumeAppender(name, filter, layout,  handleExceptions, includes,
+        return new FlumeAppender<S>(name, filter, layout,  handleExceptions, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
     }
 }

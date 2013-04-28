@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -34,23 +29,30 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  *
  */
 public class AsynchAppenderNoLocationTest {
     private static final String CONFIG = "log4j-asynch-no-location.xml";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender<String> app;
     private static LoggerContext ctx;
 
     @BeforeClass
+    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<String>) entry.getValue();
                 break;
             }
         }

@@ -41,7 +41,7 @@ import static org.junit.Assert.assertTrue;
 public class StyleConverterTest {
     private static final String CONFIG = "log4j-style.xml";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender<String> app;
     private static LoggerContext ctx;
 
     private static final String EXPECTED =
@@ -49,13 +49,14 @@ public class StyleConverterTest {
         + Constants.LINE_SEP;
 
     @BeforeClass
+    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<String>) entry.getValue();
             }
         }
     }

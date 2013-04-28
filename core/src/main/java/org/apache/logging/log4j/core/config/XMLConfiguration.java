@@ -144,7 +144,8 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                     final String advertiserString = getSubst().replace(entry.getValue());
                     if (advertiserString != null)
                     {
-                        final PluginType type = getPluginManager().getPluginType(advertiserString);
+                        @SuppressWarnings("unchecked")
+                        final PluginType<Advertiser> type = getPluginManager().getPluginType(advertiserString);
                         if (type != null)
                         {
                             final Class<Advertiser> clazz = type.getPluginClass();

@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 
+import java.io.Serializable;
+
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
  * fatal errors.
@@ -47,14 +49,14 @@ import org.apache.logging.log4j.core.LogEvent;
  * appender.
  */
 @Plugin(name = "SMTP", type = "Core", elementType = "appender", printObject = true)
-public final class SMTPAppender extends AbstractAppender {
+public final class SMTPAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
     /** The SMTP Manager */
     protected final SMTPManager manager;
 
-    private SMTPAppender(final String name, final Filter filter, final Layout<?> layout, final SMTPManager manager,
+    private SMTPAppender(final String name, final Filter filter, final Layout<T> layout, final SMTPManager manager,
                          final boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
@@ -101,7 +103,7 @@ public final class SMTPAppender extends AbstractAppender {
      * @return The SMTPAppender.
      */
     @PluginFactory
-    public static SMTPAppender createAppender(@PluginAttr("name") final String name,
+    public static <S extends Serializable> SMTPAppender<S> createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("to") final String to,
                                               @PluginAttr("cc") final String cc,
                                               @PluginAttr("bcc") final String bcc,
@@ -115,7 +117,7 @@ public final class SMTPAppender extends AbstractAppender {
                                               @PluginAttr("smtpPassword") final String smtpPassword,
                                               @PluginAttr("smtpDebug") final String smtpDebug,
                                               @PluginAttr("bufferSize") final String bufferSizeNum,
-                                              @PluginElement("layout") Layout<?> layout,
+                                              @PluginElement("layout") Layout<S> layout,
                                               @PluginElement("filter") Filter filter,
                                               @PluginAttr("suppressExceptions") final String suppressExceptions) {
         if (name == null) {
@@ -129,7 +131,9 @@ public final class SMTPAppender extends AbstractAppender {
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 
         if (layout == null) {
-            layout = HTMLLayout.createLayout(null, null, null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)HTMLLayout.createLayout(null, null, null, null, null, null);
+            layout = l;
         }
         if (filter == null) {
             filter = ThresholdFilter.createFilter(null, null, null);
@@ -141,7 +145,7 @@ public final class SMTPAppender extends AbstractAppender {
             return null;
         }
 
-        return new SMTPAppender(name, filter, layout, manager, isHandleExceptions);
+        return new SMTPAppender<S>(name, filter, layout, manager, isHandleExceptions);
     }
 
     /**
@@ -164,6 +168,7 @@ public final class SMTPAppender extends AbstractAppender {
      * sent.
      * @param event The Log event.
      */
+    @Override
     public void append(final LogEvent event) {
         manager.sendEvents(getLayout(), event);
     }

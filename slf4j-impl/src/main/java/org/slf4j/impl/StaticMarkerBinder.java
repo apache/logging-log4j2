@@ -32,10 +32,12 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     private final IMarkerFactory markerFactory = new Log4JMarkerFactory();
 
+    @Override
     public IMarkerFactory getMarkerFactory() {
         return markerFactory;
     }
 
+    @Override
     public String getMarkerFactoryClassStr() {
         return Log4JMarkerFactory.class.getName();
     }

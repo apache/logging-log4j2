@@ -49,9 +49,9 @@ public class StructuredDataFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, (Throwable)null) == Filter.Result.DENY);
+        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.DENY);
         filter = StructuredDataFilter.createFilter(pairs, "or", null, null);
         filter.start();
         msg = new StructuredDataMessage("AccountTransfer@18060", "Transfer Successful", "Audit");
@@ -59,9 +59,9 @@ public class StructuredDataFilterTest {
         msg.put("FromAccount", "211000");
         msg.put("Amount", "1000.00");
         assertTrue(filter.isStarted());
-        assertTrue(filter.filter(null, Level.DEBUG, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.DEBUG, null, msg, null) == Filter.Result.NEUTRAL);
         msg.put("ToAccount", "111111");
-        assertTrue(filter.filter(null, Level.ERROR, null, msg, (Throwable)null) == Filter.Result.NEUTRAL);
+        assertTrue(filter.filter(null, Level.ERROR, null, msg, null) == Filter.Result.NEUTRAL);
     }
 
     @Test

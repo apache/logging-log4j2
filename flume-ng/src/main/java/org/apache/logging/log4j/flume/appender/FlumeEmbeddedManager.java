@@ -37,7 +37,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     /** Name for the Flume source */
     protected static final String SOURCE_NAME = "log4j-source";
 
-    private static ManagerFactory factory = new FlumeManagerFactory();
+    private static FlumeManagerFactory factory = new FlumeManagerFactory();
 
     private static final String FiLE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
 
@@ -114,8 +114,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             }
             sb.append(NameUtil.md5(props.toString()));
         }
-        return (FlumeEmbeddedManager) getManager(sb.toString(), factory,
-            new FactoryData(name, agents, properties, batchSize, dataDir));
+        return getManager(sb.toString(), factory,
+                new FactoryData(name, agents, properties, batchSize, dataDir));
     }
 
     @Override

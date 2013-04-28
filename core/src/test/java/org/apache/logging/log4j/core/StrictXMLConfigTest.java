@@ -42,17 +42,18 @@ public class StrictXMLConfigTest {
 
     private static final String CONFIG = "log4j-strict1.xml";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender<LogEvent> app;
     private static LoggerContext ctx;
 
     @BeforeClass
+    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<LogEvent>) entry.getValue();
                 break;
             }
         }
@@ -132,7 +133,7 @@ public class StrictXMLConfigTest {
     @Test
     public void mdc() {
 
-        ThreadContext.put("TestYear", new Integer(2010).toString());
+        ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
         ThreadContext.clear();
         logger.debug("Debug message");

@@ -32,16 +32,13 @@ import java.lang.reflect.Proxy;
  */
 public class LogEventFactory {
 
-    public static <T> T getEvent(final Class<T> intrface) {
-
-        final Class<?>[] interfaces = new Class<?>[]{intrface};
+    @SuppressWarnings("unchecked")
+    public static <T extends AuditEvent> T getEvent(final Class<T> intrface) {
 
         final String eventId = NamingUtils.lowerFirst(intrface.getSimpleName());
         final StructuredDataMessage msg = new StructuredDataMessage(eventId, null, "Audit");
-        final AuditEvent audit = (AuditEvent) Proxy.newProxyInstance(intrface
-            .getClassLoader(), interfaces, new AuditProxy(msg, intrface));
-
-        return (T) audit;
+        return (T)Proxy.newProxyInstance(intrface
+            .getClassLoader(), new Class<?>[]{intrface}, new AuditProxy(msg, intrface));
     }
 
     private static class AuditProxy implements InvocationHandler {

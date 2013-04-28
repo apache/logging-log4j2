@@ -80,7 +80,7 @@ public final class NDC {
      *
      * @param stack The diagnostic context of the parent thread.
      */
-    public static void inherit(final Stack stack) {
+    public static void inherit(final Stack<String> stack) {
         org.apache.logging.log4j.ThreadContext.setStack(stack);
     }
 
@@ -153,7 +153,7 @@ public final class NDC {
      * method is called before exiting a thread, this method has been
      * augmented to lazily remove references to dead threads. In
      * practice, this means that you can be a little sloppy and
-     * occasionally forget to call {@link #remove} before exiting a
+     * occasionally forget to call {@code remove} before exiting a
      * thread. However, you must call <code>remove</code> sometime. If
      * you never call it, then your application is sure to run out of
      * memory.

@@ -276,8 +276,7 @@ public class ResolverUtil {
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
         //Do not remove the cast on the next line as removing it will cause a compile error on Java 7.
-        final BundleWiring wiring =
-            (BundleWiring) FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
+        final BundleWiring wiring = FrameworkUtil.getBundle(ResolverUtil.class).adapt(BundleWiring.class);
         final Collection<String> list = wiring.listResources(packageName, "*.class",
             BundleWiring.LISTRESOURCES_RECURSE);
         for (final String name : list) {
@@ -300,8 +299,10 @@ public class ResolverUtil {
      */
     private void loadImplementationsInDirectory(final Test test, final String parent, final File location) {
         final File[] files = location.listFiles();
-        StringBuilder builder;
+        if(files == null)
+            return;
 
+        StringBuilder builder;
         for (final File file : files) {
             builder = new StringBuilder();
             builder.append(parent).append("/").append(file.getName());
@@ -434,14 +435,17 @@ public class ResolverUtil {
      * Test against a Class.
      */
     public abstract static class ClassTest implements Test {
+        @Override
         public boolean matches(final URI resource) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean doesMatchClass() {
             return true;
         }
 
+        @Override
         public boolean doesMatchResource() {
             return false;
         }
@@ -451,14 +455,17 @@ public class ResolverUtil {
      * Test against a resource.
      */
     public abstract static class ResourceTest implements Test {
+        @Override
         public boolean matches(final Class<?> cls) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean doesMatchClass() {
             return false;
         }
 
+        @Override
         public boolean doesMatchResource() {
             return true;
         }
@@ -482,6 +489,7 @@ public class ResolverUtil {
          * @param type The Class to check.
          * @return true if the Class matches.
          */
+        @Override
         public boolean matches(final Class<?> type) {
             return type != null && parent.isAssignableFrom(type);
         }
@@ -509,6 +517,7 @@ public class ResolverUtil {
          * @param type The Class to check.
          * @return true if the Class matches.
          */
+        @Override
         public boolean matches(final Class<?> type) {
             return type != null && type.getName().endsWith(suffix);
         }
@@ -539,6 +548,7 @@ public class ResolverUtil {
          * @param type the Class to match against.
          * @return true if the Classes match.
          */
+        @Override
         public boolean matches(final Class<?> type) {
             return type != null && type.isAnnotationPresent(annotation);
         }
@@ -557,6 +567,7 @@ public class ResolverUtil {
 
         public NameIs(final String name) { this.name = "/" + name; }
 
+        @Override
         public boolean matches(final URI resource) {
             return resource.getPath().endsWith(name);
         }

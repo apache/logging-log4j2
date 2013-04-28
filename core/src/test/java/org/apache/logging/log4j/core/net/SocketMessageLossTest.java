@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,16 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class SocketMessageLossTest {
     private static final int SOCKET_PORT = 5514;
@@ -105,6 +103,7 @@ public class SocketMessageLossTest {
             server = new ServerSocket(SOCKET_PORT);
         }
 
+        @Override
         public InputStream call() throws Exception {
             client = server.accept();
             return client.getInputStream();

@@ -39,10 +39,11 @@ public class XMLLoggerPropsTest {
 
     private static final String CONFIG = "log4j-loggerprops.xml";
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender<String> app;
     private static LoggerContext ctx;
 
     @BeforeClass
+    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("test", "test");
@@ -50,7 +51,7 @@ public class XMLLoggerPropsTest {
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<String>) entry.getValue();
                 break;
             }
         }

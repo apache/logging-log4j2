@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -36,19 +33,23 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An appender that writes to random access files and can roll over at
  * intervals.
  */
 @Plugin(name = "FastRollingFile", type = "Core", elementType = "appender", printObject = true)
-public final class FastRollingFileAppender extends AbstractOutputStreamAppender {
+public final class FastRollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastRollingFileAppender(String name, Layout<?> layout,
+    private FastRollingFileAppender(String name, Layout<T> layout,
             Filter filter, RollingFileManager manager, String fileName,
             String filePattern, boolean handleException,
             boolean immediateFlush, Advertiser advertiser) {
@@ -138,7 +139,7 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
      * @return A FastRollingFileAppender.
      */
     @PluginFactory
-    public static FastRollingFileAppender createAppender(
+    public static <S extends Serializable> FastRollingFileAppender<S> createAppender(
             @PluginAttr("fileName") final String fileName,
             @PluginAttr("filePattern") final String filePattern,
             @PluginAttr("append") final String append,
@@ -146,7 +147,7 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
             @PluginAttr("immediateFlush") final String immediateFlush,
             @PluginElement("policy") final TriggeringPolicy policy,
             @PluginElement("strategy") RolloverStrategy strategy,
-            @PluginElement("layout") Layout<?> layout,
+            @PluginElement("layout") Layout<S> layout,
             @PluginElement("filter") final Filter filter,
             @PluginAttr("suppressExceptions") final String suppress,
             @PluginAttr("advertise") final String advertise,
@@ -197,10 +198,12 @@ public final class FastRollingFileAppender extends AbstractOutputStreamAppender 
         }
 
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            layout = l;
         }
 
-        return new FastRollingFileAppender(name, layout, filter, manager,
+        return new FastRollingFileAppender<S>(name, layout, filter, manager,
                 fileName, filePattern, handleExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }

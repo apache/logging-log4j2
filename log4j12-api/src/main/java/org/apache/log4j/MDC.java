@@ -71,7 +71,7 @@ public final class MDC {
         ThreadContext.clear();
     }
 
-    public static Hashtable getContext() {
-        return new Hashtable(localMap.get());
+    public static Hashtable<String, Object> getContext() {
+        return new Hashtable<String, Object>(localMap.get());
     }
 }

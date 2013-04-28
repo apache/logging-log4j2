@@ -22,13 +22,15 @@ import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 
 /**
  *
  */
-public class InMemoryAppender extends AbstractOutputStreamAppender {
+public class InMemoryAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
-    public InMemoryAppender(final String name, final Layout layout, final CompositeFilter filters, final boolean handleException) {
+    public InMemoryAppender(final String name, final Layout<T> layout, final CompositeFilter filters,
+                            final boolean handleException) {
         super(name, layout, filters, handleException, true, new InMemoryManager(name));
     }
 

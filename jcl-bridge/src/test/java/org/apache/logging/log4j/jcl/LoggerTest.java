@@ -21,11 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,9 +32,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -48,7 +45,7 @@ public class LoggerTest {
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
+        ctx.getConfiguration();
     }
 
     @AfterClass
@@ -73,13 +70,14 @@ public class LoggerTest {
         verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Constants.LINE_SEP);
     }
 
+    @SuppressWarnings("unchecked")
     private void verify(final String name, final String expected) {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Map<String, Appender<?>> list = ctx.getConfiguration().getAppenders();
         final Appender<?> listApp = list.get(name);
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        final List<String> events = ((ListAppender) listApp).getMessages();
+        final List<String> events = ((ListAppender<String>) listApp).getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);

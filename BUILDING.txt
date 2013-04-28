@@ -1,6 +1,6 @@
 Building Log4J 2
   
-To build Log4J 2, you need a JDK implementation version 1.5 or greater, and Apache Maven.
+To build Log4J 2, you need a JDK implementation version 1.6 or greater, and Apache Maven.
 
 To build the site, from a command line, run:
 

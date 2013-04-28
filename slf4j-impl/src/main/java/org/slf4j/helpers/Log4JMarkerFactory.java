@@ -29,25 +29,31 @@ public class Log4JMarkerFactory implements IMarkerFactory {
 
     private final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
+    @Override
     public Marker getMarker(final String name) {
         if (name == null) {
             throw new IllegalArgumentException("Marker name must not be null");
         }
         Marker marker = markerMap.get(name);
-        if (marker == null) {
-            marker = new MarkerWrapper(name);
+        if (marker != null) {
+            return marker;
         }
-        return marker;
+        marker = new MarkerWrapper(name);
+        Marker existing = markerMap.putIfAbsent(name, marker);
+        return existing == null ? marker : existing;
     }
 
+    @Override
     public boolean exists(final String name) {
         return markerMap.containsKey(name);
     }
 
+    @Override
     public boolean detachMarker(final String name) {
         return false;
     }
 
+    @Override
     public Marker getDetachedMarker(final String name) {
         return new MarkerWrapper(name);
     }

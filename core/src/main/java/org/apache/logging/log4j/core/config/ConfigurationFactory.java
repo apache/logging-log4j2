@@ -111,10 +111,11 @@ public abstract class ConfigurationFactory {
                     final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
                     for (final PluginType type : plugins.values()) {
                         try {
-                            final Class<ConfigurationFactory> clazz = type.getPluginClass();
+                            @SuppressWarnings("unchecked")
+                            final Class<ConfigurationFactory> clazz = (Class<ConfigurationFactory>)type.getPluginClass();
                             final Order order = clazz.getAnnotation(Order.class);
-                            final Integer weight = order.value();
                             if (order != null) {
+                                final Integer weight = order.value();
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {

@@ -135,6 +135,7 @@ public class PluginManager {
      * @param pkgs A comma separated list of package names to scan for plugins. If
      * null the default Log4j package name will be used.
      */
+    @SuppressWarnings("unchecked")
     public void collectPlugins(boolean preLoad, final String pkgs) {
         if (pluginTypeMap.containsKey(type)) {
             plugins = pluginTypeMap.get(type);
@@ -195,6 +196,7 @@ public class PluginManager {
         LOGGER.debug(sb.toString());
     }
 
+    @SuppressWarnings("unchecked")
     private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(final ClassLoader loader) {
         Enumeration<URL> resources;
         try {

@@ -25,34 +25,44 @@ import java.util.Map;
  * Bind the ThreadContextMap to the SLF4J MDC.
  */
 public class MDCContextMap implements ThreadContextMap {
+    @Override
     public void put(final String key, final String value) {
         MDC.put(key, value);
     }
 
+    @Override
     public String get(final String key) {
         return MDC.get(key);
     }
 
+    @Override
     public void remove(final String key) {
         MDC.remove(key);
     }
 
+    @Override
     public void clear() {
         MDC.clear();
     }
 
+    @Override
     public boolean containsKey(final String key) {
         return MDC.getCopyOfContextMap().containsKey(key);
     }
 
+    @Override
+    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
     public Map<String, String> getContext() {
         return MDC.getCopyOfContextMap();
     }
 
+    @Override
+    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
     public Map<String, String> get() {
         return MDC.getCopyOfContextMap();
     }
 
+    @Override
     public boolean isEmpty() {
         return MDC.getCopyOfContextMap().isEmpty();
     }

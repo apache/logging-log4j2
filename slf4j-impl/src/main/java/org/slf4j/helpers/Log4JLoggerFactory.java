@@ -41,6 +41,7 @@ public class Log4JLoggerFactory implements ILoggerFactory {
     private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =
         new WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>>();
 
+    @Override
     public Logger getLogger(final String name) {
         final LoggerContext context = getContext();
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);

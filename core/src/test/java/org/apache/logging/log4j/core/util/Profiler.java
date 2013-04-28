@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 public class Profiler {
     private static Object profiler;
     private static Class profilingModes;
-    private static Class controllerClazz;
+    private static Class<?> controllerClazz;
 
     static {
         try {

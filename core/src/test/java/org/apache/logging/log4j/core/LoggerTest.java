@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -44,6 +34,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
 /**
  *
  */
@@ -51,9 +49,9 @@ public class LoggerTest {
 
     private static final String CONFIG = "log4j-test2.xml";
     private static Configuration config;
-    private static ListAppender app;
-    private static ListAppender host;
-    private static ListAppender noThrown;
+    private static ListAppender<LogEvent> app;
+    private static ListAppender<String> host;
+    private static ListAppender<String> noThrown;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -70,15 +68,16 @@ public class LoggerTest {
     }
 
     @Before
+    @SuppressWarnings("unchecked")
     public void before() {
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<LogEvent>) entry.getValue();
             } else if (entry.getKey().equals("HostTest")) {
-                host = (ListAppender) entry.getValue();
+                host = (ListAppender<String>) entry.getValue();
             } else if (entry.getKey().equals("NoThrowable")) {
-                noThrown = (ListAppender) entry.getValue();
+                noThrown = (ListAppender<String>) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
@@ -216,7 +215,7 @@ public class LoggerTest {
 
     @Test
     public void mdc() {
-        ThreadContext.put("TestYear", new Integer(2010).toString());
+        ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
         ThreadContext.clear();
         logger.debug("Debug message");

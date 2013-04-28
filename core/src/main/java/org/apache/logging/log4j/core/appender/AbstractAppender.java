@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
-
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
@@ -84,6 +84,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Returns the ErrorHandler, if any.
      * @return The ErrorHandler.
      */
+    @Override
     public ErrorHandler getHandler() {
         return handler;
     }
@@ -92,6 +93,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * The handler must be set before the appender is started.
      * @param handler The ErrorHandler to use.
      */
+    @Override
     public void setHandler(final ErrorHandler handler) {
         if (handler == null) {
             LOGGER.error("The handler cannot be set to null");
@@ -114,6 +116,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Returns the name of the Appender.
      * @return The name of the Appender.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -122,6 +125,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Returns the Layout for the appender.
      * @return The Layout used to format the event.
      */
+    @Override
     public Layout<T> getLayout() {
         return layout;
     }
@@ -131,6 +135,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * AppenderControl will allow the exception to percolate.
      * @return true if exceptions will be suppressed, false otherwise.
      */
+    @Override
     public boolean isExceptionSuppressed() {
         return handleException;
     }
@@ -138,6 +143,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
     /**
      * Start the Appender.
      */
+    @Override
     public void start() {
         startFilter();
         this.started = true;
@@ -146,6 +152,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
     /**
      * Stop the Appender.
      */
+    @Override
     public void stop() {
         this.started = false;
         stopFilter();
@@ -155,6 +162,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Returns true if the Appender is started, false otherwise.
      * @return true if the Appender is started, false otherwise.
      */
+    @Override
     public boolean isStarted() {
         return started;
     }
