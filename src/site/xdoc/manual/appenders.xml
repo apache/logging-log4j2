@@ -115,7 +115,7 @@
   <appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
     <Asynch name="Asynch">
@@ -256,7 +256,7 @@
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
@@ -319,7 +319,8 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
+              <td>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
                 to disk but could impact performance.</td>
             </tr>
             <tr>
@@ -358,7 +359,7 @@
   <appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
   </appenders>
@@ -1067,7 +1068,7 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
+              <td>When set to true - the default, each write will be followed by a flush. This will guarantee the data is written
                 to disk but could impact performance.</td>
             </tr>
             <tr>
@@ -1294,7 +1295,7 @@
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -1317,7 +1318,7 @@
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -1345,7 +1346,7 @@
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
@@ -1421,7 +1422,7 @@
 					<tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
-						<td>When set to true, each write will be followed by a flush.
+						<td>When set to true - the default, each write will be followed by a flush.
 							This will guarantee the data is written
 							to disk but could impact performance.
 							This option is only useful when using this
@@ -1582,7 +1583,7 @@
 					<tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
-						<td>When set to true, each write will be followed by a flush. This
+						<td>When set to true - the default, each write will be followed by a flush. This
 							will guarantee the data is written
 							to disk but could impact
 							performance.
@@ -1812,7 +1813,7 @@
           <RollingFile name="Rolling-${sd:type}" fileName="${sd:type}.log"
                        filePattern="${sd:type}.%i.log.gz">
             <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
             </PatternLayout>
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
@@ -1988,7 +1989,8 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
+              <td>When set to true - the default, each write will be followed by a flush. 
+                This will guarantee the data is written
                 to disk but could impact performance.</td>
             </tr>
             <tr>
@@ -2116,7 +2118,8 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true, each write will be followed by a flush. This will guarantee the data is written
+              <td>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
                 to disk but could impact performance.</td>
             </tr>
             <tr>

@@ -144,6 +144,8 @@ public class App {
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+      <!-- Flow tracing is most useful with a pattern that shows location.
+           Below pattern outputs class, line number and method name. -->
       <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
     </Console>
     <File name="log" fileName="target/test.log" append="false">

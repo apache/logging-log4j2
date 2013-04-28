@@ -459,7 +459,7 @@ public class Bar {
       </filters>
     </appender>
     <appender type="Console" name="FLOW">
-      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
+      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class & line number -->
       <filters>
         <filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -523,7 +523,7 @@ public class Bar {
               "RollingFile": {
                 "name": "Rolling-${dollar}{sd:type}", "fileName": "${dollar}{filename}",
                 "filePattern": "target/rolling1/test1-${dollar}{sd:type}.%i.log.gz",
-                "PatternLayout": {"pattern": "%d %p %C{1.} [%t] %m%n"},
+                "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
                 "SizeBasedTriggeringPolicy": { "size": "500" }
               }
             },
@@ -566,7 +566,7 @@ public class Bar {
                 "RollingFile": {
                   "name": "Rolling-${dollar}{sd:type}", "fileName": "${dollar}{filename}",
                   "filePattern": "target/rolling1/test1-${dollar}{sd:type}.%i.log.gz",
-                  "PatternLayout": {"pattern": "%d %p %C{1.} [%t] %m%n"},
+                  "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
                   "SizeBasedTriggeringPolicy": { "size": "500" }
                 }
               },
@@ -684,6 +684,7 @@ public class Bar {
       <PatternLayout pattern="%m MDC%X%n"/>
     </Console>
     <Console name="FLOW">
+      <!-- this pattern outputs class name and line number -->
       <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
       <filters>
         <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
@@ -757,7 +758,7 @@ public class Bar {
           <RollingFile name="Rolling-${dollar}{sd:type}" fileName="${dollar}{filename}"
                        filePattern="target/rolling1/test1-${dollar}{sd:type}.%i.log.gz">
             <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
             </PatternLayout>
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
@@ -896,7 +897,7 @@ public class Bar {
           <RollingFile name="Rolling-${dollar}{sd:type}" fileName="${dollar}{filename}"
                        filePattern="target/rolling1/test1-${dollar}{sd:type}.%i.log.gz">
             <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
             </PatternLayout>
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
@@ -977,7 +978,7 @@ public class Bar {
        config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
 2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.
-       layout.PatternLayout for element PatternLayout with params(pattern="%d %p %C{1.} [%t] %m%n",
+       layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n",
        Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.
        appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with
@@ -988,7 +989,7 @@ public class Bar {
        filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown",
        bufferedIO="null", immediateFlush="null",
        SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null,
-       PatternLayout(%d %p %C{1.} [%t] %m%n), null, suppressExceptions="null")
+       PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
 2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.
        Launcher$AppClassLoader@37b90b39
@@ -1021,9 +1022,9 @@ public class Bar {
 2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", appender-ref={STDOUT}, null)
 2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
-2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %C{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
-2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %C{1.} [%t] %m%n), null, suppressExceptions="null")
+2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
 2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
 2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
