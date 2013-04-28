@@ -173,37 +173,42 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      */
 
     private RpcClient connect(final Agent[] agents, int retries, int connectTimeout, int requestTimeout) {
-        Properties props = new Properties();
+        try {
+            Properties props = new Properties();
 
-        props.put("client.type", agents.length > 1 ? "default_failover" : "default");
+            props.put("client.type", agents.length > 1 ? "default_failover" : "default");
 
-        int count = 1;
-        StringBuilder sb = new StringBuilder();
-        for (Agent agent : agents) {
-            if (sb.length() > 0) {
-                sb.append(" ");
+            int count = 1;
+            StringBuilder sb = new StringBuilder();
+            for (Agent agent : agents) {
+                if (sb.length() > 0) {
+                    sb.append(" ");
+                }
+                String hostName = "host" + count++;
+                props.put("hosts." + hostName, agent.getHost() + ":" + agent.getPort());
+                sb.append(hostName);
             }
-            String hostName = "host" + count++;
-            props.put("hosts." + hostName, agent.getHost() + ":" + agent.getPort());
-            sb.append(hostName);
-        }
-        props.put("hosts", sb.toString());
-        if (batchSize > 0) {
-            props.put("batch-size", Integer.toString(batchSize));
-        }
-        if (retries > 1) {
-            if (retries > MAX_RECONNECTS) {
-                retries = MAX_RECONNECTS;
+            props.put("hosts", sb.toString());
+            if (batchSize > 0) {
+                props.put("batch-size", Integer.toString(batchSize));
             }
-            props.put("max-attempts", Integer.toString(retries * agents.length));
+            if (retries > 1) {
+                if (retries > MAX_RECONNECTS) {
+                    retries = MAX_RECONNECTS;
+                }
+                props.put("max-attempts", Integer.toString(retries * agents.length));
+            }
+            if (requestTimeout >= 1000) {
+                props.put("request-timeout", Integer.toString(requestTimeout));
+            }
+            if (connectTimeout >= 1000) {
+                props.put("connect-timeout", Integer.toString(connectTimeout));
+            }
+            return RpcClientFactory.getInstance(props);
+        } catch (Exception ex) {
+            LOGGER.error("Unable to create Flume RPCClient: {}", ex.getMessage());
+            return null;
         }
-        if (requestTimeout >= 1000) {
-            props.put("request-timeout", Integer.toString(requestTimeout));
-        }
-        if (connectTimeout >= 1000) {
-            props.put("connect-timeout", Integer.toString(connectTimeout));
-        }
-        return RpcClientFactory.getInstance(props);
     }
 
     @Override
