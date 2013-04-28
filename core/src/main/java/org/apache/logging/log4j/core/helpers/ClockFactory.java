@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -27,7 +27,7 @@ public final class ClockFactory {
      * Name of the system property that can be used to specify a {@code Clock}
      * implementation class.
      */
-    public static final String PROPERTY_NAME = "AsyncLogger.Clock";
+    public static final String PROPERTY_NAME = "log4j.Clock";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     // private static final Clock clock = createClock();

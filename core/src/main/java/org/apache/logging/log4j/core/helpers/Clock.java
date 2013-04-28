@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.helpers;
 
 /**
  * Interface for classes that can provide the time stamp used in log events.

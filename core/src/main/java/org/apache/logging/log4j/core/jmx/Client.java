@@ -27,6 +27,8 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 
+import org.apache.logging.log4j.core.helpers.Assert;
+
 /**
  * This class allows client-side code to perform operations on remote
  * (server-side) MBeans via proxies.

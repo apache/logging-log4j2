@@ -14,23 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.helpers;
 
 import com.lmax.disruptor.util.Util;
 
 /**
- * Implementation of the {@code Clock} interface that tracks the time in a
- * private long field that is updated by a background thread once every
- * millisecond. Timers on most platforms do not have millisecond granularity, so
- * the returned value may "jump" every 10 or 16 milliseconds. To reduce this
- * problem, this class also updates the internal time value every 1024 calls to
- * {@code currentTimeMillis()}.
+ * This Clock implementation is similar to CachedClock. It is slightly faster at
+ * the cost of some accuracy.
  */
-public final class CachedClock implements Clock {
-    private static final int UPDATE_THRESHOLD = 0x3FF;
-    private static CachedClock instance = new CachedClock();
+public final class CoarseCachedClock implements Clock {
+    private static CoarseCachedClock instance = new CoarseCachedClock();
     private volatile long millis = System.currentTimeMillis();
-    private volatile short count = 0;
+
     private final Thread updater = new Thread("Clock Updater Thread") {
         public void run() {
             while (true) {
@@ -42,31 +37,29 @@ public final class CachedClock implements Clock {
         }
     };
 
-    private CachedClock() {
+    private CoarseCachedClock() {
         updater.setDaemon(true);
         updater.start();
     }
 
-    public static CachedClock instance() {
+    /**
+     * Returns the singleton instance.
+     * 
+     * @return the singleton instance
+     */
+    public static CoarseCachedClock instance() {
         return instance;
     }
 
     /**
      * Returns the value of a private long field that is updated by a background
-     * thread once every millisecond. Timers on most platforms do not
+     * thread once every millisecond. Because timers on most platforms do not
      * have millisecond granularity, the returned value may "jump" every 10 or
-     * 16 milliseconds. To reduce this problem, this method also updates the
-     * internal time value every 1024 calls.
+     * 16 milliseconds.
      * @return the cached time
      */
     @Override
     public long currentTimeMillis() {
-
-        // improve granularity: also update time field every 1024 calls.
-        // (the bit fiddling means we don't need to worry about overflows)
-        if ((++count & UPDATE_THRESHOLD) == UPDATE_THRESHOLD) {
-            millis = System.currentTimeMillis();
-        }
         return millis;
     }
 }

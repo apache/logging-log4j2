@@ -14,15 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.helpers;
 
 import static org.junit.Assert.*;
 
-import org.apache.logging.log4j.core.async.CachedClock;
-import org.apache.logging.log4j.core.async.Clock;
-import org.apache.logging.log4j.core.async.ClockFactory;
-import org.apache.logging.log4j.core.async.CoarseCachedClock;
-import org.apache.logging.log4j.core.async.SystemClock;
+import org.apache.logging.log4j.core.helpers.CachedClock;
+import org.apache.logging.log4j.core.helpers.Clock;
+import org.apache.logging.log4j.core.helpers.ClockFactory;
+import org.apache.logging.log4j.core.helpers.CoarseCachedClock;
+import org.apache.logging.log4j.core.helpers.SystemClock;
 import org.junit.Test;
 
 public class ClockFactoryTest {
