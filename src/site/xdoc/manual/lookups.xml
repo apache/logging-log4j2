@@ -45,7 +45,7 @@
           <pre class="prettyprint linenums"><![CDATA[
 <File name="Application" fileName="application.log">
   <PatternLayout>
-    <pattern>%d %p %C{1.} [%t] $${ctx:loginId} %m%n</pattern>
+    <pattern>%d %p %c{1.} [%t] $${ctx:loginId} %m%n</pattern>
   </PatternLayout>
 </File>]]></pre>
         </subsection>
@@ -60,7 +60,7 @@
           <pre class="prettyprint linenums"><![CDATA[
 <RollingFile name="Rolling-${map:type}" fileName="${filename}" filePattern="target/rolling1/test1-$${date:MM-dd-yyyy}.%i.log.gz">
   <PatternLayout>
-    <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+    <pattern>%d %p %c{1.} [%t] %m%n</pattern>
   </PatternLayout>
   <SizeBasedTriggeringPolicy size="500" />
 </RollingFile>]]></pre>
@@ -76,7 +76,7 @@
           <pre class="prettyprint linenums"><![CDATA[
 <File name="Application" fileName="application.log">
   <PatternLayout>
-    <pattern>%d %p %C{1.} [%t] $${env:USER} %m%n</pattern>
+    <pattern>%d %p %c{1.} [%t] $${env:USER} %m%n</pattern>
   </PatternLayout>
 </File>]]></pre>
         </subsection>
@@ -106,7 +106,7 @@
       <RollingFile name="Rolling-${map:type}" fileName="${filename}"
                    filePattern="target/rolling1/test1-${map:type}.%i.log.gz">
         <PatternLayout>
-          <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+          <pattern>%d %p %c{1.} [%t] %m%n</pattern>
         </PatternLayout>
         <SizeBasedTriggeringPolicy size="500" />
       </RollingFile>
@@ -131,7 +131,7 @@
       <RollingFile name="Rolling-${sd:type}" fileName="${filename}"
                    filePattern="target/rolling1/test1-${sd:type}.%i.log.gz">
         <PatternLayout>
-          <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+          <pattern>%d %p %c{1.} [%t] %m%n</pattern>
         </PatternLayout>
         <SizeBasedTriggeringPolicy size="500" />
       </RollingFile>
