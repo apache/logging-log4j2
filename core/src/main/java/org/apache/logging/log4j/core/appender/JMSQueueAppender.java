@@ -26,16 +26,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSQueueManager;
 
+import java.io.Serializable;
+
 /**
  * Appender to write to a JMS Queue.
  */
 @Plugin(name = "JMSQueue", type = "Core", elementType = "appender", printObject = true)
-public final class JMSQueueAppender extends AbstractAppender {
+public final class JMSQueueAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private final JMSQueueManager manager;
 
-    private JMSQueueAppender(final String name, final Filter filter, final Layout layout, final JMSQueueManager manager,
-                            final boolean handleExceptions) {
+    private JMSQueueAppender(final String name, final Filter filter, final Layout<T> layout,
+                             final JMSQueueManager manager, final boolean handleExceptions) {
         super(name, filter, layout, handleExceptions);
         this.manager = manager;
     }
@@ -45,6 +47,7 @@ public final class JMSQueueAppender extends AbstractAppender {
      * <p/>
      * @param event The LogEvent.
      */
+    @Override
     public void append(final LogEvent event) {
         try {
             manager.send(getLayout().toSerializable(event));
@@ -73,7 +76,7 @@ public final class JMSQueueAppender extends AbstractAppender {
      * @return The JMSQueueAppender.
      */
     @PluginFactory
-    public static JMSQueueAppender createAppender(
+    public static <S extends Serializable> JMSQueueAppender<S> createAppender(
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("factoryName") final String factoryName,
                                                 @PluginAttr("providerURL") final String providerURL,
@@ -84,7 +87,7 @@ public final class JMSQueueAppender extends AbstractAppender {
                                                 @PluginAttr("queueBindingName") final String queueBindingName,
                                                 @PluginAttr("userName") final String userName,
                                                 @PluginAttr("password") final String password,
-                                                @PluginElement("layout") Layout layout,
+                                                @PluginElement("layout") Layout<S> layout,
                                                 @PluginElement("filter") final Filter filter,
                                                 @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
@@ -98,8 +101,10 @@ public final class JMSQueueAppender extends AbstractAppender {
             return null;
         }
         if (layout == null) {
-            layout = SerializedLayout.createLayout();
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
+            layout = l;
         }
-        return new JMSQueueAppender(name, filter, layout, manager, handleExceptions);
+        return new JMSQueueAppender<S>(name, filter, layout, manager, handleExceptions);
     }
 }

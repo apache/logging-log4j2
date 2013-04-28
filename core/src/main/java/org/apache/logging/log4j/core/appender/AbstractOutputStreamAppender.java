@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 
+import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -27,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
  */
-public abstract class AbstractOutputStreamAppender extends AbstractAppender {
+public abstract class AbstractOutputStreamAppender<T extends Serializable> extends AbstractAppender<T> {
 
     /**
      * Immediate flush means that the underlying writer or output stream
@@ -54,7 +55,7 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout layout, final Filter filter,
+    protected AbstractOutputStreamAppender(final String name, final Layout<T> layout, final Filter filter,
                                            final boolean handleException, final boolean immediateFlush,
                                            final OutputStreamManager manager) {
         super(name, filter, layout, handleException);
@@ -107,6 +108,7 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      * override this method.
      * @param event The LogEvent.
      */
+    @Override
     public void append(final LogEvent event) {
         readLock.lock();
         try {

@@ -50,7 +50,6 @@ import static org.junit.Assert.fail;
  */
 public class SocketAppenderTest {
 
-    private static final String HOST = "localhost";
     private static final String PORT = "8199";
     private static final String DYN_PORT = "8300";
     private static final String ERROR_PORT = "8301";
@@ -109,7 +108,6 @@ public class SocketAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
         root.debug("This is a test message");
-        final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test");
         root.error("Throwing an exception", child);
         root.debug("This is another test message");

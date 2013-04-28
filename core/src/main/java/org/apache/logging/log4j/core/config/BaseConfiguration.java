@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -107,6 +108,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         rootNode = new Node();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public Map<String, String> getProperties() {
         return (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
     }
@@ -114,6 +117,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     /**
      * Initialize the configuration.
      */
+    @Override
     public void start() {
         setup();
         doConfigure();
@@ -130,6 +134,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     /**
      * Tear down the configuration.
      */
+    @Override
     public void stop() {
         for (final LoggerConfig logger : loggers.values()) {
             logger.clearAppenders();
@@ -146,14 +151,17 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected void setup() {
     }
 
+    @Override
     public Object getComponent(final String name) {
         return componentMap.get(name);
     }
 
+    @Override
     public void addComponent(final String name, final Object obj) {
         componentMap.putIfAbsent(name, obj);
     }
 
+    @SuppressWarnings("unchecked")
     protected void doConfigure() {
         boolean setRoot = false;
         boolean setLoggers = false;
@@ -220,9 +228,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private void setToDefault() {
         setName(DefaultConfiguration.DEFAULT_NAME);
-        final Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
-            null, null, null);
-        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
+        final Layout<? extends Serializable> layout =
+                PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
+                        null, null, null);
+        final Appender<?> appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
             "true");
         appender.start();
         addAppender(appender);
@@ -255,6 +264,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Returns the name of the configuration.
      * @return the name of the configuration.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -263,6 +273,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Add a listener for changes on the configuration.
      * @param listener The ConfigurationListener to add.
      */
+    @Override
     public void addListener(final ConfigurationListener listener) {
         listeners.add(listener);
     }
@@ -271,6 +282,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Remove a ConfigurationListener.
      * @param listener The ConfigurationListener to remove.
      */
+    @Override
     public void removeListener(final ConfigurationListener listener) {
         listeners.remove(listener);
     }
@@ -280,7 +292,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
-    public Appender getAppender(final String name) {
+    public Appender<?> getAppender(final String name) {
         return appenders.get(name);
     }
 
@@ -288,6 +300,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Returns a Map containing all the Appenders and their name.
      * @return A Map containing each Appender's name and the Appender object.
      */
+    @Override
     public Map<String, Appender<?>> getAppenders() {
         return appenders;
     }
@@ -300,22 +313,27 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         appenders.put(appender.getName(), appender);
     }
 
+    @Override
     public StrSubstitutor getSubst() {
         return subst;
     }
 
+    @Override
     public void setConfigurationMonitor(ConfigurationMonitor monitor) {
         this.monitor = monitor;
     }
 
+    @Override
     public ConfigurationMonitor getConfigurationMonitor() {
         return monitor;
     }
 
+    @Override
     public void setAdvertiser(Advertiser advertiser) {
         this.advertiser = advertiser;
     }
 
+    @Override
     public Advertiser getAdvertiser() {
         return advertiser;
     }
@@ -329,8 +347,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
+    @Override
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
-                                               final Appender appender) {
+                                               final Appender<?> appender) {
         final String name = logger.getName();
         appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(name);
@@ -354,6 +373,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Fo;ter will be associated with.
      * @param filter The Filter.
      */
+    @Override
     public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
         final String name = logger.getName();
         final LoggerConfig lc = getLoggerConfig(name);
@@ -378,6 +398,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param logger The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
+    @Override
     public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger,
                                                final boolean additive) {
         final String name = logger.getName();
@@ -416,6 +437,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The Logger name.
      * @return The located LoggerConfig.
      */
+    @Override
     public LoggerConfig getLoggerConfig(final String name) {
         if (loggers.containsKey(name)) {
             return loggers.get(name);
@@ -441,6 +463,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Returns a Map of all the LoggerConfigs.
      * @return a Map with each entry containing the name of the Logger and the LoggerConfig.
      */
+    @Override
     public Map<String, LoggerConfig> getLoggers() {
         return Collections.unmodifiableMap(loggers);
     }
@@ -487,6 +510,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         setParents();
     }
 
+    @Override
     public void createConfiguration(final Node node, final LogEvent event) {
         final PluginType type = node.getType();
         if (type != null && type.isDeferChildren()) {
@@ -527,6 +551,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
+                @SuppressWarnings("unchecked")
                 final Map<String, Object> map = (Map<String, Object>) clazz.newInstance();
                 for (final Node child : node.getChildren()) {
                     map.put(child.getName(), child.getObject());
@@ -540,6 +565,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
         if (List.class.isAssignableFrom(clazz)) {
             try {
+                @SuppressWarnings("unchecked")
                 final List<Object> list = (List<Object>) clazz.newInstance();
                 for (final Node child : node.getChildren()) {
                     list.add(child.getObject());
@@ -621,7 +647,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     final PluginElement elem = (PluginElement) a;
                     final String name = elem.value();
                     if (parmClasses[index].isArray()) {
-                        final Class parmClass = parmClasses[index].getComponentType();
+                        final Class<?> parmClass = parmClasses[index].getComponentType();
                         final List<Object> list = new ArrayList<Object>();
                         sb.append(name).append("={");
                         boolean first = true;
@@ -667,7 +693,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         }
                         parms[index] = array;
                     } else {
-                        final Class parmClass = parmClasses[index];
+                        final Class<?> parmClass = parmClasses[index];
                         boolean present = false;
                         for (final Node child : children) {
                             final PluginType childType = child.getType();

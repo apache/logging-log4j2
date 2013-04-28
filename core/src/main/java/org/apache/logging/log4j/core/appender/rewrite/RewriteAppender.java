@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -37,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
 @Plugin(name = "Rewrite", type = "Core", elementType = "appender", printObject = true)
-public final class RewriteAppender extends AbstractAppender {
+public final class RewriteAppender<T extends Serializable> extends AbstractAppender<T> {
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
@@ -53,6 +54,7 @@ public final class RewriteAppender extends AbstractAppender {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void start() {
         final Map<String, Appender<?>> map = config.getAppenders();
         for (final AppenderRef ref : appenderRefs) {
@@ -76,6 +78,7 @@ public final class RewriteAppender extends AbstractAppender {
      * Modify the event and pass to the subordinate Appenders.
      * @param event The LogEvent.
      */
+    @Override
     public void append(LogEvent event) {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
@@ -96,7 +99,7 @@ public final class RewriteAppender extends AbstractAppender {
      * @return The created RewriteAppender.
      */
     @PluginFactory
-    public static RewriteAppender createAppender(@PluginAttr("name") final String name,
+    public static <S extends Serializable> RewriteAppender<S> createAppender(@PluginAttr("name") final String name,
                                           @PluginAttr("suppressExceptions") final String suppress,
                                           @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
                                           @PluginConfiguration final Configuration config,
@@ -113,6 +116,6 @@ public final class RewriteAppender extends AbstractAppender {
             LOGGER.error("No appender references defined for RewriteAppender");
             return null;
         }
-        return new RewriteAppender(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);
+        return new RewriteAppender<S>(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);
     }
 }

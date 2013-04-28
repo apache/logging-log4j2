@@ -65,7 +65,7 @@ public class XMLLayoutTest {
 
         // set up appender
         final XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null);
-        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug

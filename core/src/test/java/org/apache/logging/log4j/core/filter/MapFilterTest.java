@@ -87,7 +87,7 @@ public class MapFilterTest {
         final MapFilter mapFilter = (MapFilter) filter;
         assertFalse("Should not be And filter", mapFilter.isAnd());
         final Map<String, List<String>> map = mapFilter.getMap();
-        assertNotNull("No Map", map == null);
+        assertNotNull("No Map", map);
         assertTrue("No elements in Map", map.size() != 0);
         assertTrue("Incorrect number of elements in Map", map.size() == 1);
         assertTrue("Map does not contain key eventId", map.containsKey("eventId"));
@@ -99,7 +99,8 @@ public class MapFilterTest {
         final Map<String,Appender<?>> appenders = config.getAppenders();
         final Appender app = appenders.get("LIST");
         assertNotNull("No List appender", app);
-        final List<String> msgs = ((ListAppender) app).getMessages();
+        @SuppressWarnings("unchecked")
+        final List<String> msgs = ((ListAppender<String>) app).getMessages();
         assertNotNull("No messages", msgs);
         assertTrue("No messages", msgs.size() > 0);
 

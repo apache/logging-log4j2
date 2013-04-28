@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -29,18 +27,23 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * File Appender.
  */
 @Plugin(name = "File", type = "Core", elementType = "appender", printObject = true)
-public final class FileAppender extends AbstractOutputStreamAppender {
+public final class FileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
     private final Advertiser advertiser;
     private Object advertisement;
 
-    private FileAppender(final String name, final Layout layout, final Filter filter, final FileManager manager,
-                         final String filename, final boolean handleException, final boolean immediateFlush, Advertiser advertiser) {
+    private FileAppender(final String name, final Layout<T> layout, final Filter filter, final FileManager manager,
+                         final String filename, final boolean handleException, final boolean immediateFlush,
+                         Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         if (advertiser != null)
         {
@@ -91,14 +94,14 @@ public final class FileAppender extends AbstractOutputStreamAppender {
      * @return The FileAppender.
      */
     @PluginFactory
-    public static FileAppender createAppender(@PluginAttr("fileName") final String fileName,
+    public static <S extends Serializable> FileAppender<S> createAppender(@PluginAttr("fileName") final String fileName,
                                               @PluginAttr("append") final String append,
                                               @PluginAttr("locking") final String locking,
                                               @PluginAttr("name") final String name,
                                               @PluginAttr("immediateFlush") final String immediateFlush,
                                               @PluginAttr("suppressExceptions") final String suppress,
                                               @PluginAttr("bufferedIO") final String bufferedIO,
-                                              @PluginElement("layout") Layout layout,
+                                              @PluginElement("layout") Layout<S> layout,
                                               @PluginElement("filters") final Filter filter,
                                               @PluginAttr("advertise") final String advertise,
                                               @PluginAttr("advertiseURI") final String advertiseURI,
@@ -132,9 +135,12 @@ public final class FileAppender extends AbstractOutputStreamAppender {
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            layout = l;
         }
 
-        return new FileAppender(name, layout, filter, manager, fileName, handleExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
+        return new FileAppender<S>(name, layout, filter, manager, fileName, handleExceptions, isFlush,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -24,9 +26,8 @@ import java.io.InputStreamReader;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 
 /**
  * Runs a sequence of performance tests.
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 public class PerfTestDriver {
     static enum WaitStrategy {
         Sleep, Yield, Block
-    };
+    }
 
     /**
      * Defines the setup for a java process running a performance test.
@@ -91,9 +92,7 @@ public class PerfTestDriver {
             args.add("-DAsyncLoggerConfig.WaitStrategy=" + _wait);
             args.add("-DAsyncLogger.WaitStrategy=" + _wait);
             if (_systemProperties != null) {
-                for (String property : _systemProperties) {
-                    args.add(property);
-                }
+                Collections.addAll(args, _systemProperties);
             }
             args.add("-cp");
             args.add(System.getProperty("java.class.path"));
@@ -167,7 +166,7 @@ public class PerfTestDriver {
                     _average += Long.parseLong(parts[i++].split("=")[1]);
                     _pct99 += Long.parseLong(parts[i++].split("=")[1]);
                     _pct99_99 += Long.parseLong(parts[i++].split("=")[1]);
-                    _count += Integer.parseInt(parts[i++].split("=")[1]);
+                    _count += Integer.parseInt(parts[i].split("=")[1]);
                 } else {
                     _throughputRowCount++;
                     String number = line.substring(0, line.indexOf(' '));
@@ -175,7 +174,7 @@ public class PerfTestDriver {
                     totalOps += opsPerSec;
                 }
             }
-            _averageOpsPerSec = totalOps / (int) _throughputRowCount;
+            _averageOpsPerSec = totalOps / _throughputRowCount;
         }
 
         public String toString() {
@@ -294,8 +293,7 @@ public class PerfTestDriver {
             pb.redirectErrorStream(true); // merge System.out and System.err
             long t1 = System.nanoTime();
             // int count = config._threadCount >= 16 ? 2 : repeat;
-            int count = repeat;
-            runPerfTest(count, x++, config, pb);
+            runPerfTest(repeat, x++, config, pb);
             System.out.printf(" took %.1f seconds%n", (System.nanoTime() - t1)
                     / (1000.0 * 1000.0 * 1000.0));
 
@@ -319,7 +317,7 @@ public class PerfTestDriver {
                         (System.nanoTime() - start)
                                 / (60.0 * 1000.0 * 1000.0 * 1000.0));
 
-        printRanking((Setup[]) tests.toArray(new Setup[tests.size()]));
+        printRanking(tests.toArray(new Setup[tests.size()]));
     }
 
     private static void printRanking(Setup[] tests) {
@@ -357,6 +355,7 @@ public class PerfTestDriver {
             final boolean[] stop) {
 
         Thread t = new Thread("OutputWriter") {
+            @Override
             public void run() {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         process.getInputStream()));

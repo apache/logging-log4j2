@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.fail;
 
@@ -64,6 +65,7 @@ public class SocketTest {
         private ServerSocket server;
         private Socket client;
 
+        @Override
         public InputStream call() throws Exception {
             server = new ServerSocket(SOCKET_PORT);
             client = server.accept();

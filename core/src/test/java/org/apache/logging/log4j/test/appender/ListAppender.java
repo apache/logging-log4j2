@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
  * List could eventually grow to cause an OutOfMemoryError.
  */
 @Plugin(name = "List", type = "Core", elementType = "appender", printObject = true)
-public class ListAppender extends AbstractAppender {
+public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private final List<LogEvent> events = new ArrayList<LogEvent>();
 
@@ -55,7 +56,8 @@ public class ListAppender extends AbstractAppender {
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout layout, final boolean newline, final boolean raw) {
+    public ListAppender(final String name, final Filter filter, final Layout<T> layout, final boolean newline,
+                        final boolean raw) {
         super(name, filter, layout);
         this.newLine = newline;
         this.raw = raw;
@@ -67,6 +69,7 @@ public class ListAppender extends AbstractAppender {
         }
     }
 
+    @Override
     public synchronized void append(final LogEvent event) {
         final Layout layout = getLayout();
         if (layout == null) {
@@ -151,10 +154,10 @@ public class ListAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static ListAppender createAppender(@PluginAttr("name") final String name,
+    public static <S extends Serializable> ListAppender<S> createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("entryPerNewLine") final String newLine,
                                               @PluginAttr("raw") final String raw,
-                                              @PluginElement("layout") final Layout layout,
+                                              @PluginElement("layout") final Layout<S> layout,
                                               @PluginElement("filters") final Filter filter) {
 
         if (name == null) {
@@ -162,9 +165,9 @@ public class ListAppender extends AbstractAppender {
             return null;
         }
 
-        final boolean nl = (newLine == null) ? false : Boolean.parseBoolean(newLine);
-        final boolean r = (raw == null) ? false : Boolean.parseBoolean(raw);
+        final boolean nl = newLine != null && Boolean.parseBoolean(newLine);
+        final boolean r = raw != null && Boolean.parseBoolean(raw);
 
-        return new ListAppender(name, filter, layout, nl, r);
+        return new ListAppender<S>(name, filter, layout, nl, r);
     }
 }

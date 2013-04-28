@@ -71,8 +71,7 @@ class PerfTestResultFormatter {
 		char[] tabs = new char[subKeys.size()];
 		Arrays.fill(tabs, '\t');
 		String sep = new String(tabs);
-		sb.append("\tAverage latency" + sep + "99% less than" + sep
-				+ "99.99% less than");
+		sb.append("\tAverage latency").append(sep).append("99% less than").append(sep).append("99.99% less than");
 		sb.append(LF);
 		for (int i = 0; i < 3; i++) {
 			for (String subKey : subKeys) {
@@ -118,7 +117,7 @@ class PerfTestResultFormatter {
 			Map<String, Stats> sub = results.get(key);
 			for (String subKey : sub.keySet()) {
 				Stats stats = sub.get(subKey);
-				sb.append("\t").append((long) stats.throughput);
+				sb.append("\t").append(stats.throughput);
 			}
 			sb.append(LF);
 		}
@@ -172,7 +171,7 @@ class PerfTestResultFormatter {
 		PerfTestResultFormatter fmt = new PerfTestResultFormatter();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				System.in));
-		String line = null;
+		String line;
 		while ((line = reader.readLine()) != null) {
 			fmt.process(line);
 		}

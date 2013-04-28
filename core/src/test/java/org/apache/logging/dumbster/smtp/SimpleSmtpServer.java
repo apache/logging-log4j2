@@ -35,7 +35,7 @@ public class SimpleSmtpServer implements Runnable {
     /**
      * Stores all of the email received since this instance started up.
      */
-    private final List receivedMail;
+    private final List<SmtpMessage> receivedMail;
 
     /**
      * Default SMTP port is 25.
@@ -68,13 +68,14 @@ public class SimpleSmtpServer implements Runnable {
      * @param port port number
      */
     public SimpleSmtpServer(final int port) {
-        receivedMail = new ArrayList();
+        receivedMail = new ArrayList<SmtpMessage>();
         this.port = port;
     }
 
     /**
      * Main loop of the SMTP server.
      */
+    @Override
     public void run() {
         stopped = false;
         try {
@@ -112,7 +113,7 @@ public class SimpleSmtpServer implements Runnable {
            * For higher concurrency, we could just change handle to return void and update the list inside the method
            * to limit the duration that we hold the lock.
            */
-                    final List msgs = handleTransaction(out, input);
+                    final List<SmtpMessage> msgs = handleTransaction(out, input);
                     receivedMail.addAll(msgs);
                 }
                 socket.close();
@@ -163,7 +164,7 @@ public class SimpleSmtpServer implements Runnable {
      * @return List of SmtpMessage
      * @throws IOException
      */
-    private List handleTransaction(final PrintWriter out, final BufferedReader input) throws IOException {
+    private List<SmtpMessage> handleTransaction(final PrintWriter out, final BufferedReader input) throws IOException {
         // Initialize the state machine
         SmtpState smtpState = SmtpState.CONNECT;
         final SmtpRequest smtpRequest = new SmtpRequest(SmtpActionType.CONNECT, "", smtpState);
@@ -175,7 +176,7 @@ public class SimpleSmtpServer implements Runnable {
         sendResponse(out, smtpResponse);
         smtpState = smtpResponse.getNextState();
 
-        final List msgList = new ArrayList();
+        final List<SmtpMessage> msgList = new ArrayList<SmtpMessage>();
         SmtpMessage msg = new SmtpMessage();
 
         while (smtpState != SmtpState.CONNECT) {

@@ -57,7 +57,7 @@ public class JMSTopicFailoverTest {
     private static final String CONFIG = "log4j-jmstopic-failover.xml";
 
     private static Configuration config;
-    private static ListAppender app;
+    private static ListAppender<LogEvent> app;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -75,11 +75,12 @@ public class JMSTopicFailoverTest {
     }
 
     @Before
+    @SuppressWarnings("unchecked")
     public void before() {
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
+                app = (ListAppender<LogEvent>) entry.getValue();
                 break;
             }
         }

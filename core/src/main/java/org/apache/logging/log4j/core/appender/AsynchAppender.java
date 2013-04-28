@@ -57,7 +57,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
     private final boolean includeLocation;
-    private AppenderControl errorAppender;
+    private AppenderControl<?> errorAppender;
     private AsynchThread thread;
 
     private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
@@ -74,9 +74,10 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void start() {
         final Map<String, Appender<?>> map = config.getAppenders();
-        final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
+        final List<AppenderControl<?>> appenders = new ArrayList<AppenderControl<?>>();
         for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {
                 appenders.add(new AppenderControl(map.get(appenderRef.getRef()), appenderRef.getLevel(),
@@ -118,6 +119,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
      * <p/>
      * @param event The LogEvent.
      */
+    @Override
     public void append(final LogEvent event) {
         if (!isStarted()) {
             throw new IllegalStateException("AsynchAppender " + getName() + " is not active");
@@ -180,8 +182,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
 
         final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
         final int queueSize = size == null ? DEFAULT_QUEUE_SIZE : Integer.parseInt(size);
-        final boolean isIncludeLocation = includeLocation == null ? false :
-                Boolean.parseBoolean(includeLocation);
+        final boolean isIncludeLocation = includeLocation != null && Boolean.parseBoolean(includeLocation);
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
@@ -195,10 +196,10 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private class AsynchThread extends Thread {
 
         private volatile boolean shutdown = false;
-        private final List<AppenderControl> appenders;
+        private final List<AppenderControl<?>> appenders;
         private final BlockingQueue<Serializable> queue;
 
-        public AsynchThread(final List<AppenderControl> appenders, final BlockingQueue<Serializable> queue) {
+        public AsynchThread(final List<AppenderControl<?>> appenders, final BlockingQueue<Serializable> queue) {
             this.appenders = appenders;
             this.queue = queue;
         }

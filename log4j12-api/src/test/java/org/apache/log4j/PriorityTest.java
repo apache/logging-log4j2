@@ -17,13 +17,11 @@
 
 package org.apache.log4j;
 
-import java.util.Locale;
-
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests of Priority.
@@ -89,77 +87,63 @@ public class PriorityTest {
 
     /**
      * Tests Priority.FATAL.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testFatal() {
         assertTrue(Priority.FATAL instanceof Level);
     }
 
     /**
      * Tests Priority.ERROR.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testERROR() {
         assertTrue(Priority.ERROR instanceof Level);
     }
 
     /**
      * Tests Priority.WARN.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testWARN() {
         assertTrue(Priority.WARN instanceof Level);
     }
 
     /**
      * Tests Priority.INFO.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testINFO() {
         assertTrue(Priority.INFO instanceof Level);
     }
 
     /**
      * Tests Priority.DEBUG.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testDEBUG() {
         assertTrue(Priority.DEBUG instanceof Level);
     }
 
     /**
      * Tests Priority.equals(null).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testEqualsNull() {
         assertFalse(Priority.DEBUG.equals(null));
     }
 
     /**
      * Tests Priority.equals(Level.DEBUG).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testEqualsLevel() {
         //
         //   this behavior violates the equals contract.
@@ -169,11 +153,9 @@ public class PriorityTest {
 
     /**
      * Tests getAllPossiblePriorities().
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testGetAllPossiblePriorities() {
         final Priority[] priorities = Priority.getAllPossiblePriorities();
         assertEquals(5, priorities.length);
@@ -181,55 +163,45 @@ public class PriorityTest {
 
     /**
      * Tests toPriority(String).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testToPriorityString() {
         assertTrue(Priority.toPriority("DEBUG") == Level.DEBUG);
     }
 
     /**
      * Tests toPriority(int).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testToPriorityInt() {
         assertTrue(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG);
     }
 
     /**
      * Tests toPriority(String, Priority).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testToPriorityStringPriority() {
         assertTrue(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG);
     }
 
     /**
      * Tests toPriority(int, Priority).
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testToPriorityIntPriority() {
         assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
     }
 
     /**
      * Test that dotless lower I + "nfo" is recognized as INFO.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testDotlessLowerI() {
         final Priority level = Priority.toPriority("\u0131nfo");
         assertEquals("INFO", level.toString());
@@ -238,11 +210,9 @@ public class PriorityTest {
     /**
      * Test that dotted lower I + "nfo" is recognized as INFO
      * even in Turkish locale.
-     *
-     * @deprecated
      */
-    @Deprecated
     @Test
+    @SuppressWarnings("deprecation")
     public void testDottedLowerI() {
         final Locale defaultLocale = Locale.getDefault();
         final Locale turkey = new Locale("tr", "TR");

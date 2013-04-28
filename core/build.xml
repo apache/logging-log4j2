@@ -50,8 +50,8 @@ Use of Maven to build this component is recommended.
        
 
     <!--   Java compiler settings   -->
-    <property name="javac.source" value="1.5"/>
-    <property name="javac.target" value="1.5"/>
+    <property name="javac.source" value="1.6"/>
+    <property name="javac.target" value="1.6"/>
     <property name="javac.deprecation" value="true"/>
     <property name="javac.debug" value="true"/>
        

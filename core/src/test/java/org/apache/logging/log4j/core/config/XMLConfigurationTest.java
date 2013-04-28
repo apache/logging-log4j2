@@ -28,16 +28,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -53,7 +51,7 @@ public class XMLConfigurationTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
-            final String name = ((XMLConfiguration) config).getName();
+            final String name = config.getName();
             if (name == null || !name.equals("XMLConfigTest")) {
                 ctx.reconfigure();
             }
@@ -104,11 +102,11 @@ public class XMLConfigurationTest {
         fos.close();
         final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
         logger.debug("This is a test");
-        final DataInputStream is = new DataInputStream(new BufferedInputStream(new FileInputStream(LOGFILE)));
+        final BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(LOGFILE)));
         try {
             int count = 0;
             String str = "";
-            while (is.available() != 0) {
+            while (is.ready()) {
                 str = is.readLine();
                 ++count;
             }

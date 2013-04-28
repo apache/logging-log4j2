@@ -511,8 +511,8 @@ public class ThrowableProxy extends Throwable {
     private ThrowableProxy[] getSuppressedProxies() {
         if (getSuppressed != null) {
             try {
-                return (ThrowableProxy[]) getSuppressed.invoke(this, null);
-            } catch (final Exception ex) {
+                return (ThrowableProxy[]) getSuppressed.invoke(this);
+            } catch (final Exception ignore) {
                 return null;
             }
         }
@@ -522,11 +522,11 @@ public class ThrowableProxy extends Throwable {
     private void setSuppressed(final Throwable throwable) {
         if (getSuppressed != null && addSuppressed != null) {
             try {
-                final Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable, null);
+                final Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable);
                 for (final Throwable t : array) {
                     addSuppressed.invoke(this, new ThrowableProxy(t));
                 }
-            } catch (final Exception ex) {
+            } catch (final Exception ignore) {
                 //
             }
         }

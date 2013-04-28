@@ -78,7 +78,7 @@ public class HelloWorld {
             <p>
               Substituting parameters leaves formatting up to you if <code>toString()</code> is not what you want.
               To facilitate formatting, you can use the same format strings as Java's 
-              <a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html#syntax">Formatter</a>.              
+              <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">Formatter</a>.
               For example:
             </p>
             <pre class="prettyprint linenums">public static Logger logger = LogManager.getFormatterLogger("Foo");

@@ -17,8 +17,6 @@
 package org.slf4j.impl;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -44,24 +42,26 @@ public class SLF4JLogger implements LocationAwareLogger {
     private final String name;
 
     public SLF4JLogger(final AbstractLogger logger, final String name) {
-        final Logger l = LogManager.getLogger(name);
         this.logger = new AbstractLoggerWrapper(logger, name, null);
         eventLogger = "EventLogger".equals(name);
         this.name = name;
     }
 
+    @Override
     public void trace(final String format) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new SimpleMessage(format), null);
         }
     }
 
+    @Override
     public void trace(final String format, final Object o) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new ParameterizedMessage(format, o), null);
         }
     }
 
+    @Override
     public void trace(final String format, final Object arg1, final Object arg2) {
         if (logger.isTraceEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
@@ -69,33 +69,39 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void trace(final String format, final Object[] args) {
+    @Override
+    public void trace(final String format, final Object... args) {
         if (logger.isTraceEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void trace(final String format, final Throwable t) {
         if (logger.isTraceEnabled()) {
             logger.log(null, FQCN, Level.TRACE, new SimpleMessage(format), t);
         }
     }
 
+    @Override
     public boolean isTraceEnabled() {
         return logger.isTraceEnabled();
     }
 
+    @Override
     public boolean isTraceEnabled(final Marker marker) {
         return logger.isTraceEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
+    @Override
     public void trace(final Marker marker, final String s) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE, new SimpleMessage(s), null);
         }
     }
 
+    @Override
     public void trace(final Marker marker, final String s, final Object o) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE,
@@ -103,6 +109,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void trace(final Marker marker, final String s, final Object o, final Object o1) {
         if (isTraceEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
@@ -110,13 +117,15 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void trace(final Marker marker, final String s, final Object[] objects) {
+    @Override
+    public void trace(final Marker marker, final String s, final Object... objects) {
         if (isTraceEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void trace(final Marker marker, final String s, final Throwable throwable) {
         if (isTraceEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.TRACE,
@@ -124,18 +133,21 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void debug(final String format) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new SimpleMessage(format), null);
         }
     }
 
+    @Override
     public void debug(final String format, final Object o) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new ParameterizedMessage(format, o), null);
         }
     }
 
+    @Override
     public void debug(final String format, final Object arg1, final Object arg2) {
         if (logger.isDebugEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
@@ -143,33 +155,39 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void debug(final String format, final Object[] args) {
+    @Override
+    public void debug(final String format, final Object... args) {
         if (logger.isDebugEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void debug(final String format, final Throwable t) {
         if (logger.isDebugEnabled()) {
             logger.log(null, FQCN, Level.DEBUG, new SimpleMessage(format), t);
         }
     }
 
+    @Override
     public boolean isDebugEnabled() {
         return logger.isDebugEnabled();
     }
 
+    @Override
     public boolean isDebugEnabled(final Marker marker) {
         return logger.isDebugEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
+    @Override
     public void debug(final Marker marker, final String s) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG, new SimpleMessage(s), null);
         }
     }
 
+    @Override
     public void debug(final Marker marker, final String s, final Object o) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG,
@@ -177,6 +195,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void debug(final Marker marker, final String s, final Object o, final Object o1) {
         if (isDebugEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
@@ -184,13 +203,15 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void debug(final Marker marker, final String s, final Object[] objects) {
+    @Override
+    public void debug(final Marker marker, final String s, final Object... objects) {
         if (isDebugEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void debug(final Marker marker, final String s, final Throwable throwable) {
         if (isDebugEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.DEBUG,
@@ -198,18 +219,21 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void info(final String format) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new SimpleMessage(format), null);
         }
     }
 
+    @Override
     public void info(final String format, final Object o) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new ParameterizedMessage(format, o), null);
         }
     }
 
+    @Override
     public void info(final String format, final Object arg1, final Object arg2) {
         if (logger.isInfoEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
@@ -217,33 +241,39 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void info(final String format, final Object[] args) {
+    @Override
+    public void info(final String format, final Object... args) {
         if (logger.isInfoEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void info(final String format, final Throwable t) {
         if (logger.isInfoEnabled()) {
             logger.log(null, FQCN, Level.INFO, new SimpleMessage(format), t);
         }
     }
 
+    @Override
     public boolean isInfoEnabled() {
         return logger.isInfoEnabled();
     }
 
+    @Override
     public boolean isInfoEnabled(final Marker marker) {
         return logger.isInfoEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
+    @Override
     public void info(final Marker marker, final String s) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO, new SimpleMessage(s), null);
         }
     }
 
+    @Override
     public void info(final Marker marker, final String s, final Object o) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO,
@@ -251,6 +281,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void info(final Marker marker, final String s, final Object o, final Object o1) {
         if (isInfoEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
@@ -258,13 +289,15 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void info(final Marker marker, final String s, final Object[] objects) {
+    @Override
+    public void info(final Marker marker, final String s, final Object... objects) {
         if (isInfoEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void info(final Marker marker, final String s, final Throwable throwable) {
         if (isInfoEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.INFO,
@@ -272,18 +305,21 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void warn(final String format) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new SimpleMessage(format), null);
         }
     }
 
+    @Override
     public void warn(final String format, final Object o) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new ParameterizedMessage(format, o), null);
         }
     }
 
+    @Override
     public void warn(final String format, final Object arg1, final Object arg2) {
         if (logger.isWarnEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
@@ -291,33 +327,39 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void warn(final String format, final Object[] args) {
+    @Override
+    public void warn(final String format, final Object... args) {
         if (logger.isWarnEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void warn(final String format, final Throwable t) {
         if (logger.isWarnEnabled()) {
             logger.log(null, FQCN, Level.WARN, new SimpleMessage(format), t);
         }
     }
 
+    @Override
     public boolean isWarnEnabled() {
         return logger.isWarnEnabled();
     }
 
+    @Override
     public boolean isWarnEnabled(final Marker marker) {
         return logger.isWarnEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
+    @Override
     public void warn(final Marker marker, final String s) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN, new SimpleMessage(s), null);
         }
     }
 
+    @Override
     public void warn(final Marker marker, final String s, final Object o) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN,
@@ -325,6 +367,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void warn(final Marker marker, final String s, final Object o, final Object o1) {
         if (isWarnEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
@@ -332,13 +375,15 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void warn(final Marker marker, final String s, final Object[] objects) {
+    @Override
+    public void warn(final Marker marker, final String s, final Object... objects) {
         if (isWarnEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void warn(final Marker marker, final String s, final Throwable throwable) {
         if (isWarnEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.WARN,
@@ -346,18 +391,21 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void error(final String format) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new SimpleMessage(format), null);
         }
     }
 
+    @Override
     public void error(final String format, final Object o) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new ParameterizedMessage(format, o), null);
         }
     }
 
+    @Override
     public void error(final String format, final Object arg1, final Object arg2) {
         if (logger.isErrorEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, arg1, arg2);
@@ -365,33 +413,39 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void error(final String format, final Object[] args) {
+    @Override
+    public void error(final String format, final Object... args) {
         if (logger.isErrorEnabled()) {
             final ParameterizedMessage msg = new ParameterizedMessage(format, args);
             logger.log(null, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void error(final String format, final Throwable t) {
         if (logger.isErrorEnabled()) {
             logger.log(null, FQCN, Level.ERROR, new SimpleMessage(format), t);
         }
     }
 
+    @Override
     public boolean isErrorEnabled() {
         return logger.isErrorEnabled();
     }
 
+    @Override
     public boolean isErrorEnabled(final Marker marker) {
         return logger.isErrorEnabled((org.apache.logging.log4j.Marker) marker);
     }
 
+    @Override
     public void error(final Marker marker, final String s) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR, new SimpleMessage(s), null);
         }
     }
 
+    @Override
     public void error(final Marker marker, final String s, final Object o) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR,
@@ -399,6 +453,7 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
+    @Override
     public void error(final Marker marker, final String s, final Object o, final Object o1) {
         if (isErrorEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, o, o1);
@@ -406,13 +461,15 @@ public class SLF4JLogger implements LocationAwareLogger {
         }
     }
 
-    public void error(final Marker marker, final String s, final Object[] objects) {
+    @Override
+    public void error(final Marker marker, final String s, final Object... objects) {
         if (isErrorEnabled(marker)) {
             final ParameterizedMessage msg = new ParameterizedMessage(s, objects);
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR, msg, msg.getThrowable());
         }
     }
 
+    @Override
     public void error(final Marker marker, final String s, final Throwable throwable) {
         if (isErrorEnabled(marker)) {
             logger.log((org.apache.logging.log4j.Marker) marker, FQCN, Level.ERROR,
@@ -421,6 +478,7 @@ public class SLF4JLogger implements LocationAwareLogger {
     }
 
 
+    @Override
     public void log(final Marker marker, final String fqcn, final int i, final String s1, final Object[] objects,
                     Throwable throwable) {
         if (!logger.isEnabled(getLevel(i), (org.apache.logging.log4j.Marker) marker, s1)) {
@@ -449,12 +507,13 @@ public class SLF4JLogger implements LocationAwareLogger {
         } else {
             msg = new ParameterizedMessage(s1, objects, throwable);
             if (throwable != null) {
-                throwable = ((ParameterizedMessage) msg).getThrowable();
+                throwable = msg.getThrowable();
             }
         }
         logger.log((org.apache.logging.log4j.Marker) marker, fqcn, getLevel(i), msg, throwable);
     }
 
+    @Override
     public String getName() {
         return name;
     }

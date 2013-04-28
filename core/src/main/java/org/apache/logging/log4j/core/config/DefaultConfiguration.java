@@ -23,6 +23,8 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.io.Serializable;
+
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
  * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
@@ -46,10 +48,10 @@ public class DefaultConfiguration extends BaseConfiguration {
     public DefaultConfiguration() {
 
         setName(DEFAULT_NAME);
-        final Layout layout = PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
-            null, null, null);
-        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
-            "true");
+        final Layout<? extends Serializable> layout =
+                PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n", null, null, null);
+        final Appender<? extends Serializable> appender =
+                ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         appender.start();
         addAppender(appender);
         final LoggerConfig root = getRootLogger();

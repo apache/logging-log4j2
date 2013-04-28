@@ -43,6 +43,7 @@ import org.mockejb.jndi.MockContextFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -100,10 +101,11 @@ public class JMSTopicTest {
                 TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
-        final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
+        final ListAppender<Serializable> listApp = new ListAppender<Serializable>("Events", serverFilters, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
-        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final ConsoleAppender<? extends Serializable> console =
+                ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
         final Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
         serverLogger.addAppender(console);

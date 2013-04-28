@@ -31,7 +31,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     private static final int MAX_RECONNECTS = 3;
 
-    private static ManagerFactory factory = new AvroManagerFactory();
+    private static AvroManagerFactory factory = new AvroManagerFactory();
 
     private final Agent[] agents;
 
@@ -95,8 +95,8 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             first = false;
         }
         sb.append("]");
-        return (FlumeAvroManager) getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
-            connectTimeout, requestTimeout));
+        return getManager(sb.toString(), factory,
+                new FactoryData(name, agents, batchSize, retries, connectTimeout, requestTimeout));
     }
 
     /**

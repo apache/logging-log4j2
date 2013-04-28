@@ -90,13 +90,14 @@ public class ExitTagTest {
         verify("exit with(5792) TRACE M-EXIT[ FLOW ] E");
     }
 
+    @SuppressWarnings("unchecked")
     private void verify(final String expected) {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Map<String, Appender<?>> list = ctx.getConfiguration().getAppenders();
         final Appender<?> listApp = list.get("List");
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        final List<String> events = ((ListAppender) listApp).getMessages();
+        final List<String> events = ((ListAppender<String>) listApp).getMessages();
         try
         {
             assertEquals("Incorrect number of messages.", 1, events.size());

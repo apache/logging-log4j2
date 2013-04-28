@@ -23,28 +23,31 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
+import java.io.Serializable;
+
 /**
  *
  */
 @Plugin(name="AlwaysFail",type="Core",elementType="appender",printObject=true)
-public class AlwaysFailAppender extends AbstractAppender {
+public class AlwaysFailAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private AlwaysFailAppender(final String name) {
         super(name, null, null, false);
     }
 
+    @Override
     public void append(final LogEvent event) {
         throw new LoggingException("Always fail");
     }
 
     @PluginFactory
-    public static AlwaysFailAppender createAppender(@PluginAttr("name") final String name) {
+    public static <S extends Serializable> AlwaysFailAppender<S> createAppender(@PluginAttr("name") final String name) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;
         }
 
-        return new AlwaysFailAppender(name);
+        return new AlwaysFailAppender<S>(name);
     }
 
 }

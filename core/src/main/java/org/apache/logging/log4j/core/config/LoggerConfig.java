@@ -23,21 +23,22 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -163,9 +164,9 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      * @param level The Level to use.
      * @param filter A Filter for the Appender reference.
      */
-    public void addAppender(final Appender appender, final Level level,
+    public <T extends Serializable> void addAppender(final Appender<T> appender, final Level level,
             final Filter filter) {
-        appenders.put(appender.getName(), new AppenderControl(appender, level,
+        appenders.put(appender.getName(), new AppenderControl<T>(appender, level,
                 filter));
     }
 

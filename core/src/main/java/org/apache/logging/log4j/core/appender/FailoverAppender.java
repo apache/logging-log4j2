@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ import java.util.Map;
  * to not suppress exceptions for the FailoverAppender to work.
  */
 @Plugin(name = "Failover", type = "Core", elementType = "appender", printObject = true)
-public final class FailoverAppender extends AbstractAppender {
+public final class FailoverAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_INTERVAL = 60 * Constants.MILLIS_IN_SECONDS;
 
@@ -49,9 +50,9 @@ public final class FailoverAppender extends AbstractAppender {
 
     private final Configuration config;
 
-    private AppenderControl primary;
+    private AppenderControl<?> primary;
 
-    private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
+    private final List<AppenderControl<?>> failoverAppenders = new ArrayList<AppenderControl<?>>();
 
     private final long interval;
 
@@ -70,6 +71,7 @@ public final class FailoverAppender extends AbstractAppender {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void start() {
         final Map<String, Appender<?>> map = config.getAppenders();
         int errors = 0;
@@ -99,8 +101,8 @@ public final class FailoverAppender extends AbstractAppender {
      * Handle the Log event.
      * @param event The LogEvent.
      */
+    @Override
     public void append(final LogEvent event) {
-        final RuntimeException re = null;
         if (!isStarted()) {
             error("FailoverAppender " + getName() + " did not start successfully");
             return;
@@ -180,7 +182,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @return The FailoverAppender that was created.
      */
     @PluginFactory
-    public static FailoverAppender createAppender(@PluginAttr("name") final String name,
+    public static <S extends Serializable> FailoverAppender<S> createAppender(@PluginAttr("name") final String name,
                                                   @PluginAttr("primary") final String primary,
                                                   @PluginElement("failovers") final String[] failovers,
                                                   @PluginAttr("retryInterval") final String interval,
@@ -220,6 +222,6 @@ public final class FailoverAppender extends AbstractAppender {
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new FailoverAppender(name, filter, primary, failovers, retryInterval, config, handleExceptions);
+        return new FailoverAppender<S>(name, filter, primary, failovers, retryInterval, config, handleExceptions);
     }
 }

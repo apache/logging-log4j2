@@ -23,7 +23,6 @@
     <version>2.0-beta6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-to-slf4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j to SLF4J Adapter</name>
@@ -167,7 +166,7 @@
             <artifactId>maven-pmd-plugin</artifactId>
             <version>${pmd.plugin.version}</version>
             <configuration>
-              <targetJdk>1.5</targetJdk>
+              <targetJdk>${maven.compile.target}</targetJdk>
             </configuration>
           </plugin>
           <plugin>

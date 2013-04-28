@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,17 +28,21 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * File Appender.
  */
 @Plugin(name = "FastFile", type = "Core", elementType = "appender", printObject = true)
-public final class FastFileAppender extends AbstractOutputStreamAppender {
+public final class FastFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastFileAppender(String name, Layout<?> layout, Filter filter,
+    private FastFileAppender(String name, Layout<T> layout, Filter filter,
             FastFileManager manager, String filename, boolean handleException,
             boolean immediateFlush, Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
@@ -116,13 +117,13 @@ public final class FastFileAppender extends AbstractOutputStreamAppender {
      * @return The FileAppender.
      */
     @PluginFactory
-    public static FastFileAppender createAppender(
+    public static <S extends Serializable> FastFileAppender<S> createAppender(
             @PluginAttr("fileName") String fileName,
             @PluginAttr("append") String append,
             @PluginAttr("name") String name,
             @PluginAttr("immediateFlush") String immediateFlush,
             @PluginAttr("suppressExceptions") String suppress,
-            @PluginElement("layout") Layout<?> layout,
+            @PluginElement("layout") Layout<S> layout,
             @PluginElement("filters") final Filter filter,
             @PluginAttr("advertise") final String advertise,
             @PluginAttr("advertiseURI") final String advertiseURI,
@@ -153,9 +154,11 @@ public final class FastFileAppender extends AbstractOutputStreamAppender {
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            layout = l;
         }
-        return new FastFileAppender(name, layout, filter, manager, fileName,
+        return new FastFileAppender<S>(name, layout, filter, manager, fileName,
                 handleExceptions, isFlush, isAdvertise ? config.getAdvertiser()
                         : null);
     }

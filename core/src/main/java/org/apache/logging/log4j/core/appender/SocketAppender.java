@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -34,15 +32,19 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TCPSocketManager;
 import org.apache.logging.log4j.util.EnglishEnums;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
 @Plugin(name = "Socket", type = "Core", elementType = "appender", printObject = true)
-public class SocketAppender extends AbstractOutputStreamAppender {
+public class SocketAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
     private Object advertisement;
     private final Advertiser advertiser;
 
-    protected SocketAppender(final String name, final Layout layout, final Filter filter,
+    protected SocketAppender(final String name, final Layout<T> layout, final Filter filter,
                              final AbstractSocketManager manager, final boolean handleException,
                              final boolean immediateFlush, Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
@@ -83,7 +85,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @return A SocketAppender.
      */
     @PluginFactory
-    public static SocketAppender createAppender(@PluginAttr("host") final String host,
+    public static <S extends Serializable> SocketAppender<S> createAppender(@PluginAttr("host") final String host,
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
@@ -91,7 +93,7 @@ public class SocketAppender extends AbstractOutputStreamAppender {
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
                                                 @PluginAttr("suppressExceptions") final String suppress,
-                                                @PluginElement("layout") Layout layout,
+                                                @PluginElement("layout") Layout<S> layout,
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginAttr("advertise") final String advertise,
                                                 @PluginConfiguration final Configuration config) {
@@ -103,7 +105,9 @@ public class SocketAppender extends AbstractOutputStreamAppender {
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         if (layout == null) {
-            layout = SerializedLayout.createLayout();
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
+            layout = l;
         }
 
         if (name == null) {
@@ -118,7 +122,8 @@ public class SocketAppender extends AbstractOutputStreamAppender {
             return null;
         }
 
-        return new SocketAppender(name, layout, filter, manager, handleExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
+        return new SocketAppender<S>(name, layout, filter, manager, handleExceptions, isFlush,
+                isAdvertise ? config.getAdvertiser() : null);
     }
 
     protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port,

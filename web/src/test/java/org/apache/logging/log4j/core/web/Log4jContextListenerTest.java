@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.web;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -37,8 +36,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -55,14 +54,14 @@ public class Log4jContextListenerTest {
         final Log4jContextListener listener = new Log4jContextListener();
         final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
         final Map<String, Appender<?>> map = config.getAppenders();
-        assertNotNull("No Appenders", map != null && map.size() > 0);
+        assertTrue("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
@@ -78,14 +77,14 @@ public class Log4jContextListenerTest {
         final Log4jContextListener listener = new Log4jContextListener();
         final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
         final Map<String, Appender<?>> map = config.getAppenders();
-        assertNotNull("No Appenders", map != null && map.size() > 0);
+        assertTrue("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
@@ -100,14 +99,14 @@ public class Log4jContextListenerTest {
         final Log4jContextListener listener = new Log4jContextListener();
         final ServletContextEvent event = new ServletContextEvent(context);
         listener.contextInitialized(event);
-        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
         final Map<String, Appender<?>> map = config.getAppenders();
-        assertNotNull("No Appenders", map != null && map.size() > 0);
+        assertTrue("No Appenders", map != null && map.size() > 0);
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
@@ -117,79 +116,101 @@ public class Log4jContextListenerTest {
 
 
     private class MockServletContext implements ServletContext {
-        private String name;
-
         private final Hashtable<String, String> params = new Hashtable<String, String>();
 
         private final Hashtable<String, Object> attrs = new Hashtable<String, Object>();
 
-
+        @Override
         public ServletContext getContext(final String s) {
             return null;
         }
 
+        @Override
         public int getMajorVersion() {
             return 0;
         }
 
+        @Override
         public int getMinorVersion() {
             return 0;
         }
 
+        @Override
         public String getMimeType(final String s) {
             return null;
         }
 
+        @Override
         public Set getResourcePaths(final String s) {
             return null;
         }
 
+        @Override
         public URL getResource(final String s) throws MalformedURLException {
             return null;
         }
 
+        @Override
         public InputStream getResourceAsStream(final String s) {
             return null;
         }
 
+        @Override
         public RequestDispatcher getRequestDispatcher(final String s) {
             return null;
         }
 
+        @Override
         public RequestDispatcher getNamedDispatcher(final String s) {
             return null;
         }
 
+        @Override
+        @Deprecated
+        @SuppressWarnings("deprecation")
         public Servlet getServlet(final String s) throws ServletException {
             return null;
         }
 
+        @Override
+        @Deprecated
+        @SuppressWarnings("deprecation")
         public Enumeration getServlets() {
             return null;
         }
 
+        @Override
+        @Deprecated
+        @SuppressWarnings("deprecation")
         public Enumeration getServletNames() {
             return null;
         }
 
+        @Override
         public void log(final String s) {
             System.out.println(s);
         }
 
+        @Override
+        @Deprecated
+        @SuppressWarnings("deprecation")
         public void log(final Exception e, final String s) {
             System.out.println(s);
             e.printStackTrace();
         }
 
+        @Override
         public void log(final String s, final Throwable throwable) {
             System.out.println(s);
             throwable.printStackTrace();
         }
 
+        @Override
         public String getRealPath(final String s) {
             return null;
         }
 
+        @Override
         public String getServerInfo() {
             return "Mock";
         }
@@ -198,34 +219,42 @@ public class Log4jContextListenerTest {
             params.put(key, value);
         }
 
+        @Override
         public String getInitParameter(final String s) {
             return params.get(s);
         }
 
+        @Override
         public Enumeration getInitParameterNames() {
             return params.keys();
         }
 
+        @Override
         public Object getAttribute(final String s) {
             return attrs.get(s);
         }
 
+        @Override
         public Enumeration getAttributeNames() {
             return attrs.keys();
         }
 
+        @Override
         public void setAttribute(final String s, final Object o) {
             attrs.put(s, o);
         }
 
+        @Override
         public void removeAttribute(final String s) {
             attrs.remove(s);
         }
 
+        @Override
         public String getServletContextName() {
             return null;
         }
 
+        @Override
         public String getContextPath() {
             return null;
         }

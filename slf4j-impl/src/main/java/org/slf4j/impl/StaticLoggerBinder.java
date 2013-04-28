@@ -65,6 +65,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
      * Returns the factory.
      * @return the factor.
      */
+    @Override
     public ILoggerFactory getLoggerFactory() {
         return loggerFactory;
     }
@@ -73,6 +74,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
      * Returns the class name.
      * @return the class name;
      */
+    @Override
     public String getLoggerFactoryClassStr() {
         return LOGGER_FACTORY_CLASS_STR;
     }

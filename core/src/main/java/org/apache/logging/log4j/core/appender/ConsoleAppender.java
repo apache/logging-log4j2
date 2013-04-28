@@ -29,6 +29,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
 /**
@@ -42,7 +43,7 @@ import java.lang.reflect.Constructor;
  * default. OTOH, a Writer cannot print byte streams.
  */
 @Plugin(name = "Console", type = "Core", elementType = "appender", printObject = true)
-public final class ConsoleAppender extends AbstractOutputStreamAppender {
+public final class ConsoleAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
@@ -56,7 +57,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         SYSTEM_ERR
     }
 
-    private ConsoleAppender(final String name, final Layout layout, final Filter filter,
+    private ConsoleAppender(final String name, final Layout<T> layout, final Filter filter,
                             final OutputStreamManager manager,
                             final boolean handleExceptions) {
         super(name, layout, filter, handleExceptions, true, manager);
@@ -74,7 +75,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static ConsoleAppender createAppender(@PluginElement("layout") Layout layout,
+    public static <S extends Serializable> ConsoleAppender<S> createAppender(@PluginElement("layout") Layout<S> layout,
                                                  @PluginElement("filters") final Filter filter,
                                                  @PluginAttr("target") final String t,
                                                  @PluginAttr("name") final String name,
@@ -85,12 +86,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null);
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            layout = l;
         }
         final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender(name, layout, filter, getManager(isFollow, target), handleExceptions);
+        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target), handleExceptions);
     }
 
     private static OutputStreamManager getManager(final boolean follow, final Target target) {
@@ -224,6 +227,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
          * @param data The data required to create the entity.
          * @return The OutputStreamManager
          */
+        @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
             return new OutputStreamManager(data.os, data.type);
         }

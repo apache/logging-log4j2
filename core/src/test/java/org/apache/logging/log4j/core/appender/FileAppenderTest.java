@@ -18,18 +18,16 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.After;
-import org.junit.Test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -139,8 +137,8 @@ public class FileAppenderTest {
     }
 
     private static void writer(final boolean lock, final int count, final String name) throws Exception {
-        final Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null);
-        final FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
+        final Layout<String> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null);
+        final FileAppender<String> app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
             "false", "false", layout, null, "false", null, null);
         final Thread t = Thread.currentThread();
         app.start();
@@ -164,10 +162,10 @@ public class FileAppenderTest {
         final String expected = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} \\[[^\\]]*\\] INFO TestLogger - Test";
         final Pattern pattern = Pattern.compile(expected);
         final FileInputStream fis = new FileInputStream(FILENAME);
-        final DataInputStream is = new DataInputStream(new BufferedInputStream(fis));
+        final BufferedReader is = new BufferedReader(new InputStreamReader(fis));
         int counter = 0;
         String str = "";
-        while (is.available() != 0) {
+        while (is.ready()) {
             str = is.readLine();
             //System.out.println(str);
             ++counter;
@@ -196,6 +194,7 @@ public class FileAppenderTest {
             this.lock = lock;
             this.count = count;
         }
+        @Override
         public void run() {
             final Thread thread = Thread.currentThread();
 

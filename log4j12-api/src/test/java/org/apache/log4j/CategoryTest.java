@@ -20,23 +20,20 @@ package org.apache.log4j;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -46,7 +43,7 @@ public class CategoryTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    private static ListAppender appender = new ListAppender("List");
+    private static ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List");
 
     @BeforeClass
     public static void setupClass() {
@@ -66,6 +63,7 @@ public class CategoryTest {
      * Tests Category.forcedLog.
      */
     @Test
+    @SuppressWarnings("deprecation")
     public void testForcedLog() {
         final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
@@ -163,8 +161,8 @@ public class CategoryTest {
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
-        final Layout layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
-        final ListAppender appender = new ListAppender("List2", null, layout, false, false);
+        final Layout<String> layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
+        final ListAppender<String> appender = new ListAppender<String>("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
         category.getLogger().addAppender(appender);
