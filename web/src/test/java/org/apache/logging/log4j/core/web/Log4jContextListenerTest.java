@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.junit.Test;
 
 import javax.servlet.RequestDispatcher;
@@ -65,8 +65,8 @@ public class Log4jContextListenerTest {
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -88,8 +88,8 @@ public class Log4jContextListenerTest {
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -110,8 +110,8 @@ public class Log4jContextListenerTest {
         assertTrue("Wrong configuration", map.containsKey("List"));
         listener.contextDestroyed(event);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
 

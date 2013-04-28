@@ -61,7 +61,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     /**
      * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
-     * 
+     *
      * @param executor
      */
     public LoggerContextAdmin(LoggerContext loggerContext, Executor executor) {
@@ -166,7 +166,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
             ConfigurationSource source = new ConfigurationSource(in);
             Configuration updated = ConfigurationFactory.getInstance()
                     .getConfiguration(source);
-            loggerContext.setConfiguration(updated);
+            loggerContext.start(updated);
             LOGGER.debug("Completed remote request to reconfigure from config text.");
         } catch (Exception ex) {
             customConfigText = old;

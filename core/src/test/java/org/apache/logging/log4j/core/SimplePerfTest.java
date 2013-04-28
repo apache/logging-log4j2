@@ -46,7 +46,7 @@ public class SimplePerfTest {
         final Configuration config = ((LoggerContext)LogManager.getContext()).getConfiguration();
         if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
             System.out.println("Configuration was " + config.getName());
-            ((LoggerContext)LogManager.getContext()).setConfiguration(new DefaultConfiguration());
+            ((LoggerContext)LogManager.getContext()).start(new DefaultConfiguration());
         }
 
         for (int i=0; i < WARMUP; ++i) {

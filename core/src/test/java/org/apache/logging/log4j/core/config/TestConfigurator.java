@@ -76,8 +76,8 @@ public class TestConfigurator {
         assertTrue("Wrong configuration", map.containsKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -96,8 +96,8 @@ public class TestConfigurator {
         assertTrue("Wrong configuration", map.containsKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -116,8 +116,8 @@ public class TestConfigurator {
         assertTrue("Wrong configuration", map.containsKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -133,8 +133,8 @@ public class TestConfigurator {
         assertTrue("Wrong configuration", map.containsKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -150,8 +150,8 @@ public class TestConfigurator {
         assertTrue("Wrong configuration", map.containsKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test
@@ -177,8 +177,8 @@ public class TestConfigurator {
         assertTrue("Configuration not reset", newConfig != config);
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertTrue("Incorrect Configuration. Expected " + DefaultConfiguration.DEFAULT_NAME + " but found " +
-            config.getName(), DefaultConfiguration.DEFAULT_NAME.equals(config.getName()));
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
     @Test

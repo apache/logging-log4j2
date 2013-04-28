@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
  */
 public class NullConfiguration extends BaseConfiguration {
 
-    private static final String NULL_NAME = "Null";
+    public static final String NULL_NAME = "Null";
 
     public NullConfiguration() {
 

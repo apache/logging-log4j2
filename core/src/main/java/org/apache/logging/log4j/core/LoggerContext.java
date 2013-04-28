@@ -118,7 +118,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Constructor taking a name external context and a configuration location
      * String. The location must be resolvable to a File.
-     * 
+     *
      * @param name The configuration location.
      * @param externalContext The external context.
      * @param configLocn The configuration location.
@@ -142,7 +142,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if (status == Status.INITIALIZED) {
+                if (status == Status.INITIALIZED || status == Status.STOPPED) {
                     status = Status.STARTING;
                     reconfigure();
                     shutdownThread = new ShutdownThread(this);
@@ -160,16 +160,45 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
     }
 
+    /**
+     * Start with a specific configuration.
+     * @param config The new Configuration.
+     */
+    public void start(final Configuration config) {
+        if (configLock.tryLock()) {
+            try {
+                if (status == Status.INITIALIZED || status == Status.STOPPED) {
+                    shutdownThread = new ShutdownThread(this);
+                    try {
+                        Runtime.getRuntime().addShutdownHook(shutdownThread);
+                    } catch (SecurityException se) {
+                        LOGGER.warn("Unable to register shutdown hook due to security restrictions");
+                        shutdownThread = null;
+                    }
+                    status = Status.STARTED;
+                }
+            } finally {
+                configLock.unlock();
+            }
+        }
+        setConfiguration(config);
+    }
+
     public void stop() {
         configLock.lock();
         try {
+            if (status == Status.STOPPED) {
+                return;
+            }
             status = Status.STOPPING;
             if (shutdownThread != null) {
                 Runtime.getRuntime().removeShutdownHook(shutdownThread);
                 shutdownThread = null;
             }
-            updateLoggers(new NullConfiguration());
-            config.stop();
+            Configuration prev = config;
+            config = new NullConfiguration();
+            updateLoggers();
+            prev.stop();
             externalContext = null;
             status = Status.STOPPED;
         } finally {
@@ -251,7 +280,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Returns the current Configuration. The Configuration will be replaced
      * when a reconfigure occurs.
-     * 
+     *
      * @return The Configuration.
      */
     public Configuration getConfiguration() {
@@ -280,7 +309,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param config The new Configuration.
      * @return The previous Configuration.
      */
-    public synchronized Configuration setConfiguration(final Configuration config) {
+    private synchronized Configuration setConfiguration(final Configuration config) {
         if (config == null) {
             throw new NullPointerException("No Configuration was provided");
         }
@@ -357,7 +386,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     /**
      * Cause a reconfiguration to take place when the underlying configuration
      * file changes.
-     * 
+     *
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     public synchronized void onChange(final Reconfigurable reconfigurable) {

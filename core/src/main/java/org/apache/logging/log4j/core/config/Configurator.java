@@ -65,7 +65,7 @@ public final class Configurator {
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
-                ctx.setConfiguration(config);
+                ctx.start(config);
                 return ctx;
             } else {
                 LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
@@ -97,7 +97,7 @@ public final class Configurator {
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
-                ctx.setConfiguration(config);
+                ctx.start(config);
                 return ctx;
             } else {
                 LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
@@ -115,7 +115,7 @@ public final class Configurator {
      */
     public static void shutdown(final LoggerContext ctx) {
         if (ctx != null) {
-            ctx.setConfiguration(new DefaultConfiguration());
+            ctx.stop();
         }
     }
 }
