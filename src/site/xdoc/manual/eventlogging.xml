@@ -32,9 +32,9 @@
               Logging system, by itself it does not implement any of the features an audit logging system would require
               such as guaranteed delivery.
             </p>
-            <p>The recommended way of using the EventLogger in a typcial web application is to populate
+            <p>The recommended way of using the EventLogger in a typical web application is to populate
               the ThreadContext Map with data that is related to the entire lifespan of the request such as the user's
-              id, the user's ip address, the product name, etc. This can easily be done in a servlet fileter where
+              id, the user's ip address, the product name, etc. This can easily be done in a servlet filter where
               the ThreadContext Map can also be cleared at the end of the request. When an event that needs to be
               recorded occurs a StructuredDataMessage should be created and populated.
               Then call EventLogger.logEvent(msg) where msg is a reference to the StructuredDataMessage.</p>
