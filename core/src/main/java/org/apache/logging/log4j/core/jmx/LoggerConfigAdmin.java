@@ -54,7 +54,12 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
         }
     }
 
-    /** @see LoggerConfigAdminMBean#PATTERN */
+    /**
+     * Returns the {@code ObjectName} of this mbean.
+     * 
+     * @return the {@code ObjectName}
+     * @see LoggerConfigAdminMBean#PATTERN
+     */
     public ObjectName getObjectName() {
         return objectName;
     }

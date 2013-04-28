@@ -45,9 +45,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * All instrumentation for Log4J2 classes can be disabled by setting system
  * property {@code -Dlog4j2.disable.jmx=true}.
  */
-public class Server {
+public final class Server {
 
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
+    
+    private Server() {
+    }
 
     /**
      * Either returns the specified name as is, or returns a quoted value

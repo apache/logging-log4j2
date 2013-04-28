@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -60,8 +59,8 @@ public interface LoggerContextAdminMBean {
      * Sets the configuration location to the specified URI. This will cause the
      * instrumented {@code LoggerContext} to reconfigure.
      * 
-     * @param configLocationURI location of the configuration file in
-     *            {@link URI} format.
+     * @param configLocation location of the configuration file in
+     *            {@link java.net.URI} format.
      * @throws URISyntaxException if the format of the specified
      *             configLocationURI is incorrect
      * @throws IOException if an error occurred reading the specified location
@@ -75,6 +74,8 @@ public interface LoggerContextAdminMBean {
      * {@code setConfigText}.
      * 
      * @return the configuration text
+     * @throws IOException if a problem occurred reading the contents of the
+     *             config file.
      */
     String getConfigText() throws IOException;
 

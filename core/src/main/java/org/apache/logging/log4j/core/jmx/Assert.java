@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.jmx;
 /**
  * Utility class providing common validation logic.
  */
-public class Assert {
+public final class Assert {
     private Assert() {
     }
 
@@ -44,6 +44,7 @@ public class Assert {
      * }
      * </pre>
      * 
+     * @param <T> the type of the parameter to check and return
      * @param checkMe the parameter to check
      * @param name name of the parameter to use in the error message if
      *            {@code null}

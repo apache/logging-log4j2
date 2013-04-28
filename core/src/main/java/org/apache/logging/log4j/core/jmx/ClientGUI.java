@@ -48,9 +48,9 @@ import javax.swing.UIManager.LookAndFeelInfo;
  * GUI that connects to a Java process via JMX and allows the user to view and
  * modify the log4j2 configuration, as well as monitor status logs.
  * 
- * @see http 
- *      ://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole
- *      .html
+ * @see <a href=
+ *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html
+ *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html</a >
  */
 public class ClientGUI extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
@@ -119,11 +119,12 @@ public class ClientGUI extends JPanel implements NotificationListener {
      * http://www.componative.com/content/controller/developer/insights
      * /jconsole3/
      * 
-     * @param args
-     *            must have at least one parameter, which specifies the location
-     *            to connect to. Must be of the form {@code host:port} or
-     *            {@code service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi} or
+     * @param args must have at least one parameter, which specifies the
+     *            location to connect to. Must be of the form {@code host:port}
+     *            or {@code service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi}
+     *            or
      *            {@code service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi}
+     * @throws Exception if anything goes wrong
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {

@@ -62,7 +62,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
      * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
      *
-     * @param executor
+     * @param executor used to send notifications asynchronously
+     * @param loggerContext the instrumented object
      */
     public LoggerContextAdmin(LoggerContext loggerContext, Executor executor) {
         super(executor, createNotificationInfo());
@@ -78,7 +79,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
+        String[] notifTypes = new String[] {//
+                NOTIF_TYPE_RECONFIGURED };
         String name = Notification.class.getName();
         String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
@@ -192,6 +194,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
             try {
                 in.close();
             } catch (Exception ignored) {
+                // ignored
             }
         }
     }
@@ -221,7 +224,12 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         return getConfig().getProperties();
     }
 
-    /** @see LoggerContextAdminMBean#PATTERN */
+    /**
+     * Returns the {@code ObjectName} of this mbean.
+     * 
+     * @return the {@code ObjectName}
+     * @see LoggerContextAdminMBean#PATTERN
+     */
     public ObjectName getObjectName() {
         return objectName;
     }
