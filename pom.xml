@@ -56,15 +56,23 @@
       <name>Scott Deboy</name>
       <email>sdeboy@apache.org</email>
     </developer>
-  </developers>
-  <contributors>
-    <contributor>
+    <developer>
+      <id>rpopma</id>
       <name>Remko Popma</name>
-      <email>remkop@yahoo.com</email>
+      <email>rpopma@apache.org</email>
       <roles>
         <role>Async Low-Latency Loggers, log4j JMX support</role>
       </roles>
-      <timezone>+9</timezone>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Nick Williams</name>
+      <email>nicholas@nicholaswilliams.net</email>
+      <roles>
+        <role>JSP Tag Library</role>
+      </roles>
+      <timezone>-6</timezone>
       <properties>
       </properties>
     </contributor>
