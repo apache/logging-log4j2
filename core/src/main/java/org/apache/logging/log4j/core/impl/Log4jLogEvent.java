@@ -282,7 +282,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return new LogEventProxy(this, this.includeLocation);
     }
 
-    public static Serializable serialize(final Log4jLogEvent event, 
+    public static Serializable serialize(final Log4jLogEvent event,
             final boolean includeLocation) {
         return new LogEventProxy(event, includeLocation);
     }
@@ -293,9 +293,9 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         }
         if (event instanceof LogEventProxy) {
             final LogEventProxy proxy = (LogEventProxy) event;
-            Log4jLogEvent result = new Log4jLogEvent(proxy.name, proxy.marker, 
-                    proxy.fqcnOfLogger, proxy.level, proxy.message, 
-                    proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName, 
+            Log4jLogEvent result = new Log4jLogEvent(proxy.name, proxy.marker,
+                    proxy.fqcnOfLogger, proxy.level, proxy.message,
+                    proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName,
                     proxy.location, proxy.timestamp);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
@@ -359,8 +359,8 @@ public class Log4jLogEvent implements LogEvent, Serializable {
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            Log4jLogEvent result = new Log4jLogEvent(name, marker, fqcnOfLogger, 
-                    level, message, throwable, mdc, ndc, threadName, location, 
+            Log4jLogEvent result = new Log4jLogEvent(name, marker, fqcnOfLogger,
+                    level, message, throwable, mdc, ndc, threadName, location,
                     timestamp);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
