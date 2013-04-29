@@ -24,6 +24,9 @@
   <body>
     <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
       <action dev="rpopma" type="update">
+        Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch).
+      </action>
+      <action dev="rpopma" type="update">
         Removed CheckStyle false positives for NewlineAtEndOfFile and whitespace following '*' at end of line in javadoc.
       </action>
       <action dev="rpopma" type="update">

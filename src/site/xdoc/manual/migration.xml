@@ -198,8 +198,8 @@
   </loggers>
 </configuration>]]></pre>
 
-            <h4>Sample 4 - AsynchAppender</h4>
-            <p>Log4j 1.x XML configuration using the AsynchAppender.</p>
+            <h4>Sample 4 - AsyncAppender</h4>
+            <p>Log4j 1.x XML configuration using the AsyncAppender.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
@@ -225,9 +225,9 @@
     <File name="TEMP" fileName="temp">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </File>
-    <Asynch name="ASYNC">
+    <Async name="ASYNC">
       <appender-ref ref="TEMP"/>
-    </Asynch>
+    </Async>
   </appenders>
   <loggers>
     <root level="debug">
@@ -237,8 +237,8 @@
 </configuration>]]></pre>
 
 
-            <h4>Sample 5 - AsynchAppender with Console and File</h4>
-            <p>Log4j 1.x XML configuration using the AsynchAppender.</p>
+            <h4>Sample 5 - AsyncAppender with Console and File</h4>
+            <p>Log4j 1.x XML configuration using the AsyncAppender.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
@@ -263,7 +263,7 @@
   </root>
 </log4j:configuration>]]></pre>
 
-            <p>Log4j 2 XML configuration. Note that the Asynch Appender should be configured after the appenders it
+            <p>Log4j 2 XML configuration. Note that the Async Appender should be configured after the appenders it
               references. This will allow it to shutdown properly.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="debug">
@@ -274,10 +274,10 @@
     <File name="TEMP" fileName="temp">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </File>
-    <Asynch name="ASYNC">
+    <Async name="ASYNC">
       <appender-ref ref="TEMP"/>
       <appender-ref ref="CONSOLE"/>
-    </Asynch>
+    </Async>
   </appenders>
   <loggers>
     <root level="debug">
