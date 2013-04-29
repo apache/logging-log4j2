@@ -31,8 +31,10 @@
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
-
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf"/>
+    </module>
+    
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
     <module name="Translation"/>
@@ -53,8 +55,10 @@
 
     <!-- Checks for white space at the end of the line -->
     <!-- See http://checkstyle.sourceforge.net/config_regexp.html -->
+    <!-- Updated to ignore whitespace following '*' in javadoc comments -->
+    <!-- http://stackoverflow.com/questions/9100059/checkstyle-trailing-spaces-regexp-issue -->
     <module name="RegexpSingleline">
-      <property name="format" value="\s+$"/>
+      <property name="format" value="(?&lt;!\A[ \t]*\*?)[ \t]$"/>
       <property name="message" value="Line has trailing spaces."/>
       <property name="fileExtensions" value="java"/>
     </module>
