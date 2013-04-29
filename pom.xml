@@ -44,17 +44,20 @@
       <name>Ralph Goers</name>
       <email>rgoers@apache.org</email>
       <organization>Intuit Financial Services</organization>
+      <timezone>America/Los_Angeles</timezone>
     </developer>
     <developer>
       <id>ggregory</id>
       <name>Gary Gregory</name>
       <email>ggregory@apache.org</email>
       <organization>Rocket Software</organization>
+      <timezone>America/New_York</timezone>
     </developer>
     <developer>
       <id>sdeboy</id>
       <name>Scott Deboy</name>
       <email>sdeboy@apache.org</email>
+      <timezone>America/Los_Angeles</timezone>
     </developer>
     <developer>
       <id>rpopma</id>
@@ -63,6 +66,12 @@
       <roles>
         <role>Async Low-Latency Loggers, log4j JMX support</role>
       </roles>
+      <timezone>Asia/Tokyo</timezone>
+      <properties>
+      <!-- 
+        <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
+      -->
+      </properties>
     </developer>
   </developers>
   <contributors>
@@ -72,7 +81,7 @@
       <roles>
         <role>JSP Tag Library</role>
       </roles>
-      <timezone>-6</timezone>
+      <timezone>America/Chicago</timezone>
       <properties>
       </properties>
     </contributor>
