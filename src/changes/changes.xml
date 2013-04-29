@@ -23,6 +23,12 @@
 
   <body>
     <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
+      <action dev="rpopma" type="update">
+        Moved Clock interface to package org.apache.logging.log4j.core.helpers.
+      </action>
+      <action issue="LOG4J2-225" dev="rpopma" type="update">
+        Documentation updates to clarify use and impact of location in pattern layouts.
+      </action>
       <action issue="LOG4J2-224" dev="rgoers" type="fix">
         The FlumeAppender failed to start if the Flume RPCClient could not connect to any Flume agents.
       </action>
