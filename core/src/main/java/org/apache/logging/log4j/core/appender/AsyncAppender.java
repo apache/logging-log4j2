@@ -39,14 +39,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Appends to one or more Appenders asynchronously.  You can configure an AsynchAppender with one
- * or more Appenders and an Appender to append to if the queue is full. The AsynchAppender does not allow
- * a filter to be specified on the Appender references.
+ * Appends to one or more Appenders asynchronously.  You can configure an
+ * AsyncAppender with one or more Appenders and an Appender to append to if the
+ * queue is full. The AsyncAppender does not allow a filter to be specified on
+ * the Appender references.
  *
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-@Plugin(name = "Asynch", type = "Core", elementType = "appender", printObject = true)
-public final class AsynchAppender<T extends Serializable> extends AbstractAppender<T> {
+@Plugin(name = "Async", type = "Core", elementType = "appender", printObject = true)
+public final class AsyncAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
@@ -58,9 +59,9 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     private final String errorRef;
     private final boolean includeLocation;
     private AppenderControl<?> errorAppender;
-    private AsynchThread thread;
+    private AsyncThread thread;
 
-    private AsynchAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
+    private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                            final String errorRef, final int queueSize, final boolean blocking,
                            final boolean handleExceptions, final Configuration config,
                            final boolean includeLocation) {
@@ -94,9 +95,9 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
             }
         }
         if (appenders.size() > 0) {
-            thread = new AsynchThread(appenders, queue);
+            thread = new AsyncThread(appenders, queue);
         } else if (errorRef == null) {
-            throw new ConfigurationException("No appenders are available for AsynchAppender " + getName());
+            throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
 
         thread.start();
@@ -110,7 +111,7 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
         try {
             thread.join();
         } catch (final InterruptedException ex) {
-            LOGGER.warn("Interrupted while stopping AsynchAppender {}", getName());
+            LOGGER.warn("Interrupted while stopping AsyncAppender {}", getName());
         }
     }
 
@@ -122,17 +123,18 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
     @Override
     public void append(final LogEvent event) {
         if (!isStarted()) {
-            throw new IllegalStateException("AsynchAppender " + getName() + " is not active");
+            throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
         if (event instanceof Log4jLogEvent) {
             boolean appendSuccessful = false;
-            if (blocking){
+            if (blocking) {
                 try {
                     // wait for free slots in the queue
                     queue.put(Log4jLogEvent.serialize((Log4jLogEvent) event, includeLocation));
                     appendSuccessful = true;
                 } catch (InterruptedException e) {
-                    LOGGER.warn("Interrupted while waiting for a free slots in the LogEvent-queue at the AsynchAppender {}", getName());
+                    LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
+                            getName());
                 }
             } else {
                 appendSuccessful = queue.offer(Log4jLogEvent.serialize((Log4jLogEvent) event, includeLocation));
@@ -140,14 +142,14 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
                     error("Appender " + getName() + " is unable to write primary appenders. queue is full");
                 }
             }
-            if ((!appendSuccessful) && (errorAppender != null)){
+            if ((!appendSuccessful) && (errorAppender != null)) {
                 errorAppender.callAppender(event);
             }
         }
     }
 
     /**
-     * Create an AsynchAppender.
+     * Create an AsyncAppender.
      * @param appenderRefs The Appenders to reference.
      * @param errorRef An optional Appender to write to if the queue is full or other errors occur.
      * @param blocking True if the Appender should wait when the queue is full. The default is true.
@@ -159,10 +161,10 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
      * The default is "true".
      * @param <S> The actual type of the Serializable.
-     * @return The AsynchAppender.
+     * @return The AsyncAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> AsynchAppender<S> createAppender(
+    public static <S extends Serializable> AsyncAppender<S> createAppender(
                 @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
                 @PluginAttr("error-ref") final String errorRef,
                 @PluginAttr("blocking") final String blocking,
@@ -173,11 +175,11 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
                 @PluginConfiguration final Configuration config,
                 @PluginAttr("suppressExceptions") final String suppress) {
         if (name == null) {
-            LOGGER.error("No name provided for AsynchAppender");
+            LOGGER.error("No name provided for AsyncAppender");
             return null;
         }
         if (appenderRefs == null) {
-            LOGGER.error("No appender references provided to AsynchAppender {}", name);
+            LOGGER.error("No appender references provided to AsyncAppender {}", name);
         }
 
         final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
@@ -186,20 +188,20 @@ public final class AsynchAppender<T extends Serializable> extends AbstractAppend
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
 
-        return new AsynchAppender<S>(name, filter, appenderRefs, errorRef, 
+        return new AsyncAppender<S>(name, filter, appenderRefs, errorRef,
                 queueSize, isBlocking, handleExceptions, config, isIncludeLocation);
     }
 
     /**
      * Thread that calls the Appenders.
      */
-    private class AsynchThread extends Thread {
+    private class AsyncThread extends Thread {
 
         private volatile boolean shutdown = false;
         private final List<AppenderControl<?>> appenders;
         private final BlockingQueue<Serializable> queue;
 
-        public AsynchThread(final List<AppenderControl<?>> appenders, final BlockingQueue<Serializable> queue) {
+        public AsyncThread(final List<AppenderControl<?>> appenders, final BlockingQueue<Serializable> queue) {
             this.appenders = appenders;
             this.queue = queue;
         }

@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class AsynchAppenderTest {
+public class AsyncAppenderTest {
     private static final String CONFIG = "log4j-asynch.xml";
     private static Configuration config;
     private static ListAppender<String> app;
@@ -72,7 +72,7 @@ public class AsynchAppenderTest {
 
     @Test
     public void rewriteTest() throws Exception {
-        final Logger logger = LogManager.getLogger(AsynchAppender.class);
+        final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);
@@ -80,16 +80,16 @@ public class AsynchAppenderTest {
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
         String msg = list.get(0);
-        String expected = AsynchAppenderTest.class.getName() + " rewriteTest This is a test";
+        String expected = AsyncAppenderTest.class.getName() + " rewriteTest This is a test";
         assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
         msg = list.get(1);
-        expected = AsynchAppenderTest.class.getName() + " rewriteTest Hello world!";
+        expected = AsyncAppenderTest.class.getName() + " rewriteTest Hello world!";
         assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
     }
 
     @Test
     public void testException() throws Exception {
-        final Logger logger = LogManager.getLogger(AsynchAppender.class);
+        final Logger logger = LogManager.getLogger(AsyncAppender.class);
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
         logger.error("This is a test", child);

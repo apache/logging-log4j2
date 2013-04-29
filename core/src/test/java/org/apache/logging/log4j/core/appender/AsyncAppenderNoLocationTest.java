@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class AsynchAppenderNoLocationTest {
+public class AsyncAppenderNoLocationTest {
     private static final String CONFIG = "log4j-asynch-no-location.xml";
     private static Configuration config;
     private static ListAppender<String> app;
@@ -72,7 +72,7 @@ public class AsynchAppenderNoLocationTest {
     
     @Test
     public void testNoLocation() throws Exception {
-        final Logger logger = LogManager.getLogger(AsynchAppender.class);
+        final Logger logger = LogManager.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);

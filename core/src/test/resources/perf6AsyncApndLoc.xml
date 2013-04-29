@@ -6,13 +6,13 @@
         <pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</pattern>
       </PatternLayout>
     </FastFile>
-    <Asynch name="Asynch" includeLocation="true" blocking="true" bufferSize="262144">
+    <Async name="Async" includeLocation="true" blocking="true" bufferSize="262144">
       <appender-ref ref="FastFile"/>
-    </Asynch>
+    </Async>
   </appenders>  
   <loggers>
     <root level="info" includeLocation="true">
-      <appender-ref ref="Asynch"/>
+      <appender-ref ref="Async"/>
     </root>
   </loggers>
 </configuration>

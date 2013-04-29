@@ -45,11 +45,11 @@
         <p>
           Appenders always have a name so that they can be referenced from Loggers.
         </p>
-        <a name="AsynchAppender"/>
-        <subsection name="AsynchAppender">
-          <p>The AsynchAppender accepts references to other Appenders and causes LogEvents to be written to them
+        <a name="AsyncAppender"/>
+        <subsection name="AsyncAppender">
+          <p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them
             on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
-            the application. The AsynchAppender should be configured after the appenders it references to allow it
+            the application. The AsyncAppender should be configured after the appenders it references to allow it
             to shut down properly.</p>
           <table>
             <tr>
@@ -105,10 +105,10 @@
               not included by default when adding a log event to the queue.
               You can change this by setting includeLocation="true".</td>
             </tr>
-            <caption align="top">AsynchAppender Parameters</caption>
+            <caption align="top">AsyncAppender Parameters</caption>
           </table>
           <p>
-            A typical AsynchAppender configuration might look like:
+            A typical AsyncAppender configuration might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
@@ -118,13 +118,13 @@
         <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
-    <Asynch name="Asynch">
+    <Async name="Async">
       <appender-ref ref="MyFile"/>
-    </Asynch>
+    </Async>
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Asynch"/>
+      <appender-ref ref="Async"/>
     </root>
   </loggers>
 </configuration>]]></pre>
