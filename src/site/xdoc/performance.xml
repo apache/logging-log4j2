@@ -216,8 +216,7 @@
 		<b>Asynchronous Logging Performance Improvements</b>
 		<br />
 		<p>
-		Log4j 2 supports a new "<a href="manual/async.html">async</a>" module 
-		which offers Asynchronous Loggers for high throughput and low latency logging.
+		Log4j 2 offers Asynchronous Loggers for high throughput and low latency logging.
 		Asynchronous Loggers are implemented using the
 		<a href="http://lmax-exchange.github.com/disruptor/">LMAX Disruptor</a>
 		inter-thread messaging library instead of the ArrayBlockingQueue used by Asynchronous Appenders.
