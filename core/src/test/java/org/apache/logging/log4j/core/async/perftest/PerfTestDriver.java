@@ -155,7 +155,7 @@ public class PerfTestDriver {
         private long _averageOpsPerSec;
 
         // example line: avg=828 99%=1118 99.99%=5028 Count=3125
-        public Stats(String raw, int repeat) {
+        public Stats(String raw) {
             String[] lines = raw.split("[\\r\\n]+");
             long totalOps = 0;
             for (String line : lines) {
@@ -208,8 +208,8 @@ public class PerfTestDriver {
     public static void main(String[] args) throws Exception {
         final String ALL_ASYNC = "-DLog4jContextSelector="
                 + AsyncLoggerContextSelector.class.getName();
-        final String CACHEDCLOCK = "-DAsyncLogger.Clock=CachedClock";
-        final String SYSCLOCK = "";
+        final String CACHEDCLOCK = "-Dlog4j.Clock=CachedClock";
+        final String SYSCLOCK = "-Dlog4j.Clock=SystemClock";
         final String LOG12 = RunLog4j1.class.getName();
         final String LOG20 = RunLog4j2.class.getName();
         final String LOGBK = RunLogback.class.getName();
@@ -306,7 +306,7 @@ public class PerfTestDriver {
 
             String raw = buffer.toString();
             System.out.print(raw);
-            Stats stats = new Stats(raw, repeat);
+            Stats stats = new Stats(raw);
             System.out.println(stats);
             System.out.println("-----");
             config._stats = stats;
