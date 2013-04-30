@@ -226,6 +226,10 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     @Override
     public void setup() {
+        if (rootElement == null) {
+            LOGGER.error("No logging configuration");
+            return;
+        }
         constructHierarchy(rootNode, rootElement);
         if (status.size() > 0) {
             for (final Status s : status) {

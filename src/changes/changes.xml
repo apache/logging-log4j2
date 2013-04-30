@@ -23,6 +23,9 @@
 
   <body>
     <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-222" dev="rgoers" type="fix">
+        Disruptor will now shutdown during Tomcat shutdown.
+      </action>
       <action dev="rpopma" type="update">
         Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch).
       </action>
