@@ -193,7 +193,7 @@ public class AsyncLogger extends Logger {
             threadlocalInfo.set(info);
         }
 
-        Boolean includeLocation = config.loggerConfig.isIncludeLocation();
+        boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, data,
                 t, //
 
@@ -212,8 +212,7 @@ public class AsyncLogger extends Logger {
                 // location: very expensive operation. LOG4J2-153:
                 // Only include if "includeLocation=true" is specified,
                 // exclude if not specified or if "false" was specified.
-                includeLocation != null && includeLocation ? location(fqcn)
-                        : null,
+                includeLocation ? location(fqcn) : null,
 
                 // System.currentTimeMillis());
                 // CoarseCachedClock: 20% faster than system clock, 16ms gaps
