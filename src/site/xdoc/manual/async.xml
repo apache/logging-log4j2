@@ -64,7 +64,7 @@
 					These appenders can also be used
 					with synchronous loggers
 					and will give the same performance benefits.
-					They do not need the disruptor jar on the classpath.
+					Fast File Appenders do not need the disruptor jar on the classpath.
 				</li>
 			</ul>
 			<a name="Trade-offs" />
