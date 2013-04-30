@@ -50,19 +50,6 @@ public class LoggingController {
 
     private List<AuditEvent> events;
 
-    public LoggingController() {
-
-        ThreadContext.clear();
-
-        RequestContext.setSessionId("session1234");
-        RequestContext.setIpAddress("127.0.0.1");
-        RequestContext.setClientId("02121");
-        RequestContext.setProductName("IB");
-        RequestContext.setProductVersion("4.18.1");
-        RequestContext.setLocale("en_US");
-        RequestContext.setRegion("prod");
-    }
-
     @RequestMapping(value = "/start.do", method = RequestMethod.GET)
     public ModelAndView startLogging(
         @RequestParam(value = "member", required = false, defaultValue = "fakemember") final String member,
@@ -80,6 +67,15 @@ public class LoggingController {
 
             @Override
             public void run() {
+                ThreadContext.clear();
+
+                RequestContext.setSessionId("session1234");
+                RequestContext.setIpAddress("127.0.0.1");
+                RequestContext.setClientId("02121");
+                RequestContext.setProductName("IB");
+                RequestContext.setProductVersion("4.18.1");
+                RequestContext.setLocale("en_US");
+                RequestContext.setRegion("prod");
                 while (generateLog) {
                     // Generate rand number between 1 to 10
                     final int rand = ran.nextInt(9) + 1;
@@ -110,6 +106,7 @@ public class LoggingController {
                     }
 
                 }
+                ThreadContext.cloneStack();
             }
         }).start();
 

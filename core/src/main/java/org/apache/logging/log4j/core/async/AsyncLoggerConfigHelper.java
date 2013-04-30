@@ -63,8 +63,9 @@ class AsyncLoggerConfigHelper {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static volatile Disruptor<RingBufferLog4jEvent> disruptor;
-    private static ExecutorService executor = Executors
-            .newSingleThreadExecutor();
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private static volatile int count = 0;
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects
@@ -97,6 +98,7 @@ class AsyncLoggerConfigHelper {
     }
 
     private static synchronized void initDisruptor() {
+        ++count;
         if (disruptor != null) {
             return;
         }
@@ -213,7 +215,10 @@ class AsyncLoggerConfigHelper {
         }
     }
 
-    public void shutdown() {
+    public synchronized void shutdown() {
+        if (--count > 0) {
+            return;
+        }
         Disruptor<RingBufferLog4jEvent> temp = disruptor;
 
         // Must guarantee that publishing to the RingBuffer has stopped

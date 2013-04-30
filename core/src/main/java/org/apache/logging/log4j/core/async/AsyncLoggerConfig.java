@@ -80,7 +80,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     /**
      * Constructor that sets the name, level and additive values.
-     * 
+     *
      * @param name The Logger name.
      * @param level The Level.
      * @param additive true if the Logger is additive, false otherwise.
@@ -128,19 +128,19 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     @Override
     public void stopFilter() {
-        // only stop disruptor if shutting down logging subsystem
+        /* only stop disruptor if shutting down logging subsystem
         if (LogManager.getContext() instanceof LoggerContext) {
             if (((LoggerContext) LogManager.getContext()).getStatus() != Status.STOPPING) {
                 return;
             }
-        }
+        } */
         helper.shutdown();
         super.stopFilter();
     }
 
     /**
      * Factory method to create a LoggerConfig.
-     * 
+     *
      * @param additivity True if additive, false otherwise.
      * @param levelName The Level to be associated with the Logger.
      * @param loggerName The name of the Logger.
