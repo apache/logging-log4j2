@@ -64,10 +64,12 @@
             <tr>
               <td>locationInfo</td>
               <td>boolean</td>
-              <td><p>If true, the filename and line number will be included in the HTML output. The default value is
+              <td>
+              <a name="HtmlLocationInfo" />
+              <p>If true, the filename and line number will be included in the HTML output. The default value is
                 false.</p>
-                <p>Generating location info is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
                 </td>
             </tr>
             <tr>
@@ -203,6 +205,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternClass" />
                 <b>C</b>{precision}<br />
                 <b>class</b>{precision}
               </td>
@@ -211,8 +214,8 @@ WARN  [main]: Message 2</pre>
                   This conversion specifier can be optionally followed by<em>precision specifier</em>, that
                   follows the same rules as the logger name converter.
                 </p>
-                <p>Generating the class name of the caller is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating the class name of the caller (<a href="#LocationInformation">location information</a>)
+                is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
             <tr>
@@ -298,12 +301,13 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternFile" />
                 <b>F</b><br />
                 <b>file</b>
               </td>
               <td><p>Outputs the file name where the logging request was issued.</p>
-                <p>Generating the file information is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating the file information (<a href="#LocationInformation">location information</a>)
+                is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
             <tr>
@@ -490,6 +494,7 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternLocation" />
                 <b>l</b><br />
                 <b>location</b>
               </td>
@@ -500,19 +505,20 @@ WARN  [main]: Message 2</pre>
                   qualified name of the calling method followed by the callers source the file name and line
                   number between parentheses.
                 </p>
-                <p>Generating location information is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating <a href="#LocationInformation">location information</a>
+                is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternLine" />
                 <b>L</b><br />
                 <b>line</b>
               </td>
               <td><p>Outputs the line number from where the logging request
                 was issued.</p>
-                <p>Generating line number information is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating line number information (<a href="#LocationInformation">location information</a>)
+                is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
             <tr>
@@ -526,12 +532,13 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
+              <a name="PatternMethod" />
                 <b>M</b><br />
                 <b>method</b>
               </td>
               <td><p>Outputs the method name where the logging request was issued.</p>
-                <p>Generating the method name of the caller is an expensive operation and may impact
-                <a href="#LocationInformation">performance</a>. Use with caution.</p>
+                <p>Generating the method name of the caller (<a href="#LocationInformation">location information</a>)
+                is an expensive operation and may impact performance. Use with caution.</p>
               </td>
             </tr>
             <tr>
@@ -1161,23 +1168,33 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         <subsection name="Location Information">
         <p>
 			If one of the layouts is
-			configured with a location-related attribute like %line,
-			%location, %class or %method, Log4j will take a snapshot of the
+			configured with a location-related attribute like 
+			HTML <a href="#HtmlLocationInfo">locationInfo</a>,
+			or one of the patterns 
+			<a href="#PatternClass">%C or $class</a>,
+			<a href="#PatternFile">%F or %file</a>,
+			<a href="#PatternLocation">%l or %location</a>,
+			<a href="#PatternLine">%L or %line</a>,
+			<a href="#PatternMethod">%M or %method</a>,
+			Log4j will take a snapshot of the
 			stack, and walk the stack trace to find the location information.
+			</p>
+			<p>
 			This is an expensive operation: 1.3 - 5 times slower for
 			synchronous loggers. Synchronous loggers wait as
 			long as possible before they take this stack snapshot. If no
-			location is required, the snapshot will never be taken. However,
+			location is required, the snapshot will never be taken. 
+			</p><p>
+			However,
 			asynchronous loggers need to make this decision before passing the
 			log message to another thread; the location information will be
 			lost after that point.
-			</p><p>
 			The performance impact of taking a stack trace snapshot is even
 			higher for asynchronous loggers: logging with location is
 			4 - 20 times slower than without location.
 			For this reason, asynchronous loggers and asynchronous
 			appenders do not include location information by default.
-			
+			</p><p>
 			You can override the default behaviour in your logger 
 			or asynchronous appender configuration 
 			by specifying
