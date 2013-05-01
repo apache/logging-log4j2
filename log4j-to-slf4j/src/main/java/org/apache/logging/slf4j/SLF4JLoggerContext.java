@@ -30,6 +30,17 @@ import java.util.concurrent.ConcurrentMap;
 public class SLF4JLoggerContext implements LoggerContext {
     private final ConcurrentMap<String, SLF4JLogger> loggers = new ConcurrentHashMap<String, SLF4JLogger>();
 
+    public SLF4JLoggerContext() {
+        // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)
+        try {
+            Class.forName("org.slf4j.helpers.Log4JLoggerFactory");
+            throw new IllegalStateException("slf4j-impl jar is mutually exclusive with log4j-to-slf4j jar "
+                + "(the first routes calls from SLF4J to Log4j, the second from Log4j to SLF4J)");
+        } catch (Throwable classNotFoundIsGood) {
+            // org.slf4j.helpers.Log4JLoggerFactory is not on classpath. Good!
+        }
+    }
+
     public Object getExternalContext() {
         return null;
     }
