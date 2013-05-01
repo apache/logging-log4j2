@@ -220,6 +220,9 @@ class AsyncLoggerConfigHelper {
             return;
         }
         Disruptor<Log4jEventWrapper> temp = disruptor;
+        if (temp == null) {
+            return; // disruptor was already shut down by another thread
+        }
 
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
