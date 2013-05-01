@@ -27,6 +27,21 @@ import java.net.URI;
 public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     private static LoggerContext context = new SLF4JLoggerContext();
 
+    public SLF4JLoggerContextFactory() {
+        // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)
+        boolean misconfigured = false;
+        try {
+            Class.forName("org.slf4j.helpers.Log4JLoggerFactory");
+            misconfigured = true;
+        } catch (Throwable classNotFoundIsGood) {
+            // org.slf4j.helpers.Log4JLoggerFactory is not on classpath. Good!
+        }
+        if (misconfigured) {
+            throw new IllegalStateException("slf4j-impl jar is mutually exclusive with log4j-to-slf4j jar "
+                    + "(the first routes calls from SLF4J to Log4j, the second from Log4j to SLF4J)");
+        }
+    }
+
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return context;
     }
