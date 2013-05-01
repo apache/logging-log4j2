@@ -319,9 +319,15 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true - the default, each write will be followed by a flush.
+              <td><p>When set to true - the default, each write will be followed by a flush.
                 This will guarantee the data is written
-                to disk but could impact performance.</td>
+                to disk but could impact performance.</p>
+                <p>Flushing after every write is only useful when using this
+				appender with synchronous loggers. Asynchronous loggers and
+				appenders will automatically flush at the end of a batch of events, 
+				even if immediateFlush is set to false. This also guarantees
+				the data is written to disk but is more efficient.</p>
+              </td>
             </tr>
             <tr>
               <td>layout</td>
@@ -1068,8 +1074,15 @@
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true - the default, each write will be followed by a flush. This will guarantee the data is written
-                to disk but could impact performance.</td>
+              <td><p>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</p>
+                <p>Flushing after every write is only useful when using this
+				appender with synchronous loggers. Asynchronous loggers and
+				appenders will automatically flush at the end of a batch of events, 
+				even if immediateFlush is set to false. This also guarantees
+				the data is written to disk but is more efficient.</p>
+              </td>
             </tr>
             <tr>
               <td>layout</td>
@@ -1422,14 +1435,15 @@
 					<tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
-						<td>When set to true - the default, each write will be followed by a flush.
-							This will guarantee the data is written
-							to disk but could impact performance.
-							This option is only useful when using this
-							appender with synchronous loggers. Asynchronous loggers will
-							automatically flush at the end of a batch, which also guarantees
-							the data is written to disk but is more efficient.
-						</td>
+		              <td><p>When set to true - the default, each write will be followed by a flush.
+		                This will guarantee the data is written
+		                to disk but could impact performance.</p>
+		                <p>Flushing after every write is only useful when using this
+						appender with synchronous loggers. Asynchronous loggers and
+						appenders will automatically flush at the end of a batch of events, 
+						even if immediateFlush is set to false. This also guarantees
+						the data is written to disk but is more efficient.</p>
+		              </td>
 					</tr>
 					<tr>
 						<td>layout</td>
@@ -1583,18 +1597,15 @@
 					<tr>
 						<td>immediateFlush</td>
 						<td>boolean</td>
-						<td>When set to true - the default, each write will be followed by a flush. This
-							will guarantee the data is written
-							to disk but could impact
-							performance.
-							This option is only useful when using this
-							appender with
-							synchronous loggers. Asynchronous loggers will
-							automatically
-							flush at the end of a batch, which also guarantees
-							the data
-							is written to disk but is more efficient.
-						</td>
+		              <td><p>When set to true - the default, each write will be followed by a flush.
+		                This will guarantee the data is written
+		                to disk but could impact performance.</p>
+		                <p>Flushing after every write is only useful when using this
+						appender with synchronous loggers. Asynchronous loggers and
+						appenders will automatically flush at the end of a batch of events, 
+						even if immediateFlush is set to false. This also guarantees
+						the data is written to disk but is more efficient.</p>
+		              </td>
 					</tr>
 					<tr>
 						<td>layout</td>
