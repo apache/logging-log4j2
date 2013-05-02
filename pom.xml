@@ -92,7 +92,7 @@
       <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
       <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
       <post>log4j-user@logging.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</archive>
       <otherArchives>
         <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
         <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
