@@ -33,7 +33,7 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
         try {
             Class.forName("org.slf4j.helpers.Log4JLoggerFactory");
             misconfigured = true;
-        } catch (Throwable classNotFoundIsGood) {
+        } catch (ClassNotFoundException classNotFoundIsGood) {
             // org.slf4j.helpers.Log4JLoggerFactory is not on classpath. Good!
         }
         if (misconfigured) {
