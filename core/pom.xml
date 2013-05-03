@@ -370,6 +370,7 @@
 					<version>1.6.0</version>
 					<scope>system</scope>
 					<systemPath>${java.home}/../lib/jconsole.jar</systemPath>
+					<optional>true</optional>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -388,6 +389,7 @@
 					<version>1.6.0</version>
 					<scope>system</scope>
 					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
+					<optional>true</optional>
 				</dependency>
 			</dependencies>
 		</profile>

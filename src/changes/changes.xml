@@ -24,7 +24,7 @@
   <body>
     <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
       <action issue="LOG4J2-235" dev="rpopma" type="fix">
-        Removed dependency on tools jar from core module.
+        Removed dependency on tools jar from core module, made jconsole dependency optional.
       </action>
       <action issue="LOG4J2-233" dev="rpopma" type="fix">
         Fixed link to log4j-user mailing list.
