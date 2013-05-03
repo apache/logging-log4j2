@@ -355,6 +355,7 @@
 			</properties>
 
 			<dependencies>
+			    <!-- 
 				<dependency>
 					<groupId>com.sun</groupId>
 					<artifactId>tools</artifactId>
@@ -362,6 +363,7 @@
 					<scope>system</scope>
 					<systemPath>${toolsjar}</systemPath>
 				</dependency>
+				-->
 				<dependency>
 					<groupId>com.sun</groupId>
 					<artifactId>jconsole</artifactId>
