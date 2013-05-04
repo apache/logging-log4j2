@@ -131,7 +131,7 @@ public class Bar {
 }</pre>
           </p>
           <p>
-            If no configuration files are present logback will default to the DefaultConfiguration which
+            If no configuration files are present log4j will default to the DefaultConfiguration which
             will set up a minimal logging environment consisting of a
             <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
             attached to the root logger. The output will be formatted using a
@@ -151,7 +151,7 @@ public class Bar {
             configuration equivalent to the default would look like:
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -200,7 +200,7 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -232,7 +232,7 @@ public class Bar {
             and so it is possible to disable it by setting the additivity attribute on the logger to false:
           </p>
            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -311,6 +311,7 @@ public class Bar {
             as the action being performed for a specific user, route output to Flume or a log reporting system,
             etc. Being able to do this requires understanding the syntax of the configuration files.
           </p>
+        <a name="XML"/>
           <h4>Configuration with XML</h4>
           <p>
             The configuration element in the XML file accepts several attributes:
@@ -492,6 +493,7 @@ public class Bar {
   </loggers>
 
 </configuration>]]></pre>
+        <a name="JSON"/>
           <h4>Configuration with JSON</h4>
           <p>
             In addition to XML, Log4j can be configured using JSON. The JSON format is very similar to the
@@ -604,6 +606,7 @@ public class Bar {
   <version>1.9.2</version>
 </dependency>]]></pre>
           </p>
+        <a name="Loggers"/>
           <h4>Configuring loggers</h4>
           <p>
             An understanding of how loggers work in Log4j is critical before trying to configure them.
@@ -632,14 +635,15 @@ public class Bar {
             are configured on the LoggerConfig each of them be called when processing logging events.
           </p>
           <p>
-            Every configuration must have a root logger. If one is not configured the default root LoggerConfig,
-            which has a level of ERROR but with no appenders attached, will be used. The main differences
+            <b><em>Every configuration must have a root logger</em></b>. If one is not configured the default root LoggerConfig,
+            which has a level of ERROR and has a Console appender attached, will be used. The main differences
             between the root logger and other loggers are
             <ol>
               <li>The root logger does not have a name attribute.</li>
               <li>The root logger does not support the additivity attribute since it has no parent.</li>
             </ol>
           </p>
+        <a name="Appenders"/>
           <h4>Configuring Appenders</h4>
           <p>
             An appender is configured either using the specific appender plugin's name or with an appender
@@ -653,6 +657,7 @@ public class Bar {
             along with a type attribute that contains the layout plugin's name. The various appenders
             will contain other attributes or elements that are required for them to function properly.
           </p>
+        <a name="Filters"/>
           <h4>Configuring Filters</h4>
           <p>
             Log4j allows a filter to be specified in any of 4 places:

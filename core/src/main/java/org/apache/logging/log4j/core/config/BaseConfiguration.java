@@ -206,9 +206,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             setToDefault();
             return;
         } else if (!setRoot) {
-            LOGGER.warn("No Root logger was configured, using default");
+            LOGGER.warn("No Root logger was configured, creating default ERROR-level Root logger with Console appender");
             setToDefault();
-            return;
+            // return; // LOG4J2-219: creating default root=ok, but don't exclude configured Loggers
         }
 
         for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
