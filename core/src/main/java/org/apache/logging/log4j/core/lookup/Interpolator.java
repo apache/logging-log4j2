@@ -56,9 +56,13 @@ public class Interpolator implements StrLookup {
         }
     }
 
+    /**
+     * Create the default Interpolator using only Lookups that work without an event.
+     */
     public Interpolator() {
         this.defaultLookup = new MapLookup(new HashMap<String, String>());
         lookups.put("sys", new SystemPropertiesLookup());
+        lookups.put("env", new EnvironmentLookup());
     }
 
      /**

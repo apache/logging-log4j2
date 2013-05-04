@@ -22,6 +22,9 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
+    <List name="List2">
+      <PatternLayout pattern="${env:PATH} %m%n"/>
+    </List>
     <List name="List">
     </List>
   </appenders>

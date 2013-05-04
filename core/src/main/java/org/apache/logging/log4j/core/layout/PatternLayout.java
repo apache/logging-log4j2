@@ -126,6 +126,10 @@ public final class PatternLayout extends AbstractStringLayout {
         formatters = parser.parse(pattern);
     }
 
+    public String getConversionPattern() {
+        return conversionPattern;
+    }
+
     /**
      * PatternLayout's content format is specified by:<p/>
      * Key: "structured" Value: "false"<p/>
