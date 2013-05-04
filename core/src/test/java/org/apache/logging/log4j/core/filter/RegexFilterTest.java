@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.BeforeClass;
@@ -50,5 +51,16 @@ public class RegexFilterTest {
         assertTrue(filter.filter(event) == Filter.Result.DENY);
         filter = RegexFilter.createFilter("* test *", null, null, null);
         assertNull(filter);
+    }
+
+    @Test
+    public void TestNoMsg() {
+        RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
+        filter.start();
+        assertTrue(filter.isStarted());
+        assertTrue(filter.filter(null, Level.DEBUG, null, (String)null, (Throwable)null) == Filter.Result.DENY);
+        assertTrue(filter.filter(null, Level.DEBUG, null, (Message)null, (Throwable)null) == Filter.Result.DENY);
+        assertTrue(filter.filter(null, Level.DEBUG, null, null, (Object[])null) == Filter.Result.DENY);
+
     }
 }
