@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.jmx;
+package org.apache.logging.log4j.jmx.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,6 +45,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
+import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
  * GUI that connects to a Java process via JMX and allows the user to view and

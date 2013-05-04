@@ -601,6 +601,7 @@
     <module>flume-ng</module>
     <module>web</module>
     <module>taglib</module>
+    <module>jmx-gui</module>
     <module>samples</module>
   </modules>
   <profiles>
