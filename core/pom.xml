@@ -178,10 +178,22 @@
             <Import-Package>${osgi.import}</Import-Package>
             <DynamicImport-Package>${osgi.dynamicImport}</DynamicImport-Package>
             <Bundle-DocURL>${project.url}</Bundle-DocURL>
-            <Fragment-Host>org.apache.commons.log4j-api;bundle-version=${project.version}</Fragment-Host>
+            <Fragment-Host>org.apache.commons.log4j-api;bundle-version=${project.version.osgi}</Fragment-Host>
           </instructions>
         </configuration>
         <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>cleanVersions</goal>
+            </goals>
+            <configuration>
+              <versions>
+
+                <project.version.osgi>${project.version}</project.version.osgi>
+              </versions>
+            </configuration>
+          </execution>
           <execution>
             <id>bundle-manifest</id>
             <phase>process-classes</phase>
@@ -355,7 +367,7 @@
 			</properties>
 
 			<dependencies>
-			    <!-- 
+			    <!--
 				<dependency>
 					<groupId>com.sun</groupId>
 					<artifactId>tools</artifactId>
