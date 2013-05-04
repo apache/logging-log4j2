@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.jmx;
+package org.apache.logging.log4j.jmx.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 
 import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.jmx.ContextSelectorAdminMBean;
+import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
+import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
  * This class allows client-side code to perform operations on remote

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.jmx;
+package org.apache.logging.log4j.jmx.gui;
 
 import java.util.HashMap;
 import java.util.Map;
