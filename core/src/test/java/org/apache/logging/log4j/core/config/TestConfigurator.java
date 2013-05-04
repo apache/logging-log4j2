@@ -21,9 +21,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Test;
 
 import java.io.File;
@@ -179,6 +182,32 @@ public class TestConfigurator {
         config = ctx.getConfiguration();
         assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
             config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
+    }
+
+
+    @Test
+    public void testEnvironment() throws Exception {
+        final LoggerContext ctx = Configurator.initialize("-config", null, (String) null);
+        final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
+            CONFIG_NAME.equals(config.getName()));
+        final Map<String, Appender<?>> map = config.getAppenders();
+        assertNotNull("No Appenders", map != null && map.size() > 0);
+        Appender<?> app = null;
+        for (Map.Entry<String, Appender<?>> entry: map.entrySet()) {
+            if (entry.getKey().equals("List2")) {
+                app = entry.getValue();
+            }
+        }
+        assertNotNull("No ListAppender named List2", app);
+        Layout layout = app.getLayout();
+        assertNotNull("Appender List2 does not have a Layout", layout);
+        assertTrue("Appender List2 is not configured with a PatternLayout", layout instanceof PatternLayout);
+        String pattern = ((PatternLayout) layout).getConversionPattern();
+        assertNotNull("No conversion pattern for List2 PatternLayout", pattern);
+        assertFalse("Environment variable was not substituted", pattern.startsWith("${env:PATH}"));
     }
 
     @Test
