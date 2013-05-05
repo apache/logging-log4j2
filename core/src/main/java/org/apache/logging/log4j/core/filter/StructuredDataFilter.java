@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Filter based on data in a StructuredDataMessage.
  */
-@Plugin(name = "StructuredDataFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "StructuredDataFilter", category = "Core", elementType = "filter", printObject = true)
 public final class StructuredDataFilter extends MapFilter {
 
     private StructuredDataFilter(final Map<String, List<String>> map, final boolean oper, final Result onMatch,

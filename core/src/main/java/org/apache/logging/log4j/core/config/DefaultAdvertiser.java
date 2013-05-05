@@ -24,11 +24,11 @@ import java.util.Map;
 /**
  * The default advertiser does not do anything.
  */
-@Plugin(name = "default", type = "Core", elementType = "advertiser", printObject = false)
+@Plugin(name = "default", category = "Core", elementType = "advertiser", printObject = false)
 public class DefaultAdvertiser implements Advertiser {
     /**
      * Does nothing.
-     * 
+     *
      * @return null
      */
     public Object advertise(Map<String, String> properties) {

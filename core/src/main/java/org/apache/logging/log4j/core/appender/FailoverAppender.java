@@ -39,7 +39,7 @@ import java.util.Map;
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
  */
-@Plugin(name = "Failover", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
 public final class FailoverAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_INTERVAL = 60 * Constants.MILLIS_IN_SECONDS;

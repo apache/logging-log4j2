@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * (false). The default is false.
  *
  */
-@Plugin(name = "RegexFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "RegexFilter", category = "Core", elementType = "filter", printObject = true)
 public final class RegexFilter extends AbstractFilter {
 
     private final Pattern pattern;

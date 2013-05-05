@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  *
  */
-@Plugin(name = "SizeBasedTriggeringPolicy", type = "Core", printObject = true)
+@Plugin(name = "SizeBasedTriggeringPolicy", category = "Core", printObject = true)
 public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
     /**
      * Allow subclasses access to the status logger without creating another instance.

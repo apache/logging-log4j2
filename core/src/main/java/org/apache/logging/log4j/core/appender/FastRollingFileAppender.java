@@ -41,7 +41,7 @@ import java.util.Map;
  * An appender that writes to random access files and can roll over at
  * intervals.
  */
-@Plugin(name = "FastRollingFile", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "FastRollingFile", category = "Core", elementType = "appender", printObject = true)
 public final class FastRollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
@@ -76,7 +76,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
     /**
      * Write the log entry rolling over the file when required.
-     * 
+     *
      * @param event The LogEvent.
      */
     @Override
@@ -96,7 +96,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
     /**
      * Returns the File name for the Appender.
-     * 
+     *
      * @return The file name.
      */
     public String getFileName() {
@@ -105,7 +105,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
     /**
      * Returns the file pattern used when rolling over.
-     * 
+     *
      * @return The file pattern.
      */
     public String getFilePattern() {
@@ -114,7 +114,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
     /**
      * Create a FastRollingFileAppender.
-     * 
+     *
      * @param fileName The name of the file that is actively written to.
      *            (required).
      * @param filePattern The pattern of the file name to use on rollover.

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Used to contain the individual Route elements.
  */
-@Plugin(name = "Routes", type = "Core", printObject = true)
+@Plugin(name = "Routes", category = "Core", printObject = true)
 public final class Routes {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

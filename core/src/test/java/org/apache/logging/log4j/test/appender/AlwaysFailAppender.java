@@ -28,7 +28,7 @@ import java.io.Serializable;
 /**
  *
  */
-@Plugin(name="AlwaysFail",type="Core",elementType="appender",printObject=true)
+@Plugin(name="AlwaysFail", category ="Core",elementType="appender",printObject=true)
 public class AlwaysFailAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private AlwaysFailAppender(final String name) {

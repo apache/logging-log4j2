@@ -42,7 +42,7 @@ import java.lang.reflect.Constructor;
  * and then call getBytes which may use a configured encoding or the system
  * default. OTOH, a Writer cannot print byte streams.
  */
-@Plugin(name = "Console", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();

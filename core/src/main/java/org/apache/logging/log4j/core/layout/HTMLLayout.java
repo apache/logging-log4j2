@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * Appenders using this layout should have their encoding set to UTF-8 or UTF-16, otherwise events containing
  * non ASCII characters could result in corrupted log files.
  */
-@Plugin(name = "HTMLLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "HTMLLayout", category = "Core", elementType = "layout", printObject = true)
 public final class HTMLLayout extends AbstractStringLayout {
 
     private static final int BUF_SIZE = 256;
@@ -193,7 +193,7 @@ public final class HTMLLayout extends AbstractStringLayout {
     }
 
     /**
-     * HTMLLayout's format is sufficiently specified via the content type.  The format could be defined via a DTD, 
+     * HTMLLayout's format is sufficiently specified via the content type.  The format could be defined via a DTD,
      * but isn't at this time - returning empty Map/unspecified.
      * @return empty Map
      */

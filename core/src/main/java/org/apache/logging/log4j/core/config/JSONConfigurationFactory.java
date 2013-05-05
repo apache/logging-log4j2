@@ -22,7 +22,7 @@ import java.io.File;
 /**
  *
  */
-@Plugin(name = "JSONConfigurationFactory", type = "ConfigurationFactory")
+@Plugin(name = "JSONConfigurationFactory", category = "ConfigurationFactory")
 @Order(6)
 public class JSONConfigurationFactory extends ConfigurationFactory {
 

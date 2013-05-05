@@ -28,7 +28,7 @@ import java.lang.management.ManagementFactory;
  * always return false.
  */
 
-@Plugin(name = "OnStartupTriggeringPolicy", type = "Core", printObject = true)
+@Plugin(name = "OnStartupTriggeringPolicy", category = "Core", printObject = true)
 public class OnStartupTriggeringPolicy implements TriggeringPolicy {
     private static final long JVM_START_TIME = ManagementFactory.getRuntimeMXBean().getStartTime();
 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Returns the event's rendered message in a StringBuffer.
  */
-@Plugin(name = "MarkerPatternConverter", type = "Converter")
+@Plugin(name = "MarkerPatternConverter", category = "Converter")
 @ConverterKeys({"marker" })
 public final class MarkerPatternConverter extends LogEventPatternConverter {
 

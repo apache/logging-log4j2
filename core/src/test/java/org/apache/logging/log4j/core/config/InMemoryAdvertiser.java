@@ -22,17 +22,17 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import java.util.HashMap;
 import java.util.Map;
 
-@Plugin(name = "memory", type = "Core", elementType = "advertiser", printObject = false)
+@Plugin(name = "memory", category = "Core", elementType = "advertiser", printObject = false)
 public class InMemoryAdvertiser implements Advertiser {
     private static Map<Object, Map<String, String>> properties = new HashMap<Object, Map<String, String>>();
-    
+
     public static Map<Object, Map<String, String>> getAdvertisedEntries()
     {
         Map<Object, Map<String, String>> result = new HashMap<Object, Map<String, String>>();
         result.putAll(properties);
         return result;
     }
-    
+
     public Object advertise(Map<String, String> newEntry) {
         Object object = new Object();
         properties.put(object, new HashMap<String, String>(newEntry));

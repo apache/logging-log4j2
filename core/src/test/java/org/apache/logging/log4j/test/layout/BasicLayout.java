@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  *
  */
-@Plugin(name = "BasicLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "BasicLayout", category = "Core", elementType = "layout", printObject = true)
 public class BasicLayout extends AbstractStringLayout {
 
     private static final String HEADER = "Header" + Constants.LINE_SEP;

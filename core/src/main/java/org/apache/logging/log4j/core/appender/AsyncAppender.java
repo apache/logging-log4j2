@@ -46,7 +46,7 @@ import java.util.concurrent.BlockingQueue;
  *
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-@Plugin(name = "Async", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;

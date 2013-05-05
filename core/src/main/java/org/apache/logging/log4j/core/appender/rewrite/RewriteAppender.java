@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
  */
-@Plugin(name = "Rewrite", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
 public final class RewriteAppender<T extends Serializable> extends AbstractAppender<T> {
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();

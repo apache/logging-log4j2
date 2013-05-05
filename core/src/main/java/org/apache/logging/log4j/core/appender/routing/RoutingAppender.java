@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentMap;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Plugin(name = "Routing", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender<T extends Serializable> extends AbstractAppender<T> {
     private static final String DEFAULT_KEY = "ROUTING_APPENDER_DEFAULT";
     private final Routes routes;

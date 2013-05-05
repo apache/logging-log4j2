@@ -30,7 +30,7 @@ import java.util.List;
 /**
  *
  */
-@Plugin(name="FailOnce",type="Core",elementType="appender",printObject=true)
+@Plugin(name="FailOnce", category ="Core",elementType="appender",printObject=true)
 public class FailOnceAppender<T extends Serializable> extends AbstractAppender<T> {
 
     boolean fail = true;

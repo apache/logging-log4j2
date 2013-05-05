@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.Appender;
 /**
  * An Appender container.
  */
-@Plugin(name = "appenders", type = "Core")
+@Plugin(name = "appenders", category = "Core")
 public final class AppendersPlugin {
 
     private AppendersPlugin() {

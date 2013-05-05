@@ -25,7 +25,7 @@ import java.util.EnumMap;
 /**
  * Returns the event's level in a StringBuffer.
  */
-@Plugin(name = "LevelPatternConverter", type = "Converter")
+@Plugin(name = "LevelPatternConverter", category = "Converter")
 @ConverterKeys({"p", "level" })
 public final class LevelPatternConverter extends LogEventPatternConverter {
     /**

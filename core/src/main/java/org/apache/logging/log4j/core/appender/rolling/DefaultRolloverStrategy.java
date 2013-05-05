@@ -63,7 +63,7 @@ import java.util.List;
  * <p>Given that this rollover algorithm requires as many file renaming
  * operations as the window size, large window sizes are discouraged.
  */
-@Plugin(name = "DefaultRolloverStrategy", type = "Core", printObject = true)
+@Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
     /**
      * Allow subclasses access to the status logger without creating another instance.

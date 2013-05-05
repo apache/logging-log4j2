@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 /**
  * Formats a log event in accordance with RFC 5424.
  */
-@Plugin(name = "RFC5424Layout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
 public final class RFC5424Layout extends AbstractStringLayout {
 
     /**
@@ -415,8 +415,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
                 if (prefix != null) {
                     sb.append(prefix);
                 }
-                sb.append(escapeNewlines(escapeSDParams(entry.getKey()),escapeNewLine)).append("=\"")
-                  .append(escapeNewlines(escapeSDParams(entry.getValue()),escapeNewLine)).append("\"");
+                sb.append(escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine)).append("=\"")
+                  .append(escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine)).append("\"");
             }
         }
     }

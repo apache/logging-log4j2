@@ -27,7 +27,7 @@ import java.util.TimeZone;
 /**
  * Convert and format the event's date in a StringBuffer.
  */
-@Plugin(name = "DatePatternConverter", type = "Converter")
+@Plugin(name = "DatePatternConverter", category = "Converter")
 @ConverterKeys({"d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 

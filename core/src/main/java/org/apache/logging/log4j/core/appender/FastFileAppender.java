@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * File Appender.
  */
-@Plugin(name = "FastFile", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "FastFile", category = "Core", elementType = "appender", printObject = true)
 public final class FastFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
@@ -68,7 +68,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
 
     /**
      * Write the log entry rolling over the file when required.
-     * 
+     *
      * @param event The LogEvent.
      */
     @Override
@@ -86,7 +86,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
 
     /**
      * Returns the file name this appender is associated with.
-     * 
+     *
      * @return The File name.
      */
     public String getFileName() {
@@ -97,7 +97,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
     // locking is not supported and buffering cannot be switched off
     /**
      * Create a File Appender.
-     * 
+     *
      * @param fileName The name and path of the file.
      * @param append "True" if the file should be appended to, "false" if it
      *            should be overwritten. The default is "true".

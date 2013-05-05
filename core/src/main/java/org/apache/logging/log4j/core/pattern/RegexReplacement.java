@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * Replace tokens in the LogEvent message.
  */
-@Plugin(name = "replace", type = "Core", printObject = true)
+@Plugin(name = "replace", category = "Core", printObject = true)
 public final class RegexReplacement {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Formats a log event as a BSD Log record.
  */
-@Plugin(name = "SyslogLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "SyslogLayout", category = "Core", elementType = "layout", printObject = true)
 public class SyslogLayout extends AbstractStringLayout {
     /**
      * Match newlines in a platform-independent manner.

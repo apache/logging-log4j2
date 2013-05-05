@@ -31,7 +31,7 @@ import java.io.Serializable;
 /**
  * Appender to write to a JMS Topic.
  */
-@Plugin(name = "JMSTopic", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JMSTopic", category = "Core", elementType = "appender", printObject = true)
 public final class JMSTopicAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private final JMSTopicManager manager;

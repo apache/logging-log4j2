@@ -37,7 +37,7 @@
             initialization the Configuration will invoke the PluginManager to locate all the Log4j plugins
             that are located in the declared <a href="./configuration.html#ConfigurationSyntax">packages</a>.
             As the configuration is processed the appropriate plugins will be automatically configured and
-            initialized.  Log4j 2 utilizes a few different types of plugins which are described in the follownig
+            initialized.  Log4j 2 utilizes a few different categories of plugins which are described in the following
             sections.
           </p>
         </subsection>

@@ -72,7 +72,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * non ASCII characters could result in corrupted
  * log files.
  */
-@Plugin(name = "XMLLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "XMLLayout", category = "Core", elementType = "layout", printObject = true)
 public class XMLLayout extends AbstractStringLayout {
 
     private static final int DEFAULT_SIZE = 256;

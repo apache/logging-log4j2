@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
-@Plugin(name = "Socket", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
 public class SocketAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
     private Object advertisement;
     private final Advertiser advertiser;

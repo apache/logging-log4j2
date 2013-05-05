@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Handles properties defined in the configuration.
  */
-@Plugin(name = "properties", type = "Core", printObject = true)
+@Plugin(name = "properties", category = "Core", printObject = true)
 public final class PropertiesPlugin {
 
     private PropertiesPlugin() {

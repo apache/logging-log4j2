@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Advertise an entity via ZeroConf/MulticastDNS and the JmDNS library.
  *
  */
-@Plugin(name = "multicastdns", type = "Core", elementType = "advertiser", printObject = false)
+@Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
 public class MulticastDNSAdvertiser implements Advertiser {
     protected static final Logger LOGGER = StatusLogger.getLogger();
     private static Object jmDNS = initializeJMDNS();
@@ -39,15 +39,15 @@ public class MulticastDNSAdvertiser implements Advertiser {
 
     public MulticastDNSAdvertiser()
     {
-        //no arg constructor for reflection 
+        //no arg constructor for reflection
     }
 
     /**
      * Advertise the provided entity.
-     * 
-     * Properties map provided in advertise method must include a "name" entry 
+     *
+     * Properties map provided in advertise method must include a "name" entry
      * but may also provide "protocol" (tcp/udp) as well as a "port" entry
-     * 
+     *
      * @param properties the properties representing the entity to advertise
      * @return the object which can be used to unadvertise, or null if advertisement was unsuccessful
      */

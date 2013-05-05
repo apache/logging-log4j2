@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Composes and invokes one or more filters.
  */
-@Plugin(name = "filters", type = "Core", printObject = true)
+@Plugin(name = "filters", category = "Core", printObject = true)
 public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycle {
 
     private final List<Filter> filters;

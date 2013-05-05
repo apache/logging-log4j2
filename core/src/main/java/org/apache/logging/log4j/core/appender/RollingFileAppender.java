@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * An appender that writes to files and can roll over at intervals.
  */
-@Plugin(name = "RollingFile", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RollingFile", category = "Core", elementType = "appender", printObject = true)
 public final class RollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;

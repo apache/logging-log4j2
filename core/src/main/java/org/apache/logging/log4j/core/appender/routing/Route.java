@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * A Route to an appender.
  */
-@Plugin(name = "Route", type = "Core", printObject = true, deferChildren = true)
+@Plugin(name = "Route", category = "Core", printObject = true, deferChildren = true)
 public final class Route {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
