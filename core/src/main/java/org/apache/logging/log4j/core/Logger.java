@@ -59,18 +59,20 @@ public class Logger extends AbstractLogger {
     }
 
     /**
+     * This method is only used for 1.x compatibility.
      * Returns the parent of this Logger. If it doesn't already exist return a temporary Logger.
      * @return The parent Logger.
      */
     public Logger getParent() {
-        final LoggerConfig lc = config.loggerConfig.getParent();
+        LoggerConfig lc = config.loggerConfig.getName().equals(getName()) ? config.loggerConfig.getParent() :
+            config.loggerConfig;
         if (lc == null) {
             return null;
         }
         if (context.hasLogger(lc.getName())) {
-            return context.getLogger(getName(), getMessageFactory());
+            return context.getLogger(lc.getName(), getMessageFactory());
         }
-        return new Logger(context, getName(), this.getMessageFactory());
+        return new Logger(context, lc.getName(), this.getMessageFactory());
     }
 
     /**
