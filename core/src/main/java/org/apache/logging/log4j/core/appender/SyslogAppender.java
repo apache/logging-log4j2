@@ -35,7 +35,7 @@ import java.io.Serializable;
 /**
  * The Syslog Appender.
  */
-@Plugin(name = "Syslog", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
     private static final String BSD = "bsd";

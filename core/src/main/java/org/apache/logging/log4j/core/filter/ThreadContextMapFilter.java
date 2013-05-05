@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
-@Plugin(name = "ThreadContextMapFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "ThreadContextMapFilter", category = "Core", elementType = "filter", printObject = true)
 public class ThreadContextMapFilter extends MapFilter {
 
     private final String key;

@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Compare against a log level that is associated with an MDC value.
  */
-@Plugin(name = "DynamicThresholdFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "DynamicThresholdFilter", category = "Core", elementType = "filter", printObject = true)
 public final class DynamicThresholdFilter extends AbstractFilter {
     private Map<String, Level> levelMap = new HashMap<String, Level>();
     private Level defaultThreshold = Level.ERROR;

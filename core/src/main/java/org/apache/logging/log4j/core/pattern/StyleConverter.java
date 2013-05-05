@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
  */
-@Plugin(name = "style", type = "Converter")
+@Plugin(name = "style", category = "Converter")
 @ConverterKeys({"style" })
 public final class StyleConverter extends LogEventPatternConverter {
 

@@ -68,7 +68,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * normalized to upper-case internally.
  * </p>
  */
-@Plugin(name = "highlight", type = "Converter")
+@Plugin(name = "highlight", category = "Converter")
 @ConverterKeys({ "highlight" })
 public final class HighlightConverter extends LogEventPatternConverter {
 

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.message.Message;
  * configured marker as a parent.
  *
  */
-@Plugin(name = "MarkerFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "MarkerFilter", category = "Core", elementType = "filter", printObject = true)
 public final class MarkerFilter extends AbstractFilter {
 
     private final String name;

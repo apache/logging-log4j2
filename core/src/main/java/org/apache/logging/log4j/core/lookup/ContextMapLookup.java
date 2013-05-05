@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Looks up keys from system properties.
  */
-@Plugin(name = "ctx", type = "Lookup")
+@Plugin(name = "ctx", category = "Lookup")
 public class ContextMapLookup implements StrLookup {
 
     /**

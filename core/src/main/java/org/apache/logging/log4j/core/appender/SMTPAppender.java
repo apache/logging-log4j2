@@ -48,7 +48,7 @@ import java.io.Serializable;
  * message is appended. This can be modified by setting a filter for the
  * appender.
  */
-@Plugin(name = "SMTP", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "SMTP", category = "Core", elementType = "appender", printObject = true)
 public final class SMTPAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private static final int DEFAULT_BUFFER_SIZE = 512;

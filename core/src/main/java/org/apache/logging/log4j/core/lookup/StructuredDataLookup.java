@@ -23,7 +23,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 /**
  * Looks up keys from system properties.
  */
-@Plugin(name = "sd", type = "Lookup")
+@Plugin(name = "sd", category = "Lookup")
 public class StructuredDataLookup implements StrLookup {
 
     /**

@@ -25,7 +25,7 @@ import java.util.UUID;
 /**
  * Formats the event sequence number.
  */
-@Plugin(name = "UUIDPatternConverter", type = "Converter")
+@Plugin(name = "UUIDPatternConverter", category = "Converter")
 @ConverterKeys({"u", "uuid" })
 public final class UUIDPatternConverter extends LogEventPatternConverter {
 

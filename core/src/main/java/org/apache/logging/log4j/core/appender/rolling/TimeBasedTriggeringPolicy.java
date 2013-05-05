@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Triggering Policy that causes a rollover based on time.
  */
-@Plugin(name = "TimeBasedTriggeringPolicy", type = "Core", printObject = true)
+@Plugin(name = "TimeBasedTriggeringPolicy", category = "Core", printObject = true)
 public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
 
     private long nextRollover;

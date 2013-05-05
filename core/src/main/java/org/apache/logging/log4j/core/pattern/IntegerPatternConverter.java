@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * Formats an integer.
  */
-@Plugin(name = "IntegerPatternConverter", type = "FileConverter")
+@Plugin(name = "IntegerPatternConverter", category = "FileConverter")
 @ConverterKeys({"i", "index" })
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
     /**

@@ -174,7 +174,7 @@ public class PluginManager {
         }
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String pluginType = plugin.type();
+            final String pluginType = plugin.category();
             if (!pluginTypeMap.containsKey(pluginType)) {
                 pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType>());
             }

@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
-@Plugin(name = "PropertiesRewritePolicy", type = "Core", elementType = "rewritePolicy", printObject = true)
+@Plugin(name = "PropertiesRewritePolicy", category = "Core", elementType = "rewritePolicy", printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
     /**
      * Allow subclasses access to the status logger without creating another instance.

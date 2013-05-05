@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * The basis for a lookup based on a Map.
  */
-@Plugin(name = "map", type = "Lookup")
+@Plugin(name = "map", category = "Lookup")
 public class MapLookup implements StrLookup {
     /**
      * Map keys are variable names and value.

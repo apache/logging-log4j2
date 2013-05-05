@@ -33,7 +33,7 @@ import java.util.Locale;
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
  */
-@Plugin(name = "Flume", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Flume", category = "Core", elementType = "appender", printObject = true)
 public final class FlumeAppender<T extends Serializable> extends AbstractAppender<T> implements FlumeEventFactory {
 
     private final AbstractFlumeManager manager;

@@ -97,7 +97,7 @@
               passed the Node tree and instantiate the configuration objects from that.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "XMLConfigurationFactory", type = "ConfigurationFactory")
+@Plugin(name = "XMLConfigurationFactory", category = "ConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
 
@@ -137,7 +137,7 @@ public class XMLConfigurationFactory extends ConfigurationFactory {
               The following example shows how the root LoggerConfig simply extends a generic LoggerConfig.
             </p>
             <pre class="prettyprint linenums"><![CDATA[
-@Plugin(name = "root", type = "Core", printObject = true)
+@Plugin(name = "root", category = "Core", printObject = true)
 public static class RootLogger extends LoggerConfig {
 
     @PluginFactory
@@ -173,7 +173,7 @@ public static class RootLogger extends LoggerConfig {
               The example below shows a Lookup that will return the value of a System Property.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "sys", type = "Lookup")
+@Plugin(name = "sys", category = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
 
     /**
@@ -211,7 +211,7 @@ public class SystemPropertiesLookup implements StrLookup {
               typical pattern where all the filter methods resolve to a single filter method.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "ThresholdFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "ThresholdFilter", category = "Core", elementType = "filter", printObject = true)
 public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
@@ -287,7 +287,7 @@ public final class ThresholdFilter extends AbstractFilter {
               requiring that logging pause while the reconfiguration takes place.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "Stub", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "Stub", category = "Core", elementType = "appender", printObject = true)
 public final class StubAppender extends OutputStreamAppender {
 
     private StubAppender(String name, Layout layout, Filter filter, StubManager manager,
@@ -334,7 +334,7 @@ public final class StubAppender extends OutputStreamAppender {
               methods parameters annotated with PluginAttr or PluginElement as appropriate.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "SampleLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "SampleLayout", category = "Core", elementType = "layout", printObject = true)
 public class SampleLayout extends AbstractStringLayout {
 
     protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
@@ -386,7 +386,7 @@ public class SampleLayout extends AbstractStringLayout {
               The following shows the skeleton of a Converter plugin.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "query", type = "Converter")
+@Plugin(name = "query", category = "Converter")
 @ConverterKeys({"q", "query"})
 public final class QueryConverter extends LogEventPatternConverter {
 

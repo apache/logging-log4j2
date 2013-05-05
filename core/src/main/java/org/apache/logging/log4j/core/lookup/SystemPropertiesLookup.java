@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Looks up keys from system properties.
  */
-@Plugin(name = "sys", type = "Lookup")
+@Plugin(name = "sys", category = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
 
     /**

@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * java.util.Hashtable.toString(), or to output the value of a specific key
  * within the Map.
  */
-@Plugin(name = "MapPatternConverter", type = "Converter")
+@Plugin(name = "MapPatternConverter", category = "Converter")
 @ConverterKeys({"K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {
     /**

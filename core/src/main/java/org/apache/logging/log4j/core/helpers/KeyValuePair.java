@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 /**
  * Key/Value pair configuration item.
  */
-@Plugin(name = "KeyValuePair", type = "Core", printObject = true)
+@Plugin(name = "KeyValuePair", category = "Core", printObject = true)
 public class KeyValuePair {
 
     private final String key;

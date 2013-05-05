@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * Replacement pattern converter.
  */
-@Plugin(name = "replace", type = "Converter")
+@Plugin(name = "replace", category = "Converter")
 @ConverterKeys({"replace" })
 public final class RegexReplacementConverter extends LogEventPatternConverter {
 

@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Container of Logger objects.
  */
-@Plugin(name = "loggers", type = "Core")
+@Plugin(name = "loggers", category = "Core")
 public final class LoggersPlugin {
 
     private LoggersPlugin() {

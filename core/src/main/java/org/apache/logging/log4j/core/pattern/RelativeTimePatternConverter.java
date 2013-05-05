@@ -24,7 +24,7 @@ import java.lang.management.ManagementFactory;
 /**
  * Returns the relative time in milliseconds since JVM Startup.
  */
-@Plugin(name = "RelativeTimePatternConverter", type = "Converter")
+@Plugin(name = "RelativeTimePatternConverter", category = "Converter")
 @ConverterKeys({"r", "relative" })
 public class RelativeTimePatternConverter extends LogEventPatternConverter {
     /**

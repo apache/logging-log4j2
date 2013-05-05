@@ -29,7 +29,7 @@ import java.util.TimeZone;
 /**
  * Filters events that fall within a specified time period in each day.
  */
-@Plugin(name = "TimeFilter", type = "Core", elementType = "filter", printObject = true)
+@Plugin(name = "TimeFilter", category = "Core", elementType = "filter", printObject = true)
 public final class TimeFilter extends AbstractFilter {
     /**
      * Length of hour in milliseconds.

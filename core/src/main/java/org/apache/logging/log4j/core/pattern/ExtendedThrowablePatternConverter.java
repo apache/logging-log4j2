@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
  * The extended stack trace will also include the location of where the class was loaded from and the
  * version of the jar if available.
  */
-@Plugin(name = "ExtendedThrowablePatternConverter", type = "Converter")
+@Plugin(name = "ExtendedThrowablePatternConverter", category = "Converter")
 @ConverterKeys({"xEx", "xThrowable", "xException" })
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
 

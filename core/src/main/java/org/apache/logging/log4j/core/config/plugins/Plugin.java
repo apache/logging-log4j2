@@ -33,7 +33,7 @@ public @interface Plugin {
     String EMPTY = "";
 
     String name();
-    String type();
+    String category();
     String elementType() default EMPTY;
     boolean printObject() default false;
     boolean deferChildren() default false;

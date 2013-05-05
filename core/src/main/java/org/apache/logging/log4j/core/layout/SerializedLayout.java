@@ -30,7 +30,7 @@ import java.io.OutputStream;
 /**
  * Format a LogEvent in its serialized form.
  */
-@Plugin(name = "SerializedLayout", type = "Core", elementType = "layout", printObject = true)
+@Plugin(name = "SerializedLayout", category = "Core", elementType = "layout", printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
 
     private static byte[] header;
@@ -101,7 +101,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * @return empty Map
      */
     public Map<String, String> getContentFormat() {
-        return new HashMap<String, String>();    
+        return new HashMap<String, String>();
     }
 
     /**

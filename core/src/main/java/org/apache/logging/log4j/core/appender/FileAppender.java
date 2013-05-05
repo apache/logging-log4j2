@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * File Appender.
  */
-@Plugin(name = "File", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
 public final class FileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
@@ -90,7 +90,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
      * @param filter The filter, if any, to use.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
-     * @param config The Configuration               
+     * @param config The Configuration
      * @return The FileAppender.
      */
     @PluginFactory

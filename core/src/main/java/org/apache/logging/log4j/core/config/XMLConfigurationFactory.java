@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Factory to construct an XMLConfiguration.
  */
-@Plugin(name = "XMLConfigurationFactory", type = "ConfigurationFactory")
+@Plugin(name = "XMLConfigurationFactory", category = "ConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
 

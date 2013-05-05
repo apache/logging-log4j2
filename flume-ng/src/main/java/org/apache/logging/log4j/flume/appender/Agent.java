@@ -25,7 +25,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Agent Specification for FlumeAvroAppender.
  */
-@Plugin(name = "Agent", type = "Core", printObject = true)
+@Plugin(name = "Agent", category = "Core", printObject = true)
 public final class Agent {
 
     private static final String DEFAULT_HOST = "localhost";

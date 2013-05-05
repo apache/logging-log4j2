@@ -31,7 +31,7 @@ import java.io.Serializable;
 /**
  * Appender to write to a JMS Queue.
  */
-@Plugin(name = "JMSQueue", type = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JMSQueue", category = "Core", elementType = "appender", printObject = true)
 public final class JMSQueueAppender<T extends Serializable> extends AbstractAppender<T> {
 
     private final JMSQueueManager manager;

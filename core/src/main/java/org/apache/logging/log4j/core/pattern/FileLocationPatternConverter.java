@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 /**
  * Returns the event's line location information in a StringBuffer.
  */
-@Plugin(name = "FileLocationPatternConverter", type = "Converter")
+@Plugin(name = "FileLocationPatternConverter", category = "Converter")
 @ConverterKeys({"F", "file" })
 public final class FileLocationPatternConverter extends LogEventPatternConverter {
     /**

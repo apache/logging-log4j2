@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  *
  */
-@Plugin(name = "FlumeKeyProvider", type = "KeyProvider", elementType = "SecretKeyProvider", printObject = true)
+@Plugin(name = "FlumeKeyProvider", category = "KeyProvider", elementType = "SecretKeyProvider", printObject = true)
 public class FlumeKeyProvider implements SecretKeyProvider {
 
     private static final byte[] key = new byte[] {-7, -21, -118, -25, -79, 73, 72, -64, 0, 127, -93, -13, -38,

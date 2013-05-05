@@ -30,7 +30,7 @@ import java.io.StringWriter;
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
  * the number of lines to print is explicitly specified.
  */
-@Plugin(name = "ThrowablePatternConverter", type = "Converter")
+@Plugin(name = "ThrowablePatternConverter", category = "Converter")
 @ConverterKeys({"ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 
