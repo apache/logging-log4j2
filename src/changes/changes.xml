@@ -22,7 +22,7 @@
   </properties>
 
   <body>
-    <release version="2.0-beta6" date="@TBD@" description="Bug fixes and enhancements">
+    <release version="2.0-beta6" date="2013-05-05" description="Bug fixes and enhancements">
       <action issue="LOG4J2-231" dev="rgoers" type="fix">
         Logger.getParent() was not returning the correct Logger.
       </action>
