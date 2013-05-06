@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.helpers;
 
 /**
- * Interface for classes that can provide the time stamp used in log events.
+ * Provides the time stamp used in log events.
  */
 public interface Clock {
     /**
