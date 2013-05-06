@@ -68,7 +68,7 @@
       </roles>
       <timezone>Asia/Tokyo</timezone>
       <properties>
-      <!-- 
+      <!--
         <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
       -->
       </properties>
@@ -130,8 +130,8 @@
     <slf4j.version>1.7.2</slf4j.version>
     <logback.version>1.0.7</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.0-beta5</Log4jReleaseVersion>
-    <Log4jReleaseCount>seventh</Log4jReleaseCount>
+    <Log4jReleaseVersion>2.0-beta6</Log4jReleaseVersion>
+    <Log4jReleaseCount>eighth</Log4jReleaseCount>
     <jackson.version>1.9.2</jackson.version>
     <disruptor.version>3.0.1</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->

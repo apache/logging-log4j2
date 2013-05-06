@@ -1,65 +1,47 @@
 
-              Apache Log4j 2.0-beta5 RELEASE NOTES
+              Apache Log4j 2.0-beta6 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta5 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta6 release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
 many of the improvements available in Logback while fixing some inherent problems in Logback's
 architecture.
 
-This is the seventh release of Log4j 2 and is being made available to encourage use and feedback from the community.
+This is the eighth release of Log4j 2 and is being made available to encourage use and feedback from the community.
 
 Bug fixes and enhancements
 
 Changes in this version include:
 
-New features:
-o LOG4J2-207:  Add JMX support. Thanks to Remko Popma. 
-o LOG4J2-187:  Add tag library. Thanks to Nick Williams. 
-o LOG4J2-164:  Add methods is/setEndOfBatch to LogEvent. Thanks to Remko Popma. 
-o LOG4J2-163:  Add support for asynchronous loggers. Thanks to Remko Popma. 
-o LOG4J2-179:  Add Logger interface APIs to log at given levels. 
-o Added FlumePersistentManager which writes to BerkeleyDB and then writes to Flume asynchronously. 
-o LOG4J2-155:  Expose file appender configuration details via an advertisement mechanism. 
 
 Fixed Bugs:
-o LOG4J2-205:  Fix deadlock in SocketAppender. Added option to not wait for socket reconnect. 
-o LOG4J2-211:  Removing extra spaces in entry and exit method output. Thanks to Nick Williams. 
-o LOG4J2-212:  Loggers without a "." had no parent logger. 
-o LOG4J2-212:  Call LoggerContext.stop when the application is shutdown. 
-o LOG4J2-210:  MapMessage was not enclosing key value in quotes when generating XML. Thanks to Arkin Yetis. 
-o LOG4J2-198:  FlumeAvroManager now uses Flume RPCClient. 
-o LOG4J2-196:  FlumeAvroManager now uses Flume RPCClient. 
-o LOG4J2-207:  Use the Maven group ID org.apache.logging.log4j for all artifacts. 
-o LOG4J2-195:  Unit tests now create files in the target directory. Thanks to Remko Popma. 
-o LOG4J2-193:  RollingFastFileAppender (in log4j-async) did not roll over. Thanks to Remko Popma. 
-o LOG4J2-199:  Highlight subprojects in sub-navigation. Thanks to Remko Popma. 
-o LOG4J2-200:  LoggerContext method renamed to removeFilter from removeFiler. Thanks to Remko Popma. 
-o LOG4J2-194:  ThrowableFormatOptionsTest failed on Windows due to CR/LF issue. Thanks to Remko Popma. 
-o LOG4J2-190:  BaseConfiguration addLoggerAppender saved appender using the Logger name. Thanks to Werner. 
-o LOG4J2-189:  The blocking parameter did not work properly on AsynchAppender. Thanks to Werner. 
-o LOG4J2-188:  appender-refs on AsynchAppender didn't support the level and filter elements. Thanks to Werner. 
-o LOG4J2-176:  Avoid IllegalArgumentException in AsynchAppender. Thanks to Remko Popma. 
-o LOG4J2-181:  OutputStreamManager now adds the layout header whenever the OutputStream is set. 
-o LOG4J2-177:  Fix NullPointerException in DatagramOutputStream when flush is called from multiple threads. Thanks to Remko Popma. 
-o LOG4J2-175:  Plugin cache should be reset when addPackages is called. 
-o LOG4J2-159:  Add Fragment-Host to MANIFEST.MF for log4j2-core. Thanks to Jan Winter. 
-o LOG4J2-167:  Configurator throws a ClassCastException if LogManager returns a SimpleLoggerContext. 
-o LOG4J2-169:  ConfigurationFactory was adding factories on every call. 
-o LOG4J2-161:  Modify ClassLoaderContextSelector to use the first ClassLoader in the child parent hierarchy that
-        has a Context with a configuration to allow JSPs to use the WebApp's context and configuration. 
+o LOG4J2-231:  Logger.getParent() was not returning the correct Logger. 
+o LOG4J2-201:  Renamed Plugin annotation attribute from "type" to "category". 
+o LOG4J2-219:  Fix: install default root logger if not configured (this is unchanged),
+        but make sure to include configured named loggers. Clarified documentation. Thanks to Peter DePasquale. 
+o LOG4J2-159:  Use OSGi version format in Fragment-Host 
+o LOG4J2-234:  RegexFilter threw a NullPointerException when used as a context-wide filter. 
+o LOG4J2-192:  Add support for interpolating Environment variables when processing the configuration. 
+o LOG4J2-235:  Removed dependency on tools jar from core module, made jconsole dependency optional. Thanks to Sebastian Oerding. 
+o LOG4J2-233:  Fixed link to log4j-user mailing list. 
+o LOG4J2-222:  Disruptor will now shutdown during Tomcat shutdown. Thanks to Steven Yang. 
+o LOG4J2-224:  The FlumeAppender failed to start if the Flume RPCClient could not connect to any Flume agents. 
+o LOG4J2-223:  Fix LoggerContext start and stop to eliminate IllegalStateException and NoClassDefFound errors. 
+o LOG4J2-221:  Remove hundreds of compiler warnings. Thanks to Nick Williams. 
+o LOG4J2-215:  Various small documentation fixes. 
+o LOG4J2-217:  Ensure PluginManager streams are always closed. Thanks to Fabien Sanglard. 
 
 Changes:
-o LOG4J2-214:  Async documentation update. Thanks to Remko Popma. 
-o LOG4J2-208:  Move async subproject into core. Thanks to Remko Popma. 
-o LOG4J2-160:  Move Throwable pattern converter options processing to ThrowableFormatOptions class. Thanks to Joanne Polsky. 
-o LOG4J2-157:  Allowed Loggers access to the properties in the LoggerConfig. Thanks to Remko Popma. 
-o LOG4J2-153:  Added ability to include or exclude location information. Thanks to Remko Popma. 
-o LOG4J2-151:  Allow Logger and LoggerContext to be subclassed. Thanks to Remko Popma. 
+o LOG4J2-237:  Moved JMX Client GUI classes into separate jmx-gui submodule. 
+o LOG4J2-230:  Improved error reporting when misconfigured. Thanks to Wojciech Zaręba. 
+o Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch). 
+o Removed CheckStyle false positives for NewlineAtEndOfFile and whitespace following '*' at end of line in javadoc. 
+o Moved Clock interface to package org.apache.logging.log4j.core.helpers. 
+o LOG4J2-225:  Documentation updates to clarify use and impact of location in pattern layouts. 
 
 
-Apache Log4j 2.0-beta5 requires a minimum of Java 6 to build and run. Basic compatibility with
+Apache Log4j 2.0-beta6 requires a minimum of Java 6 to build and run. Basic compatibility with
 Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
