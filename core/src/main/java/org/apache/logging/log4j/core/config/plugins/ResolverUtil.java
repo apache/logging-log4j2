@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleWiring;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +30,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * <p>ResolverUtil is used to locate classes that are available in the/a class path and meet
@@ -239,7 +240,7 @@ public class ResolverUtil {
             try {
                 final URL url = urls.nextElement();
                 String urlPath = url.getFile();
-                urlPath = URLDecoder.decode(urlPath, "UTF-8");
+                urlPath = URLDecoder.decode(urlPath, Charsets.UTF_8.name());
 
                 // If it's a file in a directory, trim the stupid file: spec
                 if (urlPath.startsWith("file:")) {

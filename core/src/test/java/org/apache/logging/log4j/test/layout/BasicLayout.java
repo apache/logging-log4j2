@@ -55,7 +55,6 @@ public class BasicLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static BasicLayout createLayout() {
-        final Charset charset = Charsets.getSupportedCharset("UTF-8");
-        return new BasicLayout(charset);
+        return new BasicLayout(Charsets.UTF_8);
     }
 }
