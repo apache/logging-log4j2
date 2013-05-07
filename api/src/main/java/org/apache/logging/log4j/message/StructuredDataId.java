@@ -58,7 +58,7 @@ public class StructuredDataId implements Serializable {
         if (name != null) {
             if (name.length() > MAX_LENGTH) {
                 throw new IllegalArgumentException(String.format("Length of id %s exceeds maximum of %d characters",
-                        MAX_LENGTH, name));
+                        name, MAX_LENGTH));
             }
             index = name.indexOf("@");
         }

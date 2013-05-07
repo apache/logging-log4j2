@@ -25,12 +25,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class Charsets {
 
+    private static final String UTF_8 = "UTF-8";
+
     private Charsets() {
     }
 
     /**
-     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8, if not
-     * supported, use the platform default.
+     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8.
      *
      * @param charsetName
      *            the preferred charset name
@@ -44,7 +45,7 @@ public final class Charsets {
             }
         }
         if (charset == null) {
-            charset = Charset.isSupported("UTF-8") ? Charset.forName("UTF-8") : Charset.defaultCharset();
+            charset = Charset.forName(UTF_8);
             if (charsetName != null) {
                 StatusLogger.getLogger().error("Charset " + charsetName + " is not supported for layout, using " +
                     charset.displayName());

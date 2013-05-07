@@ -65,8 +65,9 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
             final Level level = Level.toLevel(pair[0].trim(), null);
             if (level == null) {
                 LOGGER.error("Invalid Level {}", pair[0].trim());
+            } else {
+                levelMap.put(level, pair[1].trim());
             }
-            levelMap.put(level, pair[1].trim());
         }
         if (levelMap.size() == 0) {
             return INSTANCE;
