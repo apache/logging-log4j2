@@ -19,6 +19,7 @@ package org.apache.logging.log4j.jmx.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,12 +35,14 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -61,6 +64,17 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private Client client;
     private JTextArea statusLogTextArea;
     private JTabbedPane tabbedPane;
+    private JToggleButton wrapLinesToggleButton;
+
+    private AbstractAction toggleWrapAction = new AbstractAction() {
+        private static final long serialVersionUID = -4214143754637722322L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean wrap = wrapLinesToggleButton.isSelected();
+            statusLogTextArea.setLineWrap(wrap);
+        }
+    };
 
     public ClientGUI(Client client) throws InstanceNotFoundException,
             MalformedObjectNameException, IOException {
@@ -77,7 +91,14 @@ public class ClientGUI extends JPanel implements NotificationListener {
         statusLogTextArea.setForeground(Color.black);
         statusLogTextArea.setFont(new Font("Monospaced", Font.PLAIN,
                 statusLogTextArea.getFont().getSize()));
-        JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea);
+        statusLogTextArea.setWrapStyleWord(true);
+
+        wrapLinesToggleButton = new JToggleButton(toggleWrapAction);
+        wrapLinesToggleButton.setToolTipText("Toggle line wrapping");
+        JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea, //
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, //
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollStatusLog.setCorner(JScrollPane.LOWER_RIGHT_CORNER, wrapLinesToggleButton);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("StatusLogger", scrollStatusLog);
