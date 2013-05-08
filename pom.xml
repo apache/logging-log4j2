@@ -140,7 +140,7 @@
     <osgi.import>*</osgi.import>
     <osgi.dynamicImport />
     <osgi.private />
-    <pmd.plugin.version>2.7.1</pmd.plugin.version>
+    <pmd.plugin.version>3.0.1</pmd.plugin.version>
     <changes.plugin.version>2.8</changes.plugin.version>
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
     <surefire.plugin.version>2.12.4</surefire.plugin.version>
