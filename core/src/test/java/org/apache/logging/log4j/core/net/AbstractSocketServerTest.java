@@ -29,10 +29,10 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,78 +42,7 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class SocketServerTest {
-
-    private static final String MESSAGE_1 = "This is a test message";
-    private static final String MESSAGE_2 = "This is test message 2";
-    private static final String PORT = "8199";
-    private static final int PORTNUM = Integer.parseInt(PORT);
-
-    private static SocketServer tcp;
-    private static Thread thread;
-
-    LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-    Logger root = ctx.getLogger("SocketServerTest");
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcp = new SocketServer(PORTNUM);
-        thread = new Thread(tcp);
-        thread.start();
-
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        tcp.shutdown();
-        try {
-            thread.join();
-        } catch (final InterruptedException iex) {
-
-        }
-    }
-
-    @After
-    public void teardown() {
-        final Map<String,Appender<?>> map = root.getAppenders();
-        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
-            final Appender<?> app = entry.getValue();
-            root.removeAppender(app);
-            app.stop();
-        }
-    }
-
-    @Test
-    public void testServer() throws Exception {
-        final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
-        final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, "tcp", "-1",
-            null, "Test", null, null, null, socketFilter, null, null);
-        appender.start();
-        final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilter, null, false, false);
-        listApp.start();
-        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
-        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
-        final Logger serverLogger = ctx.getLogger(SocketServer.class.getName());
-        serverLogger.addAppender(console);
-        serverLogger.setAdditive(false);
-
-        // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.addAppender(listApp);
-        root.setAdditive(false);
-        root.setLevel(Level.DEBUG);
-        root.debug(MESSAGE_1);
-        root.debug(MESSAGE_2);
-        Thread.sleep(100);
-        final List<LogEvent> events = listApp.getEvents();
-        assertNotNull("No event retrieved", events);
-        assertTrue("No events retrieved", events.size() > 0);
-        assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals(MESSAGE_1));
-        assertTrue("Incorrect number of events received", events.size() == 2);
-        assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals(MESSAGE_2));
-    }
+public abstract class AbstractSocketServerTest {
 
     private class ThreadFilter extends AbstractFilter {
 
@@ -125,6 +54,75 @@ public class SocketServerTest {
         public Filter.Result filter(final LogEvent event) {
             return event.getThreadName().equals(Thread.currentThread().getName()) ? onMatch : onMismatch;
         }
+    }
+
+    private static final String MESSAGE_1 = "This is a test message";
+    private static final String MESSAGE_2 = "This is test message 2";
+
+    private final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+
+    private final String port;
+    private final String protocol;
+
+    private final Logger root = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
+
+    protected AbstractSocketServerTest(final String protocol, final String port) {
+        this.protocol = protocol;
+        this.port = port;
+    }
+
+    @After
+    public void tearDown() {
+        final Map<String, Appender<?>> map = root.getAppenders();
+        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
+            final Appender<?> app = entry.getValue();
+            root.removeAppender(app);
+            app.stop();
+        }
+    }
+
+    @Test
+    public void test64KMessages() throws Exception {
+        final char[] a64K = new char[1024 * 64];
+        Arrays.fill(a64K, 'a');
+        final String m1 = new String(a64K);
+        final String m2 = MESSAGE_2 + m1;
+        testServer(m1, m2);
+    }
+
+    protected void testServer(final String message1, final String message2) throws Exception {
+        final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
+        final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final SocketAppender<Serializable> appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", null,
+                null, null, socketFilter, null, null);
+        appender.start();
+        final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilter, null, false, false);
+        listApp.start();
+        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null);
+        final ConsoleAppender<String> console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final Logger serverLogger = ctx.getLogger(SocketServer.class.getName());
+        serverLogger.addAppender(console);
+        serverLogger.setAdditive(false);
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.addAppender(listApp);
+        root.setAdditive(false);
+        root.setLevel(Level.DEBUG);
+        root.debug(message1);
+        root.debug(message2);
+        Thread.sleep(100);
+        final List<LogEvent> events = listApp.getEvents();
+        assertNotNull("No event retrieved", events);
+        assertTrue("No events retrieved", events.size() > 0);
+        assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals(message1));
+        assertTrue("Incorrect number of events received: " + events.size(), events.size() == 2);
+        assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals(message2));
+    }
+
+    @Test
+    public void testShortMessages() throws Exception {
+        testServer(MESSAGE_1, MESSAGE_2);
     }
 
 }
