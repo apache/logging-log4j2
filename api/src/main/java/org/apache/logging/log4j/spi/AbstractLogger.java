@@ -142,6 +142,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level The logging Level.
      * @param t     The Throwable.
      */
+    @Override
     public void catching(final Level level, final Throwable t) {
         catching(FQCN, level, t);
     }
@@ -151,6 +152,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param t The Throwable.
      */
+    @Override
     public void catching(final Throwable t) {
         catching(FQCN, Level.ERROR, t);
     }
@@ -184,6 +186,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
      */
+    @Override
     public void debug(final Marker marker, final Message msg) {
         if (isEnabled(Level.DEBUG, marker, msg, null)) {
             log(marker, FQCN, Level.DEBUG, msg, null);
@@ -197,6 +200,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void debug(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.DEBUG, marker, msg, t)) {
             log(marker, FQCN, Level.DEBUG, msg, t);
@@ -209,6 +213,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void debug(final Marker marker, final Object message) {
         if (isEnabled(Level.DEBUG, marker, message, null)) {
             log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
@@ -223,6 +228,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void debug(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.DEBUG, marker, message, t)) {
             log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
@@ -235,6 +241,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void debug(final Marker marker, final String message) {
         if (isEnabled(Level.DEBUG, marker, message)) {
             log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
@@ -248,6 +255,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void debug(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.DEBUG, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -263,6 +271,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void debug(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.DEBUG, marker, message, t)) {
             log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
@@ -274,6 +283,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void debug(final Message msg) {
         if (isEnabled(Level.DEBUG, null, msg, null)) {
             log(null, FQCN, Level.DEBUG, msg, null);
@@ -286,6 +296,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void debug(final Message msg, final Throwable t) {
         if (isEnabled(Level.DEBUG, null, msg, t)) {
             log(null, FQCN, Level.DEBUG, msg, t);
@@ -297,6 +308,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void debug(final Object message) {
         if (isEnabled(Level.DEBUG, null, message, null)) {
             log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
@@ -310,6 +322,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void debug(final Object message, final Throwable t) {
         if (isEnabled(Level.DEBUG, null, message, t)) {
             log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
@@ -321,6 +334,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void debug(final String message) {
         if (isEnabled(Level.DEBUG, null, message)) {
             log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
@@ -333,6 +347,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void debug(final String message, final Object... params) {
         if (isEnabled(Level.DEBUG, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -347,6 +362,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void debug(final String message, final Throwable t) {
         if (isEnabled(Level.DEBUG, null, message, t)) {
             log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
@@ -356,6 +372,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Logs entry to a method.
      */
+    @Override
     public void entry() {
         entry(FQCN);
     }
@@ -365,6 +382,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param params The parameters to the method.
      */
+    @Override
     public void entry(final Object... params) {
         entry(FQCN, params);
     }
@@ -408,6 +426,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
      */
+    @Override
     public void error(final Marker marker, final Message msg) {
         if (isEnabled(Level.ERROR, marker, msg, null)) {
             log(marker, FQCN, Level.ERROR, msg, null);
@@ -421,6 +440,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void error(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.ERROR, marker, msg, t)) {
             log(marker, FQCN, Level.ERROR, msg, t);
@@ -433,6 +453,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void error(final Marker marker, final Object message) {
         if (isEnabled(Level.ERROR, marker, message, null)) {
             log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
@@ -447,6 +468,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void error(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.ERROR, marker, message, t)) {
             log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
@@ -459,6 +481,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void error(final Marker marker, final String message) {
         if (isEnabled(Level.ERROR, marker, message)) {
             log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
@@ -472,6 +495,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void error(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.ERROR, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -487,6 +511,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void error(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.ERROR, marker, message, t)) {
             log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
@@ -498,6 +523,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void error(final Message msg) {
         if (isEnabled(Level.ERROR, null, msg, null)) {
             log(null, FQCN, Level.ERROR, msg, null);
@@ -510,6 +536,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void error(final Message msg, final Throwable t) {
         if (isEnabled(Level.ERROR, null, msg, t)) {
             log(null, FQCN, Level.ERROR, msg, t);
@@ -521,6 +548,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void error(final Object message) {
         if (isEnabled(Level.ERROR, null, message, null)) {
             log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
@@ -534,6 +562,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void error(final Object message, final Throwable t) {
         if (isEnabled(Level.ERROR, null, message, t)) {
             log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
@@ -545,6 +574,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void error(final String message) {
         if (isEnabled(Level.ERROR, null, message)) {
             log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
@@ -557,6 +587,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void error(final String message, final Object... params) {
         if (isEnabled(Level.ERROR, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -571,6 +602,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void error(final String message, final Throwable t) {
         if (isEnabled(Level.ERROR, null, message, t)) {
             log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
@@ -580,6 +612,7 @@ public abstract class AbstractLogger implements Logger {
     /**
      * Logs exit from a method.
      */
+    @Override
     public void exit() {
         exit(FQCN, null);
     }
@@ -591,6 +624,7 @@ public abstract class AbstractLogger implements Logger {
      * @param result The result being returned from the method call.
      * @return the Throwable.
      */
+    @Override
     public <R> R exit(final R result) {
         return exit(FQCN, result);
     }
@@ -615,6 +649,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
      */
+    @Override
     public void fatal(final Marker marker, final Message msg) {
         if (isEnabled(Level.FATAL, marker, msg, null)) {
             log(marker, FQCN, Level.FATAL, msg, null);
@@ -628,6 +663,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void fatal(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.FATAL, marker, msg, t)) {
             log(marker, FQCN, Level.FATAL, msg, t);
@@ -640,6 +676,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void fatal(final Marker marker, final Object message) {
         if (isEnabled(Level.FATAL, marker, message, null)) {
             log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
@@ -654,6 +691,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void fatal(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.FATAL, marker, message, t)) {
             log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
@@ -666,6 +704,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void fatal(final Marker marker, final String message) {
         if (isEnabled(Level.FATAL, marker, message)) {
             log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
@@ -679,6 +718,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void fatal(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.FATAL, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -694,6 +734,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void fatal(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.FATAL, marker, message, t)) {
             log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
@@ -704,6 +745,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void fatal(final Message msg) {
         if (isEnabled(Level.FATAL, null, msg, null)) {
             log(null, FQCN, Level.FATAL, msg, null);
@@ -716,6 +758,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void fatal(final Message msg, final Throwable t) {
         if (isEnabled(Level.FATAL, null, msg, t)) {
             log(null, FQCN, Level.FATAL, msg, t);
@@ -727,6 +770,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void fatal(final Object message) {
         if (isEnabled(Level.FATAL, null, message, null)) {
             log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
@@ -740,6 +784,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void fatal(final Object message, final Throwable t) {
         if (isEnabled(Level.FATAL, null, message, t)) {
             log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
@@ -751,6 +796,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void fatal(final String message) {
         if (isEnabled(Level.FATAL, null, message)) {
             log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
@@ -763,6 +809,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void fatal(final String message, final Object... params) {
         if (isEnabled(Level.FATAL, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -777,6 +824,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void fatal(final String message, final Throwable t) {
         if (isEnabled(Level.FATAL, null, message, t)) {
             log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
@@ -788,6 +836,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @return the message factory.
      */
+    @Override
     public MessageFactory getMessageFactory() {
         return messageFactory;
     }
@@ -795,6 +844,7 @@ public abstract class AbstractLogger implements Logger {
     /* (non-Javadoc)
      * @see org.apache.logging.log4j.Logger#getName()
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -805,6 +855,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
      */
+    @Override
     public void info(final Marker marker, final Message msg) {
         if (isEnabled(Level.INFO, marker, msg, null)) {
             log(marker, FQCN, Level.INFO, msg, null);
@@ -818,6 +869,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void info(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.INFO, marker, msg, t)) {
             log(marker, FQCN, Level.INFO, msg, t);
@@ -830,6 +882,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void info(final Marker marker, final Object message) {
         if (isEnabled(Level.INFO, marker, message, null)) {
             log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), null);
@@ -844,6 +897,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void info(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.INFO, marker, message, t)) {
             log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), t);
@@ -856,6 +910,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void info(final Marker marker, final String message) {
         if (isEnabled(Level.INFO, marker, message)) {
             log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), null);
@@ -869,6 +924,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void info(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.INFO, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -884,6 +940,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void info(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.INFO, marker, message, t)) {
             log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), t);
@@ -895,6 +952,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void info(final Message msg) {
         if (isEnabled(Level.INFO, null, msg, null)) {
             log(null, FQCN, Level.INFO, msg, null);
@@ -907,6 +965,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void info(final Message msg, final Throwable t) {
         if (isEnabled(Level.INFO, null, msg, t)) {
             log(null, FQCN, Level.INFO, msg, t);
@@ -918,6 +977,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void info(final Object message) {
         if (isEnabled(Level.INFO, null, message, null)) {
             log(null, FQCN, Level.INFO, messageFactory.newMessage(message), null);
@@ -932,6 +992,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void info(final Object message, final Throwable t) {
         if (isEnabled(Level.INFO, null, message, t)) {
             log(null, FQCN, Level.INFO, messageFactory.newMessage(message), t);
@@ -943,6 +1004,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void info(final String message) {
         if (isEnabled(Level.INFO, null, message)) {
             log(null, FQCN, Level.INFO, messageFactory.newMessage(message), null);
@@ -955,6 +1017,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void info(final String message, final Object... params) {
         if (isEnabled(Level.INFO, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -969,6 +1032,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void info(final String message, final Throwable t) {
         if (isEnabled(Level.INFO, null, message, t)) {
             log(null, FQCN, Level.INFO, messageFactory.newMessage(message), t);
@@ -981,6 +1045,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         DEBUG, {@code false} otherwise.
      */
+    @Override
     public boolean isDebugEnabled() {
         return isEnabled(Level.DEBUG, null, null);
     }
@@ -992,6 +1057,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         DEBUG, {@code false} otherwise.
      */
+    @Override
     public boolean isDebugEnabled(final Marker marker) {
         return isEnabled(Level.DEBUG, marker, (Object) null, null);
     }
@@ -1004,6 +1070,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level the level to check
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
+    @Override
     public boolean isEnabled(final Level level) {
         return isEnabled(level, null, (Object) null, null);
     }
@@ -1063,6 +1130,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         {@link Level#ERROR ERROR}, {@code false} otherwise.
      */
+    @Override
     public boolean isErrorEnabled() {
         return isEnabled(Level.ERROR, null, (Object) null, null);
     }
@@ -1074,6 +1142,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         {@link Level#ERROR ERROR}, {@code false} otherwise.
      */
+    @Override
     public boolean isErrorEnabled(final Marker marker) {
         return isEnabled(Level.ERROR, marker, (Object) null, null);
     }
@@ -1084,6 +1153,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         FATAL, {@code false} otherwise.
      */
+    @Override
     public boolean isFatalEnabled() {
         return isEnabled(Level.FATAL, null, (Object) null, null);
     }
@@ -1095,6 +1165,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         FATAL, {@code false} otherwise.
      */
+    @Override
     public boolean isFatalEnabled(final Marker marker) {
         return isEnabled(Level.FATAL, marker, (Object) null, null);
     }
@@ -1105,6 +1176,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         INFO, {@code false} otherwise.
      */
+    @Override
     public boolean isInfoEnabled() {
         return isEnabled(Level.INFO, null, (Object) null, null);
     }
@@ -1115,6 +1187,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         INFO, {@code false} otherwise.
      */
+    @Override
     public boolean isInfoEnabled(final Marker marker) {
         return isEnabled(Level.INFO, marker, (Object) null, null);
     }
@@ -1125,6 +1198,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         TRACE, {@code false} otherwise.
      */
+    @Override
     public boolean isTraceEnabled() {
         return isEnabled(Level.TRACE, null, (Object) null, null);
     }
@@ -1136,6 +1210,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         TRACE, {@code false} otherwise.
      */
+    @Override
     public boolean isTraceEnabled(final Marker marker) {
         return isEnabled(Level.TRACE, marker, (Object) null, null);
     }
@@ -1147,6 +1222,7 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         WARN, {@code false} otherwise.
      */
+    @Override
     public boolean isWarnEnabled() {
         return isEnabled(Level.WARN, null, (Object) null, null);
     }
@@ -1158,10 +1234,12 @@ public abstract class AbstractLogger implements Logger {
      * @return boolean - {@code true} if this Logger is enabled for level
      *         WARN, {@code false} otherwise.
      */
+    @Override
     public boolean isWarnEnabled(final Marker marker) {
         return isEnabled(Level.WARN, marker, (Object) null, null);
     }
 
+    @Override
     public boolean isEnabled(final Level level, final Marker marker) {
         return isEnabled(level, marker, (Object) null, null);
     }
@@ -1173,6 +1251,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg the message string to be logged
      */
+    @Override
     public void log(final Level level, final Marker marker, final Message msg) {
         if (isEnabled(level, marker, msg, null)) {
             log(marker, FQCN, level, msg, null);
@@ -1187,6 +1266,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t A Throwable or null.
      */
+    @Override
     public void log(final Level level, final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(level, marker, msg, t)) {
             log(marker, FQCN, level, msg, t);
@@ -1200,6 +1280,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void log(final Level level, final Marker marker, final Object message) {
         if (isEnabled(level, marker, message, null)) {
             log(marker, FQCN, level, messageFactory.newMessage(message), null);
@@ -1215,6 +1296,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
+    @Override
     public void log(final Level level, final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(level, marker, message, t)) {
             log(marker, FQCN, level, messageFactory.newMessage(message), t);
@@ -1228,6 +1310,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void log(final Level level, final Marker marker, final String message) {
         if (isEnabled(level, marker, message)) {
             log(marker, FQCN, level, messageFactory.newMessage(message), null);
@@ -1242,6 +1325,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params parameters to the message.
      */
+    @Override
     public void log(final Level level, final Marker marker, final String message, final Object... params) {
         if (isEnabled(level, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1258,6 +1342,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
+    @Override
     public void log(final Level level, final Marker marker, final String message, final Throwable t) {
         if (isEnabled(level, marker, message, t)) {
             log(marker, FQCN, level, messageFactory.newMessage(message), t);
@@ -1270,6 +1355,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level the logging level
      * @param msg the message string to be logged
      */
+    @Override
     public void log(final Level level, final Message msg) {
         if (isEnabled(level, null, msg, null)) {
             log(null, FQCN, level, msg, null);
@@ -1283,6 +1369,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t A Throwable or null.
      */
+    @Override
     public void log(final Level level, final Message msg, final Throwable t) {
         if (isEnabled(level, null, msg, t)) {
             log(null, FQCN, level, msg, t);
@@ -1295,6 +1382,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level the logging level
      * @param message the message object to log.
      */
+    @Override
     public void log(final Level level, final Object message) {
         if (isEnabled(level, null, message, null)) {
             log(null, FQCN, level, messageFactory.newMessage(message), null);
@@ -1309,6 +1397,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
+    @Override
     public void log(final Level level, final Object message, final Throwable t) {
         if (isEnabled(level, null, message, t)) {
             log(null, FQCN, level, messageFactory.newMessage(message), t);
@@ -1321,6 +1410,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level the logging level
      * @param message the message object to log.
      */
+    @Override
     public void log(final Level level, final String message) {
         if (isEnabled(level, null, message)) {
             log(null, FQCN, level, messageFactory.newMessage(message), null);
@@ -1334,6 +1424,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params parameters to the message.
      */
+    @Override
     public void log(final Level level, final String message, final Object... params) {
         if (isEnabled(level, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1350,6 +1441,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param t the exception to log, including its stack trace.
      */
+    @Override
     public void log(final Level level, final String message, final Throwable t) {
         if (isEnabled(level, null, message, t)) {
             log(null, FQCN, level, messageFactory.newMessage(message), t);
@@ -1375,6 +1467,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t     The Throwable.
      * @return the Throwable.
      */
+    @Override
     public <T extends Throwable> T throwing(final Level level, final T t) {
         return throwing(FQCN, level, t);
     }
@@ -1386,6 +1479,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      * @return the Throwable.
      */
+    @Override
     public <T extends Throwable> T throwing(final T t) {
         return throwing(FQCN, Level.ERROR, t);
     }
@@ -1428,6 +1522,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param msg    the message string to be logged
      */
+    @Override
     public void trace(final Marker marker, final Message msg) {
         if (isEnabled(Level.TRACE, marker, msg, null)) {
             log(marker, FQCN, Level.TRACE, msg, null);
@@ -1442,6 +1537,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void trace(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.TRACE, marker, msg, t)) {
             log(marker, FQCN, Level.TRACE, msg, t);
@@ -1454,6 +1550,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void trace(final Marker marker, final Object message) {
         if (isEnabled(Level.TRACE, marker, message, null)) {
             log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
@@ -1472,6 +1569,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void trace(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.TRACE, marker, message, t)) {
             log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
@@ -1484,6 +1582,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void trace(final Marker marker, final String message) {
         if (isEnabled(Level.TRACE, marker, message)) {
             log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
@@ -1497,6 +1596,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void trace(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.TRACE, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1516,6 +1616,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void trace(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.TRACE, marker, message, t)) {
             log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
@@ -1527,6 +1628,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void trace(final Message msg) {
         if (isEnabled(Level.TRACE, null, msg, null)) {
             log(null, FQCN, Level.TRACE, msg, null);
@@ -1539,6 +1641,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void trace(final Message msg, final Throwable t) {
         if (isEnabled(Level.TRACE, null, msg, t)) {
             log(null, FQCN, Level.TRACE, msg, t);
@@ -1550,6 +1653,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void trace(final Object message) {
         if (isEnabled(Level.TRACE, null, message, null)) {
             log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
@@ -1567,6 +1671,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void trace(final Object message, final Throwable t) {
         if (isEnabled(Level.TRACE, null, message, t)) {
             log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
@@ -1578,6 +1683,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void trace(final String message) {
         if (isEnabled(Level.TRACE, null, message)) {
             log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
@@ -1590,6 +1696,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void trace(final String message, final Object... params) {
         if (isEnabled(Level.TRACE, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1608,6 +1715,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void trace(final String message, final Throwable t) {
         if (isEnabled(Level.TRACE, null, message, t)) {
             log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
@@ -1620,6 +1728,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement
      * @param msg    the message string to be logged
      */
+    @Override
     public void warn(final Marker marker, final Message msg) {
         if (isEnabled(Level.WARN, marker, msg, null)) {
             log(marker, FQCN, Level.WARN, msg, null);
@@ -1633,6 +1742,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg    the message string to be logged
      * @param t      A Throwable or null.
      */
+    @Override
     public void warn(final Marker marker, final Message msg, final Throwable t) {
         if (isEnabled(Level.WARN, marker, msg, t)) {
             log(marker, FQCN, Level.WARN, msg, t);
@@ -1645,6 +1755,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void warn(final Marker marker, final Object message) {
         if (isEnabled(Level.WARN, marker, message, null)) {
             log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), null);
@@ -1665,6 +1776,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void warn(final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
             log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), t);
@@ -1677,6 +1789,7 @@ public abstract class AbstractLogger implements Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message object to log.
      */
+    @Override
     public void warn(final Marker marker, final String message) {
         if (isEnabled(Level.WARN, marker, message)) {
             log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), null);
@@ -1690,6 +1803,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void warn(final Marker marker, final String message, final Object... params) {
         if (isEnabled(Level.WARN, marker, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1705,6 +1819,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void warn(final Marker marker, final String message, final Throwable t) {
         if (isEnabled(Level.WARN, marker, message, t)) {
             log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), t);
@@ -1716,6 +1831,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param msg the message string to be logged
      */
+    @Override
     public void warn(final Message msg) {
         if (isEnabled(Level.WARN, null, msg, null)) {
             log(null, FQCN, Level.WARN, msg, null);
@@ -1728,6 +1844,7 @@ public abstract class AbstractLogger implements Logger {
      * @param msg the message string to be logged
      * @param t   A Throwable or null.
      */
+    @Override
     public void warn(final Message msg, final Throwable t) {
         if (isEnabled(Level.WARN, null, msg, t)) {
             log(null, FQCN, Level.WARN, msg, t);
@@ -1739,6 +1856,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void warn(final Object message) {
         if (isEnabled(Level.WARN, null, message, null)) {
             log(null, FQCN, Level.WARN, messageFactory.newMessage(message), null);
@@ -1752,6 +1870,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void warn(final Object message, final Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
             log(null, FQCN, Level.WARN, messageFactory.newMessage(message), t);
@@ -1763,6 +1882,7 @@ public abstract class AbstractLogger implements Logger {
      *
      * @param message the message object to log.
      */
+    @Override
     public void warn(final String message) {
         if (isEnabled(Level.WARN, null, message)) {
             log(null, FQCN, Level.WARN, messageFactory.newMessage(message), null);
@@ -1775,6 +1895,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message to log.
      * @param params  parameters to the message.
      */
+    @Override
     public void warn(final String message, final Object... params) {
         if (isEnabled(Level.WARN, null, message, params)) {
             final Message msg = messageFactory.newMessage(message, params);
@@ -1789,6 +1910,7 @@ public abstract class AbstractLogger implements Logger {
      * @param message the message object to log.
      * @param t       the exception to log, including its stack trace.
      */
+    @Override
     public void warn(final String message, final Throwable t) {
         if (isEnabled(Level.WARN, null, message, t)) {
             log(null, FQCN, Level.WARN, messageFactory.newMessage(message), t);

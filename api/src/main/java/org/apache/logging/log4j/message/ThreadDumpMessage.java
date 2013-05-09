@@ -81,6 +81,7 @@ public class ThreadDumpMessage implements Message {
      * Returns the ThreadDump in printable format.
      * @return the ThreadDump suitable for logging.
      */
+    @Override
     public String getFormattedMessage() {
         if (formattedMessage != null) {
             return formattedMessage;
@@ -102,6 +103,7 @@ public class ThreadDumpMessage implements Message {
      * Returns the title.
      * @return the title.
      */
+    @Override
     public String getFormat() {
         return title == null ? "" : title;
     }
@@ -111,6 +113,7 @@ public class ThreadDumpMessage implements Message {
      * and the StackTraceElement array as the value;
      * @return the "parameters" to this Message.
      */
+    @Override
     public Object[] getParameters() {
         return null;
     }
@@ -162,6 +165,7 @@ public class ThreadDumpMessage implements Message {
      * Factory to create basic thread information.
      */
     private static class BasicThreadInfoFactory implements ThreadInfoFactory {
+        @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
             final Map<ThreadInformation, StackTraceElement[]> threads =
@@ -177,6 +181,7 @@ public class ThreadDumpMessage implements Message {
      * Factory to create extended thread information.
      */
     private static class ExtendedThreadInfoFactory implements ThreadInfoFactory {
+        @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
             final ThreadInfo[] array = bean.dumpAllThreads(true, true);
@@ -195,6 +200,7 @@ public class ThreadDumpMessage implements Message {
      *
      * @return null
      */
+    @Override
     public Throwable getThrowable() {
         return null;
     }

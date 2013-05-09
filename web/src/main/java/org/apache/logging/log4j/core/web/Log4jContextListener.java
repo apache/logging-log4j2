@@ -47,6 +47,7 @@ public class Log4jContextListener implements ServletContextListener {
      * Initialize Logging for the web application.
      * @param event The ServletContextEvent.
      */
+    @Override
     public void contextInitialized(final ServletContextEvent event) {
         final ServletContext context = event.getServletContext();
         final String locn = context.getInitParameter(LOG4J_CONFIG);
@@ -65,6 +66,7 @@ public class Log4jContextListener implements ServletContextListener {
      * Shutdown logging for the web application.
      * @param event The ServletContextEvent.
      */
+    @Override
     public void contextDestroyed(final ServletContextEvent event) {
         final LoggerContext ctx = (LoggerContext) event.getServletContext().getAttribute(LOG4J_CONTEXT_ATTRIBUTE);
         Configurator.shutdown(ctx);

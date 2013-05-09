@@ -96,10 +96,12 @@ public class SimpleLoggerContext implements LoggerContext {
         this.stream = ps;
     }
 
+    @Override
     public Logger getLogger(final String name) {
         return getLogger(name, null);
     }
 
+    @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
             final Logger logger = loggers.get(name);
@@ -112,10 +114,12 @@ public class SimpleLoggerContext implements LoggerContext {
         return loggers.get(name);
     }
 
+    @Override
     public boolean hasLogger(final String name) {
         return false;
     }
 
+    @Override
     public Object getExternalContext() {
         return null;
     }

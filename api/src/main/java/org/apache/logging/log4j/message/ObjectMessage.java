@@ -45,6 +45,7 @@ public class ObjectMessage implements Message {
      * Returns the formatted object message.
      * @return the formatted object message.
      */
+    @Override
     public String getFormattedMessage() {
         return obj.toString();
     }
@@ -53,6 +54,7 @@ public class ObjectMessage implements Message {
      * Returns the object formatted using its toString method.
      * @return the String representation of the object.
      */
+    @Override
     public String getFormat() {
         return obj.toString();
     }
@@ -61,6 +63,7 @@ public class ObjectMessage implements Message {
      * Returns the object as if it were a parameter.
      * @return The object.
      */
+    @Override
     public Object[] getParameters() {
         return new Object[]{obj};
     }
@@ -108,6 +111,7 @@ public class ObjectMessage implements Message {
      *
      * @return the message if it is a throwable.
      */
+    @Override
     public Throwable getThrowable() {
         return obj instanceof Throwable ? (Throwable) obj : null;
     }

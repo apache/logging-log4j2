@@ -453,6 +453,7 @@ public final class ThreadContext  {
             super(collection);
         }
 
+        @Override
         public String pop() {
             final int index = size() - 1;
             if (index >= 0) {
@@ -463,6 +464,7 @@ public final class ThreadContext  {
             throw new NoSuchElementException("The ThreadContext stack is empty");
         }
 
+        @Override
         public String peek() {
             final int index = size() - 1;
             if (index >= 0) {
@@ -471,18 +473,22 @@ public final class ThreadContext  {
             return null;
         }
 
+        @Override
         public void push(final String message) {
             add(message);
         }
 
+        @Override
         public int getDepth() {
             return size();
         }
 
+        @Override
         public List<String> asList() {
             return this;
         }
 
+        @Override
         public void trim(final int depth) {
             if (depth < 0) {
                 throw new IllegalArgumentException("Maximum stack depth cannot be negative");
@@ -493,6 +499,7 @@ public final class ThreadContext  {
 
         }
 
+        @Override
         public ContextStack copy() {
             return new ThreadContextStack(this);
         }

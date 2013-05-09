@@ -88,6 +88,7 @@ public final class ProviderUtil {
         } else {
             cl = java.security.AccessController.doPrivileged(
                 new java.security.PrivilegedAction<ClassLoader>() {
+                    @Override
                     public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
                     }

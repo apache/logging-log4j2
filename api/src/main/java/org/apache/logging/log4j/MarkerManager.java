@@ -87,14 +87,17 @@ public final class MarkerManager {
             this.parent = parent;
         }
 
+        @Override
         public String getName() {
             return this.name;
         }
 
+        @Override
         public Marker getParent() {
             return this.parent;
         }
 
+        @Override
         public boolean isInstanceOf(final Marker m) {
             if (m == null) {
                 throw new IllegalArgumentException("A marker parameter is required");
@@ -109,6 +112,7 @@ public final class MarkerManager {
             return false;
         }
 
+        @Override
         public boolean isInstanceOf(final String name) {
             if (name == null) {
                 throw new IllegalArgumentException("A marker name is required");

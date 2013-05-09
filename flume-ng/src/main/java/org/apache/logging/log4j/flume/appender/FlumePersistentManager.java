@@ -230,6 +230,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
          * @param data The data required to create the entity.
          * @return The FlumeKratiManager.
          */
+        @Override
         public FlumePersistentManager createManager(final String name, final FactoryData data) {
             SecretKey secretKey = null;
 

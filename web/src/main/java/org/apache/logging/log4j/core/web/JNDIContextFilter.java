@@ -52,6 +52,7 @@ public class JNDIContextFilter implements Filter {
     private String name;
     private NamedContextSelector selector = null;
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         context = filterConfig.getServletContext();
         name = filterConfig.getInitParameter(CONTEXT_NAME);
@@ -88,6 +89,7 @@ public class JNDIContextFilter implements Filter {
         }
     }
 
+    @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
                          final FilterChain filterChain)
         throws IOException, ServletException {
@@ -104,6 +106,7 @@ public class JNDIContextFilter implements Filter {
         }
     }
 
+    @Override
     public void destroy() {
         final LoggerContext ctx = (LoggerContext) context.getAttribute(Log4jContextListener.LOG4J_CONTEXT_ATTRIBUTE);
         if (ctx != null && created) {

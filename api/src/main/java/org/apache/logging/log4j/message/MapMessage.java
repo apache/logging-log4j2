@@ -59,6 +59,7 @@ public class MapMessage implements MultiformatMessage {
         this.data = map instanceof SortedMap ? (SortedMap<String, String>) map : new TreeMap<String, String>(map);
     }
 
+    @Override
     public String[] getFormats() {
         final String[] formats = new String[MapFormat.values().length];
         int i = 0;
@@ -72,6 +73,7 @@ public class MapMessage implements MultiformatMessage {
      * Returns the data elements as if they were parameters on the logging event.
      * @return the data elements.
      */
+    @Override
     public Object[] getParameters() {
         return data.values().toArray();
     }
@@ -80,6 +82,7 @@ public class MapMessage implements MultiformatMessage {
      * Returns the message.
      * @return the message.
      */
+    @Override
     public String getFormat() {
         return "";
     }
@@ -203,6 +206,7 @@ public class MapMessage implements MultiformatMessage {
      * Format the message and return it.
      * @return the formatted message.
      */
+    @Override
     public String getFormattedMessage() {
         return asString();
     }
@@ -215,6 +219,7 @@ public class MapMessage implements MultiformatMessage {
      *
      * @return The formatted message.
      */
+    @Override
     public String getFormattedMessage(final String[] formats) {
         if (formats == null || formats.length == 0) {
             return asString();
@@ -302,6 +307,7 @@ public class MapMessage implements MultiformatMessage {
      *
      * @return null
      */
+    @Override
     public Throwable getThrowable() {
         return null;
     }

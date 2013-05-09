@@ -190,6 +190,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Get the Frequently Qualified Class Name.
      * @return the FQCN String.
      */
+    @Override
     public String getFQCN() {
         return event.getFQCN();
     }
@@ -198,6 +199,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the logging Level.
      * @return the Level.
      */
+    @Override
     public Level getLevel() {
         return event.getLevel();
     }
@@ -206,6 +208,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the logger name.
      * @return the logger name.
      */
+    @Override
     public String getLoggerName() {
         return event.getLoggerName();
     }
@@ -214,6 +217,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the StackTraceElement for the caller of the logging API.
      * @return the StackTraceElement of the caller.
      */
+    @Override
     public StackTraceElement getSource() {
         return event.getSource();
     }
@@ -222,6 +226,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the Message.
      * @return the Message.
      */
+    @Override
     public Message getMessage() {
         return event.getMessage();
     }
@@ -230,6 +235,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the Marker.
      * @return the Marker.
      */
+    @Override
     public Marker getMarker() {
         return event.getMarker();
     }
@@ -238,6 +244,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the name of the Thread.
      * @return the name of the Thread.
      */
+    @Override
     public String getThreadName() {
         return event.getThreadName();
     }
@@ -246,6 +253,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the event timestamp.
      * @return the event timestamp.
      */
+    @Override
     public long getMillis() {
         return event.getMillis();
     }
@@ -254,6 +262,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns the Throwable associated with the event, if any.
      * @return the Throwable.
      */
+    @Override
     public Throwable getThrown() {
         return event.getThrown();
     }
@@ -262,6 +271,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns a copy of the context Map.
      * @return a copy of the context Map.
      */
+    @Override
     public Map<String, String> getContextMap() {
         return ctx;
     }
@@ -270,6 +280,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      * Returns a copy of the context stack.
      * @return a copy of the context stack.
      */
+    @Override
     public ThreadContext.ContextStack getContextStack() {
         return event.getContextStack();
     }

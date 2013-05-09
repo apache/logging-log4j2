@@ -262,6 +262,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
          * @param data The data required to create the entity.
          * @return The FlumeAvroManager.
          */
+        @Override
         public FlumeAvroManager createManager(final String name, final FactoryData data) {
             try {
 

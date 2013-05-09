@@ -168,6 +168,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
          * @param data The data required to create the entity.
          * @return The FlumeAvroManager.
          */
+        @Override
         public FlumeEmbeddedManager createManager(final String name, final FactoryData data) {
             try {
                 final DefaultLogicalNodeManager nodeManager = new DefaultLogicalNodeManager();

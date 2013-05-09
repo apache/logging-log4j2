@@ -43,6 +43,7 @@ public class SimpleMessage implements Message {
      * Returns the message.
      * @return the message.
      */
+    @Override
     public String getFormattedMessage() {
         return message;
     }
@@ -51,6 +52,7 @@ public class SimpleMessage implements Message {
      * Returns the message.
      * @return the message.
      */
+    @Override
     public String getFormat() {
         return message;
     }
@@ -59,6 +61,7 @@ public class SimpleMessage implements Message {
      * Returns null since there are no parameters.
      * @return null.
      */
+    @Override
     public Object[] getParameters() {
         return null;
     }
@@ -92,6 +95,7 @@ public class SimpleMessage implements Message {
      *
      * @return null
      */
+    @Override
     public Throwable getThrowable() {
         return null;
     }

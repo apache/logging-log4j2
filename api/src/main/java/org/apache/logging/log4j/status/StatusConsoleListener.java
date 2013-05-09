@@ -78,6 +78,7 @@ public class StatusConsoleListener implements StatusListener {
      * Writes status messages to the console.
      * @param data The StatusData.
      */
+    @Override
     public void log(final StatusData data) {
         if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
             stream.println(data.getFormattedStatus());

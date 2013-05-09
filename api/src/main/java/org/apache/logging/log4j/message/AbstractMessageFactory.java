@@ -31,6 +31,7 @@ public abstract class AbstractMessageFactory implements MessageFactory {
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.Object)
      */
+    @Override
     public Message newMessage(final Object message) {
         return new ObjectMessage(message);
     }
@@ -40,6 +41,7 @@ public abstract class AbstractMessageFactory implements MessageFactory {
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.String)
      */
+    @Override
     public Message newMessage(final String message) {
         return new SimpleMessage(message);
     }
@@ -49,5 +51,6 @@ public abstract class AbstractMessageFactory implements MessageFactory {
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(java.lang.String, java.lang.Object)
      */
+    @Override
     public abstract Message newMessage(String message, Object... params);
 }
