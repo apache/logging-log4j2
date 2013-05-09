@@ -28,10 +28,12 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
     private static LoggerContext context = new SimpleLoggerContext();
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return context;
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
                                     URI configLocation) {
         return context;

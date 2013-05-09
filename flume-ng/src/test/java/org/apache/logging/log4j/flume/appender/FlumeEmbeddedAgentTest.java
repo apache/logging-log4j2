@@ -253,11 +253,13 @@ public class FlumeEmbeddedAgentTest {
             return null;
         }
 
+        @Override
         public Status append(AvroFlumeEvent event) throws AvroRemoteException {
             eventQueue.add(event);
             return Status.OK;
         }
 
+        @Override
         public Status appendBatch(List<AvroFlumeEvent> events)
             throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));

@@ -25,18 +25,22 @@ import org.apache.logging.log4j.spi.LoggerContext;
 public class TestLoggerContext implements LoggerContext {
     private final Logger logger = new TestLogger();
 
+    @Override
     public Logger getLogger(final String name) {
         return logger;
     }
 
+    @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         return new TestLogger(name, messageFactory);
     }
 
+    @Override
     public boolean hasLogger(final String name) {
         return false;
     }
 
+    @Override
     public Object getExternalContext() {
         return null;
     }

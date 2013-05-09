@@ -143,6 +143,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * Set the name of the Logger.
      * @param name The name of the Logger.
      */
+    @Override
     public void setLoggerName(final String name) {
         this.loggerName = name;
     }
@@ -151,6 +152,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * Returns the name of the Logger.
      * @return the name of the Logger.
      */
+    @Override
     public String getLoggerName() {
         return this.loggerName;
     }
@@ -165,6 +167,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * Returns the formatted message after looking up the format in the resource bundle.
      * @return The formatted message String.
      */
+    @Override
     public String getFormattedMessage() {
         if (formattedMessage != null) {
             return formattedMessage;
@@ -187,10 +190,12 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         return formattedMessage;
     }
 
+    @Override
     public String getFormat() {
         return messagePattern;
     }
 
+    @Override
     public Object[] getParameters() {
         if (argArray != null) {
             return argArray;
@@ -198,6 +203,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         return stringArgs;
     }
 
+    @Override
     public Throwable getThrowable() {
         return throwable;
     }

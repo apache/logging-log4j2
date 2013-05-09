@@ -77,6 +77,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * Publish the event.
      * @param event The LogEvent.
      */
+    @Override
     public void append(final LogEvent event) {
 
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
@@ -102,6 +103,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * @param compress If true the body will be compressed.
      * @return A Flume Event.
      */
+    @Override
     public FlumeEvent createEvent(final LogEvent event, final String includes, final String excludes,
                                   final String required, final String mdcPrefix, final String eventPrefix,
                                   final boolean compress) {

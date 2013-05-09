@@ -163,6 +163,7 @@ public class ParameterizedMessage implements Message {
      * Returns the formatted message.
      * @return the formatted message.
      */
+    @Override
     public String getFormattedMessage() {
         if (formattedMessage == null) {
             formattedMessage = formatMessage(messagePattern, stringArgs);
@@ -174,6 +175,7 @@ public class ParameterizedMessage implements Message {
      * Returns the message pattern.
      * @return the message pattern.
      */
+    @Override
     public String getFormat() {
         return messagePattern;
     }
@@ -182,6 +184,7 @@ public class ParameterizedMessage implements Message {
      * Returns the message parameters.
      * @return the message parameters.
      */
+    @Override
     public Object[] getParameters() {
         if (argArray != null) {
             return argArray;
@@ -198,6 +201,7 @@ public class ParameterizedMessage implements Message {
      *
      * @return the Throwable, if any.
      */
+    @Override
     public Throwable getThrowable() {
         return throwable;
     }

@@ -42,10 +42,12 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
         }
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return context;
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
                                     URI configLocation) {
         return context;

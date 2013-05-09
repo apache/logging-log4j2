@@ -30,10 +30,12 @@ import java.util.concurrent.ConcurrentMap;
 public class SLF4JLoggerContext implements LoggerContext {
     private final ConcurrentMap<String, SLF4JLogger> loggers = new ConcurrentHashMap<String, SLF4JLogger>();
 
+    @Override
     public Object getExternalContext() {
         return null;
     }
 
+    @Override
     public Logger getLogger(final String name) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
@@ -41,6 +43,7 @@ public class SLF4JLoggerContext implements LoggerContext {
         return loggers.get(name);
     }
 
+    @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggers.containsKey(name)) {
             loggers.putIfAbsent(name, new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
@@ -48,6 +51,7 @@ public class SLF4JLoggerContext implements LoggerContext {
         return loggers.get(name);
     }
 
+    @Override
     public boolean hasLogger(final String name) {
         return loggers.containsKey(name);
     }

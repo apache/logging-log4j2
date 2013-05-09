@@ -44,6 +44,7 @@ public class FlumeNode implements LifecycleAware {
         this.configurationAware = configurationAware;
     }
 
+    @Override
     public void start() {
 
         Preconditions.checkState(nodeManager != null, "Node manager can not be null");
@@ -55,6 +56,7 @@ public class FlumeNode implements LifecycleAware {
         lifecycleState = LifecycleState.START;
     }
 
+    @Override
     public void stop() {
 
         LOGGER.info("Flume node stopping");
@@ -72,6 +74,7 @@ public class FlumeNode implements LifecycleAware {
         return conf;
     }
 
+    @Override
     public LifecycleState getLifecycleState() {
         return lifecycleState;
     }

@@ -48,6 +48,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * @param key The key name.
      * @param value The key value.
      */
+    @Override
     public void put(final String key, final String value) {
         if (!useMap) {
             return;
@@ -67,6 +68,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * @param key The key to locate.
      * @return The value associated with the key or null.
      */
+    @Override
     public String get(final String key) {
         final Map<String, String> map = localMap.get();
         return map == null ? null : map.get(key);
@@ -77,6 +79,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * parameter.
      * @param key The key to remove.
      */
+    @Override
     public void remove(final String key) {
         final Map<String, String> map = localMap.get();
         if (map != null) {
@@ -87,6 +90,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     /**
      * Clear the context.
      */
+    @Override
     public void clear() {
         localMap.remove();
     }
@@ -96,6 +100,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * @param key The key to locate.
      * @return True if the key is in the context, false otherwise.
      */
+    @Override
     public boolean containsKey(final String key) {
         final Map<String, String> map = localMap.get();
         return map == null ? false : map.containsKey(key);
@@ -105,6 +110,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * Get a copy of current thread's context Map.
      * @return a copy of the context.
      */
+    @Override
     public Map<String, String> getContext() {
         final Map<String, String> map = localMap.get();
         return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
@@ -114,6 +120,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * Return the context Map.
      * @return the Context Map.
      */
+    @Override
     public Map<String, String> get() {
         return localMap.get();
     }
@@ -122,6 +129,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
      * Returns true if the Map is empty.
      * @return true if the Map is empty, false otherwise.
      */
+    @Override
     public boolean isEmpty() {
         final Map<String, String> map = localMap.get();
         return map == null || map.size() == 0;

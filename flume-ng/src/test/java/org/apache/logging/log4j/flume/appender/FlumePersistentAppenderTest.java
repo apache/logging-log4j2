@@ -290,12 +290,14 @@ public class FlumePersistentAppenderTest {
             return null;
         }
 
+        @Override
         public Status append(AvroFlumeEvent event) throws AvroRemoteException {
             eventQueue.add(event);
             //System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             return Status.OK;
         }
 
+        @Override
         public Status appendBatch(List<AvroFlumeEvent> events) throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));
             for (AvroFlumeEvent event : events) {

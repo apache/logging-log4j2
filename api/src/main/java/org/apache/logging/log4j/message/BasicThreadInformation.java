@@ -79,6 +79,7 @@ class BasicThreadInformation implements ThreadInformation {
      * Print the thread information.
      * @param sb The StringBuilder.
      */
+    @Override
     public void printThreadInfo(final StringBuilder sb) {
         sb.append("\"").append(name).append("\" ");
         if (isDaemon) {
@@ -97,6 +98,7 @@ class BasicThreadInformation implements ThreadInformation {
      * @param sb The StringBuilder.
      * @param trace The stack trace element array to format.
      */
+    @Override
     public void printStack(final StringBuilder sb, final StackTraceElement[] trace) {
         for (final StackTraceElement element : trace) {
             sb.append("\tat ").append(element).append("\n");

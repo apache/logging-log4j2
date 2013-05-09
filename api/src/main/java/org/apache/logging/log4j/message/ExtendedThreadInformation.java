@@ -33,6 +33,7 @@ class ExtendedThreadInformation implements ThreadInformation {
         this.info = thread;
     }
 
+    @Override
     public void printThreadInfo(final StringBuilder sb) {
         sb.append("\"").append(info.getThreadName()).append("\"");
         sb.append(" Id=").append(info.getThreadId()).append(" ");
@@ -46,6 +47,7 @@ class ExtendedThreadInformation implements ThreadInformation {
         sb.append('\n');
     }
 
+    @Override
     public void printStack(final StringBuilder sb, final StackTraceElement[] stack) {
         int i = 0;
         for (final StackTraceElement element : stack) {
