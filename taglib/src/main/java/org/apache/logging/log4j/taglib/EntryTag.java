@@ -46,6 +46,7 @@ public class EntryTag extends LoggerAwareTagSupport implements DynamicAttributes
         }
     }
 
+    @Override
     public void setDynamicAttribute(final String uri, final String name, final Object value) {
         this.attributes.add(value);
     }

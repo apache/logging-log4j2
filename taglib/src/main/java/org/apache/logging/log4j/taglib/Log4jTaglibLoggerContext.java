@@ -47,14 +47,17 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         this.servletContext = servletContext;
     }
 
+    @Override
     public Object getExternalContext() {
         return this.servletContext;
     }
 
+    @Override
     public Log4jTaglibLogger getLogger(final String name) {
         return this.getLogger(name, null);
     }
 
+    @Override
     public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
         Log4jTaglibLogger logger = this.loggers.get(name);
         if (logger != null) {
@@ -80,6 +83,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         return logger;
     }
 
+    @Override
     public boolean hasLogger(final String name) {
         return this.loggers.containsKey(name);
     }

@@ -79,6 +79,7 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
 
     protected abstract Level getLevel();
 
+    @Override
     public final void setDynamicAttribute(final String uri, final String name, final Object value) {
         this.attributes.add(value);
     }
