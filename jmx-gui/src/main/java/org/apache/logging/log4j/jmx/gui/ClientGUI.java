@@ -56,7 +56,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
  * modify the log4j2 configuration, as well as monitor status logs.
  * 
  * @see <a href=
- *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html
+ *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html"
  *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html</a >
  */
 public class ClientGUI extends JPanel implements NotificationListener {
