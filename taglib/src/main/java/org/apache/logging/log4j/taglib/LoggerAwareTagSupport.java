@@ -55,15 +55,14 @@ abstract class LoggerAwareTagSupport extends BodyTagSupport {
     protected final Log4jTaglibLogger getLogger() throws JspException {
         if (this.logger != null) {
             return TagUtils.resolveLogger(this.loggerContext, this.logger, null);
-        } else {
-            Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.pageContext);
-            if (logger == null) {
-                String name = this.pageContext.getPage().getClass().getName();
-                logger = TagUtils.resolveLogger(this.loggerContext, name, null);
-                TagUtils.setDefaultLogger(this.pageContext, logger);
-            }
-            return logger;
         }
+        Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.pageContext);
+        if (logger == null) {
+            String name = this.pageContext.getPage().getClass().getName();
+            logger = TagUtils.resolveLogger(this.loggerContext, name, null);
+            TagUtils.setDefaultLogger(this.pageContext, logger);
+        }
+        return logger;
     }
 
     public final void setLogger(Object logger) {
