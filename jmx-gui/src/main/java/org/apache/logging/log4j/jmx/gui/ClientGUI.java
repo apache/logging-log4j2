@@ -52,7 +52,7 @@ import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
- * GUI that connects to a Java process via JMX and allows the user to view and
+ * Swing GUI that connects to a Java process via JMX and allows the user to view and
  * modify the log4j2 configuration, as well as monitor status logs.
  * 
  * @see <a href=
