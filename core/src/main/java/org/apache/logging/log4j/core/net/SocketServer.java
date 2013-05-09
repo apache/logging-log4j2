@@ -51,7 +51,7 @@ public class SocketServer extends AbstractServer implements Runnable {
 
     private static final int MAX_PORT = 65534;
 
-    private boolean isActive = true;
+    private volatile boolean isActive = true;
 
     private final ServerSocket server;
 
