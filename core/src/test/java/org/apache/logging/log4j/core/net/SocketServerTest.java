@@ -44,6 +44,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class SocketServerTest {
 
+    private static final String MESSAGE_1 = "This is a test message";
+    private static final String MESSAGE_2 = "This is test message 2";
     private static final String PORT = "8199";
     private static final int PORTNUM = Integer.parseInt(PORT);
 
@@ -102,15 +104,15 @@ public class SocketServerTest {
         root.addAppender(listApp);
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
-        root.debug("This is a test message");
-        root.debug("This is test message 2");
+        root.debug(MESSAGE_1);
+        root.debug(MESSAGE_2);
         Thread.sleep(100);
         final List<LogEvent> events = listApp.getEvents();
         assertNotNull("No event retrieved", events);
         assertTrue("No events retrieved", events.size() > 0);
-        assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals("This is a test message"));
+        assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals(MESSAGE_1));
         assertTrue("Incorrect number of events received", events.size() == 2);
-        assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals("This is test message 2"));
+        assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals(MESSAGE_2));
     }
 
     private class ThreadFilter extends AbstractFilter {
