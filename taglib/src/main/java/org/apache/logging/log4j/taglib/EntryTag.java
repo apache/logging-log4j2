@@ -46,13 +46,13 @@ public class EntryTag extends LoggerAwareTagSupport implements DynamicAttributes
         }
     }
 
-    public void setDynamicAttribute(String uri, String name, Object value) {
+    public void setDynamicAttribute(final String uri, final String name, final Object value) {
         this.attributes.add(value);
     }
 
     @Override
     public int doEndTag() throws JspException {
-        Log4jTaglibLogger logger = this.getLogger();
+        final Log4jTaglibLogger logger = this.getLogger();
 
         if (TagUtils.isEnabled(logger, Level.TRACE, null)) {
             if (this.attributes.size() == 0) {

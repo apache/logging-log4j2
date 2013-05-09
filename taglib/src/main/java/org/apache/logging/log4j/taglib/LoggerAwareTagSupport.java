@@ -47,7 +47,7 @@ abstract class LoggerAwareTagSupport extends BodyTagSupport {
     }
 
     @Override
-    public final void setPageContext(PageContext pageContext) {
+    public final void setPageContext(final PageContext pageContext) {
         super.setPageContext(pageContext);
         this.loggerContext = Log4jTaglibLoggerContext.getInstance(pageContext.getServletContext());
     }
@@ -58,14 +58,14 @@ abstract class LoggerAwareTagSupport extends BodyTagSupport {
         }
         Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.pageContext);
         if (logger == null) {
-            String name = this.pageContext.getPage().getClass().getName();
+            final String name = this.pageContext.getPage().getClass().getName();
             logger = TagUtils.resolveLogger(this.loggerContext, name, null);
             TagUtils.setDefaultLogger(this.pageContext, logger);
         }
         return logger;
     }
 
-    public final void setLogger(Object logger) {
+    public final void setLogger(final Object logger) {
         this.logger = logger;
     }
 }

@@ -39,13 +39,13 @@ public class ExitTag extends LoggerAwareTagSupport {
         this.result = null;
     }
 
-    public void setResult(Object result) {
+    public void setResult(final Object result) {
         this.result = result;
     }
 
     @Override
     public int doEndTag() throws JspException {
-        Log4jTaglibLogger logger = this.getLogger();
+        final Log4jTaglibLogger logger = this.getLogger();
 
         if (TagUtils.isEnabled(logger, Level.TRACE, null)) {
             if (this.result == null) {

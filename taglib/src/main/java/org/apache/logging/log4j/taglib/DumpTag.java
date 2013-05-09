@@ -48,24 +48,24 @@ public class DumpTag extends TagSupport {
         this.scope = PageContext.PAGE_SCOPE;
     }
 
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = TagUtils.getScope(scope);
     }
 
     @Override
     public int doEndTag() throws JspException {
         try {
-            Enumeration<String> names = this.pageContext.getAttributeNamesInScope(this.scope);
+            final Enumeration<String> names = this.pageContext.getAttributeNamesInScope(this.scope);
             this.pageContext.getOut().write("<dl>");
             while (names != null && names.hasMoreElements()) {
-                String name = names.nextElement();
-                Object value = this.pageContext.getAttribute(name, this.scope);
+                final String name = names.nextElement();
+                final Object value = this.pageContext.getAttribute(name, this.scope);
 
                 this.pageContext.getOut().write("<dt><code>" + name + "</code></dt>");
                 this.pageContext.getOut().write("<dd><code>" + value + "</code></dd>");
             }
             this.pageContext.getOut().write("</dl>");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new JspException("Could not write scope contents. Cause:  " + e.toString(), e);
         }
 

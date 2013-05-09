@@ -58,7 +58,7 @@ public class ExitTagTest {
         StatusLogger.getLogger().reset();
     }
 
-    private Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
+    private final Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
     private ExitTag tag;
 
     @Before

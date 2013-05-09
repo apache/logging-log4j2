@@ -61,22 +61,22 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
  */
 public class ClientGUI extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
-    private Client client;
+    private final Client client;
     private JTextArea statusLogTextArea;
     private JTabbedPane tabbedPane;
     private JToggleButton wrapLinesToggleButton;
 
-    private AbstractAction toggleWrapAction = new AbstractAction() {
+    private final AbstractAction toggleWrapAction = new AbstractAction() {
         private static final long serialVersionUID = -4214143754637722322L;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            boolean wrap = wrapLinesToggleButton.isSelected();
+        public void actionPerformed(final ActionEvent e) {
+            final boolean wrap = wrapLinesToggleButton.isSelected();
             statusLogTextArea.setLineWrap(wrap);
         }
     };
 
-    public ClientGUI(Client client) throws InstanceNotFoundException,
+    public ClientGUI(final Client client) throws InstanceNotFoundException,
             MalformedObjectNameException, IOException {
         this.client = Assert.isNotNull(client, "client");
         createWidgets();
@@ -95,7 +95,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
 
         wrapLinesToggleButton = new JToggleButton(toggleWrapAction);
         wrapLinesToggleButton.setToolTipText("Toggle line wrapping");
-        JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea, //
+        final JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea, //
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, //
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollStatusLog.setCorner(JScrollPane.LOWER_RIGHT_CORNER, wrapLinesToggleButton);
@@ -109,29 +109,29 @@ public class ClientGUI extends JPanel implements NotificationListener {
 
     private void populateWidgets() {
 
-        StatusLoggerAdminMBean statusAdmin = client.getStatusLoggerAdmin();
-        String[] messages = statusAdmin.getStatusDataHistory();
-        for (String message : messages) {
+        final StatusLoggerAdminMBean statusAdmin = client.getStatusLoggerAdmin();
+        final String[] messages = statusAdmin.getStatusDataHistory();
+        for (final String message : messages) {
             statusLogTextArea.append(message + "\n");
         }
 
-        for (LoggerContextAdminMBean ctx : client.getLoggerContextAdmins()) {
-            ClientEditConfigPanel editor = new ClientEditConfigPanel(ctx);
+        for (final LoggerContextAdminMBean ctx : client.getLoggerContextAdmins()) {
+            final ClientEditConfigPanel editor = new ClientEditConfigPanel(ctx);
             tabbedPane.addTab("LoggerContext: " + ctx.getName(), editor);
         }
     }
 
     private void registerListeners() throws InstanceNotFoundException,
             MalformedObjectNameException, IOException {
-        NotificationFilterSupport filter = new NotificationFilterSupport();
+        final NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType(StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE);
-        ObjectName objName = new ObjectName(StatusLoggerAdminMBean.NAME);
+        final ObjectName objName = new ObjectName(StatusLoggerAdminMBean.NAME);
         client.getConnection().addNotificationListener(objName, this, filter,
                 null);
     }
 
     @Override
-    public void handleNotification(Notification notif, Object paramObject) {
+    public void handleNotification(final Notification notif, final Object paramObject) {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
             statusLogTextArea.append(notif.getMessage() + "\n");
         }
@@ -151,7 +151,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
      *            {@code service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi}
      * @throws Exception if anything goes wrong
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length < 1) {
             usage();
             return;
@@ -160,13 +160,13 @@ public class ClientGUI extends JPanel implements NotificationListener {
         if (!serviceUrl.startsWith("service:jmx")) {
             serviceUrl = "service:jmx:rmi:///jndi/rmi://" + args[0] + "/jmxrmi";
         }
-        JMXServiceURL url = new JMXServiceURL(serviceUrl);
-        Map<String, String> paramMap = new HashMap<String, String>();
-        for (Object objKey : System.getProperties().keySet()) {
-            String key = (String) objKey;
+        final JMXServiceURL url = new JMXServiceURL(serviceUrl);
+        final Map<String, String> paramMap = new HashMap<String, String>();
+        for (final Object objKey : System.getProperties().keySet()) {
+            final String key = (String) objKey;
             paramMap.put(key, System.getProperties().getProperty(key));
         }
-        JMXConnector connector = JMXConnectorFactory.connect(url, paramMap);
+        final JMXConnector connector = JMXConnectorFactory.connect(url, paramMap);
         final Client client = new Client(connector);
         final String title = "Log4J2 JMX Client - " + url;
 
@@ -175,13 +175,13 @@ public class ClientGUI extends JPanel implements NotificationListener {
             public void run() {
                 installLookAndFeel();
                 try {
-                    ClientGUI gui = new ClientGUI(client);
-                    JFrame frame = new JFrame(title);
+                    final ClientGUI gui = new ClientGUI(client);
+                    final JFrame frame = new JFrame(title);
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.getContentPane().add(gui, BorderLayout.CENTER);
                     frame.pack();
                     frame.setVisible(true);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     // if console is visible, print error so that
                     // the stack trace remains visible after error dialog is
                     // closed
@@ -189,7 +189,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
 
                     // show error in dialog: there may not be a console window
                     // visible
-                    StringWriter sr = new StringWriter();
+                    final StringWriter sr = new StringWriter();
                     ex.printStackTrace(new PrintWriter(sr));
                     JOptionPane.showMessageDialog(null, sr.toString(), "Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -199,28 +199,28 @@ public class ClientGUI extends JPanel implements NotificationListener {
     }
 
     private static void usage() {
-        String me = ClientGUI.class.getName();
+        final String me = ClientGUI.class.getName();
         System.err.println("Usage: java " + me + " <host>:<port>");
         System.err.println("   or: java " + me
                 + " service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi");
-        String longAdr = " service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi";
+        final String longAdr = " service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi";
         System.err.println("   or: java " + me + longAdr);
     }
 
     private static void installLookAndFeel() {
         try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            for (final LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
                     return;
                 }
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

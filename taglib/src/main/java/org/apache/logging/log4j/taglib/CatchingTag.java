@@ -39,13 +39,13 @@ public class CatchingTag extends ExceptionAwareTagSupport {
         this.level = null;
     }
 
-    public void setLevel(Object level) {
+    public void setLevel(final Object level) {
         this.level = TagUtils.resolveLevel(level);
     }
 
     @Override
     public int doEndTag() throws JspException {
-        Log4jTaglibLogger logger = this.getLogger();
+        final Log4jTaglibLogger logger = this.getLogger();
 
         if (this.level == null) {
             logger.catching(FQCN, Level.ERROR, this.getException());

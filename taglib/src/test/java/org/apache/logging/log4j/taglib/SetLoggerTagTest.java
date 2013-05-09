@@ -52,11 +52,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("helloWorld", PageContext.PAGE_SCOPE);
+        final Object attribute = this.context.getAttribute("helloWorld", PageContext.PAGE_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagLoggerVarPageScope", logger.getName());
     }
 
@@ -70,11 +70,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.PAGE_SCOPE);
+        final Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.PAGE_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringVarPageScope", logger.getName());
     }
 
@@ -82,7 +82,7 @@ public class SetLoggerTagTest {
     public void testDoEndTagStringFactoryVarPageScope() throws Exception {
         this.tag.setLogger("testDoEndTagStringFactoryVarPageScope");
 
-        MessageFactory factory = new StringFormatterMessageFactory();
+        final MessageFactory factory = new StringFormatterMessageFactory();
 
         this.tag.setFactory(factory);
         this.tag.setVar("goodbyeCruelWorld");
@@ -91,11 +91,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.PAGE_SCOPE);
+        final Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.PAGE_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringFactoryVarPageScope", logger.getName());
         assertSame("The message factory is not correct.", factory, logger.getMessageFactory());
     }
@@ -111,11 +111,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("helloWorld", PageContext.SESSION_SCOPE);
+        final Object attribute = this.context.getAttribute("helloWorld", PageContext.SESSION_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagLoggerVarSessionScope", logger.getName());
     }
 
@@ -130,11 +130,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.REQUEST_SCOPE);
+        final Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.REQUEST_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringVarRequestScope", logger.getName());
     }
 
@@ -142,7 +142,7 @@ public class SetLoggerTagTest {
     public void testDoEndTagStringFactoryVarApplicationScope() throws Exception {
         this.tag.setLogger("testDoEndTagStringFactoryVarApplicationScope");
 
-        MessageFactory factory = new StringFormatterMessageFactory();
+        final MessageFactory factory = new StringFormatterMessageFactory();
 
         this.tag.setFactory(factory);
         this.tag.setVar("goodbyeCruelWorld");
@@ -152,11 +152,11 @@ public class SetLoggerTagTest {
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
         assertNull("The default logger should still be null.", TagUtils.getDefaultLogger(this.context));
 
-        Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.APPLICATION_SCOPE);
+        final Object attribute = this.context.getAttribute("goodbyeCruelWorld", PageContext.APPLICATION_SCOPE);
         assertNotNull("The attribute should not be null.", attribute);
         assertTrue("The attribute should be a Log4jTaglibLogger.", attribute instanceof Log4jTaglibLogger);
 
-        Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
+        final Log4jTaglibLogger logger = (Log4jTaglibLogger)attribute;
         assertEquals("The logger name is not correct.", "testDoEndTagStringFactoryVarApplicationScope",
                 logger.getName());
         assertSame("The message factory is not correct.", factory, logger.getMessageFactory());
@@ -169,7 +169,7 @@ public class SetLoggerTagTest {
         assertNull("The default logger should be null.", TagUtils.getDefaultLogger(this.context));
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
 
-        Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
+        final Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
         assertNotNull("The default logger should not be null anymore.", logger);
         assertEquals("The logger name is not correct.", "testDoEndTagLoggerDefault", logger.getName());
     }
@@ -181,7 +181,7 @@ public class SetLoggerTagTest {
         assertNull("The default logger should be null.", TagUtils.getDefaultLogger(this.context));
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
 
-        Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
+        final Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
         assertNotNull("The default logger should not be null anymore.", logger);
         assertEquals("The logger name is not correct.", "testDoEndTagStringDefault", logger.getName());
     }
@@ -190,14 +190,14 @@ public class SetLoggerTagTest {
     public void testDoEndTagStringFactoryDefault() throws Exception {
         this.tag.setLogger("testDoEndTagStringFactoryDefault");
 
-        MessageFactory factory = new StringFormatterMessageFactory();
+        final MessageFactory factory = new StringFormatterMessageFactory();
 
         this.tag.setFactory(factory);
 
         assertNull("The default logger should be null.", TagUtils.getDefaultLogger(this.context));
         assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
 
-        Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
+        final Log4jTaglibLogger logger = TagUtils.getDefaultLogger(this.context);
         assertNotNull("The default logger should not be null anymore.", logger);
         assertEquals("The logger name is not correct.", "testDoEndTagStringFactoryDefault", logger.getName());
         assertSame("The message factory is not correct.", factory, logger.getMessageFactory());

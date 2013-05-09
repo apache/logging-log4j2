@@ -36,7 +36,7 @@ abstract class ExceptionAwareTagSupport extends LoggerAwareTagSupport {
         return this.exception;
     }
 
-    public final void setException(Throwable exception) {
+    public final void setException(final Throwable exception) {
         this.exception = exception;
     }
 }

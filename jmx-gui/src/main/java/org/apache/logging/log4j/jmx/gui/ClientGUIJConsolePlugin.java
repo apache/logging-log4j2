@@ -32,12 +32,12 @@ public class ClientGUIJConsolePlugin extends JConsolePlugin {
     @Override
     public Map<String, JPanel> getTabs() {
         try {
-            Client client = new Client(getContext().getMBeanServerConnection());
-            ClientGUI gui = new ClientGUI(client);
-            Map<String, JPanel> result = new HashMap<String, JPanel>();
+            final Client client = new Client(getContext().getMBeanServerConnection());
+            final ClientGUI gui = new ClientGUI(client);
+            final Map<String, JPanel> result = new HashMap<String, JPanel>();
             result.put("Log4j2", gui);
             return result;
-        } catch (Throwable ex) {
+        } catch (final Throwable ex) {
             throw new IllegalStateException(ex);
         }
     }

@@ -43,7 +43,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
 
     private final ServletContext servletContext;
 
-    private Log4jTaglibLoggerContext(ServletContext servletContext) {
+    private Log4jTaglibLoggerContext(final ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
@@ -51,11 +51,11 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         return this.servletContext;
     }
 
-    public Log4jTaglibLogger getLogger(String name) {
+    public Log4jTaglibLogger getLogger(final String name) {
         return this.getLogger(name, null);
     }
 
-    public Log4jTaglibLogger getLogger(String name, MessageFactory factory) {
+    public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
         Log4jTaglibLogger logger = this.loggers.get(name);
         if (logger != null) {
             AbstractLogger.checkMessageFactory(logger, factory);
@@ -65,7 +65,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         synchronized (this.loggers) {
             logger = this.loggers.get(name);
             if (logger == null) {
-                Logger original = factory == null ? LogManager.getLogger(name) : LogManager.getLogger(name, factory);
+                final Logger original = factory == null ? LogManager.getLogger(name) : LogManager.getLogger(name, factory);
                 if (!(original instanceof AbstractLogger)) {
                     throw new LoggingException(
                             "Log4j Tag Library requires base logging system to extend Log4j AbstractLogger."
@@ -80,11 +80,11 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         return logger;
     }
 
-    public boolean hasLogger(String name) {
+    public boolean hasLogger(final String name) {
         return this.loggers.containsKey(name);
     }
 
-    static synchronized Log4jTaglibLoggerContext getInstance(ServletContext servletContext) {
+    static synchronized Log4jTaglibLoggerContext getInstance(final ServletContext servletContext) {
         Log4jTaglibLoggerContext loggerContext = CONTEXTS.get(servletContext);
         if (loggerContext != null) {
             return loggerContext;
