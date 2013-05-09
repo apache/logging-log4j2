@@ -41,17 +41,17 @@ public class IfEnabledTag extends LoggerAwareTagSupport {
         this.marker = null;
     }
 
-    public final void setLevel(Object level) {
+    public final void setLevel(final Object level) {
         this.level = level;
     }
 
-    public final void setMarker(Marker marker) {
+    public final void setMarker(final Marker marker) {
         this.marker = marker;
     }
 
     @Override
     public int doStartTag() throws JspException {
-        Level level = TagUtils.resolveLevel(this.level);
+        final Level level = TagUtils.resolveLevel(this.level);
         if (level == null) {
             throw new JspException("Level must be of type String or org.apache.logging.log4j.Level.");
         }

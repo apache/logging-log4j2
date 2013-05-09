@@ -65,7 +65,7 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
         return this.message;
     }
 
-    public final void setMessage(Object message) {
+    public final void setMessage(final Object message) {
         this.message = message;
     }
 
@@ -73,13 +73,13 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
         return this.marker;
     }
 
-    public final void setMarker(Marker marker) {
+    public final void setMarker(final Marker marker) {
         this.marker = marker;
     }
 
     protected abstract Level getLevel();
 
-    public final void setDynamicAttribute(String uri, String name, Object value) {
+    public final void setDynamicAttribute(final String uri, final String name, final Object value) {
         this.attributes.add(value);
     }
 
@@ -90,13 +90,13 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
 
     @Override
     public final int doEndTag() throws JspException {
-        Log4jTaglibLogger logger = this.getLogger();
-        Level level = this.getLevel();
-        Marker marker = this.getMarker();
+        final Log4jTaglibLogger logger = this.getLogger();
+        final Level level = this.getLevel();
+        final Marker marker = this.getMarker();
 
         if (TagUtils.isEnabled(logger, level, marker)) {
-            Object message = this.getMessage();
-            Throwable exception = this.getException();
+            final Object message = this.getMessage();
+            final Throwable exception = this.getException();
             if (message instanceof Message) {
                 logger.log(marker, FQCN, level, (Message) message, exception);
             } else if (message instanceof String) {

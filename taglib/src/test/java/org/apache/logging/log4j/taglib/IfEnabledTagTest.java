@@ -54,7 +54,7 @@ public class IfEnabledTagTest {
         StatusLogger.getLogger().reset();
     }
 
-    private Logger logger = LogManager.getLogger("IfEnabledTagTest");
+    private final Logger logger = LogManager.getLogger("IfEnabledTagTest");
     private IfEnabledTag tag;
 
     @Before

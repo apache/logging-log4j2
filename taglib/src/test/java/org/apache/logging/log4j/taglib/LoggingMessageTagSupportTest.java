@@ -60,7 +60,7 @@ public class LoggingMessageTagSupportTest {
         StatusLogger.getLogger().reset();
     }
 
-    private Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
+    private final Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
     private LoggingMessageTagSupport tag;
 
     private void setUp(final Level level) {
@@ -96,7 +96,7 @@ public class LoggingMessageTagSupportTest {
     public void testMessageObject() throws Exception {
         this.setUp(null);
 
-        Object message = new Object();
+        final Object message = new Object();
         this.tag.setMessage(message);
 
         assertSame("The message is not correct.", message, this.tag.getMessage());
@@ -106,7 +106,7 @@ public class LoggingMessageTagSupportTest {
     public void testMessageBody() throws Exception {
         this.setUp(null);
 
-        MockBodyContent content = new MockBodyContent("This is the body content 01.", (Writer)null);
+        final MockBodyContent content = new MockBodyContent("This is the body content 01.", (Writer)null);
         this.tag.setBodyContent(content);
 
         assertEquals("The message is not correct.", "This is the body content 01.", this.tag.getMessage());
@@ -116,7 +116,7 @@ public class LoggingMessageTagSupportTest {
     public void testMessageStringBodyIgnored() throws Exception {
         this.setUp(null);
 
-        MockBodyContent content = new MockBodyContent("This is more body content 02.", (Writer)null);
+        final MockBodyContent content = new MockBodyContent("This is more body content 02.", (Writer)null);
         this.tag.setBodyContent(content);
         this.tag.setMessage("This is another message 02.");
 
@@ -315,7 +315,7 @@ public class LoggingMessageTagSupportTest {
     private static class MyMessage {
         private final String internal;
 
-        public MyMessage(String internal) {
+        public MyMessage(final String internal) {
             this.internal = internal;
         }
 

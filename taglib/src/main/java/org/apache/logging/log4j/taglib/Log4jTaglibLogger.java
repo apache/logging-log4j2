@@ -28,27 +28,27 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
  * @since 2.0
  */
 class Log4jTaglibLogger extends AbstractLoggerWrapper {
-    public Log4jTaglibLogger(AbstractLogger logger, String name, MessageFactory messageFactory) {
+    public Log4jTaglibLogger(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
         super(logger, name, messageFactory);
     }
 
     @Override
-    protected void entry(String fqcn, Object... params) {
+    protected void entry(final String fqcn, final Object... params) {
         super.entry(fqcn, params);
     }
 
     @Override
-    protected <R> R exit(String fqcn, R result) {
+    protected <R> R exit(final String fqcn, final R result) {
         return super.exit(fqcn, result);
     }
 
     @Override
-    protected void catching(String fqcn, Level level, Throwable t) {
+    protected void catching(final String fqcn, final Level level, final Throwable t) {
         super.catching(fqcn, level, t);
     }
 
     @Override
-    protected <T extends Throwable> T throwing(String fqcn, Level level, T t) {
+    protected <T extends Throwable> T throwing(final String fqcn, final Level level, final T t) {
         return super.throwing(fqcn, level, t);
     }
 }

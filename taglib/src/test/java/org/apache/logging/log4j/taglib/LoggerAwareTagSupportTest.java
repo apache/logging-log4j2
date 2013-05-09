@@ -48,23 +48,23 @@ public class LoggerAwareTagSupportTest {
     public void testGetLoggerWithGenericLogger() throws Exception {
         this.setUp(null);
 
-        Logger logger = LogManager.getLogger("testGetLoggerWithGenericLogger");
+        final Logger logger = LogManager.getLogger("testGetLoggerWithGenericLogger");
 
         this.tag.setLogger(logger);
-        Log4jTaglibLogger returned = this.tag.getLogger();
+        final Log4jTaglibLogger returned = this.tag.getLogger();
 
         assertNotNull("The first returned logger should not be null.", returned);
         assertNotSame("The first returned logger should not be the same as the set.", logger, returned);
         assertEquals("The name is not correct.", "testGetLoggerWithGenericLogger", returned.getName());
 
-        Log4jTaglibLogger returned2 = this.tag.getLogger();
+        final Log4jTaglibLogger returned2 = this.tag.getLogger();
 
         assertNotNull("The second returned logger should not be null.", returned2);
         assertSame("The second returned logger should be the same as the first.", returned, returned2);
 
         this.tag.release();
 
-        Log4jTaglibLogger returned3 = this.tag.getLogger();
+        final Log4jTaglibLogger returned3 = this.tag.getLogger();
 
         assertNotNull("The third returned logger should not be null.", returned3);
         assertNotSame("The third returned logger should not be the same as the first.", returned, returned3);
@@ -74,8 +74,8 @@ public class LoggerAwareTagSupportTest {
     public void testGetLoggerWithTaglibLogger() throws Exception {
         this.setUp(null);
 
-        AbstractLogger wrapped = (AbstractLogger)LogManager.getLogger("testGetLoggerWithTaglibLogger");
-        Log4jTaglibLogger logger = new Log4jTaglibLogger(wrapped, wrapped.getName(), wrapped.getMessageFactory());
+        final AbstractLogger wrapped = (AbstractLogger)LogManager.getLogger("testGetLoggerWithTaglibLogger");
+        final Log4jTaglibLogger logger = new Log4jTaglibLogger(wrapped, wrapped.getName(), wrapped.getMessageFactory());
 
         this.tag.setLogger(logger);
         Log4jTaglibLogger returned = this.tag.getLogger();
@@ -95,12 +95,12 @@ public class LoggerAwareTagSupportTest {
         this.setUp(null);
 
         this.tag.setLogger("testGetLoggerWithStringLogger");
-        Log4jTaglibLogger returned = this.tag.getLogger();
+        final Log4jTaglibLogger returned = this.tag.getLogger();
 
         assertNotNull("The first returned logger should not be null.", returned);
         assertEquals("The name is not correct.", "testGetLoggerWithStringLogger", returned.getName());
 
-        Log4jTaglibLogger returned2 = this.tag.getLogger();
+        final Log4jTaglibLogger returned2 = this.tag.getLogger();
 
         assertNotNull("The second returned logger should not be null.", returned2);
         assertSame("The second returned logger should be the same as the first.", returned, returned2);
@@ -108,20 +108,20 @@ public class LoggerAwareTagSupportTest {
 
     @Test
     public void testGetDefaultLogger01() throws Exception {
-        Object page = new Object() {};
+        final Object page = new Object() {};
         this.setUp(page);
 
         assertNull("The default logger should be null.", TagUtils.getDefaultLogger(this.context));
 
-        Log4jTaglibLogger returned = this.tag.getLogger();
+        final Log4jTaglibLogger returned = this.tag.getLogger();
         assertNotNull("The first returned logger should not be null.", returned);
         assertEquals("The logger name is not correct.", page.getClass().getName(), returned.getName());
 
-        Log4jTaglibLogger defaultLogger = TagUtils.getDefaultLogger(this.context);
+        final Log4jTaglibLogger defaultLogger = TagUtils.getDefaultLogger(this.context);
         assertNotNull("The default logger should not be null anymore.", defaultLogger);
         assertSame("The default logger should be the same as the returned logger.", returned, defaultLogger);
 
-        Log4jTaglibLogger returned2 = this.tag.getLogger();
+        final Log4jTaglibLogger returned2 = this.tag.getLogger();
 
         assertNotNull("The second returned logger should not be null.", returned2);
         assertSame("The second returned logger should be the same as the first.", returned, returned2);
@@ -129,20 +129,20 @@ public class LoggerAwareTagSupportTest {
 
     @Test
     public void testGetDefaultLogger02() throws Exception {
-        Object page = new Object() {};
+        final Object page = new Object() {};
         this.setUp(page);
 
         assertNull("The default logger should be null.", TagUtils.getDefaultLogger(this.context));
 
-        Log4jTaglibLogger returned = this.tag.getLogger();
+        final Log4jTaglibLogger returned = this.tag.getLogger();
         assertNotNull("The first returned logger should not be null.", returned);
         assertEquals("The logger name is not correct.", page.getClass().getName(), returned.getName());
 
-        Log4jTaglibLogger defaultLogger = TagUtils.getDefaultLogger(this.context);
+        final Log4jTaglibLogger defaultLogger = TagUtils.getDefaultLogger(this.context);
         assertNotNull("The default logger should not be null anymore.", defaultLogger);
         assertSame("The default logger should be the same as the returned logger.", returned, defaultLogger);
 
-        Log4jTaglibLogger returned2 = this.tag.getLogger();
+        final Log4jTaglibLogger returned2 = this.tag.getLogger();
 
         assertNotNull("The second returned logger should not be null.", returned2);
         assertSame("The second returned logger should be the same as the first.", returned, returned2);

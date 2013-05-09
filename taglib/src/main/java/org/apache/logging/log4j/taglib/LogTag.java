@@ -39,7 +39,7 @@ public class LogTag extends LoggingMessageTagSupport {
         return this.level;
     }
 
-    public void setLevel(Object level) {
+    public void setLevel(final Object level) {
         this.level = TagUtils.resolveLevel(level);
     }
 }

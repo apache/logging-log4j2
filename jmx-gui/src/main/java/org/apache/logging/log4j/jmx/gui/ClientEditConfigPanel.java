@@ -54,51 +54,51 @@ public class ClientEditConfigPanel extends JPanel {
     private JButton buttonSendLocation;
     private JButton buttonSendConfigText;
     private JTextArea configTextArea;
-    private LoggerContextAdminMBean contextAdmin;
+    private final LoggerContextAdminMBean contextAdmin;
 
-    private AbstractAction actionReconfigureFromLocation = new AbstractAction(
+    private final AbstractAction actionReconfigureFromLocation = new AbstractAction(
             "Reconfigure from Location") {
         private static final long serialVersionUID = 6995219797596745774L;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             try {
                 contextAdmin.setConfigLocationURI(locationTextField.getText());
                 populateWidgets();
                 showConfirmation();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 populateWidgets();
                 handle("Could not reconfigure from location", ex);
             }
         }
     };
-    private AbstractAction actionReconfigureFromText = new AbstractAction(
+    private final AbstractAction actionReconfigureFromText = new AbstractAction(
             "Reconfigure with XML Below") {
         private static final long serialVersionUID = -2846103707134292312L;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            String encoding = System.getProperty("file.encoding");
+        public void actionPerformed(final ActionEvent e) {
+            final String encoding = System.getProperty("file.encoding");
             try {
                 contextAdmin.setConfigText(configTextArea.getText(), encoding);
                 populateWidgets();
                 showConfirmation();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 populateWidgets();
                 handle("Could not reconfigure from XML", ex);
             }
         }
     };
 
-    public ClientEditConfigPanel(LoggerContextAdminMBean contextAdmin) {
+    public ClientEditConfigPanel(final LoggerContextAdminMBean contextAdmin) {
         this.contextAdmin = contextAdmin;
         createWidgets();
         populateWidgets();
     }
 
-    private void handle(String msg, Exception ex) {
-        StringWriter sr = new StringWriter(BUFFER_SIZE);
-        PrintWriter pw = new PrintWriter(sr);
+    private void handle(final String msg, final Exception ex) {
+        final StringWriter sr = new StringWriter(BUFFER_SIZE);
+        final PrintWriter pw = new PrintWriter(sr);
         pw.println("Please check the StatusLogger tab for details");
         pw.println();
         ex.printStackTrace(pw);
@@ -114,12 +114,12 @@ public class ClientEditConfigPanel extends JPanel {
     private void populateWidgets() {
         try {
             configTextArea.setText(contextAdmin.getConfigText());
-        } catch (Exception ex) {
-            StringWriter sw = new StringWriter(ERR_MSG_INITIAL_BUFFER_SIZE);
+        } catch (final Exception ex) {
+            final StringWriter sw = new StringWriter(ERR_MSG_INITIAL_BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));
             configTextArea.setText(sw.toString());
         }
-        String uri = contextAdmin.getConfigLocationURI();
+        final String uri = contextAdmin.getConfigLocationURI();
         locationTextField.setText(uri);
     }
 
@@ -130,7 +130,7 @@ public class ClientEditConfigPanel extends JPanel {
         configTextArea.setForeground(Color.black);
         configTextArea.setFont(new Font("Monospaced", Font.PLAIN,
                 configTextArea.getFont().getSize()));
-        JScrollPane scrollConfig = new JScrollPane(configTextArea);
+        final JScrollPane scrollConfig = new JScrollPane(configTextArea);
 
         locationTextField = new JTextField(LOCATION_TEXT_COLS);
         locationLabel = new JLabel("Location: ");
@@ -138,7 +138,7 @@ public class ClientEditConfigPanel extends JPanel {
         buttonSendLocation = new JButton(actionReconfigureFromLocation);
         buttonSendConfigText = new JButton(actionReconfigureFromText);
 
-        JPanel north = new JPanel();
+        final JPanel north = new JPanel();
         north.setLayout(new BoxLayout(north, BoxLayout.LINE_AXIS));
         north.add(locationLabel);
         north.add(locationTextField);

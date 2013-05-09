@@ -45,7 +45,7 @@ final class TagUtils {
         throw new RuntimeException("TagUtils cannot be instantiated.");
     }
 
-    static int getScope(String scope) {
+    static int getScope(final String scope) {
         if ("request".equalsIgnoreCase(scope)) {
             return PageContext.REQUEST_SCOPE;
         }
@@ -58,7 +58,7 @@ final class TagUtils {
         return PageContext.PAGE_SCOPE;
     }
 
-    static Level resolveLevel(Object level) {
+    static Level resolveLevel(final Object level) {
         if (level instanceof Level) {
             return (Level) level;
         }
@@ -80,7 +80,7 @@ final class TagUtils {
                             logger.getClass().getName());
                     WARNED_FOR.add(logger);
                 }
-                AbstractLogger original = (AbstractLogger) logger;
+                final AbstractLogger original = (AbstractLogger) logger;
                 return getLogger(context, original.getName(), original.getMessageFactory());
             }
             throw new JspException(
@@ -92,24 +92,24 @@ final class TagUtils {
         throw new JspException("Logger must be of type String or org.apache.logging.log4j.Logger.");
     }
 
-    private static Log4jTaglibLogger getLogger(Log4jTaglibLoggerContext context, String name, MessageFactory factory)
+    private static Log4jTaglibLogger getLogger(final Log4jTaglibLoggerContext context, final String name, final MessageFactory factory)
             throws JspException {
         try {
             return context.getLogger(name, factory);
-        } catch (LoggingException e) {
+        } catch (final LoggingException e) {
             throw new JspException(e.getMessage(), e);
         }
     }
 
-    static void setDefaultLogger(PageContext pageContext, Log4jTaglibLogger logger) {
+    static void setDefaultLogger(final PageContext pageContext, final Log4jTaglibLogger logger) {
         pageContext.setAttribute(TagUtils.LOGGER_SCOPE_ATTRIBUTE, logger, PageContext.PAGE_SCOPE);
     }
 
-    static Log4jTaglibLogger getDefaultLogger(PageContext pageContext) {
+    static Log4jTaglibLogger getDefaultLogger(final PageContext pageContext) {
         return (Log4jTaglibLogger) pageContext.getAttribute(TagUtils.LOGGER_SCOPE_ATTRIBUTE, PageContext.PAGE_SCOPE);
     }
 
-    static boolean isEnabled(Log4jTaglibLogger logger, Level level, Marker marker) {
+    static boolean isEnabled(final Log4jTaglibLogger logger, final Level level, final Marker marker) {
         if (marker == null) {
             return logger.isEnabled(level);
         }

@@ -59,30 +59,30 @@ public class SetLoggerTag extends BodyTagSupport {
     }
 
     @Override
-    public void setPageContext(PageContext pageContext) {
+    public void setPageContext(final PageContext pageContext) {
         super.setPageContext(pageContext);
         this.loggerContext = Log4jTaglibLoggerContext.getInstance(pageContext.getServletContext());
     }
 
-    public void setLogger(Object logger) {
+    public void setLogger(final Object logger) {
         this.logger = logger;
     }
 
-    public void setFactory(MessageFactory factory) {
+    public void setFactory(final MessageFactory factory) {
         this.factory = factory;
     }
 
-    public void setVar(String var) {
+    public void setVar(final String var) {
         this.var = var;
     }
 
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = TagUtils.getScope(scope);
     }
 
     @Override
     public int doEndTag() throws JspException {
-        Log4jTaglibLogger logger = TagUtils.resolveLogger(this.loggerContext, this.logger, this.factory);
+        final Log4jTaglibLogger logger = TagUtils.resolveLogger(this.loggerContext, this.logger, this.factory);
 
         if (this.var != null) {
             this.pageContext.setAttribute(this.var, logger, this.scope);

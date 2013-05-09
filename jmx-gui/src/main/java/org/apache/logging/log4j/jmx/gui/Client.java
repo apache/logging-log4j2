@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
  */
 public class Client {
     private JMXConnector connector;
-    private MBeanServerConnection connection;
+    private final MBeanServerConnection connection;
     private StatusLoggerAdminMBean statusLoggerAdmin;
     private ContextSelectorAdminMBean contextSelectorAdmin;
     private List<LoggerContextAdminMBean> contextAdminList;
@@ -53,7 +53,7 @@ public class Client {
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(JMXConnector connector) throws MalformedObjectNameException,
+    public Client(final JMXConnector connector) throws MalformedObjectNameException,
             IOException {
         this.connector = Assert.isNotNull(connector, "JMXConnector");
         this.connector.connect();
@@ -71,7 +71,7 @@ public class Client {
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(MBeanServerConnection mBeanServerConnection)
+    public Client(final MBeanServerConnection mBeanServerConnection)
             throws MalformedObjectNameException, IOException {
         this.connection = mBeanServerConnection;
         init();
@@ -87,11 +87,11 @@ public class Client {
                 ContextSelectorAdminMBean.class, false);
 
         contextAdminList = new ArrayList<LoggerContextAdminMBean>();
-        String pattern = String.format(LoggerContextAdminMBean.PATTERN, "*");
-        ObjectName search = new ObjectName(pattern);
-        Set<ObjectName> found = connection.queryNames(search, null);
-        for (ObjectName contextName : found) {
-            LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
+        final String pattern = String.format(LoggerContextAdminMBean.PATTERN, "*");
+        final ObjectName search = new ObjectName(pattern);
+        final Set<ObjectName> found = connection.queryNames(search, null);
+        for (final ObjectName contextName : found) {
+            final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
                     contextName, //
                     LoggerContextAdminMBean.class, false);
             contextAdminList.add(ctx);
@@ -127,7 +127,7 @@ public class Client {
     public void close() {
         try {
             connector.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

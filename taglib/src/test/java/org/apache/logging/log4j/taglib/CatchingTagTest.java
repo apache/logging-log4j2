@@ -59,7 +59,7 @@ public class CatchingTagTest {
         StatusLogger.getLogger().reset();
     }
 
-    private Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
+    private final Logger logger = LogManager.getLogger("LoggingMessageTagSupportTestLogger");
     private CatchingTag tag;
 
     @Before
