@@ -25,6 +25,9 @@
       <action issue="LOG4J2-247" dev="ggregory" type="fix">
         SocketServer.isActive should be volatile because it is accessed from different threads.
       </action>
+      <action issue="LOG4J2-251" dev="sdeboy" type="add">
+        Provide configuration information (location, content type, content if possible) via a registered Advertiser. 
+      </action>
     </release>
     <release version="2.0-beta6" date="2013-05-05" description="Bug fixes and enhancements">
       <action issue="LOG4J2-231" dev="rgoers" type="fix">
