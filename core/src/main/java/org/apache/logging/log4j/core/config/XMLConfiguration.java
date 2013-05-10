@@ -55,6 +55,7 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,10 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     private static final int BUF_SIZE = 16384;
 
     private final List<Status> status = new ArrayList<Status>();
+
+    private Map<String, String> advertisedConfiguration;
+
+    private Object advertisement;
 
     private Element rootElement;
 
@@ -151,6 +156,10 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                             final Class<Advertiser> clazz = type.getPluginClass();
                             try {
                                 advertiser = clazz.newInstance();
+                                advertisedConfiguration = new HashMap<String, String>();
+                                advertisedConfiguration.put("content", new String(buffer));
+                                advertisedConfiguration.put("contentType", "text/xml");
+                                advertisedConfiguration.put("name", "configuration");
                             } catch (InstantiationException e) {
                                 System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
                             } catch (IllegalAccessException e) {
@@ -225,6 +234,15 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     }
 
     @Override
+    public void stop() {
+        super.stop();
+        if (advertiser != null && advertisement != null)
+        {
+            advertiser.unadvertise(advertisement);
+        }
+    }
+
+    @Override
     public void setup() {
         if (rootElement == null) {
             LOGGER.error("No logging configuration");
@@ -238,6 +256,10 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             return;
         }
         rootElement = null;
+        if (advertiser != null && advertisedConfiguration != null)
+        {
+            advertisement = advertiser.advertise(advertisedConfiguration);
+        }
     }
 
     public Configuration reconfigure() {

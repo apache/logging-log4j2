@@ -41,6 +41,7 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     private static final int BUF_SIZE = 16384;
 
     private final List<Status> status = new ArrayList<Status>();
+
+    private Map<String, String> advertisedConfiguration;
+    
+    private Object advertisement;
 
     private JsonNode root;
 
@@ -126,6 +131,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                         {
                             final Class<Advertiser> clazz = type.getPluginClass();
                             advertiser = clazz.newInstance();
+                            advertisedConfiguration = new HashMap<String, String>();
+                            advertisedConfiguration.put("content", new String(buffer));
+                            advertisedConfiguration.put("contentType", "application/json");
+                            advertisedConfiguration.put("name", "configuration");
                         }
                     }
                 }
@@ -162,7 +171,16 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         }
     }
 
-     @Override
+    @Override
+    public void stop() {
+        super.stop();
+        if (advertiser != null && advertisement != null)
+        {
+            advertiser.unadvertise(advertisement);
+        }
+    }
+
+    @Override
     public void setup() {
         final Iterator<Map.Entry<String, JsonNode>> iter = root.getFields();
         final List<Node> children = rootNode.getChildren();
@@ -182,6 +200,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
             return;
+        }
+        if (advertiser != null && advertisedConfiguration != null)
+        {
+            advertisement = advertiser.advertise(advertisedConfiguration);
         }
     }
 
