@@ -144,6 +144,7 @@
     <changes.plugin.version>2.9</changes.plugin.version>
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
     <surefire.plugin.version>2.14.1</surefire.plugin.version>
+    <rat.plugin.version>0.8</rat.plugin.version>
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
@@ -586,7 +587,7 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.8</version>
+        <version>${rat.plugin.version}</version>
         <configuration>
           <excludes>
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -745,7 +746,7 @@
           <plugin>
             <groupId>org.apache.rat</groupId>
             <artifactId>apache-rat-plugin</artifactId>
-            <version>0.8</version>
+            <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
                 <exclude>dist/target/**/*</exclude>
