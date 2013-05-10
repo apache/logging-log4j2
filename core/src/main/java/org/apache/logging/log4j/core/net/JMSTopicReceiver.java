@@ -28,6 +28,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * Receives Topic messages that contain LogEvents. This implementation expects that all messages
@@ -80,7 +81,8 @@ public class JMSTopicReceiver extends AbstractJMSReceiver {
 
         new JMSTopicReceiver(tcfBindingName, topicBindingName, username, password);
 
-        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        final Charset enc = Charset.defaultCharset();
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, enc));
         // Loop until the word "exit" is typed
         System.out.println("Type \"exit\" to quit JMSTopicReceiver.");
         while (true) {

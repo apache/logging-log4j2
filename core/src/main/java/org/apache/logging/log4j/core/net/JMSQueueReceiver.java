@@ -28,6 +28,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * Receives Log Events over a JMS Queue. This implementation expects that all messages will
@@ -81,7 +82,8 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
 
         new JMSQueueReceiver(qcfBindingName, queueBindingName, username, password);
 
-        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        final Charset enc = Charset.defaultCharset();
+        final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, enc));
         // Loop until the word "exit" is typed
         System.out.println("Type \"exit\" to quit JMSQueueReceiver.");
         while (true) {
