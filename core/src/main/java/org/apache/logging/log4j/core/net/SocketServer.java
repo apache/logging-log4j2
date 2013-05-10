@@ -38,6 +38,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -93,7 +94,8 @@ public class SocketServer extends AbstractServer implements Runnable {
         final SocketServer sserver = new SocketServer(port);
         final Thread server = new Thread(sserver);
         server.start();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final Charset enc = Charset.defaultCharset();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
         while (true) {
             final String line = reader.readLine();
             if (line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {

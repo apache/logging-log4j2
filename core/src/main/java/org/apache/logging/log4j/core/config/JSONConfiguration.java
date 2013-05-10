@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -101,7 +102,8 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                         } else {
                             try {
                                 final File destFile = FileUtils.fileFromURI(new URI(dest));
-                                stream = new PrintStream(new FileOutputStream(destFile));
+                                final String enc = Charset.defaultCharset().name();
+                                stream = new PrintStream(new FileOutputStream(destFile), true, enc);
                             } catch (final URISyntaxException use) {
                                 System.err.println("Unable to write to " + dest + ". Writing to stdout");
                             }
@@ -226,7 +228,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     }
 
     private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType type = getPluginManager().getPluginType(name);
+        final PluginType<?> type = getPluginManager().getPluginType(name);
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
         final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.getFields();
@@ -242,7 +244,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                     LOGGER.debug("Processing node for array " + entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
                         final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType entryType = getPluginManager().getPluginType(pluginType);
+                        final PluginType<?> entryType = getPluginManager().getPluginType(pluginType);
                         final Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {

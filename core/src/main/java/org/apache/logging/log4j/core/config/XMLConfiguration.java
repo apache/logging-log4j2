@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -121,7 +122,8 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                         } else {
                             try {
                                 final File destFile = FileUtils.fileFromURI(new URI(dest));
-                                stream = new PrintStream(new FileOutputStream(destFile));
+                                final String enc = Charset.defaultCharset().name();
+                                stream = new PrintStream(new FileOutputStream(destFile), true, enc);
                             } catch (final URISyntaxException use) {
                                 System.err.println("Unable to write to " + dest + ". Writing to stdout");
                             }
@@ -290,7 +292,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
                 final String name = getType(child);
-                final PluginType type = getPluginManager().getPluginType(name);
+                final PluginType<?> type = getPluginManager().getPluginType(name);
                 final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {
