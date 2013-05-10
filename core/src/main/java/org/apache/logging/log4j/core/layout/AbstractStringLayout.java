@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.core.LogEvent;
-
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -31,19 +30,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     private final Charset charset;
 
-    private final StringEncoder encoder;
-
     protected AbstractStringLayout(final Charset charset) {
         this.charset = charset;
-        boolean useClass = false;
-        try {
-            if (String.class.getMethod("getBytes", new Class[] {Charset.class}) != null) {
-                useClass = true;
-            }
-        } catch (final NoSuchMethodException ex) {
-            // Not JDK 6 or greater.
-        }
-        encoder = useClass ? new ClassEncoder() : new NameEncoder();
     }
 
     /**
@@ -54,7 +42,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      */
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        return encoder.getBytes(toSerializable(event));
+        return toSerializable(event).getBytes(charset);
     }
 
     /**
@@ -67,38 +55,5 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
 
     protected Charset getCharset() {
         return charset;
-    }
-
-    /**
-     * Encoder interface to support Java 5 and Java 6+.
-     */
-    private interface StringEncoder {
-
-        byte[] getBytes(String str);
-    }
-
-    /**
-     * JDK 6 or greater.
-     */
-    private class ClassEncoder implements StringEncoder {
-        @Override
-        public byte[] getBytes(final String str) {
-            return str.getBytes(charset);
-        }
-    }
-
-    /**
-     * JDK 5.
-     */
-    private class NameEncoder implements StringEncoder {
-        @Override
-        public byte[] getBytes(final String str) {
-            try {
-                return str.getBytes(charset.name());
-            } catch (final UnsupportedEncodingException ex) {
-                // This shouldn't ever happen since an invalid Charset would never have been created.
-                return str.getBytes();
-            }
-        }
     }
 }
