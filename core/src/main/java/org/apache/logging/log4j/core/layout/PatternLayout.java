@@ -142,6 +142,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * Key: "format" Value: provided "conversionPattern" param
      * @return Map of content format keys supporting PatternLayout
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>();
@@ -158,6 +159,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param event logging event to be formatted.
      * @return The event formatted as a String.
      */
+    @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {

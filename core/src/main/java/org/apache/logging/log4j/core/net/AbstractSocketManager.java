@@ -63,6 +63,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * Key: "address" Value: provided "address" param
      * @return Map of content format keys supporting AbstractSocketManager
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());

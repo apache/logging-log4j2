@@ -139,6 +139,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
     }
 
+    @Override
     public void start() {
         if (configLock.tryLock()) {
             try {
@@ -184,6 +185,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         setConfiguration(config);
     }
 
+    @Override
     public void stop() {
         configLock.lock();
         try {
@@ -219,6 +221,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         return status;
     }
 
+    @Override
     public boolean isStarted() {
         return status == Status.STARTED;
     }
@@ -235,6 +238,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Returns the external context.
      * @return The external context.
      */
+    @Override
     public Object getExternalContext() {
         return this.externalContext;
     }
@@ -244,6 +248,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param name The name of the Logger to return.
      * @return The Logger.
      */
+    @Override
     public Logger getLogger(final String name) {
         return getLogger(name, null);
     }
@@ -256,6 +261,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      *            a warning if mismatched.
      * @return The Logger.
      */
+    @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         Logger logger = loggers.get(name);
         if (logger != null) {
@@ -273,6 +279,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * @param name The Logger name to search for.
      * @return True if the Logger exists, false otherwise.
      */
+    @Override
     public boolean hasLogger(final String name) {
         return loggers.containsKey(name);
     }
@@ -389,6 +396,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      *
      * @param reconfigurable The Configuration that can be reconfigured.
      */
+    @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
         LOGGER.debug("Reconfiguration started for context " + name);
         final Configuration config = reconfigurable.reconfigure();
@@ -413,6 +421,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             this.context = context;
         }
 
+        @Override
         public void run() {
             context.shutdownThread = null;
             context.stop();

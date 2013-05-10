@@ -48,6 +48,7 @@ public class RingBufferLogEventTranslator implements
     private long currentTimeMillis;
 
     // @Override
+    @Override
     public void translateTo(RingBufferLogEvent event, long sequence) {
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
                 thrown, contextMap, contextStack, threadName, location,

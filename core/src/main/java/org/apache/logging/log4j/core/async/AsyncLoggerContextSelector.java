@@ -32,17 +32,20 @@ public class AsyncLoggerContextSelector implements ContextSelector {
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext(
             "AsyncLoggerContext");
 
+    @Override
     public LoggerContext getContext(String fqcn, ClassLoader loader,
             boolean currentContext) {
         return CONTEXT;
     }
 
+    @Override
     public List<LoggerContext> getLoggerContexts() {
         List<LoggerContext> list = new ArrayList<LoggerContext>();
         list.add(CONTEXT);
         return Collections.unmodifiableList(list);
     }
 
+    @Override
     public LoggerContext getContext(String fqcn, ClassLoader loader,
             boolean currentContext, URI configLocation) {
         return CONTEXT;

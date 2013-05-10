@@ -27,7 +27,8 @@ import org.apache.oro.text.perl.Perl5Util;
 public class SunReflectFilter implements Filter {
   Perl5Util util = new Perl5Util();
 
-  public String filter(final String in) {
+  @Override
+public String filter(final String in) {
     if(in == null) {
       return null;
     }

@@ -31,6 +31,7 @@ public class BasicContextSelector implements ContextSelector {
 
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -38,6 +39,7 @@ public class BasicContextSelector implements ContextSelector {
     }
 
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
                                     URI configLocation) {
 
@@ -53,6 +55,7 @@ public class BasicContextSelector implements ContextSelector {
 
     }
 
+    @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<LoggerContext>();
         list.add(CONTEXT);

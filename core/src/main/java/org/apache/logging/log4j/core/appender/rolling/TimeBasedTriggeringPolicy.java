@@ -42,6 +42,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * Initialize the policy.
      * @param manager The RollingFileManager.
      */
+    @Override
     public void initialize(final RollingFileManager manager) {
         this.manager = manager;
         nextRollover = manager.getProcessor().getNextTime(manager.getFileTime(), interval, modulate);
@@ -52,6 +53,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * @param event   A reference to the currently event.
      * @return true if a rollover should occur.
      */
+    @Override
     public boolean isTriggeringEvent(final LogEvent event) {
         if (manager.getFileSize() == 0) {
             return false;

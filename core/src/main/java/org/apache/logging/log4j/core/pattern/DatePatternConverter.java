@@ -169,6 +169,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         output.append(cachedDate);
     }
 
+    @Override
     public void format(final StringBuilder toAppendTo, final Object... objects) {
         for (final Object obj : objects) {
             if (obj instanceof Date) {

@@ -44,6 +44,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Returns the header, if one is available.
      * @return A byte array containing the header.
      */
+    @Override
     public byte[] getHeader() {
         return header;
     }
@@ -60,6 +61,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Returns the footer, if one is available.
      * @return A byte array containing the footer.
      */
+    @Override
     public byte[] getFooter() {
         return footer;
     }

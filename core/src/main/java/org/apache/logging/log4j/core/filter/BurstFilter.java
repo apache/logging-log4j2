@@ -175,10 +175,12 @@ public final class BurstFilter extends AbstractFilter {
             this.expireTime = delay + System.nanoTime();
         }
 
+        @Override
         public long getDelay(final TimeUnit timeUnit) {
             return timeUnit.convert(expireTime - System.nanoTime(), TimeUnit.NANOSECONDS);
         }
 
+        @Override
         public int compareTo(final Delayed delayed) {
             if (this.expireTime < ((LogDelay) delayed).expireTime) {
                 return -1;

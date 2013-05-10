@@ -23,6 +23,7 @@ public class AbsoluteTimeFilter implements Filter {
     
     private final Perl5Util util = new Perl5Util();
 
+    @Override
     public String filter(final String in) {
         final String pat = "/" + Filter.ABSOLUTE_TIME_PAT + "/";
 

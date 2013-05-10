@@ -37,6 +37,7 @@ public class DateLookup implements StrLookup {
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The value of the environment variable.
      */
+    @Override
     public String lookup(final String key) {
         return formatDate(System.currentTimeMillis(), key);
     }
@@ -47,6 +48,7 @@ public class DateLookup implements StrLookup {
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The value of the environment variable.
      */
+    @Override
     public String lookup(final LogEvent event, final String key) {
         return formatDate(event.getMillis(), key);
     }

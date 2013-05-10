@@ -61,6 +61,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
      */
+    @Override
     public LogEvent rewrite(final LogEvent source) {
         final Map<String, String> props = new HashMap<String, String>(source.getContextMap());
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {

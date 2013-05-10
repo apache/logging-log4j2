@@ -31,6 +31,7 @@ public class DefaultAdvertiser implements Advertiser {
      *
      * @return null
      */
+    @Override
     public Object advertise(Map<String, String> properties) {
         return null;
     }
@@ -39,6 +40,7 @@ public class DefaultAdvertiser implements Advertiser {
      * Does nothing
      * @param advertisedObject
      */
+    @Override
     public void unadvertise(Object advertisedObject) {
         //no-op
     }

@@ -52,6 +52,7 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final Object obj, final StringBuilder output) {
         if (obj instanceof LogEvent) {
             format((LogEvent) obj, output);

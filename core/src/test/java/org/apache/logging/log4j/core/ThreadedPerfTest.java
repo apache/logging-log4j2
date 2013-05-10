@@ -62,6 +62,7 @@ public class ThreadedPerfTest {
     }
 
     public class DebugDisabledRunnable implements Runnable {
+        @Override
         public void run() {
             for (int i=0; i < LOOP_CNT; ++i) {
                 logger.isDebugEnabled();
@@ -70,6 +71,7 @@ public class ThreadedPerfTest {
     }
 
      public class DebugLoggerRunnable implements Runnable {
+        @Override
         public void run() {
             for (int i=0; i < LOOP_CNT; ++i) {
                 logger.debug("This is a test");

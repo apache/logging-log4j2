@@ -301,6 +301,7 @@ public class PluginManager {
          * @param type The type to check for.
          * @return true if the Class is of the specified type.
          */
+        @Override
         public boolean matches(final Class<?> type) {
             return type != null && type.isAnnotationPresent(Plugin.class) &&
                 (isA == null || isA.isAssignableFrom(type));

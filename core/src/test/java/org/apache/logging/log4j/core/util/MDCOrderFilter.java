@@ -45,7 +45,8 @@ public class MDCOrderFilter implements Filter {
   /**
    *  Switch order of MDC keys when not in expected order.
    */
-  public String filter(final String in) {
+  @Override
+public String filter(final String in) {
     if (in == null) {
       return null;
     }

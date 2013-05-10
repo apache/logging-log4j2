@@ -119,6 +119,7 @@ public class SocketServer extends AbstractServer implements Runnable {
     /**
      * Accept incoming events and processes them.
      */
+    @Override
     public void run() {
         while (isActive) {
             try {

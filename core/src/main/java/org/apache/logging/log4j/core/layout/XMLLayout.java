@@ -97,6 +97,7 @@ public class XMLLayout extends AbstractStringLayout {
      * @param event The LogEvent.
      * @return The XML representation of the LogEvent.
      */
+    @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
@@ -223,6 +224,7 @@ public class XMLLayout extends AbstractStringLayout {
      * Key: "version" Value: "1.2"
      * @return Map of content format keys supporting XMLLayout
      */
+    @Override
     public Map<String, String> getContentFormat() {
         Map<String, String> result = new HashMap<String, String>();
         result.put("dtd", "log4j.dtd");

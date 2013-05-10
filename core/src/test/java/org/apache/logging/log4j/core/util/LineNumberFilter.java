@@ -23,7 +23,8 @@ import org.apache.oro.text.perl.Perl5Util;
 public class LineNumberFilter implements Filter {
   Perl5Util util = new Perl5Util();
 
-  public String filter(final String in) {
+  @Override
+public String filter(final String in) {
     if (util.match("/\\(.*:\\d{1,4}\\)/", in)) {
       return util.substitute("s/\\(.*:\\d{1,4}\\)/\\(X\\)/", in);
     } else if (util.match("/\\(Native Method\\)/", in)) {

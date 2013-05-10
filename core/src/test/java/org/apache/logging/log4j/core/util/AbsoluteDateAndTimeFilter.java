@@ -23,6 +23,7 @@ public class AbsoluteDateAndTimeFilter implements Filter {
     
     private final Perl5Util util = new Perl5Util();
 
+    @Override
     public String filter(final String in) {
         final String pat = "/" + Filter.ABSOLUTE_DATE_AND_TIME_PAT + "/";
 

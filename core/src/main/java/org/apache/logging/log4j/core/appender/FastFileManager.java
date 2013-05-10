@@ -140,6 +140,7 @@ public class FastFileManager extends OutputStreamManager {
      * 
      * @return Map of content format keys supporting FileManager
      */
+    @Override
     public Map<String, String> getContentFormat() {
         Map<String, String> result = new HashMap<String, String>(
                 super.getContentFormat());
@@ -181,6 +182,7 @@ public class FastFileManager extends OutputStreamManager {
          * @param data The FactoryData
          * @return The FastFileManager for the File.
          */
+        @Override
         public FastFileManager createManager(String name, FactoryData data) {
             File file = new File(name);
             final File parent = file.getParentFile();

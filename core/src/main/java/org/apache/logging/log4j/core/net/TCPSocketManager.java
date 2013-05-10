@@ -145,6 +145,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      * Key: "direction" Value: "out"
      * @return Map of content format keys supporting TCPSocketManager
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
@@ -235,6 +236,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     private static class TCPSocketManagerFactory implements ManagerFactory<TCPSocketManager, FactoryData> {
 
+        @Override
         public TCPSocketManager createManager(final String name, final FactoryData data) {
 
             InetAddress address;

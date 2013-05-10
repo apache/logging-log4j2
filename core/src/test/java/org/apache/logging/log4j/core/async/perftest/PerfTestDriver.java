@@ -177,6 +177,7 @@ public class PerfTestDriver {
             _averageOpsPerSec = totalOps / _throughputRowCount;
         }
 
+        @Override
         public String toString() {
             String fmt = "throughput: %,d ops/sec. latency(ns): avg=%.1f 99%% < %.1f 99.99%% < %.1f (%d samples)";
             return String.format(fmt, _averageOpsPerSec, //

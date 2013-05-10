@@ -33,12 +33,14 @@ public class InMemoryAdvertiser implements Advertiser {
         return result;
     }
 
+    @Override
     public Object advertise(Map<String, String> newEntry) {
         Object object = new Object();
         properties.put(object, new HashMap<String, String>(newEntry));
         return object;
     }
 
+    @Override
     public void unadvertise(Object advertisedObject) {
         properties.remove(advertisedObject);
     }

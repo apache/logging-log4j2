@@ -58,6 +58,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
      * @param properties the properties representing the entity to advertise
      * @return the object which can be used to unadvertise, or null if advertisement was unsuccessful
      */
+    @Override
     public Object advertise(Map<String, String> properties) {
         //default to tcp if "protocol" was not set
         Map<String, String> truncatedProperties = new HashMap<String, String>();
@@ -117,6 +118,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
      * Unadvertise the previously advertised entity
      * @param serviceInfo
      */
+    @Override
     public void unadvertise(Object serviceInfo) {
         if (jmDNS != null) {
             try {

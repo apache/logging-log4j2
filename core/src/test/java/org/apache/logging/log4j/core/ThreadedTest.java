@@ -78,6 +78,7 @@ public class ThreadedTest {
         public LoggingRunnable(final State state) {
             this.state = state;
         }
+        @Override
         public void run() {
             for (int i=0; i < LOOP_CNT; ++i) {
                 logger.debug(state);
@@ -90,6 +91,7 @@ public class ThreadedTest {
         public StateSettingRunnable(final State state) {
             this.state = state;
         }
+        @Override
         public void run() {
             for (int i=0; i < LOOP_CNT*4; ++i) {
                 Thread.yield();

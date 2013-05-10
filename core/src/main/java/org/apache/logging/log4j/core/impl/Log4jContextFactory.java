@@ -78,6 +78,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * for the caller if a more appropriate Context can be determined.
      * @return The LoggerContext.
      */
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
@@ -95,6 +96,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * @param configLocation The location of the configuration for the LoggerContext.
      * @return The LoggerContext.
      */
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
             URI configLocation) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);

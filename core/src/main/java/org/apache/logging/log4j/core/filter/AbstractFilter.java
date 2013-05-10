@@ -69,6 +69,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
     /**
      * Mark the Filter as started.
      */
+    @Override
     public void start() {
         started = true;
     }
@@ -77,6 +78,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * Determine if the the Filter has started.
      * @return true if the Filter is started, false otherwise.
      */
+    @Override
     public boolean isStarted() {
         return started;
     }
@@ -84,6 +86,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
     /**
      * Mark the Filter as stopped.
      */
+    @Override
     public void stop() {
         started = false;
     }
@@ -92,6 +95,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * Returns the Result to be returned when a match does not occur.
      * @return the onMismatch Result.
      */
+    @Override
     public final Result getOnMismatch() {
         return onMismatch;
     }
@@ -100,6 +104,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * Returns the Result to be returned when a match occurs.
      * @return the onMatch Result.
      */
+    @Override
     public final Result getOnMatch() {
         return onMatch;
     }
@@ -118,6 +123,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param params An array of parameters or null.
      * @return The Result of filtering.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
         return Result.NEUTRAL;
@@ -132,6 +138,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
         return Result.NEUTRAL;
@@ -146,6 +153,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param t A throwable or null.
      * @return The Result of filtering.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
         return Result.NEUTRAL;
@@ -156,6 +164,7 @@ public abstract class AbstractFilter implements Filter, LifeCycle {
      * @param event The LogEvent.
      * @return The Result of filtering.
      */
+    @Override
     public Result filter(final LogEvent event) {
         return Result.NEUTRAL;
     }

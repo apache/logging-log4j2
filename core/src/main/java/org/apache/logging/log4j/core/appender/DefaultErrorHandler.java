@@ -48,6 +48,7 @@ public class DefaultErrorHandler implements ErrorHandler {
      * Handle an error with a message.
      * @param msg The message.
      */
+    @Override
     public void error(final String msg) {
         final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
@@ -61,6 +62,7 @@ public class DefaultErrorHandler implements ErrorHandler {
      * @param msg The message.
      * @param t The Throwable.
      */
+    @Override
     public void error(final String msg, final Throwable t) {
         final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {
@@ -78,6 +80,7 @@ public class DefaultErrorHandler implements ErrorHandler {
      * @param event The LogEvent.
      * @param t The Throwable.
      */
+    @Override
     public void error(final String msg, final LogEvent event, final Throwable t) {
         final long current = System.currentTimeMillis();
         if (lastException + EXCEPTION_INTERVAL < current || exceptionCount++ < MAX_EXCEPTIONS) {

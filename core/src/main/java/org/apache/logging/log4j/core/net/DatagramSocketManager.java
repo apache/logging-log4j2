@@ -66,6 +66,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * Key: "direction" Value: "out"
      * @return Map of content format keys supporting DatagramSocketManager
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
@@ -93,6 +94,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      */
     private static class DatagramSocketManagerFactory implements ManagerFactory<DatagramSocketManager, FactoryData> {
 
+        @Override
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
             InetAddress address;
             final OutputStream os = new DatagramOutputStream(data.host, data.port);

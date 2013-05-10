@@ -52,11 +52,13 @@ public abstract class AbstractAction implements Action {
      * @return true if successful.
      * @throws IOException if IO error.
      */
+    @Override
     public abstract boolean execute() throws IOException;
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void run() {
         if (!interrupted) {
             try {
@@ -73,6 +75,7 @@ public abstract class AbstractAction implements Action {
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void close() {
         interrupted = true;
     }
@@ -82,6 +85,7 @@ public abstract class AbstractAction implements Action {
      *
      * @return true if action is complete.
      */
+    @Override
     public boolean isComplete() {
         return complete;
     }

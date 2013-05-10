@@ -264,6 +264,7 @@ public class RollingFileManager extends FileManager {
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
          */
+        @Override
         public RollingFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             final File parent = file.getParentFile();

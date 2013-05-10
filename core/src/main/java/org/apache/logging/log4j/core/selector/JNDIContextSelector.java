@@ -94,10 +94,12 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return getContext(fqcn, loader, currentContext, null);
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
                                     URI configLocation) {
 
@@ -118,6 +120,7 @@ public class JNDIContextSelector implements NamedContextSelector {
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, configLocation);
     }
 
+    @Override
     public LoggerContext locateContext(final String name, final URI configLocation) {
         if (name == null) {
             LOGGER.error("A context name is required to locate a LoggerContext");
@@ -139,10 +142,12 @@ public class JNDIContextSelector implements NamedContextSelector {
         }
     }
 
+    @Override
     public LoggerContext removeContext(final String name) {
         return CONTEXT_MAP.remove(name);
     }
 
+    @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<LoggerContext>(CONTEXT_MAP.values());
         return Collections.unmodifiableList(list);

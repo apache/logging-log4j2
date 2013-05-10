@@ -64,6 +64,7 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
     /**
      * {@inheritDoc}
      */
+    @Override
     public void format(final StringBuilder output, final Object... objects) {
         output.append(substitute ? config.getSubst().replace(literal) : literal);
     }

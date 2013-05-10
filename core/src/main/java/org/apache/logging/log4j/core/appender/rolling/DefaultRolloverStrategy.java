@@ -105,6 +105,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return A RolloverDescription.
      * @throws SecurityException if an error occurs.
      */
+    @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         if (maxIndex >= 0) {
             int fileIndex;

@@ -295,6 +295,7 @@ public class SMTPManager extends AbstractManager {
      */
     private static class SMTPManagerFactory implements ManagerFactory<SMTPManager, FactoryData> {
 
+        @Override
         public SMTPManager createManager(final String name, final FactoryData data) {
             final String prefix = "mail." + data.protocol;
 

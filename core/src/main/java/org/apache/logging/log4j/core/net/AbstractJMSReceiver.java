@@ -41,6 +41,7 @@ public abstract class AbstractJMSReceiver extends AbstractServer implements java
      * Listener that receives the event.
      * @param message The received message.
      */
+    @Override
     public void onMessage(final javax.jms.Message message) {
 
         try {
