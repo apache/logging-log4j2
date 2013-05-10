@@ -135,6 +135,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                             advertisedConfiguration.put("content", new String(buffer));
                             advertisedConfiguration.put("contentType", "application/json");
                             advertisedConfiguration.put("name", "configuration");
+                            if (configSource.getLocation() != null)
+                            {
+                                advertisedConfiguration.put("location", configSource.getLocation());
+                            }
                         }
                     }
                 }

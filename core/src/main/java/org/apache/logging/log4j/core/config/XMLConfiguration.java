@@ -160,6 +160,10 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                                 advertisedConfiguration.put("content", new String(buffer));
                                 advertisedConfiguration.put("contentType", "text/xml");
                                 advertisedConfiguration.put("name", "configuration");
+                                if (configSource.getLocation() != null)
+                                {
+                                    advertisedConfiguration.put("location", configSource.getLocation());
+                                }
                             } catch (InstantiationException e) {
                                 System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
                             } catch (IllegalAccessException e) {
