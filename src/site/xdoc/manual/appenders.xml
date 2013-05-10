@@ -20,6 +20,7 @@
     <properties>
         <title>Log4j 2 Appenders</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="nicholas@nicholaswilliams.net">Nick Williams</author>
     </properties>
 
     <body>
@@ -644,6 +645,118 @@
   </loggers>
 </configuration>]]></pre>
         </subsection>
+        <a name="JDBCAppender"/>
+        <subsection name="JDBCAppender">
+          <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
+          to obtain JDBC connections using the DriverManager, a JNDI DataSource or a custom factory method.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>connectionSource</td>
+              <td>ConnectionSource</td>
+              <td>The connections source from which database connections should be retrieved.</td>
+            </tr>
+            <tr>
+              <td>tableName</td>
+              <td>String</td>
+              <td>The name of the database table to insert log events into.</td>
+            </tr>
+            <tr>
+              <td>columnConfigs</td>
+              <td>ColumnConfig[]</td>
+              <td>Information about the columns that log event data should be inserted into and how to insert that data.
+                This is represented with multiple &lt;Column /&gt; elements.</td>
+            </tr>
+          </table>
+          <p>
+            Here are a few sample configurations for the JDBCAppender:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="application_log">
+      <DriverManager jdbcUrl="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
+      <Column name="eventDate" isEventTimestamp="true" />
+      <Column name="level" pattern="%level" />
+      <Column name="logger" pattern="%logger" />
+      <Column name="message" pattern="%message" />
+      <Column name="exception" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="dbo.application_log">
+      <DataSource jndiName="java:/comp/env/jdbc/ApplicationDataSource" />
+      <Column name="eventDate" isEventTimestamp="true" />
+      <Column name="level" pattern="%level" />
+      <Column name="logger" pattern="%logger" />
+      <Column name="message" pattern="%message" />
+      <Column name="exception" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
+      <ConnectionFactory class="net.example.db.ConnectionFactory" method="getNewDatabaseConnection" />
+      <Column name="EVENT_ID" literal="LOGGING.APPLICATION_LOG_SEQUENCE.NEXTVAL" />
+      <Column name="EVENT_DATE" isEventTimestamp="true" />
+      <Column name="LEVEL" pattern="%level" />
+      <Column name="LOGGER" pattern="%logger" />
+      <Column name="MESSAGE" pattern="%message" />
+      <Column name="THROWABLE" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
         <a name="JMSQueueAppender"/>
         <subsection name="JMSQueueAppender">
           <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
@@ -856,6 +969,217 @@
   <loggers>
     <root level="error">
       <appender-ref ref="jmsQueue"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="JPAAppender"/>
+        <subsection name="JPAAppender">
+          <p>The JPAAppender writes log events to a relational database table using the Java Persistence API.
+            It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
+            configured to persist to the table desired.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>entityClassName</td>
+              <td>String</td>
+              <td>The fully qualified name of the concrete LogEventWrapperEntity implementation that has JPA annotations
+                mapping it to a database table.</td>
+            </tr>
+            <tr>
+              <td>persistenceUnitName</td>
+              <td>String</td>
+              <td>The name of the JPA persistence unit that should be used for persisting log events.</td>
+            </tr>
+          </table>
+          <p>
+            Here is a sample configurations for the JPAAppender. The first XML sample is the Log4j configuration file,
+            the second is the persistence.xml file. Hibernate ORM is assumed here, but any JPA provider will do:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jpa name="databaseAppender" persistenceUnitName="appPersistenceUnit"
+         entityClassName="com.example.logging.JpaLogEntity" />
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+  <persistence-unit name="appPersistenceUnit">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jpa-data-source>jdbc/ApplicationDataSource</jpa-data-source>
+    <class>com.example.logging.JpaLogEntity</class>
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+    </properties>
+  </persistence-unit>
+</persistence>]]></pre>
+
+            <pre class="prettyprint linenums lang-java"><![CDATA[package com.example.logging;
+...
+@Entity
+@Table(name="application_log", schema="dbo")
+public class JpaLogEntity extends LogEventWrapperEntity {
+    private static final long serialVersionUID = 1L;
+    private long id = 0L;
+
+    public TestEntity() {
+        super(null);
+    }
+    public TestEntity(LogEvent wrappedEvent) {
+        super(wrappedEvent);
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level")
+    public Level getLevel() {
+        return getWrappedEvent().getLevel();
+    }
+
+    @Override
+    @Basic
+    @Column(name = "logger")
+    public String getLoggerName() {
+        return getWrappedEvent().getLoggerName();
+    }
+    ...
+}]]></pre>
+          </p>
+        </subsection>
+        <a name="NoSQLAppender"/>
+        <subsection name="NoSQLAppender">
+          <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
+            Provider implementations currently exist for MongoDB and Apache CouchDB, and writing a custom provider is
+            quite simple.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>noSqlProvider</td>
+              <td>NoSQLProvider&lt;C extends NoSQLConnection&lt;W, T extends NoSQLObject&lt;W&gt;&gt;&gt;</td>
+              <td>The NoSQL provider that provides connections to the chosen NoSQL database.</td>
+            </tr>
+          </table>
+          <p>
+            Here are a few sample configurations for the NoSQLAppender:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <MongoDb databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
+               username="loggingUser" password="abc123" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <MongoDb collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
+               factoryMethodName="getNewMongoClient" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
+               username="loggingUser" password="abc123" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>

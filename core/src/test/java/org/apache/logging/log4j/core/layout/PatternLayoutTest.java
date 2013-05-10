@@ -74,7 +74,7 @@ public class PatternLayoutTest {
         final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null);
+        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null);
         //FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File", "false",
             "true", "false", layout, null, "false", null, null);
@@ -137,7 +137,7 @@ public class PatternLayoutTest {
     public void testRegex() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(),
-            null, null);
+            null, null, null);
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
             Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);

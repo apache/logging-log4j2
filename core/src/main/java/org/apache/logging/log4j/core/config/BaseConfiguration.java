@@ -231,7 +231,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         setName(DefaultConfiguration.DEFAULT_NAME);
         final Layout<? extends Serializable> layout =
                 PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
-                        null, null, null);
+                        null, null, null, null);
         final Appender<?> appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
             "true");
         appender.start();

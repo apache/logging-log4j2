@@ -199,7 +199,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
 
