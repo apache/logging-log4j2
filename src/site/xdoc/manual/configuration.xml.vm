@@ -295,11 +295,11 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration advertiser="org.apache.logging.log4j.core.net.MulticastDNSAdvertiser">
+<configuration advertiser="multicastdns">
 ...
 </configuration>
 <appenders>
-  <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="http://path/to/output.log" advertise="true">
+  <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
   ...
   </File>
 </appenders>]]></pre>
