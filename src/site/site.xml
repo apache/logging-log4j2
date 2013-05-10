@@ -74,8 +74,11 @@
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
+        <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
         <item name="JMSQueue" href="/manual/appenders.html#JMSQueueAppender"/>
         <item name="JMSTopic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
+        <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>

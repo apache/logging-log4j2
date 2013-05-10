@@ -161,7 +161,7 @@ public class CategoryTest {
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
-        final Layout<String> layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null);
+        final Layout<String> layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null, null);
         final ListAppender<String> appender = new ListAppender<String>("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);

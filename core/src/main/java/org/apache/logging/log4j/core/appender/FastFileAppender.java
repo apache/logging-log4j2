@@ -155,7 +155,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
         }
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
         return new FastFileAppender<S>(name, layout, filter, manager, fileName,

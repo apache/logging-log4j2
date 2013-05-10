@@ -26,29 +26,33 @@
         <section name="Log4j 2 Implementation">
 
             <p>
-              The Log4Jj 2 implementation provides the functional components 
-              of the logging system. 
-              Users are free to create their own plugins and include them 
-              in the logging configuration.
+              The Log4Jj 2 implementation provides the functional components of the logging system.
+              Users are free to create their own plugins and include them in the logging configuration.
             </p>
 
         </section>
 
         <section name="Requirements">
-           <p>
-             Log4j 2 requires Java 6.
-             Some features may require optional 
-             <a href="dependencies.html">dependencies</a>. These dependencies are
-             specified in the documentation for those features.
-          </p>
-          <ul>
-          <li>JSON configuration requires the Jackson JSON-processor.</li>
-          <li>Async Loggers require the LMAX Disruptor.</li>
-          <li>SMTPAppender requires Javax Mail.</li>
-          <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like  
-             <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
-          <li>Windows color support requires Jansi.</li>
-          </ul>
+            <p>
+                Log4j 2 requires Java 6. Some features may require optional
+                <a href="dependencies.html">dependencies</a>. These dependencies are specified in the
+                documentation for those features.
+            </p>
+            <ul>
+                <li>JSON configuration requires the Jackson JSON-processor.</li>
+                <li>Async Loggers require the LMAX Disruptor.</li>
+                <li>SMTPAppender requires Javax Mail.</li>
+                <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like
+                <a href="http://activemq.apache.org/">Apache ActiveMQ</a>.</li>
+                <li>Windows color support requires Jansi.</li>
+                <li>The JDBC Appender requires a JDBC driver for the database you choese to write events to.</li>
+                <li>The JPA Appender requires the Java Persistence API classes, a JPA provider implementation,
+                and a decorated entity that the user implements. It also requires an appropriate JDBC driver.</li>
+                <li>The NoSQL Appender with MongoDB provider requires the MongoDB Java Client driver.</li>
+                <li>The NoSQL Appender with Apache CouchDB provider requires the LightCouch CouchDB client library.</li>
+                <li>The NoSQL Appender can be customized with a user-supplied provider, which will require the
+                appropriate client library.</li>
+            </ul>
         </section>
 
     </body>

@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-229" dev="ggregory" type="add" due-to="beamerblvd">
+        New JDBC, JPA, and NoSQL database Appenders.
+      </action>
       <action issue="LOG4J2-247" dev="ggregory" type="fix">
         SocketServer.isActive should be volatile because it is accessed from different threads.
       </action>

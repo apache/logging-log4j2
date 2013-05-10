@@ -87,7 +87,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
         }
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null);
+            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
         final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);

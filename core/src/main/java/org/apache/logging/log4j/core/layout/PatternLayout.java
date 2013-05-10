@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -33,7 +31,9 @@ import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>A flexible layout configurable with pattern string. The goal of this class
@@ -92,6 +92,8 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private final RegexReplacement replace;
 
+    private final boolean handleExceptions;
+
     /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
@@ -99,15 +101,18 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param replace The regular expression to match.
      * @param pattern conversion pattern.
      * @param charset The character set.
+     * @param handleExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
+     *                         exceptions will be written even if the pattern does not specify so).
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                         final Charset charset) {
+                          final Charset charset, boolean handleExceptions) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;
         this.config = config;
+        this.handleExceptions = handleExceptions;
         final PatternParser parser = createPatternParser(config);
-        formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, true);
+        formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.handleExceptions);
     }
 
     /**
@@ -123,7 +128,7 @@ public final class PatternLayout extends AbstractStringLayout {
             return;
         }
         final PatternParser parser = createPatternParser(this.config);
-        formatters = parser.parse(pattern);
+        formatters = parser.parse(pattern, this.handleExceptions);
     }
 
     public String getConversionPattern() {
@@ -190,18 +195,24 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Create a pattern layout.
+     *
      * @param pattern The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @param replace A Regex replacement String.
      * @param charsetName The character set.
+     * @param suppressExceptions Whether or not exceptions should be suppressed in this pattern (defaults to no, which
+     *                           means exceptions will be written even if the pattern does not specify so).
      * @return The PatternLayout.
      */
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") final String pattern,
                                              @PluginConfiguration final Configuration config,
                                              @PluginElement("replace") final RegexReplacement replace,
-                                             @PluginAttr("charset") final String charsetName) {
+                                             @PluginAttr("charset") final String charsetName,
+                                             @PluginAttr("suppressExceptions") final String suppressExceptions) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
-        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset);
+        boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
+                handleExceptions);
     }
 }
