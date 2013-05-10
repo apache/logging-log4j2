@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -86,7 +88,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            @SuppressWarnings({"unchecked"})
             Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
@@ -103,9 +105,15 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
     }
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {
-        final PrintStream printStream = target == Target.SYSTEM_OUT ?
-            follow ? new PrintStream(new SystemOutStream()) : System.out :
-            follow ? new PrintStream(new SystemErrStream()) : System.err;
+        final String enc = Charset.defaultCharset().name();
+        PrintStream printStream = null;
+        try {
+            printStream = target == Target.SYSTEM_OUT ?
+            follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
+            follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
+        } catch (UnsupportedEncodingException ex) { // should never happen
+            throw new IllegalStateException("Unsupported default encoding " + enc, ex);
+        }
         PropertiesUtil propsUtil = PropertiesUtil.getProperties();
         if (!propsUtil.getStringProperty("os.name").startsWith("Windows") ||
             propsUtil.getBooleanProperty("log4j.skipJansi")) {
