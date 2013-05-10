@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Advertise an entity via ZeroConf/MulticastDNS and the JmDNS library.
+ *
+ * The length of property names and values must be 255 bytes or less.  
+ * Entries with names or values larger than 255 bytes will be removed prior to advertisement.
  *
  */
 @Plugin(name = "multicastdns", category = "Core", elementType = "advertiser", printObject = false)
@@ -48,18 +52,29 @@ public class MulticastDNSAdvertiser implements Advertiser {
      * Properties map provided in advertise method must include a "name" entry
      * but may also provide "protocol" (tcp/udp) as well as a "port" entry
      *
+     * The length of property names and values must be 255 bytes or less.  
+     * Entries with names or values larger than 255 bytes will be removed prior to advertisement.
+     * 
      * @param properties the properties representing the entity to advertise
      * @return the object which can be used to unadvertise, or null if advertisement was unsuccessful
      */
     public Object advertise(Map<String, String> properties) {
         //default to tcp if "protocol" was not set
-        String protocol = properties.get("protocol");
+        Map<String, String> truncatedProperties = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry:properties.entrySet())
+        {
+            if (entry.getKey().length() <= 255 && entry.getValue().length() <= 255)
+            {
+                truncatedProperties.put(entry.getKey(), entry.getValue());
+            }
+        }
+        String protocol = truncatedProperties.get("protocol");
         String zone = "._log4j._"+(protocol != null ? protocol : "tcp") + ".local.";
         //default to 4555 if "port" was not set
-        String portString = properties.get("port");
+        String portString = truncatedProperties.get("port");
         int port = (portString != null ? Integer.parseInt(portString) : 4555);
 
-        String name = properties.get("name");
+        String name = truncatedProperties.get("name");
 
         //if version 3 is available, use it to construct a serviceInfo instance, otherwise support the version1 API
         if (jmDNS != null)
@@ -72,12 +87,11 @@ public class MulticastDNSAdvertiser implements Advertiser {
             } catch (NoSuchMethodException e) {
                 //no-op
             }
-            System.out.println("building: " + zone);
             Object serviceInfo;
             if (isVersion3) {
-                serviceInfo = buildServiceInfoVersion3(zone, port, name, properties);
+                serviceInfo = buildServiceInfoVersion3(zone, port, name, truncatedProperties);
             } else {
-                serviceInfo = buildServiceInfoVersion1(zone, port, name, properties);
+                serviceInfo = buildServiceInfoVersion1(zone, port, name, truncatedProperties);
             }
 
             try {
