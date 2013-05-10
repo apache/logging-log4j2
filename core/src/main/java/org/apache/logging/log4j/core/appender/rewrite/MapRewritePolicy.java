@@ -56,6 +56,7 @@ public final class MapRewritePolicy implements RewritePolicy {
      * used to create a new logging event.
      * @return The LogEvent after rewriting.
      */
+    @Override
     public LogEvent rewrite(final LogEvent source) {
         final Message msg = source.getMessage();
         if (msg == null || !(msg instanceof MapMessage)) {

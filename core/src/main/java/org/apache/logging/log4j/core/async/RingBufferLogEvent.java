@@ -42,6 +42,7 @@ public class RingBufferLogEvent implements LogEvent {
      */
     private static class Factory implements EventFactory<RingBufferLogEvent> {
         // @Override
+        @Override
         public RingBufferLogEvent newInstance() {
             return new RingBufferLogEvent();
         }
@@ -103,43 +104,52 @@ public class RingBufferLogEvent implements LogEvent {
      * @return {@code true} if this event is the end of a batch, {@code false}
      *         otherwise
      */
+    @Override
     public boolean isEndOfBatch() {
         return endOfBatch;
     }
 
+    @Override
     public void setEndOfBatch(boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
     }
 
+    @Override
     public boolean isIncludeLocation() {
         return includeLocation;
     }
 
+    @Override
     public void setIncludeLocation(boolean includeLocation) {
         this.includeLocation = includeLocation;
     }
 
     // @Override
+    @Override
     public String getLoggerName() {
         return loggerName;
     }
 
     // @Override
+    @Override
     public Marker getMarker() {
         return marker;
     }
 
     // @Override
+    @Override
     public String getFQCN() {
         return fqcn;
     }
 
     // @Override
+    @Override
     public Level getLevel() {
         return level;
     }
 
     // @Override
+    @Override
     public Message getMessage() {
         if (message == null) {
             message = new SimpleMessage("");
@@ -148,31 +158,37 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     // @Override
+    @Override
     public Throwable getThrown() {
         return thrown;
     }
 
     // @Override
+    @Override
     public Map<String, String> getContextMap() {
         return contextMap;
     }
 
     // @Override
+    @Override
     public ContextStack getContextStack() {
         return contextStack;
     }
 
     // @Override
+    @Override
     public String getThreadName() {
         return threadName;
     }
 
     // @Override
+    @Override
     public StackTraceElement getSource() {
         return location;
     }
 
     // @Override
+    @Override
     public long getMillis() {
         return currentTimeMillis;
     }

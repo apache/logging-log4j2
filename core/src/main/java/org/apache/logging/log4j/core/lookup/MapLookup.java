@@ -57,6 +57,7 @@ public class MapLookup implements StrLookup {
      * @param key the key to be looked up, may be null
      * @return the matching value, null if no match
      */
+    @Override
     public String lookup(final String key) {
         if (map == null) {
             return null;
@@ -68,6 +69,7 @@ public class MapLookup implements StrLookup {
         return obj;
     }
 
+    @Override
     public String lookup(final LogEvent event, final String key) {
         if (map == null && !(event.getMessage() instanceof MapMessage)) {
             return null;

@@ -266,6 +266,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         }
     }
 
+    @Override
     public Configuration reconfigure() {
         if (configFile != null) {
             try {

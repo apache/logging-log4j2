@@ -70,6 +70,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
      *
      * @return active log file name after rollover.
      */
+    @Override
     public String getActiveFileName() {
         return activeFileName;
     }
@@ -77,6 +78,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getAppend() {
         return append;
     }
@@ -87,6 +89,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
      *
      * @return action, may be null.
      */
+    @Override
     public Action getSynchronous() {
         return synchronous;
     }
@@ -97,6 +100,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
      *
      * @return action, may be null.
      */
+    @Override
     public Action getAsynchronous() {
         return asynchronous;
     }

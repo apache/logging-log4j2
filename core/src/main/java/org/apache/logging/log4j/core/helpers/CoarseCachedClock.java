@@ -27,6 +27,7 @@ public final class CoarseCachedClock implements Clock {
     private volatile long millis = System.currentTimeMillis();
 
     private final Thread updater = new Thread("Clock Updater Thread") {
+        @Override
         public void run() {
             while (true) {
                 long time = System.currentTimeMillis();

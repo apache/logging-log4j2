@@ -31,6 +31,7 @@ public class StructuredDataLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value for the key.
      */
+    @Override
     public String lookup(final String key) {
         return null;
     }
@@ -41,6 +42,7 @@ public class StructuredDataLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value associated with the key.
      */
+    @Override
     public String lookup(final LogEvent event, final String key) {
         if (event == null || !(event.getMessage() instanceof StructuredDataMessage)) {
             return null;

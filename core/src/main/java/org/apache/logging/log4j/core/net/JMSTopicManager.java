@@ -216,6 +216,7 @@ public class JMSTopicManager extends AbstractJMSManager {
      */
     private static class JMSTopicManagerFactory implements ManagerFactory<JMSTopicManager, FactoryData> {
 
+        @Override
         public JMSTopicManager createManager(final String name, final FactoryData data) {
             try {
                 final Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,

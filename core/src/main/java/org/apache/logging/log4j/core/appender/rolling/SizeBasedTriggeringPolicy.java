@@ -79,6 +79,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * Initialize the TriggeringPolicy.
      * @param manager The RollingFileManager.
      */
+    @Override
     public void initialize(final RollingFileManager manager) {
         this.manager = manager;
     }
@@ -89,6 +90,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * @param event   A reference to the currently event.
      * @return true if a rollover should take place, false otherwise.
      */
+    @Override
     public boolean isTriggeringEvent(final LogEvent event) {
         return manager.getFileSize() > maxFileSize;
     }

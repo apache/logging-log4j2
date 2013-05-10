@@ -52,6 +52,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * @param event The Log Event.
      * @return The formatted event as a byte array.
      */
+    @Override
     public byte[] toByteArray(final LogEvent event) {
         return encoder.getBytes(toSerializable(event));
     }
@@ -59,6 +60,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
     /**
      * @return The default content type for Strings.
      */
+    @Override
     public String getContentType() {
         return "text/plain";
     }
@@ -79,6 +81,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * JDK 6 or greater.
      */
     private class ClassEncoder implements StringEncoder {
+        @Override
         public byte[] getBytes(final String str) {
             return str.getBytes(charset);
         }
@@ -88,6 +91,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> {
      * JDK 5.
      */
     private class NameEncoder implements StringEncoder {
+        @Override
         public byte[] getBytes(final String str) {
             try {
                 return str.getBytes(charset.name());

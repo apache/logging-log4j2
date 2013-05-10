@@ -115,6 +115,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @param event The Logging Event.
      * @return A String containing the LogEvent as HTML.
      */
+    @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder sbuf = new StringBuilder(BUF_SIZE);
 
@@ -197,6 +198,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      * but isn't at this time - returning empty Map/unspecified.
      * @return empty Map
      */
+    @Override
     public Map<String, String> getContentFormat() {
         return new HashMap<String, String>();
     }

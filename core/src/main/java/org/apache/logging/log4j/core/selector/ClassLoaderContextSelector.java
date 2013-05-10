@@ -62,10 +62,12 @@ public class ClassLoaderContextSelector implements ContextSelector {
         setupCallerCheck();
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return getContext(fqcn, loader, currentContext, null);
     }
 
+    @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
                                     URI configLocation) {
         if (currentContext) {
@@ -149,6 +151,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
         }
     }
 
+    @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<LoggerContext>();
         final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = CONTEXT_MAP.values();

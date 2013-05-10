@@ -34,10 +34,12 @@ public class NullEnumeration implements Enumeration {
         return instance;
     }
 
+    @Override
     public boolean hasMoreElements() {
         return false;
     }
 
+    @Override
     public Object nextElement() {
         throw new NoSuchElementException();
     }

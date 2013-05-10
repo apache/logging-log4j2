@@ -32,6 +32,7 @@ public final class CachedClock implements Clock {
     private volatile long millis = System.currentTimeMillis();
     private volatile short count = 0;
     private final Thread updater = new Thread("Clock Updater Thread") {
+        @Override
         public void run() {
             while (true) {
                 long time = System.currentTimeMillis();

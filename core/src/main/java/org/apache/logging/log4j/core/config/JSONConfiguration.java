@@ -211,6 +211,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         }
     }
 
+    @Override
     public Configuration reconfigure() {
         if (configFile != null) {
             try {

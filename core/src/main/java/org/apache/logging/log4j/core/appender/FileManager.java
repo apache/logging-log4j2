@@ -121,6 +121,7 @@ public class FileManager extends OutputStreamManager {
      * Key: "fileURI" Value: provided "advertiseURI" param
      * @return Map of content format keys supporting FileManager
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
@@ -163,6 +164,7 @@ public class FileManager extends OutputStreamManager {
          * @param data The FactoryData
          * @return The FileManager for the File.
          */
+        @Override
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             final File parent = file.getParentFile();

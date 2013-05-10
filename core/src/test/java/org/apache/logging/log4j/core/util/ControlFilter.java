@@ -28,7 +28,8 @@ public class ControlFilter implements Filter {
     this.allowedPatterns = allowedPatterns;
   }
 
-  public String filter(final String in) throws UnexpectedFormatException {
+  @Override
+public String filter(final String in) throws UnexpectedFormatException {
     final int len = allowedPatterns.length;
 
     for (int i = 0; i < len; i++) {

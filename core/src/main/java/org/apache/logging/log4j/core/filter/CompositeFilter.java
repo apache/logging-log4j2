@@ -71,6 +71,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         return new CompositeFilter(Collections.unmodifiableList(filters));
     }
 
+    @Override
     public Iterator<Filter> iterator() {
         return filters.iterator();
     }
@@ -87,6 +88,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         return filters.size();
     }
 
+    @Override
     public void start() {
         for (final Filter filter : filters) {
             if (filter instanceof LifeCycle) {
@@ -96,6 +98,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         isStarted = true;
     }
 
+    @Override
     public void stop() {
         for (final Filter filter : filters) {
             if (filter instanceof LifeCycle) {
@@ -105,6 +108,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
         isStarted = false;
     }
 
+    @Override
     public boolean isStarted() {
         return isStarted;
     }
@@ -114,6 +118,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *
      * @return the Result that should be returned when the filter does not match the event.
      */
+    @Override
     public Result getOnMismatch() {
         return Result.NEUTRAL;
     }
@@ -123,6 +128,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *
      * @return the Result that should be returned when the filter matches the event.
      */
+    @Override
     public Result getOnMatch() {
         return Result.NEUTRAL;
     }
@@ -142,6 +148,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            An array of parameters or null.
      * @return the Result.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
                          final Object... params) {
         Result result = Result.NEUTRAL;
@@ -169,6 +176,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
                          final Throwable t) {
         Result result = Result.NEUTRAL;
@@ -196,6 +204,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            A Throwable or null.
      * @return the Result.
      */
+    @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
                          final Throwable t) {
         Result result = Result.NEUTRAL;
@@ -215,6 +224,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      *            The Event to filter on.
      * @return the Result.
      */
+    @Override
     public Result filter(final LogEvent event) {
         Result result = Result.NEUTRAL;
         for (final Filter filter : filters) {

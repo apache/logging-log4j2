@@ -49,63 +49,78 @@ public class DateLookupTest {
          */
         private static final long serialVersionUID = -2663819677970643109L;
 
+        @Override
         public Level getLevel() {
             return null;
         }
 
+        @Override
         public String getLoggerName() {
             return null;
         }
 
+        @Override
         public StackTraceElement getSource() {
             return null;
         }
 
+        @Override
         public Message getMessage() {
             return null;
         }
 
+        @Override
         public Marker getMarker() {
             return null;
         }
 
+        @Override
         public String getThreadName() {
             return null;
         }
 
+        @Override
         public long getMillis() {
             final Calendar cal = Calendar.getInstance();
             cal.set(2011, 11, 30, 10, 56, 35);
             return cal.getTimeInMillis();
         }
 
+        @Override
         public Throwable getThrown() {
             return null;
         }
 
+        @Override
         public Map<String, String> getContextMap() {
             return null;
         }
 
+        @Override
         public ThreadContext.ContextStack getContextStack() {
             return null;
         }
 
+        @Override
         public String getFQCN() {
             return null;
         }
 
+        @Override
         public boolean isEndOfBatch() {
             return false;
         }
 
+        @Override
         public void setEndOfBatch(boolean endOfBatch) {
         }
 
+        @Override
         public boolean isIncludeLocation() {
             return false;
         }
 
+        @Override
         public void setIncludeLocation(boolean locationRequired) {
         }
     }

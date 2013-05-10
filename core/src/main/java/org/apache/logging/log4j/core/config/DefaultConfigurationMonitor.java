@@ -24,6 +24,7 @@ public class DefaultConfigurationMonitor implements ConfigurationMonitor {
     /**
      * Does nothing.
      */
+    @Override
     public void checkConfiguration() {
         // do nothing
     }

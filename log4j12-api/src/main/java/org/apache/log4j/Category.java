@@ -436,6 +436,7 @@ public class Category {
      */
     private static class PrivateFactory implements LoggerFactory {
 
+        @Override
         public Logger makeNewLoggerInstance(final LoggerContext context, final String name) {
             return new Logger(context, name);
         }

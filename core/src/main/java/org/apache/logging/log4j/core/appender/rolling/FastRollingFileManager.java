@@ -130,6 +130,7 @@ public class FastRollingFileManager extends RollingFileManager {
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
          */
+        @Override
         public FastRollingFileManager createManager(String name,
                 FactoryData data) {
             File file = new File(name);

@@ -66,6 +66,7 @@ public class FileConfigurationMonitor implements ConfigurationMonitor {
     /**
      * Called to determine if the configuration has changed.
      */
+    @Override
     public void checkConfiguration() {
         if ((++counter & MASK) == 0) {
             synchronized (this) {

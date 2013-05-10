@@ -55,6 +55,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * @param event The LogEvent.
      * @return the formatted LogEvent.
      */
+    @Override
     public byte[] toByteArray(final LogEvent event) {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -77,6 +78,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * @param event The Logging Event.
      * @return The LogEvent.
      */
+    @Override
     public LogEvent toSerializable(final LogEvent event) {
         return event;
     }
@@ -100,6 +102,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * SerializedLayout's format is sufficiently specified via the content type, use empty Map/unspecified.
      * @return empty Map
      */
+    @Override
     public Map<String, String> getContentFormat() {
         return new HashMap<String, String>();
     }
@@ -108,6 +111,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
      * SerializedLayout returns a binary stream.
      * @return The content type.
      */
+    @Override
     public String getContentType() {
         return "application/octet-stream";
     }

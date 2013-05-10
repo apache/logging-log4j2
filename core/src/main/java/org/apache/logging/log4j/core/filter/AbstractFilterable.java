@@ -40,6 +40,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Returns the Filter.
      * @return the Filter.
      */
+    @Override
     public Filter getFilter() {
         return filter;
     }
@@ -48,6 +49,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Add a filter.
      * @param filter The Filter to add.
      */
+    @Override
     public synchronized void addFilter(final Filter filter) {
         if (this.filter == null) {
             this.filter = filter;
@@ -63,6 +65,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Remove a Filter.
      * @param filter The Filter to remove.
      */
+    @Override
     public synchronized void removeFilter(final Filter filter) {
         if (this.filter == filter) {
             this.filter = null;
@@ -84,6 +87,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Determines if a Filter is present.
      * @return false if no Filter is present.
      */
+    @Override
     public boolean hasFilter() {
         return filter != null;
     }
@@ -111,6 +115,7 @@ public abstract class AbstractFilterable implements Filterable {
      * @param event The LogEvent.
      * @return true if the LogEvent should be processed.
      */
+    @Override
     public boolean isFiltered(final LogEvent event) {
         return filter != null && filter.filter(event) == Filter.Result.DENY;
     }

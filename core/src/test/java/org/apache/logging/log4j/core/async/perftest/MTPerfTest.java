@@ -39,7 +39,8 @@ public class MTPerfTest extends PerfTest {
 		final Histogram warmupHist = PerfTest.createHistogram();
 		final long stop = System.currentTimeMillis() + (60 * 1000);
 		Runnable run1 = new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				for (int i = 0; i < 10; i++) {
 					final int LINES = PerfTest.throughput ? 50000 : 200000;
 					runTest(runner, LINES, null, warmupHist, 2);
@@ -86,7 +87,8 @@ public class MTPerfTest extends PerfTest {
 		for (int i = 0; i < threads.length; i++) {
 			final Histogram histogram = histograms[i];
 			threads[i] = new Thread() {
-				public void run() {
+				@Override
+                public void run() {
 //				    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
 				    int latencyCount = 5000000;
 					int count = PerfTest.throughput ? LINES / threadCount

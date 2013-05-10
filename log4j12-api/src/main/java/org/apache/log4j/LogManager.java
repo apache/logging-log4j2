@@ -128,60 +128,75 @@ public final class LogManager {
      * The Repository.
      */
     private static class Repository implements LoggerRepository {
+        @Override
         public void addHierarchyEventListener(final HierarchyEventListener listener) {
 
         }
 
+        @Override
         public boolean isDisabled(final int level) {
             return false;
         }
 
+        @Override
         public void setThreshold(final Level level) {
 
         }
 
+        @Override
         public void setThreshold(final String val) {
 
         }
 
+        @Override
         public void emitNoAppenderWarning(final Category cat) {
 
         }
 
+        @Override
         public Level getThreshold() {
             return Level.OFF;
         }
 
+        @Override
         public Logger getLogger(final String name) {
             return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
         }
 
+        @Override
         public Logger getLogger(final String name, final LoggerFactory factory) {
             return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
         }
 
+        @Override
         public Logger getRootLogger() {
             return (Logger) Category.getRoot((LoggerContext) PrivateManager.getContext());
         }
 
+        @Override
         public Logger exists(final String name) {
             return LogManager.exists(name);
         }
 
+        @Override
         public void shutdown() {
         }
 
+        @Override
         public Enumeration getCurrentLoggers() {
             return NullEnumeration.getInstance();
         }
 
+        @Override
         public Enumeration getCurrentCategories() {
             return NullEnumeration.getInstance();
         }
 
+        @Override
         public void fireAddAppenderEvent(final Category logger, final Appender appender) {
         }
 
+        @Override
         public void resetConfiguration() {
         }
     }

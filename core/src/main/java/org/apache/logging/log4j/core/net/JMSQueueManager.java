@@ -215,6 +215,7 @@ public class JMSQueueManager extends AbstractJMSManager {
      */
     private static class JMSQueueManagerFactory implements ManagerFactory<JMSQueueManager, FactoryData> {
 
+        @Override
         public JMSQueueManager createManager(final String name, final FactoryData data) {
             try {
                 final Context ctx = createContext(data.factoryName, data.providerURL, data.urlPkgPrefixes,

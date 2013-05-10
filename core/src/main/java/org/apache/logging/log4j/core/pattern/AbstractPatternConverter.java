@@ -54,6 +54,7 @@ public abstract class AbstractPatternConverter implements PatternConverter {
      *
      * @return the name of the conversion pattern
      */
+    @Override
     public final String getName() {
         return name;
     }
@@ -67,6 +68,7 @@ public abstract class AbstractPatternConverter implements PatternConverter {
      * @param e null values are accepted
      * @return the name of the conversion pattern
      */
+    @Override
     public String getStyleClass(final Object e) {
         return style;
     }

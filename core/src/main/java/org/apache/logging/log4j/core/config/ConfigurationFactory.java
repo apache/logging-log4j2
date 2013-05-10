@@ -312,6 +312,7 @@ public abstract class ConfigurationFactory {
             this.factoryClass = clazz;
         }
 
+        @Override
         public int compareTo(final WeightedFactory wf) {
             final int w = wf.weight;
             if (weight == w) {

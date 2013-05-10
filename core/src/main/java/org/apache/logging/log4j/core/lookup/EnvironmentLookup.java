@@ -30,6 +30,7 @@ public class EnvironmentLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value of the environment variable.
      */
+    @Override
     public String lookup(final String key) {
         return System.getenv(key);
     }
@@ -40,6 +41,7 @@ public class EnvironmentLookup implements StrLookup {
      * @param key  the key to be looked up, may be null
      * @return The value of the environment variable.
      */
+    @Override
     public String lookup(final LogEvent event, final String key) {
         return System.getenv(key);
     }

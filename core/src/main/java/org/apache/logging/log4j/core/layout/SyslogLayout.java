@@ -74,6 +74,7 @@ public class SyslogLayout extends AbstractStringLayout {
      * @param event The LogEvent
      * @return the event formatted as a String.
      */
+    @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = new StringBuilder();
 
@@ -131,6 +132,7 @@ public class SyslogLayout extends AbstractStringLayout {
      * Key: "formatType" Value: "logfilepatternreceiver" (format uses the keywords supported by LogFilePatternReceiver)
      * @return Map of content format keys supporting SyslogLayout
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>();

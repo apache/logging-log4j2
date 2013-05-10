@@ -37,6 +37,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * Initializes the policy.
      * @param manager The RollingFileManager.
      */
+    @Override
     public void initialize(final RollingFileManager manager) {
         for (final TriggeringPolicy policy : policies) {
             policy.initialize(manager);
@@ -48,6 +49,7 @@ public final class CompositeTriggeringPolicy implements TriggeringPolicy {
      * @param event A reference to the currently event.
      * @return true if a rollover should occur, false otherwise.
      */
+    @Override
     public boolean isTriggeringEvent(final LogEvent event) {
         for (final TriggeringPolicy policy : policies) {
             if (policy.isTriggeringEvent(event)) {

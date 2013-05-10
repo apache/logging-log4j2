@@ -139,6 +139,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the logging Level.
      * @return the Level associated with this event.
      */
+    @Override
     public Level getLevel() {
         return level;
     }
@@ -147,6 +148,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the name of the Logger used to generate the event.
      * @return The Logger name.
      */
+    @Override
     public String getLoggerName() {
         return name;
     }
@@ -155,6 +157,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the Message associated with the event.
      * @return The Message.
      */
+    @Override
     public Message getMessage() {
         return message;
     }
@@ -163,6 +166,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the name of the Thread on which the event was generated.
      * @return The name of the Thread.
      */
+    @Override
     public String getThreadName() {
         if (threadName == null) {
             threadName = Thread.currentThread().getName();
@@ -174,6 +178,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the time in milliseconds from the epoch when the event occurred.
      * @return The time the event occurred.
      */
+    @Override
     public long getMillis() {
         return timestamp;
     }
@@ -182,6 +187,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the Throwable associated with the event, or null.
      * @return The Throwable associated with the event.
      */
+    @Override
     public Throwable getThrown() {
         return throwable;
     }
@@ -190,6 +196,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the Marker associated with the event, or null.
      * @return the Marker associated with the event.
      */
+    @Override
     public Marker getMarker() {
         return marker;
     }
@@ -198,6 +205,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * The fully qualified class name of the class that was called by the caller.
      * @return the fully qualified class name of the class that is performing logging.
      */
+    @Override
     public String getFQCN() {
         return fqcnOfLogger;
     }
@@ -206,6 +214,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns the immutable copy of the ThreadContext Map.
      * @return The context Map.
      */
+    @Override
     public Map<String, String> getContextMap() {
         return mdc == null ? ThreadContext.EMPTY_MAP : mdc;
     }
@@ -214,6 +223,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * Returns an immutable copy of the ThreadContext stack.
      * @return The context Stack.
      */
+    @Override
     public ThreadContext.ContextStack getContextStack() {
         return ndc == null ? ThreadContext.EMPTY_STACK : ndc;
     }
@@ -223,6 +233,7 @@ public class Log4jLogEvent implements LogEvent, Serializable {
      * before the first occurrence of FQCN as a class name.
      * @return the StackTraceElement for the caller.
      */
+    @Override
     public StackTraceElement getSource() {
         if (location != null) {
             return location;
@@ -258,18 +269,22 @@ public class Log4jLogEvent implements LogEvent, Serializable {
         return null;
     }
 
+    @Override
     public boolean isIncludeLocation() {
         return includeLocation;
     }
 
+    @Override
     public void setIncludeLocation(boolean includeLocation) {
         this.includeLocation = includeLocation;
     }
 
+    @Override
     public boolean isEndOfBatch() {
         return endOfBatch;
     }
 
+    @Override
     public void setEndOfBatch(boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
     }

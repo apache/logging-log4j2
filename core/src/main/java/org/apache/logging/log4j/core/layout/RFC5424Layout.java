@@ -196,6 +196,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Key: "format" Value: "RFC5424"<p/>
      * @return Map of content format keys supporting RFC5424Layout
      */
+    @Override
     public Map<String, String> getContentFormat()
     {
         Map<String, String> result = new HashMap<String, String>();
@@ -210,6 +211,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param event The LogEvent.
      * @return The RFC 5424 String representation of the LogEvent.
      */
+    @Override
     public String toSerializable(final LogEvent event) {
         final Message msg = event.getMessage();
         final boolean isStructured = msg instanceof StructuredDataMessage;
@@ -437,6 +439,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Includes only the listed keys.
      */
     private class IncludeChecker implements ListChecker {
+        @Override
         public boolean check(final String key) {
             return mdcIncludes.contains(key);
         }
@@ -446,6 +449,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Excludes the listed keys.
      */
     private class ExcludeChecker implements ListChecker {
+        @Override
         public boolean check(final String key) {
             return !mdcExcludes.contains(key);
         }
@@ -455,6 +459,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * Does nothing.
      */
     private class NoopChecker implements ListChecker {
+        @Override
         public boolean check(final String key) {
             return true;
         }

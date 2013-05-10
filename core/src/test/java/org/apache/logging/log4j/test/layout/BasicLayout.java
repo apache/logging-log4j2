@@ -35,6 +35,7 @@ public class BasicLayout extends AbstractStringLayout {
 
     private static final String HEADER = "Header" + Constants.LINE_SEP;
 
+    @Override
     public byte[] getHeader() {
         return HEADER.getBytes(getCharset());
     }
@@ -43,10 +44,12 @@ public class BasicLayout extends AbstractStringLayout {
         super(charset);
     }
 
+    @Override
     public String toSerializable(LogEvent event) {
         return event.getMessage().getFormattedMessage() + Constants.LINE_SEP;
     }
 
+    @Override
     public Map<String, String> getContentFormat() {
         return new HashMap<String, String>();
     }
