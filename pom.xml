@@ -127,12 +127,12 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <slf4j.version>1.7.2</slf4j.version>
-    <logback.version>1.0.7</logback.version>
+    <slf4j.version>1.7.5</slf4j.version>
+    <logback.version>1.0.13</logback.version>
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-beta6</Log4jReleaseVersion>
     <Log4jReleaseCount>eighth</Log4jReleaseCount>
-    <jackson.version>1.9.2</jackson.version>
+    <jackson.version>1.9.11</jackson.version>
     <disruptor.version>3.0.1</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
@@ -141,9 +141,9 @@
     <osgi.dynamicImport />
     <osgi.private />
     <pmd.plugin.version>3.0.1</pmd.plugin.version>
-    <changes.plugin.version>2.8</changes.plugin.version>
+    <changes.plugin.version>2.9</changes.plugin.version>
     <javadoc.plugin.version>2.9</javadoc.plugin.version>
-    <surefire.plugin.version>2.12.4</surefire.plugin.version>
+    <surefire.plugin.version>2.14.1</surefire.plugin.version>
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
@@ -259,7 +259,7 @@
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>mail</artifactId>
-        <version>1.4.5</version>
+        <version>1.4.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
@@ -343,7 +343,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>2.10</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
