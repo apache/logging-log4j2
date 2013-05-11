@@ -72,6 +72,8 @@
         <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
         <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
+        <item name="FastFile" href="/manual/appenders.html#FastFileAppender"/>
+        <item name="FastRollingFile" href="/manual/appenders.html#FastRollingFileAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
@@ -82,8 +84,6 @@
         <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
-        <item name="FastFile" href="/manual/appenders.html#FastFileAppender"/>
-        <item name="FastRollingFile" href="/manual/appenders.html#FastRollingFileAppender"/>
         <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
         <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
         <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
@@ -135,7 +135,7 @@
         <item name="Appenders" href="/manual/extending.html#Appenders"/>
         <item name="Layouts" href="/manual/extending.html#Layouts"/>
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
-        <item name="Custom Plugins" href="/manual/extending.html#Custom"/>
+        <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
     </menu>
 
