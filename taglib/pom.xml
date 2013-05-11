@@ -29,12 +29,6 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Tag Library</name>
   <description>Apache Log4j Tag Library for Web Applications</description>
-  <contributors>
-    <contributor>
-      <name>Nick Williams</name>
-      <email>nicholas@nicholaswilliams.net</email>
-    </contributor>
-  </contributors>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Tag Library Documentation</docLabel>
