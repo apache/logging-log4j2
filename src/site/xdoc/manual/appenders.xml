@@ -20,7 +20,7 @@
     <properties>
         <title>Log4j 2 Appenders</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
-        <author email="nicholas@nicholaswilliams.net">Nick Williams</author>
+        <author email="nickwilliams@apache.org">Nick Williams</author>
     </properties>
 
     <body>

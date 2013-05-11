@@ -73,19 +73,13 @@
       -->
       </properties>
     </developer>
-  </developers>
-  <contributors>
-    <contributor>
+    <developer>
+      <id>nickwilliams</id>
       <name>Nick Williams</name>
-      <email>nicholas@nicholaswilliams.net</email>
-      <roles>
-        <role>JSP Tag Library</role>
-      </roles>
+      <email>nickwilliams@apache.org</email>
       <timezone>America/Chicago</timezone>
-      <properties>
-      </properties>
-    </contributor>
-  </contributors>
+    </developer>
+  </developers>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
