@@ -135,6 +135,9 @@ public class SMTPManager extends AbstractManager {
         }
         try {
             final LogEvent[] priorEvents = buffer.removeAll();
+            if (priorEvents == null || priorEvents.length == 0) {
+                return; // nothing to do, another thread already took all events
+            }
             final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
 
             final String contentType = layout.getContentType();
