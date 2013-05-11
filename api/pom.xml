@@ -23,7 +23,6 @@
     <version>2.0-beta7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-api</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j API</name>

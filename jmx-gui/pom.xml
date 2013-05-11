@@ -23,10 +23,13 @@
     <version>2.0-beta7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-jmx-gui</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4J JMX GUI</name>
+  <description>
+    Swing-based client for remotely editing the log4j configuration and remotely monitoring StatusLogger output.
+    Includes a JConsole plug-in.
+  </description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JMX GUI Documentation</docLabel>
@@ -186,17 +189,7 @@
 			<properties>
 				<toolsjar>${java.home}/../lib/jconsole.jar</toolsjar>
 			</properties>
-
 			<dependencies>
-			    <!--
-				<dependency>
-					<groupId>com.sun</groupId>
-					<artifactId>tools</artifactId>
-					<version>1.6.0</version>
-					<scope>system</scope>
-					<systemPath>${toolsjar}</systemPath>
-				</dependency>
-				-->
 				<dependency>
 					<groupId>com.sun</groupId>
 					<artifactId>jconsole</artifactId>
@@ -226,7 +219,6 @@
 				</dependency>
 			</dependencies>
 		</profile>
-      </profiles>
-  <description>Swing-based client for remotely editing the log4j configuration and remotely monitoring StatusLogger output. Includes a JConsole plug-in.</description>
+  </profiles>
 </project>
 
