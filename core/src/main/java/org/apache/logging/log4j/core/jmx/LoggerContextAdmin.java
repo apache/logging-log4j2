@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,6 +43,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory.ConfigurationSource;
 import org.apache.logging.log4j.core.helpers.Assert;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -144,11 +146,17 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     @Override
     public String getConfigText() throws IOException {
+        return getConfigText(Charsets.UTF_8.name());
+    }
+
+    @Override
+    public String getConfigText(String charsetName) throws IOException {
         if (customConfigText != null) {
             return customConfigText;
         }
         try {
-            return readContents(new URI(getConfigLocationURI()));
+            Charset charset = Charset.forName(charsetName);
+            return readContents(new URI(getConfigLocationURI()), charset);
         } catch (Exception ex) {
             StringWriter sw = new StringWriter(BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));
@@ -179,11 +187,11 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         }
     }
 
-    private String readContents(URI uri) throws IOException {
+    private String readContents(URI uri, Charset charset) throws IOException {
         InputStream in = null;
         try {
             in = uri.toURL().openStream();
-            Reader reader = new InputStreamReader(in);
+            Reader reader = new InputStreamReader(in, charset);
             StringBuilder result = new StringBuilder(TEXT_BUFFER);
             char[] buff = new char[PAGE];
             int count = -1;
