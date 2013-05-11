@@ -71,13 +71,27 @@ public interface LoggerContextAdminMBean {
     /**
      * Returns the configuration text, which may be the contents of the
      * configuration file or the text that was last set with a call to
-     * {@code setConfigText}.
+     * {@code setConfigText}. If reading a file, this method assumes the file's
+     * character encoding is UTF-8.
      * 
      * @return the configuration text
      * @throws IOException if a problem occurred reading the contents of the
      *             config file.
      */
     String getConfigText() throws IOException;
+
+    /**
+     * Returns the configuration text, which may be the contents of the
+     * configuration file or the text that was last set with a call to
+     * {@code setConfigText}.
+     * 
+     * @param charsetName the encoding to use to convert the file's bytes into
+     *            the resulting string.
+     * @return the configuration text
+     * @throws IOException if a problem occurred reading the contents of the
+     *             config file.
+     */
+    String getConfigText(String charsetName) throws IOException;
 
     /**
      * Sets the configuration text. This does not replace the contents of the
