@@ -22,7 +22,6 @@ limitations under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <name>Log4j Distribution</name>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-distribution</artifactId>
   <packaging>pom</packaging>
   <description>Log4j - Distribution archives.</description>
