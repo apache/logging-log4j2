@@ -47,13 +47,13 @@ import java.util.Map;
  * @see AbstractLogEventWrapperEntity
  */
 @MappedSuperclass
-public abstract class LogEventEntity extends AbstractLogEventWrapperEntity {
+public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity {
     @SuppressWarnings("unused") // JPA requires this
-    public LogEventEntity() {
+    public BasicLogEventEntity() {
         super();
     }
 
-    public LogEventEntity(final LogEvent wrapped) {
+    public BasicLogEventEntity(final LogEvent wrapped) {
         super(wrapped);
     }
 
