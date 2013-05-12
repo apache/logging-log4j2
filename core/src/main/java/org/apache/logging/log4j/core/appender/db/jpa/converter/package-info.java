@@ -15,9 +15,11 @@
  * limitations under the license.
  */
 /**
- * The JPA Appender supports writing log events to a relational database using the Java Persistence API. You will need
- * a JDBC driver on your classpath for the database you wish to log to. You will also need the Java Persistence API 2.1
- * and your JPA provider of choice on the class path; these Maven dependencies are optional and will not automatically
- * be added to your classpath.
+ * The converters in this package implement the JPA 2.1 mechanism for converting non-standard types to and from
+ * database fields. Most of these types are capable of two-way conversion and can be used to both persist and retrieve
+ * entities. The {@link ContextMapAttributeConverter} and {@link ContextStackAttributeConverter} only support
+ * persistence and not retrieval, persisting the type as a simple string. You can use the
+ * {@link ContextMapJsonAttributeConverter} and {@link ContextStackJsonAttributeConverter} instead, which require the
+ * Jackson Mapper dependency to also be on your class path.
  */
-package org.apache.logging.log4j.core.appender.db.jpa;
+package org.apache.logging.log4j.core.appender.db.jpa.converter;
