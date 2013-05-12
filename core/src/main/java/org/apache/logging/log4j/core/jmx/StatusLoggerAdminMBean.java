@@ -24,7 +24,7 @@ import org.apache.logging.log4j.status.StatusData;
  * The MBean interface for monitoring and managing the {@code StatusLogger}.
  */
 public interface StatusLoggerAdminMBean {
-    /** Object name of this MBean. */
+    /** Object name ({@value}) of this MBean. */
     String NAME = "org.apache.logging.log4j2:type=StatusLogger";
 
     /**

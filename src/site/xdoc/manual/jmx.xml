@@ -70,6 +70,10 @@
       </section>
 		<a name="Log4J_MBeans" />
       <section name="Log4J Instrumented Components">
+      <p>The best way to find out which methods and attributes of the various
+      Log4J components are accessible via JMX is to look at the
+      <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/jmx/package-summary.html"
+      >Javadoc</a> or by exploring directly in JConsole.</p>
       <p>The screenshot below shows the Log4J MBeans in JConsole.</p>
       <p><img src="../images/jmx-jconsole-mbeans.png" /></p>
       </section>

@@ -20,7 +20,9 @@ package org.apache.logging.log4j.core.jmx;
  * The MBean interface for monitoring and managing the {@code ContextSelector}.
  */
 public interface ContextSelectorAdminMBean {
-    /** Object name of this MBean. */
+    /**
+     * ObjectName pattern ({@value}) for the context selector MBean.
+     */
     String NAME = "org.apache.logging.log4j2:type=ContextSelector";
 
     /**
