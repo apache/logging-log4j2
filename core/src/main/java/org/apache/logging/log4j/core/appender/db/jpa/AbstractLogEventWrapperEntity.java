@@ -30,7 +30,7 @@ import java.util.Map;
  * Users of the JPA appender MUST extend this class, using JPA annotations on the concrete class and all of its
  * accessor methods (as needed) to map them to the proper table and columns. Accessors you do not want persisted should
  * be annotated with {@link Transient @Transient}. All accessors should call {@link #getWrappedEvent()} and delegate the
- * call to the underlying event. Users may want to instead extend {@link LogEventEntity}, which takes care of all of
+ * call to the underlying event. Users may want to instead extend {@link BasicLogEventEntity}, which takes care of all of
  * this for you.<br>
  * <br>
  * The concrete class must have two constructors: a public no-arg constructor to convince the JPA provider that it's a
@@ -52,7 +52,7 @@ import java.util.Map;
  * requirement that accessor methods have matching mutator methods. If you create additional accessor methods, you must
  * likewise create matching no-op mutator methods.
  *
- * @see LogEventEntity
+ * @see BasicLogEventEntity
  */
 @MappedSuperclass
 public abstract class AbstractLogEventWrapperEntity implements LogEvent {

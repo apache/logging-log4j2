@@ -18,7 +18,7 @@ import java.util.Map;
 @Entity
 @Table(name = "jpaBasicLogEntry")
 @SuppressWarnings("unused")
-public class TestBasicEntity extends LogEventEntity {
+public class TestBasicEntity extends BasicLogEventEntity {
     private static final long serialVersionUID = 1L;
 
     private long id = 0L;
