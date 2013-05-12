@@ -317,7 +317,7 @@ public class ThrowableProxy extends Throwable {
      * @param stackTrace The stack trace being resolved.
      * @return The StackTracePackageElement array.
      */
-    private StackTracePackageElement[] resolvePackageData(final Stack<Class<?>> stack, final Map<String,
+    StackTracePackageElement[] resolvePackageData(final Stack<Class<?>> stack, final Map<String,
                                                           CacheEntry> map,
                                                           final StackTraceElement[] rootTrace,
                                                           final StackTraceElement[] stackTrace) {
@@ -336,19 +336,19 @@ public class ThrowableProxy extends Throwable {
             stackLength = stackTrace.length;
         }
         final StackTracePackageElement[] packageArray = new StackTracePackageElement[stackLength];
-        Class<?> clazz = stack.peek();
+        Class<?> clazz = stack.isEmpty() ? null : stack.peek();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
             final String className = stackTrace[i].getClassName();
             // The stack returned from getCurrentStack will be missing entries for  java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
             // present as those methods have returned.
-            if (className.equals(clazz.getName())) {
+            if (clazz != null && className.equals(clazz.getName())) {
                 final CacheEntry entry = resolvePackageElement(clazz, true);
                 packageArray[i] = entry.element;
                 lastLoader = entry.loader;
                 stack.pop();
-                clazz = stack.peek();
+                clazz = stack.isEmpty() ? null : stack.peek();
             } else {
                 if (map.containsKey(className)) {
                     final CacheEntry entry = map.get(className);
@@ -486,7 +486,8 @@ public class ThrowableProxy extends Throwable {
             final Method[] methods = clazz.getMethods();
             for (final Method method : methods) {
                 final int modifier = method.getModifiers();
-                if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
+                if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier) &&
+                    method.getParameterTypes().length == 1) {
                     getCallerClass = method;
                     return;
                 }
@@ -535,7 +536,7 @@ public class ThrowableProxy extends Throwable {
     /**
      * Cached StackTracePackageElement and the ClassLoader.
      */
-    private class CacheEntry {
+    class CacheEntry {
         private final StackTracePackageElement element;
         private final ClassLoader loader;
 

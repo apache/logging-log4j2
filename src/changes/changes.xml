@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-245" dev="rgoers" type="fix">
+        Avoid EmptyStack exception if getCallerClass and SecurityManager are not available.
+      </action>
       <action issue="LOG4J2-229" dev="ggregory" type="add" due-to="beamerblvd">
         New JDBC, JPA, and NoSQL database Appenders.
       </action>
@@ -29,7 +32,7 @@
         SocketServer.isActive should be volatile because it is accessed from different threads.
       </action>
       <action issue="LOG4J2-251" dev="sdeboy" type="add">
-        Provide configuration information (location, content type, content if possible) via a registered Advertiser. 
+        Provide configuration information (location, content type, content if possible) via a registered Advertiser.
       </action>
     </release>
     <release version="2.0-beta6" date="2013-05-05" description="Bug fixes and enhancements">
