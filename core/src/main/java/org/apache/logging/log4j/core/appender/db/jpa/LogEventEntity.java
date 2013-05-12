@@ -20,7 +20,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Map;
 
 /**
- * Users of the JPA appender may want to extend this class instead of {@link LogEventWrapperEntity}. This class
+ * Users of the JPA appender may want to extend this class instead of {@link AbstractLogEventWrapperEntity}. This class
  * implements all of the required mutator methods but does not implement a mutable entity ID property. In order to
  * create an entity based on this class, you need only create two constructors matching this class's
  * constructors, annotate the class {@link javax.persistence.Entity @Entity} and {@link javax.persistence.Table @Table},
@@ -44,10 +44,10 @@ import java.util.Map;
  * there are any attributes you do not want persistent, you should override their accessor methods and annotate with
  * {@link javax.persistence.Transient @Transient}.
  *
- * @see LogEventWrapperEntity
+ * @see AbstractLogEventWrapperEntity
  */
 @MappedSuperclass
-public abstract class LogEventEntity extends LogEventWrapperEntity {
+public abstract class LogEventEntity extends AbstractLogEventWrapperEntity {
     @SuppressWarnings("unused") // JPA requires this
     public LogEventEntity() {
         super();

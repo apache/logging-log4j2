@@ -16,28 +16,27 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import java.lang.reflect.Constructor;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import java.lang.reflect.Constructor;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.
  */
 public final class JPADatabaseManager extends AbstractDatabaseManager {
     private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
-        private final Class<? extends LogEventWrapperEntity> entityClass;
-        private final Constructor<? extends LogEventWrapperEntity> entityConstructor;
+        private final Class<? extends AbstractLogEventWrapperEntity> entityClass;
+        private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
         private final String persistenceUnitName;
 
-        protected FactoryData(final int bufferSize, final Class<? extends LogEventWrapperEntity> entityClass,
-                final Constructor<? extends LogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
+        protected FactoryData(final int bufferSize, final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
             super(bufferSize);
 
             this.entityClass = entityClass;
@@ -64,7 +63,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
      * @param bufferSize
      *            The size of the log event buffer.
      * @param entityClass
-     *            The fully-qualified class name of the {@link LogEventWrapperEntity} concrete implementation.
+     *            The fully-qualified class name of the {@link AbstractLogEventWrapperEntity} concrete implementation.
      * @param entityConstructor
      *            The one-arg {@link LogEvent} constructor for the concrete entity class.
      * @param persistenceUnitName
@@ -72,15 +71,15 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
      * @return a new or existing JPA manager as applicable.
      */
     public static JPADatabaseManager getJPADatabaseManager(final String name, final int bufferSize,
-            final Class<? extends LogEventWrapperEntity> entityClass,
-            final Constructor<? extends LogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
 
         return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, entityClass, entityConstructor,
                 persistenceUnitName), FACTORY);
     }
 
     private final String entityClassName;
-    private final Constructor<? extends LogEventWrapperEntity> entityConstructor;
+    private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
     private EntityManager entityManager;
 
     private EntityManagerFactory entityManagerFactory;
@@ -90,8 +89,8 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     private EntityTransaction transaction;
 
     private JPADatabaseManager(final String name, final int bufferSize,
-            final Class<? extends LogEventWrapperEntity> entityClass,
-            final Constructor<? extends LogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor, final String persistenceUnitName) {
         super(name, bufferSize);
         this.entityClassName = entityClass.getName();
         this.entityConstructor = entityConstructor;
@@ -126,7 +125,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
             return;
         }
 
-        LogEventWrapperEntity entity;
+        AbstractLogEventWrapperEntity entity;
         try {
             entity = this.entityConstructor.newInstance(event);
         } catch (final Exception e) {

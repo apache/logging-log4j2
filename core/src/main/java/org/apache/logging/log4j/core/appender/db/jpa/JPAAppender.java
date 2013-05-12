@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import java.lang.reflect.Constructor;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
@@ -26,12 +24,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
+import java.lang.reflect.Constructor;
+
 /**
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a
- * pre-configured JPA persistence unit and a concrete implementation of the abstract {@link LogEventWrapperEntity} class
+ * pre-configured JPA persistence unit and a concrete implementation of the abstract {@link AbstractLogEventWrapperEntity} class
  * decorated with JPA annotations.
  * 
- * @see LogEventWrapperEntity
+ * @see AbstractLogEventWrapperEntity
  */
 @Plugin(name = "Jpa", category = "Core", elementType = "appender", printObject = true)
 public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
@@ -48,7 +48,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
      *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
      *            buffer reaches this size.
      * @param entityClassName
-     *            The fully qualified name of the concrete {@link LogEventWrapperEntity} implementation that has JPA
+     *            The fully qualified name of the concrete {@link AbstractLogEventWrapperEntity} implementation that has JPA
      *            annotations mapping it to a database table.
      * @param persistenceUnitName
      *            The name of the JPA persistence unit that should be used for persisting log events.
@@ -78,11 +78,11 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
 
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends LogEventWrapperEntity> entityClass = (Class<? extends LogEventWrapperEntity>) Class
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass = (Class<? extends AbstractLogEventWrapperEntity>) Class
                     .forName(entityClassName);
 
-            if (!LogEventWrapperEntity.class.isAssignableFrom(entityClass)) {
-                LOGGER.error("Entity class [{}] does not extend LogEventWrapperEntity.", entityClassName);
+            if (!AbstractLogEventWrapperEntity.class.isAssignableFrom(entityClass)) {
+                LOGGER.error("Entity class [{}] does not extend AbstractLogEventWrapperEntity.", entityClassName);
                 return null;
             }
 
@@ -94,7 +94,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                 return null;
             }
 
-            final Constructor<? extends LogEventWrapperEntity> entityConstructor = entityClass
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor = entityClass
                     .getConstructor(LogEvent.class);
 
             final String managerName = "jpaManager{ description=" + name + ", bufferSize=" + bufferSizeInt
