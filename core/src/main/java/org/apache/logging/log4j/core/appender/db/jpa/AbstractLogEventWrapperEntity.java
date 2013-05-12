@@ -35,7 +35,7 @@ import java.util.Map;
  * <br>
  * The concrete class must have two constructors: a public no-arg constructor to convince the JPA provider that it's a
  * valid entity, and a public constructor that takes a single {@link LogEvent event} and passes it to the parent class
- * with {@link #LogEventWrapperEntity(LogEvent) super(event)}. Furthermore, the concrete class must be annotated
+ * with {@link #AbstractLogEventWrapperEntity(LogEvent) super(event)}. Furthermore, the concrete class must be annotated
  * {@link javax.persistence.Entity @Entity} and {@link javax.persistence.Table @Table} and must implement a fully
  * mutable ID property annotated with {@link javax.persistence.Id @Id} and
  * {@link javax.persistence.GeneratedValue @GeneratedValue} to tell the JPA provider how to calculate an ID for new
@@ -55,7 +55,7 @@ import java.util.Map;
  * @see LogEventEntity
  */
 @MappedSuperclass
-public abstract class LogEventWrapperEntity implements LogEvent {
+public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     /**
      * Generated serial version ID.
      */
@@ -63,7 +63,7 @@ public abstract class LogEventWrapperEntity implements LogEvent {
     private final LogEvent wrappedEvent;
 
     @SuppressWarnings("unused") // JPA requires this
-    protected LogEventWrapperEntity() {
+    protected AbstractLogEventWrapperEntity() {
         this(null);
     }
 
@@ -74,7 +74,7 @@ public abstract class LogEventWrapperEntity implements LogEvent {
      * @param wrappedEvent
      *            The underlying event from which information is obtained.
      */
-    protected LogEventWrapperEntity(final LogEvent wrappedEvent) {
+    protected AbstractLogEventWrapperEntity(final LogEvent wrappedEvent) {
         this.wrappedEvent = wrappedEvent;
     }
 

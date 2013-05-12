@@ -43,7 +43,7 @@ import java.util.Map;
 @Entity
 @Table(name = "jpaBaseLogEntry")
 @SuppressWarnings("unused")
-public class TestEntity extends LogEventWrapperEntity {
+public class TestEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
 
     private long id = 0L;
