@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -128,7 +130,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
-    public synchronized void send(final Event event)  {
+    public void send(final Event event)  {
         if (worker.isShutdown()) {
             throw new LoggingException("Unable to record event");
         }
