@@ -20,7 +20,31 @@ package org.apache.logging.log4j.core.jmx;
  * The MBean interface for monitoring and managing a {@code LoggerConfig}.
  */
 public interface LoggerConfigAdminMBean {
-    /** ObjectName pattern for LoggerConfigAdmin MBeans. */
+    /**
+     * ObjectName pattern ({@value}) for LoggerConfigAdmin MBeans.
+     * This pattern contains two variables, where the first is the name of the
+     * context, the second is the name of the instrumented logger config.
+     * <p>
+     * You can find all registered LoggerConfigAdmin MBeans like this:
+     * </p>
+     * <pre>
+     * MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+     * String pattern = String.format(LoggerConfigAdminMBean.PATTERN, &quot;*&quot;, &quot;*&quot;);
+     * Set&lt;ObjectName&gt; loggerConfigNames = mbs.queryNames(new ObjectName(pattern), null);
+     * </pre>
+     * <p>
+     * Some characters are not allowed in ObjectNames. The logger context name
+     * and logger config name may be quoted. When LoggerConfigAdmin MBeans are
+     * registered, their ObjectNames are created using this pattern as follows:
+     * </p>
+     * <pre>
+     * String ctxName = Server.escape(loggerContext.getName());
+     * String loggerConfigName = Server.escape(loggerConfig.getName());
+     * String name = String.format(PATTERN, ctxName, loggerConfigName);
+     * ObjectName objectName = new ObjectName(name);
+     * </pre>
+     * @see Server#escape(String)
+     */
     String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=LoggerConfig,name=%s";
 
     /**

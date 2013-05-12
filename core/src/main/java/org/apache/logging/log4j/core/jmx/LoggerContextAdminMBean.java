@@ -24,13 +24,35 @@ import java.util.Map;
  * The MBean interface for monitoring and managing a {@code LoggerContext}.
  */
 public interface LoggerContextAdminMBean {
-    /** ObjectName pattern for LoggerContextAdmin MBeans. */
+    /**
+     * ObjectName pattern ({@value}) for LoggerContextAdmin MBeans.
+     * This pattern contains a variable, which is the name of the logger context.
+     * <p>
+     * You can find all registered LoggerContextAdmin MBeans like this:
+     * </p>
+     * <pre>
+     * MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+     * String pattern = String.format(LoggerContextAdminMBean.PATTERN, &quot;*&quot;);
+     * Set&lt;ObjectName&gt; loggerContextNames = mbs.queryNames(new ObjectName(pattern), null);
+     * </pre>
+     * <p>
+     * Some characters are not allowed in ObjectNames. The logger context name
+     * may be quoted. When LoggerContextAdmin MBeans are
+     * registered, their ObjectNames are created using this pattern as follows:
+     * </p>
+     * <pre>
+     * String ctxName = Server.escape(loggerContext.getName());
+     * String name = String.format(PATTERN, ctxName);
+     * ObjectName objectName = new ObjectName(name);
+     * </pre>
+     * @see Server#escape(String)
+     */
     String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s";
 
     /**
      * Notification that the {@code Configuration} of the instrumented
      * {@code LoggerContext} has been reconfigured. Notifications of this type
-     * do not carry a message or user data.
+     * ({@value}) do not carry a message or user data.
      */
     String NOTIF_TYPE_RECONFIGURED = "com.apache.logging.log4j.core.jmx.config.reconfigured";
 

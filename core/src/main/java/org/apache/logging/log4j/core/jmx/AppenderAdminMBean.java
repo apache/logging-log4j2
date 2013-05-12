@@ -16,11 +16,36 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+
 /**
  * The MBean interface for monitoring and managing an {@code Appender}.
  */
 public interface AppenderAdminMBean {
-    /** ObjectName pattern for AppenderAdmin MBeans. */
+    /**
+     * ObjectName pattern ({@value}) for AppenderAdmin MBeans.
+     * This pattern contains two variables, where the first is the
+     * name of the context, the second is the name of the instrumented appender.
+     * <p>
+     * You can find all registered AppenderAdmin MBeans like this:
+     * </p>
+     * <pre>
+     * MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+     * String pattern = String.format(AppenderAdminMBean.PATTERN, &quot;*&quot;, &quot;*&quot;);
+     * Set&lt;ObjectName&gt; appenderNames = mbs.queryNames(new ObjectName(pattern), null);
+     * </pre>
+     * <p>
+     * Some characters are not allowed in ObjectNames. The logger context name
+     * and appender name may be quoted. When AppenderAdmin MBeans are
+     * registered, their ObjectNames are created using this pattern as follows:
+     * </p>
+     * <pre>
+     * String ctxName = Server.escape(loggerContext.getName());
+     * String appenderName = Server.escape(appender.getName());
+     * String name = String.format(PATTERN, ctxName, appenderName);
+     * ObjectName objectName = new ObjectName(name);
+     * </pre>
+     * @see Server#escape(String)
+     */
     String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=Appender,name=%s";
 
     /**
