@@ -14,7 +14,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 <configuration status="debug">
 
@@ -23,7 +22,7 @@
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jpa name="databaseAppender" persistenceUnitName="jpaAppenderTestUnit"
-         entityClassName="org.apache.logging.log4j.core.appender.db.jpa.TestEntity" />
+         entityClassName="org.apache.logging.log4j.core.appender.db.jpa.TestBasicEntity" />
   </appenders>
 
   <loggers>

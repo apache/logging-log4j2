@@ -16,11 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -31,48 +36,26 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class JPAAppenderTest {
-    @SuppressWarnings("unused")
-    public static class BadConstructorEntity1 extends TestEntity {
-        private static final long serialVersionUID = 1L;
-
-        public BadConstructorEntity1(final LogEvent wrappedEvent) {
-            super(wrappedEvent);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static class BadConstructorEntity2 extends TestEntity {
-        private static final long serialVersionUID = 1L;
-
-        public BadConstructorEntity2() {
-            super(null);
-        }
-
-        public BadConstructorEntity2(final LogEvent wrappedEvent, final String badParameter) {
-            super(wrappedEvent);
-        }
-    }
-
     private Connection connection;
 
     public void setUp(final String configFileName) throws SQLException {
         this.connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
 
-        final Statement statement = this.connection.createStatement();
-        statement.executeUpdate("CREATE TABLE jpaLogEntry ( "
-                + "id INTEGER IDENTITY, eventDate DATETIME, level VARCHAR(10), logger VARCHAR(255), "
-                + "message VARCHAR(1024), exception VARCHAR(1048576)" + " )");
+        Statement statement = this.connection.createStatement();
+        statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( " +
+                    "id INTEGER IDENTITY, eventDate DATETIME, level VARCHAR(10), logger VARCHAR(255), " +
+                    "message VARCHAR(1024), exception VARCHAR(1048576)" +
+                " )");
+        statement.close();
+
+        statement = this.connection.createStatement();
+        statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( " +
+                    "id INTEGER IDENTITY, millis BIGINT, level VARCHAR(10), logger VARCHAR(255), " +
+                    "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576)" +
+                " )");
         statement.close();
 
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
@@ -115,6 +98,29 @@ public class JPAAppenderTest {
     }
 
     @Test
+    public void testNoEntityClassName() {
+        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, null, "jpaAppenderTestUnit");
+
+        assertNull("The appender should be null.", appender);
+    }
+
+    @Test
+    public void testNonLogEventEntity() {
+        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, Object.class.getName(),
+                "jpaAppenderTestUnit");
+
+        assertNull("The appender should be null.", appender);
+    }
+
+    @Test
+    public void testNoPersistenceUnitName() {
+        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, TestEntity.class.getName(),
+                null);
+
+        assertNull("The appender should be null.", appender);
+    }
+
+    @Test
     public void testBadConstructorEntity01() {
         final JPAAppender appender = JPAAppender.createAppender("name", null, null, null,
                 BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit");
@@ -139,9 +145,10 @@ public class JPAAppenderTest {
     }
 
     @Test
-    public void testConfiguredAppender() throws SQLException {
+    @Ignore("until Hibernate implements support for @Convert, @Converter")
+    public void testBaseJpaEntityAppender() throws SQLException {
         try {
-            this.setUp("log4j2-jpa.xml");
+            this.setUp("log4j2-jpa-base.xml");
 
             final RuntimeException exception = new RuntimeException("Hello, world!");
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -152,14 +159,14 @@ public class JPAAppenderTest {
 
             final long millis = System.currentTimeMillis();
 
-            final Logger logger1 = LogManager.getLogger(this.getClass().getName() + ".testConfiguredAppender");
-            final Logger logger2 = LogManager.getLogger(this.getClass().getName() + ".testConfiguredAppenderAgain");
+            final Logger logger1 = LogManager.getLogger(this.getClass().getName() + ".testBaseJpaEntityAppender");
+            final Logger logger2 = LogManager.getLogger(this.getClass().getName() + ".testBaseJpaEntityAppenderAgain");
             logger1.info("Test my message 01.");
             logger1.error("This is another message 02.", exception);
             logger2.warn("A final warning has been issued.");
 
             final Statement statement = this.connection.createStatement();
-            final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaLogEntry ORDER BY id");
+            final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaBaseLogEntry ORDER BY id");
 
             assertTrue("There should be at least one row.", resultSet.next());
 
@@ -201,25 +208,87 @@ public class JPAAppenderTest {
     }
 
     @Test
-    public void testNoEntityClassName() {
-        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, null, "jpaAppenderTestUnit");
+    @Ignore("until Hibernate implements support for @Convert, @Converter")
+    public void testBasicJpaEntityAppender() throws SQLException {
+        try {
+            this.setUp("log4j2-jpa-basic.xml");
 
-        assertNull("The appender should be null.", appender);
+            final Error exception = new Error("Goodbye, cruel world!");
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final PrintWriter writer = new PrintWriter(outputStream);
+            exception.printStackTrace(writer);
+            writer.close();
+            final String stackTrace = outputStream.toString();
+
+            final long millis = System.currentTimeMillis();
+
+            final Logger logger1 = LogManager.getLogger(this.getClass().getName() + ".testBasicJpaEntityAppender");
+            final Logger logger2 = LogManager.getLogger(this.getClass().getName() + ".testBasicJpaEntityAppenderAgain");
+            logger1.debug("Test my debug 01.");
+            logger1.warn("This is another warning 02.", exception);
+            logger2.fatal("A fatal warning has been issued.");
+
+            final Statement statement = this.connection.createStatement();
+            final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaBasicLogEntry ORDER BY id");
+
+            assertTrue("There should be at least one row.", resultSet.next());
+
+            long date = resultSet.getLong("millis");
+            assertTrue("The date should be later than pre-logging (1).", date >= millis);
+            assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
+            assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
+            assertEquals("The logger column is not correct (1).", logger1.getName(), resultSet.getString("logger"));
+            assertEquals("The message column is not correct (1).", "Test my debug 01.",
+                    resultSet.getString("message"));
+            assertNull("The exception column is not correct (1).", resultSet.getString("exception"));
+
+            assertTrue("There should be at least two rows.", resultSet.next());
+
+            date = resultSet.getLong("millis");
+            assertTrue("The date should be later than pre-logging (2).", date >= millis);
+            assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
+            assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
+            assertEquals("The logger column is not correct (2).", logger1.getName(), resultSet.getString("logger"));
+            assertEquals("The message column is not correct (2).", "This is another warning 02.",
+                    resultSet.getString("message"));
+            assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("exception"));
+
+            assertTrue("There should be three rows.", resultSet.next());
+
+            date = resultSet.getLong("millis");
+            assertTrue("The date should be later than pre-logging (3).", date >= millis);
+            assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
+            assertEquals("The level column is not correct (3).", "FATAL", resultSet.getString("level"));
+            assertEquals("The logger column is not correct (3).", logger2.getName(), resultSet.getString("logger"));
+            assertEquals("The message column is not correct (3).", "A fatal warning has been issued.",
+                    resultSet.getString("message"));
+            assertNull("The exception column is not correct (3).", resultSet.getString("exception"));
+
+            assertFalse("There should not be four rows.", resultSet.next());
+        } finally {
+            this.tearDown();
+        }
     }
 
-    @Test
-    public void testNonLogEventEntity() {
-        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, Object.class.getName(),
-                "jpaAppenderTestUnit");
+    @SuppressWarnings("unused")
+    public static class BadConstructorEntity1 extends TestEntity {
+        private static final long serialVersionUID = 1L;
 
-        assertNull("The appender should be null.", appender);
+        public BadConstructorEntity1(final LogEvent wrappedEvent) {
+            super(wrappedEvent);
+        }
     }
 
-    @Test
-    public void testNoPersistenceUnitName() {
-        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, TestEntity.class.getName(),
-                null);
+    @SuppressWarnings("unused")
+    public static class BadConstructorEntity2 extends TestEntity {
+        private static final long serialVersionUID = 1L;
 
-        assertNull("The appender should be null.", appender);
+        public BadConstructorEntity2() {
+            super(null);
+        }
+
+        public BadConstructorEntity2(final LogEvent wrappedEvent, final String badParameter) {
+            super(wrappedEvent);
+        }
     }
 }
