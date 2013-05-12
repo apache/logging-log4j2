@@ -134,7 +134,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
         if (rpcClient != null) {
             try {
-                LOGGER.debug("Sending batch of {} events", events.getEvents().size());
+                LOGGER.trace("Sending batch of {} events", events.getEvents().size());
                 rpcClient.appendBatch(events.getEvents());
             } catch (final Exception ex) {
                 rpcClient.close();
