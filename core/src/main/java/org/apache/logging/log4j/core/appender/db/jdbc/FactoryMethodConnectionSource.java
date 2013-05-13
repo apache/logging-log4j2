@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import javax.sql.DataSource;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * A {@link JDBCAppender} connection source that uses a public static factory method to obtain a {@link Connection} or
@@ -37,20 +36,38 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class FactoryMethodConnectionSource implements ConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final DataSource dataSource;
+    private final String description;
+
+    private FactoryMethodConnectionSource(final DataSource dataSource, final String className, final String methodName,
+                                          final String returnType) {
+        this.dataSource = dataSource;
+        this.description = "factory{ public static " + returnType + " " + className + "." + methodName + "() }";
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return this.dataSource.getConnection();
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a connection source within the plugin manager.
-     * 
-     * @param className
-     *            The name of a public class that contains a static method capable of returning either a
-     *            {@link DataSource} or a {@link Connection}.
-     * @param methodName
-     *            The name of the public static method on the aforementioned class that returns the data source or
-     *            connection. If this method returns a {@link Connection}, it should return a new connection every call.
+     *
+     * @param className The name of a public class that contains a static method capable of returning either a
+     *                  {@link DataSource} or a {@link Connection}.
+     * @param methodName The name of the public static method on the aforementioned class that returns the data source
+     *                   or connection. If this method returns a {@link Connection}, it should return a new connection
+     *                   every call.
      * @return the created connection source.
      */
     @PluginFactory
     public static FactoryMethodConnectionSource createConnectionSource(@PluginAttr("class") final String className,
-            @PluginAttr("method") final String methodName) {
+                                                                       @PluginAttr("method") final String methodName) {
         if (className == null || className.length() == 0 || methodName == null || methodName.length() == 0) {
             LOGGER.error("No class name or method name specified for the connection factory method.");
             return null;
@@ -129,30 +146,11 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
                 }
             };
         } else {
-            LOGGER.error("Method [{}.{}()] returns unsupported type [{}].", className, methodName, returnType.getName());
+            LOGGER.error("Method [{}.{}()] returns unsupported type [{}].", className, methodName,
+                    returnType.getName());
             return null;
         }
 
         return new FactoryMethodConnectionSource(dataSource, className, methodName, returnTypeString);
-    }
-
-    private final DataSource dataSource;
-
-    private final String description;
-
-    private FactoryMethodConnectionSource(final DataSource dataSource, final String className, final String methodName,
-            final String returnType) {
-        this.dataSource = dataSource;
-        this.description = "factory{ public static " + returnType + " " + className + "." + methodName + "() }";
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        return this.dataSource.getConnection();
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

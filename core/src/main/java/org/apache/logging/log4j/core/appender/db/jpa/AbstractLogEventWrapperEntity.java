@@ -30,8 +30,8 @@ import java.util.Map;
  * Users of the JPA appender MUST extend this class, using JPA annotations on the concrete class and all of its
  * accessor methods (as needed) to map them to the proper table and columns. Accessors you do not want persisted should
  * be annotated with {@link Transient @Transient}. All accessors should call {@link #getWrappedEvent()} and delegate the
- * call to the underlying event. Users may want to instead extend {@link BasicLogEventEntity}, which takes care of all of
- * this for you.<br>
+ * call to the underlying event. Users may want to instead extend {@link BasicLogEventEntity}, which takes care of all
+ * of this for you.<br>
  * <br>
  * The concrete class must have two constructors: a public no-arg constructor to convince the JPA provider that it's a
  * valid entity, and a public constructor that takes a single {@link LogEvent event} and passes it to the parent class
@@ -56,23 +56,25 @@ import java.util.Map;
  */
 @MappedSuperclass
 public abstract class AbstractLogEventWrapperEntity implements LogEvent {
-    /**
-     * Generated serial version ID.
-     */
     private static final long serialVersionUID = 1L;
+
     private final LogEvent wrappedEvent;
 
-    @SuppressWarnings("unused") // JPA requires this
+    /**
+     * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's
+     * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
+     * entity.
+     */
+    @SuppressWarnings("unused")
     protected AbstractLogEventWrapperEntity() {
         this(null);
     }
 
     /**
-     * Instantiates the base class. All concrete implementations must have two constructors: a no-arg constructor that
-     * calls this constructor with a null argument, and a constructor matching this constructor's signature.
+     * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's
+     * signature. This constructor is used for wrapping this entity around a logged event.
      * 
-     * @param wrappedEvent
-     *            The underlying event from which information is obtained.
+     * @param wrappedEvent The underlying event from which information is obtained.
      */
     protected AbstractLogEventWrapperEntity(final LogEvent wrappedEvent) {
         this.wrappedEvent = wrappedEvent;
@@ -80,6 +82,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
 
     /**
      * All eventual accessor methods must call this method and delegate the method call to the underlying wrapped event.
+     * Annotated {@link @Transient} so as not to be included in the persisted entity.
      * 
      * @return The underlying event from which information is obtained.
      */
@@ -198,6 +201,12 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
         // this entity is write-only
     }
 
+    /**
+     * Indicates whether the source of the logging request is required downstream. Annotated {@link @Transient} so as
+     * not to be included in the persisted entity.
+     *
+     * @return whether the source of the logging request is required downstream.
+     */
     @Override
     @Transient
     public final boolean isIncludeLocation() {
@@ -205,11 +214,16 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     @Override
-    @Transient
     public final void setIncludeLocation(final boolean locationRequired) {
         this.getWrappedEvent().setIncludeLocation(locationRequired);
     }
 
+    /**
+     * Indicates whether this event is the last one in a batch. Annotated {@link @Transient} so as not to be included
+     * in the persisted entity.
+     *
+     * @return whether this event is the last one in a batch.
+     */
     @Override
     @Transient
     public final boolean isEndOfBatch() {
@@ -217,7 +231,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     @Override
-    @Transient
     public final void setEndOfBatch(final boolean endOfBatch) {
         this.getWrappedEvent().setEndOfBatch(endOfBatch);
     }

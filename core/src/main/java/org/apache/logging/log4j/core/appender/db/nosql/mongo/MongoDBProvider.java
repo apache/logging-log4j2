@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.mongo;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
-
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,10 +28,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * The MongoDB implementation of {@link NoSQLProvider}.
@@ -40,50 +39,69 @@ import com.mongodb.WriteConcern;
 public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final String collectionName;
+    private final DB database;
+    private final String description;
+
+    private final WriteConcern writeConcern;
+
+    private MongoDBProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
+            final String description) {
+        this.database = database;
+        this.writeConcern = writeConcern;
+        this.collectionName = collectionName;
+        this.description = "mongoDb{ " + description + " }";
+    }
+
+    @Override
+    public MongoDBConnection getConnection() {
+        return new MongoDBConnection(this.database, this.writeConcern, this.collectionName);
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a MongoDB provider within the plugin manager.
-     * 
-     * @param collectionName
-     *            The name of the MongoDB collection to which log events should be written.
-     * @param writeConcernConstant
-     *            The {@link WriteConcern} constant to control writing details, defaults to
-     *            {@link WriteConcern#ACKNOWLEDGED}.
-     * @param writeConcernConstantClassName
-     *            The name of a class containing the aforementioned static WriteConcern constant. Defaults to
-     *            {@link WriteConcern}.
-     * @param databaseName
-     *            The name of the MongoDB database containing the collection to which log events should be written.
-     *            Mutually exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param server
-     *            The host name of the MongoDB server, defaults to localhost and mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param port
-     *            The port the MongoDB server is listening on, defaults to the default MongoDB port and mutually
-     *            exclusive with {@code factoryClassName&factoryMethodName!=null}.
-     * @param username
-     *            The username to authenticate against the MongoDB server with.
-     * @param password
-     *            The password to authenticate against the MongoDB server with.
-     * @param factoryClassName
-     *            A fully qualified class name containing a static factory method capable of returning a {@link DB} or a
-     *            {@link MongoClient}.
-     * @param factoryMethodName
-     *            The name of the public static factory method belonging to the aforementioned factory class.
+     *
+     * @param collectionName The name of the MongoDB collection to which log events should be written.
+     * @param writeConcernConstant The {@link WriteConcern} constant to control writing details, defaults to
+     *                             {@link WriteConcern#ACKNOWLEDGED}.
+     * @param writeConcernConstantClassName The name of a class containing the aforementioned static WriteConcern
+     *                                      constant. Defaults to {@link WriteConcern}.
+     * @param databaseName The name of the MongoDB database containing the collection to which log events should be
+     *                     written. Mutually exclusive with {@code factoryClassName&factoryMethodName!=null}.
+     * @param server The host name of the MongoDB server, defaults to localhost and mutually exclusive with
+     *               {@code factoryClassName&factoryMethodName!=null}.
+     * @param port The port the MongoDB server is listening on, defaults to the default MongoDB port and mutually
+     *             exclusive with {@code factoryClassName&factoryMethodName!=null}.
+     * @param username The username to authenticate against the MongoDB server with.
+     * @param password The password to authenticate against the MongoDB server with.
+     * @param factoryClassName A fully qualified class name containing a static factory method capable of returning a
+     *                         {@link DB} or a {@link MongoClient}.
+     * @param factoryMethodName The name of the public static factory method belonging to the aforementioned factory
+     *                          class.
      * @return a new MongoDB provider.
      */
     @PluginFactory
     public static MongoDBProvider createNoSQLProvider(@PluginAttr("collectionName") final String collectionName,
-            @PluginAttr("writeConcernConstant") final String writeConcernConstant,
-            @PluginAttr("writeConcernConstantClass") final String writeConcernConstantClassName,
-            @PluginAttr("databaseName") final String databaseName, @PluginAttr("server") final String server,
-            @PluginAttr("port") final String port, @PluginAttr("username") final String username,
-            @PluginAttr("password") final String password,
-            @PluginAttr("factoryClassName") final String factoryClassName,
-            @PluginAttr("factoryMethodName") final String factoryMethodName) {
+                                                      @PluginAttr("writeConcernConstant") final String
+                                                              writeConcernConstant,
+                                                      @PluginAttr("writeConcernConstantClass") final String
+                                                              writeConcernConstantClassName,
+                                                      @PluginAttr("databaseName") final String databaseName,
+                                                      @PluginAttr("server") final String server,
+                                                      @PluginAttr("port") final String port,
+                                                      @PluginAttr("username") final String username,
+                                                      @PluginAttr("password") final String password,
+                                                      @PluginAttr("factoryClassName") final String factoryClassName,
+                                                      @PluginAttr("factoryMethodName") final String factoryMethodName) {
         DB database;
         String description;
-        if (factoryClassName != null && factoryClassName.length() > 0 && factoryMethodName != null
-                && factoryMethodName.length() > 0) {
+        if (factoryClassName != null && factoryClassName.length() > 0 &&
+                factoryMethodName != null && factoryMethodName.length() > 0) {
             try {
                 final Class<?> factoryClass = Class.forName(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
@@ -139,7 +157,8 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
                     if (port != null && port.length() > 0) {
                         try {
                             portInt = Integer.parseInt(port);
-                        } catch (final NumberFormatException ignore) { /* */
+                        } catch (final NumberFormatException ignore) {
+                            // we don't care
                         }
                     }
 
@@ -198,29 +217,5 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
         }
 
         return new MongoDBProvider(database, writeConcern, collectionName, description);
-    }
-
-    private final String collectionName;
-    private final DB database;
-    private final String description;
-
-    private final WriteConcern writeConcern;
-
-    private MongoDBProvider(final DB database, final WriteConcern writeConcern, final String collectionName,
-            final String description) {
-        this.database = database;
-        this.writeConcern = writeConcern;
-        this.collectionName = collectionName;
-        this.description = "mongoDb{ " + description + " }";
-    }
-
-    @Override
-    public MongoDBConnection getConnection() {
-        return new MongoDBConnection(this.database, this.writeConcern, this.collectionName);
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

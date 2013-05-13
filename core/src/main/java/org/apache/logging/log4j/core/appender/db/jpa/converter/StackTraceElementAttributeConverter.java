@@ -23,6 +23,10 @@ import javax.persistence.AttributeConverter;
  * converter is capable of converting both to and from {@link String}s.
  */
 public class StackTraceElementAttributeConverter implements AttributeConverter<StackTraceElement, String> {
+    private static final int UNKNOWN_SOURCE = -1;
+
+    private static final int NATIVE_METHOD = -2;
+
     @Override
     public String convertToDatabaseColumn(final StackTraceElement element) {
         return element.toString();
@@ -43,12 +47,12 @@ public class StackTraceElementAttributeConverter implements AttributeConverter<S
         String parenthesisContents = s.substring(open + 1, s.indexOf(")"));
 
         String fileName = null;
-        int lineNumber = -1;
+        int lineNumber = UNKNOWN_SOURCE;
         if ("Native Method".equals(parenthesisContents)) {
-            lineNumber = -2;
+            lineNumber = NATIVE_METHOD;
         } else if (!"Unknown Source".equals(parenthesisContents)) {
             int colon = parenthesisContents.indexOf(":");
-            if (colon > -1) {
+            if (colon > UNKNOWN_SOURCE) {
                 fileName = parenthesisContents.substring(0, colon);
                 try {
                     lineNumber = Integer.parseInt(parenthesisContents.substring(colon + 1));

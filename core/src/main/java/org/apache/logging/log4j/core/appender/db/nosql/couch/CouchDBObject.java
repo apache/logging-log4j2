@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
+import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
 
 /**
  * The Apache CouchDB implementation of {@link NoSQLObject}.
@@ -34,8 +34,18 @@ public final class CouchDBObject implements NoSQLObject<Map<String, Object>> {
     }
 
     @Override
+    public void set(final String field, final Object value) {
+        this.map.put(field, value);
+    }
+
+    @Override
     public void set(final String field, final NoSQLObject<Map<String, Object>> value) {
         this.map.put(field, value.unwrap());
+    }
+
+    @Override
+    public void set(final String field, final Object[] values) {
+        this.map.put(field, Arrays.asList(values));
     }
 
     @Override
@@ -45,16 +55,6 @@ public final class CouchDBObject implements NoSQLObject<Map<String, Object>> {
             list.add(value.unwrap());
         }
         this.map.put(field, list);
-    }
-
-    @Override
-    public void set(final String field, final Object value) {
-        this.map.put(field, value);
-    }
-
-    @Override
-    public void set(final String field, final Object[] values) {
-        this.map.put(field, Arrays.asList(values));
     }
 
     @Override

@@ -18,4 +18,3 @@
  * The classes in this package contain the Apache CouchDB provider for the NoSQL Appender.
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
-
