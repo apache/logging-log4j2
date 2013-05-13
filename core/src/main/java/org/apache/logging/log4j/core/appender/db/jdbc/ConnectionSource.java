@@ -28,11 +28,16 @@ public interface ConnectionSource {
      * This should return a new connection every time it is called.
      * 
      * @return the SQL connection object.
-     * @throws SQLException
-     *             if a database error occurs.
+     * @throws SQLException if a database error occurs.
      */
     Connection getConnection() throws SQLException;
 
+    /**
+     * All implementations must override {@link Object#toString()} to provide information about the connection
+     * configuration (obscuring passwords with one-way hashes).
+     *
+     * @return the string representation of this connection source.
+     */
     @Override
     String toString();
 }

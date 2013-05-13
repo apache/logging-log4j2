@@ -46,18 +46,13 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     }
 
     @Override
-    public void close() {
-        this.mongo.close();
+    public MongoDBObject createObject() {
+        return new MongoDBObject();
     }
 
     @Override
     public MongoDBObject[] createList(final int length) {
         return new MongoDBObject[length];
-    }
-
-    @Override
-    public MongoDBObject createObject() {
-        return new MongoDBObject();
     }
 
     @Override
@@ -70,6 +65,11 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
         } catch (final MongoException e) {
             LOGGER.error("Failed to write log event to MongoDB due to error.", e);
         }
+    }
+
+    @Override
+    public void close() {
+        this.mongo.close();
     }
 
     @Override

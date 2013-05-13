@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import org.apache.logging.log4j.Level;
@@ -48,15 +64,33 @@ import java.util.Map;
  */
 @MappedSuperclass
 public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity {
-    @SuppressWarnings("unused") // JPA requires this
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's
+     * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
+     * entity.
+     */
+    @SuppressWarnings("unused")
     public BasicLogEventEntity() {
         super();
     }
 
-    public BasicLogEventEntity(final LogEvent wrapped) {
-        super(wrapped);
+    /**
+     * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's
+     * signature. This constructor is used for wrapping this entity around a logged event.
+     *
+     * @param wrappedEvent The underlying event from which information is obtained.
+     */
+    public BasicLogEventEntity(final LogEvent wrappedEvent) {
+        super(wrappedEvent);
     }
 
+    /**
+     * Gets the level. Annotated with {@code @Basic} and {@code @Enumerated(EnumType.STRING)}.
+     *
+     * @return the level.
+     */
     @Override
     @Basic
     @Enumerated(EnumType.STRING)
@@ -64,60 +98,119 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
         return this.getWrappedEvent().getLevel();
     }
 
+    /**
+     * Gets the logger name. Annotated with {@code @Basic}.
+     *
+     * @return the logger name.
+     */
     @Override
     @Basic
     public String getLoggerName() {
         return this.getWrappedEvent().getLoggerName();
     }
 
+    /**
+     * Gets the source location information. Annotated with
+     * {@code @Convert(converter = StackTraceElementAttributeConverter.class)}.
+     *
+     * @return the source location information.
+     * @see StackTraceElementAttributeConverter
+     */
     @Override
     @Convert(converter = StackTraceElementAttributeConverter.class)
     public StackTraceElement getSource() {
         return this.getWrappedEvent().getSource();
     }
 
+    /**
+     * Gets the message. Annotated with {@code @Convert(converter = MessageAttributeConverter.class)}.
+     *
+     * @return the message.
+     * @see MessageAttributeConverter
+     */
     @Override
     @Convert(converter = MessageAttributeConverter.class)
     public Message getMessage() {
         return this.getWrappedEvent().getMessage();
     }
 
+    /**
+     * Gets the marker. Annotated with {@code @Convert(converter = MarkerAttributeConverter.class)}.
+     *
+     * @return the marker.
+     * @see MarkerAttributeConverter
+     */
     @Override
     @Convert(converter = MarkerAttributeConverter.class)
     public Marker getMarker() {
         return this.getWrappedEvent().getMarker();
     }
 
+    /**
+     * Gets the thread name. Annotated with {@code @Basic}.
+     *
+     * @return the thread name.
+     */
     @Override
     @Basic
     public String getThreadName() {
         return this.getWrappedEvent().getThreadName();
     }
 
+    /**
+     * Gets the number of milliseconds since JVM launch. Annotated with {@code @Basic}.
+     *
+     * @return the number of milliseconds since JVM launch.
+     */
     @Override
     @Basic
     public long getMillis() {
         return this.getWrappedEvent().getMillis();
     }
 
+    /**
+     * Gets the exception logged. Annotated with {@code @Convert(converter = ThrowableAttributeConverter.class)}.
+     *
+     * @return the exception logged.
+     * @see ThrowableAttributeConverter
+     */
     @Override
     @Convert(converter = ThrowableAttributeConverter.class)
     public Throwable getThrown() {
         return this.getWrappedEvent().getThrown();
     }
 
+    /**
+     * Gets the context map. Annotated with {@code @Convert(converter = ContextMapAttributeConverter.class)}.
+     *
+     * @return the context map.
+     * @see ContextMapAttributeConverter
+     * @see org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter
+     */
     @Override
     @Convert(converter = ContextMapAttributeConverter.class)
     public Map<String, String> getContextMap() {
         return this.getWrappedEvent().getContextMap();
     }
 
+    /**
+     * Gets the context stack. Annotated with {@code @Convert(converter = ContextStackAttributeConverter.class)}.
+     *
+     * @return the context stack.
+     * @see ContextStackAttributeConverter
+     * @see org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackJsonAttributeConverter
+     */
     @Override
     @Convert(converter = ContextStackAttributeConverter.class)
     public ThreadContext.ContextStack getContextStack() {
         return this.getWrappedEvent().getContextStack();
     }
 
+    /**
+     * Gets the fully qualified class name of the caller of the logger API. Annotated with {@code @Basic}.
+     *
+     * @return the fully qualified class name of the caller of the logger API.
+     */
     @Override
     @Basic
     public String getFQCN() {

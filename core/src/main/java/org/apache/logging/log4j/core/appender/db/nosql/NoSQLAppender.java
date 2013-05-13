@@ -37,27 +37,37 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  */
 @Plugin(name = "NoSql", category = "Core", elementType = "appender", printObject = true)
 public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseManager<?>> {
+    private final String description;
+
+    private NoSQLAppender(final String name, final Filter filter, final boolean handleException,
+                          final NoSQLDatabaseManager<?> manager) {
+        super(name, filter, handleException, manager);
+        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a NoSQL appender within the plugin manager.
-     * 
-     * @param name
-     *            The name of the appender.
-     * @param suppressExceptions
-     *            {@code "true"} (default) if logging exceptions should be hidden from the application, false otherwise.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param bufferSize
-     *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
-     *            buffer reaches this size.
-     * @param provider
-     *            The NoSQL provider that provides connections to the chosen NoSQL database.
+     *
+     * @param name The name of the appender.
+     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
+     *                           {@code "false"} otherwise.
+     * @param filter The filter, if any, to use.
+     * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
+     *                   the buffer reaches this size.
+     * @param provider The NoSQL provider that provides connections to the chosen NoSQL database.
      * @return a new NoSQL appender.
      */
     @PluginFactory
     public static NoSQLAppender createAppender(@PluginAttr("name") final String name,
-            @PluginAttr("suppressExceptions") final String suppressExceptions,
-            @PluginElement("filter") final Filter filter, @PluginAttr("bufferSize") final String bufferSize,
-            @PluginElement("noSqlProvider") final NoSQLProvider<?> provider) {
+                                               @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                               @PluginElement("filter") final Filter filter,
+                                               @PluginAttr("bufferSize") final String bufferSize,
+                                               @PluginElement("noSqlProvider") final NoSQLProvider<?> provider) {
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;
@@ -76,25 +86,13 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";
 
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager(managerName,
-                bufferSizeInt, provider);
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager(
+                managerName, bufferSizeInt, provider
+        );
         if (manager == null) {
             return null;
         }
 
         return new NoSQLAppender(name, filter, handleExceptions, manager);
-    }
-
-    private final String description;
-
-    private NoSQLAppender(final String name, final Filter filter, final boolean handleException,
-            final NoSQLDatabaseManager<?> manager) {
-        super(name, filter, handleException, manager);
-        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

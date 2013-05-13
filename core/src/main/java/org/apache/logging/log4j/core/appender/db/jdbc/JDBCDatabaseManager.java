@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -23,105 +28,21 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
 public final class JDBCDatabaseManager extends AbstractDatabaseManager {
-    private static final class Column {
-        private final boolean isEventTimestamp;
-        private final PatternLayout layout;
-
-        private Column(final PatternLayout layout, final boolean isEventDate) {
-            this.layout = layout;
-            this.isEventTimestamp = isEventDate;
-        }
-    }
-
-    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
-        private final ColumnConfig[] columnConfigs;
-        private final ConnectionSource connectionSource;
-        private final String tableName;
-
-        protected FactoryData(final int bufferSize, final ConnectionSource connectionSource, final String tableName,
-                final ColumnConfig[] columnConfigs) {
-            super(bufferSize);
-            this.connectionSource = connectionSource;
-            this.tableName = tableName;
-            this.columnConfigs = columnConfigs;
-        }
-    }
-
-    private static final class JDBCDatabaseManagerFactory implements ManagerFactory<JDBCDatabaseManager, FactoryData> {
-        @Override
-        public JDBCDatabaseManager createManager(final String name, final FactoryData data) {
-            final StringBuilder columnPart = new StringBuilder();
-            final StringBuilder valuePart = new StringBuilder();
-            final List<Column> columns = new ArrayList<Column>();
-            int i = 0;
-            for (final ColumnConfig config : data.columnConfigs) {
-                if (i++ > 0) {
-                    columnPart.append(',');
-                    valuePart.append(',');
-                }
-
-                columnPart.append(config.getColumnName());
-
-                if (config.getLiteralValue() != null) {
-                    valuePart.append(config.getLiteralValue());
-                } else {
-                    columns.add(new Column(config.getLayout(), config.isEventTimestamp()));
-                    valuePart.append('?');
-                }
-            }
-
-            final String sqlStatement = "INSERT INTO " + data.tableName + " (" + columnPart + ") VALUES (" + valuePart
-                    + ")";
-
-            return new JDBCDatabaseManager(name, data.bufferSize, data.connectionSource, sqlStatement, columns);
-        }
-    }
-
     private static final JDBCDatabaseManagerFactory FACTORY = new JDBCDatabaseManagerFactory();
 
-    /**
-     * Creates a JDBC manager for use within the {@link JDBCAppender}, or returns a suitable one if it already exists.
-     * 
-     * @param name
-     *            The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize
-     *            The size of the log event buffer.
-     * @param connectionSource
-     *            The source for connections to the database.
-     * @param tableName
-     *            The name of the database table to insert log events into.
-     * @param columnConfigs
-     *            Configuration information about the log table columns.
-     * @return a new or existing JDBC manager as applicable.
-     */
-    public static JDBCDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
-            final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs) {
-
-        return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, connectionSource, tableName,
-                columnConfigs), FACTORY);
-    }
-
     private final List<Column> columns;
-
-    private Connection connection;
-
     private final ConnectionSource connectionSource;
-
     private final String sqlStatement;
 
+    private Connection connection;
     private PreparedStatement statement;
 
     private JDBCDatabaseManager(final String name, final int bufferSize, final ConnectionSource connectionSource,
-            final String sqlStatement, final List<Column> columns) {
+                                final String sqlStatement, final List<Column> columns) {
         super(name, bufferSize);
         this.connectionSource = connectionSource;
         this.sqlStatement = sqlStatement;
@@ -180,6 +101,89 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             }
         } catch (final SQLException e) {
             LOGGER.error("Failed to insert record for log event in manager [{}].", this.getName(), e);
+        }
+    }
+
+    /**
+     * Creates a JDBC manager for use within the {@link JDBCAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param connectionSource The source for connections to the database.
+     * @param tableName The name of the database table to insert log events into.
+     * @param columnConfigs Configuration information about the log table columns.
+     * @return a new or existing JDBC manager as applicable.
+     */
+    public static JDBCDatabaseManager getJDBCDatabaseManager(final String name, final int bufferSize,
+                                                             final ConnectionSource connectionSource,
+                                                             final String tableName,
+                                                             final ColumnConfig[] columnConfigs) {
+
+        return AbstractDatabaseManager.getManager(
+                name, new FactoryData(bufferSize, connectionSource, tableName, columnConfigs), FACTORY
+        );
+    }
+
+    /**
+     * Encapsulates data that {@link JDBCDatabaseManagerFactory} uses to create managers.
+     */
+    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
+        private final ColumnConfig[] columnConfigs;
+        private final ConnectionSource connectionSource;
+        private final String tableName;
+
+        protected FactoryData(final int bufferSize, final ConnectionSource connectionSource, final String tableName,
+                              final ColumnConfig[] columnConfigs) {
+            super(bufferSize);
+            this.connectionSource = connectionSource;
+            this.tableName = tableName;
+            this.columnConfigs = columnConfigs;
+        }
+    }
+
+    /**
+     * Creates managers.
+     */
+    private static final class JDBCDatabaseManagerFactory implements ManagerFactory<JDBCDatabaseManager, FactoryData> {
+        @Override
+        public JDBCDatabaseManager createManager(final String name, final FactoryData data) {
+            final StringBuilder columnPart = new StringBuilder();
+            final StringBuilder valuePart = new StringBuilder();
+            final List<Column> columns = new ArrayList<Column>();
+            int i = 0;
+            for (final ColumnConfig config : data.columnConfigs) {
+                if (i++ > 0) {
+                    columnPart.append(',');
+                    valuePart.append(',');
+                }
+
+                columnPart.append(config.getColumnName());
+
+                if (config.getLiteralValue() != null) {
+                    valuePart.append(config.getLiteralValue());
+                } else {
+                    columns.add(new Column(config.getLayout(), config.isEventTimestamp()));
+                    valuePart.append('?');
+                }
+            }
+
+            final String sqlStatement = "INSERT INTO " + data.tableName + " (" + columnPart + ") VALUES (" +
+                    valuePart + ")";
+
+            return new JDBCDatabaseManager(name, data.getBufferSize(), data.connectionSource, sqlStatement, columns);
+        }
+    }
+
+    /**
+     * Encapsulates information about a database column and how to persist data to it.
+     */
+    private static final class Column {
+        private final boolean isEventTimestamp;
+        private final PatternLayout layout;
+
+        private Column(final PatternLayout layout, final boolean isEventDate) {
+            this.layout = layout;
+            this.isEventTimestamp = isEventDate;
         }
     }
 }

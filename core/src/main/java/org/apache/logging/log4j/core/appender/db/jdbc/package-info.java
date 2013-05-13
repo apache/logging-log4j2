@@ -19,4 +19,3 @@
  * a JDBC driver on your classpath for the database you wish to log to.
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
-

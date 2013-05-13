@@ -31,6 +31,8 @@ import java.util.ListIterator;
  */
 @Converter(autoApply = false)
 public class ThrowableAttributeConverter implements AttributeConverter<Throwable, String> {
+    private static final int CAUSED_BY_STRING_LENGTH = 10;
+
     private static final Field THROWABLE_CAUSE;
 
     private static final Field THROWABLE_MESSAGE;
@@ -77,7 +79,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable convertString(final ListIterator<String> lines, boolean removeCausedBy) {
         String firstLine = lines.next();
         if (removeCausedBy) {
-            firstLine = firstLine.substring(10);
+            firstLine = firstLine.substring(CAUSED_BY_STRING_LENGTH);
         }
         int colon = firstLine.indexOf(":");
         String throwableClassName;
@@ -115,7 +117,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                                    final StackTraceElement[] stackTrace) {
         try {
             @SuppressWarnings("unchecked")
-            Class<Throwable> throwableClass = (Class<Throwable>)Class.forName(throwableClassName);
+            Class<Throwable> throwableClass = (Class<Throwable>) Class.forName(throwableClassName);
 
             if (!Throwable.class.isAssignableFrom(throwableClass)) {
                 return null;
@@ -175,7 +177,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final String message, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
-            Constructor<Throwable>[] constructors = (Constructor<Throwable>[])throwableClass.getConstructors();
+            Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
             for (Constructor<Throwable> constructor : constructors) {
                 Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 2) {
@@ -196,7 +198,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
-            Constructor<Throwable>[] constructors = (Constructor<Throwable>[])throwableClass.getConstructors();
+            Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
             for (Constructor<Throwable> constructor : constructors) {
                 Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 1 && Throwable.class.isAssignableFrom(parameterTypes[0])) {

@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * A {@link JDBCAppender} connection source that uses a {@link DataSource} to connect to the database.
@@ -36,12 +35,29 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class DataSourceConnectionSource implements ConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final DataSource dataSource;
+    private final String description;
+
+    private DataSourceConnectionSource(final String dataSourceName, final DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.description = "dataSource{ name=" + dataSourceName + ", value=" + dataSource + " }";
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return this.dataSource.getConnection();
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a connection source within the plugin manager.
-     * 
-     * @param jndiName
-     *            The full JNDI path where the data source is bound. Should start with java:/comp/env or
-     *            environment-equivalent.
+     *
+     * @param jndiName The full JNDI path where the data source is bound. Should start with java:/comp/env or
+     *                 environment-equivalent.
      * @return the created connection source.
      */
     @PluginFactory
@@ -64,24 +80,5 @@ public final class DataSourceConnectionSource implements ConnectionSource {
             LOGGER.error(e.getMessage(), e);
             return null;
         }
-    }
-
-    private final DataSource dataSource;
-
-    private final String description;
-
-    private DataSourceConnectionSource(final String dataSourceName, final DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.description = "dataSource{ name=" + dataSourceName + ", value=" + dataSource + " }";
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        return this.dataSource.getConnection();
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

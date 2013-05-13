@@ -28,40 +28,49 @@ import java.lang.reflect.Constructor;
 
 /**
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a
- * pre-configured JPA persistence unit and a concrete implementation of the abstract {@link AbstractLogEventWrapperEntity} class
- * decorated with JPA annotations.
+ * pre-configured JPA persistence unit and a concrete implementation of the abstract
+ * {@link AbstractLogEventWrapperEntity} class decorated with JPA annotations.
  * 
  * @see AbstractLogEventWrapperEntity
  */
 @Plugin(name = "Jpa", category = "Core", elementType = "appender", printObject = true)
 public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
+    private final String description;
+
+    private JPAAppender(final String name, final Filter filter, final boolean handleException,
+            final JPADatabaseManager manager) {
+        super(name, filter, handleException, manager);
+        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a JPA appender within the plugin manager.
-     * 
-     * @param name
-     *            The name of the appender.
-     * @param suppressExceptions
-     *            {@code "true"} (default) if logging exceptions should be hidden from the application, false otherwise.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param bufferSize
-     *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
-     *            buffer reaches this size.
-     * @param entityClassName
-     *            The fully qualified name of the concrete {@link AbstractLogEventWrapperEntity} implementation that has JPA
-     *            annotations mapping it to a database table.
-     * @param persistenceUnitName
-     *            The name of the JPA persistence unit that should be used for persisting log events.
+     *
+     * @param name The name of the appender.
+     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
+     *                           {@code "false"} otherwise.
+     * @param filter The filter, if any, to use.
+     * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
+     *                   the buffer reaches this size.
+     * @param entityClassName The fully qualified name of the concrete {@link AbstractLogEventWrapperEntity}
+     *                        implementation that has JPA annotations mapping it to a database table.
+     * @param persistenceUnitName The name of the JPA persistence unit that should be used for persisting log events.
      * @return a new JPA appender.
      */
     @PluginFactory
     public static JPAAppender createAppender(@PluginAttr("name") final String name,
-            @PluginAttr("suppressExceptions") final String suppressExceptions,
-            @PluginElement("filter") final Filter filter, @PluginAttr("bufferSize") final String bufferSize,
-            @PluginAttr("entityClassName") final String entityClassName,
-            @PluginAttr("persistenceUnitName") final String persistenceUnitName) {
-        if (entityClassName == null || entityClassName.length() == 0 || persistenceUnitName == null
-                || persistenceUnitName.length() == 0) {
+                                             @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                             @PluginElement("filter") final Filter filter,
+                                             @PluginAttr("bufferSize") final String bufferSize,
+                                             @PluginAttr("entityClassName") final String entityClassName,
+                                             @PluginAttr("persistenceUnitName") final String persistenceUnitName) {
+        if (entityClassName == null || entityClassName.length() == 0 ||
+                persistenceUnitName == null || persistenceUnitName.length() == 0) {
             LOGGER.error("Attributes entityClassName and persistenceUnitName are required for JPA Appender.");
             return null;
         }
@@ -78,8 +87,8 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
 
         try {
             @SuppressWarnings("unchecked")
-            final Class<? extends AbstractLogEventWrapperEntity> entityClass = (Class<? extends AbstractLogEventWrapperEntity>) Class
-                    .forName(entityClassName);
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass =
+                    (Class<? extends AbstractLogEventWrapperEntity>) Class.forName(entityClassName);
 
             if (!AbstractLogEventWrapperEntity.class.isAssignableFrom(entityClass)) {
                 LOGGER.error("Entity class [{}] does not extend AbstractLogEventWrapperEntity.", entityClassName);
@@ -94,14 +103,15 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                 return null;
             }
 
-            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor = entityClass
-                    .getConstructor(LogEvent.class);
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor =
+                    entityClass.getConstructor(LogEvent.class);
 
             final String managerName = "jpaManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                     + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + "}";
 
-            final JPADatabaseManager manager = JPADatabaseManager.getJPADatabaseManager(managerName, bufferSizeInt,
-                    entityClass, entityConstructor, persistenceUnitName);
+            final JPADatabaseManager manager = JPADatabaseManager.getJPADatabaseManager(
+                    managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName
+            );
             if (manager == null) {
                 return null;
             }
@@ -115,18 +125,5 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                     entityClassName);
             return null;
         }
-    }
-
-    private final String description;
-
-    private JPAAppender(final String name, final Filter filter, final boolean handleException,
-            final JPADatabaseManager manager) {
-        super(name, filter, handleException, manager);
-        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

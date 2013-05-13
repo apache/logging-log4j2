@@ -34,33 +34,43 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  */
 @Plugin(name = "Jdbc", category = "Core", elementType = "appender", printObject = true)
 public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseManager> {
+    private final String description;
+
+    private JDBCAppender(final String name, final Filter filter, final boolean handleException,
+                         final JDBCDatabaseManager manager) {
+        super(name, filter, handleException, manager);
+        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating a JDBC appender within the plugin manager.
-     * 
-     * @param name
-     *            The name of the appender.
-     * @param suppressExceptions
-     *            {@code "true"} (default) if logging exceptions should be hidden from the application, false otherwise.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param connectionSource
-     *            The connections source from which database connections should be retrieved.
-     * @param bufferSize
-     *            If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
-     *            buffer reaches this size.
-     * @param tableName
-     *            The name of the database table to insert log events into.
-     * @param columnConfigs
-     *            Information about the columns that log event data should be inserted into and how to insert that data.
+     *
+     * @param name The name of the appender.
+     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
+     *                           {@code "false"} otherwise.
+     * @param filter The filter, if any, to use.
+     * @param connectionSource The connections source from which database connections should be retrieved.
+     * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
+     *                   the buffer reaches this size.
+     * @param tableName The name of the database table to insert log events into.
+     * @param columnConfigs Information about the columns that log event data should be inserted into and how to insert
+     *                      that data.
      * @return a new JDBC appender.
      */
     @PluginFactory
     public static JDBCAppender createAppender(@PluginAttr("name") final String name,
-            @PluginAttr("suppressExceptions") final String suppressExceptions,
-            @PluginElement("filter") final Filter filter,
-            @PluginElement("connectionSource") final ConnectionSource connectionSource,
-            @PluginAttr("bufferSize") final String bufferSize, @PluginAttr("tableName") final String tableName,
-            @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
+                                              @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                              @PluginElement("filter") final Filter filter,
+                                              @PluginElement("connectionSource") final ConnectionSource
+                                                      connectionSource,
+                                              @PluginAttr("bufferSize") final String bufferSize,
+                                              @PluginAttr("tableName") final String tableName,
+                                              @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
         int bufferSizeInt;
         try {
             bufferSizeInt = bufferSize == null || bufferSize.length() == 0 ? 0 : Integer.parseInt(bufferSize);
@@ -85,25 +95,13 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
 
         managerName.append(" ] }");
 
-        final JDBCDatabaseManager manager = JDBCDatabaseManager.getJDBCDatabaseManager(managerName.toString(),
-                bufferSizeInt, connectionSource, tableName, columnConfigs);
+        final JDBCDatabaseManager manager = JDBCDatabaseManager.getJDBCDatabaseManager(
+                managerName.toString(), bufferSizeInt, connectionSource, tableName, columnConfigs
+        );
         if (manager == null) {
             return null;
         }
 
         return new JDBCAppender(name, filter, handleExceptions, manager);
-    }
-
-    private final String description;
-
-    private JDBCAppender(final String name, final Filter filter, final boolean handleException,
-            final JDBCDatabaseManager manager) {
-        super(name, filter, handleException, manager);
-        this.description = this.getName() + "{ manager=" + this.getManager() + " }";
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

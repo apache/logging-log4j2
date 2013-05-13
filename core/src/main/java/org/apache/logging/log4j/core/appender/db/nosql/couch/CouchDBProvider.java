@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
-import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,6 +26,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
+import java.lang.reflect.Method;
+
 /**
  * The Apache CouchDB implementation of {@link NoSQLProvider}.
  */
@@ -37,45 +37,58 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
     private static final int HTTPS = 443;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final CouchDbClient client;
+    private final String description;
+
+    private CouchDBProvider(final CouchDbClient client, final String description) {
+        this.client = client;
+        this.description = "couchDb{ " + description + " }";
+    }
+
+    @Override
+    public CouchDBConnection getConnection() {
+        return new CouchDBConnection(this.client);
+    }
+
+    @Override
+    public String toString() {
+        return this.description;
+    }
+
     /**
      * Factory method for creating an Apache CouchDB provider within the plugin manager.
-     * 
-     * @param databaseName
-     *            The name of the database to which log event documents will be written.
-     * @param protocol
-     *            Either "http" or "https," defaults to "http" and mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param server
-     *            The host name of the CouchDB server, defaults to localhost and mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param port
-     *            The port that CouchDB is listening on, defaults to 80 if {@code protocol} is "http" and 443 if
-     *            {@code protocol} is "https," and mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param username
-     *            The username to authenticate against the MongoDB server with, mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param password
-     *            The password to authenticate against the MongoDB server with, mutually exclusive with
-     *            {@code factoryClassName&factoryMethodName!=null}.
-     * @param factoryClassName
-     *            A fully qualified class name containing a static factory method capable of returning a
-     *            {@link CouchDbClient} or {@link CouchDbProperties}.
-     * @param factoryMethodName
-     *            The name of the public static factory method belonging to the aforementioned factory class.
+     *
+     * @param databaseName The name of the database to which log event documents will be written.
+     * @param protocol Either "http" or "https," defaults to "http" and mutually exclusive with
+     *                 {@code factoryClassName&factoryMethodName!=null}.
+     * @param server The host name of the CouchDB server, defaults to localhost and mutually exclusive with
+     *               {@code factoryClassName&factoryMethodName!=null}.
+     * @param port The port that CouchDB is listening on, defaults to 80 if {@code protocol} is "http" and 443 if
+     *             {@code protocol} is "https," and mutually exclusive with
+     *             {@code factoryClassName&factoryMethodName!=null}.
+     * @param username The username to authenticate against the MongoDB server with, mutually exclusive with
+     *                 {@code factoryClassName&factoryMethodName!=null}.
+     * @param password The password to authenticate against the MongoDB server with, mutually exclusive with
+     *                 {@code factoryClassName&factoryMethodName!=null}.
+     * @param factoryClassName A fully qualified class name containing a static factory method capable of returning a
+     *                         {@link CouchDbClient} or {@link CouchDbProperties}.
+     * @param factoryMethodName The name of the public static factory method belonging to the aforementioned factory
+     *                          class.
      * @return a new Apache CouchDB provider.
      */
     @PluginFactory
     public static CouchDBProvider createNoSQLProvider(@PluginAttr("databaseName") final String databaseName,
-            @PluginAttr("protocol") String protocol, @PluginAttr("server") String server,
-            @PluginAttr("port") final String port, @PluginAttr("username") final String username,
-            @PluginAttr("password") final String password,
-            @PluginAttr("factoryClassName") final String factoryClassName,
-            @PluginAttr("factoryMethodName") final String factoryMethodName) {
+                                                      @PluginAttr("protocol") String protocol,
+                                                      @PluginAttr("server") String server,
+                                                      @PluginAttr("port") final String port,
+                                                      @PluginAttr("username") final String username,
+                                                      @PluginAttr("password") final String password,
+                                                      @PluginAttr("factoryClassName") final String factoryClassName,
+                                                      @PluginAttr("factoryMethodName") final String factoryMethodName) {
         CouchDbClient client;
         String description;
-        if (factoryClassName != null && factoryClassName.length() > 0 && factoryMethodName != null
-                && factoryMethodName.length() > 0) {
+        if (factoryClassName != null && factoryClassName.length() > 0 &&
+                factoryMethodName != null && factoryMethodName.length() > 0) {
             try {
                 final Class<?> factoryClass = Class.forName(factoryClassName);
                 final Method method = factoryClass.getMethod(factoryMethodName);
@@ -126,7 +139,8 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
             if (port != null && port.length() > 0) {
                 try {
                     portInt = Integer.parseInt(port);
-                } catch (final NumberFormatException ignore) { /* */
+                } catch (final NumberFormatException ignore) {
+                    // we don't care
                 }
             } else {
                 LOGGER.warn("No port specified, using default port [{}] for protocol [{}].", portInt, protocol);
@@ -151,24 +165,5 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
         }
 
         return new CouchDBProvider(client, description);
-    }
-
-    private final CouchDbClient client;
-
-    private final String description;
-
-    private CouchDBProvider(final CouchDbClient client, final String description) {
-        this.client = client;
-        this.description = "couchDb{ " + description + " }";
-    }
-
-    @Override
-    public CouchDBConnection getConnection() {
-        return new CouchDBConnection(this.client);
-    }
-
-    @Override
-    public String toString() {
-        return this.description;
     }
 }

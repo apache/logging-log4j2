@@ -16,60 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
+import java.util.Map;
+
 /**
  * An {@link AbstractDatabaseManager} implementation for all NoSQL databases.
  * 
- * @param <W>
- *            A type parameter for reassuring the compiler that all operations are using the same {@link NoSQLObject}.
+ * @param <W> A type parameter for reassuring the compiler that all operations are using the same {@link NoSQLObject}.
  */
 public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
-    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
-        private final NoSQLProvider<?> provider;
-
-        protected FactoryData(final int bufferSize, final NoSQLProvider<?> provider) {
-            super(bufferSize);
-            this.provider = provider;
-        }
-    }
-
-    private static final class NoSQLDatabaseManagerFactory implements
-            ManagerFactory<NoSQLDatabaseManager<?>, FactoryData> {
-        @Override
-        @SuppressWarnings("unchecked")
-        public NoSQLDatabaseManager<?> createManager(final String name, final FactoryData data) {
-            return new NoSQLDatabaseManager(name, data.bufferSize, data.provider);
-        }
-    }
-
     private static final NoSQLDatabaseManagerFactory FACTORY = new NoSQLDatabaseManagerFactory();
 
-    /**
-     * Creates a NoSQL manager for use within the {@link NoSQLAppender}, or returns a suitable one if it already exists.
-     * 
-     * @param name
-     *            The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize
-     *            The size of the log event buffer.
-     * @param provider
-     *            A provider instance which will be used to obtain connections to the chosen NoSQL database.
-     * @return a new or existing NoSQL manager as applicable.
-     */
-    public static NoSQLDatabaseManager<?> getNoSQLDatabaseManager(final String name, final int bufferSize,
-            final NoSQLProvider<?> provider) {
-        return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, provider), FACTORY);
-    }
+    private final NoSQLProvider<NoSQLConnection<W, ? extends NoSQLObject<W>>> provider;
 
     private NoSQLConnection<W, ? extends NoSQLObject<W>> connection;
-
-    private final NoSQLProvider<NoSQLConnection<W, ? extends NoSQLObject<W>>> provider;
 
     private NoSQLDatabaseManager(final String name, final int bufferSize,
             final NoSQLProvider<NoSQLConnection<W, ? extends NoSQLObject<W>>> provider) {
@@ -84,23 +49,6 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         } catch (final Exception e) {
             LOGGER.error("Failed to obtain a connection to the NoSQL database in manager [{}].", this.getName(), e);
         }
-    }
-
-    private NoSQLObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
-        final NoSQLObject<W>[] stackTraceEntities = this.connection.createList(stackTrace.length);
-        for (int i = 0; i < stackTrace.length; i++) {
-            stackTraceEntities[i] = this.convertStackTraceElement(stackTrace[i]);
-        }
-        return stackTraceEntities;
-    }
-
-    private NoSQLObject<W> convertStackTraceElement(final StackTraceElement element) {
-        final NoSQLObject<W> elementEntity = this.connection.createObject();
-        elementEntity.set("className", element.getClassName());
-        elementEntity.set("methodName", element.getMethodName());
-        elementEntity.set("fileName", element.getFileName());
-        elementEntity.set("lineNumber", element.getLineNumber());
-        return elementEntity;
     }
 
     @Override
@@ -196,5 +144,59 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         }
 
         this.connection.insertObject(entity);
+    }
+
+    private NoSQLObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
+        final NoSQLObject<W>[] stackTraceEntities = this.connection.createList(stackTrace.length);
+        for (int i = 0; i < stackTrace.length; i++) {
+            stackTraceEntities[i] = this.convertStackTraceElement(stackTrace[i]);
+        }
+        return stackTraceEntities;
+    }
+
+    private NoSQLObject<W> convertStackTraceElement(final StackTraceElement element) {
+        final NoSQLObject<W> elementEntity = this.connection.createObject();
+        elementEntity.set("className", element.getClassName());
+        elementEntity.set("methodName", element.getMethodName());
+        elementEntity.set("fileName", element.getFileName());
+        elementEntity.set("lineNumber", element.getLineNumber());
+        return elementEntity;
+    }
+
+    /**
+     * Creates a NoSQL manager for use within the {@link NoSQLAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
+     * @return a new or existing NoSQL manager as applicable.
+     */
+    public static NoSQLDatabaseManager<?> getNoSQLDatabaseManager(final String name, final int bufferSize,
+                                                                  final NoSQLProvider<?> provider) {
+        return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, provider), FACTORY);
+    }
+
+    /**
+     * Encapsulates data that {@link NoSQLDatabaseManagerFactory} uses to create managers.
+     */
+    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
+        private final NoSQLProvider<?> provider;
+
+        protected FactoryData(final int bufferSize, final NoSQLProvider<?> provider) {
+            super(bufferSize);
+            this.provider = provider;
+        }
+    }
+
+    /**
+     * Creates managers.
+     */
+    private static final class NoSQLDatabaseManagerFactory implements
+            ManagerFactory<NoSQLDatabaseManager<?>, FactoryData> {
+        @Override
+        @SuppressWarnings("unchecked")
+        public NoSQLDatabaseManager<?> createManager(final String name, final FactoryData data) {
+            return new NoSQLDatabaseManager(name, data.getBufferSize(), data.provider);
+        }
     }
 }

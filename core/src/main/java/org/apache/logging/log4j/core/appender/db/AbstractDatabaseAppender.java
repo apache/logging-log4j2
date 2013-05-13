@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
@@ -32,46 +32,27 @@ import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
  * {@link org.apache.logging.log4j.core.appender.db.jdbc JDBC}, {@link org.apache.logging.log4j.core.appender.db.jpa
  * JPA}, and {@link org.apache.logging.log4j.core.appender.db.nosql NoSQL}.
  * 
- * @param <T>
- *            Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
+ * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
 public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender<LogEvent> {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private T manager;
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
+
+    private T manager;
 
     /**
      * Instantiates the base appender.
      * 
-     * @param name
-     *            The appender name.
-     * @param filter
-     *            The filter, if any, to use.
-     * @param handleException
-     *            Whether logging exceptions should be reported to the application.
-     * @param manager
-     *            The matching {@link AbstractDatabaseManager} implementation.
+     * @param name The appender name.
+     * @param filter The filter, if any, to use.
+     * @param handleException Whether logging exceptions should be reported to the application.
+     * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
     protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean handleException,
-            final T manager) {
+                                       final T manager) {
         super(name, filter, null, handleException);
         this.manager = manager;
-    }
-
-    @Override
-    public final void append(final LogEvent event) {
-        this.readLock.lock();
-        try {
-            this.getManager().write(event);
-        } catch (final AppenderRuntimeException e) {
-            this.error(
-                    "Unable to write to database [" + this.getManager().getName() + "] for appender [" + this.getName()
-                            + "].", e);
-            throw e;
-        } finally {
-            this.readLock.unlock();
-        }
     }
 
     /**
@@ -94,28 +75,6 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         return this.manager;
     }
 
-    /**
-     * Replaces the underlying manager in use within this appender. This can be useful for manually changing the way log
-     * events are written to the database without losing buffered or in-progress events. The existing manager is
-     * released only after the new manager has been installed. This method is thread-safe.
-     * 
-     * @param manager
-     *            The new manager to install.
-     */
-    protected final void replaceManager(final T manager) {
-        this.writeLock.lock();
-        try {
-            final T old = this.getManager();
-            if (!manager.isConnected()) {
-                manager.connect();
-            }
-            this.manager = manager;
-            old.release();
-        } finally {
-            this.writeLock.unlock();
-        }
-    }
-
     @Override
     public final void start() {
         if (this.getManager() == null) {
@@ -132,6 +91,41 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         super.stop();
         if (this.getManager() != null) {
             this.getManager().release();
+        }
+    }
+
+    @Override
+    public final void append(final LogEvent event) {
+        this.readLock.lock();
+        try {
+            this.getManager().write(event);
+        } catch (final AppenderRuntimeException e) {
+            this.error("Unable to write to database [" + this.getManager().getName() + "] for appender [" +
+                    this.getName() + "].", e);
+            throw e;
+        } finally {
+            this.readLock.unlock();
+        }
+    }
+
+    /**
+     * Replaces the underlying manager in use within this appender. This can be useful for manually changing the way log
+     * events are written to the database without losing buffered or in-progress events. The existing manager is
+     * released only after the new manager has been installed. This method is thread-safe.
+     *
+     * @param manager The new manager to install.
+     */
+    protected final void replaceManager(final T manager) {
+        this.writeLock.lock();
+        try {
+            final T old = this.getManager();
+            if (!manager.isConnected()) {
+                manager.connect();
+            }
+            this.manager = manager;
+            old.release();
+        } finally {
+            this.writeLock.unlock();
         }
     }
 }

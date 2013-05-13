@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
+
+import java.util.Map;
 
 /**
  * The Apache CouchDB implementation of {@link NoSQLConnection}.
@@ -39,19 +39,13 @@ public final class CouchDBConnection implements NoSQLConnection<Map<String, Obje
     }
 
     @Override
-    public synchronized void close() {
-        this.closed = true;
-        this.client.shutdown();
+    public CouchDBObject createObject() {
+        return new CouchDBObject();
     }
 
     @Override
     public CouchDBObject[] createList(final int length) {
         return new CouchDBObject[length];
-    }
-
-    @Override
-    public CouchDBObject createObject() {
-        return new CouchDBObject();
     }
 
     @Override
@@ -64,6 +58,12 @@ public final class CouchDBConnection implements NoSQLConnection<Map<String, Obje
         } catch (final Exception e) {
             LOGGER.error("Failed to write log event to CouchDB due to error.", e);
         }
+    }
+
+    @Override
+    public synchronized void close() {
+        this.closed = true;
+        this.client.shutdown();
     }
 
     @Override
