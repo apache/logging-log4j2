@@ -42,6 +42,16 @@
       </PropertiesRewritePolicy>
       <appender-ref ref="List2"/>
     </Rewrite>
+    <Rewrite name="Rewrite3">
+      <MapFilter>
+        <KeyValuePair key="Key1" Value="Value1"/>
+      </MapFilter>
+      <MapRewritePolicy>
+        <KeyValuePair key="Key1" Value="Apache"/>
+        <KeyValuePair key="Key3" Value="Log4j"/>
+      </MapRewritePolicy>
+      <appender-ref ref="List"/>
+    </Rewrite>
   </appenders>
 
   <loggers>
@@ -49,6 +59,9 @@
       <appender-ref ref="Rewrite"/>
     </logger>
 
+    <logger name="org.apache.logging.log4j.core.Logging" level="trace" additivity="false">
+      <appender-ref ref="Rewrite3"/>
+    </logger>
     <logger name="org.apache.logging.log4j" level="trace" additivity="false">
       <appender-ref ref="Rewrite2"/>
     </logger>
