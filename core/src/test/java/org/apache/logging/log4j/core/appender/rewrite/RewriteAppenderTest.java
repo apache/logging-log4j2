@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -103,5 +104,23 @@ public class RewriteAppenderTest {
         assertNotNull("No events generated", list);
         assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
         assertFalse("Did not resolve user name", list.get(0).contains("{user.dir}"));
+    }
+
+
+    @Test
+    public void testFilter() {
+        StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
+        msg.put("Key1", "Value2");
+        msg.put("Key2", "Value1");
+        Logger logger = LogManager.getLogger("org.apache.logging.log4j.core.Logging");
+        logger.debug(msg);
+        msg = new StructuredDataMessage("Test", "This is a test", "Service");
+        msg.put("Key1", "Value1");
+        msg.put("Key2", "Value2");
+        logger.trace(msg);
+
+        final List<LogEvent> list = app.getEvents();
+        assertTrue("Events were generated", list == null || list.size() == 0);
+        app.clear();
     }
 }

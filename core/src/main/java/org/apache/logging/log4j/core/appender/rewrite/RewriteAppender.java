@@ -61,7 +61,9 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
             final String name = ref.getRef();
             final Appender appender = map.get(name);
             if (appender != null) {
-                appenders.put(name, new AppenderControl(appender, ref.getLevel(), null));
+                Filter filter = appender instanceof AbstractAppender<?> ?
+                    ((AbstractAppender<?>) appender).getFilter() : null;
+                appenders.put(name, new AppenderControl(appender, ref.getLevel(), filter));
             } else {
                 LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
             }

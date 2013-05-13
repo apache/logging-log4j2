@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J-244" dev="rgoers" type="fix">
+        Rewrite Appender was ignoring filters on referenced appenders.
+      </action>
       <action issue="LOG4J2-245" dev="rgoers" type="fix">
         Avoid EmptyStack exception if getCallerClass and SecurityManager are not available.
       </action>
