@@ -96,7 +96,7 @@ public final class ColumnConfig {
         final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
         final boolean isPattern = pattern != null && pattern.length() > 0;
 
-        if (isEventTimestamp && isLiteralValue || isEventTimestamp && isPattern || isLiteralValue && isPattern) {
+        if ((isEventTimestamp && isLiteralValue) || (isEventTimestamp && isPattern) || (isLiteralValue && isPattern)) {
             LOGGER.error("The pattern, literal, and isEventTimestamp attributes are mutually exclusive.");
             return null;
         }
