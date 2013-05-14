@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -41,6 +29,9 @@ import org.easymock.CaptureType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 public class DriverManagerConnectionSourceTest {
     private Driver driver;
@@ -61,17 +52,6 @@ public class DriverManagerConnectionSourceTest {
     }
 
     @Test
-    public void testInvalidUrl() throws SQLException {
-        expect(this.driver.acceptsURL("log4j2:test:appender:jdbc:url://localhost:2737/database")).andReturn(false);
-        replay(this.driver);
-
-        final DriverManagerConnectionSource source = DriverManagerConnectionSource.createConnectionSource(
-                "log4j2:test:appender:jdbc:url://localhost:2737/database", "username01", "password01");
-
-        assertNull("The connection source should be null.", source);
-    }
-
-    @Test
     public void testNoUrl01() {
         replay(this.driver);
 
@@ -89,6 +69,58 @@ public class DriverManagerConnectionSourceTest {
                 "username01", "password01");
 
         assertNull("The connection source should be null.", source);
+    }
+
+    @Test
+    public void testInvalidUrl() throws SQLException {
+        expect(this.driver.acceptsURL("log4j2:test:appender:jdbc:url://localhost:2737/database")).andReturn(false);
+        replay(this.driver);
+
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.createConnectionSource(
+                "log4j2:test:appender:jdbc:url://localhost:2737/database", "username01", "password01");
+
+        assertNull("The connection source should be null.", source);
+    }
+
+    @Test
+    public void testValidUrlUsernamePassword() throws SQLException {
+        final Connection connection1 = createStrictMock(Connection.class);
+        final Connection connection2 = createStrictMock(Connection.class);
+
+        final Capture<Properties> capture = new Capture<Properties>(CaptureType.ALL);
+
+        expect(this.driver.acceptsURL("log4j2:test:appender:jdbc:url://localhost:2737/database")).andReturn(true);
+        expect(this.driver.connect(eq("log4j2:test:appender:jdbc:url://localhost:2737/database"), capture(capture)))
+                .andReturn(connection1);
+        expect(this.driver.connect(eq("log4j2:test:appender:jdbc:url://localhost:2737/database"), capture(capture)))
+                .andReturn(connection2);
+        replay(this.driver, connection1, connection2);
+
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.createConnectionSource(
+                "log4j2:test:appender:jdbc:url://localhost:2737/database", "username01", "password01");
+
+        assertNotNull("The connection source should not be null.", source);
+        assertEquals("The toString value is not correct.",
+                "driverManager{ url=log4j2:test:appender:jdbc:url://localhost:2737/database, username=username01, "
+                        + "passwordHash=" + NameUtil.md5("password01" + DriverManagerConnectionSource.class.getName())
+                        + " }", source.toString());
+        assertSame("The connection is not correct (1).", connection1, source.getConnection());
+        assertSame("The connection is not correct (2).", connection2, source.getConnection());
+
+        final List<Properties> captured = capture.getValues();
+        assertEquals("The number of captured properties is not correct.", 2, captured.size());
+
+        final Properties properties1 = captured.get(0);
+        assertNotNull("The properties object should not be null (1).", properties1);
+        assertEquals("The username is not correct (1).", "username01", properties1.getProperty("user"));
+        assertEquals("The password is not correct (1).", "password01", properties1.getProperty("password"));
+
+        final Properties properties2 = captured.get(1);
+        assertNotNull("The properties object should not be null (2).", properties2);
+        assertEquals("The username is not correct (2).", "username01", properties2.getProperty("user"));
+        assertEquals("The password is not correct (2).", "password01", properties2.getProperty("password"));
+
+        verify(connection1, connection2);
     }
 
     @Test
@@ -169,47 +201,6 @@ public class DriverManagerConnectionSourceTest {
         assertNotNull("The properties object should not be null (2).", properties2);
         assertNull("The username should be null (2).", properties2.getProperty("user"));
         assertNull("The password should be null (2).", properties2.getProperty("password"));
-
-        verify(connection1, connection2);
-    }
-
-    @Test
-    public void testValidUrlUsernamePassword() throws SQLException {
-        final Connection connection1 = createStrictMock(Connection.class);
-        final Connection connection2 = createStrictMock(Connection.class);
-
-        final Capture<Properties> capture = new Capture<Properties>(CaptureType.ALL);
-
-        expect(this.driver.acceptsURL("log4j2:test:appender:jdbc:url://localhost:2737/database")).andReturn(true);
-        expect(this.driver.connect(eq("log4j2:test:appender:jdbc:url://localhost:2737/database"), capture(capture)))
-                .andReturn(connection1);
-        expect(this.driver.connect(eq("log4j2:test:appender:jdbc:url://localhost:2737/database"), capture(capture)))
-                .andReturn(connection2);
-        replay(this.driver, connection1, connection2);
-
-        final DriverManagerConnectionSource source = DriverManagerConnectionSource.createConnectionSource(
-                "log4j2:test:appender:jdbc:url://localhost:2737/database", "username01", "password01");
-
-        assertNotNull("The connection source should not be null.", source);
-        assertEquals("The toString value is not correct.",
-                "driverManager{ url=log4j2:test:appender:jdbc:url://localhost:2737/database, username=username01, "
-                        + "passwordHash=" + NameUtil.md5("password01" + DriverManagerConnectionSource.class.getName())
-                        + " }", source.toString());
-        assertSame("The connection is not correct (1).", connection1, source.getConnection());
-        assertSame("The connection is not correct (2).", connection2, source.getConnection());
-
-        final List<Properties> captured = capture.getValues();
-        assertEquals("The number of captured properties is not correct.", 2, captured.size());
-
-        final Properties properties1 = captured.get(0);
-        assertNotNull("The properties object should not be null (1).", properties1);
-        assertEquals("The username is not correct (1).", "username01", properties1.getProperty("user"));
-        assertEquals("The password is not correct (1).", "password01", properties1.getProperty("password"));
-
-        final Properties properties2 = captured.get(1);
-        assertNotNull("The properties object should not be null (2).", properties2);
-        assertEquals("The username is not correct (2).", "username01", properties2.getProperty("user"));
-        assertEquals("The password is not correct (2).", "password01", properties2.getProperty("password"));
 
         verify(connection1, connection2);
     }

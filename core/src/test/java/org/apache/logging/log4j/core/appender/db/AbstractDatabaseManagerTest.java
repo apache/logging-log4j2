@@ -16,32 +16,101 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import static org.easymock.EasyMock.createMockBuilder;
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.same;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.After;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 public class AbstractDatabaseManagerTest {
     private AbstractDatabaseManager manager;
 
     public void setUp(final String name, final int buffer) {
-        this.manager = createMockBuilder(AbstractDatabaseManager.class).withConstructor(String.class, int.class)
-                .withArgs(name, buffer).addMockedMethod("release").createStrictMock();
+        this.manager = createMockBuilder(AbstractDatabaseManager.class)
+                .withConstructor(String.class, int.class)
+                .withArgs(name, buffer)
+                .addMockedMethod("release")
+                .createStrictMock();
     }
 
     @After
     public void tearDown() {
         verify(this.manager);
+    }
+
+    @Test
+    public void testConnection01() {
+        this.setUp("testName01", 0);
+
+        replay(this.manager);
+
+        assertEquals("The name is not correct.", "testName01", this.manager.getName());
+        assertFalse("The manager should not be connected.", this.manager.isConnected());
+
+        verify(this.manager);
+        reset(this.manager);
+        this.manager.connectInternal();
+        expectLastCall();
+        replay(this.manager);
+
+        this.manager.connect();
+        assertTrue("The manager should be connected now.", this.manager.isConnected());
+
+        verify(this.manager);
+        reset(this.manager);
+        this.manager.disconnectInternal();
+        expectLastCall();
+        replay(this.manager);
+
+        this.manager.disconnect();
+        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
+    }
+
+    @Test
+    public void testConnection02() {
+        this.setUp("anotherName02", 0);
+
+        replay(this.manager);
+
+        assertEquals("The name is not correct.", "anotherName02", this.manager.getName());
+        assertFalse("The manager should not be connected.", this.manager.isConnected());
+
+        verify(this.manager);
+        reset(this.manager);
+        this.manager.connectInternal();
+        expectLastCall();
+        replay(this.manager);
+
+        this.manager.connect();
+        assertTrue("The manager should be connected now.", this.manager.isConnected());
+
+        verify(this.manager);
+        reset(this.manager);
+        this.manager.disconnectInternal();
+        expectLastCall();
+        replay(this.manager);
+
+        this.manager.releaseSub();
+        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
+    }
+
+    @Test
+    public void testToString01() {
+        this.setUp("someName01", 0);
+
+        replay(this.manager);
+
+        assertEquals("The string is not correct.", "someName01", this.manager.toString());
+    }
+
+    @Test
+    public void testToString02() {
+        this.setUp("bufferSize=12, anotherKey02=coolValue02", 12);
+
+        replay(this.manager);
+
+        assertEquals("The string is not correct.", "bufferSize=12, anotherKey02=coolValue02", this.manager.toString());
     }
 
     @Test
@@ -175,79 +244,5 @@ public class AbstractDatabaseManagerTest {
         replay(this.manager);
 
         this.manager.disconnect();
-    }
-
-    @Test
-    public void testConnection01() {
-        this.setUp("testName01", 0);
-
-        replay(this.manager);
-
-        assertEquals("The name is not correct.", "testName01", this.manager.getName());
-        assertFalse("The manager should not be connected.", this.manager.isConnected());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.connect();
-        assertTrue("The manager should be connected now.", this.manager.isConnected());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.disconnectInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.disconnect();
-        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
-    }
-
-    @Test
-    public void testConnection02() {
-        this.setUp("anotherName02", 0);
-
-        replay(this.manager);
-
-        assertEquals("The name is not correct.", "anotherName02", this.manager.getName());
-        assertFalse("The manager should not be connected.", this.manager.isConnected());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.connectInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.connect();
-        assertTrue("The manager should be connected now.", this.manager.isConnected());
-
-        verify(this.manager);
-        reset(this.manager);
-        this.manager.disconnectInternal();
-        expectLastCall();
-        replay(this.manager);
-
-        this.manager.releaseSub();
-        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
-    }
-
-    @Test
-    public void testToString01() {
-        this.setUp("someName01", 0);
-
-        replay(this.manager);
-
-        assertEquals("The string is not correct.", "someName01", this.manager.toString());
-    }
-
-    @Test
-    public void testToString02() {
-        this.setUp("bufferSize=12, anotherKey02=coolValue02", 12);
-
-        replay(this.manager);
-
-        assertEquals("The string is not correct.", "bufferSize=12, anotherKey02=coolValue02", this.manager.toString());
     }
 }

@@ -16,11 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter;
-
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -29,7 +25,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.Map;
+
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter;
 
 @Entity
 @Table(name = "jpaBasicLogEntry")
@@ -59,13 +59,6 @@ public class TestBasicEntity extends BasicLogEventEntity {
     }
 
     @Override
-    @Convert(converter = ContextMapJsonAttributeConverter.class)
-    @Column(name = "contextMapJson")
-    public Map<String, String> getContextMap() {
-        return super.getContextMap();
-    }
-
-    @Override
     @Transient
     public StackTraceElement getSource() {
         return super.getSource();
@@ -81,6 +74,13 @@ public class TestBasicEntity extends BasicLogEventEntity {
     @Transient
     public String getThreadName() {
         return super.getThreadName();
+    }
+
+    @Override
+    @Convert(converter = ContextMapJsonAttributeConverter.class)
+    @Column(name = "contextMapJson")
+    public Map<String, String> getContextMap() {
+        return super.getContextMap();
     }
 
     @Override
