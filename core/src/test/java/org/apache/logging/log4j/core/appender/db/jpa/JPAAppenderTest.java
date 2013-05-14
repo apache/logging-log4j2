@@ -106,7 +106,7 @@ public class JPAAppenderTest {
 
     @Test
     public void testNoPersistenceUnitName() {
-        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, TestEntity.class.getName(),
+        final JPAAppender appender = JPAAppender.createAppender("name", null, null, null, TestBaseEntity.class.getName(),
                 null);
 
         assertNull("The appender should be null.", appender);
@@ -145,7 +145,7 @@ public class JPAAppenderTest {
     }
 
     @Test
-    @Ignore("until Hibernate implements support for @Convert, @Converter")
+    @Ignore("Until Hibernate fixes https://hibernate.atlassian.net/browse/HHH-8111")
     public void testBaseJpaEntityAppender() throws SQLException {
         try {
             this.setUp("log4j2-jpa-base.xml");
@@ -208,7 +208,7 @@ public class JPAAppenderTest {
     }
 
     @Test
-    @Ignore("until Hibernate implements support for @Convert, @Converter")
+    @Ignore("Until Hibernate fixes https://hibernate.atlassian.net/browse/HHH-8111")
     public void testBasicJpaEntityAppender() throws SQLException {
         try {
             this.setUp("log4j2-jpa-basic.xml");
@@ -271,7 +271,7 @@ public class JPAAppenderTest {
     }
 
     @SuppressWarnings("unused")
-    public static class BadConstructorEntity1 extends TestEntity {
+    public static class BadConstructorEntity1 extends TestBaseEntity {
         private static final long serialVersionUID = 1L;
 
         public BadConstructorEntity1(final LogEvent wrappedEvent) {
@@ -280,7 +280,7 @@ public class JPAAppenderTest {
     }
 
     @SuppressWarnings("unused")
-    public static class BadConstructorEntity2 extends TestEntity {
+    public static class BadConstructorEntity2 extends TestBaseEntity {
         private static final long serialVersionUID = 1L;
 
         public BadConstructorEntity2() {

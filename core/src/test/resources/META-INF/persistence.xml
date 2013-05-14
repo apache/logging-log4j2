@@ -24,8 +24,9 @@
 
   <persistence-unit name="jpaAppenderTestUnit">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <class>org.apache.logging.log4j.core.appender.db.jpa.TestEntity</class>
-    <!--<class>org.apache.logging.log4j.core.appender.db.jpa.TestBasicEntity</class>-->
+    <class>org.apache.logging.log4j.core.appender.db.jpa.TestBaseEntity</class>
+    <!--<class>org.apache.logging.log4j.core.appender.db.jpa.TestBasicEntity</class>
+      Until Hibernate fixes https://hibernate.atlassian.net/browse/HHH-8111-->
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.connection.username" value="sa" />
