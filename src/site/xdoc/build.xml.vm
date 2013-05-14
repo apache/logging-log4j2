@@ -19,151 +19,38 @@
 	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
 	<properties>
-		<title>Building and Using Log4J</title>
+		<title>Building and Installing Log4j</title>
 	</properties>
 
 	<body>
-		<section name="Building and Using Log4j">
+		<section name="Building and Installing Log4j">
 
-      <subsection name="Building Log4J">
-        <p>
-          Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
-          most current source code can be found at
-          <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be
-          obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
-        </p>
-        <p>
-          Log4j 2.x uses Maven 2 or 3 as its build tool. To build and install Log4j in your local Maven cache, from 
-          the root directory run:
-        </p>
-        <p>
-          <pre>mvn install</pre>
-        </p>
-        <p>
-          Then to build the full site, you must use a local staging directory:
-        </p>
-        <p>
-          <pre>mvn site
+      <p>
+        Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
+        most current source code can be found at
+        <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be
+        obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
+      </p>
+      <p>
+        Log4j 2.x uses Maven 2 or 3 as its build tool. To build and install Log4j in your local Maven cache, from
+        the root directory run:
+      </p>
+      <pre>mvn install</pre>
+      <p>
+        Then to build the full site, you must use a local staging directory:
+      </p>
+      <pre>mvn site
 [Windows] mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
 [Unix] mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j</pre>
-        </p>
-        <p>
-          To rebuild only what's changed and execute the tests, run:
-        </p>
-        <p>
-          <pre>mvn test</pre>
-        </p>
-        <p>
-          To rebuild from scratch, add "clean", for example:
-        </p>
-        <p>
-          <pre>mvn clean test</pre>
-        </p>
-      </subsection>
-      <subsection name="Using Log4J on your classpath">
-       <p>
-         To use Log4j 2 in your application make sure that both the API and Core jars are in the application's
-         classpath. Add the dependencies listed below to your classpath.
-       </p>
-       <ul>
-         <li><code>log4j-api-${Log4jReleaseVersion}.jar</code></li>
-         <li><code>log4j-core-${Log4jReleaseVersion}.jar</code></li>
-       </ul>
-       <p>
-         You can do this from the command line or a manifest file.
-       </p>
-      </subsection>
-      <subsection name="Using Log4J in your Apache Maven build">
-       <p>
-         To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
-         <code>pom.xml</code> file.
-       </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-]]></pre>
-      </subsection>
-      <subsection name="Using Log4J in your Apache Ivy build">
-       <p>
-         To build with <a href="https://ant.apache.org/ivy/">Apache Ivy</a>, add the dependencies listed below to your
-         <code>ivy.xml</code> file.
-       </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
-  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${Log4jReleaseVersion}" />
-</dependencies>
-]]></pre>
-      </subsection>
-      <subsection name="Optional Components">
-        <p>
-          Log4j 2.x contains several optional components that can be included in an application.
-        </p>
-        <h4>Log4j 1.x</h4>
-        <p>If there are existing components that are written to use Log4j 1.x and it is desired to have this
-           logging routed to Log4j 2 then remove any log4j 1.x dependencies and add the following.
-        </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-1.2-api</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependecies>
-]]></pre>
-          <h4>Apache Commons Logging</h4>
-          <p>Commons Logging is used in many components as a way of letting applications choose the specific
-             logging implementation. To route logging from those components into Log4j 2 include the
-             following dependency and do not remove the Commons Logging jar.
-          </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-jcl</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-]]></pre>
-          <h4>SLF4J</h4>
-          <p>SLF4J is another popular logging API that may be bound to Log4j 2 by including the following
-             dependency along with the SLF4J dependencies.
-          </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-slf4j-impl</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-]]></pre>
-          <h4>Tag Library</h4>
-          <p>The Log4j Log Tag Library creates the capability of inserting log statements in JSPs without
-             the use of Java scripting. It uses the standard Log4j 2 API to log messages according to
-             your Log4j configuration.
-          </p>
-<pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-taglib</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-]]></pre>
-      </subsection>
+      <p>
+        To rebuild only what's changed and execute the tests, run:
+      </p>
+      <pre>mvn test</pre>
+      <p>
+        To rebuild from scratch, add "clean", for example:
+      </p>
+      <pre>mvn clean test</pre>
+
 		</section>
 	</body>
 </document>

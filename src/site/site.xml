@@ -20,7 +20,8 @@
     <menu name="Apache Log4j™ 2" inherit="top" img="icon-home">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
-      <item name="Build and Install" href="/build.html"/>
+      <item name="Maven and Ivy" href="/maven-artifacts.html"/>
+      <item name="Build" href="/build.html"/>
       <item name="Changelog" href="/changelog.html"/>
     </menu>
 
