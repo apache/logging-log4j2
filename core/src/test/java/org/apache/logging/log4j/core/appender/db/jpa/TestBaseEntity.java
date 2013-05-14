@@ -16,14 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
-import org.apache.logging.log4j.message.Message;
-
+import java.util.Date;
+import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -37,22 +31,28 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import java.util.Date;
-import java.util.Map;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
+import org.apache.logging.log4j.message.Message;
 
 @Entity
 @Table(name = "jpaBaseLogEntry")
 @SuppressWarnings("unused")
-public class TestEntity extends AbstractLogEventWrapperEntity {
+public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
 
     private long id = 0L;
 
-    public TestEntity() {
+    public TestBaseEntity() {
         super();
     }
 
-    public TestEntity(final LogEvent wrappedEvent) {
+    public TestBaseEntity(final LogEvent wrappedEvent) {
         super(wrappedEvent);
     }
 
