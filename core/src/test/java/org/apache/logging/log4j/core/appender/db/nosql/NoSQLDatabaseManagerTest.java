@@ -16,20 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql;
 
-import static org.easymock.EasyMock.anyInt;
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.getCurrentArguments;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -49,9 +35,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
+
 public class NoSQLDatabaseManagerTest {
-    NoSQLConnection<Map<String, Object>, CouchDBObject> connection;
-    NoSQLProvider<NoSQLConnection<Map<String, Object>, CouchDBObject>> provider;
+    private NoSQLConnection<Map<String, Object>, CouchDBObject> connection;
+    private NoSQLProvider<NoSQLConnection<Map<String, Object>, CouchDBObject>> provider;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -89,6 +78,63 @@ public class NoSQLDatabaseManagerTest {
             replay(this.provider, this.connection);
 
             manager.disconnectInternal();
+        } finally {
+            try {
+                manager.release();
+            } catch (final Throwable ignore) { /* */
+            }
+        }
+    }
+
+    @Test
+    public void testWriteInternalNotConnected01() {
+        replay(this.provider, this.connection);
+
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+
+        try {
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+
+            final LogEvent event = createStrictMock(LogEvent.class);
+            replay(this.provider, this.connection, event);
+
+            manager.writeInternal(event);
+
+            verify(event);
+        } finally {
+            try {
+                manager.release();
+            } catch (final Throwable ignore) { /* */
+            }
+        }
+    }
+
+    @Test
+    public void testWriteInternalNotConnected02() {
+        expect(this.provider.getConnection()).andReturn(this.connection);
+        replay(this.provider, this.connection);
+
+        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
+
+        try {
+            manager.connect();
+
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+
+            final LogEvent event = createStrictMock(LogEvent.class);
+            expect(this.connection.isClosed()).andReturn(true);
+            replay(this.provider, this.connection, event);
+
+            manager.writeInternal(event);
+
+            verify(this.provider, this.connection, event);
+            reset(this.provider, this.connection);
+            expect(this.connection.isClosed()).andReturn(false);
+            this.connection.close();
+            expectLastCall();
+            replay(this.provider, this.connection);
         } finally {
             try {
                 manager.release();
@@ -479,63 +525,6 @@ public class NoSQLDatabaseManagerTest {
             assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
 
             verify(this.provider, this.connection, event, message);
-            reset(this.provider, this.connection);
-            expect(this.connection.isClosed()).andReturn(false);
-            this.connection.close();
-            expectLastCall();
-            replay(this.provider, this.connection);
-        } finally {
-            try {
-                manager.release();
-            } catch (final Throwable ignore) { /* */
-            }
-        }
-    }
-
-    @Test
-    public void testWriteInternalNotConnected01() {
-        replay(this.provider, this.connection);
-
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
-
-        try {
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
-
-            final LogEvent event = createStrictMock(LogEvent.class);
-            replay(this.provider, this.connection, event);
-
-            manager.writeInternal(event);
-
-            verify(event);
-        } finally {
-            try {
-                manager.release();
-            } catch (final Throwable ignore) { /* */
-            }
-        }
-    }
-
-    @Test
-    public void testWriteInternalNotConnected02() {
-        expect(this.provider.getConnection()).andReturn(this.connection);
-        replay(this.provider, this.connection);
-
-        final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
-
-        try {
-            manager.connect();
-
-            verify(this.provider, this.connection);
-            reset(this.provider, this.connection);
-
-            final LogEvent event = createStrictMock(LogEvent.class);
-            expect(this.connection.isClosed()).andReturn(true);
-            replay(this.provider, this.connection, event);
-
-            manager.writeInternal(event);
-
-            verify(this.provider, this.connection, event);
             reset(this.provider, this.connection);
             expect(this.connection.isClosed()).andReturn(false);
             this.connection.close();

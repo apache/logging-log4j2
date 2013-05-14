@@ -16,18 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -36,6 +26,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 public class DataSourceConnectionSourceTest {
     private InitialContext context;
@@ -54,6 +47,28 @@ public class DataSourceConnectionSourceTest {
     @After
     public void tearDown() {
         MockContextFactory.revertSetAsInitial();
+    }
+
+    @Test
+    public void testNoJndiName01() {
+        final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(null);
+
+        assertNull("The connection source should be null.", source);
+    }
+
+    @Test
+    public void testNoJndiName02() {
+        final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource("");
+
+        assertNull("The connection source should be null.", source);
+    }
+
+    @Test
+    public void testNoDataSource() {
+        final DataSourceConnectionSource source = DataSourceConnectionSource
+                .createConnectionSource("java:/comp/env/jdbc/Logging01");
+
+        assertNull("The connection source should be null.", source);
     }
 
     @Test
@@ -110,27 +125,5 @@ public class DataSourceConnectionSourceTest {
         assertNull("The connection source should be null now.", source);
 
         verify(dataSource, connection1, connection2);
-    }
-
-    @Test
-    public void testNoDataSource() {
-        final DataSourceConnectionSource source = DataSourceConnectionSource
-                .createConnectionSource("java:/comp/env/jdbc/Logging01");
-
-        assertNull("The connection source should be null.", source);
-    }
-
-    @Test
-    public void testNoJndiName01() {
-        final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(null);
-
-        assertNull("The connection source should be null.", source);
-    }
-
-    @Test
-    public void testNoJndiName02() {
-        final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource("");
-
-        assertNull("The connection source should be null.", source);
     }
 }

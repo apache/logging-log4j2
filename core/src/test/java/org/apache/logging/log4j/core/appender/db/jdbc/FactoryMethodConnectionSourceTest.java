@@ -16,18 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -35,28 +25,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
+
 public class FactoryMethodConnectionSourceTest {
-    @SuppressWarnings("unused")
-    protected static final class BadReturnTypeFactory {
-        public static String factoryMethod01() {
-            return "hello";
-        }
-    }
-
-    @SuppressWarnings("unused")
-    protected static final class ConnectionFactory {
-        public static Connection anotherMethod03() {
-            return (Connection) holder.get();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    protected static final class DataSourceFactory {
-        public static DataSource factoryMethod02() {
-            return (DataSource) holder.get();
-        }
-    }
-
     private static ThreadLocal<Object> holder = new ThreadLocal<Object>();
 
     @AfterClass
@@ -73,6 +45,22 @@ public class FactoryMethodConnectionSourceTest {
     @After
     public void tearDown() {
         holder.remove();
+    }
+
+    @Test
+    public void testNoClassName() {
+        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(null,
+                "method");
+
+        assertNull("The connection source should be null.", source);
+    }
+
+    @Test
+    public void testNoMethodName() {
+        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource("someClass",
+                null);
+
+        assertNull("The connection source should be null.", source);
     }
 
     @Test
@@ -100,26 +88,6 @@ public class FactoryMethodConnectionSourceTest {
     }
 
     @Test
-    public void testConnectionReturnType() throws SQLException {
-        final Connection connection = createStrictMock(Connection.class);
-
-        replay(connection);
-
-        holder.set(connection);
-
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
-                ConnectionFactory.class.getName(), "anotherMethod03");
-
-        assertNotNull("The connection source should not be null.", source);
-        assertEquals("The toString value is not correct.", "factory{ public static java.sql.Connection "
-                + ConnectionFactory.class.getName() + ".anotherMethod03() }", source.toString());
-        assertSame("The connection is not correct (1).", connection, source.getConnection());
-        assertSame("The connection is not correct (2).", connection, source.getConnection());
-
-        verify(connection);
-    }
-
-    @Test
     public void testDataSourceReturnType() throws SQLException {
         final DataSource dataSource = createStrictMock(DataSource.class);
         final Connection connection1 = createStrictMock(Connection.class);
@@ -144,18 +112,43 @@ public class FactoryMethodConnectionSourceTest {
     }
 
     @Test
-    public void testNoClassName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(null,
-                "method");
+    public void testConnectionReturnType() throws SQLException {
+        final Connection connection = createStrictMock(Connection.class);
 
-        assertNull("The connection source should be null.", source);
+        replay(connection);
+
+        holder.set(connection);
+
+        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
+                ConnectionFactory.class.getName(), "anotherMethod03");
+
+        assertNotNull("The connection source should not be null.", source);
+        assertEquals("The toString value is not correct.", "factory{ public static java.sql.Connection "
+                + ConnectionFactory.class.getName() + ".anotherMethod03() }", source.toString());
+        assertSame("The connection is not correct (1).", connection, source.getConnection());
+        assertSame("The connection is not correct (2).", connection, source.getConnection());
+
+        verify(connection);
     }
 
-    @Test
-    public void testNoMethodName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource("someClass",
-                null);
+    @SuppressWarnings("unused")
+    protected static final class BadReturnTypeFactory {
+        public static String factoryMethod01() {
+            return "hello";
+        }
+    }
 
-        assertNull("The connection source should be null.", source);
+    @SuppressWarnings("unused")
+    protected static final class DataSourceFactory {
+        public static DataSource factoryMethod02() {
+            return (DataSource) holder.get();
+        }
+    }
+
+    @SuppressWarnings("unused")
+    protected static final class ConnectionFactory {
+        public static Connection anotherMethod03() {
+            return (Connection) holder.get();
+        }
     }
 }

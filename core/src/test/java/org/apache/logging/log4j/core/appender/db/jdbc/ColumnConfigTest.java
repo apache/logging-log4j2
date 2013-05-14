@@ -16,15 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ColumnConfigTest {
     @Before
@@ -35,6 +31,55 @@ public class ColumnConfigTest {
     @After
     public void tearDown() {
 
+    }
+
+    @Test
+    public void testNullNameNoConfig() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, null, "%l", null, null);
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testPatternAndLiteralNoConfig() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", "literal", null);
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testPatternAndDateNoConfig() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", null, "true");
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testLiteralAndDateNoConfig() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, "literal", "true");
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testNoSettingNoConfig01() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, null, null);
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testNoSettingNoConfig02() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, null, "false");
+
+        assertNull("The result should be null.", config);
+    }
+
+    @Test
+    public void testNoSettingNoConfig03() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "", "", "");
+
+        assertNull("The result should be null.", config);
     }
 
     @Test
@@ -60,10 +105,28 @@ public class ColumnConfigTest {
     }
 
     @Test
-    public void testLiteralAndDateNoConfig() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, "literal", "true");
+    public void testPatternColumn01() {
+        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", null, null);
 
-        assertNull("The result should be null.", config);
+        assertNotNull("The result should not be null.", config);
+        assertEquals("The column name is not correct.", "columnName01", config.getColumnName());
+        assertNotNull("The pattern should not be null.", config.getLayout());
+        assertEquals("The pattern is not correct.", "%l", config.getLayout().toString());
+        assertNull("The literal value should be null.", config.getLiteralValue());
+        assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
+    }
+
+    @Test
+    public void testPatternColumn02() {
+        final ColumnConfig config = ColumnConfig
+                .createColumnConfig(null, "anotherName02", "%X{id} %level", "", "false");
+
+        assertNotNull("The result should not be null.", config);
+        assertEquals("The column name is not correct.", "anotherName02", config.getColumnName());
+        assertNotNull("The pattern should not be null.", config.getLayout());
+        assertEquals("The pattern is not correct.", "%X{id} %level", config.getLayout().toString());
+        assertNull("The literal value should be null.", config.getLiteralValue());
+        assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
     }
 
     @Test
@@ -88,73 +151,6 @@ public class ColumnConfigTest {
         assertNull("The pattern should be null.", config.getLayout());
         assertNotNull("The literal value should be null.", config.getLiteralValue());
         assertEquals("The literal value is not correct.", "USER1.MY_SEQUENCE.NEXT", config.getLiteralValue());
-        assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
-    }
-
-    @Test
-    public void testNoSettingNoConfig01() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, null, null);
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testNoSettingNoConfig02() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", null, null, "false");
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testNoSettingNoConfig03() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "", "", "");
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testNullNameNoConfig() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, null, "%l", null, null);
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testPatternAndDateNoConfig() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", null, "true");
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testPatternAndLiteralNoConfig() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", "literal", null);
-
-        assertNull("The result should be null.", config);
-    }
-
-    @Test
-    public void testPatternColumn01() {
-        final ColumnConfig config = ColumnConfig.createColumnConfig(null, "columnName01", "%l", null, null);
-
-        assertNotNull("The result should not be null.", config);
-        assertEquals("The column name is not correct.", "columnName01", config.getColumnName());
-        assertNotNull("The pattern should not be null.", config.getLayout());
-        assertEquals("The pattern is not correct.", "%l", config.getLayout().toString());
-        assertNull("The literal value should be null.", config.getLiteralValue());
-        assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
-    }
-
-    @Test
-    public void testPatternColumn02() {
-        final ColumnConfig config = ColumnConfig
-                .createColumnConfig(null, "anotherName02", "%X{id} %level", "", "false");
-
-        assertNotNull("The result should not be null.", config);
-        assertEquals("The column name is not correct.", "anotherName02", config.getColumnName());
-        assertNotNull("The pattern should not be null.", config.getLayout());
-        assertEquals("The pattern is not correct.", "%X{id} %level", config.getLayout().toString());
-        assertNull("The literal value should be null.", config.getLiteralValue());
         assertFalse("The timestamp flag should be false.", config.isEventTimestamp());
     }
 }
