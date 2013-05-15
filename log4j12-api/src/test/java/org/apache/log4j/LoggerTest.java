@@ -17,6 +17,11 @@
 
 package org.apache.log4j;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,11 +33,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import static org.junit.Assert.*;
 
@@ -496,10 +496,6 @@ public class LoggerTest {
         CountingAppender() {
             super("Counter", null, null);
             counter = 0;
-        }
-
-        @Override
-        public void close() {
         }
 
         @Override
