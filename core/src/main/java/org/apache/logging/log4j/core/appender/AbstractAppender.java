@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
@@ -25,8 +27,6 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.Serializable;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
@@ -103,13 +103,6 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
             return;
         }
         this.handler = handler;
-    }
-
-    /**
-     * Close the stream associated with the Appender.
-     */
-    public void close() {
-
     }
 
     /**
