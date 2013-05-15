@@ -89,10 +89,10 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     protected void setOutputStream(final OutputStream os) {
-        this.os = os;
         if (header != null) {
             try {
-                this.os.write(header, 0, header.length);
+                os.write(header, 0, header.length);
+                this.os = os; // only update field if os.write() succeeded
             } catch (final IOException ioe) {
                 LOGGER.error("Unable to write header", ioe);
             }
@@ -128,11 +128,12 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     protected void close() {
-        if (os == System.out || os == System.err) {
+        OutputStream stream = os; // access volatile field only once per method
+        if (stream == System.out || stream == System.err) {
             return;
         }
         try {
-            os.close();
+            stream.close();
         } catch (final IOException ex) {
             LOGGER.error("Unable to close stream " + getName() + ". " + ex);
         }
