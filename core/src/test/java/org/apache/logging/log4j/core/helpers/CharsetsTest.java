@@ -38,7 +38,7 @@ public class CharsetsTest {
         assertSame(Charset.defaultCharset(), actual);
     }
 
-    @Test(expected=IllegalCharsetNameException.class)
+    @Test(expected = IllegalCharsetNameException.class)
     public void testThrowsExceptionIfNameIsIllegal() {
         Charset actual = Charsets.getSupportedCharset("spaces not allowed");
         assertSame(Charset.defaultCharset(), actual);
@@ -52,8 +52,12 @@ public class CharsetsTest {
         Charset actual2 = Charsets.getSupportedCharset("ISO-8859-1");
         assertSame(Charset.forName("ISO-8859-1"), actual2);
 
-        Charset actual3 = Charsets.getSupportedCharset("KOI8-R");
-        assertSame(Charset.forName("KOI8-R"), actual3);
+        // This part of the test is NOT portable across all Java platforms.
+        // There is no guarantee that KOI8-R is on any given platform
+        if (Charset.isSupported("KOI8-R")) {
+            Charset actual3 = Charsets.getSupportedCharset("KOI8-R");
+            assertSame(Charset.forName("KOI8-R"), actual3);
+        }
     }
 
 }
