@@ -190,17 +190,17 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
                     "true", config);
         }
 
-        final FastRollingFileManager manager = FastRollingFileManager
-                .getFastRollingFileManager(fileName, filePattern, isAppend,
-                        isFlush, policy, strategy, advertiseURI);
-        if (manager == null) {
-            return null;
-        }
-
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
+        }
+
+
+        final FastRollingFileManager manager = FastRollingFileManager.getFastRollingFileManager(fileName, filePattern,
+            isAppend, isFlush, policy, strategy, advertiseURI, layout);
+        if (manager == null) {
+            return null;
         }
 
         return new FastRollingFileAppender<S>(name, layout, filter, manager,

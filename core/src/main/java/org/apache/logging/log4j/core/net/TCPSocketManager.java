@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.net;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
@@ -65,10 +67,13 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @param host The name of the host.
      * @param port The port number on the host.
      * @param delay Reconnection interval.
+     * @param immediateFail
+     * @param layout The Layout.
      */
     public TCPSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr,
-                            final String host, final int port, final int delay, final boolean immediateFail) {
-        super(name, os, addr, host, port);
+                            final String host, final int port, final int delay, final boolean immediateFail,
+                            final Layout layout) {
+        super(name, os, addr, host, port, layout);
         this.reconnectionDelay = delay;
         this.socket = sock;
         this.immediateFail = immediateFail;
@@ -88,7 +93,8 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @param delay The interval to pause between retries.
      * @return A TCPSocketManager.
      */
-    public static TCPSocketManager getSocketManager(final String host, int port, int delay, boolean immediateFail) {
+    public static TCPSocketManager getSocketManager(final String host, int port, int delay,
+                                                    final boolean immediateFail, final Layout layout ) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -99,7 +105,7 @@ public class TCPSocketManager extends AbstractSocketManager {
             delay = DEFAULT_RECONNECTION_DELAY;
         }
         return (TCPSocketManager) getManager("TCP:" + host + ":" + port,
-            new FactoryData(host, port, delay, immediateFail), FACTORY);
+            new FactoryData(host, port, delay, immediateFail, layout), FACTORY);
     }
 
     @Override
@@ -222,12 +228,15 @@ public class TCPSocketManager extends AbstractSocketManager {
         private final int port;
         private final int delay;
         private final boolean immediateFail;
+        private final Layout layout;
 
-        public FactoryData(final String host, final int port, final int delay, final boolean immediateFail) {
+        public FactoryData(final String host, final int port, final int delay, final boolean immediateFail,
+                           final Layout layout) {
             this.host = host;
             this.port = port;
             this.delay = delay;
             this.immediateFail = immediateFail;
+            this.layout = layout;
         }
     }
 
@@ -251,7 +260,7 @@ public class TCPSocketManager extends AbstractSocketManager {
                 final Socket socket = new Socket(data.host, data.port);
                 os = socket.getOutputStream();
                 return new TCPSocketManager(name, os, socket, address, data.host, data.port, data.delay,
-                    data.immediateFail);
+                    data.immediateFail, data.layout);
             } catch (final IOException ex) {
                 LOGGER.error("TCPSocketManager (" + name + ") " + ex);
                 os = new ByteArrayOutputStream();
@@ -259,7 +268,8 @@ public class TCPSocketManager extends AbstractSocketManager {
             if (data.delay == 0) {
                 return null;
             }
-            return new TCPSocketManager(name, os, null, address, data.host, data.port, data.delay, data.immediateFail);
+            return new TCPSocketManager(name, os, null, address, data.host, data.port, data.delay, data.immediateFail,
+                data.layout);
         }
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Layout;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,9 +42,10 @@ public class FastFileManager extends OutputStreamManager {
     private final ByteBuffer buffer;
     private ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
-    protected FastFileManager(RandomAccessFile file, String fileName,
-            OutputStream os, boolean immediateFlush, String advertiseURI) {
-        super(os, fileName);
+    protected FastFileManager(final RandomAccessFile file, final String fileName,
+            final OutputStream os, final boolean immediateFlush, final String advertiseURI,
+            final Layout layout) {
+        super(os, fileName, layout);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
@@ -54,19 +57,18 @@ public class FastFileManager extends OutputStreamManager {
 
     /**
      * Returns the FastFileManager.
-     * 
+     *
      * @param fileName The name of the file to manage.
-     * @param append true if the file should be appended to, false if it should
-     *            be overwritten.
-     * @param isFlush true if the contents should be flushed to disk on every
-     *            write
+     * @param append true if the file should be appended to, false if it should be overwritten.
+     * @param isFlush true if the contents should be flushed to disk on every write
      * @param advertiseURI the URI to use when advertising the file
+     * @param layout The layout.
      * @return A FastFileManager for the File.
      */
-    public static FastFileManager getFileManager(String fileName,
-            boolean append, boolean isFlush, String advertiseURI) {
-        return (FastFileManager) getManager(fileName, new FactoryData(append,
-                isFlush, advertiseURI), FACTORY);
+    public static FastFileManager getFileManager(final String fileName, final boolean append,
+                                                 final boolean isFlush, final String advertiseURI,
+                                                 final Layout layout) {
+        return (FastFileManager) getManager(fileName, new FactoryData(append, isFlush, advertiseURI, layout), FACTORY);
     }
 
     public Boolean isEndOfBatch() {
@@ -115,7 +117,7 @@ public class FastFileManager extends OutputStreamManager {
 
     /**
      * Returns the name of the File being managed.
-     * 
+     *
      * @return The name of the File being managed.
      */
     public String getFileName() {
@@ -137,7 +139,7 @@ public class FastFileManager extends OutputStreamManager {
      * FileManager's content format is specified by:
      * <p/>
      * Key: "fileURI" Value: provided "advertiseURI" param.
-     * 
+     *
      * @return Map of content format keys supporting FileManager
      */
     @Override
@@ -155,29 +157,30 @@ public class FastFileManager extends OutputStreamManager {
         private final boolean append;
         private final boolean immediateFlush;
         private final String advertiseURI;
+        private final Layout layout;
 
         /**
          * Constructor.
-         * 
+         *
          * @param append Append status.
          */
-        public FactoryData(boolean append, boolean immediateFlush,
-                String advertiseURI) {
+        public FactoryData(final boolean append, final boolean immediateFlush, final String advertiseURI,
+                           final Layout layout) {
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.advertiseURI = advertiseURI;
+            this.layout = layout;
         }
     }
 
     /**
      * Factory to create a FastFileManager.
      */
-    private static class FastFileManagerFactory implements
-            ManagerFactory<FastFileManager, FactoryData> {
+    private static class FastFileManagerFactory implements ManagerFactory<FastFileManager, FactoryData> {
 
         /**
          * Create a FastFileManager.
-         * 
+         *
          * @param name The name of the File.
          * @param data The FactoryData
          * @return The FastFileManager for the File.
@@ -197,8 +200,7 @@ public class FastFileManager extends OutputStreamManager {
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");
-                return new FastFileManager(raf, name, os, data.immediateFlush,
-                        data.advertiseURI);
+                return new FastFileManager(raf, name, os, data.immediateFlush, data.advertiseURI, data.layout);
             } catch (Exception ex) {
                 LOGGER.error("FastFileManager (" + name + ") " + ex);
             }

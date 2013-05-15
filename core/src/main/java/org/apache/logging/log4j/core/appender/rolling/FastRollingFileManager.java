@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
@@ -41,13 +42,12 @@ public class FastRollingFileManager extends RollingFileManager {
     private final ByteBuffer buffer;
     private ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
-    public FastRollingFileManager(RandomAccessFile raf, String fileName,
-            String pattern, OutputStream os, boolean append,
-            boolean immediateFlush, long size, long time,
-            TriggeringPolicy policy, RolloverStrategy strategy,
-            String advertiseURI) {
-        super(fileName, pattern, os, append, size, time, policy, strategy,
-                advertiseURI);
+    public FastRollingFileManager(final RandomAccessFile raf, final String fileName,
+            final String pattern, final OutputStream os, final boolean append,
+            final boolean immediateFlush, final long size, final long time,
+            final TriggeringPolicy policy, final RolloverStrategy strategy,
+            final String advertiseURI, final Layout layout) {
+        super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = raf;
         isEndOfBatch.set(Boolean.FALSE);
@@ -56,13 +56,11 @@ public class FastRollingFileManager extends RollingFileManager {
         buffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
     }
 
-    public static FastRollingFileManager getFastRollingFileManager(
-            String fileName, String filePattern, boolean isAppend,
-            boolean immediateFlush, TriggeringPolicy policy,
-            RolloverStrategy strategy, String advertiseURI) {
-        return (FastRollingFileManager) getManager(fileName, new FactoryData(
-                filePattern, isAppend, immediateFlush, policy, strategy,
-                advertiseURI), FACTORY);
+    public static FastRollingFileManager getFastRollingFileManager(final String fileName, final String filePattern,
+            final boolean isAppend, final boolean immediateFlush, final TriggeringPolicy policy,
+            final RolloverStrategy strategy, final String advertiseURI, final Layout layout) {
+        return (FastRollingFileManager) getManager(fileName, new FactoryData(filePattern, isAppend, immediateFlush,
+            policy, strategy, advertiseURI, layout), FACTORY);
     }
 
     public Boolean isEndOfBatch() {
@@ -120,19 +118,17 @@ public class FastRollingFileManager extends RollingFileManager {
     /**
      * Factory to create a FastRollingFileManager.
      */
-    private static class FastRollingFileManagerFactory implements
-            ManagerFactory<FastRollingFileManager, FactoryData> {
+    private static class FastRollingFileManagerFactory implements ManagerFactory<FastRollingFileManager, FactoryData> {
 
         /**
          * Create the FastRollingFileManager.
-         * 
+         *
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
          */
         @Override
-        public FastRollingFileManager createManager(String name,
-                FactoryData data) {
+        public FastRollingFileManager createManager(String name, FactoryData data) {
             File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
@@ -147,10 +143,8 @@ public class FastRollingFileManager extends RollingFileManager {
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");
-                return new FastRollingFileManager(raf, name, data.pattern,
-                        new DummyOutputStream(), data.append,
-                        data.immediateFlush, size, time, data.policy,
-                        data.strategy, data.advertiseURI);
+                return new FastRollingFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
+                        data.immediateFlush, size, time, data.policy, data.strategy, data.advertiseURI, data.layout);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("FastRollingFileManager (" + name + ") " + ex);
             }
@@ -179,23 +173,25 @@ public class FastRollingFileManager extends RollingFileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
+        private final Layout layout;
 
         /**
          * Create the data for the factory.
-         * 
+         *
          * @param pattern The pattern.
          * @param append The append flag.
          * @param immediateFlush
          */
-        public FactoryData(String pattern, boolean append,
-                boolean immediateFlush, TriggeringPolicy policy,
-                RolloverStrategy strategy, String advertiseURI) {
+        public FactoryData(final String pattern, final boolean append, final boolean immediateFlush,
+                           final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
+                           final Layout layout) {
             this.pattern = pattern;
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.policy = policy;
             this.strategy = strategy;
             this.advertiseURI = advertiseURI;
+            this.layout = layout;
         }
     }
 

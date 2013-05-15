@@ -59,10 +59,6 @@ public abstract class AbstractOutputStreamAppender<T extends Serializable> exten
                                            final boolean handleException, final boolean immediateFlush,
                                            final OutputStreamManager manager) {
         super(name, filter, layout, handleException);
-        if (layout != null) {
-            manager.setHeader(layout.getHeader());
-            manager.setFooter(layout.getFooter());
-        }
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }

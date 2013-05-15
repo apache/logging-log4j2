@@ -147,17 +147,16 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
                     + name);
             return null;
         }
-
-        FastFileManager manager = FastFileManager.getFileManager(fileName,
-                isAppend, isFlush, advertiseURI);
-        if (manager == null) {
-            return null;
-        }
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
+        FastFileManager manager = FastFileManager.getFileManager(fileName, isAppend, isFlush, advertiseURI, layout);
+        if (manager == null) {
+            return null;
+        }
+
         return new FastFileAppender<S>(name, layout, filter, manager, fileName,
                 handleExceptions, isFlush, isAdvertise ? config.getAdvertiser()
                         : null);

@@ -20,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 import java.io.OutputStream;
@@ -38,26 +40,29 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param address
      * @param host The host to connect to.
      * @param port The port on the host.
+     * @param layout The layout
      */
-    protected DatagramSocketManager(final String name, final OutputStream os, InetAddress address, final String host, final int port) {
-        super(name, os, address, host, port);
+    protected DatagramSocketManager(final String name, final OutputStream os, InetAddress address, final String host,
+                                    final int port, final Layout layout) {
+        super(name, os, address, host, port, layout);
     }
 
     /**
      * Obtain a SocketManager.
      * @param host The host to connect to.
      * @param port The port on the host.
+     * @param layout The layout.
      * @return A DatagramSocketManager.
      */
-    public static DatagramSocketManager getSocketManager(final String host, final int port) {
+    public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout layout) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {
             throw new IllegalArgumentException("A port value is required");
         }
-        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port), FACTORY
-        );
+        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port, layout),
+            FACTORY);
     }
 
     /**
@@ -82,10 +87,12 @@ public class DatagramSocketManager extends AbstractSocketManager {
     private static class FactoryData {
         private final String host;
         private final int port;
+        private final Layout layout;
 
-        public FactoryData(final String host, final int port) {
+        public FactoryData(final String host, final int port, final Layout layout) {
             this.host = host;
             this.port = port;
+            this.layout = layout;
         }
     }
 
@@ -104,7 +111,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
                 LOGGER.error("Could not find address of " + data.host, ex);
                 return null;
             }
-            return new DatagramSocketManager(name, os, address, data.host, data.port);
+            return new DatagramSocketManager(name, os, address, data.host, data.port, data.layout);
         }
     }
 }

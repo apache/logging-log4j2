@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Layout;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -25,14 +27,28 @@ import java.io.OutputStream;
  */
 public class OutputStreamManager extends AbstractManager {
 
-    private OutputStream os;
+    private volatile OutputStream os;
 
-    private byte[] footer = null;
-    private byte[] header = null;
+    private final byte[] footer;
+    private final byte[] header;
 
-    protected OutputStreamManager(final OutputStream os, final String streamName) {
+    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout) {
         super(streamName);
         this.os = os;
+        if (layout != null) {
+            this.footer = layout.getFooter();
+            this.header = layout.getHeader();
+            if (this.header != null) {
+                try {
+                    this.os.write(header, 0, header.length);
+                } catch (final IOException ioe) {
+                    LOGGER.error("Unable to write header", ioe);
+                }
+            }
+        } else {
+            this.footer = null;
+            this.header = null;
+        }
     }
 
     /**
@@ -47,31 +63,6 @@ public class OutputStreamManager extends AbstractManager {
     public static <T> OutputStreamManager getManager(final String name, final T data,
                                                  final ManagerFactory<? extends OutputStreamManager, T> factory) {
         return AbstractManager.getManager(name, factory, data);
-    }
-
-    /**
-     * Set the header to write when the stream is opened.
-     * @param header The header.
-     */
-    public synchronized void setHeader(final byte[] header) {
-        if (header != null) {
-            this.header = header;
-            try {
-                this.os.write(header, 0, header.length);
-            } catch (final IOException ioe) {
-                LOGGER.error("Unable to write header", ioe);
-            }
-        }
-    }
-
-    /**
-     * Set the footer to write when the stream is closed.
-     * @param footer The footer.
-     */
-    public synchronized void setFooter(final byte[] footer) {
-        if (footer != null) {
-            this.footer = footer;
-        }
     }
 
     /**

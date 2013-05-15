@@ -95,13 +95,13 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
         final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target), handleExceptions);
+        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target, layout), handleExceptions);
     }
 
-    private static OutputStreamManager getManager(final boolean follow, final Target target) {
+    private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout layout) {
         final String type = target.name();
         final OutputStream os = getOutputStream(follow, target);
-        return OutputStreamManager.getManager(target.name() + "." + follow, new FactoryData(os, type), factory);
+        return OutputStreamManager.getManager(target.name() + "." + follow, new FactoryData(os, type, layout), factory);
     }
 
     private static OutputStream getOutputStream(final boolean follow, final Target target) {
@@ -212,15 +212,17 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
     private static class FactoryData {
         private final OutputStream os;
         private final String type;
+        private final Layout layout;
 
         /**
          * Constructor.
          * @param os The OutputStream.
          * @param type The name of the target.
          */
-        public FactoryData(final OutputStream os, final String type) {
+        public FactoryData(final OutputStream os, final String type, final Layout layout) {
             this.os = os;
             this.type = type;
+            this.layout = layout;
         }
     }
 
@@ -237,7 +239,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.type);
+            return new OutputStreamManager(data.os, data.type, data.layout);
         }
     }
 
