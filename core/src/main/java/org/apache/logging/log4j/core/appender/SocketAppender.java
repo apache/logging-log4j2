@@ -117,7 +117,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
 
         final String prot = protocol != null ? protocol : Protocol.TCP.name();
 
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail);
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
@@ -127,13 +127,14 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
     }
 
     protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port,
-                                                               final int delay, final boolean immediateFail) {
+                                                               final int delay, final boolean immediateFail,
+                                                               final Layout layout) {
         final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:
-                return TCPSocketManager.getSocketManager(host, port, delay, immediateFail);
+                return TCPSocketManager.getSocketManager(host, port, delay, immediateFail, layout);
             case UDP:
-                return DatagramSocketManager.getSocketManager(host, port);
+                return DatagramSocketManager.getSocketManager(host, port, layout);
             default:
                 return null;
         }

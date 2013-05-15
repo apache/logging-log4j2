@@ -166,16 +166,16 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
             strategy = DefaultRolloverStrategy.createStrategy(null, null, "true", config);
         }
 
-        final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
-            isBuffered, policy, strategy, advertiseURI);
-        if (manager == null) {
-            return null;
-        }
-
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
+        }
+
+        final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
+            isBuffered, policy, strategy, advertiseURI, layout);
+        if (manager == null) {
+            return null;
         }
 
         return new RollingFileAppender<S>(name, layout, filter, manager, fileName, filePattern,

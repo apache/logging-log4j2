@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Layout;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,8 +41,9 @@ public class FileManager extends OutputStreamManager {
     private final boolean isLocking;
     private final String advertiseURI;
 
-    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking, String advertiseURI) {
-        super(os, fileName);
+    protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
+                          final String advertiseURI, final Layout layout) {
+        super(os, fileName, layout);
         this.isAppend = append;
         this.isLocking = locking;
         this.advertiseURI = advertiseURI;
@@ -56,12 +59,14 @@ public class FileManager extends OutputStreamManager {
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
-                                             final boolean bufferedIO, String advertiseURI) {
+                                             final boolean bufferedIO, final String advertiseURI,
+                                             final Layout layout) {
 
         if (locking && bufferedIO) {
             locking = false;
         }
-        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO, advertiseURI), FACTORY);
+        return (FileManager) getManager(fileName, new FactoryData(append, locking, bufferedIO, advertiseURI, layout),
+            FACTORY);
     }
 
     @Override
@@ -137,6 +142,7 @@ public class FileManager extends OutputStreamManager {
         private final boolean locking;
         private final boolean bufferedIO;
         private final String advertiseURI;
+        private final Layout layout;
 
         /**
          * Constructor.
@@ -145,11 +151,13 @@ public class FileManager extends OutputStreamManager {
          * @param bufferedIO Buffering flag.
          * @param advertiseURI the URI to use when advertising the file
          */
-        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO, String advertiseURI) {
+        public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO,
+                           final String advertiseURI, final Layout layout) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;
             this.advertiseURI = advertiseURI;
+            this.layout = layout;
         }
     }
 
@@ -178,7 +186,7 @@ public class FileManager extends OutputStreamManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
-                return new FileManager(name, os, data.append, data.locking, data.advertiseURI);
+                return new FileManager(name, os, data.append, data.locking, data.advertiseURI, data.layout);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

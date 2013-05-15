@@ -129,16 +129,18 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
             LOGGER.error("No filename provided for FileAppender with name "  + name);
             return null;
         }
-
-        final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseURI);
-        if (manager == null) {
-            return null;
-        }
         if (layout == null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
+
+        final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseURI,
+            layout);
+        if (manager == null) {
+            return null;
+        }
+
 
         return new FileAppender<S>(name, layout, filter, manager, fileName, handleExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);

@@ -130,7 +130,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
             return null;
         }
         final String prot = protocol != null ? protocol : Protocol.UDP.name();
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail);
+        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }

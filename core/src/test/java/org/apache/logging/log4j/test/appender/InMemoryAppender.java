@@ -31,7 +31,7 @@ public class InMemoryAppender<T extends Serializable> extends AbstractOutputStre
 
     public InMemoryAppender(final String name, final Layout<T> layout, final CompositeFilter filters,
                             final boolean handleException) {
-        super(name, layout, filters, handleException, true, new InMemoryManager(name));
+        super(name, layout, filters, handleException, true, new InMemoryManager(name, layout));
     }
 
     @Override
@@ -41,8 +41,8 @@ public class InMemoryAppender<T extends Serializable> extends AbstractOutputStre
 
     private static class InMemoryManager extends OutputStreamManager {
 
-        public InMemoryManager(final String name) {
-            super(new ByteArrayOutputStream(), name);
+        public InMemoryManager(final String name, final Layout layout) {
+            super(new ByteArrayOutputStream(), name, layout);
         }
 
         @Override

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -46,8 +47,8 @@ public class RollingFileManager extends FileManager {
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
                                  final boolean append, final long size, final long time, final TriggeringPolicy policy,
-                                 final RolloverStrategy strategy, String advertiseURI) {
-        super(fileName, os, append, false, advertiseURI);
+                                 final RolloverStrategy strategy, final String advertiseURI, final Layout layout) {
+        super(fileName, os, append, false, advertiseURI, layout);
         this.size = size;
         this.initialTime = time;
         this.policy = policy;
@@ -65,14 +66,16 @@ public class RollingFileManager extends FileManager {
      * @param policy The TriggeringPolicy.
      * @param strategy The RolloverStrategy.
      * @param advertiseURI the URI to use when advertising the file
+     * @param layout The Layout.
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
                                                     final boolean bufferedIO, final TriggeringPolicy policy,
-                                                    final RolloverStrategy strategy, String advertiseURI) {
+                                                    final RolloverStrategy strategy, final String advertiseURI,
+                                                    final Layout layout) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
-            bufferedIO, policy, strategy, advertiseURI), factory);
+            bufferedIO, policy, strategy, advertiseURI, layout), factory);
     }
 
     @Override
@@ -234,6 +237,7 @@ public class RollingFileManager extends FileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
+        private final Layout layout;
 
         /**
          * Create the data for the factory.
@@ -241,15 +245,18 @@ public class RollingFileManager extends FileManager {
          * @param append The append flag.
          * @param bufferedIO The bufferedIO flag.
          * @param advertiseURI
+         * @param layout The Layout.
          */
         public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
-                           final TriggeringPolicy policy, final RolloverStrategy strategy, String advertiseURI) {
+                           final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
+                           final Layout layout) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;
             this.policy = policy;
             this.strategy = strategy;
             this.advertiseURI = advertiseURI;
+            this.layout = layout;
         }
     }
 
@@ -287,7 +294,7 @@ public class RollingFileManager extends FileManager {
                     os = new BufferedOutputStream(os);
                 }
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
-                    data.strategy, data.advertiseURI);
+                    data.strategy, data.advertiseURI, data.layout);
             } catch (final FileNotFoundException ex) {
                 LOGGER.error("FileManager (" + name + ") " + ex);
             }

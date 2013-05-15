@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.net;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 import java.io.OutputStream;
@@ -50,8 +52,8 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * @param port The target port number.
      */
     public AbstractSocketManager(final String name, final OutputStream os, final InetAddress addr, final String host,
-                                 final int port) {
-        super(os, name);
+                                 final int port, final Layout layout) {
+        super(os, name, layout);
         this.address = addr;
         this.host = host;
         this.port = port;
@@ -69,7 +71,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("port", Integer.toString(port));
         result.put("address", address.getHostAddress());
-        
+
         return result;
     }
 }
