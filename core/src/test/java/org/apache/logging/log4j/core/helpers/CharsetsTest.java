@@ -46,6 +46,8 @@ public class CharsetsTest {
 
     @Test
     public void testReturnRequestedCharsetIfSupported() {
+        // See http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
+        // for a list of required charsets.
         Charset actual1 = Charsets.getSupportedCharset("UTF-8");
         assertSame(Charset.forName("UTF-8"), actual1);
 
