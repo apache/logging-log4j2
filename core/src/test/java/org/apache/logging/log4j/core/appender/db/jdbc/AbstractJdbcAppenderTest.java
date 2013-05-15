@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -32,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -48,14 +38,15 @@ import org.junit.After;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
 
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
+
 public abstract class AbstractJdbcAppenderTest {
-
-    private final String dbType;
-
+    private final String databaseType;
     private Connection connection;
 
-    public AbstractJdbcAppenderTest(final String dbType) {
-        this.dbType = dbType;
+    public AbstractJdbcAppenderTest(final String databaseType) {
+        this.databaseType = databaseType;
     }
 
     protected abstract Connection newConnection() throws SQLException;
@@ -64,7 +55,7 @@ public abstract class AbstractJdbcAppenderTest {
         this.connection = this.newConnection();
         final Statement statement = this.connection.createStatement();
         try {
-            statement.executeUpdate(toCreateTableSqlString(tableName));
+            statement.executeUpdate(this.toCreateTableSqlString(tableName));
         } finally {
             statement.close();
         }
@@ -75,15 +66,6 @@ public abstract class AbstractJdbcAppenderTest {
             context.reconfigure();
         }
         StatusLogger.getLogger().reset();
-    }
-
-    protected void setUpTable(final String tableName) throws SQLException {
-        final Statement statement = this.connection.createStatement();
-        try {
-            statement.executeUpdate(toCreateTableSqlString(tableName));
-        } finally {
-            statement.close();
-        }
     }
 
     @After
@@ -119,7 +101,6 @@ public abstract class AbstractJdbcAppenderTest {
 
     @Test
     public void testDataSourceConfig() throws Exception {
-        System.out.println("Before creating mock data source.");
         final DataSource dataSource = createStrictMock(DataSource.class);
 
         expect(dataSource.getConnection()).andAnswer(new IAnswer<Connection>() {
@@ -130,24 +111,19 @@ public abstract class AbstractJdbcAppenderTest {
         }).atLeastOnce();
         replay(dataSource);
 
-        System.out.println("Before creating mock context.");
         MockContextFactory.setAsInitial();
 
-        System.out.println("Before instantiating context.");
         final InitialContext context = new InitialContext();
         context.createSubcontext("java:");
         context.createSubcontext("java:/comp");
         context.createSubcontext("java:/comp/env");
         context.createSubcontext("java:/comp/env/jdbc");
 
-        System.out.println("Before binding data source.");
         context.bind("java:/comp/env/jdbc/TestDataSourceAppender", dataSource);
 
         try {
-            System.out.println("Before setting up.");
             this.setUp("dsLogEntry", "log4j2-data-source.xml");
 
-            System.out.println("After setting up.");
             final Error exception = new Error("Final error massage is fatal!");
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             final PrintWriter writer = new PrintWriter(outputStream);
@@ -187,7 +163,7 @@ public abstract class AbstractJdbcAppenderTest {
 
     @Test
     public void testDriverManagerConfig() throws SQLException {
-        this.setUp("dmLogEntry", "log4j2-" + this.dbType + "-driver-manager.xml");
+        this.setUp("dmLogEntry", "log4j2-" + this.databaseType + "-driver-manager.xml");
 
         final RuntimeException exception = new RuntimeException("Hello, world!");
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -235,7 +211,7 @@ public abstract class AbstractJdbcAppenderTest {
 
     @Test
     public void testFactoryMethodConfig() throws SQLException {
-        this.setUp("fmLogEntry", "log4j2-" + this.dbType + "-factory-method.xml");
+        this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
         final SQLException exception = new SQLException("Some other error message!");
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -286,5 +262,4 @@ public abstract class AbstractJdbcAppenderTest {
                 + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), "
                 + "logger VARCHAR(255), message VARCHAR(1024), exception VARCHAR(1048576)" + " )";
     }
-
 }

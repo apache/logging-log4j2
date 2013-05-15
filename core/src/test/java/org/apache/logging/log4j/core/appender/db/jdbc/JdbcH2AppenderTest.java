@@ -24,25 +24,23 @@ import java.sql.SQLException;
  * Tests the JDBC appender with the H2 database in memory.
  */
 public class JdbcH2AppenderTest extends AbstractJdbcAppenderTest {
-
     private static final String PASSWORD = "";
     private static final String USER_ID = "sa";
 
+    public JdbcH2AppenderTest() {
+        super("h2");
+    }
+
     /**
-     * Referred from log4j2-factory-method.xml.
+     * Referred from log4j2-h2-factory-method.xml.
      */
     @SuppressWarnings("unused")
     public static Connection getConfigConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
     }
 
-    public JdbcH2AppenderTest() {
-        super("h2");
-    }
-
     @Override
     protected Connection newConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
     }
-
 }

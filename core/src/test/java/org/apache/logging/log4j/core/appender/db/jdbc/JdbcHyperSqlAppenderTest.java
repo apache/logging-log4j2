@@ -24,22 +24,23 @@ import java.sql.SQLException;
  * Tests the JDBC appender with the HyperSQL database (a.k.a. HSQLDB) in memory.
  */
 public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
-
-    /**
-     * Referred from log4j2-factory-method.xml.
-     */
-    @SuppressWarnings("unused")
-    public static Connection getConfigConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j;ifexists=true", "sa", "");
-    }
+    private static final String PASSWORD = "";
+    private static final String USER_ID = "sa";
 
     public JdbcHyperSqlAppenderTest() {
         super("hsqldb");
     }
 
-    @Override
-    protected Connection newConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
+    /**
+     * Referred from log4j2-hsqldb-factory-method.xml.
+     */
+    @SuppressWarnings("unused")
+    public static Connection getConfigConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j;ifexists=true", USER_ID, PASSWORD);
     }
 
+    @Override
+    protected Connection newConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
+    }
 }
