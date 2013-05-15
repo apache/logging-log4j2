@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-255" dev="rpopma" type="fix">
+        Multi-byte character strings are now assumed to be in the platform default encoding, not UTF-8.
+      </action>
       <action issue="LOG4J2-254" dev="rgoers" type="fix">
         Mark OutputStream in OutputStreamManager as volatile. Mark header and footer as final.
       </action>

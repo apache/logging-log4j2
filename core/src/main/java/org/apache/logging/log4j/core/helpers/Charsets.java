@@ -31,10 +31,12 @@ public final class Charsets {
     }
 
     /**
-     * Gets a Charset, starting with the preferred {@code charsetName} if supported, if not, use UTF-8.
+     * Returns a Charset, if possible the Charset for the specified {@code charsetName},
+     * otherwise (if the specified {@code charsetName} is {@code null} or not supported)
+     * this method returns the platform default Charset.
      *
      * @param charsetName
-     *            the preferred charset name
+     *            name of the preferred charset or {@code null}
      * @return a Charset, not null.
      */
     public static Charset getSupportedCharset(final String charsetName) {
@@ -45,7 +47,7 @@ public final class Charsets {
             }
         }
         if (charset == null) {
-            charset = UTF_8;
+            charset = Charset.defaultCharset();
             if (charsetName != null) {
                 StatusLogger.getLogger().error("Charset " + charsetName + " is not supported for layout, using " +
                     charset.displayName());
