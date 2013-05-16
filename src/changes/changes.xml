@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-258" dev="ggregory" type="fix">
+        HTML layout does not output meta element for charset.
+      </action>
       <action issue="LOG4J2-257" dev="ggregory" type="fix">
         XML layout ignores charset for the XML processing intruction's encoding attribute.
       </action>
