@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-
-import javax.persistence.AttributeConverter;
-import javax.persistence.PersistenceException;
 import java.io.IOException;
 import java.util.Map;
+import javax.persistence.AttributeConverter;
+import javax.persistence.PersistenceException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A JPA 2.1 attribute converter for {@link Map Map&lt;String, String&gt;}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is capable of converting both to and from
  * {@link String}s.
  *
- * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Mapper.
+ * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Data
+ * Processor.
  */
 public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<String, String>, String> {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

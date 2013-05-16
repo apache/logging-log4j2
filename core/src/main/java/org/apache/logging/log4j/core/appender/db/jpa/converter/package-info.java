@@ -20,6 +20,6 @@
  * entities. The {@link ContextMapAttributeConverter} and {@link ContextStackAttributeConverter} only support
  * persistence and not retrieval, persisting the type as a simple string. You can use the
  * {@link ContextMapJsonAttributeConverter} and {@link ContextStackJsonAttributeConverter} instead, which require the
- * Jackson Mapper dependency to also be on your class path.
+ * Jackson Data Processor dependency to also be on your class path.
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;

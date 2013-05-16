@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import java.io.File;
+
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
  *
@@ -32,8 +33,9 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
     public static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
     private static String[] dependencies = new String[] {
-        "org.codehaus.jackson.JsonNode",
-        "org.codehaus.jackson.map.ObjectMapper"
+            "com.fasterxml.jackson.databind.ObjectMapper",
+            "com.fasterxml.jackson.databind.JsonNode",
+            "com.fasterxml.jackson.core.JsonParser"
     };
 
     private final File configFile = null;

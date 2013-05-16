@@ -16,20 +16,22 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.ThreadContext;
-import org.codehaus.jackson.type.TypeReference;
-
-import javax.persistence.AttributeConverter;
-import javax.persistence.PersistenceException;
 import java.io.IOException;
 import java.util.List;
+import javax.persistence.AttributeConverter;
+import javax.persistence.PersistenceException;
+
+import org.apache.logging.log4j.ThreadContext;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * A JPA 2.1 attribute converter for {@link ThreadContext.ContextStack}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is capable of converting both to and from
  * {@link String}s.
  *
- * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Mapper.
+ * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Data
+ * Processor.
  */
 public class ContextStackJsonAttributeConverter implements AttributeConverter<ThreadContext.ContextStack, String> {
     @Override

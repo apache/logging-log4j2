@@ -593,19 +593,19 @@ public class Bar {
   }
 }</pre>
           <p>
-            The JSON support uses Jackson to parse the JSON files. These dependencies must be added to a project
-            that wants to use JSON for configuration:
+            The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
+            to a project that wants to use JSON for configuration:
           <pre class="prettyprint linenums"><![CDATA[
 <dependency>
-  <groupId>org.codehaus.jackson</groupId>
-  <artifactId>jackson-core-asl</artifactId>
-  <version>1.9.2</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <version>2.2.1</version>
 </dependency>
 
 <dependency>
-  <groupId>org.codehaus.jackson</groupId>
-  <artifactId>jackson-mapper-asl</artifactId>
-  <version>1.9.2</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.2.1</version>
 </dependency>]]></pre>
           </p>
         <a name="Loggers"/>

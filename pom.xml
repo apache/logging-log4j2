@@ -136,7 +136,7 @@
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.0-beta6</Log4jReleaseVersion>
     <Log4jReleaseCount>eighth</Log4jReleaseCount>
-    <jackson.version>1.9.11</jackson.version>
+    <jackson.version>2.2.1</jackson.version>
     <disruptor.version>3.0.1</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
     <osgi.symbolicName>org.apache.logging.${project.artifactId}</osgi.symbolicName>
@@ -251,14 +251,14 @@
         <optional>true</optional>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
         <version>${jackson.version}</version>
         <optional>true</optional>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
         <version>${jackson.version}</version>
         <optional>true</optional>
       </dependency>
