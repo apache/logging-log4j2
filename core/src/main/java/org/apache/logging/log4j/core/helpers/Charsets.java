@@ -24,22 +24,35 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Charset utilities.
  */
 public final class Charsets {
-    
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
-
-    private Charsets() {
-    }
 
     /**
-     * Returns a Charset, if possible the Charset for the specified {@code charsetName},
-     * otherwise (if the specified {@code charsetName} is {@code null} or not supported)
-     * this method returns the platform default Charset.
+     * UTF-8 Charset.
+     */
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
+
+    /**
+     * Returns a Charset, if possible the Charset for the specified {@code charsetName}, otherwise (if the specified
+     * {@code charsetName} is {@code null} or not supported) this method returns the platform default Charset.
      *
      * @param charsetName
      *            name of the preferred charset or {@code null}
      * @return a Charset, not null.
      */
     public static Charset getSupportedCharset(final String charsetName) {
+        return getSupportedCharset(charsetName, Charset.defaultCharset());
+    }
+
+    /**
+     * Returns a Charset, if possible the Charset for the specified {@code charsetName}, otherwise (if the specified
+     * {@code charsetName} is {@code null} or not supported) this method returns the platform default Charset.
+     *
+     * @param charsetName
+     *            name of the preferred charset or {@code null}
+     * @param defaultCharset
+     *            returned if {@code charsetName} is null or is not supported.
+     * @return a Charset, never null.
+     */
+    public static Charset getSupportedCharset(final String charsetName, final Charset defaultCharset) {
         Charset charset = null;
         if (charsetName != null) {
             if (Charset.isSupported(charsetName)) {
@@ -47,13 +60,16 @@ public final class Charsets {
             }
         }
         if (charset == null) {
-            charset = Charset.defaultCharset();
+            charset = defaultCharset;
             if (charsetName != null) {
-                StatusLogger.getLogger().error("Charset " + charsetName + " is not supported for layout, using " +
-                    charset.displayName());
+                StatusLogger.getLogger().error(
+                        "Charset " + charsetName + " is not supported for layout, using " + charset.displayName());
             }
         }
         return charset;
+    }
+
+    private Charsets() {
     }
 
 }
