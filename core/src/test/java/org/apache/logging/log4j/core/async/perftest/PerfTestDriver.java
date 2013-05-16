@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -28,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 
 /**
  * Runs a sequence of performance tests.
@@ -80,8 +80,8 @@ public class PerfTestDriver {
             // args.add("-XX:+PrintGCApplicationConcurrentTime");
             // args.add("-XX:+PrintSafepointStatistics");
 
-            args.add("-Dlog4j.configuration=" + _log4jConfig); // log4j1.2
-            args.add("-Dlog4j.configurationFile=" + _log4jConfig); // log4j2
+            args.add("-Dlog4j.configuration=" + _log4jConfig); // log4j 1.2
+            args.add("-Dlog4j.configurationFile=" + _log4jConfig); // log4j 2
             args.add("-Dlogback.configurationFile=" + _log4jConfig);// logback
 
             int ringBufferSize = getUserSpecifiedRingBufferSize();

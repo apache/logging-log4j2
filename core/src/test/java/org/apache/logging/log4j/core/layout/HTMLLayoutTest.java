@@ -16,23 +16,22 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -112,7 +111,7 @@ public class HTMLLayoutTest {
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
         final String string = list.get(3);
         assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
-        assertTrue("Incorrect title", list.get(4).equals("<title>Log4J Log Messages</title>"));
+        assertTrue("Incorrect title", list.get(4).equals("<title>Log4j Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
         assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
         assertTrue("Incorrect body", list.get(71).equals(body));

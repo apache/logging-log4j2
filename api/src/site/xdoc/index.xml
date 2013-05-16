@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4J 2 API</title>
+        <title>Log4j 2 API</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -26,7 +26,7 @@
         <section name="Log4j 2 API">
 
             <p>
-              The Log4Jj 2 API provides the interface that applications should code to and provides the
+              The Log4j 2 API provides the interface that applications should code to and provides the
               adapter components required for implementers to create a logging implementation.
             </p>
 

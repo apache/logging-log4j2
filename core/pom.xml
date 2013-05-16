@@ -25,8 +25,8 @@
   </parent>
   <artifactId>log4j-core</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Log4J Core</name>
-  <description>Apache Log4J Implementation.</description>
+  <name>Apache Log4j Core</name>
+  <description>The Log4j Implementation</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>

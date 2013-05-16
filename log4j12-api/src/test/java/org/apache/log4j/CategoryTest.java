@@ -17,6 +17,9 @@
 
 package org.apache.log4j;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,9 +32,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -127,7 +127,7 @@ public class CategoryTest {
     }
 
     /**
-     * Test using a pre-existing log4j2 logger
+     * Test using a pre-existing Log4j 2 logger
      */
     @Test
     public void testExistingLog4j2Logger() {

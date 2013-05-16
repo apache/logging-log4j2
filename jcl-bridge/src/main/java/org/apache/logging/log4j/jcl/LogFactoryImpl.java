@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.jcl;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  *
@@ -51,7 +51,7 @@ public class LogFactoryImpl extends LogFactory {
             return loggers.get(name);
         }
         throw new LogConfigurationException(
-            "Commons Logging Adapter requires base logging system to extend Log4J AbstractLogger");
+            "Commons Logging Adapter requires base logging system to extend Log4j AbstractLogger");
     }
 
     private ConcurrentMap<String, Log> getLoggersMap() {

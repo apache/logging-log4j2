@@ -18,7 +18,7 @@
 
 <document>
     <properties>
-        <title>Log4J2 Filters</title>
+        <title>Log4j Filters</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
@@ -128,7 +128,7 @@
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <filters>
-    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NETURAL"/>
+    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                             onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
@@ -164,7 +164,7 @@
         <subsection name="DynamicThresholdFilter">
           <p>
             The DynamicThresholdFilter allows filtering by log level based on specific attributes. For example,
-            if the user's loginid is being captured in the ThreadContext Map then it is possible to enable
+            if the user's loginId is being captured in the ThreadContext Map then it is possible to enable
             debug logging for only that user.
           </p>
           <table>
@@ -270,7 +270,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
-    <KeyValuePari key="eventId" value="Logout"/>
+    <KeyValuePair key="eventId" value="Logout"/>
   </MapFilter>
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -309,7 +309,7 @@
     <root level="error">
       <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
         <KeyValuePair key="eventId" value="Login"/>
-        <KeyValuePari key="eventId" value="Logout"/>
+        <KeyValuePair key="eventId" value="Logout"/>
       </MapFilter>
       <appender-ref ref="RollingFile">
       </appender-ref>
@@ -338,7 +338,7 @@
       <appender-ref ref="RollingFile">
         <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
           <KeyValuePair key="eventId" value="Login"/>
-          <KeyValuePari key="eventId" value="Logout"/>
+          <KeyValuePair key="eventId" value="Logout"/>
         </MapFilter>
       </appender-ref>
     </root>
@@ -509,7 +509,7 @@
 <configuration status="warn" name="MyApp" packages="">
   <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="id" value="Login"/>
-    <KeyValuePari key="id" value="Logout"/>
+    <KeyValuePair key="id" value="Logout"/>
   </StructuredDataFilter>
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
@@ -731,7 +731,7 @@
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
-      <TiemFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
+      <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout>
         <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>

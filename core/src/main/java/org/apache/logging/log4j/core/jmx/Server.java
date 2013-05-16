@@ -42,7 +42,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Creates MBeans to instrument various classes in the log4j class hierarchy.
  * <p>
- * All instrumentation for Log4J2 classes can be disabled by setting system
+ * All instrumentation for Log4j 2 classes can be disabled by setting system
  * property {@code -Dlog4j2.disable.jmx=true}.
  */
 public final class Server {

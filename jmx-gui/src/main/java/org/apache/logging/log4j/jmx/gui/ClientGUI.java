@@ -53,7 +53,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
  * Swing GUI that connects to a Java process via JMX and allows the user to view and
- * modify the log4j2 configuration, as well as monitor status logs.
+ * modify the Log4j 2 configuration, as well as monitor status logs.
  * 
  * @see <a href=
  *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html"
@@ -168,7 +168,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
         }
         final JMXConnector connector = JMXConnectorFactory.connect(url, paramMap);
         final Client client = new Client(connector);
-        final String title = "Log4J2 JMX Client - " + url;
+        final String title = "Log4j JMX Client - " + url;
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
