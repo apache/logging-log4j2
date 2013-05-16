@@ -96,10 +96,12 @@ public class HTMLLayoutTest {
 
         final List<String> list = appender.getMessages();
         assertTrue("Incorrect number of lines. Require at least 85 " + list.size(), list.size() > 85);
-        assertTrue("Incorrect header", list.get(3).equals("<title>Log4J Log Messages</title>"));
+        final String string = list.get(3);
+        assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
+        assertTrue("Incorrect title", list.get(4).equals("<title>Log4J Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        assertTrue("Incorrect multiline", list.get(49).equals(multiLine));
-        assertTrue("Incorrect body", list.get(70).equals(body));
+        assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
+        assertTrue("Incorrect body", list.get(71).equals(body));
 
     }
 }

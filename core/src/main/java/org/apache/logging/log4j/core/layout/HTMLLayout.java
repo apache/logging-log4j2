@@ -258,6 +258,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append(Constants.LINE_SEP);
         sbuf.append("<html>").append(Constants.LINE_SEP);
         sbuf.append("<head>").append(Constants.LINE_SEP);
+        sbuf.append("<meta charset=\"").append(getCharset()).append("\"/>").append(Constants.LINE_SEP);
         sbuf.append("<title>").append(title).append("</title>").append(Constants.LINE_SEP);
         sbuf.append("<style type=\"text/css\">").append(Constants.LINE_SEP);
         sbuf.append("<!--").append(Constants.LINE_SEP);
@@ -317,7 +318,7 @@ public final class HTMLLayout extends AbstractStringLayout {
                                           @PluginAttr("charset") final String charsetName,
                                           @PluginAttr("fontSize") String fontSize,
                                           @PluginAttr("fontName") String font) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         if (font == null) {
             font = "arial,sans-serif";
         }
