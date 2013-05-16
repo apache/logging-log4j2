@@ -63,13 +63,13 @@ public class HTMLLayoutTest {
 
 
     @Test
-    public void testContentType() throws Exception {
+    public void testContentType() {
         final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
         assertEquals("text/html; charset=UTF-8", layout.getContentType());
     }
     
     @Test
-    public void testDefaultCharset() throws Exception {
+    public void testDefaultCharset() {
         final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
         assertEquals(Charsets.UTF_8, layout.getCharset());
     }
@@ -78,7 +78,7 @@ public class HTMLLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    public void testLayout() {
 
         // set up appender
         final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
