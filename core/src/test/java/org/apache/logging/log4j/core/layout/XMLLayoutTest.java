@@ -36,10 +36,14 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public class XMLLayoutTest {
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    Logger root = ctx.getLogger("");
-
+    private static final String body =
+        "<log4j:message><![CDATA[empty mdc]]></log4j:message>";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
+
+    @AfterClass
+    public static void cleanupClass() {
+        ConfigurationFactory.removeConfigurationFactory(cf);
+    }
 
     @BeforeClass
     public static void setupClass() {
@@ -48,13 +52,9 @@ public class XMLLayoutTest {
         ctx.reconfigure();
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
-    }
+    LoggerContext ctx = (LoggerContext) LogManager.getContext();
 
-    private static final String body =
-        "<log4j:message><![CDATA[empty mdc]]></log4j:message>";
+    Logger root = ctx.getLogger("");
 
 
     /**
