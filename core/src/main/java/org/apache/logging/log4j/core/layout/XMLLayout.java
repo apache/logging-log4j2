@@ -239,7 +239,7 @@ public class XMLLayout extends AbstractStringLayout {
      * @return The content type.
      */
     public String getContentType() {
-        return "text/xml";
+        return "text/xml; charset=" + this.getCharset();
     }
 
     List<String> getThrowableString(final Throwable throwable) {
