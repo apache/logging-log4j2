@@ -24,12 +24,14 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -56,6 +58,11 @@ public class XMLLayoutTest {
 
     Logger root = ctx.getLogger("");
 
+    @Test
+    public void testDefaultCharset() {
+        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null);
+        assertEquals(Charsets.UTF_8, layout.getCharset());
+    }
 
     /**
      * Test case for MDC conversion pattern.
