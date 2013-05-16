@@ -198,9 +198,11 @@ public class XMLLayout extends AbstractStringLayout {
             return null;
         }
         final StringBuilder sbuf = new StringBuilder();
-        sbuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+        sbuf.append("<?xml version=\"1.0\" encoding=\"");
+        sbuf.append(this.getCharset().name());
+        sbuf.append("\"?>\r\n");
         sbuf.append("<log4j:eventSet xmlns:log4j=\"http://logging.apache.org/log4j/\">\r\n");
-        return sbuf.toString().getBytes(getCharset());
+        return sbuf.toString().getBytes(this.getCharset());
     }
 
 
@@ -267,11 +269,12 @@ public class XMLLayout extends AbstractStringLayout {
     }
 
     /**
-     * Create an XML Layout.
+     * Creates an XML Layout.
+     * 
      * @param locationInfo If "true" include the location information in the generated XML.
      * @param properties If "true" include the thread context in the generated XML.
      * @param complete If "true" include the XML header.
-     * @param charsetName The character set to use.
+     * @param charsetName The character set to use, if {@code null}, uses UTF-8.
      * @return An XML Layout.
      */
     @PluginFactory
@@ -279,7 +282,7 @@ public class XMLLayout extends AbstractStringLayout {
                                          @PluginAttr("properties") final String properties,
                                          @PluginAttr("complete") final String complete,
                                          @PluginAttr("charset") final String charsetName) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName);
+        final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         final boolean info = locationInfo == null ? false : Boolean.valueOf(locationInfo);
         final boolean props = properties == null ? false : Boolean.valueOf(properties);
         final boolean comp = complete == null ? false : Boolean.valueOf(complete);

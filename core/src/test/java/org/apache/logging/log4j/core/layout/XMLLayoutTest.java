@@ -92,7 +92,8 @@ public class XMLLayoutTest {
         final List<String> list = appender.getMessages();
 
         assertTrue("Incorrect number of lines. Require at least 50 " + list.size(), list.size() > 50);
-        assertTrue("Incorrect header", list.get(0).equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        final String string = list.get(0);
+        assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</log4j:eventSet>"));
         assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(8), list.get(8).equals(body));
     }
