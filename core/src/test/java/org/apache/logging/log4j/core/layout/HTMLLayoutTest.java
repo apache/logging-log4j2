@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -60,6 +62,18 @@ public class HTMLLayoutTest {
         "<td title=\"Message\">First line<br />Second line</td>";
 
 
+    @Test
+    public void testContentType() throws Exception {
+        final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
+        assertEquals("text/html; charset=UTF-8", layout.getContentType());
+    }
+    
+    @Test
+    public void testDefaultCharset() throws Exception {
+        final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
+        assertEquals(Charsets.UTF_8, layout.getCharset());
+    }
+    
     /**
      * Test case for MDC conversion pattern.
      */
