@@ -16,10 +16,10 @@
  */
 package org.apache.logging.slf4j;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-
-import java.net.URI;
 
 /**
  *
@@ -31,10 +31,10 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
         // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)
         boolean misconfigured = false;
         try {
-            Class.forName("org.slf4j.helpers.Log4JLoggerFactory");
+            Class.forName("org.slf4j.helpers.Log4jLoggerFactory");
             misconfigured = true;
         } catch (ClassNotFoundException classNotFoundIsGood) {
-            // org.slf4j.helpers.Log4JLoggerFactory is not on classpath. Good!
+            // org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!
         }
         if (misconfigured) {
             throw new IllegalStateException("slf4j-impl jar is mutually exclusive with log4j-to-slf4j jar "

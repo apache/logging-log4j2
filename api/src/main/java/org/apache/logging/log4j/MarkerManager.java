@@ -37,7 +37,7 @@ public final class MarkerManager {
      * @return The Marker with the specified name.
      */
     public static Marker getMarker(final String name) {
-        markerMap.putIfAbsent(name, new Log4JMarker(name));
+        markerMap.putIfAbsent(name, new Log4jMarker(name));
         return markerMap.get(name);
     }
 
@@ -63,26 +63,26 @@ public final class MarkerManager {
      * @return The Marker with the specified name.
      */
     public static Marker getMarker(final String name, final Marker parent) {
-        markerMap.putIfAbsent(name, new Log4JMarker(name, parent));
+        markerMap.putIfAbsent(name, new Log4jMarker(name, parent));
         return markerMap.get(name);
     }
 
     /**
      * The actual Marker implementation.
      */
-    private static class Log4JMarker implements Marker {
+    private static class Log4jMarker implements Marker {
 
         private static final long serialVersionUID = 100L;
 
         private final String name;
         private final Marker parent;
 
-        public Log4JMarker(final String name) {
+        public Log4jMarker(final String name) {
             this.name = name;
             this.parent = null;
         }
 
-        public Log4JMarker(final String name, final Marker parent) {
+        public Log4jMarker(final String name, final Marker parent) {
             this.name = name;
             this.parent = parent;
         }

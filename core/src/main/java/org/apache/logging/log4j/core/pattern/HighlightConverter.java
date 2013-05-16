@@ -52,12 +52,12 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * You can use a predefined style:
  *
  * <pre>
- * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Log4J}
+ * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=Log4j}
  * </pre>
  * The available predefined styles are:
  * <ul>
  * <li>{@code Default}</li>
- * <li>{@code Log4J} - The same as {@code Default}</li>
+ * <li>{@code Log4j} - The same as {@code Default}</li>
  * <li>{@code Logback}</li>
  * </ul>
  * </p>

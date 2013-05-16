@@ -33,9 +33,9 @@ import org.slf4j.impl.SLF4JLogger;
 /**
  *
  */
-public class Log4JLoggerFactory implements ILoggerFactory {
+public class Log4jLoggerFactory implements ILoggerFactory {
 
-    private static final String FQCN = Log4JLoggerFactory.class.getName();
+    private static final String FQCN = Log4jLoggerFactory.class.getName();
     private static final String PACKAGE = "org.slf4j";
 
     private final Map<LoggerContext, ConcurrentMap<String, Logger>> contextMap =

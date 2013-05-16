@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.web;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Saves the LoggerContext into the ServletContext as an attribute.
@@ -31,7 +31,7 @@ public class Log4jContextListener implements ServletContextListener {
     /**
      * The name of the attribute to use to store the LoggerContext into the ServletContext.
      */
-    public static final String LOG4J_CONTEXT_ATTRIBUTE = "Log4JContext";
+    public static final String LOG4J_CONTEXT_ATTRIBUTE = "Log4jContext";
 
     /**
      * The location of the configuration.

@@ -16,7 +16,7 @@
  */
 package org.slf4j.impl;
 
-import org.slf4j.helpers.Log4JMDCAdapter;
+import org.slf4j.helpers.Log4jMDCAdapter;
 import org.slf4j.spi.MDCAdapter;
 
 /**
@@ -37,7 +37,7 @@ public final class StaticMDCBinder {
      * @return an MDC adapter
      */
     public MDCAdapter getMDCA() {
-        return new Log4JMDCAdapter();
+        return new Log4jMDCAdapter();
     }
 
     /**
@@ -45,6 +45,6 @@ public final class StaticMDCBinder {
      * @return The adapter class name.
      */
     public String getMDCAdapterClassStr() {
-        return Log4JMDCAdapter.class.getName();
+        return Log4jMDCAdapter.class.getName();
     }
 }

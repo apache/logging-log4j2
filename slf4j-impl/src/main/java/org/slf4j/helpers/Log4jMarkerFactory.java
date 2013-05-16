@@ -16,16 +16,16 @@
  */
 package org.slf4j.helpers;
 
-import org.slf4j.IMarkerFactory;
-import org.slf4j.Marker;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.slf4j.IMarkerFactory;
+import org.slf4j.Marker;
 
 /**
  *
  */
-public class Log4JMarkerFactory implements IMarkerFactory {
+public class Log4jMarkerFactory implements IMarkerFactory {
 
     private final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<String, Marker>();
 
