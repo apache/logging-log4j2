@@ -39,6 +39,8 @@
   <disallow pkg="com.mongodb" />
   <disallow pkg="org.bson" />
   <disallow pkg="org.lightcouch" />
+  <disallow pkg="org.codehaus.jackson" />
+  <disallow pkg="com.fasterxml.jackson" />
 
   <subpackage name="core">
 
@@ -48,6 +50,10 @@
 
         <subpackage name="jpa">
           <allow pkg="javax.persistence" />
+
+          <subpackage name="converter">
+            <allow pkg="com.fasterxml.jackson" />
+          </subpackage>
         </subpackage>
 
         <subpackage name="nosql">
@@ -65,6 +71,10 @@
 
       </subpackage>
 
+    </subpackage>
+
+    <subpackage name="config">
+      <allow pkg="com.fasterxml.jackson" />
     </subpackage>
 
   </subpackage>
