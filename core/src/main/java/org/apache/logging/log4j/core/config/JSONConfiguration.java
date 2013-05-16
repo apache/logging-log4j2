@@ -16,19 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
-import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.status.StatusConsoleListener;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,6 +33,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
+import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Creates a Node hierarchy from a JSON file.
@@ -80,7 +81,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             final ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
             root = mapper.readTree(is);
             if (root.size() == 1) {
-                final Iterator<JsonNode> i = root.getElements();
+                final Iterator<JsonNode> i = root.elements();
                 root = i.next();
             }
             processAttributes(rootNode, root);
@@ -188,7 +189,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
     @Override
     public void setup() {
-        final Iterator<Map.Entry<String, JsonNode>> iter = root.getFields();
+        final Iterator<Map.Entry<String, JsonNode>> iter = root.fields();
         final List<Node> children = rootNode.getChildren();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
@@ -231,7 +232,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
         final PluginType<?> type = getPluginManager().getPluginType(name);
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
-        final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.getFields();
+        final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
         final List<Node> children = node.getChildren();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
@@ -252,7 +253,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                         } else {
                             LOGGER.debug("Processing " + pluginType + " " + entry.getKey() + "[" + i + "]");
                         }
-                        final Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).getFields();
+                        final Iterator<Map.Entry<String, JsonNode>> itemIter = n.get(i).fields();
                         final List<Node> itemChildren = item.getChildren();
                         while (itemIter.hasNext()) {
                             final Map.Entry<String, JsonNode> itemEntry = itemIter.next();
@@ -284,7 +285,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     }
 
     private String getType(final JsonNode node, final String name) {
-        final Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+        final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
             if (entry.getKey().equalsIgnoreCase("type")) {
@@ -299,7 +300,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
     private void processAttributes(final Node parent, final JsonNode node) {
         final Map<String, String> attrs = parent.getAttributes();
-        final Iterator<Map.Entry<String, JsonNode>> iter = node.getFields();
+        final Iterator<Map.Entry<String, JsonNode>> iter = node.fields();
         while (iter.hasNext()) {
             final Map.Entry<String, JsonNode> entry = iter.next();
             if (!entry.getKey().equalsIgnoreCase("type")) {

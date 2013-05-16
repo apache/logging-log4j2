@@ -39,7 +39,7 @@
                 documentation for those features.
             </p>
             <ul>
-                <li>JSON configuration requires the Jackson JSON-processor.</li>
+                <li>JSON configuration requires the Jackson Data Processor.</li>
                 <li>Async Loggers require the LMAX Disruptor.</li>
                 <li>SMTPAppender requires Javax Mail.</li>
                 <li>JMSQueueAppender and JMSTopicAppender require a JMS implementation like
