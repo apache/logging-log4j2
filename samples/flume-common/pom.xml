@@ -23,7 +23,6 @@
     <groupId>org.apache.logging.log4j.samples</groupId>
     <version>2.0-beta7-SNAPSHOT</version>
   </parent>
-  <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>flume-common</artifactId>
   <name>flume-common</name>
   <packaging>jar</packaging>
