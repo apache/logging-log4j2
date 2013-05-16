@@ -27,7 +27,7 @@
     <menu ref="reports"/>
 
 	<!-- Overall Project Info -->
-    <menu name="Log4J Project Information" img="icon-info-sign">
+    <menu name="Log4j Project Information" img="icon-info-sign">
       <item name="Dependencies" href="../dependencies.html" />
       <item name="Dependency Convergence" href="../dependency-convergence.html" />
       <item name="Dependency Management" href="../dependency-management.html" />
@@ -39,7 +39,7 @@
       <item name="Project Summary" href="../project-summary.html" />
     </menu>
 
-    <menu name="Log4J Project Reports" img="icon-cog">
+    <menu name="Log4j Project Reports" img="icon-cog">
       <item name="Changes Report" href="../changes-report.html" />
       <item name="JIRA Report" href="../jira-report.html" />
       <item name="Surefire Report" href="../surefire-report.html" />

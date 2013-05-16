@@ -324,7 +324,7 @@ Logger y = Logger.getLogger("wombat");
           and
           <code>X.Y.Z</code>
           do not have configured LoggerConfigs and so get their Level from the LoggerConfig
-          assigned to them,<code>X</code>, since it is the LoggerCofnig whose name has the
+          assigned to them,<code>X</code>, since it is the LoggerConfig whose name has the
           longest match to the start of the Logger's name.
         </p>
 
@@ -363,14 +363,14 @@ Logger y = Logger.getLogger("wombat");
           have a Configured LoggerConfig with the same name. The logger
           <code>X.YZ</code>
           does not have configured LoggerConfig and so gets its Level from the LoggerConfig
-          assigned to it,<code>X</code>, since it is the LoggerCofnig whose name has the
+          assigned to it,<code>X</code>, since it is the LoggerConfig whose name has the
           longest match to the start of the Logger's name. It is not associated with LoggerConfig
           <code>X.Y</code>
           since tokens after periods must match exactly.
         </p>
         <p>The table below provides illustrates how Level filtering works. Im the table, the vertical
           header shows the Level of the LogEvent, while the horizontal header shows the Level associated
-          with the appopriate LoggerConfig. The intersection identifies whether the LogEvent would
+          with the appropriate LoggerConfig. The intersection identifies whether the LogEvent would
           be allowed to pass for further processing (Yes) or discarded (No).
         </p>
         <table>
@@ -471,7 +471,7 @@ Logger y = Logger.getLogger("wombat");
           each Filter can return one of three results, Accept, Deny or Neutral. A response of Accept means
           that no other Filters should be called and the event should progress. A response of Deny means
           the event should be immediately ignored and control should be returned to the caller. A response
-          of Neutral indicates the event should be passed to other Filters. If there are no other Fitlers the
+          of Neutral indicates the event should be passed to other Filters. If there are no other Filters the
           event will be processed.
         </p>
         <p>Although an event may be accepted by a Filter the event still might not be logged. This can happen
@@ -610,7 +610,7 @@ Logger y = Logger.getLogger("wombat");
           message according to user specified criteria. For example, if you
           frequently need to log <code>Oranges</code>, an object type used in
           your current project, then you can create an OrangeMessage that accepts an
-          Orange instance and pass that to Log4J so that the Orange object can
+          Orange instance and pass that to Log4j so that the Orange object can
           be formatted into an appropriate byte array when required.
         </p>
 

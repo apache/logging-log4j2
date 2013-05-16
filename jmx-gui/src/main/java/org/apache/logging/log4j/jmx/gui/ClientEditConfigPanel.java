@@ -38,7 +38,7 @@ import javax.swing.JTextField;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 
 /**
- * Panel for editing Log4J configurations.
+ * Panel for editing Log4j configurations.
  */
 public class ClientEditConfigPanel extends JPanel {
     private static final long serialVersionUID = -7544651740950723394L;

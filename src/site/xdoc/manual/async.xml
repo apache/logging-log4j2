@@ -11,7 +11,7 @@
 	language governing permissions and limitations under the License. -->
 <document>
 	<properties>
-		<title>Log4j2 Asynchronous Loggers for Low-Latency Logging</title>
+		<title>Log4j 2 Asynchronous Loggers for Low-Latency Logging</title>
 		<author email="rpopma@apache.org">Remko Popma</author>
 	</properties>
 	<body>
@@ -20,12 +20,12 @@
 				Asynchronous logging can improve your application's 
 				performance by executing the I/O operations
 				in a separate thread.
-				Log4j2 makes a number of improvements in this area.
+				Log4j 2 makes a number of improvements in this area.
 			</p>
 			<ul>
 				<li>
 					<b>Asynchronous Loggers</b>
-					are a new addition to Log4j2.
+					are a new addition to Log4j 2.
 					Their aim is to return from the call
 					to Logger.log to the application as
 					soon as possible. You can choose
@@ -562,7 +562,7 @@
 				  <th>64 threads</th>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Loggers all asynchronous</td>
+				  <td>Log4j 2: Loggers all asynchronous</td>
 				  <td align="right">2,652,412</td>
 				  <td align="right">909,119</td>
 				  <td align="right">776,993</td>
@@ -572,7 +572,7 @@
 				  <td align="right">288,997</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Loggers mixed sync/async</td>
+				  <td>Log4j 2: Loggers mixed sync/async</td>
 				  <td align="right">2,454,358</td>
 				  <td align="right">839,394</td>
 				  <td align="right">854,578</td>
@@ -582,7 +582,7 @@
 				  <td align="right">218,937</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Async Appender</td>
+				  <td>Log4j 2: Async Appender</td>
 				  <td align="right">1,713,429</td>
 				  <td align="right">603,019</td>
 				  <td align="right">331,506</td>
@@ -612,7 +612,7 @@
 				  <td align="right">21,303</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Synchronous</td>
+				  <td>Log4j 2: Synchronous</td>
 				  <td align="right">273,536</td>
 				  <td align="right">136,523</td>
 				  <td align="right">67,609</td>
@@ -658,7 +658,7 @@
 				  <th>32 threads</th>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Loggers all asynchronous</td>
+				  <td>Log4j 2: Loggers all asynchronous</td>
 				  <td align="right">1,715,344</td>
 				  <td align="right">928,951</td>
 				  <td align="right">1,045,265</td>
@@ -667,7 +667,7 @@
 				  <td align="right">773,565</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Loggers mixed sync/async</td>
+				  <td>Log4j 2: Loggers mixed sync/async</td>
 				  <td align="right">571,099</td>
 				  <td align="right">1,204,774</td>
 				  <td align="right">1,632,204</td>
@@ -676,7 +676,7 @@
 				  <td align="right">908,529</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Async Appender</td>
+				  <td>Log4j 2: Async Appender</td>
 				  <td align="right">1,236,548</td>
 				  <td align="right">1,006,287</td>
 				  <td align="right">511,571</td>
@@ -703,7 +703,7 @@
 				  <td align="right">133,435</td>
 				 </tr>
 				 <tr>
-				  <td>Log4j2: Synchronous</td>
+				  <td>Log4j 2: Synchronous</td>
 				  <td align="right">281,250</td>
 				  <td align="right">225,731</td>
 				  <td align="right">129,015</td>
@@ -819,7 +819,7 @@
 			  <th>64 threads</th>
 			 </tr>
 			 <tr>
-			  <td>Log4j2: Loggers all async</td>
+			  <td>Log4j 2: Loggers all async</td>
 			  <td align="right">677</td>
 			  <td align="right">4,135</td>
 			  <td align="right">1,638</td>
@@ -828,7 +828,7 @@
 			  <td align="right">16,128</td>
 			 </tr>
 			 <tr>
-			  <td>Log4j2: Loggers mixed
+			  <td>Log4j 2: Loggers mixed
 			  sync/async</td>
 			  <td align="right">648</td>
 			  <td align="right">4,873</td>
@@ -838,7 +838,7 @@
 			  <td align="right">16,384</td>
 			 </tr>
 			 <tr>
-			  <td>Log4j2: Async Appender</td>
+			  <td>Log4j 2: Async Appender</td>
 			  <td align="right">2,423</td>
 			  <td align="right">2,117,722</td>
 			  <td align="right">4,096</td>

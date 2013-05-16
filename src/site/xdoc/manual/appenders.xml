@@ -297,7 +297,7 @@
 					file I/O. While FastFileAppender
 					from different Configurations
 					cannot be shared, the FastFileManagers can be if the Manager is
-					accessible. For example, two webapps in a
+					accessible. For example, two web applications in a
 					servlet container can have
 					their own configuration and safely
 					write to the same file if Log4j
@@ -420,7 +420,7 @@
 					from different Configurations cannot be
 					shared, the FastRollingFileManagers can be
 					if the Manager is accessible.
-					For example, two webapps in a servlet
+					For example, two web applications in a servlet
 					container can have their own configuration and safely write to the
 					same file if Log4j is in a ClassLoader that is common to both of them.
 				</p>
@@ -655,8 +655,8 @@
           <p>The FileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter. The
             FileAppender uses a FileManager (which extends OutputStreamManager) to actually perform the file I/O. While
             FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is
-            accessible. For example, two webapps in a servlet container can have their own configuration and safely
-            write to the same file if Log4J is in a ClassLoader that is common to both of them.</p>
+            accessible. For example, two web applications in a servlet container can have their own configuration and
+            safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -763,7 +763,7 @@
               <li>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured
               with an Avro Source.</li>
               <li>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</li>
-              <li>It can persist events to a local BerkeleyDB datastore and then asynchronously send the events to
+              <li>It can persist events to a local BerkeleyDB data store and then asynchronously send the events to
               Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</li>
             </ol>
             Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
@@ -790,7 +790,7 @@
             <tr>
               <td>agentRetries</td>
               <td>integer</td>
-              <td>The number of times the agent should be retried before failing to a secondary. This paramenter is
+              <td>The number of times the agent should be retried before failing to a secondary. This parameter is
                 ignored when type="persistent" is specified (agents are tried once before failing to the next).</td>
             </tr>
             <tr>
@@ -1598,7 +1598,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             </tr>
             <tr>
               <td>rewritePolicy</td>
-              <td>RewritePolciy</td>
+              <td>RewritePolicy</td>
               <td>The RewritePolicy that will manipulate the LogEvent.</td>
             </tr>
             <tr>
@@ -1712,9 +1712,9 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             and rolls the file over according the TriggeringPolicy and the RolloverPolicy. The
             RollingFileAppender uses a RollingFileManager (which extends OutputStreamManager) to actually perform the
             file I/O and perform the rollover. While RolloverFileAppenders from different Configurations cannot be
-            shared, the RollingFileManagers can be if the Manager is accessible. For example, two webapps in a
+            shared, the RollingFileManagers can be if the Manager is accessible. For example, two web applications in a
             servlet container can have their own configuration and safely
-            write to the same file if Log4J is in a ClassLoader that is common to both of them.</p>
+            write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
           <p>
             A RollingFileAppender requires a <a href="#TriggeringPolicies">TriggeringPolicy</a> and a
             <a href="#RolloverStrategies">RolloverStrategy</a>. The triggering policy determines if a rollover should
@@ -1734,7 +1734,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
               <td>append</td>
               <td>boolean</td>
               <td>When true - the default, records will be appended to the end of the file. When set to false,
-                the file will be cleared before new reocrds are written.</td>
+                the file will be cleared before new records are written.</td>
             </tr>
             <tr>
               <td>bufferedIO</td>
@@ -2098,7 +2098,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             </tr>
             <tr>
               <td>rewritePolicy</td>
-              <td>RewritePolciy</td>
+              <td>RewritePolicy</td>
               <td>The RewritePolicy that will manipulate the LogEvent.</td>
             </tr>
             <tr>

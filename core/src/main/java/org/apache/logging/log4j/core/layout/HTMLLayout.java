@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Charsets;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.Transform;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -36,6 +25,17 @@ import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.helpers.Transform;
 
 /**
  * This layout outputs events in a HTML table.
@@ -52,7 +52,7 @@ public final class HTMLLayout extends AbstractStringLayout {
 
     private static final String REGEXP = Constants.LINE_SEP.equals("\n") ? "\n" : Constants.LINE_SEP + "|\n";
 
-    private static final String DEFAULT_TITLE = "Log4J Log Messages";
+    private static final String DEFAULT_TITLE = "Log4j Log Messages";
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
 

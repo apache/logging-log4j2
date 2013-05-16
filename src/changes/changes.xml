@@ -220,7 +220,7 @@
         Expose file appender configuration details via an advertisement mechanism.
       </action>
       <action issue="LOG4J2-159" dev="rgoers" type="fix" due-to="Jan Winter">
-        Add Fragment-Host to MANIFEST.MF for log4j2-core.
+        Add Fragment-Host to MANIFEST.MF for log4j-core.
       </action>
       <action issue="LOG4J2-167" dev="rgoers" type="fix">
         Configurator throws a ClassCastException if LogManager returns a SimpleLoggerContext.

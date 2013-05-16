@@ -16,6 +16,11 @@
  */
 package org.slf4j.helpers;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
@@ -24,11 +29,6 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.impl.SLF4JLogger;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  *
@@ -55,7 +55,7 @@ public class Log4JLoggerFactory implements ILoggerFactory {
             loggers.putIfAbsent(name, new SLF4JLogger((AbstractLogger) logger, name));
             return loggers.get(name);
         }
-        throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4J AbstractLogger");
+        throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4j AbstractLogger");
     }
 
     private ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {

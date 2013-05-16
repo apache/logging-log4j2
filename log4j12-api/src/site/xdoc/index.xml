@@ -18,12 +18,12 @@
 
 <document>
     <properties>
-        <title>Log4J 1.2 Bridge</title>
+        <title>Log4j 1.2 Bridge</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="Log4J 1.2 Bridge">
+        <section name="Log4j 1.2 Bridge">
 
             <p>
               The Log4j 1.2 Bridge allows applications coded to use Log4j 1.2 API to use

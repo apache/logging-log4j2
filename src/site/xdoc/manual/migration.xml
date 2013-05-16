@@ -59,7 +59,7 @@
               </ol>
             </p>
           </subsection>
-          <subsection name="Configuring Log4J 2">
+          <subsection name="Configuring Log4j 2">
             <p>
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
               the same functionality is available. Below are the example configurations for Log4j 1.x and their

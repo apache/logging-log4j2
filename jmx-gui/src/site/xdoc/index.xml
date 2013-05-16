@@ -18,12 +18,12 @@
 
 <document>
     <properties>
-        <title>Log4J JMX GUI</title>
+        <title>Log4j JMX GUI</title>
         <author email="rpopma@apache.org">Remko Popma</author>
     </properties>
 
     <body>
-        <section name="Log4J JMX GUI">
+        <section name="Log4j JMX GUI">
 
             <p>
               JMX GUI provides a Swing-based client for remotely editing the log4j configuration 

@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,6 +28,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers
@@ -252,7 +252,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     /**
-     * SecurityManager that will locate the caller of the Log4j2 API.
+     * SecurityManager that will locate the caller of the Log4j 2 API.
      */
     private static class PrivateSecurityManager extends SecurityManager {
 

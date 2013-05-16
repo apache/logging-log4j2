@@ -25,20 +25,20 @@
     <body>
       <section name="JMX">
         <p>
-          Log4J2 has built-in support for JMX. 
+          Log4j 2 has built-in support for JMX.
           The StatusLogger, ContextSelector, and all LoggerContexts,
           LoggerConfigs and Appenders are instrumented with MBeans and can
           be remotely monitored and controlled.
         </p>
         <p>Also included is a simple client GUI that can be used to
         monitor the StatusLogger output, as well as to remotely reconfigure
-        Log4J with a different configuration file, or to edit the
+        Log4j with a different configuration file, or to edit the
         current configuration directly.
         </p>
       </section>
       <a name="Enabling_JMX" />
       <section name="Enabling JMX">
-        <p>JMX support is enabled by default. When Log4J initializes,
+        <p>JMX support is enabled by default. When Log4j initializes,
         the StatusLogger, ContextSelector, and all LoggerContexts,
           LoggerConfigs and Appenders are instrumented with MBeans.
         To disable JMX completely, and prevent these MBeans from being created,
@@ -68,58 +68,58 @@
         Monitoring and Management</a>.</p>
         </subsection>
       </section>
-		<a name="Log4J_MBeans" />
-      <section name="Log4J Instrumented Components">
+		<a name="Log4j_MBeans" />
+      <section name="Log4j Instrumented Components">
       <p>The best way to find out which methods and attributes of the various
-      Log4J components are accessible via JMX is to look at the
+      Log4j components are accessible via JMX is to look at the
       <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/jmx/package-summary.html"
       >Javadoc</a> or by exploring directly in JConsole.</p>
-      <p>The screenshot below shows the Log4J MBeans in JConsole.</p>
+      <p>The screenshot below shows the Log4j MBeans in JConsole.</p>
       <p><img src="../images/jmx-jconsole-mbeans.png" /></p>
       </section>
 		<a name="ClientGUI" />
       <section name="Client GUI">
-      <p>Log4J includes a basic client GUI that can be used to
-        monitor the StatusLogger output and to remotely modify the Log4J 
+      <p>Log4j includes a basic client GUI that can be used to
+        monitor the StatusLogger output and to remotely modify the Log4j
         configuration. The client GUI can be run as a stand-alone application
         or as a JConsole plug-in.</p>
 		<subsection name="Running the Client GUI as a JConsole Plug-in">
-		<p>To run the Log4J JMX Client GUI as a JConsole Plug-in, 
+		<p>To run the Log4j JMX Client GUI as a JConsole Plug-in,
 		start JConsole with the following command:
 		</p>
 		<p><code>$JAVA_HOME/bin/jconsole -pluginpath /path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar</code></p>
 		<p>or on Windows:</p>
 		<p><code>%JAVA_HOME%\bin\jconsole -pluginpath \path\to\log4j-core-2.0.jar;\path\to\log4j-jmx-gui-2.0.jar</code></p>
 		<p>If you execute the above command and connect to your application,
-		you will see an extra "Log4j2" tab in the JConsole window.
+		you will see an extra "Log4j 2" tab in the JConsole window.
 		This tab contains the client GUI, with the StatusLogger selected.
 		The screenshot below shows the StatusLogger panel in JConsole.
 		</p>
         <p><img src="../images/jmx-jconsole-statuslogger.png" /></p>
 		</subsection>
-		<subsection name="Remotely Editing the Log4J Configuration">
+		<subsection name="Remotely Editing the Log4j Configuration">
 		<p>The client GUI also contains a simple editor that can be used
-		to remotely change the Log4J configuration.
+		to remotely change the Log4j configuration.
 		</p><p>
 		The screenshot below shows the configuration edit panel in JConsole.
 		</p>
         <p><img src="../images/jmx-jconsole-editconfig.png" /></p>
         <p>The configuration edit panel provides two ways to modify
-        the Log4J configuration: specifying a different configuration location 
+        the Log4j configuration: specifying a different configuration location
         URI, or modifying the configuration XML directly in the editor panel.</p>
         <p>If you specify a different configuration location URI and
         click the "Reconfigure from Location" button, the specified file
         or resource must exist and be readable by the application,
         or an error will occur and the configuration will not change.
         If an error occurred while processing the contents of the specified resource,
-        Log4J will keep its original configuration, but the editor panel
+        Log4j will keep its original configuration, but the editor panel
         will show the contents of the file you specified. </p>
         <p>
         The text area showing the contents of the configuration file is 
         editable, and you can directly modify the configuration in this 
         editor panel. Clicking the "Reconfigure with XML below" button will
         send the configuration text to the remote application where it
-        will be used to reconfigure Log4J on the fly.
+        will be used to reconfigure Log4j on the fly.
         This will not overwrite any configuration file.
         Reconfiguring with text from the editor happens in memory only and
         the text is not permanently stored anywhere.
@@ -127,7 +127,7 @@
 		</subsection>
 		<a name="ClientStandAlone" />
 		<subsection name="Running the Client GUI as a Stand-alone Application">
-		<p>To run the Log4J JMX Client GUI as a stand-alone application, 
+		<p>To run the Log4j JMX Client GUI as a stand-alone application,
 		run the following command:
 		</p>
 		<p><code>$JAVA_HOME/bin/java -cp /path/to/log4j-core-2.0.jar:/path/to/log4j-jmx-gui-2.0.jar org.apache.logging.log4j.jmx.gui.ClientGUI &lt;options&gt;</code></p>
