@@ -114,13 +114,29 @@
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
-        <module name="AvoidStarImport"/>
-        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="AvoidStarImport">
+          <property name="allowStaticMemberImports" value="true"/>
+        </module>
+        <module name="IllegalImport"/><!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
         <module name="ImportControl">
-          <property name="severity" value="error"/>
-          <property name="file" value="checkstyle-import-control.xml"/>
+            <property name="severity" value="error"/>
+            <property name="file" value="checkstyle-import-control.xml"/>
+        </module>
+        <module name="ImportOrder">
+            <!-- Imports must be separated (by one newline) into the following groups:
+                     java and javax
+                     org
+                     com
+                     all others
+                 Imports within a group must be sorted alphabetically (lexicographically)
+                 All static imports come below all other imports -->
+            <property name="groups" value="/^javax?\./,org,com"/>
+            <property name="ordered" value="true"/>
+            <property name="caseSensitive" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="bottom"/>
         </module>
 
 
