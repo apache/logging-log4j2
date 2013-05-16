@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * A {@link JDBCAppender} connection source that uses a {@link DataSource} to connect to the database.

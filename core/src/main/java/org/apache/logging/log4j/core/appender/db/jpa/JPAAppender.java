@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import java.lang.reflect.Constructor;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
-import java.lang.reflect.Constructor;
 
 /**
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a

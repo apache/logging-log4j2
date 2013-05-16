@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import java.io.Writer;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.servlet.jsp.tagext.BodyTag;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,12 +36,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.web.MockBodyContent;
 import org.springframework.mock.web.MockPageContext;
-
-import javax.servlet.jsp.tagext.BodyTag;
-import java.io.Writer;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 

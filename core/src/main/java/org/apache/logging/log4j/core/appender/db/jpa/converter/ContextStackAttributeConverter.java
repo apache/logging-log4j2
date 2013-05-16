@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.ThreadContext;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  * A JPA 2.1 attribute converter for {@link ThreadContext.ContextStack}s in

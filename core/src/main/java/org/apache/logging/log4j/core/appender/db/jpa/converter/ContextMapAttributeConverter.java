@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import java.util.Map;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Map;
 
 /**
  * A JPA 2.1 attribute converter for {@link Map Map&lt;String, String&gt;}s in

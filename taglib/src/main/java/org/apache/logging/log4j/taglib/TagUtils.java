@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
@@ -23,11 +28,6 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Provides support for logging tags.
@@ -92,7 +92,8 @@ final class TagUtils {
         throw new JspException("Logger must be of type String or org.apache.logging.log4j.Logger.");
     }
 
-    private static Log4jTaglibLogger getLogger(final Log4jTaglibLoggerContext context, final String name, final MessageFactory factory)
+    private static Log4jTaglibLogger getLogger(final Log4jTaglibLoggerContext context, final String name,
+                                               final MessageFactory factory)
             throws JspException {
         try {
             return context.getLogger(name, factory);

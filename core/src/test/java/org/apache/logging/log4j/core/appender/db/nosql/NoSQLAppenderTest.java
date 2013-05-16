@@ -16,16 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql;
 
-import static org.easymock.EasyMock.createStrictMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 public class NoSQLAppenderTest {
     @Before

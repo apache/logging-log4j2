@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import org.apache.logging.log4j.Level;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.logging.log4j.Level;
 
 /**
  * This class implements the {@code <log:entry>} tag.

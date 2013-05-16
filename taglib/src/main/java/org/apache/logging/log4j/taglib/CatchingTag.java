@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import org.apache.logging.log4j.Level;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
+
+import org.apache.logging.log4j.Level;
 
 /**
  * This class implements the {@code <log:catching>} tag.

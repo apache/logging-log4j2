@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import java.util.Map;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-import java.util.Map;
 
 /**
  * Users of the JPA appender MUST extend this class, using JPA annotations on the concrete class and all of its

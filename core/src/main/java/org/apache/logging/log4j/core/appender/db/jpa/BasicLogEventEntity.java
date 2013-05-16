@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import java.util.Map;
+import javax.persistence.Basic;
+import javax.persistence.Convert;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -27,13 +34,6 @@ import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeC
 import org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
 import org.apache.logging.log4j.message.Message;
-
-import javax.persistence.Basic;
-import javax.persistence.Convert;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
-import java.util.Map;
 
 /**
  * Users of the JPA appender may want to extend this class instead of {@link AbstractLogEventWrapperEntity}. This class

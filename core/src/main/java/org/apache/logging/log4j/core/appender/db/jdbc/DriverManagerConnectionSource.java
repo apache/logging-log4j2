@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * A {@link JDBCAppender} connection source that uses a standard JDBC URL, username, and password to connect to the

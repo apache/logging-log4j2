@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
-
-import java.util.Map;
 
 /**
  * The Apache CouchDB implementation of {@link NoSQLConnection}.
