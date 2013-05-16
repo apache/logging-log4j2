@@ -26,7 +26,7 @@
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-samples</artifactId>
   <packaging>pom</packaging>
-  <name>log4j-samples</name>
+  <name>Apache Log4j Samples</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,7 +46,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j.samples</groupId>
-        <artifactId>flume-common</artifactId>
+        <artifactId>log4j-samples-flume-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
