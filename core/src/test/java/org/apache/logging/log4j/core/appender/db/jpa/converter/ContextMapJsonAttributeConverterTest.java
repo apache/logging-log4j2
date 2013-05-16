@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 

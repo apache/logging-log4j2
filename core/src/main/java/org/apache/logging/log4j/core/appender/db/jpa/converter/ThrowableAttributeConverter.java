@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 /**
  * A JPA 2.1 attribute converter for {@link Throwable}s in {@link org.apache.logging.log4j.core.LogEvent}s. This

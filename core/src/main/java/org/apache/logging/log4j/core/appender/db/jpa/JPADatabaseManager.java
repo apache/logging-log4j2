@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-
+import java.lang.reflect.Constructor;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.lang.reflect.Constructor;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.

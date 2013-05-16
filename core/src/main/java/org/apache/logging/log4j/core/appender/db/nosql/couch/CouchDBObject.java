@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
-import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
 
 /**
  * The Apache CouchDB implementation of {@link NoSQLObject}.

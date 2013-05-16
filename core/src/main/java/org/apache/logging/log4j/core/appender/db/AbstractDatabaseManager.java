@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-
-import java.util.ArrayList;
 
 /**
  * Manager that allows database appenders to have their configuration reloaded without losing events.

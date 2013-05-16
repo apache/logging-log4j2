@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.mongo;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,9 +28,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 
 /**
  * The MongoDB implementation of {@link NoSQLProvider}.

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * A JPA 2.1 attribute converter for {@link Message}s in {@link org.apache.logging.log4j.core.LogEvent}s. This

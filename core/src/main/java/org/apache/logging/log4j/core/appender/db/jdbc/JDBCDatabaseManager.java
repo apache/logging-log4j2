@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.

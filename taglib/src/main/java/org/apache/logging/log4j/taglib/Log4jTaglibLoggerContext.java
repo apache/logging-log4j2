@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import java.util.WeakHashMap;
+import javax.servlet.ServletContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-
-import javax.servlet.ServletContext;
-import java.util.WeakHashMap;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -68,7 +68,8 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
         synchronized (this.loggers) {
             logger = this.loggers.get(name);
             if (logger == null) {
-                final Logger original = factory == null ? LogManager.getLogger(name) : LogManager.getLogger(name, factory);
+                final Logger original = factory == null ?
+                        LogManager.getLogger(name) : LogManager.getLogger(name, factory);
                 if (!(original instanceof AbstractLogger)) {
                     throw new LoggingException(
                             "Log4j Tag Library requires base logging system to extend Log4j AbstractLogger."

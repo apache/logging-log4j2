@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.mongo;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
+import java.util.Collections;
+
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
 
-import java.util.Collections;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 
 /**
  * The MongoDB implementation of {@link NoSQLObject}.

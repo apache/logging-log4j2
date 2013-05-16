@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.Message;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Implements common methods for logging tags that accept messages and markers.
