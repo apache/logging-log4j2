@@ -59,6 +59,12 @@ public class XMLLayoutTest {
     Logger root = ctx.getLogger("");
 
     @Test
+    public void testContentType() {
+        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null);
+        assertEquals("text/xml; charset=UTF-8", layout.getContentType());
+    }
+
+    @Test
     public void testDefaultCharset() {
         final XMLLayout layout = XMLLayout.createLayout(null, null, null, null);
         assertEquals(Charsets.UTF_8, layout.getCharset());
