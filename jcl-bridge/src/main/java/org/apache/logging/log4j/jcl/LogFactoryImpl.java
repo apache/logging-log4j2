@@ -47,7 +47,7 @@ public class LogFactoryImpl extends LogFactory {
         }
         final org.apache.logging.log4j.Logger logger = PrivateManager.getLogger(name);
         if (logger instanceof AbstractLogger) {
-            loggers.putIfAbsent(name, new Log4JLog((AbstractLogger) logger, name));
+            loggers.putIfAbsent(name, new Log4jLog((AbstractLogger) logger, name));
             return loggers.get(name);
         }
         throw new LogConfigurationException(

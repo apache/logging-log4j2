@@ -17,7 +17,7 @@
 package org.slf4j.impl;
 
 import org.slf4j.IMarkerFactory;
-import org.slf4j.helpers.Log4JMarkerFactory;
+import org.slf4j.helpers.Log4jMarkerFactory;
 import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
@@ -30,7 +30,7 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
      */
     public static final StaticMarkerBinder SINGLETON = new StaticMarkerBinder();
 
-    private final IMarkerFactory markerFactory = new Log4JMarkerFactory();
+    private final IMarkerFactory markerFactory = new Log4jMarkerFactory();
 
     @Override
     public IMarkerFactory getMarkerFactory() {
@@ -39,6 +39,6 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     @Override
     public String getMarkerFactoryClassStr() {
-        return Log4JMarkerFactory.class.getName();
+        return Log4jMarkerFactory.class.getName();
     }
 }

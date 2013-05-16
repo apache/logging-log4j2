@@ -17,7 +17,7 @@
 package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
-import org.slf4j.helpers.Log4JLoggerFactory;
+import org.slf4j.helpers.Log4jLoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
@@ -32,7 +32,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "1.6"; // !final
 
-    private static final String LOGGER_FACTORY_CLASS_STR = Log4JLoggerFactory.class.getName();
+    private static final String LOGGER_FACTORY_CLASS_STR = Log4jLoggerFactory.class.getName();
 
     /**
      * The unique instance of this class.
@@ -49,7 +49,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
      * Private constructor to prevent instantiation
      */
     private StaticLoggerBinder() {
-        loggerFactory = new Log4JLoggerFactory();
+        loggerFactory = new Log4jLoggerFactory();
     }
 
     /**

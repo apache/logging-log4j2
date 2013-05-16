@@ -16,15 +16,15 @@
  */
 package org.slf4j.helpers;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.spi.MDCAdapter;
-
-import java.util.Map;
 
 /**
  *
  */
-public class Log4JMDCAdapter implements MDCAdapter {
+public class Log4jMDCAdapter implements MDCAdapter {
 
     @Override
     public void put(final String key, final String val) {
