@@ -21,7 +21,9 @@ import java.util.Map;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
- * Represents a Message that conforms to RFC 5424 (http://tools.ietf.org/html/rfc5424).
+ * Represents a Message that conforms to RFC 5424.
+ * 
+ * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 public class StructuredDataMessage extends MapMessage {
 
