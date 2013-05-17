@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.easymock.IAnswer;
+import org.h2.util.IOUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
@@ -50,6 +51,8 @@ public abstract class AbstractJdbcAppenderTest {
     }
 
     protected abstract Connection newConnection() throws SQLException;
+
+    protected abstract String toCreateTableSqlString(final String tableName);
 
     protected void setUp(final String tableName, final String configFileName) throws SQLException {
         this.connection = this.newConnection();
@@ -147,11 +150,12 @@ public abstract class AbstractJdbcAppenderTest {
             assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
             assertEquals("The literal column is not correct (1).", "Literal Value of Data Source",
                     resultSet.getString("literalColumn"));
-            assertEquals("The level column is not correct (1).", "FATAL", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getString("logger"));
+            assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
+            assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
             assertEquals("The message column is not correct (1).", "Error from data source 02.",
                     resultSet.getString("message"));
-            assertEquals("The exception column is not correct (1).", stackTrace, resultSet.getString("exception"));
+            assertEquals("The exception column is not correct (1).", stackTrace,
+                    IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
             assertFalse("There should not be two rows.", resultSet.next());
 
@@ -162,7 +166,7 @@ public abstract class AbstractJdbcAppenderTest {
     }
 
     @Test
-    public void testDriverManagerConfig() throws SQLException {
+    public void testDriverManagerConfig() throws Exception {
         this.setUp("dmLogEntry", "log4j2-" + this.databaseType + "-driver-manager.xml");
 
         final RuntimeException exception = new RuntimeException("Hello, world!");
@@ -188,10 +192,11 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (1).", "Literal Value Test String",
                 resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (1).", "INFO", resultSet.getString("level"));
-        assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getString("logger"));
+        assertEquals("The level column is not correct (1).", "INFO", resultSet.getNString("level"));
+        assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
         assertEquals("The message column is not correct (1).", "Test my message 01.", resultSet.getString("message"));
-        assertEquals("The exception column is not correct (1).", "", resultSet.getString("exception"));
+        assertEquals("The exception column is not correct (1).", "",
+                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertTrue("There should be two rows.", resultSet.next());
 
@@ -200,17 +205,18 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (2).", "Literal Value Test String",
                 resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
-        assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getString("logger"));
+        assertEquals("The level column is not correct (2).", "WARN", resultSet.getNString("level"));
+        assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
         assertEquals("The message column is not correct (2).", "This is another message 02.",
                 resultSet.getString("message"));
-        assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("exception"));
+        assertEquals("The exception column is not correct (2).", stackTrace,
+                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertFalse("There should not be three rows.", resultSet.next());
     }
 
     @Test
-    public void testFactoryMethodConfig() throws SQLException {
+    public void testFactoryMethodConfig() throws Exception {
         this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
         final SQLException exception = new SQLException("Some other error message!");
@@ -236,11 +242,12 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (1).", "Some Other Literal Value",
                 resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
-        assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getString("logger"));
+        assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getNString("level"));
+        assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
         assertEquals("The message column is not correct (1).", "Factory logged message 01.",
                 resultSet.getString("message"));
-        assertEquals("The exception column is not correct (1).", "", resultSet.getString("exception"));
+        assertEquals("The exception column is not correct (1).", "",
+                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertTrue("There should be two rows.", resultSet.next());
 
@@ -249,17 +256,13 @@ public abstract class AbstractJdbcAppenderTest {
         assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
         assertEquals("The literal column is not correct (2).", "Some Other Literal Value",
                 resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (2).", "ERROR", resultSet.getString("level"));
-        assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getString("logger"));
-        assertEquals("The message column is not correct (2).", "Error from factory 02.", resultSet.getString("message"));
-        assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("exception"));
+        assertEquals("The level column is not correct (2).", "ERROR", resultSet.getNString("level"));
+        assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
+        assertEquals("The message column is not correct (2).", "Error from factory 02.",
+                resultSet.getString("message"));
+        assertEquals("The exception column is not correct (2).", stackTrace,
+                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
 
         assertFalse("There should not be three rows.", resultSet.next());
-    }
-
-    protected String toCreateTableSqlString(final String tableName) {
-        return "CREATE TABLE " + tableName + " ( "
-                + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), "
-                + "logger VARCHAR(255), message VARCHAR(1024), exception VARCHAR(1048576)" + " )";
     }
 }

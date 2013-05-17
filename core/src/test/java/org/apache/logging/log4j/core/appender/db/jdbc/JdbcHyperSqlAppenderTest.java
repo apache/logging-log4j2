@@ -43,4 +43,12 @@ public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
     protected Connection newConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
     }
+
+    @Override
+    protected String toCreateTableSqlString(String tableName) {
+        return "CREATE TABLE " + tableName + " ( " +
+                    "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
+                    "logger VARCHAR(255), message VARCHAR(1024), exception CLOB" +
+                " )";
+    }
 }

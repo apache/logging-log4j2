@@ -23,13 +23,13 @@
     </Console>
     <Jdbc name="databaseAppender" tableName="fmLogEntry">
       <ConnectionFactory class="org.apache.logging.log4j.core.appender.db.jdbc.JdbcH2AppenderTest"
-         method="getConfigConnection" />
+                         method="getConfigConnection" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="literalColumn" literal="'Some Other Literal Value'" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
-      <Column name="message" pattern="%message" />
-      <Column name="exception" pattern="%ex{full}" />
+      <Column name="message" pattern="%message" isUnicode="false" />
+      <Column name="exception" pattern="%ex{full}" isClob="true" />
     </Jdbc>
   </appenders>
 
