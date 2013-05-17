@@ -50,6 +50,8 @@ import java.util.regex.Pattern;
 
 /**
  * Formats a log event in accordance with RFC 5424.
+ * 
+ * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
 public final class RFC5424Layout extends AbstractStringLayout {
