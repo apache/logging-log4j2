@@ -33,16 +33,20 @@ public final class ColumnConfig {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String columnName;
-    private final boolean eventTimestamp;
     private final PatternLayout layout;
     private final String literalValue;
+    private final boolean eventTimestamp;
+    private final boolean unicode;
+    private final boolean clob;
 
     private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
-                         final boolean eventDate) {
+                         final boolean eventDate, final boolean unicode, final boolean clob) {
         this.columnName = columnName;
         this.layout = layout;
         this.literalValue = literalValue;
         this.eventTimestamp = eventDate;
+        this.unicode = unicode;
+        this.clob = clob;
     }
 
     public String getColumnName() {
@@ -59,6 +63,14 @@ public final class ColumnConfig {
 
     public boolean isEventTimestamp() {
         return this.eventTimestamp;
+    }
+
+    public boolean isUnicode() {
+        return this.unicode;
+    }
+
+    public boolean isClob() {
+        return this.clob;
     }
 
     @Override
@@ -86,29 +98,36 @@ public final class ColumnConfig {
                                                   @PluginAttr("name") final String name,
                                                   @PluginAttr("pattern") final String pattern,
                                                   @PluginAttr("literal") final String literalValue,
-                                                  @PluginAttr("isEventTimestamp") final String eventTimestamp) {
+                                                  @PluginAttr("isEventTimestamp") final String eventTimestamp,
+                                                  @PluginAttr("isUnicode") final String unicode,
+                                                  @PluginAttr("isClob") final String clob) {
         if (name == null || name.length() == 0) {
             LOGGER.error("The column config is not valid because it does not contain a column name.");
             return null;
         }
 
-        final boolean isEventTimestamp = eventTimestamp != null && Boolean.parseBoolean(eventTimestamp);
-        final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
         final boolean isPattern = pattern != null && pattern.length() > 0;
+        final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
+        final boolean isEventTimestamp = eventTimestamp != null && Boolean.parseBoolean(eventTimestamp);
+        final boolean isUnicode = unicode == null || unicode.length() == 0 || Boolean.parseBoolean(unicode);
+        final boolean isClob = clob != null && Boolean.parseBoolean(clob);
 
-        if ((isEventTimestamp && isLiteralValue) || (isEventTimestamp && isPattern) || (isLiteralValue && isPattern)) {
+        if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {
             LOGGER.error("The pattern, literal, and isEventTimestamp attributes are mutually exclusive.");
             return null;
         }
 
         if (isEventTimestamp) {
-            return new ColumnConfig(name, null, null, true);
+            return new ColumnConfig(name, null, null, true, false, false);
         }
         if (isLiteralValue) {
-            return new ColumnConfig(name, null, literalValue, false);
+            return new ColumnConfig(name, null, literalValue, false, false, false);
         }
         if (isPattern) {
-            return new ColumnConfig(name, PatternLayout.createLayout(pattern, config, null, null, "true"), null, false);
+            return new ColumnConfig(
+                    name, PatternLayout.createLayout(pattern, config, null, null, "true"), null, false, isUnicode,
+                    isClob
+            );
         }
 
         LOGGER.error("To configure a column you must specify a pattern or literal or set isEventDate to true.");

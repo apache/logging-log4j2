@@ -27,8 +27,8 @@
       <Column name="literalColumn" literal="'Literal Value of Data Source'" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
-      <Column name="message" pattern="%message" />
-      <Column name="exception" pattern="%ex{full}" />
+      <Column name="message" pattern="%message" isUnicode="false" />
+      <Column name="exception" pattern="%ex{full}" isClob="true" />
     </Jdbc>
   </appenders>
 

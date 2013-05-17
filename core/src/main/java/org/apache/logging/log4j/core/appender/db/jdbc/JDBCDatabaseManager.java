@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -81,6 +82,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected void writeInternal(final LogEvent event) {
+        StringReader reader = null;
         try {
             if (!this.isConnected() || this.connection == null || this.connection.isClosed()) {
                 LOGGER.error("Cannot write logging event; manager [{}] not connected to the database.", this.getName());
@@ -92,7 +94,20 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
                 if (column.isEventTimestamp) {
                     this.statement.setTimestamp(i++, new Timestamp(event.getMillis()));
                 } else {
-                    this.statement.setString(i++, column.layout.toSerializable(event));
+                    if (column.isClob) {
+                        reader = new StringReader(column.layout.toSerializable(event));
+                        if (column.isUnicode) {
+                            this.statement.setNClob(i++, reader);
+                        } else {
+                            this.statement.setClob(i++, reader);
+                        }
+                    } else {
+                        if (column.isUnicode) {
+                            this.statement.setNString(i++, column.layout.toSerializable(event));
+                        } else {
+                            this.statement.setString(i++, column.layout.toSerializable(event));
+                        }
+                    }
                 }
             }
 
@@ -101,6 +116,10 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             }
         } catch (final SQLException e) {
             LOGGER.error("Failed to insert record for log event in manager [{}].", this.getName(), e);
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
     }
 
@@ -162,7 +181,9 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
                 if (config.getLiteralValue() != null) {
                     valuePart.append(config.getLiteralValue());
                 } else {
-                    columns.add(new Column(config.getLayout(), config.isEventTimestamp()));
+                    columns.add(new Column(
+                            config.getLayout(), config.isEventTimestamp(), config.isUnicode(), config.isClob()
+                    ));
                     valuePart.append('?');
                 }
             }
@@ -178,12 +199,17 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
      * Encapsulates information about a database column and how to persist data to it.
      */
     private static final class Column {
-        private final boolean isEventTimestamp;
         private final PatternLayout layout;
+        private final boolean isEventTimestamp;
+        private final boolean isUnicode;
+        private final boolean isClob;
 
-        private Column(final PatternLayout layout, final boolean isEventDate) {
+        private Column(final PatternLayout layout, final boolean isEventDate, final boolean isUnicode,
+                       final boolean isClob) {
             this.layout = layout;
             this.isEventTimestamp = isEventDate;
+            this.isUnicode = isUnicode;
+            this.isClob = isClob;
         }
     }
 }
