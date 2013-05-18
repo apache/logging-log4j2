@@ -1030,7 +1030,7 @@
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
               <td>suppressExceptions</td>
@@ -1053,19 +1053,142 @@
             <tr>
               <td>connectionSource</td>
               <td>ConnectionSource</td>
-              <td>The connections source from which database connections should be retrieved.</td>
+              <td><em>Required.</em> The connections source from which database connections should be retrieved.</td>
             </tr>
             <tr>
               <td>tableName</td>
               <td>String</td>
-              <td>The name of the database table to insert log events into.</td>
+              <td><em>Required.</em> The name of the database table to insert log events into.</td>
             </tr>
             <tr>
               <td>columnConfigs</td>
               <td>ColumnConfig[]</td>
-              <td>Information about the columns that log event data should be inserted into and how to insert that data.
-                This is represented with multiple &lt;Column /&gt; elements.</td>
+              <td><em>Required.</em> Information about the columns that log event data should be inserted into and how
+                to insert that data. This is represented with multiple <code>&lt;Column&gt;</code> elements.</td>
             </tr>
+            <caption align="top">JDBCAppender Parameters</caption>
+          </table>
+          <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
+            which the Appender gets JDBC connections. You must use exactly one of the
+            <code>&lt;DriverManager&gt;</code>, <code>&lt;DataSource&gt;</code>, or
+            <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>url</td>
+              <td>String</td>
+              <td><em>Required.</em> The JDBC URL, such as <code>jdbc:mysql://example.org:3306/exampleDb</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>The user to connect as, if required.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The password to authenticate with, if a username is specified.</td>
+            </tr>
+            <caption align="top">DriverManager Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>jndiName</td>
+              <td>String</td>
+              <td><em>Required.</em> The full, prefixed JNDI name that the data source is bound to, such as
+                <code>java:/comp/env/jdbc/LoggingDatabase</code>.</td>
+            </tr>
+            <caption align="top">DataSource Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>class</td>
+              <td>Class</td>
+              <td><em>Required.</em> The fully qualified name of a class containing a static factory method for
+                obtaining JDBC connections.</td>
+            </tr>
+            <tr>
+              <td>method</td>
+              <td>Method</td>
+              <td><em>Required.</em> The name of a static factory method for obtaining JDBC connections. This method
+                must have no parameters and its return type must be either <code>java.sql.Connection</code> or
+                <code>javax.sql.DataSource</code>. If the method returns <code>Connection</code>s, it must return a new
+                connection every time it is called.</td>
+            </tr>
+            <caption align="top">ConnectionFactory Parameters</caption>
+          </table>
+          <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
+            columns in the table should be written to and how to write to them. The JDBCAppender uses this information
+            to formulate a <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the database column.</td>
+            </tr>
+            <tr>
+              <td>pattern</td>
+              <td>String</td>
+              <td>Use this attribute to insert a value or values from the log event in this column using a
+                <code>PatternLayout</code> pattern. Simply specify any legal pattern in this attribute. Either this
+                attribute, <code>literal</code>, or <code>isEventTimestamp="true"</code> must be specified, but not more
+                than one of these.</td>
+            </tr>
+            <tr>
+              <td>literal</td>
+              <td>String</td>
+              <td>Use this attribute to insert a literal value in this column. The value will be included directly in
+                the insert SQL, without any quoting (which means that if you want this to be a string, your value should
+                contain single quotes around it like this: <code>literal="'Literal String'"</code>). This is especially
+                useful for databases that don't support identity columns. For example, if you are using Oracle you could
+                specify <code>literal="NAME_OF_YOUR_SEQUENCE.NEXTVAL"</code> to insert a unique ID in an ID column.
+                Either this attribute, <code>pattern</code>, or <code>isEventTimestamp="true"</code> must be specified,
+                but not more than one of these.</td>
+            </tr>
+            <tr>
+              <td>isEventTimestamp</td>
+              <td>boolean</td>
+              <td>Use this attribute to insert the event timestamp in this column, which should be a SQL datetime. The
+                value will be inserted as a <code>java.sql.Types.TIMESTAMP</code>. Either this attribute (equal to
+                <code>true</code>), <code>pattern</code>, or <code>isEventTimestamp</code> must be specified, but not
+                more than one of these.</td>
+            </tr>
+            <tr>
+              <td>isUnicode</td>
+              <td>boolean</td>
+              <td>This attribute is ignored unless <code>pattern</code> is specified. If <code>true</code> or omitted
+                (default), the value will be inserted as unicode (<code>setNString</code> or <code>setNClob</code>).
+                Otherwise, the value will be inserted non-unicode (<code>setString</code> or <code>setClob</code>).</td>
+            </tr>
+            <tr>
+              <td>isClob</td>
+              <td>boolean</td>
+              <td>This attribute is ignored unless <code>pattern</code> is specified. Use this attribute to indicate
+                that the column stores Character Large Objects (CLOBs). If <code>true</code>, the value will be inserted
+                as a CLOB (<code>setClob</code> or <code>setNClob</code>). If <code>false</code> or omitted (default),
+                the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or <code>setNString</code>).
+              </td>
+            </tr>
+            <caption align="top">Column Parameters</caption>
           </table>
           <p>
             Here are a few sample configurations for the JDBCAppender:
@@ -1360,7 +1483,7 @@
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
               <td>suppressExceptions</td>
@@ -1383,14 +1506,16 @@
             <tr>
               <td>entityClassName</td>
               <td>String</td>
-              <td>The fully qualified name of the concrete LogEventWrapperEntity implementation that has JPA annotations
-                mapping it to a database table.</td>
+              <td><em>Required.</em> The fully qualified name of the concrete LogEventWrapperEntity implementation that
+                has JPA annotations mapping it to a database table.</td>
             </tr>
             <tr>
               <td>persistenceUnitName</td>
               <td>String</td>
-              <td>The name of the JPA persistence unit that should be used for persisting log events.</td>
+              <td><em>Required.</em> The name of the JPA persistence unit that should be used for persisting log
+                events.</td>
             </tr>
+            <caption align="top">JPAAppender Parameters</caption>
           </table>
           <p>
             Here is a sample configurations for the JPAAppender. The first XML sample is the Log4j configuration file,
@@ -1482,7 +1607,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             <tr>
               <td>name</td>
               <td>String</td>
-              <td>The name of the Appender.</td>
+              <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
               <td>suppressExceptions</td>
@@ -1505,8 +1630,143 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             <tr>
               <td>noSqlProvider</td>
               <td>NoSQLProvider&lt;C extends NoSQLConnection&lt;W, T extends NoSQLObject&lt;W&gt;&gt;&gt;</td>
-              <td>The NoSQL provider that provides connections to the chosen NoSQL database.</td>
+              <td><em>Required.</em> The NoSQL provider that provides connections to the chosen NoSQL database.</td>
             </tr>
+            <caption align="top">NoSQLAppender Parameters</caption>
+          </table>
+          <p>You specify which NoSQL provider to use by specifying the appropriate configuration element within the
+            <code>&lt;NoSql&gt;</code> element. The types currently supported are <code>&lt;MongoDb&gt;</code> and
+            <code>&lt;CouchDb&gt;</code>. To create your own custom provider, read the JavaDoc for the
+            <code>NoSQLProvider</code>, <code>NoSQLConnection</code>, and <code>NoSQLObject</code> classes and the
+            documentation about creating Log4j plugins. We recommend you review the source code for the MongoDB and
+            CouchDB providers as a guide for creating your own provider.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>collectionName</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the MongoDB collection to insert the events into.</td>
+            </tr>
+            <tr>
+              <td>writeConcernConstant</td>
+              <td>Field</td>
+              <td>By default, the MongoDB provider inserts records with the instructions
+                <code>com.mongodb.WriteConcern.ACKNOWLEDGED</code>. Use this optional attribute to specify the name of
+                a constant other than <code>ACKNOWLEDGED</code>.</td>
+            </tr>
+            <tr>
+              <td>writeConcernConstantClass</td>
+              <td>Class</td>
+              <td>If you specify <code>writeConcernConstant</code>, you can use this attribute to specify a class other
+                than <code>com.mongodb.WriteConcern</code> to find the constant on (to create your own custom
+                instructions).</td>
+            </tr>
+            <tr>
+              <td>factoryClassName</td>
+              <td>Class</td>
+              <td>To provide a connection to the MongoDB database, you can use this attribute and
+                <code>factoryMethodName</code> to specify a class and static method to get the connection from. The
+                method must return a <code>com.mongodb.DB</code> or a <code>com.mongodb.MongoClient</code>. If the
+                <code>DB</code> is not authenticated, you must also specify a <code>username</code> and
+                <code>password</code>. If you use the factory method for providing a connection, you must not specify
+                the <code>databaseName</code>, <code>server</code>, or <code>port</code> attributes.</td>
+            </tr>
+            <tr>
+              <td>factoryMethodName</td>
+              <td>Method</td>
+              <td>See the documentation for attribute <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>databaseName</td>
+              <td>String</td>
+              <td>If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing
+                a MongoDB connection, you must specify a MongoDB database name using this attribute. You must also
+                specify a <code>username</code> and <code>password</code>. You can optionally also specify a
+                <code>server</code> (defaults to localhost), and a <code>port</code> (defaults to the default MongoDB
+                port).</td>
+            </tr>
+            <tr>
+              <td>server</td>
+              <td>String</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>int</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
+            </tr>
+            <caption align="top">MongoDB Provider Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>factoryClassName</td>
+              <td>Class</td>
+              <td>To provide a connection to the CouchDB database, you can use this attribute and
+                <code>factoryMethodName</code> to specify a class and static method to get the connection from. The
+                method must return a <code>org.lightcouch.CouchDbClient</code> or a
+                <code>org.lightcouch.CouchDbProperties</code>. If you use the factory method for providing a connection,
+                you must not specify the <code>databaseName</code>, <code>protocol</code>, <code>server</code>,
+                <code>port</code>, <code>username</code>, or <code>password</code> attributes.</td>
+            </tr>
+            <tr>
+              <td>factoryMethodName</td>
+              <td>Method</td>
+              <td>See the documentation for attribute <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>databaseName</td>
+              <td>String</td>
+              <td>If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing
+                a CouchDB connection, you must specify a CouchDB database name using this attribute. You must also
+                specify a <code>username</code> and <code>password</code>. You can optionally also specify a
+                <code>protocol</code> (defaults to http), <code>server</code> (defaults to localhost), and a
+                <code>port</code> (defaults to 80 for http and 443 for https).</td>
+            </tr>
+            <tr>
+              <td>protocol</td>
+              <td>String</td>
+              <td>Must either be "http" or "https." See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>server</td>
+              <td>String</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>int</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code>.</td>
+            </tr>
+            <caption align="top">CouchDB Provider Parameters</caption>
           </table>
           <p>
             Here are a few sample configurations for the NoSQLAppender:
@@ -1555,6 +1815,60 @@ public class JpaLogEntity extends LogEventWrapperEntity {
     </root>
   </loggers>
 </configuration>]]></pre>
+          </p>
+          <p>
+            The following example demonstrates how log events are persisted in NoSQL databases if represented in a JSON
+            format:
+            <pre class="prettyprint lang-javascript"><![CDATA[{
+    "level": "WARN",
+    "loggerName": "com.example.application.MyClass",
+    "message": "Something happened that you might want to know about.",
+    "source": {
+        "className": "com.example.application.MyClass",
+        "methodName": "exampleMethod",
+        "fileName": "MyClass.java",
+        "lineNumber": 81
+    },
+    "marker": {
+        "name": "SomeMarker",
+        "parent" {
+            "name": "SomeParentMarker"
+        }
+    },
+    "threadName": "Thread-1",
+    "millis": 1368844166761,
+    "date": "2013-05-18T02:29:26.761Z",
+    "thrown": {
+        "type": "java.sql.SQLException",
+        "message": "Could not insert record. Connection lost.",
+        "stackTrace": [
+                { "className": "org.example.sql.driver.PreparedStatement$1", "methodName": "responder", "fileName": "PreparedStatement.java", "lineNumber": 1049 },
+                { "className": "org.example.sql.driver.PreparedStatement", "methodName": "executeUpdate", "fileName": "PreparedStatement.java", "lineNumber": 738 },
+                { "className": "com.example.application.MyClass", "methodName": "exampleMethod", "fileName": "MyClass.java", "lineNumber": 81 },
+                { "className": "com.example.application.MainClass", "methodName": "main", "fileName": "MainClass.java", "lineNumber": 52 }
+        ],
+        "cause": {
+            "type": "java.io.IOException",
+            "message": "Connection lost.",
+            "stackTrace": [
+                { "className": "java.nio.channels.SocketChannel", "methodName": "write", "fileName": null, "lineNumber": -1 },
+                { "className": "org.example.sql.driver.PreparedStatement$1", "methodName": "responder", "fileName": "PreparedStatement.java", "lineNumber": 1032 },
+                { "className": "org.example.sql.driver.PreparedStatement", "methodName": "executeUpdate", "fileName": "PreparedStatement.java", "lineNumber": 738 },
+                { "className": "com.example.application.MyClass", "methodName": "exampleMethod", "fileName": "MyClass.java", "lineNumber": 81 },
+                { "className": "com.example.application.MainClass", "methodName": "main", "fileName": "MainClass.java", "lineNumber": 52 }
+            ]
+        }
+    },
+    "contextMap": {
+        "ID": "86c3a497-4e67-4eed-9d6a-2e5797324d7b",
+        "username": "JohnDoe"
+    },
+    "contextStack": [
+        "topItem",
+        "anotherItem",
+        "bottomItem"
+    ]
+}]]></pre>
           </p>
         </subsection>
         <a name="OutputStreamAppender"/>

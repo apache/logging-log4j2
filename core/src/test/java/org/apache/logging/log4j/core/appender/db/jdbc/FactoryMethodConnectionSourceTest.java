@@ -49,32 +49,32 @@ public class FactoryMethodConnectionSourceTest {
 
     @Test
     public void testNoClassName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(null,
-                "method");
+        final FactoryMethodConnectionSource source =
+                FactoryMethodConnectionSource.createConnectionSource(null, "method");
 
         assertNull("The connection source should be null.", source);
     }
 
     @Test
     public void testNoMethodName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource("someClass",
-                null);
+        final FactoryMethodConnectionSource source =
+                FactoryMethodConnectionSource.createConnectionSource("someClass", null);
 
         assertNull("The connection source should be null.", source);
     }
 
     @Test
     public void testBadClassName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
-                "org.apache.BadClass", "factoryMethod");
+        final FactoryMethodConnectionSource source =
+                FactoryMethodConnectionSource.createConnectionSource("org.apache.BadClass", "factoryMethod");
 
         assertNull("The connection source should be null.", source);
     }
 
     @Test
     public void testBadMethodName() {
-        final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(this
-                .getClass().getName(), "factoryMethod");
+        final FactoryMethodConnectionSource source =
+                FactoryMethodConnectionSource.createConnectionSource(this.getClass().getName(), "factoryMethod");
 
         assertNull("The connection source should be null.", source);
     }
@@ -82,7 +82,8 @@ public class FactoryMethodConnectionSourceTest {
     @Test
     public void testBadReturnType() {
         final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
-                BadReturnTypeFactory.class.getName(), "factoryMethod01");
+                BadReturnTypeFactory.class.getName(), "factoryMethod01"
+        );
 
         assertNull("The connection source should be null.", source);
     }
@@ -100,7 +101,8 @@ public class FactoryMethodConnectionSourceTest {
         holder.set(dataSource);
 
         final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
-                DataSourceFactory.class.getName(), "factoryMethod02");
+                DataSourceFactory.class.getName(), "factoryMethod02"
+        );
 
         assertNotNull("The connection source should not be null.", source);
         assertEquals("The toString value is not correct.", "factory{ public static javax.sql.DataSource[" + dataSource
@@ -120,7 +122,8 @@ public class FactoryMethodConnectionSourceTest {
         holder.set(connection);
 
         final FactoryMethodConnectionSource source = FactoryMethodConnectionSource.createConnectionSource(
-                ConnectionFactory.class.getName(), "anotherMethod03");
+                ConnectionFactory.class.getName(), "anotherMethod03"
+        );
 
         assertNotNull("The connection source should not be null.", source);
         assertEquals("The toString value is not correct.", "factory{ public static java.sql.Connection "

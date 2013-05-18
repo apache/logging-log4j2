@@ -126,6 +126,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
             }
         } else if (databaseName != null && databaseName.length() > 0) {
             if (protocol != null && protocol.length() > 0) {
+                protocol = protocol.toLowerCase();
                 if (!protocol.equals("http") && !protocol.equals("https")) {
                     LOGGER.error("Only protocols [http] and [https] are supported, [{}] specified.", protocol);
                     return null;
