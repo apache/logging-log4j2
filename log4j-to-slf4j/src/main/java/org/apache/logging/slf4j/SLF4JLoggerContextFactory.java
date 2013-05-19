@@ -52,4 +52,8 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
                                     URI configLocation) {
         return context;
     }
+
+    @Override
+    public void removeContext(LoggerContext context) {
+    }
 }

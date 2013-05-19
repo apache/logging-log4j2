@@ -45,4 +45,10 @@ public interface LoggerContextFactory {
      * @return The LoggerContext.
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation);
+
+    /**
+     * Removes knowledge of a LoggerContext.
+     * @param The context to remove.
+     */
+    void removeContext(LoggerContext context);
 }

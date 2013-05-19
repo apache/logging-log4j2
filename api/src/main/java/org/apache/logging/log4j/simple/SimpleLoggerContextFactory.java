@@ -38,4 +38,8 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
                                     URI configLocation) {
         return context;
     }
+
+    @Override
+    public void removeContext(LoggerContext context) {
+    }
 }

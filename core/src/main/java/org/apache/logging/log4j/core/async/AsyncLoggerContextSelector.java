@@ -29,12 +29,10 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
  */
 public class AsyncLoggerContextSelector implements ContextSelector {
 
-    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext(
-            "AsyncLoggerContext");
+    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncLoggerContext");
 
     @Override
-    public LoggerContext getContext(String fqcn, ClassLoader loader,
-            boolean currentContext) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
         return CONTEXT;
     }
 
@@ -46,9 +44,12 @@ public class AsyncLoggerContextSelector implements ContextSelector {
     }
 
     @Override
-    public LoggerContext getContext(String fqcn, ClassLoader loader,
-            boolean currentContext, URI configLocation) {
+    public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation) {
         return CONTEXT;
+    }
+
+    @Override
+    public void removeContext(LoggerContext context) {
     }
 
 }

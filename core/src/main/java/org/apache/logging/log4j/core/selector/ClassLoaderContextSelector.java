@@ -142,6 +142,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
         }
     }
 
+    @Override
     public void removeContext(final LoggerContext context) {
         for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : CONTEXT_MAP.entrySet()) {
             final LoggerContext ctx = entry.getValue().get().get();

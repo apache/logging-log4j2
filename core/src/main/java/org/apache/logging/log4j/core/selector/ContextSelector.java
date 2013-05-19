@@ -52,4 +52,10 @@ public interface ContextSelector {
      * @return The List of LoggerContexts.
      */
     List<LoggerContext> getLoggerContexts();
+
+    /**
+     * Remove any references to the LoggerContext.
+     * @param context The context to remove.
+     */
+    void removeContext(LoggerContext context);
 }
