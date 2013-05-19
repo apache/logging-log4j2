@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-223" dev="rgoers" type="fix">
+        Remove LoggerContext when LoggerContext is stopped.
+      </action>
       <action issue="LOG4J2-260" dev="ggregory" type="fix">
         XML layout does not specify charset in content type.
       </action>

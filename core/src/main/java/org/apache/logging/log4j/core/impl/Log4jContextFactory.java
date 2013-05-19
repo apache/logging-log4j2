@@ -105,4 +105,16 @@ public class Log4jContextFactory implements LoggerContextFactory {
         }
         return ctx;
     }
+
+
+    /**
+     * Removes knowledge of a LoggerContext.
+     * @param The context to remove.
+     */
+    @Override
+    public void removeContext(org.apache.logging.log4j.spi.LoggerContext context) {
+        if (context instanceof LoggerContext) {
+            selector.removeContext((LoggerContext) context);
+        }
+    }
 }

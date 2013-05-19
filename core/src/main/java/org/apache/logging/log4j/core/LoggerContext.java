@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -202,6 +203,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             updateLoggers();
             prev.stop();
             externalContext = null;
+            LogManager.getFactory().removeContext(this);
             status = Status.STOPPED;
         } finally {
             configLock.unlock();

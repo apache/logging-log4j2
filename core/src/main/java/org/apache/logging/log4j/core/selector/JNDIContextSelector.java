@@ -133,6 +133,7 @@ public class JNDIContextSelector implements NamedContextSelector {
         return CONTEXT_MAP.get(name);
     }
 
+    @Override
     public void removeContext(final LoggerContext context) {
 
         for (final Map.Entry<String, LoggerContext> entry : CONTEXT_MAP.entrySet()) {
