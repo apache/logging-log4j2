@@ -269,7 +269,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
                     if (upperKey.startsWith(name.toUpperCase(Locale.ENGLISH))) {
                         final String msg =
-                            "Specification of the agent name is allowed in Flume Appender configuration: " + key;
+                            "Specification of the agent name is not allowed in Flume Appender configuration: " + key;
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);
                     }
