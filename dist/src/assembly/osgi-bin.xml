@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <assembly>
-    <id>bin</id>
+    <id>osgi-bin</id>
     <formats>
         <format>tar.gz</format>
         <format>zip</format>
     </formats>
-    <baseDirectory>apache-log4j-${project.version}-bin</baseDirectory>
+    <baseDirectory>apache-log4j-${project.version}-osgi-bin</baseDirectory>
     <includeSiteDirectory>false</includeSiteDirectory>
     <moduleSets>
         <moduleSet>
@@ -29,9 +29,19 @@ limitations under the License.
     </moduleSets>
     <dependencySets>
         <dependencySet>
+          <includes>
+            <include>org.apache.logging.log4j:log4j-core:jar:sources</include>
+            <include>org.apache.logging.log4j:log4j-core:jar:javadoc</include>
+          </includes>
+        </dependencySet>
+        <dependencySet>
             <includes>
                 <include>org.apache.logging.log4j:log4j-*</include>
+                <include>org.apache.logging.log4j.osgi:*</include>
             </includes>
+            <excludes>
+                <exclude>org.apache.logging.log4j:log4j-core</exclude>
+            </excludes>
             <outputDirectory></outputDirectory>
             <unpack>false</unpack>
         </dependencySet>
