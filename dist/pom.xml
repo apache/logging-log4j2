@@ -204,6 +204,36 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-async</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-jpa</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-net</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-nosql-couch</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-nosql-mongo</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.osgi</groupId>
+      <artifactId>log4j-core-osgi-reduced</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -235,6 +265,20 @@
               <finalName>apache-log4j-${project.version}</finalName>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+          <execution>
+            <id>osgi-binary</id>
+            <configuration>
+              <finalName>apache-log4j-${project.version}</finalName>
+              <descriptors>
+                <descriptor>src/assembly/osgi-bin.xml</descriptor>
               </descriptors>
               <tarLongFileMode>gnu</tarLongFileMode>
             </configuration>

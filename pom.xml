@@ -751,6 +751,7 @@
   <modules>
     <module>api</module>
     <module>core</module>
+    <module>osgi</module>
     <module>log4j12-api</module>
     <module>slf4j-impl</module>
     <module>log4j-to-slf4j</module>
