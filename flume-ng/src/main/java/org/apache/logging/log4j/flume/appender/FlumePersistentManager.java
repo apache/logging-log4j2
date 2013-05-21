@@ -51,6 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 
 /**
  *
@@ -271,6 +272,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 File dir = new File(data.dataDir);
                 FileUtils.mkdir(dir, true);
                 final EnvironmentConfig dbEnvConfig = new EnvironmentConfig();
+                dbEnvConfig.setConfigParam(EnvironmentConfig.CONSOLE_LOGGING_LEVEL, Level.SEVERE.toString());
                 dbEnvConfig.setTransactional(true);
                 dbEnvConfig.setAllowCreate(true);
                 dbEnvConfig.setLockTimeout(5, TimeUnit.SECONDS);
