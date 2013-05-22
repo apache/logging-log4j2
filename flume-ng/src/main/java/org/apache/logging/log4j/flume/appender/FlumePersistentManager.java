@@ -272,7 +272,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 File dir = new File(data.dataDir);
                 FileUtils.mkdir(dir, true);
                 final EnvironmentConfig dbEnvConfig = new EnvironmentConfig();
-                dbEnvConfig.setConfigParam(EnvironmentConfig.CONSOLE_LOGGING_LEVEL, Level.SEVERE.toString());
                 dbEnvConfig.setTransactional(true);
                 dbEnvConfig.setAllowCreate(true);
                 dbEnvConfig.setLockTimeout(5, TimeUnit.SECONDS);
@@ -466,7 +465,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                         LOGGER.warn("WriterThread encountered an exception. Continuing.", ex);
                     }
                 } else {
-                    while (!shutdown && database.count() < batchSize && nextBatch > now) {
+                    while (!shutdown && (database.count() == 0 || database.count() < batchSize && nextBatch > now)) {
                         try {
                             long interval = nextBatch - now;
                             queue.poll(interval, TimeUnit.MILLISECONDS);
