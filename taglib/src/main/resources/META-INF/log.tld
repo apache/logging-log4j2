@@ -49,7 +49,7 @@ the only one that will be used.
 Every effort was made to optimize these tags and ensure decent performance, but users of
 this library should keep in mind that the creation and execution of JSP tags adds significant
 overhead to the standard Log4j method calls. While the "trace", "debug", and "info" options are
-available in this library, their uses are not nano-second order of magnitude with logging off
+available in this library, their uses are not nanosecond order of magnitude with logging off
 that users may be used to with standard Log4j method calls. Therefore, they should be used
 sparingly. Use of the "ifEnabled" tag does not improve this performance; this tag is available
 to conditionally evaluate other actions in addition to logging actions.]]></description>
