@@ -71,7 +71,7 @@ to conditionally evaluate other actions in addition to logging actions.]]></desc
     <attribute>
       <description>The name or instance of the Logger to set as the JSP's default Logger or
         the name of the Logger to export as the specified EL variable.</description>
-      <name>value</name>
+      <name>logger</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.Object</type>
