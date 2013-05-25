@@ -37,9 +37,9 @@ public final class CachedClock implements Clock {
             while (true) {
                 long time = System.currentTimeMillis();
                 millis = time;
+                
+                // avoid explicit dependency on sun.misc.Util
                 LockSupport.parkNanos(1000 * 1000);
-                // Util.getUnsafe().park(true, time + 1); // abs (millis)
-                // Util.getUnsafe().park(false, 1000 * 1000);// relative(nanos)
             }
         }
     };
