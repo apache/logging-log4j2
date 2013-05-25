@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import com.lmax.disruptor.util.Util;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * This Clock implementation is similar to CachedClock. It is slightly faster at
@@ -32,7 +32,8 @@ public final class CoarseCachedClock implements Clock {
             while (true) {
                 long time = System.currentTimeMillis();
                 millis = time;
-                Util.getUnsafe().park(true, time + 1); // abs (millis)
+                LockSupport.parkNanos(1000 * 1000);
+                // Util.getUnsafe().park(true, time + 1); // abs (millis)
                 // Util.getUnsafe().park(false, 1000 * 1000);// relative(nanos)
             }
         }
