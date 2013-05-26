@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored
+ * is always immutable. This means the Map can be passed to other threads without concern that it will be updated.
+ * Since it is expected that the Map will be passed to many more log events than the number of keys it contains
+ * the performance should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap {
 
@@ -30,7 +34,8 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         new InheritableThreadLocal<Map<String, String>>() {
             @Override
             protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                return parentValue == null || !useMap ? null : new HashMap<String, String>(parentValue);
+                return parentValue == null || !useMap ? null :
+                    Collections.unmodifiableMap(new HashMap<String, String>(parentValue));
             }
         };
 
@@ -54,11 +59,9 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return;
         }
         Map<String, String> map = localMap.get();
-        if (map == null) {
-            map = new HashMap<String, String>();
-            localMap.set(map);
-        }
+        map = map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
         map.put(key, value);
+        localMap.set(Collections.unmodifiableMap(map));
     }
 
     /**
@@ -83,7 +86,9 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     public void remove(final String key) {
         final Map<String, String> map = localMap.get();
         if (map != null) {
-            map.remove(key);
+            final Map<String, String> copy = new HashMap<String, String>(map);
+            copy.remove(key);
+            localMap.set(Collections.unmodifiableMap(copy));
         }
     }
 
@@ -103,25 +108,25 @@ public class DefaultThreadContextMap implements ThreadContextMap {
     @Override
     public boolean containsKey(final String key) {
         final Map<String, String> map = localMap.get();
-        return map == null ? false : map.containsKey(key);
+        return map != null && map.containsKey(key);
     }
 
     /**
-     * Get a copy of current thread's context Map.
-     * @return a copy of the context.
+     * Returns a non-{@code null} mutable copy of the ThreadContext Map.
+     * @return a non-{@code null} mutable copy of the context.
      */
     @Override
-    public Map<String, String> getContext() {
+    public Map<String, String> getCopy() {
         final Map<String, String> map = localMap.get();
         return map == null ? new HashMap<String, String>() : new HashMap<String, String>(map);
     }
 
     /**
-     * Return the context Map.
+     * Returns either {@code null} or an immutable view of the context Map.
      * @return the Context Map.
      */
     @Override
-    public Map<String, String> get() {
+    public Map<String, String> getImmutableMapOrNull() {
         return localMap.get();
     }
 

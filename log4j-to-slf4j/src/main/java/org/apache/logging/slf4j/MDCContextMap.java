@@ -52,13 +52,13 @@ public class MDCContextMap implements ThreadContextMap {
 
     @Override
     @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
-    public Map<String, String> getContext() {
+    public Map<String, String> getCopy() {
         return MDC.getCopyOfContextMap();
     }
 
     @Override
     @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
-    public Map<String, String> get() {
+    public Map<String, String> getImmutableMapOrNull() {
         return MDC.getCopyOfContextMap();
     }
 

@@ -18,10 +18,12 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.PersistenceException;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -56,6 +58,8 @@ public class ContextStackJsonAttributeConverter implements AttributeConverter<Th
             throw new PersistenceException("Failed to convert JSON string to list for stack.", e);
         }
 
-        return new ThreadContext.ImmutableStack(list);
+        DefaultThreadContextStack result = new DefaultThreadContextStack(true);
+        result.addAll(list);
+        return result;
     }
 }
