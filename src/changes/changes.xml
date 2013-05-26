@@ -22,6 +22,13 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action dev="rpopma" type="update">
+        Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap:
+        getContext() to getCopy(), get() to getImmutableMapOrNull().
+      </action>
+      <action issue="LOG4J2-154" dev="rpopma" type="update">
+        Improve ThreadContext performance with copy-on-write map and stack.
+      </action>
       <action issue="LOG4J2-261" dev="rgoers" type="fix" due-to="Edward Sargisson">
         Add missing "not" to error message.
       </action>
