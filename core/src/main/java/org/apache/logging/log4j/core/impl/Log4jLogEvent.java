@@ -28,6 +28,8 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,20 +121,21 @@ public class Log4jLogEvent implements LogEvent, Serializable {
     }
 
     private static Map<String, String> createMap(final List<Property> properties) {
-        if (ThreadContext.isEmpty() && (properties == null || properties.size() == 0)) {
+        final Map<String, String> contextMap = ThreadContext.getImmutableContext();
+        if (contextMap == null && (properties == null || properties.size() == 0)) {
             return null;
         }
         if (properties == null || properties.size() == 0) {
-            return ThreadContext.getImmutableContext();
+            return contextMap; // contextMap is not null
         }
-        final Map<String, String> map = ThreadContext.getContext();
+        final Map<String, String> map = new HashMap<String, String>(contextMap);
 
         for (final Property prop : properties) {
             if (!map.containsKey(prop.getName())) {
                 map.put(prop.getName(), prop.getValue());
             }
         }
-        return new ThreadContext.ImmutableMap(map);
+        return Collections.unmodifiableMap(map);
     }
 
     /**

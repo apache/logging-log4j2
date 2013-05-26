@@ -63,16 +63,16 @@ public interface ThreadContextMap {
     boolean containsKey(final String key);
 
     /**
-     * Get a copy of current thread's context Map.
-     * @return a copy of the context.
+     * Get a non-{@code null} mutable copy of current thread's context Map.
+     * @return a mutable copy of the context.
      */
-    Map<String, String> getContext();
+    Map<String, String> getCopy();
 
     /**
-     * Return the actual context Map.
-     * @return the actual context Map.
+     * Return an immutable view on the context Map or {@code null} if the context map is empty.
+     * @return an immutable context Map or {@code null}.
      */
-    Map<String, String> get();
+    Map<String, String> getImmutableMapOrNull();
 
     /**
      * Returns true if the Map is empty.
