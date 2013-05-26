@@ -96,6 +96,8 @@ public class OutputStreamManager extends AbstractManager {
             } catch (final IOException ioe) {
                 LOGGER.error("Unable to write header", ioe);
             }
+        } else {
+            this.os = os;
         }
     }
 
