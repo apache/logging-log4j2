@@ -174,7 +174,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.2</version>
+        <version>${cobertura.plugin.version}</version>
         <reportSets>
           <reportSet>
             <!-- Disabled at it kills the site generation via a NoClassDefFoundError -->

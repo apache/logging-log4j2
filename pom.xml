@@ -151,6 +151,7 @@
     <surefire.plugin.version>2.14.1</surefire.plugin.version>
     <rat.plugin.version>0.8</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
+    <cobertura.plugin.version>2.2</cobertura.plugin.version>
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
     <maven.compile.source>1.6</maven.compile.source>
     <maven.compile.target>1.6</maven.compile.target>
