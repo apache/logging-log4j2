@@ -48,7 +48,8 @@ public interface LoggerContextFactory {
 
     /**
      * Removes knowledge of a LoggerContext.
-     * @param The context to remove.
+     * 
+     * @param context The context to remove.
      */
     void removeContext(LoggerContext context);
 }
