@@ -109,7 +109,8 @@ public class Log4jContextFactory implements LoggerContextFactory {
 
     /**
      * Removes knowledge of a LoggerContext.
-     * @param The context to remove.
+     * 
+     * @param context The context to remove.
      */
     @Override
     public void removeContext(org.apache.logging.log4j.spi.LoggerContext context) {
