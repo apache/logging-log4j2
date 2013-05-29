@@ -165,10 +165,9 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
 
             if (throwable == null) {
                 return null;
-            } else {
-                throwable.setStackTrace(stackTrace);
-                return throwable;
             }
+            throwable.setStackTrace(stackTrace);
+            return throwable;
         } catch (Exception e) {
             return null;
         }
