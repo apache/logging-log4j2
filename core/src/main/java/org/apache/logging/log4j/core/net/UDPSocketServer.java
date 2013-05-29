@@ -57,14 +57,12 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
 
     private final DatagramSocket server;
 
-    private final ConcurrentMap<Long, DatagramPacketHandler> handlers = new ConcurrentHashMap<Long, DatagramPacketHandler>();
-
     // max size so we only have to deal with one packet
-    private int maxBufferSize = 1024 * 65;
+    private int maxBufferSize = 1024 * 65 + 1024;
 
     /**
      * Constructor.
-     * 
+     *
      * @param port
      *            to listen on.
      * @throws IOException
@@ -80,7 +78,7 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
 
     /**
      * Main startup for the server.
-     * 
+     *
      * @param args
      *            The command line arguments.
      * @throws Exception
@@ -138,63 +136,19 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
                 byte[] buf = new byte[maxBufferSize];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 server.receive(packet);
-                final DatagramPacketHandler handler = new DatagramPacketHandler(packet);
-                handlers.put(handler.getId(), handler);
-                handler.start();
-            } catch (final IOException ioe) {
-                System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
-                ioe.printStackTrace();
-            }
-        }
-        for (final Map.Entry<Long, DatagramPacketHandler> entry : handlers.entrySet()) {
-            final DatagramPacketHandler handler = entry.getValue();
-            handler.shutdown();
-            try {
-                handler.join();
-            } catch (final InterruptedException ie) {
-                // Ignore the exception
-            }
-        }
-    }
-
-    /**
-     * Thread that processes the events.
-     */
-    private class DatagramPacketHandler extends Thread {
-        private final ObjectInputStream ois;
-        private boolean shutdown = false;
-
-        public DatagramPacketHandler(final DatagramPacket packet) throws IOException {
-            this.ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()));
-        }
-
-        public void shutdown() {
-            this.shutdown = true;
-            interrupt();
-        }
-
-        @Override
-        public void run() {
-            boolean closed = false;
-            try {
-                try {
-                    while (!shutdown) {
-                        final LogEvent event = (LogEvent) ois.readObject();
-                        if (event != null) {
-                            log(event);
-                        }
-                    }
-                } catch (final EOFException eof) {
-                    closed = true;
-                } catch (final OptionalDataException opt) {
-                    logger.error("OptionalDataException eof=" + opt.eof + " length=" + opt.length, opt);
-                } catch (final ClassNotFoundException cnfe) {
-                    logger.error("Unable to locate LogEvent class", cnfe);
-                } catch (final IOException ioe) {
-                    logger.error("IOException encountered while reading from socket", ioe);
+                ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()));
+                final LogEvent event = (LogEvent) ois.readObject();
+                if (event != null) {
+                    log(event);
                 }
-            } finally {
-                handlers.remove(getId());
+            } catch (final OptionalDataException opt) {
+                logger.error("OptionalDataException eof=" + opt.eof + " length=" + opt.length, opt);
+            } catch (final ClassNotFoundException cnfe) {
+                logger.error("Unable to locate LogEvent class", cnfe);
+            } catch (final EOFException eofe) {
+                logger.info("EOF encountered");
+            } catch (final IOException ioe) {
+                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", ioe);
             }
         }
     }

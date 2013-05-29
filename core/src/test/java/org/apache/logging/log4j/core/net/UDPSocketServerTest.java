@@ -22,7 +22,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 
-@Ignore
 public class UDPSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8199";
     private static final int PORT_NUM = Integer.parseInt(PORT);
@@ -49,7 +48,7 @@ public class UDPSocketServerTest extends AbstractSocketServerTest {
     }
 
     public UDPSocketServerTest() {
-        super("udp", PORT);
+        super("udp", PORT, true);
     }
 
 }

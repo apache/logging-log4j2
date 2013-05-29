@@ -48,13 +48,18 @@ public class DatagramOutputStream extends OutputStream {
 
     private byte[] data;
 
+    private final byte[] header;
+    private final byte[] footer;
+
     /**
      * The Constructor.
      * @param host The host to connect to.
      * @param port The port on the host.
      */
-    public DatagramOutputStream(final String host, final int port) {
+    public DatagramOutputStream(final String host, final int port, final byte[] header, final byte[] footer) {
         this.port = port;
+        this.header = header;
+        this.footer = footer;
         try {
             address = InetAddress.getByName(host);
         } catch (final UnknownHostException ex) {
@@ -89,11 +94,20 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void flush() throws IOException {
-        if (this.data != null && this.ds != null && this.address != null) {
-            final DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-            ds.send(packet);
+        try {
+            if (this.data != null && this.ds != null && this.address != null) {
+                if (footer != null) {
+                    copy(footer, 0, footer.length);
+                }
+                final DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+                ds.send(packet);
+            }
+        } finally {
+            data = null;
+            if (header != null) {
+                copy(header, 0, header.length);
+            }
         }
-        data = null;
     }
 
     @Override
@@ -111,7 +125,7 @@ public class DatagramOutputStream extends OutputStream {
         final int index = data == null ? 0 : data.length;
         final byte[] copy = new byte[length + index];
         if (data != null) {
-            System.arraycopy(data, 0, copy, 0, index);
+            System.arraycopy(data, 0, copy, 0, data.length);
         }
         System.arraycopy(bytes, offset, copy, index, length);
         data = copy;

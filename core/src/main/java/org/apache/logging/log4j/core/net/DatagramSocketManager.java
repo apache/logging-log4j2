@@ -104,7 +104,8 @@ public class DatagramSocketManager extends AbstractSocketManager {
         @Override
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
             InetAddress address;
-            final OutputStream os = new DatagramOutputStream(data.host, data.port);
+            final OutputStream os = new DatagramOutputStream(data.host, data.port, data.layout.getHeader(),
+                data.layout.getFooter());
             try {
                 address = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
