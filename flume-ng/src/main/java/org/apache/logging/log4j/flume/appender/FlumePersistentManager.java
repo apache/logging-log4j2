@@ -424,7 +424,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 }
                             }
                         } else {
-                            Cursor cursor = database.openCursor(null, null);
+                            Transaction txn = environment.beginTransaction(null, null);
+                            Cursor cursor = database.openCursor(txn, null);
                             try {
                                 status = cursor.getFirst(key, data, LockMode.RMW);
                                 while (status == OperationStatus.SUCCESS) {
@@ -447,13 +448,22 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     }
                                     status = cursor.getNext(key, data, LockMode.RMW);
                                 }
+                                if (cursor != null) {
+                                    cursor.close();
+                                    cursor = null;
+                                }
+                                txn.commit();
+                                txn = null;
                             } catch (Exception ex) {
-                                LOGGER.error("Error reading database", ex);
+                                LOGGER.error("Error reading or writing to database", ex);
                                 shutdown = true;
                                 break;
                             } finally {
                                 if (cursor != null) {
                                     cursor.close();
+                                }
+                                if (txn != null) {
+                                    txn.abort();
                                 }
                             }
                         }
