@@ -219,7 +219,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     /**
-     * Indicates whether this event is the last one in a batch. Annotated {@link @Transient} so as not to be included
+     * Indicates whether this event is the last one in a batch. Annotated {@link Transient @Transient} so as not to be included
      * in the persisted entity.
      *
      * @return whether this event is the last one in a batch.
