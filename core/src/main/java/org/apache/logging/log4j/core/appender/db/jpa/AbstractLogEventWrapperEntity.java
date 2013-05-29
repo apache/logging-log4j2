@@ -202,7 +202,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     /**
-     * Indicates whether the source of the logging request is required downstream. Annotated {@link @Transient} so as
+     * Indicates whether the source of the logging request is required downstream. Annotated {@link Transient @Transient} so as
      * not to be included in the persisted entity.
      *
      * @return whether the source of the logging request is required downstream.
