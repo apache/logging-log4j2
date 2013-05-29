@@ -128,11 +128,14 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         final String guid =  UUIDUtil.getTimeBasedUUID().toString();
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
+            // Add the guid to the Map so that it can be included in the Layout.
             ((MapMessage) message).put(GUID, guid);
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
             }
             addMapData(eventPrefix, headers, (MapMessage) message);
+        } else {
+            headers.put(GUID, guid);
         }
 
         addContextData(mdcPrefix, headers, ctx);

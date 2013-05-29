@@ -29,6 +29,8 @@ import org.apache.flume.source.avro.Status;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
@@ -214,6 +216,20 @@ public class FlumePersistentAppenderTest {
         for (int i = 0; i < 10; ++i) {
             Assert.assertTrue("Channel contained event, but not expected message " + i, fields[i]);
         }
+    }
+
+    @Test
+    public void testSingle() throws InterruptedException, IOException {
+
+        Logger logger = LogManager.getLogger("EventLogger");
+        Marker marker = MarkerManager.getMarker("EVENT");
+        logger.info(marker, "This is a test message");
+
+        final Event event = primary.poll();
+        Assert.assertNotNull(event);
+        final String body = getBody(event);
+        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
+            body.endsWith("This is a test message"));
     }
     /*
     @Test
