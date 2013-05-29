@@ -47,7 +47,7 @@ public class TCPSocketServerTest extends AbstractSocketServerTest {
     }
 
     public TCPSocketServerTest() {
-        super("tcp", PORT);
+        super("tcp", PORT, false);
     }
 
 }

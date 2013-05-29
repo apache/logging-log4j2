@@ -98,7 +98,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginAttr("advertise") final String advertise,
                                                 @PluginConfiguration final Configuration config) {
 
-        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
+        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
@@ -116,8 +116,12 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
         }
 
         final String prot = protocol != null ? protocol : Protocol.TCP.name();
+        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
+        if (p.equals(Protocol.UDP)) {
+            isFlush = true;
+        }
 
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail, layout);
+        final AbstractSocketManager manager = createSocketManager(p, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
@@ -126,10 +130,9 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
-    protected static AbstractSocketManager createSocketManager(final String protocol, final String host, final int port,
+    protected static AbstractSocketManager createSocketManager(final Protocol p, final String host, final int port,
                                                                final int delay, final boolean immediateFail,
                                                                final Layout layout) {
-        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         switch (p) {
             case TCP:
                 return TCPSocketManager.getSocketManager(host, port, delay, immediateFail, layout);

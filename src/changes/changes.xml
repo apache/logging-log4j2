@@ -22,6 +22,12 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-246" dev="rgoers" type="fix">
+        Data buffer is reset in finally clause.
+      </action>
+      <action issue="LOG4J2-228" dev="rgoers" type="fix">
+        UDP now sends one event per packet.
+      </action>
       <action dev="rpopma" type="update">
         Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap:
         getContext() to getCopy(), get() to getImmutableMapOrNull().

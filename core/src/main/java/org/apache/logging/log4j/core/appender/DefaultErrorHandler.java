@@ -69,7 +69,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             LOGGER.error(msg, t);
         }
         lastException = current;
-        if (!appender.isExceptionSuppressed() && t != null) {
+        if (!appender.isExceptionSuppressed() && t != null && !(t instanceof AppenderRuntimeException)) {
             throw new AppenderRuntimeException(msg, t);
         }
     }
@@ -87,7 +87,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             LOGGER.error(msg, t);
         }
         lastException = current;
-        if (!appender.isExceptionSuppressed() && t != null) {
+        if (!appender.isExceptionSuppressed() && t != null && !(t instanceof AppenderRuntimeException)) {
             throw new AppenderRuntimeException(msg, t);
         }
     }

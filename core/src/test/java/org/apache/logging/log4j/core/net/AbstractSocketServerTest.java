@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -63,12 +65,14 @@ public abstract class AbstractSocketServerTest {
 
     private final String port;
     private final String protocol;
+    private final boolean expectLengthException;
 
     private final Logger root = ctx.getLogger(AbstractSocketServerTest.class.getSimpleName());
 
-    protected AbstractSocketServerTest(final String protocol, final String port) {
+    protected AbstractSocketServerTest(final String protocol, final String port, final boolean expectLengthException) {
         this.protocol = protocol;
         this.port = port;
+        this.expectLengthException = expectLengthException;
     }
 
     @After
@@ -87,20 +91,30 @@ public abstract class AbstractSocketServerTest {
         Arrays.fill(a64K, 'a');
         final String m1 = new String(a64K);
         final String m2 = MESSAGE_2 + m1;
-        testServer(m1, m2);
+        if (expectLengthException) {
+            try {
+                testServer(m1, m2);
+
+            } catch (AppenderRuntimeException are) {
+                assertTrue("", are.getCause() != null && are.getCause() instanceof IOException);
+                // Failure expected.
+            }
+        } else {
+            testServer(m1, m2);
+        }
     }
 
     protected void testServer(final String message1, final String message2) throws Exception {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
         final SocketAppender<Serializable> appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", null,
-                null, null, socketFilter, null, null);
+                "false", null, socketFilter, null, null);
         appender.start();
         final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilter, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null);
         final ConsoleAppender<String> console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
-        final Logger serverLogger = ctx.getLogger(SocketServer.class.getName());
+        final Logger serverLogger = ctx.getLogger(this.getClass().getName());
         serverLogger.addAppender(console);
         serverLogger.setAdditive(false);
 

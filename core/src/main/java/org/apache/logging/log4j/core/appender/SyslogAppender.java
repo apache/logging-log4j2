@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.io.Serializable;
 
@@ -130,7 +131,8 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
             return null;
         }
         final String prot = protocol != null ? protocol : Protocol.UDP.name();
-        final AbstractSocketManager manager = createSocketManager(prot, host, port, reconnectDelay, fail, layout);
+        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
+        final AbstractSocketManager manager = createSocketManager(p, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
