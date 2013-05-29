@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-268" dev="rgoers" type="fix">
+        Add guid to FlumeEvent headers for non-Map Messages.
+      </action>
       <action issue="LOG4J2-246" dev="rgoers" type="fix">
         Data buffer is reset in finally clause.
       </action>
