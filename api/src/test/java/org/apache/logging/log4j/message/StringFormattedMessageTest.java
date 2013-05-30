@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -48,5 +49,16 @@ public class StringFormattedMessageTest {
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testException() {
+        final String testMsg = "Test message {0}";
+        final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", new NullPointerException("Null"));
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache";
+        assertEquals(expected, result);
+        Throwable t = msg.getThrowable();
+        assertNotNull("No Throwable", t);
     }
 }

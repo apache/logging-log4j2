@@ -40,10 +40,14 @@ public class StringFormattedMessage implements Message {
     private transient Object[] argArray;
     private String[] stringArgs;
     private transient String formattedMessage;
+    private transient Throwable throwable;
 
     public StringFormattedMessage(final String messagePattern, final Object... arguments) {
         this.messagePattern = messagePattern;
         this.argArray = arguments;
+        if (arguments != null && arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable) {
+            this.throwable = (Throwable) arguments[arguments.length - 1];
+        }
     }
 
     /**
@@ -149,12 +153,12 @@ public class StringFormattedMessage implements Message {
     }
 
     /**
-     * Always returns null.
+     * Return the throwable passed to the Message.
      *
-     * @return null
+     * @return the Throwable.
      */
     @Override
     public Throwable getThrowable() {
-        return null;
+        return throwable;
     }
 }

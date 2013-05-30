@@ -22,6 +22,10 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-242" dev="rgoers" type="fix">
+        StringFormattedMessage and MessageFormatMessage now will accept a Throwable as their last argument and
+        pass it on.
+      </action>
       <action issue="LOG4J2-243" dev="rgoers" type="update">
         Allow custom LogEventFactories.
       </action>
