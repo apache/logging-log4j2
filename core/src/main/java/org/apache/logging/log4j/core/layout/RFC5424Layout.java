@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 /**
  * Formats a log event in accordance with RFC 5424.
- * 
+ *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
@@ -497,7 +497,6 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param excludes A comma separated list of mdc keys that should be excluded from the LogEvent.
      * @param includes A comma separated list of mdc keys that should be included in the FlumeEvent.
      * @param required A comma separated list of mdc keys that must be present in the MDC.
-     * @param charsetName The character set.
      * @param exceptionPattern The pattern for formatting exceptions.
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An RFC5424Layout.
@@ -517,10 +516,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("mdcExcludes") final String excludes,
                                              @PluginAttr("mdcIncludes") String includes,
                                              @PluginAttr("mdcRequired") final String required,
-                                             @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("exceptionPattern") final String exceptionPattern,
                                              @PluginConfiguration final Configuration config) {
-        final Charset charset = Charsets.getSupportedCharset(charsetName);
+        final Charset charset = Charsets.UTF_8;
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
             includes = null;

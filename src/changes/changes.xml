@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-263" dev="rgoers" type="fix">
+        Do not allow a charset on RFC5424Layout - use UTF-8.
+      </action>
       <action issue="LOG4J2-242" dev="rgoers" type="fix">
         StringFormattedMessage and MessageFormatMessage now will accept a Throwable as their last argument and
         pass it on.
