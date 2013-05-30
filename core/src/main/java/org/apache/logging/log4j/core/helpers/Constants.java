@@ -23,6 +23,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class Constants {
 
+    public static final String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
     /**
      * Name of the system property to use to identify the ContextSelector Class.
      */

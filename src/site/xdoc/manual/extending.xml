@@ -159,6 +159,11 @@ public static class RootLogger extends LoggerConfig {
     }
 }]]></pre>
           </subsection>
+          <subsection name="LogEventFactory">
+            <p>A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory
+              by setting the value of the system property Log4jLogEventFactory to the name of the custom
+              LogEventFactory class. </p>
+          </subsection>
           <subsection name="Lookups">
             <p>
               Lookups are the means in which parameter substitution is performed. During Configuration initialization

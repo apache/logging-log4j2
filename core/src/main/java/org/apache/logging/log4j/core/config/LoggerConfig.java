@@ -32,11 +32,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,11 +56,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Logger object that is created via configuration.
  */
 @Plugin(name = "logger", category = "Core", printObject = true)
-public class LoggerConfig extends AbstractFilterable implements LogEventFactory {
+public class LoggerConfig extends AbstractFilterable {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
     private static final long WAIT_TIME = 1000;
+    private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
     private final Map<String, AppenderControl<?>> appenders = new ConcurrentHashMap<String, AppenderControl<?>>();
@@ -73,11 +76,28 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
     private final Map<Property, Boolean> properties;
     private final Configuration config;
 
+    static {
+        final String factory = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
+        if (factory != null) {
+            try {
+                final Class<?> clazz = Loader.loadClass(factory);
+                if (clazz != null && LogEventFactory.class.isAssignableFrom(clazz)) {
+                    LOG_EVENT_FACTORY = (LogEventFactory) clazz.newInstance();
+                }
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create LogEventFactory " + factory, ex);
+            }
+        }
+        if (LOG_EVENT_FACTORY == null) {
+            LOG_EVENT_FACTORY = new DefaultLogEventFactory();
+        }
+    }
+
     /**
      * Default constructor.
      */
     public LoggerConfig() {
-        this.logEventFactory = this;
+        this.logEventFactory = LOG_EVENT_FACTORY;
         this.level = Level.ERROR;
         this.name = "";
         this.properties = null;
@@ -93,7 +113,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
      */
     public LoggerConfig(final String name, final Level level,
             final boolean additive) {
-        this.logEventFactory = this;
+        this.logEventFactory = LOG_EVENT_FACTORY;
         this.name = name;
         this.level = level;
         this.additive = additive;
@@ -107,7 +127,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
             final Property[] properties, final Configuration config,
             final boolean includeLocation) {
         super(filter);
-        this.logEventFactory = this;
+        this.logEventFactory = LOG_EVENT_FACTORY;
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
@@ -405,25 +425,6 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
         }
     }
 
-    /**
-     * Creates a log event.
-     *
-     * @param loggerName The name of the Logger.
-     * @param marker An optional Marker.
-     * @param fqcn The fully qualified class name of the caller.
-     * @param level The event Level.
-     * @param data The Message.
-     * @param properties Properties to be added to the log event.
-     * @param t An optional Throwable.
-     * @return The LogEvent.
-     */
-    @Override
-    public LogEvent createEvent(final String loggerName, final Marker marker,
-            final String fqcn, final Level level, final Message data,
-            final List<Property> properties, final Throwable t) {
-        return new Log4jLogEvent(loggerName, marker, fqcn, level, data,
-                properties, t);
-    }
 
     @Override
     public String toString() {
@@ -478,7 +479,7 @@ public class LoggerConfig extends AbstractFilterable implements LogEventFactory 
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
-    private static boolean includeLocation(String includeLocationConfigValue) {
+    protected static boolean includeLocation(String includeLocationConfigValue) {
         if (includeLocationConfigValue == null) {
             final boolean sync = !AsyncLoggerContextSelector.class.getName()
                     .equals(System.getProperty(Constants.LOG4J_CONTEXT_SELECTOR));
