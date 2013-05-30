@@ -274,7 +274,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                         throw new ConfigurationException(msg);
                     }
 
-                    if (upperKey.startsWith("SOURCES.")) {
+                    // Prohibit setting the sources as they are set above but allow interceptors to be set
+                    if (upperKey.startsWith("SOURCES.") && !upperKey.startsWith("SOURCES.LOG4J-SOURCE.INTERCEPTORS")) {
                         final String msg = "Specification of Sources is not allowed in Flume Appender: " + key;
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);

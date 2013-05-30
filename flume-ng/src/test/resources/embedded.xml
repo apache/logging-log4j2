@@ -4,6 +4,10 @@
     <Flume name="eventLogger" suppressExceptions="false" compress="true" type="embedded">
       <Property name="channels">primary</Property>
       <Property name="channels.primary.type">memory</Property>
+      <Property name="sources.log4j-source.interceptors">environment_interceptor</Property>
+      <Property name="sources.log4j-source.interceptors.environment_interceptor.type">static</Property>
+      <Property name="sources.log4j-source.interceptors.environment_interceptor.key">environment</Property>
+      <Property name="sources.log4j-source.interceptors.environment_interceptor.value">local</Property>
       <Property name="sinks">agent1 agent2</Property>
       <Property name="sinks.agent1.channel">primary</Property>
       <Property name="sinks.agent1.type">avro</Property>

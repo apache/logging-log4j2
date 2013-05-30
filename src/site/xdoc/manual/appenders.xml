@@ -878,7 +878,8 @@
               <td>Property[]</td>
               <td><p>One or more Property elements that are used to configure the Flume Agent. The properties must be
                 configured without the agent name (the appender name is used for this) and no sources can be
-                configured. All other Flume configuration properties are allowed. Specifying both Agent and Property
+                configured. Interceptors can be specified for the source using "sources.log4j-source.interceptors". 
+                All other Flume configuration properties are allowed. Specifying both Agent and Property
                 elements will result in an error.</p>
                 <p>When used to configure in Persistent mode the valid properties are:
                   <ol>
