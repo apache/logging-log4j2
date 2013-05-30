@@ -123,7 +123,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>)(RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
-                escapeNL, appName, msgId, excludes, includes, required, charsetName, exceptionPattern, config) :
+                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
 
         if (name == null) {

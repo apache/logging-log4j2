@@ -21,8 +21,8 @@ import java.util.Map;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
- * Represents a Message that conforms to RFC 5424.
- * 
+ * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
+ *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 public class StructuredDataMessage extends MapMessage {
@@ -189,9 +189,18 @@ public class StructuredDataMessage extends MapMessage {
 
     @Override
     protected void validate(final String key, final String value) {
+        validateKey(key);
+    }
+
+    private void validateKey(final String key) {
         if (key.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key +
-                " value: " + value);
+            throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
+        }
+        char[] chars = key.toCharArray();
+        for (char c : chars) {
+            if (c < 33 || c > 126 || c == '=' || c == ']' || c == '"') {
+                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters and may not contain a space, =, ], or \"");
+            }
         }
     }
 
