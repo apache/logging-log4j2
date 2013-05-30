@@ -22,6 +22,9 @@
   </properties>
   <body>
     <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-262" dev="rgoers" type="update" due-to="Edward Sargisson">
+        Add support for interceptors in the embedded Flume Appender.
+      </action>
       <action issue="LOG4J2-269" dev="rgoers" type="fix">
         Use transaction when batch size is 1.
       </action>

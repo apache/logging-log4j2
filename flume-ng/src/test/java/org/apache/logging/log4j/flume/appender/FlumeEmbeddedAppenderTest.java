@@ -193,6 +193,18 @@ public class FlumeEmbeddedAppenderTest {
     }
 
     @Test
+    public void testHeaderAddedByInterceptor() throws InterruptedException, IOException {
+
+        final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
+        EventLogger.logEvent(msg);
+
+        final Event event = primary.poll();
+        Assert.assertNotNull(event);
+        String environmentHeader = event.getHeaders().get("environment");
+        Assert.assertEquals("local", environmentHeader);
+    }
+
+    @Test
     public void testPerformance() throws Exception {
         long start = System.currentTimeMillis();
         int count = 10000;
