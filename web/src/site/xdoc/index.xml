@@ -41,12 +41,16 @@
                   working directory of the running server.</li>
               </ol>
             </p>
-            <p>To register this listener, make sure that the log4j-web-2.0.jar file is 
-            in the classpath (either in your web application's WEB-INF/lib directory 
+            <p>To register this listener, make sure that the log4j-web-2.0.jar file is
+            in the classpath (either in your web application's WEB-INF/lib directory
             or in the container's classpath) and add the following snippet to your web.xml:</p>
             <pre>  &lt;listener&gt;
     &lt;listener-class>org.apache.logging.log4j.core.web.Log4jContextListener&lt;/listener-class&gt;
   &lt;/listener&gt;</pre>
+            <p>
+              Either or both of the initialization parameters may contain variables of the form ${sys:propertyName} or
+              ${env:propertyName} to allow substitution using either a system property or an environment variable.
+            </p>
           </subsection>
           <subsection name="JNDIContextFilter">
             <p>The JNDIContextFilter is a Servlet Filter that can be used in conjunction with the JNDIContextSelector

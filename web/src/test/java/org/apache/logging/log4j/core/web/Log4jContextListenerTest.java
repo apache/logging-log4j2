@@ -69,6 +69,32 @@ public class Log4jContextListenerTest {
             config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
     }
 
+
+    @Test
+    public void testFromProperty() throws Exception {
+        System.setProperty("targetDir", "target/test-classes");
+        final MockServletContext context = new MockServletContext();
+        context.setInitParameter(Log4jContextListener.LOG4J_CONTEXT_NAME, "Test1");
+        context.setInitParameter(Log4jContextListener.LOG4J_CONFIG, "${sys:targetDir}/log4j2-config.xml");
+        final Log4jContextListener listener = new Log4jContextListener();
+        final ServletContextEvent event = new ServletContextEvent(context);
+        listener.contextInitialized(event);
+        LogManager.getLogger("org.apache.test.TestConfigurator");
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
+            CONFIG_NAME.equals(config.getName()));
+        final Map<String, Appender<?>> map = config.getAppenders();
+        assertTrue("No Appenders", map != null && map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        listener.contextDestroyed(event);
+        config = ctx.getConfiguration();
+        assertTrue("Incorrect Configuration. Expected " + NullConfiguration.NULL_NAME + " but found " +
+            config.getName(), NullConfiguration.NULL_NAME.equals(config.getName()));
+        System.clearProperty("targetDir");
+    }
+
     @Test
     public void testFromClassPath() throws Exception {
         final MockServletContext context = new MockServletContext();

@@ -22,6 +22,9 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
  * Saves the LoggerContext into the ServletContext as an attribute.
@@ -43,6 +46,8 @@ public class Log4jContextListener implements ServletContextListener {
      */
     public static final String LOG4J_CONTEXT_NAME = "log4jContextName";
 
+    private final StrSubstitutor subst = new StrSubstitutor(new Interpolator());
+
     /**
      * Initialize Logging for the web application.
      * @param event The ServletContextEvent.
@@ -50,8 +55,8 @@ public class Log4jContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         final ServletContext context = event.getServletContext();
-        final String locn = context.getInitParameter(LOG4J_CONFIG);
-        String name = context.getInitParameter(LOG4J_CONTEXT_NAME);
+        final String locn = subst.replace(context.getInitParameter(LOG4J_CONFIG));
+        String name = subst.replace(context.getInitParameter(LOG4J_CONTEXT_NAME));
         if (name == null) {
             name = context.getServletContextName();
         }
