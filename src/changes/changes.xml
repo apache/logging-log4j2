@@ -21,7 +21,7 @@
     <author email="rgoers@apache.org">Ralph Goers</author>
   </properties>
   <body>
-    <release version="2.0-beta7" date="2013-??-??" description="Bug fixes and enhancements">
+    <release version="2.0-beta7" date="2013-06-01" description="Bug fixes and enhancements">
       <action issue="LOG4J2-249" dev="rgoers" type="update">
         Allow context parameters in Log4jContextListener to include properties.
       </action>
