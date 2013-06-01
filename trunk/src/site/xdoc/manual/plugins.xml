@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Log4j 2 Plugins</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+      <section name="Plugins">
+        <a name="Introduction"/>
+        <subsection name="Introduction">
+          <p>
+            Log4j 1.x allowed for extension by requiring class attributes on most of the configuration
+            declarations. In the case of some elements, notably the PatternLayout, the only way to add
+            new pattern converters was to extend the PatternLayout class and add them via code. One of
+            goals of Log4j 2 is to make extending it extremely easy through the use of plugins.
+          </p>
+          <p>
+            In Log4j 2 a plugin is declared by adding a Plugin annotation to the class declaration. During
+            initialization the Configuration will invoke the PluginManager to locate all the Log4j plugins
+            that are located in the declared <a href="./configuration.html#ConfigurationSyntax">packages</a>.
+            As the configuration is processed the appropriate plugins will be automatically configured and
+            initialized.  Log4j 2 utilizes a few different categories of plugins which are described in the following
+            sections.
+          </p>
+        </subsection>
+        <a name="Core"/>
+        <subsection name="Core">
+          <p>
+            Core plugins are those that are directly represented by an element in a configuration file, such as an
+            Appender, Logger or Filter. Custom plugins that conform to the rules laid out in the next paragraph
+            may simply be referenced in the configuration, provided they are appropriate configured to be
+            loaded by the PluginManager.
+          </p>
+          <p>
+            Every Core plugin must declare a static method that is marked with a PluginFactory annotation. To
+            allow the Configuration to pass the correct parameters to the method, every
+            parameter to the method must be annotated as one of the following attribute types. Each
+            attribute or element annotation must include the name that must be present in the configuration
+            in order to match the configuration item to its respective parameter.
+          </p>
+          <h4>Attribute Types</h4>
+            <dl>
+              <dt>PluginAttr</dt>
+              <dd>The parameter must resolve to a String, although it can be the String representation of a
+              boolean. numeric value, or any other Object that can be created from a String value.</dd>
+              <dt>PluginElement</dt>
+              <dd>The parameter may represent a complex object that itself has parameters that can be configured.</dd>
+              <dt>PluginConfiguration</dt>
+              <dd>The current Configuration object will be passed to the plugin as a parameter.</dd>
+            </dl>
+        </subsection>
+        <a name="Converters"/>
+        <subsection name="Converters">
+          <p>
+            Converters are used by
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+            to render the elements identified by the conversion pattern. Every converter must specify its type as
+            "Converter" on the Plugin attribute, have a static newInstance method that accepts an array of Strings as
+            its only parameter and returns an instance of the Converter, and must have a ConverterKeys annotation
+            present that contains the array of converter patterns that will cause the Converter to be selected.
+            Converters that are meant to handle LogEvents must extend the LogEventPatternConverter class and
+            must implement a format method that accepts a LogEvent and a StringBuilder as arguments. The Converter
+            should append the result of its operation to the StringBuilder.
+          </p>
+          <p>
+            A second type of Converter is the FileConverter - which must have "FileConverter" specified in the
+            type attribute of the Plugin annotation. While similar to a LogEventPatternConverter, instead
+            of a single format method these Converters will have two variations; one that takes an Object and
+            one that takes an array of Objects instead of the LogEvent. Both append to the provided StringBuilder
+            in the same fashion as a LogEventPatternConverter. These Converters are typically used by the
+            RollingFileAppender to construct the name of the file to log to.
+          </p>
+        </subsection>
+        <a name="KeyProviders"/>
+        <subsection name="KeyProviders">
+          Some components within Log4j may provide the ability to perform data encryption. These components require
+          a secret key to perform the encryption. Applications may provide the key by creating a class that
+          implements the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/helpers/SecretKeyProvider.html">SecretKeyProvider</a>
+          interface.
+        </subsection>
+        <a name="Lookups"/>
+        <subsection name="Lookups">
+          <p>
+            Lookups are perhaps the simplest plugins of all. They must declare their type as "Lookup" on the
+            plugin annotation and must implement the StrLookup interface. They will have two methods; a
+            lookup method that accepts a String key and returns a String value and a second lookup method that
+            accepts both a LogEvent and a String key and returns a String. Lookups may be referenced by
+            specifying ${<i>name</i>:key} where <i>name</i> is the name specified in the Plugin annotation and
+            key is the name of the item to locate.
+          </p>
+        </subsection>
+        <a name="Plugin Preloading"/>
+        <subsection name="Plugin Preloading">
+          Scanning for annotated classes dynamically takes a bit of time during application initialization. Log4j
+          avoids this by scanning its classes during the build. In the Maven build, the PluginManager is invoked as
+          shown below and then the resulting Map is stored in a file in the jar being constructed. Log4j will locate
+          all the files created this way and and preload them, which shortens startup time considerably. Adding the
+          following plugin definition to your project's pom.xml will cause the plugin manager to be called during the
+          build. It will store the resulting file in the correct location under the directory specified in the first
+          argument after scanning all the components located under the package specified in the second argument.
+          <pre class="prettyprint linenums"><![CDATA[<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>exec-maven-plugin</artifactId>
+  <version>1.2.1</version>
+  <executions>
+    <execution>
+      <phase>process-classes</phase>
+      <goals>
+        <goal>java</goal>
+      </goals>
+    </execution>
+  </executions>
+  <configuration>
+    <mainClass>org.apache.logging.log4j.core.config.plugins.PluginManager</mainClass>
+    <arguments>
+      <argument>${project.build.outputDirectory}</argument>
+      <argument>org.myorg.myproject.log4j</argument>
+    </arguments>
+  </configuration>
+</plugin>]]></pre>
+        </subsection>
+      </section>
+    </body>
+</document>

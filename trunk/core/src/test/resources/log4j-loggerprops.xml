@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error" strict="false" name="DSI" packages="org.apache.logging.log4j.test">
+  <appenders>
+    <List name="List">
+      <PatternLayout pattern="[%-5level] %c{1.} user=%X{user} test=%X{test} %msg%n" />
+    </List>
+  </appenders>
+
+  <loggers>
+    <logger name="org.apache.logging.log4j.core" level="debug" additivity="false">
+      <property name="user">$${sys:user.name}</property>
+      <property name="test">${sys:test}</property>
+      <appender-ref ref="List"/>
+    </logger>
+    <root level="debug">
+      <property name="user">${sys:user.name}</property>
+      <property name="test">${sys:test}</property>
+      <appender-ref ref="List" />
+    </root>
+  </loggers>
+</configuration>

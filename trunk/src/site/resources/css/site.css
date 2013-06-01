@@ -1,0 +1,86 @@
+/*
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+div.clear { clear:both; visibility: hidden; }
+div.clear hr { display: none; }
+
+/* Tweaks to the bootstrap theme
+--------------------------------- */
+li { line-height: 20px; }
+tt { font-family: Menlo, Monaco, "Courier New", monospace; font-size: 12px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 3px 4px; color: #d14; background-color: #f7f7f9; border: 1px solid #e1e1e8; }
+dt { margin: 15px 0 5px 0; font-size: 1.2em }
+
+.big-red { font-weight: bold; color: #D14 }
+.big-green { font-weight: bold; color: green }
+
+.layout-table { width: 100%; }
+.sidebar { width: 250px; vertical-align: top; }
+.content { padding-left: 20px; vertical-align: top; }
+
+.sidebar-nav { padding: 9px 0; }
+
+.logo-left { margin: 10px; float: left }
+.logo-right { margin: 5px; float: right; height: 100px }
+
+.navbar .nav { margin-left: 40px; }
+
+.nav-list { margin-bottom: 15px; }
+.nav-list li { line-height: 16px; }
+.nav-list li.nav-header { color: #333; }
+.nav-list li.nav-header i { margin-right: 5px; }
+
+.nav-list li a { background-repeat: no-repeat; background-position: 16px 9px; padding-left: 34px; }
+.nav-list li.collapsed > a { background-image: url(../images/collapsed.gif) }
+.nav-list li.expanded > a { background-image: url(../images/expanded.gif) }
+
+.nav-list li.expanded ul { list-style: none; margin-left: 0px; }
+.nav-list li.expanded li a { display: block; padding: 3px 15px 3px 45px; margin-left: -15px; margin-right: -15px; }
+.nav-list li.expanded li a:hover { text-decoration: none; background-color: #eeeeee; }
+.nav-list li.expanded li.active a { background-color: #08C; color: white }
+
+.nav.nav-tabs { margin-bottom: 8px; }
+
+.content .section { margin-top: 20px; }
+.content .section:first-child { margin-top: 0px; }
+.section h2 { margin-bottom: 10px; }
+.section h3 { margin-bottom: 10px; }
+.section h4 { margin-bottom: 10px; }
+
+.footer { background-color: whitesmoke; padding: 15px; margin-top: 15px; text-align: center; border-top: 1px solid #EEEEEE; }
+.footer p { font-size: 12px; margin: 0 }
+
+.table-not-wide { width: inherit;}
+.alert-heading { display: block; font-size: 14px; margin-bottom: 6px; font-weight: bold; } 
+
+/* Pretty printing styles. Used with prettify.js. 
+---------------------------------------------------- */
+.com { color: #93a1a1; }
+.lit { color: #195f91; }
+.pun, .opn, .clo { color: #93a1a1; }
+.fun { color: #dc322f; }
+.str, .atv { color: #D14; }
+.kwd, .linenums .tag { color: #1e347b; }
+.typ, .atn, .dec, .var { color: teal; }
+.pln { color: #48484c; }
+.prettyprint { padding: 8px; background-color: #f7f7f9; border: 1px solid #e1e1e8; }
+.prettyprint.linenums {
+  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+          box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+}
+ol.linenums { margin: 0 0 0 33px; } 
+ol.linenums li { padding-left: 12px; color: #bebec5; line-height: 18px; text-shadow: 0 1px 0 #fff; }

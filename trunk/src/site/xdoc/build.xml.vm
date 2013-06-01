@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+	<properties>
+		<title>Building and Installing Log4j</title>
+	</properties>
+
+	<body>
+		<section name="Building and Installing Log4j">
+
+      <p>
+        Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
+        most current source code can be found at
+        <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be
+        obtained by downloading it using the instructions at <a href="./download.html">Log4j Downloads</a>.
+      </p>
+      <p>
+        Log4j 2.x uses Maven 2 or 3 as its build tool. To build and install Log4j in your local Maven cache, from
+        the root directory run:
+      </p>
+      <pre>mvn install</pre>
+      <p>
+        Then to build the full site, you must use a local staging directory:
+      </p>
+      <pre>mvn site
+[Windows] mvn site:stage-deploy -DstagingSiteURL=file:///%HOME%/log4j
+[Unix] mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j</pre>
+      <p>
+        To rebuild only what's changed and execute the tests, run:
+      </p>
+      <pre>mvn test</pre>
+      <p>
+        To rebuild from scratch, add "clean", for example:
+      </p>
+      <pre>mvn clean test</pre>
+
+		</section>
+	</body>
+</document>

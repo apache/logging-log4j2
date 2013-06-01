@@ -1,0 +1,123 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<!--
+
+This is a minimal build file to support Gump.
+Use of Maven to build this component is recommended.
+
+-->
+<project default="test">
+    <!--  use build.properties file or command line to override these properties  -->
+    <property file="build.properties"/>
+	
+	<!--  project details  -->
+    <property name="project.name" value="apache-log4j-experimental-pattern-layout"/>
+    <property name="project.title" value="Enhanced Pattern Layout Component for log4j X"/>
+    <property name="project.version" value="0.1-SNAPSHOT"/>
+    <property name="project.jar" value="${project.name}-${project.version}.jar"/>
+    
+    <!--  Location of local Maven 2 repository   -->
+    <property name="m2_repo" location="${user.home}/.m2/repository"/>
+
+	<!--  Versions for dependencies   -->
+    <property name="log4j.version" value="1.2.14"/>
+    <property name="junit.version" value="4.3.1"/>
+    <property name="oro.version" value="2.0.8"/>
+	
+	<!--  Dependency locations - assumed to be in Maven 2 repository   -->
+    <property name="junit.jar" 
+       location="${m2_repo}/junit/junit/${junit.version}/junit-${junit.version}.jar"/>
+    <property name="log4j.jar" 
+       location="${m2_repo}/log4j/log4j/${log4j.version}/log4j-${log4j.version}.jar"/>
+    <property name="oro.jar" 
+       location="${m2_repo}/oro/oro/${oro.version}/oro-${oro.version}.jar"/>
+       
+
+    <!--   Java compiler settings   -->
+    <property name="javac.source" value="1.6"/>
+    <property name="javac.target" value="1.6"/>
+    <property name="javac.deprecation" value="true"/>
+    <property name="javac.debug" value="true"/>
+       
+    <target name="init"/>
+    
+    <target name="clean" depends="init" description="Clean up generated files">
+    	<delete dir="target"/>
+    </target>
+    
+    
+    <target name="compile" depends="init" description="Compile implementation files">
+        <mkdir dir="target/classes"/>
+    	<javac destdir="target/classes"
+           srcdir="src/main/java"
+    	   deprecation="${javac.deprecation}"
+    	   debug="${javac.debug}"
+    	   target="${javac.target}"
+    	   source="${javac.source}"
+    	   classpath="${log4j.jar}"/>
+    	<copy todir="target/classes">
+    	    <fileset dir="src/main/resources"/>
+    	</copy>
+    </target>
+    
+    <target name="jar" depends="compile" description="Create jar">
+    	<jar destfile="target/${project.jar}"
+    	     basedir="target/classes">
+    	  	<manifest>
+    			<attribute name="Built-By" value="${user.name}"/>
+    			<section name="common">
+      				<attribute name="Specification-Title" value="${project.title}"/>
+      				<attribute name="Specification-Version" value="${project.version}"/>
+      				<attribute name="Specification-Vendor" value="Apache Software Foundation"/>
+      				<attribute name="Implementation-Title" value="${project.title}"/>
+      				<attribute name="Implementation-Version" value="${project.version}"/> 
+      				<attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
+    			</section>
+    		</manifest>    	     
+    	</jar>
+    </target>    
+
+    <target name="test-compile" depends="compile" description="Compile test files">
+        <mkdir dir="target/test-classes"/>
+    	<javac destdir="target/test-classes"
+           srcdir="src/test/java"
+    	   deprecation="${javac.deprecation}"
+    	   debug="${javac.debug}"
+    	   target="${javac.target}"
+    	   source="${javac.source}"
+    	   classpath="${log4j.jar}:${junit.jar}:target/classes:${oro.jar}"/>
+    	<copy todir="target/test-classes">
+    		<fileset dir="src/test/resources"/>
+    	</copy>
+    </target>    
+
+
+    <target name="test" depends="test-compile" description="Run unit tests">
+    	<junit printsummary="yes">
+    	    <classpath path="target/test-classes:target/classes:${log4j.jar}:${oro.jar}"/>
+    		<batchtest>
+    			<fileset dir="src/test/java/">
+    				<include name="**/*TestCase.java"/>
+    				<include name="**/*Test.java"/>
+    			</fileset>
+    	    </batchtest>
+    	    <formatter type="plain" usefile="false"/>
+    	</junit>
+    </target>    
+</project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="info" name="MyApp" packages="org.apache.logging.log4j.flume.test">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="persistent" dataDir="target/persistent"
+        batchsize="100" maxDelay="500">
+      <Agent host="localhost" port="${sys:primaryPort}"/>
+      <Agent host="localhost" port="${sys:alternatePort}"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+      <!-- Uncomment to enable encryption
+      <Property name="keyProvider">FlumeKeyProvider</Property> -->
+    </Flume>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d %t - [%p] %c %m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>

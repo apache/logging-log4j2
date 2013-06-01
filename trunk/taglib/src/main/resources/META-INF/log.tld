@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                            http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+  <description><![CDATA[The Log4j Log Tag Library creates the capability of inserting log
+statements in JSPs without the use of Java scripting. It uses the standard Log4j 2 API to log
+messages according to your Log4j configuration. You can learn more about Log4j 2 on the
+<a href="http://logging.apache.org/log4j/2.x/">Log4j 2</a> website.
+
+This tag library is based on the Jakarta Commons Log Taglib by Joseph Ottinger and James
+Strachan. For the most part, logging tags written against Jakarta Commons Log Taglib should
+work against this library as well. However, the "category" attribute from Jakarta has become
+the "logger" attribute in this library.
+
+In accordance with the org.apache.logging.log4j.Logger API, this tag library has tags to
+support the following logging calls: "catching", "entry", "exit", "log", "trace", "debug",
+"info", "warn", "error", and "fatal". The "trace" tag was not supported in Jakarta Commons Log
+Taglib. The "setLogger", "catching", "entry", and "trace" tags are new to this library. This
+tag library also supports the conditional tag "ifEnabled" (new) and troubleshooting tag "dump"
+(existed in Jakarta Commons Log Taglib).
+
+By default, this tag library uses a different Logger for each JSP named after the JSP ID.
+You can customize the Logger in any of the logging tags or the "ifEnabled" tag with the
+"logger" attribute. You can also use the "setLogger" tag to specify the Logger that should apply
+for the rest of a JSP's execution. If the "setLogger" tag comes before any other logging tags in
+a JSP, the default Logger for that JSP will not be created, but instead the specified logger is
+the only one that will be used.
+
+Every effort was made to optimize these tags and ensure decent performance, but users of
+this library should keep in mind that the creation and execution of JSP tags adds significant
+overhead to the standard Log4j method calls. While the "trace", "debug", and "info" options are
+available in this library, their uses are not nanosecond order of magnitude with logging off
+that users may be used to with standard Log4j method calls. Therefore, they should be used
+sparingly. Use of the "ifEnabled" tag does not improve this performance; this tag is available
+to conditionally evaluate other actions in addition to logging actions.]]></description>
+  <display-name>Log4j 2 Tag Library</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>log</short-name>
+  <uri>http://logging.apache.org/log4j/tld/log</uri>
+
+  <tag>
+    <description>Sets the default Logger to use for the rest of this JSP's execution OR exports
+      an org.apache.logging.log4j.Logger instance as the specified EL variable. The "value"
+      attribute specifies either the String name of a Logger to create or an actual Logger instance.
+      By default, Loggers are constructed and assigned the standard
+      org.apache.logging.log4j.message.ParameterizedMessageFactory. The optional "factory" attribute
+      can be used to override the default message factory.</description>
+    <name>setLogger</name>
+    <tag-class>org.apache.logging.log4j.taglib.SetLoggerTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to set as the JSP's default Logger or
+        the name of the Logger to export as the specified EL variable.</description>
+      <name>logger</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Specify this optional tag to provide a message factory other than the default
+        ParameterizedMessageFactory message factory to use for the Logger. If the Logger has already
+        been created with a different message factory, this will be ignored. Using this attribute
+        makes no sense if the "value" attribute's value is an actual Logger instance, since its
+        message factory cannot be changed.</description>
+      <name>factory</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.message.MessageFactory</type>
+    </attribute>
+    <attribute>
+      <description>The optional name of the EL variable to export this Logger as. Using this
+        attribute makes no sense if the "value" attribute's value is an actual Logger instance.
+        That would result in an existing Logger on the scope being re-added to the
+        scope.</description>
+      <name>var</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>Either "page," "request," "session," or "application," the optional scope that
+        the EL variable should be exported to (defaults to "page").</description>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <example><![CDATA[
+<log:logger value="com.foo.bar" />
+<log:logger value="com.bar.foo" var="myLogger" />
+<log:debug message="This should log with com.foo.bar." />
+<log:debug logger="${myLogger}" message="This should log with com.bar.foo." />
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Conditional tag that evaluates its body only if the specified log level and
+      marker are enabled.</description>
+    <name>ifEnabled</name>
+    <tag-class>org.apache.logging.log4j.taglib.IfEnabledTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The name of any valid Level (TRACE, DEBUG, INFO, etc.) or an actual Level
+        instance to check whether it is enabled. This value is case-insensitive.</description>
+      <name>level</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Marker data to include in the enabled check.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <example><![CDATA[
+<log:ifEnabled level="info">
+    Evaluate this content
+</log:ifEnabled>
+
+<log:ifEnabled logger="com.foo.bar" level="INFO" marker="${marker}">
+    Evaluate this content
+</log:ifEnabled>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#catching().</description>
+    <name>catching</name>
+    <tag-class>org.apache.logging.log4j.taglib.CatchingTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The name of any valid level (TRACE, DEBUG, INFO, etc.) or an actual Level
+        instance to log this at. This value is case-insensitive and defaults to ERROR for this
+        tag.</description>
+      <name>level</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The exception that should be logged.</description>
+      <name>exception</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <example><![CDATA[
+<c:catch var="myException">
+    <%= 5 / 0 %>
+</c:catch>
+<c:if test="${myException != null}">
+    <log:catching exception="${myException}" />
+</c:if>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#entry(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values
+      will be logged with this entry (TRACE) statement. The attribute names will be
+      ignored.</description>
+    <name>entry</name>
+    <tag-class>org.apache.logging.log4j.taglib.EntryTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:entry />
+<log:entry logger="com.foo.bar" />
+<log:entry arg1="${value1}" arg2="${value2}" />
+<log:entry logger="${myLogger}" argA="${value1}" argB="${value2}" />
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#exit().</description>
+    <name>exit</name>
+    <tag-class>org.apache.logging.log4j.taglib.ExitTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>An optional object to log with the exit (TRACE) statement.</description>
+      <name>result</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <example><![CDATA[
+<log:exit />
+<log:exit logger="com.foo.bar" />
+<log:exit result="${value}" />
+<log:exit logger="${myLogger}" result="${value}" />
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#log(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>log</name>
+    <tag-class>org.apache.logging.log4j.taglib.LogTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The name of any valid level (TRACE, DEBUG, INFO, etc.) or an actual Level
+        instance to log this at. This value is case-insensitive.</description>
+      <name>level</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:log level="warn" message="Log this message." />
+<log:log logger="com.foo.bar" level="ERROR" message="${objectToLog}"
+         exception="${exception}" marker="${marker}" />
+<log:log logger="com.foo.bar" level="info" exception="${exception}" marker="${marker}">
+    Log this message
+</log:log>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#trace(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>trace</name>
+    <tag-class>org.apache.logging.log4j.taglib.TraceTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:trace message="Log this message." />
+<log:trace logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+           marker="${marker}" />
+<log:trace logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:trace>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#debug(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>debug</name>
+    <tag-class>org.apache.logging.log4j.taglib.DebugTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:debug message="Log this message." />
+<log:debug logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+           marker="${marker}" />
+<log:debug logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:debug>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#info(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>info</name>
+    <tag-class>org.apache.logging.log4j.taglib.InfoTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:info message="Log this message." />
+<log:info logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+          marker="${marker}" />
+<log:info logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:info>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#warn(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>warn</name>
+    <tag-class>org.apache.logging.log4j.taglib.WarnTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:warn message="Log this message." />
+<log:warn logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+          marker="${marker}" />
+<log:warn logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:warn>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#error(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>error</name>
+    <tag-class>org.apache.logging.log4j.taglib.ErrorTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:error message="Log this message." />
+<log:error logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+           marker="${marker}" />
+<log:error logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:error>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Equivalent of org.apache.logging.log4j.Logger#fatal(). This tag has dynamic
+      attributes enabled. You may specify any number of arbitrary attributes whose values will be
+      substituted in the String message. The "message" must be a String for this to work correctly.
+      See the Log4j 2 manual for more information about message parameters and substitution. Only
+      attribute values are used; attribute names are ignored.</description>
+    <name>fatal</name>
+    <tag-class>org.apache.logging.log4j.taglib.FatalTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>The name or instance of the Logger to use to override the default Logger
+        for this JSP.</description>
+      <name>logger</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>The message that should be logged. May be a String, Object, or
+        org.apache.logging.log4j.message.Message. Either this attribute or body content are
+        required.</description>
+      <name>message</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <description>Optional marker data to include in this logging event.</description>
+      <name>marker</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>org.apache.logging.log4j.Marker</type>
+    </attribute>
+    <attribute>
+      <description>Optional exception that should be logged.</description>
+      <name>exception</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Throwable</type>
+    </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+    <example><![CDATA[
+<log:fatal message="Log this message." />
+<log:fatal logger="com.foo.bar" message="${objectToLog}" exception="${exception}"
+           marker="${marker}" />
+<log:fatal logger="com.foo.bar" exception="${exception}" marker="${marker}">
+    Log this message
+</log:fatal>
+    ]]></example>
+  </tag>
+
+  <tag>
+    <description>Displays all variables bound to the specified scope.</description>
+    <name>dump</name>
+    <tag-class>org.apache.logging.log4j.taglib.DumpTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <description>Either "page," "request," "session," or "application," the scope whose bound
+        variables should be dumped onto the page inline.</description>
+      <name>scope</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <example><![CDATA[
+<log:dump scope="page" />
+<log:dump scope="request" />
+<log:dump scope="session" />
+<log:dump scope="application" />
+    ]]></example>
+  </tag>
+
+</taglib>

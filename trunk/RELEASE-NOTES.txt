@@ -1,0 +1,61 @@
+
+              Apache Log4j 2.0-beta7 RELEASE NOTES
+
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta7 release!
+
+Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
+Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
+many of the improvements available in Logback while fixing some inherent problems in Logback's
+architecture.
+
+This is the ninth release of Log4j 2 and is being made available to encourage use and feedback from the community.
+
+Bug fixes and enhancements
+
+Changes in this version include:
+
+New features:
+o LOG4J2-10:  Break up core into multiple osgi jars. Thanks to Timothy Ward. 
+o LOG4J2-229:  New JDBC, JPA, and NoSQL database Appenders. Thanks to beamerblvd. 
+o LOG4J2-251:  Provide configuration information (location, content type, content if possible) via a registered Advertiser. 
+
+Fixed Bugs:
+o LOG4J2-263:  Do not allow a charset on RFC5424Layout - use UTF-8. 
+o LOG4J2-242:  StringFormattedMessage and MessageFormatMessage now will accept a Throwable as their last argument and
+        pass it on. 
+o LOG4J2-269:  Use transaction when batch size is 1. 
+o LOG4J2-268:  Add guid to FlumeEvent headers for non-Map Messages. 
+o LOG4J2-246:  Data buffer is reset in finally clause. 
+o LOG4J2-228:  UDP now sends one event per packet. 
+o LOG4J2-261:  Add missing "not" to error message. Thanks to Edward Sargisson. 
+o LOG4J2-223:  Remove LoggerContext when LoggerContext is stopped. 
+o LOG4J2-260:  XML layout does not specify charset in content type. 
+o LOG4J2-259:  HTML layout does not specify charset in content type. 
+o LOG4J2-258:  HTML layout does not output meta element for charset. 
+o LOG4J2-257:  XML layout ignores charset for the XML processing intruction's encoding attribute. 
+o LOG4J2-255:  Multi-byte character strings are now assumed to be in the platform default encoding, not UTF-8. 
+o LOG4J2-254:  Mark OutputStream in OutputStreamManager as volatile. Mark header and footer as final. 
+o LOG4J2-244:  Rewrite Appender was ignoring filters on referenced appenders. 
+o LOG4J2-245:  Avoid EmptyStack exception if getCallerClass and SecurityManager are not available. 
+o LOG4J2-247:  SocketServer.isActive should be volatile because it is accessed from different threads. 
+
+Changes:
+o LOG4J2-249:  Allow context parameters in Log4jContextListener to include properties. 
+o LOG4J2-243:  Allow custom LogEventFactories. 
+o LOG4J2-262:  Add support for interceptors in the embedded Flume Appender. Thanks to Edward Sargisson. 
+o Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap:
+        getContext() to getCopy(), get() to getImmutableMapOrNull(). 
+o LOG4J2-154:  Improve ThreadContext performance with copy-on-write map and stack. 
+
+
+Apache Log4j 2.0-beta7 requires a minimum of Java 6 to build and run. Basic compatibility with
+Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
+very implementation specific classes and methods. The package names and Maven groupId have been changed to
+org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
+patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
+
+http://logging.apache.org/log4j/2.x/
+
+

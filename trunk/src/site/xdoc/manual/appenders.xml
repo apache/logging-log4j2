@@ -1,0 +1,2874 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Log4j 2 Appenders</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="nickwilliams@apache.org">Nick Williams</author>
+    </properties>
+
+    <body>
+      <section name="Appenders">
+        <p>
+          Appenders are responsible for delivering LogEvents to their destination. Every Appender must
+          implement the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html">Appender</a>
+          interface. Most Appenders will extend
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/AbstractAppender.html">AbstractAppender</a>
+          which adds <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/Lifecycle.html">Lifecycle</a>
+          and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/filter/Filterable.html">Filterable</a>
+          support. Lifecycle allows components to finish initialization after configuration has completed and to
+          perform cleanup during shutdown. Filterable allows the component to have Filters attached to it which are
+          evaluated during event processing.
+        </p>
+        <p>
+          Appenders usually are only responsible for writing the event data to the target destination. In most cases
+          they delegate responsibility for formatting the event to a <a href="../layouts.html">layout</a>. Some
+          appenders wrap other appenders so that they can modify the LogEvent, handle a failure in an Appender,
+          route the event to a subordinate Appender based on advanced Filter criteria or provide similar functionality
+          that does not directly format the event for viewing.
+        </p>
+        <p>
+          Appenders always have a name so that they can be referenced from Loggers.
+        </p>
+        <a name="AsyncAppender"/>
+        <subsection name="AsyncAppender">
+          <p>The AsyncAppender accepts references to other Appenders and causes LogEvents to be written to them
+            on a separate Thread. Note that exceptions while writing to those Appenders will be hidden from
+            the application. The AsyncAppender should be configured after the appenders it references to allow it
+            to shut down properly.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>appender-ref</td>
+              <td>String</td>
+              <td>The name of the Appenders to invoke asynchronously. Multiple appender-ref
+                elements can be configured.</td>
+            </tr>
+            <tr>
+              <td>blocking</td>
+              <td>boolean</td>
+              <td>If true, the appender will wait until there are free slots in the queue. If false, the event
+                will be written to the error appender if the queue is full. The default is true.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>integer</td>
+              <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
+            </tr>
+            <tr>
+              <td>error-ref</td>
+              <td>String</td>
+              <td>The name of the Appender to invoke if none of the appenders can be called, either due to errors
+                in the appenders or because the queue is full. If not specified then errors will be ignored.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>includeLocation</td>
+              <td>boolean</td>
+              <td>Extracting location is an expensive operation (it can make
+              logging 5 - 20 times slower). To improve performance, location is
+              not included by default when adding a log event to the queue.
+              You can change this by setting includeLocation="true".</td>
+            </tr>
+            <caption align="top">AsyncAppender Parameters</caption>
+          </table>
+          <p>
+            A typical AsyncAppender configuration might look like:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+    <Async name="Async">
+      <appender-ref ref="MyFile"/>
+    </Async>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Async"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="ConsoleAppender"/>
+        <subsection name="ConsoleAppender">
+          <p>
+            As one might expect, the ConsoleAppender writes its output to either System.err or System.out with System.err
+            being the default target. A Layout must be provided to format the LogEvent.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. If no layout is supplied the default pattern layout
+              of "%m%n" will be used.</td>
+            </tr>
+            <tr>
+              <td>follow</td>
+              <td>boolean</td>
+              <td>Identifies whether the appender honors reassignments of System.out or System.err
+                via System.setOut or System.setErr made after configuration. Note that the follow
+                attribute cannot be used with Jansi on Windows.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>String</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+            </tr>
+            <caption align="top">ConsoleAppender Parameters</caption>
+          </table>
+          <p>
+            A typical Console configuration might look like:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="FailoverAppender"/>
+        <subsection name="FailoverAppender">
+          <p>The FailoverAppender wraps a set of appenders. If the primary Appender fails the secondary appenders will be
+          tried in order until one succeeds or there are no more secondaries to try.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>primary</td>
+              <td>String</td>
+              <td>The name of the primary Appender to use.</td>
+            </tr>
+            <tr>
+              <td>failovers</td>
+              <td>String[]</td>
+              <td>The names of the secondary Appenders to use.</td>
+            </tr>
+
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>retryInterval</td>
+              <td>integer</td>
+              <td>The number of seconds that should pass before retrying the primary Appender. The default is 60.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>String</td>
+              <td>Either "SYSTEM_OUT" or "SYSTEM_ERR". The default is "SYSTEM_ERR".</td>
+            </tr>
+            <caption align="top">FailoverAppender Parameters</caption>
+          </table>
+          <p>
+            A Failover configuration might look like:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Failover name="Failover" primary="RollingFile" suppressExceptions="false">
+      <Failovers>
+        <appender-ref ref="Console"/>
+      </Failovers>
+    </Failover>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Failover"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+			<a name="FastFileAppender" />
+			<subsection name="FastFileAppender">
+			<p><i>Experimental, may replace FileAppender in a future release.</i></p>
+				<p>
+					The FastFileAppender is similar to the standard
+					<a href="#FileAppender">FileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					FileAppender with "bufferedIO=true" in our
+					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
+					Similar to the FileAppender,
+					FastFileAppender uses a FastFileManager to actually perform the
+					file I/O. While FastFileAppender
+					from different Configurations
+					cannot be shared, the FastFileManagers can be if the Manager is
+					accessible. For example, two web applications in a
+					servlet container can have
+					their own configuration and safely
+					write to the same file if Log4j
+					is in a ClassLoader that is common to
+					both of them.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filters</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+		              <td><p>When set to true - the default, each write will be followed by a flush.
+		                This will guarantee the data is written
+		                to disk but could impact performance.</p>
+		                <p>Flushing after every write is only useful when using this
+						appender with synchronous loggers. Asynchronous loggers and
+						appenders will automatically flush at the end of a batch of events, 
+						even if immediateFlush is set to false. This also guarantees
+						the data is written to disk but is more efficient.</p>
+		              </td>
+					</tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+					<tr>
+						<td>suppressExceptions</td>
+						<td>boolean</td>
+						<td>The default is true, causing exceptions to be internally
+							logged and then ignored. When set to
+							false exceptions will be
+							percolated to the caller.
+						</td>
+					</tr>
+					<caption align="top">FastFileAppender Parameters</caption>
+				</table>
+				<p>
+					Here is a sample FastFile configuration:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastFile name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </FastFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="MyFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+			</subsection>
+			<a name="FastRollingFileAppender" />
+			<subsection name="FastRollingFileAppender">
+			<p><i>Experimental, may replace RollingFileAppender in a future release.</i></p>
+				<p>
+					The FastRollingFileAppender is similar to the standard
+					<a href="#RollingFileAppender">RollingFileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and
+					internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					RollingFileAppender with "bufferedIO=true"
+					in our
+					<a href="async.html#FastFileAppenderPerformance">measurements</a>.
+
+					The FastRollingFileAppender writes
+					to the File named in the
+					fileName parameter
+					and rolls the file over according the
+					TriggeringPolicy
+					and the RolloverPolicy.
+
+					Similar to the RollingFileAppender,
+					FastRollingFileAppender uses a FastRollingFileManager
+					to actually perform the
+					file I/O and perform the rollover. While FastRollingFileAppender
+					from different Configurations cannot be
+					shared, the FastRollingFileManagers can be
+					if the Manager is accessible.
+					For example, two web applications in a servlet
+					container can have their own configuration and safely write to the
+					same file if Log4j is in a ClassLoader that is common to both of them.
+				</p>
+				<p>
+					A FastRollingFileAppender requires a
+					<a href="#TriggeringPolicies">TriggeringPolicy</a>
+					and a
+					<a href="#RolloverStrategies">RolloverStrategy</a>.
+					The triggering policy determines if a rollover should
+					be performed
+					while the RolloverStrategy defines how the rollover
+					should be done.
+					If no RolloverStrategy
+					is configured, FastRollingFileAppender will
+					use the
+					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+				</p>
+				<p>
+					File locking is not supported by the FastRollingFileAppender.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>filter</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a
+							CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filePattern</td>
+						<td>String</td>
+						<td>
+							The pattern of the file name of the archived log file. The format
+							of the pattern should is
+							dependent on the RolloverPolicy that is
+							used. The DefaultRolloverPolicy
+							will accept both
+							a date/time
+							pattern compatible with
+							<a
+								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+								SimpleDateFormat</a>
+
+							and/or a %i which represents an integer counter. The pattern
+							also supports interpolation at
+							runtime so any of the Lookups (such
+							as the
+							<a href="./lookups.html#DateLookup">DateLookup</a>
+							can
+							be included in the pattern.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+		              <td><p>When set to true - the default, each write will be followed by a flush.
+		                This will guarantee the data is written
+		                to disk but could impact performance.</p>
+		                <p>Flushing after every write is only useful when using this
+						appender with synchronous loggers. Asynchronous loggers and
+						appenders will automatically flush at the end of a batch of events, 
+						even if immediateFlush is set to false. This also guarantees
+						the data is written to disk but is more efficient.</p>
+		              </td>
+					</tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+					<tr>
+						<td>policy</td>
+						<td>TriggeringPolicy</td>
+						<td>The policy to use to determine if a rollover should occur.
+						</td>
+					</tr>
+					<tr>
+						<td>strategy</td>
+						<td>RolloverStrategy</td>
+						<td>The strategy to use to determine the name and location of the
+							archive file.
+						</td>
+					</tr>
+					<tr>
+						<td>suppressExceptions</td>
+						<td>boolean</td>
+						<td>The default is true, causing exceptions to be internally
+							logged and then ignored. When set to
+							false exceptions will be
+							percolated to the caller.
+						</td>
+					</tr>
+					<caption align="top">FastRollingFileAppender Parameters</caption>
+				</table>
+				<a name="FRFA_TriggeringPolicies" />
+				<h4>Triggering Policies</h4>
+				<p>
+					See
+					<a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.
+				</p>
+				<a name="FRFA_RolloverStrategies" />
+				<h4>Rollover Strategies</h4>
+				<p>
+					See
+					<a href="#RolloverStrategies">RollingFileAppender Rollover Strategies</a>.
+				</p>
+
+				<p>
+					Below is a sample configuration that uses a FastRollingFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+				<p>
+					This second example shows a rollover strategy that will keep up to
+					20 files before removing them.
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+				<p>
+					Below is a sample configuration that uses a FastRollingFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip and will roll every 6 hours when the hour is
+					divisible
+					by 6:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <FastRollingFile name="FastRollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </FastRollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="FastRollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+				</p>
+			</subsection>
+        <a name="FileAppender"/>
+        <subsection name="FileAppender">
+          <p>The FileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter. The
+            FileAppender uses a FileManager (which extends OutputStreamManager) to actually perform the file I/O. While
+            FileAppenders from different Configurations cannot be shared, the FileManagers can be if the Manager is
+            accessible. For example, two web applications in a servlet container can have their own configuration and
+            safely write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>append</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be appended to the end of the file. When set to false,
+                the file will be cleared before new records are written.</td>
+            </tr>
+            <tr>
+              <td>bufferedIO</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be written to a buffer and the data will be written to
+                disk when the buffer is full or, if immediateFlush is set, when the record is written.
+                File locking cannot be used with bufferedIO. Performance tests have shown that using buffered I/O
+                significantly improves performance, even if immediateFlush is enabled.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>fileName</td>
+              <td>String</td>
+              <td>The name of the file to write to. If the file, or any of its parent directories, do not exist,
+                they will be created.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td><p>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</p>
+                <p>Flushing after every write is only useful when using this
+				appender with synchronous loggers. Asynchronous loggers and
+				appenders will automatically flush at the end of a batch of events, 
+				even if immediateFlush is set to false. This also guarantees
+				the data is written to disk but is more efficient.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent</td>
+            </tr>
+            <tr>
+              <td>locking</td>
+              <td>boolean</td>
+              <td>When set to true, I/O operations will occur only while the file lock is held allowing FileAppenders
+                in multiple JVMs and potentially multiple hosts to write to the same file simultaneously. This
+                will significantly impact performance so should be used carefully. Furthermore, on many systems
+                the file lock is "advisory" meaning that other applications can perform operations on the file
+                without acquiring a lock. The default value is false.</td>
+            </tr>
+
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">FileAppender Parameters</caption>
+          </table>
+           <p>
+            Here is a sample File configuration:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="MyFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="FlumeAppender"/>
+        <subsection name="FlumeAppender">
+          <p><i>This is an optional component supplied in a separate jar.</i></p>
+          <p><a href="http://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable,
+            and available system for efficiently collecting, aggregating, and moving large amounts of log data
+            from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
+            them to a Flume agent as serialized Avro events for consumption.</p>
+          <p>
+            The Flume Appender supports three modes of operation.
+            <ol>
+              <li>It can act as a remote Flume client which sends Flume events via Avro to a Flume Agent configured
+              with an Avro Source.</li>
+              <li>It can act as an embedded Flume Agent where Flume events pass directly into Flume for processing.</li>
+              <li>It can persist events to a local BerkeleyDB data store and then asynchronously send the events to
+              Flume, similar to the embedded Flume Agent but without most of the Flume dependencies.</li>
+            </ol>
+            Usage as an embedded agent will cause the messages to be directly passed to the Flume Channel and then
+            control will be immediately returned to the application. All interaction with remote agents will occur
+            asynchronously. Setting the "type" attribute to "Embedded" will force the use of the embedded agent. In
+            addition, configuring agent properties in the appender configuration will also cause the embedded agent
+            to be used.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>agents</td>
+              <td>Agent[]</td>
+              <td>An array of Agents to which the logging events should be sent. If more than one agent is specified
+                the first Agent will be the primary and subsequent Agents will be used in the order specified as
+                secondaries should the primary Agent fail. Each Agent definition supplies the Agents host and port.
+                The specification of agents and properties are mutually exclusive. If both are configured an
+                error will result.</td>
+            </tr>
+            <tr>
+              <td>agentRetries</td>
+              <td>integer</td>
+              <td>The number of times the agent should be retried before failing to a secondary. This parameter is
+                ignored when type="persistent" is specified (agents are tried once before failing to the next).</td>
+            </tr>
+            <tr>
+              <td>batchSize</td>
+              <td>integer</td>
+              <td>Specifies the number of events that should be sent as a batch. The default is 1. <i>This
+                parameter only applies to the Flume NG Appender.</i></td>
+            </tr>
+            <tr>
+              <td>compress</td>
+              <td>boolean</td>
+              <td>When set to true the message body will be compressed using gzip</td>
+            </tr>
+            <tr>
+              <td>connectTimeout</td>
+              <td>integer</td>
+              <td>The number of milliseconds Flume will wait before timing out the connection.</td>
+            </tr>
+            <tr>
+              <td>dataDir</td>
+              <td>String</td>
+              <td>Directory where the Flume write ahead log should be written. Valid only when embedded is set
+                to true and Agent elements are used instead of Property elements.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>eventPrefix</td>
+              <td>String</td>
+              <td>The character string to prepend to each event attribute in order to distinguish it from MDC attributes.
+                The default is an empty string.</td>
+            </tr>
+            <tr>
+              <td>flumeEventFactory</td>
+              <td>FlumeEventFactory</td>
+              <td>Factory that generates the Flume events from Log4j events. The default factory is the
+                FlumeAvroAppender itself.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. If no layout is specified RFC5424Layout will be used.</td>
+            </tr>
+            <tr>
+              <td>maxDelay</td>
+              <td>integer</td>
+              <td>The maximum number of seconds to wait for batchSize events before publishing the batch.</td>
+            </tr>
+            <tr>
+              <td>mdcExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be excluded from the FlumeEvent. This is mutually
+                exclusive with the mdcIncludes attribute.</td>
+            </tr>
+            <tr>
+              <td>mdcIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be included in the FlumeEvent. Any keys in the MDC
+                not found in the list will be excluded. This option is mutually exclusive with the mdcExcludes
+                attribute.</td>
+            </tr>
+            <tr>
+              <td>mdcRequired</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that must be present in the MDC. If a key is not present a
+                LoggingException will be thrown.</td>
+            </tr>
+            <tr>
+              <td>mdcPrefix</td>
+              <td>String</td>
+              <td>A string that should be prepended to each MDC key in order to distinguish it from event attributes.
+                The default string is "mdc:".</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>Property[]</td>
+              <td><p>One or more Property elements that are used to configure the Flume Agent. The properties must be
+                configured without the agent name (the appender name is used for this) and no sources can be
+                configured. Interceptors can be specified for the source using "sources.log4j-source.interceptors". 
+                All other Flume configuration properties are allowed. Specifying both Agent and Property
+                elements will result in an error.</p>
+                <p>When used to configure in Persistent mode the valid properties are:
+                  <ol>
+                  <li>"keyProvider" to specify the name of the plugin to provide the secret key for encryption.</li>
+                </ol></p>
+              </td>
+            </tr>
+            <tr>
+              <td>requestTimeout</td>
+              <td>integer</td>
+              <td>The number of milliseconds Flume will wait before timing out the request.</td>
+            </tr>
+
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>type</td>
+              <td>enumeration</td>
+              <td>One of "Avro", "Embedded", or "Persistent" to indicate which variation of the Appender is desired.</td>
+            </tr>
+            <caption align="top">FlumeAppender Parameters</caption>
+          </table>
+            <p>
+              A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
+              compresses the body, and formats the body using the RFC5424Layout:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="eventLogger"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
+            compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="persistent" dataDir="./logData">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+      <Property name="keyProvider">MySecretProvider</Property>
+    </Flume>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="eventLogger"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
+            compresses the body, formats the body using RFC5424Layout and passes the events to an embedded Flume
+            Agent.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d [%p] %c %m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="EventLogger" level="info">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="warn">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          <p>
+            A sample FlumeAppender configuration that is configured with a primary and a secondary agent using
+            Flume configuration properties, compresses the body, formats the body using RFC5424Layout and passes the
+            events to an embedded Flume Agent.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error" name="MyApp" packages="">
+  <appenders>
+    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
+      <Property name="channels">file</Property>
+      <Property name="channels.file.type">file</Property>
+      <Property name="channels.file.checkpointDir">target/file-channel/checkpoint</Property>
+      <Property name="channels.file.dataDirs">target/file-channel/data</Property>
+      <Property name="sinks">agent1 agent2</Property>
+      <Property name="sinks.agent1.channel">file</Property>
+      <Property name="sinks.agent1.type">avro</Property>
+      <Property name="sinks.agent1.hostname">192.168.10.101</Property>
+      <Property name="sinks.agent1.port">8800</Property>
+      <Property name="sinks.agent1.batch-size">100</Property>
+      <Property name="sinks.agent2.channel">file</Property>
+      <Property name="sinks.agent2.type">avro</Property>
+      <Property name="sinks.agent2.hostname">192.168.10.102</Property>
+      <Property name="sinks.agent2.port">8800</Property>
+      <Property name="sinks.agent2.batch-size">100</Property>
+      <Property name="sinkgroups">group1</Property>
+      <Property name="sinkgroups.group1.sinks">agent1 agent2</Property>
+      <Property name="sinkgroups.group1.processor.type">failover</Property>
+      <Property name="sinkgroups.group1.processor.priority.agent1">10</Property>
+      <Property name="sinkgroups.group1.processor.priority.agent2">5</Property>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%d [%p] %c %m%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="EventLogger" level="info">
+      <appender-ref ref="eventLogger"/>
+    </logger>
+    <root level="warn">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+        </subsection>
+        <a name="JDBCAppender"/>
+        <subsection name="JDBCAppender">
+          <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
+          to obtain JDBC connections using the DriverManager, a JNDI DataSource or a custom factory method.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>connectionSource</td>
+              <td>ConnectionSource</td>
+              <td><em>Required.</em> The connections source from which database connections should be retrieved.</td>
+            </tr>
+            <tr>
+              <td>tableName</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the database table to insert log events into.</td>
+            </tr>
+            <tr>
+              <td>columnConfigs</td>
+              <td>ColumnConfig[]</td>
+              <td><em>Required.</em> Information about the columns that log event data should be inserted into and how
+                to insert that data. This is represented with multiple <code>&lt;Column&gt;</code> elements.</td>
+            </tr>
+            <caption align="top">JDBCAppender Parameters</caption>
+          </table>
+          <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
+            which the Appender gets JDBC connections. You must use exactly one of the
+            <code>&lt;DriverManager&gt;</code>, <code>&lt;DataSource&gt;</code>, or
+            <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>url</td>
+              <td>String</td>
+              <td><em>Required.</em> The JDBC URL, such as <code>jdbc:mysql://example.org:3306/exampleDb</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>The user to connect as, if required.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The password to authenticate with, if a username is specified.</td>
+            </tr>
+            <caption align="top">DriverManager Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>jndiName</td>
+              <td>String</td>
+              <td><em>Required.</em> The full, prefixed JNDI name that the data source is bound to, such as
+                <code>java:/comp/env/jdbc/LoggingDatabase</code>.</td>
+            </tr>
+            <caption align="top">DataSource Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>class</td>
+              <td>Class</td>
+              <td><em>Required.</em> The fully qualified name of a class containing a static factory method for
+                obtaining JDBC connections.</td>
+            </tr>
+            <tr>
+              <td>method</td>
+              <td>Method</td>
+              <td><em>Required.</em> The name of a static factory method for obtaining JDBC connections. This method
+                must have no parameters and its return type must be either <code>java.sql.Connection</code> or
+                <code>javax.sql.DataSource</code>. If the method returns <code>Connection</code>s, it must return a new
+                connection every time it is called.</td>
+            </tr>
+            <caption align="top">ConnectionFactory Parameters</caption>
+          </table>
+          <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
+            columns in the table should be written to and how to write to them. The JDBCAppender uses this information
+            to formulate a <code>PreparedStatement</code> to insert records without SQL injection vulnerability.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the database column.</td>
+            </tr>
+            <tr>
+              <td>pattern</td>
+              <td>String</td>
+              <td>Use this attribute to insert a value or values from the log event in this column using a
+                <code>PatternLayout</code> pattern. Simply specify any legal pattern in this attribute. Either this
+                attribute, <code>literal</code>, or <code>isEventTimestamp="true"</code> must be specified, but not more
+                than one of these.</td>
+            </tr>
+            <tr>
+              <td>literal</td>
+              <td>String</td>
+              <td>Use this attribute to insert a literal value in this column. The value will be included directly in
+                the insert SQL, without any quoting (which means that if you want this to be a string, your value should
+                contain single quotes around it like this: <code>literal="'Literal String'"</code>). This is especially
+                useful for databases that don't support identity columns. For example, if you are using Oracle you could
+                specify <code>literal="NAME_OF_YOUR_SEQUENCE.NEXTVAL"</code> to insert a unique ID in an ID column.
+                Either this attribute, <code>pattern</code>, or <code>isEventTimestamp="true"</code> must be specified,
+                but not more than one of these.</td>
+            </tr>
+            <tr>
+              <td>isEventTimestamp</td>
+              <td>boolean</td>
+              <td>Use this attribute to insert the event timestamp in this column, which should be a SQL datetime. The
+                value will be inserted as a <code>java.sql.Types.TIMESTAMP</code>. Either this attribute (equal to
+                <code>true</code>), <code>pattern</code>, or <code>isEventTimestamp</code> must be specified, but not
+                more than one of these.</td>
+            </tr>
+            <tr>
+              <td>isUnicode</td>
+              <td>boolean</td>
+              <td>This attribute is ignored unless <code>pattern</code> is specified. If <code>true</code> or omitted
+                (default), the value will be inserted as unicode (<code>setNString</code> or <code>setNClob</code>).
+                Otherwise, the value will be inserted non-unicode (<code>setString</code> or <code>setClob</code>).</td>
+            </tr>
+            <tr>
+              <td>isClob</td>
+              <td>boolean</td>
+              <td>This attribute is ignored unless <code>pattern</code> is specified. Use this attribute to indicate
+                that the column stores Character Large Objects (CLOBs). If <code>true</code>, the value will be inserted
+                as a CLOB (<code>setClob</code> or <code>setNClob</code>). If <code>false</code> or omitted (default),
+                the value will be inserted as a VARCHAR or NVARCHAR (<code>setString</code> or <code>setNString</code>).
+              </td>
+            </tr>
+            <caption align="top">Column Parameters</caption>
+          </table>
+          <p>
+            Here are a few sample configurations for the JDBCAppender:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="application_log">
+      <DriverManager jdbcUrl="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
+      <Column name="eventDate" isEventTimestamp="true" />
+      <Column name="level" pattern="%level" />
+      <Column name="logger" pattern="%logger" />
+      <Column name="message" pattern="%message" />
+      <Column name="exception" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="dbo.application_log">
+      <DataSource jndiName="java:/comp/env/jdbc/ApplicationDataSource" />
+      <Column name="eventDate" isEventTimestamp="true" />
+      <Column name="level" pattern="%level" />
+      <Column name="logger" pattern="%logger" />
+      <Column name="message" pattern="%message" />
+      <Column name="exception" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jdbc name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
+      <ConnectionFactory class="net.example.db.ConnectionFactory" method="getNewDatabaseConnection" />
+      <Column name="EVENT_ID" literal="LOGGING.APPLICATION_LOG_SEQUENCE.NEXTVAL" />
+      <Column name="EVENT_DATE" isEventTimestamp="true" />
+      <Column name="LEVEL" pattern="%level" />
+      <Column name="LOGGER" pattern="%logger" />
+      <Column name="MESSAGE" pattern="%message" />
+      <Column name="THROWABLE" pattern="%ex{full}" />
+    </Jdbc>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="JMSQueueAppender"/>
+        <subsection name="JMSQueueAppender">
+          <p>The JMSQueueAppender sends the formatted log event to a JMS Queue.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>factoryBindingName</td>
+              <td>String</td>
+              <td>The name to locate in the Context that provides the
+                <a href="http://download.oracle.com/javaee/5/api/javax/jms/QueueConnectionFactory.html">QueueConnectionFactory</a>.</td>
+            </tr>
+            <tr>
+              <td>factoryName</td>
+              <td>String</td>
+              <td>The fully qualified class name that should be used to define the Initial Context Factory as
+                defined in <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
+                If no value is provided the
+                default InitialContextFactory will be used. If a factoryName is specified without a providerURL
+                a warning message will be logged as this is likely to cause problems.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. If no layout is specified SerializedLayout will be used.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The password to use to create the queue connection.</td>
+            </tr>
+            <tr>
+              <td>providerURL</td>
+              <td>String</td>
+              <td>The URL of the provider to use as defined by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+                If this value is null the default system provider will be used.</td>
+            </tr>
+            <tr>
+              <td>queueBindingName</td>
+              <td>String</td>
+              <td>The name to use to locate the <a href="http://download.oracle.com/javaee/5/api/javax/jms/Queue.html">Queue</a>.</td>
+            </tr>
+            <tr>
+              <td>securityPrincipalName</td>
+              <td>String</td>
+              <td>The name of the identity of the Principal as specified by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
+                If a securityPrincipalName is specified without securityCredentials a warning message will be
+                logged as this is likely to cause problems.</td>
+            </tr>
+            <tr>
+              <td>securityCredentials</td>
+              <td>String</td>
+              <td>The security credentials for the principal as specified by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>urlPkgPrefixes</td>
+              <td>String</td>
+              <td>A colon-separated list of package prefixes for the class name of the factory class that will create
+                a URL context factory as defined by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
+            </tr>
+             <tr>
+              <td>userName</td>
+              <td>String</td>
+              <td>The user id used to create the queue connection.</td>
+            </tr>
+            <caption align="top">JMSQueueAppender Parameters</caption>
+          </table>
+           <p>
+            Here is a sample JMSQueueAppender configuration:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <JMSQueue name="jmsQueue" queueBindingName="MyQueue"
+              factoryBindingName="MyQueueConnectionFactory"/>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="jmsQueue"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="JMSTopicAppender"/>
+        <subsection name="JMSTopicAppender">
+          <p>The JMSTopicAppender sends the formatted log event to a JMS Topic.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>factoryBindingName</td>
+              <td>String</td>
+              <td>The name to locate in the Context that provides the
+                <a href="http://download.oracle.com/javaee/5/api/javax/jms/TopicConnectionFactory.html">TopicConnectionFactory</a>.</td>
+            </tr>
+            <tr>
+              <td>factoryName</td>
+              <td>String</td>
+              <td>The fully qualified class name that should be used to define the Initial Context Factory as
+                defined in <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
+                If no value is provided the
+                default InitialContextFactory will be used. If a factoryName is specified without a providerURL
+                a warning message will be logged as this is likely to cause problems.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. If no layout is specified SerializedLayout will be used.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>The password to use to create the queue connection.</td>
+            </tr>
+            <tr>
+              <td>providerURL</td>
+              <td>String</td>
+              <td>The URL of the provider to use as defined by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+                If this value is null the default system provider will be used.</td>
+            </tr>
+            <tr>
+              <td>topicBindingName</td>
+              <td>String</td>
+              <td>The name to use to locate the
+                <a href="http://download.oracle.com/javaee/5/api/javax/jms/Topic.html">Topic</a>.</td>
+            </tr>
+            <tr>
+              <td>securityPrincipalName</td>
+              <td>String</td>
+              <td>The name of the identity of the Principal as specified by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
+                If a securityPrincipalName is specified without securityCredentials a warning message will be
+                logged as this is likely to cause problems.</td>
+            </tr>
+            <tr>
+              <td>securityCredentials</td>
+              <td>String</td>
+              <td>The security credentials for the principal as specified by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>urlPkgPrefixes</td>
+              <td>String</td>
+              <td>A colon-separated list of package prefixes for the class name of the factory class that will create
+                a URL context factory as defined by
+                <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.</td>
+            </tr>
+             <tr>
+              <td>userName</td>
+              <td>String</td>
+              <td>The user id used to create the queue connection.</td>
+            </tr>
+            <caption align="top">JMSTopicAppender Parameters</caption>
+          </table>
+           <p>
+            Here is a sample JMSTopicAppender configuration:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <JMSTopic name="jmsTopic" topicBindingName="MyTopic"
+              factoryBindingName="MyTopicConnectionFactory"/>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="jmsQueue"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="JPAAppender"/>
+        <subsection name="JPAAppender">
+          <p>The JPAAppender writes log events to a relational database table using the Java Persistence API.
+            It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
+            configured to persist to the table desired.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>entityClassName</td>
+              <td>String</td>
+              <td><em>Required.</em> The fully qualified name of the concrete LogEventWrapperEntity implementation that
+                has JPA annotations mapping it to a database table.</td>
+            </tr>
+            <tr>
+              <td>persistenceUnitName</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the JPA persistence unit that should be used for persisting log
+                events.</td>
+            </tr>
+            <caption align="top">JPAAppender Parameters</caption>
+          </table>
+          <p>
+            Here is a sample configurations for the JPAAppender. The first XML sample is the Log4j configuration file,
+            the second is the persistence.xml file. Hibernate ORM is assumed here, but any JPA provider will do:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <Jpa name="databaseAppender" persistenceUnitName="appPersistenceUnit"
+         entityClassName="com.example.logging.JpaLogEntity" />
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+  <persistence-unit name="appPersistenceUnit">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jpa-data-source>jdbc/ApplicationDataSource</jpa-data-source>
+    <class>com.example.logging.JpaLogEntity</class>
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+    </properties>
+  </persistence-unit>
+</persistence>]]></pre>
+
+            <pre class="prettyprint linenums lang-java"><![CDATA[package com.example.logging;
+...
+@Entity
+@Table(name="application_log", schema="dbo")
+public class JpaLogEntity extends LogEventWrapperEntity {
+    private static final long serialVersionUID = 1L;
+    private long id = 0L;
+
+    public TestEntity() {
+        super(null);
+    }
+    public TestEntity(LogEvent wrappedEvent) {
+        super(wrappedEvent);
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level")
+    public Level getLevel() {
+        return getWrappedEvent().getLevel();
+    }
+
+    @Override
+    @Basic
+    @Column(name = "logger")
+    public String getLoggerName() {
+        return getWrappedEvent().getLoggerName();
+    }
+    ...
+}]]></pre>
+          </p>
+        </subsection>
+        <a name="NoSQLAppender"/>
+        <subsection name="NoSQLAppender">
+          <p>The NoSQLAppender writes log events to a NoSQL database using an internal lightweight provider interface.
+            Provider implementations currently exist for MongoDB and Apache CouchDB, and writing a custom provider is
+            quite simple.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
+                exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter may be
+                used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>If an integer greater than 0, this causes the appender to buffer log events and flush whenever the
+                buffer reaches this size.</td>
+            </tr>
+            <tr>
+              <td>noSqlProvider</td>
+              <td>NoSQLProvider&lt;C extends NoSQLConnection&lt;W, T extends NoSQLObject&lt;W&gt;&gt;&gt;</td>
+              <td><em>Required.</em> The NoSQL provider that provides connections to the chosen NoSQL database.</td>
+            </tr>
+            <caption align="top">NoSQLAppender Parameters</caption>
+          </table>
+          <p>You specify which NoSQL provider to use by specifying the appropriate configuration element within the
+            <code>&lt;NoSql&gt;</code> element. The types currently supported are <code>&lt;MongoDb&gt;</code> and
+            <code>&lt;CouchDb&gt;</code>. To create your own custom provider, read the JavaDoc for the
+            <code>NoSQLProvider</code>, <code>NoSQLConnection</code>, and <code>NoSQLObject</code> classes and the
+            documentation about creating Log4j plugins. We recommend you review the source code for the MongoDB and
+            CouchDB providers as a guide for creating your own provider.</p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>collectionName</td>
+              <td>String</td>
+              <td><em>Required.</em> The name of the MongoDB collection to insert the events into.</td>
+            </tr>
+            <tr>
+              <td>writeConcernConstant</td>
+              <td>Field</td>
+              <td>By default, the MongoDB provider inserts records with the instructions
+                <code>com.mongodb.WriteConcern.ACKNOWLEDGED</code>. Use this optional attribute to specify the name of
+                a constant other than <code>ACKNOWLEDGED</code>.</td>
+            </tr>
+            <tr>
+              <td>writeConcernConstantClass</td>
+              <td>Class</td>
+              <td>If you specify <code>writeConcernConstant</code>, you can use this attribute to specify a class other
+                than <code>com.mongodb.WriteConcern</code> to find the constant on (to create your own custom
+                instructions).</td>
+            </tr>
+            <tr>
+              <td>factoryClassName</td>
+              <td>Class</td>
+              <td>To provide a connection to the MongoDB database, you can use this attribute and
+                <code>factoryMethodName</code> to specify a class and static method to get the connection from. The
+                method must return a <code>com.mongodb.DB</code> or a <code>com.mongodb.MongoClient</code>. If the
+                <code>DB</code> is not authenticated, you must also specify a <code>username</code> and
+                <code>password</code>. If you use the factory method for providing a connection, you must not specify
+                the <code>databaseName</code>, <code>server</code>, or <code>port</code> attributes.</td>
+            </tr>
+            <tr>
+              <td>factoryMethodName</td>
+              <td>Method</td>
+              <td>See the documentation for attribute <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>databaseName</td>
+              <td>String</td>
+              <td>If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing
+                a MongoDB connection, you must specify a MongoDB database name using this attribute. You must also
+                specify a <code>username</code> and <code>password</code>. You can optionally also specify a
+                <code>server</code> (defaults to localhost), and a <code>port</code> (defaults to the default MongoDB
+                port).</td>
+            </tr>
+            <tr>
+              <td>server</td>
+              <td>String</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>int</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code> and <code>factoryClassName</code>.</td>
+            </tr>
+            <caption align="top">MongoDB Provider Parameters</caption>
+          </table>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>factoryClassName</td>
+              <td>Class</td>
+              <td>To provide a connection to the CouchDB database, you can use this attribute and
+                <code>factoryMethodName</code> to specify a class and static method to get the connection from. The
+                method must return a <code>org.lightcouch.CouchDbClient</code> or a
+                <code>org.lightcouch.CouchDbProperties</code>. If you use the factory method for providing a connection,
+                you must not specify the <code>databaseName</code>, <code>protocol</code>, <code>server</code>,
+                <code>port</code>, <code>username</code>, or <code>password</code> attributes.</td>
+            </tr>
+            <tr>
+              <td>factoryMethodName</td>
+              <td>Method</td>
+              <td>See the documentation for attribute <code>factoryClassName</code>.</td>
+            </tr>
+            <tr>
+              <td>databaseName</td>
+              <td>String</td>
+              <td>If you do not specify a <code>factoryClassName</code> and <code>factoryMethodName</code> for providing
+                a CouchDB connection, you must specify a CouchDB database name using this attribute. You must also
+                specify a <code>username</code> and <code>password</code>. You can optionally also specify a
+                <code>protocol</code> (defaults to http), <code>server</code> (defaults to localhost), and a
+                <code>port</code> (defaults to 80 for http and 443 for https).</td>
+            </tr>
+            <tr>
+              <td>protocol</td>
+              <td>String</td>
+              <td>Must either be "http" or "https." See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>server</td>
+              <td>String</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>int</td>
+              <td>See the documentation for attribute <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>username</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code>.</td>
+            </tr>
+            <tr>
+              <td>password</td>
+              <td>String</td>
+              <td>See the documentation for attributes <code>databaseName</code>.</td>
+            </tr>
+            <caption align="top">CouchDB Provider Parameters</caption>
+          </table>
+          <p>
+            Here are a few sample configurations for the NoSQLAppender:
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <MongoDb databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
+               username="loggingUser" password="abc123" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <MongoDb collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
+               factoryMethodName="getNewMongoClient" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+
+            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+  <appenders>
+    <NoSql name="databaseAppender">
+      <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
+               username="loggingUser" password="abc123" />
+    </NoSql>
+  </appenders>
+  <loggers>
+    <root level="warn">
+      <appender-ref ref="databaseAppender"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <p>
+            The following example demonstrates how log events are persisted in NoSQL databases if represented in a JSON
+            format:
+            <pre class="prettyprint lang-javascript"><![CDATA[{
+    "level": "WARN",
+    "loggerName": "com.example.application.MyClass",
+    "message": "Something happened that you might want to know about.",
+    "source": {
+        "className": "com.example.application.MyClass",
+        "methodName": "exampleMethod",
+        "fileName": "MyClass.java",
+        "lineNumber": 81
+    },
+    "marker": {
+        "name": "SomeMarker",
+        "parent" {
+            "name": "SomeParentMarker"
+        }
+    },
+    "threadName": "Thread-1",
+    "millis": 1368844166761,
+    "date": "2013-05-18T02:29:26.761Z",
+    "thrown": {
+        "type": "java.sql.SQLException",
+        "message": "Could not insert record. Connection lost.",
+        "stackTrace": [
+                { "className": "org.example.sql.driver.PreparedStatement$1", "methodName": "responder", "fileName": "PreparedStatement.java", "lineNumber": 1049 },
+                { "className": "org.example.sql.driver.PreparedStatement", "methodName": "executeUpdate", "fileName": "PreparedStatement.java", "lineNumber": 738 },
+                { "className": "com.example.application.MyClass", "methodName": "exampleMethod", "fileName": "MyClass.java", "lineNumber": 81 },
+                { "className": "com.example.application.MainClass", "methodName": "main", "fileName": "MainClass.java", "lineNumber": 52 }
+        ],
+        "cause": {
+            "type": "java.io.IOException",
+            "message": "Connection lost.",
+            "stackTrace": [
+                { "className": "java.nio.channels.SocketChannel", "methodName": "write", "fileName": null, "lineNumber": -1 },
+                { "className": "org.example.sql.driver.PreparedStatement$1", "methodName": "responder", "fileName": "PreparedStatement.java", "lineNumber": 1032 },
+                { "className": "org.example.sql.driver.PreparedStatement", "methodName": "executeUpdate", "fileName": "PreparedStatement.java", "lineNumber": 738 },
+                { "className": "com.example.application.MyClass", "methodName": "exampleMethod", "fileName": "MyClass.java", "lineNumber": 81 },
+                { "className": "com.example.application.MainClass", "methodName": "main", "fileName": "MainClass.java", "lineNumber": 52 }
+            ]
+        }
+    },
+    "contextMap": {
+        "ID": "86c3a497-4e67-4eed-9d6a-2e5797324d7b",
+        "username": "JohnDoe"
+    },
+    "contextStack": [
+        "topItem",
+        "anotherItem",
+        "bottomItem"
+    ]
+}]]></pre>
+          </p>
+        </subsection>
+        <a name="OutputStreamAppender"/>
+        <subsection name="OutputStreamAppender">
+          The OutputStreamAppender provides the base for many of the other Appenders such as the File and Socket
+          appenders that write the event to an Output Stream. It cannot be directly configured. Support for
+          immediateFlush and buffering is provided by the OutputStreamAppender. The OutputStreamAppender uses an
+          OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple
+          configurations.
+        </subsection>
+        <a name="RewriteAppender"/>
+        <subsection name="RewriteAppender">
+          <p>
+            The RewriteAppender allows the LogEvent to manipulated before it is processed by another Appender. This
+            can be used to mask sensitive information such as passwords or to inject information into each event.
+            The RewriteAppender must be configured with a <a href="RewritePolicy">RewritePolicy</a>. The
+            RewriteAppender should be configured after any Appenders it references to allow it to shut down properly.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>appender-ref</td>
+              <td>String</td>
+              <td>The name of the Appenders to call after the LogEvent has been manipulated. Multiple appender-ref
+                elements can be configured.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>rewritePolicy</td>
+              <td>RewritePolicy</td>
+              <td>The RewritePolicy that will manipulate the LogEvent.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">RewriteAppender Parameters</caption>
+          </table>
+          <h4>RewritePolicy</h4>
+            <p>
+              RewritePolicy is an interface that allows implementations to inspect and possibly modify LogEvents
+              before they are passed to Appender. RewritePolicy declares a single method named rewrite that must
+              be implemented. The method is passed the LogEvent and can return the same event or create a new one.
+            </p>
+            <h5>MapRewritePolicy</h5>
+              <p>
+                MapRewritePolicy will evaluate LogEvents that contain a MapMessage and will add or update
+                elements of the Map.
+              </p>
+              <table>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>mode</td>
+                  <td>String</td>
+                  <td>"Add" or "Update"</td>
+                </tr>
+                <tr>
+                  <td>keyValuePair</td>
+                  <td>KeyValuePair[]</td>
+                  <td>An array of keys and their values.</td>
+                </tr>
+              </table>
+           <p>
+             The following configuration shows a RewriteAppender configured to add a product key and its value
+             to the MapMessage.:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Rewrite name="rewrite">
+      <appender-ref ref="STDOUT"/>
+      <MapRewritePolicy mode="Add">
+        <KeyValuePair key="product" value="TestProduct"/>
+      </MapRewritePolicy>
+    </Rewrite>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Rewrite"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <h5>PropertiesRewritePolicy</h5>
+          <p>
+            PropertiesRewritePolicy will add properties configured on the policy to the ThreadContext Map
+            being logged. The properties will not be added to the actual ThreadContext Map. The property
+            values may contain variables that will be evaluated when the configuration is processed as
+            well as when the event is logged.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>properties</td>
+              <td>Property[]</td>
+              <td>One of more Property elements to define the keys and values to be added to the ThreadContext Map.</td>
+            </tr>
+          </table>
+          <p>
+            The following configuration shows a RewriteAppender configured to add a product key and its value
+            to the MapMessage.:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <Rewrite name="rewrite">
+      <appender-ref ref="STDOUT"/>
+      <PropertiesRewritePolicy>
+        <Property key="user">${sys:user.name}</Property>
+        <Property key="env">${sys:environment}</Property>
+      </PropertiesRewritePolicy>
+    </Rewrite>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Rewrite"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="RollingFileAppender"/>
+        <subsection name="RollingFileAppender">
+          <p>The RollingFileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter
+            and rolls the file over according the TriggeringPolicy and the RolloverPolicy. The
+            RollingFileAppender uses a RollingFileManager (which extends OutputStreamManager) to actually perform the
+            file I/O and perform the rollover. While RolloverFileAppenders from different Configurations cannot be
+            shared, the RollingFileManagers can be if the Manager is accessible. For example, two web applications in a
+            servlet container can have their own configuration and safely
+            write to the same file if Log4j is in a ClassLoader that is common to both of them.</p>
+          <p>
+            A RollingFileAppender requires a <a href="#TriggeringPolicies">TriggeringPolicy</a> and a
+            <a href="#RolloverStrategies">RolloverStrategy</a>. The triggering policy determines if a rollover should
+            be performed while the RolloverStrategy defines how the rollover should be done. If no RolloverStrategy
+            is configured, RollingFileAppender will use the <a href="DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+          </p>
+          <p>
+            File locking is not supported by the RollingFileAppender.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>append</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be appended to the end of the file. When set to false,
+                the file will be cleared before new records are written.</td>
+            </tr>
+            <tr>
+              <td>bufferedIO</td>
+              <td>boolean</td>
+              <td>When true - the default, records will be written to a buffer and the data will be written to
+                disk when the buffer is full or, if immediateFlush is set, when the record is written.
+                File locking cannot be used with bufferedIO. Performance tests have shown that using buffered I/O
+                significantly improves performance, even if immediateFlush is enabled.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>fileName</td>
+              <td>String</td>
+              <td>The name of the file to write to. If the file, or any of its parent directories, do not exist,
+                they will be created.</td>
+            </tr>
+            <tr>
+              <td>filePattern</td>
+              <td>String</td>
+              <td>The pattern of the file name of the archived log file. The format of the pattern should is
+                dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
+                a date/time pattern compatible with
+                <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+                and and/or a %i which represents an integer counter. The pattern also supports interpolation at
+                runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a> can
+                be included in the pattern.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td><p>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</p>
+                <p>Flushing after every write is only useful when using this
+				appender with synchronous loggers. Asynchronous loggers and
+				appenders will automatically flush at the end of a batch of events, 
+				even if immediateFlush is set to false. This also guarantees
+				the data is written to disk but is more efficient.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent</td>
+            </tr>
+
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>policy</td>
+              <td>TriggeringPolicy</td>
+              <td>The policy to use to determine if a rollover should occur.</td>
+            </tr>
+            <tr>
+              <td>strategy</td>
+              <td>RolloverStrategy</td>
+              <td>The strategy to use to determine the name and location of the archive file.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">RollingFileAppender Parameters</caption>
+          </table>
+          <a name="TriggeringPolicies"/>
+          <h4>Triggering Policies</h4>
+            <h5>Composite Triggering Policy</h5>
+              <p>
+                The CompositeTriggeringPolicy combines multiple triggering policies and returns true if any
+                of the configured policies return true. The CompositeTriggeringPolicy is configured simply
+                by wrapping other policies in a "Policies" element.
+              </p>
+            <h5>OnStartup Triggering Policy</h5>
+              <p>
+                The OnStartup policy takes no parameters and causes a rollover if the log file is older than the
+                current JVM's start time.
+              </p>
+            <h5>SizeBased Triggering Policy</h5>
+              <p>
+                Causes a rollover once the file has reached the specified size. The size can be specified in bytes,
+                KB, MB or GB.
+              </p>
+            <h5>TimeBased Triggering Policy</h5>
+              <p>
+                Causes a rollover once the date/time pattern no longer applies to the active file. This policy
+                accepts an "increment" attribute which indicates how frequently the rollover should occur based on the
+                time pattern and a "modulate" boolean attribute.
+              </p>
+                <table>
+                  <tr>
+                    <th>Parameter Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>interval</td>
+                    <td>integer</td>
+                    <td>How often a rollover should occur based on the most specific time unit in the date pattern.
+                      For example, with a date pattern with hours as the most specific item and and increment of 4 rollovers
+                      would occur every 4 hours.
+                      The default value is 1.</td>
+                  </tr>
+                  <tr>
+                    <td>modulate</td>
+                    <td>boolean</td>
+                    <td>Indicates whether the interval should be adjusted to cause the next rollover to occur on
+                      the interval boundary. For example, if the item is hours, the current hour is 3 am and the
+                      interval is 4 then then the first rollover will occur at 4 am and then next ones will occur at
+                      8 am, noon, 4pm, etc.</td>
+                  </tr>
+                  <caption align="top">TimeBasedTriggeringPolicy Parameters</caption>
+                </table>
+          <a name="RolloverStrategies"/>
+          <h4>Rollover Strategies</h4>
+            <a name="DefaultRolloverStrategy"/>
+            <h5>Default Rollover Strategy</h5>
+              <p>
+                The default rollover strategy accepts both a date/time pattern and an integer from the filePattern
+                attribute specified on the RollingFileAppender itself. If the date/time pattern
+                is present it will be replaced with the current date and time values. If the pattern contains an integer
+                it will be incremented on each rollover. If the pattern contains both a date/time and integer
+                in the pattern the integer will be incremented until the result of the date/time pattern changes. If
+                the file pattern ends with ".gz" or ".zip" the resulting archive will be compressed using the
+                compression scheme that matches the suffix. The pattern may also contain lookup references that
+                can be resolved at runtime such as is shown in the example below.
+              </p>
+              <p>The default rollover strategy supports two variations for incrementing the counter. The first is
+                the "fixed window" strategy. To illustrate how it works, suppose that the min attribute is set to 1,
+                the max attribute is set to 3, the file name is "foo.log", and the file name pattern is "foo-%i.log".
+              </p>
+
+              <table>
+                <tr>
+                  <th>Number of rollovers</th>
+                  <th>Active output target</th>
+                  <th>Archived log files</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>foo.log</td>
+                  <td>-</td>
+                  <td>All logging is going to the initial file.</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log</td>
+                  <td>During the first rollover foo.log is renamed to foo-1.log. A new foo.log file is created and
+                  starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log</td>
+                  <td>During the second rollover foo-1.log is renamed to foo-2.log and foo.log is renamed to
+                    foo-1.log. A new foo.log file is created and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>During the third rollover foo-2.log is renamed to foo-3.log, foo-1.log is renamed to foo-2.log and
+                    foo.log is renamed to foo-1.log. A new foo.log file is created and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>In the fourth and subsequent rollovers, foo-3.log is deleted, foo-2.log is renamed to foo-3.log,
+                    foo-1.log is renamed to foo-2.log and foo.log is renamed to foo-1.log. A new foo.log file is
+                    created and starts being written to.</td>
+                </tr>
+              </table>
+              <p>By way of contrast, when the the fileIndex attribute is set to "max" but all the other settings
+                are the same the following actions will be performed.
+              </p>
+              <table>
+                <tr>
+                  <th>Number of rollovers</th>
+                  <th>Active output target</th>
+                  <th>Archived log files</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>foo.log</td>
+                  <td>-</td>
+                  <td>All logging is going to the initial file.</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log</td>
+                  <td>During the first rollover foo.log is renamed to foo-1.log. A new foo.log file is created and
+                    starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log</td>
+                  <td>During the second rollover foo.log is renamed to foo-2.log. A new foo.log file is created
+                    and starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>During the third rollover foo.log is renamed to foo-3.log. A new foo.log file is created and
+                    starts being written to.</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>foo.log</td>
+                  <td>foo-1.log, foo-2.log, foo-3.log</td>
+                  <td>In the fourth and subsequent rollovers, foo-1.log is deleted, foo-2.log is renamed to foo-1.log,
+                    foo-3.log is renamed to foo-2.log and foo.log is renamed to foo-3.log. A new foo.log file is
+                    created and starts being written to.</td>
+                </tr>
+              </table>
+              <table>
+                <tr>
+                  <th>Parameter Name</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>fileIndex</td>
+                  <td>String</td>
+                  <td>If set to "max" (the default), files with a higher index will be newer than files with a
+                    smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy
+                    described above.</td>
+                </tr>
+                <tr>
+                  <td>min</td>
+                  <td>integer</td>
+                  <td>The minimum value of the counter. The default value is 1.</td>
+                </tr>
+                <tr>
+                  <td>max</td>
+                  <td>integer</td>
+                  <td>The maximum value of the counter. Once this values is reached older archives will be
+                    deleted on subsequent rollovers.</td>
+                </tr>
+                <caption align="top">DefaultRolloverStrategy Parameters</caption>
+              </table>
+
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with both the time and size based
+            triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
+            based on the current year and month, and will compress each
+            archive using gzip:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+          <p>
+            This second example shows a rollover strategy that will keep up to 20 files before removing them.
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+        </p>
+          <p>
+            Below is a sample configuration that uses a RollingFileAppender with both the time and size based
+            triggering policies, will create up to 7 archives on the same day (1-7) that are stored in a directory
+            based on the current year and month, and will compress each
+            archive using gzip and will roll every 6 hours when the hour is divisible by 6:
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="RollingFile"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="RoutingAppender"/>
+        <subsection name="RoutingAppender">
+           <p>
+             The RoutingAppender evaluates LogEvents and then routes them to a subordinate Appender. The target
+             Appender may be an appender previously configured and may be referenced by its name or the
+             Appender can be dynamically created as needed. The RoutingAppender should be configured after any
+             Appenders it references to allow it to shut down properly.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>rewritePolicy</td>
+              <td>RewritePolicy</td>
+              <td>The RewritePolicy that will manipulate the LogEvent.</td>
+            </tr>
+            <tr>
+              <td>routes</td>
+              <td>Routes</td>
+              <td>Contains one or more Route declarations to identify the criteria for choosing Appenders.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">RoutingAppender Parameters</caption>
+          </table>
+          <h4>Routes</h4>
+            <p>
+              The Routes element accepts a single, required attribute named "pattern". The pattern is evaluated
+              against all the registered Lookups and the result is used to select a Route. Each Route may be
+              configured with a key. If the key matches the result of evaluating the pattern then that Route
+              will be selected. If no key is specified on a Route then that Route is the default. Only one Route
+              can be configured as the default.
+            </p>
+            <p>
+              Each Route must reference an Appender. If the Route contains an appender-ref attribute then the
+              Route will reference an Appender that was defined in the configuration. If the Route contains an
+              Appender definition then an Appender will be created within the context of the RoutingAppender and
+              will be reused each time a matching Appender name is referenced through a Route.
+            </p>
+          <p>
+            Below is a sample configuration that uses a RoutingAppender to route all Audit events to
+            a FlumeAppender and all other events will be routed to a RollingFileAppender that captures only
+            the specific event type. Note that the AuditAppender was predefined while the RollingFileAppenders
+            are created as needed.
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Flume name="AuditLogger" suppressExceptions="false" compress="true">
+      <Agent host="192.168.10.101" port="8800"/>
+      <Agent host="192.168.10.102" port="8800"/>
+      <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
+    </Flume>
+    <Routing name="Routing">
+      <Routes pattern="$${sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${sd:type}" fileName="${sd:type}.log"
+                       filePattern="${sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route appender-ref="AuditLogger" key="Audit"/>
+      </Routes>
+    </Routing>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Routing"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="SMTPAppender"/>
+        <subsection name="SMTPAppender">
+          <p>
+            Sends an e-mail when a specific logging event occurs, typically on errors or fatal errors.
+          </p>
+          <p>
+            The number of logging events delivered in this e-mail depend on the value of
+            <b>BufferSize</b> option. The <code>SMTPAppender</code> keeps only the last
+            <code>BufferSize</code> logging events in its cyclic buffer. This keeps
+            memory requirements at a reasonable level while still delivering useful
+            application context.
+          </p>
+          <p>
+            The default behavior is to trigger sending an email whenever an ERROR or higher
+            severity event is logged and to format it as HTML. The circumstances on when the
+            email is sent can be controlled by setting one or more filters on the Appender.
+            As with other Appenders, the formatting can be controlled by specifying a Layout
+            for the Appender.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>bcc</td>
+              <td>String</td>
+              <td>The comma-separated list of BCC email addresses.</td>
+            </tr>
+            <tr>
+              <td>cc</td>
+              <td>String</td>
+              <td>The comma-separated list of CC email addresses.</td>
+            </tr>
+            <tr>
+              <td>bufferSize</td>
+              <td>integer</td>
+              <td>The maximum number of log events to be buffered for inclusion in the message. Defaults to 512.</td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.
+              </td>
+            </tr>
+            <tr>
+              <td>from</td>
+              <td>String</td>
+              <td>The email address of the sender.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>replyTo</td>
+              <td>String</td>
+              <td>The comma-separated list of reply-to email addresses.</td>
+            </tr>
+            <tr>
+              <td>smtpDebug</td>
+              <td>boolean</td>
+              <td>When set to true enables session debugging on STDOUT. Defaults to false.</td>
+            </tr>
+            <tr>
+              <td>smtpHost</td>
+              <td>String</td>
+              <td>The SMTP hostname to send to. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>smtpPassword</td>
+              <td>String</td>
+              <td>The password required to authenticate against the SMTP server.</td>
+            </tr>
+            <tr>
+              <td>smtpPort</td>
+              <td>integer</td>
+              <td>The SMTP port to send to. </td>
+            </tr>
+            <tr>
+              <td>smtpProtocol</td>
+              <td>String</td>
+              <td>The SMTP transport protocol (such as "smtps", defaults to "smtp").</td>
+            </tr>
+            <tr>
+              <td>smtpUsername</td>
+              <td>String</td>
+              <td>The username required to authenticate against the SMTP server.</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.
+              </td>
+            </tr>
+            <tr>
+              <td>to</td>
+              <td>String</td>
+              <td>The comma-separated list of recipient email addresses.</td>
+            </tr>
+            <caption align="top">SMTPAppender Parameters</caption>
+          </table>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <SMTP name="Mail" suppressExceptions="false" subject="Error Log" to="errors@logging.apache.org"
+      from="test@logging.apache.org" smtpHost="localhost" smtpPort="25" bufferSize="50">
+    </SMTP>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Mail"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+        </subsection>
+        <a name="SocketAppender"/>
+        <subsection name="SocketAppender">
+          <p>
+            The SocketAppender is an OutputStreamAppender that writes its output to a remote destination
+            specified by a host and port. The data can be sent over either TCP or UDP and can be sent in any format.
+            The default format is to send a Serialized LogEvent. Log4j 2 contains a SocketServer which is capable
+            of receiving serialized LogEvents and routing them through the logging system on the server.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The name or address of the system that is listening for log events. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+              socket is not available.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td>When set to true - the default, each write will be followed by a flush. 
+                This will guarantee the data is written
+                to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>layout</td>
+              <td>Layout</td>
+              <td>The Layout to use to format the LogEvent. The default is SerializedLayout.</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>integer</td>
+              <td>The port on the host that is listening for log events. This parameter must be specified.</td>
+            </tr>
+            <tr>
+              <td>protocol</td>
+              <td>String</td>
+              <td>"TCP" or "UDP". This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>reconnectionDelay</td>
+              <td>integer</td>
+              <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
+                the server after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if suppressExceptions is
+                set to false).</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">SocketAppender Parameters</caption>
+          </table>
+
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Socket name="socket" host="localhost" port="9500">
+      <SerializedLayout />
+    </Socket>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="socket"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+        </subsection>
+        <a name="SyslogAppender"/>
+        <subsection name="SyslogAppender">
+          <p>
+            The SyslogAppender is a SocketAppender that writes its output to a remote destination
+            specified by a host and port in a format that conforms with either the BSD Syslog format or the RFC 5424
+            format. The data can be sent over either TCP or UDP.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>appName</td>
+              <td>String</td>
+              <td>The value to use as the APP-NAME in the RFC 5424 syslog record.</td>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting the syslog String to a byte array. The String must be
+                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+                If not specified, the default system Charset will be used.</td>
+            </tr>
+            <tr>
+              <td>enterpriseNumber</td>
+              <td>integer</td>
+              <td>The IANA enterprise number as described in
+                <a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+              may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>facility</td>
+              <td>String</td>
+              <td>The facility is used to try to classify the message. The facility option must be set to one of
+                "KERN", "USER", "MAIL", "DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
+                "FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2", "LOCAL3", "LOCAL4", "LOCAL5",
+                "LOCAL6", or "LOCAL7". These values may be specified as upper or lower case characters.</td>
+            </tr>
+            <tr>
+              <td>format</td>
+              <td>String</td>
+              <td>If set to "RFC5424" the data will be formatted in accordance with RFC 5424. Otherwise, it will
+                be formatted as a BSD Syslog record. Note that although BSD Syslog records are required to be
+                1024 bytes or shorter the SyslogLayout does not truncate them. The RFC5424Layout also does not
+                truncate records since the receiver must accept records of up to 2048 bytes and may accept records
+                that are longer.</td>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The name or address of the system that is listening for log events. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>id</td>
+              <td>String</td>
+              <td>The default structured data id to use when formatting according to RFC 5424. If the LogEvent contains
+                a StructuredDataMessage the id from the Message will be used instead of this value.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+                socket is not available.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>includeMDC</td>
+              <td>boolean</td>
+              <td>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
+                Defaults to true.</td>
+            </tr>
+            <tr>
+              <td>mdcExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be excluded from the LogEvent. This is mutually
+                exclusive with the mdcIncludes attribute. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be included in the FlumeEvent. Any keys in the MDC
+                not found in the list will be excluded. This option is mutually exclusive with the mdcExcludes
+                attribute. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcRequired</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that must be present in the MDC. If a key is not present a
+                LoggingException will be thrown. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcPrefix</td>
+              <td>String</td>
+              <td>A string that should be prepended to each MDC key in order to distinguish it from event attributes.
+                The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>messageId</td>
+              <td>String</td>
+              <td>The default value to be used in the MSGID field of RFC 5424 syslog records. </td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>newLine</td>
+              <td>boolean</td>
+              <td>If true, a newline will be appended to the end of the syslog record. The default is false.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>integer</td>
+              <td>The port on the host that is listening for log events. This parameter must be specified.</td>
+            </tr>
+
+            <tr>
+              <td>protocol</td>
+              <td>String</td>
+              <td>"TCP" or "UDP". This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>reconnectionDelay</td>
+              <td>integer</td>
+              <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
+                the server after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if suppressExceptions is
+                set to false).</td>
+            </tr>
+            <tr>
+              <td>suppressExceptions</td>
+              <td>boolean</td>
+              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
+                false exceptions will be percolated to the caller.</td>
+            </tr>
+            <caption align="top">SyslogAppender Parameters</caption>
+          </table>
+          <p>
+            A sample syslogAppender configuration that is configured with two SyslogAppenders, one using the BSD
+            format and one using RFC 5424.
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" name="MyApp" packages="">
+  <appenders>
+    <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
+    <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
+            protocol="TCP" appName="MyApp" includeMDC="true"
+            facility="LOCAL0" enterpriseNumber="18060" newLine="true"
+            messageId="Audit" id="App"/>
+  </appenders>
+  <loggers>
+    <logger name="com.mycorp" level="error">
+      <appender-ref ref="RFC5424"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="bsd"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          </p>
+        </subsection>
+      </section>
+  </body>
+</document>

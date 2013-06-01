@@ -1,0 +1,118 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+package org.apache.logging.log4j.core.net;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+
+import java.io.OutputStream;
+
+/**
+ * Socket Manager for UDP connections.
+ */
+public class DatagramSocketManager extends AbstractSocketManager {
+
+    private static final DatagramSocketManagerFactory FACTORY = new DatagramSocketManagerFactory();
+
+    /**
+     * The Constructor.
+     * @param name The unique name of the connection.
+     * @param os The OutputStream.
+     * @param address
+     * @param host The host to connect to.
+     * @param port The port on the host.
+     * @param layout The layout
+     */
+    protected DatagramSocketManager(final String name, final OutputStream os, InetAddress address, final String host,
+                                    final int port, final Layout layout) {
+        super(name, os, address, host, port, layout);
+    }
+
+    /**
+     * Obtain a SocketManager.
+     * @param host The host to connect to.
+     * @param port The port on the host.
+     * @param layout The layout.
+     * @return A DatagramSocketManager.
+     */
+    public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout layout) {
+        if (host == null || host.length() == 0) {
+            throw new IllegalArgumentException("A host name is required");
+        }
+        if (port <= 0) {
+            throw new IllegalArgumentException("A port value is required");
+        }
+        return (DatagramSocketManager) getManager("UDP:" + host + ":" + port, new FactoryData(host, port, layout),
+            FACTORY);
+    }
+
+    /**
+     * DatagramSocketManager's content format is specified by:<p/>
+     * Key: "protocol" Value: "udp"<p/>
+     * Key: "direction" Value: "out"
+     * @return Map of content format keys supporting DatagramSocketManager
+     */
+    @Override
+    public Map<String, String> getContentFormat()
+    {
+        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        result.put("protocol", "udp");
+        result.put("direction", "out");
+
+        return result;
+    }
+
+    /**
+     * Data for the factory.
+     */
+    private static class FactoryData {
+        private final String host;
+        private final int port;
+        private final Layout layout;
+
+        public FactoryData(final String host, final int port, final Layout layout) {
+            this.host = host;
+            this.port = port;
+            this.layout = layout;
+        }
+    }
+
+    /**
+     * Factory to create the DatagramSocketManager.
+     */
+    private static class DatagramSocketManagerFactory implements ManagerFactory<DatagramSocketManager, FactoryData> {
+
+        @Override
+        public DatagramSocketManager createManager(final String name, final FactoryData data) {
+            InetAddress address;
+            final OutputStream os = new DatagramOutputStream(data.host, data.port, data.layout.getHeader(),
+                data.layout.getFooter());
+            try {
+                address = InetAddress.getByName(data.host);
+            } catch (final UnknownHostException ex) {
+                LOGGER.error("Could not find address of " + data.host, ex);
+                return null;
+            }
+            return new DatagramSocketManager(name, os, address, data.host, data.port, data.layout);
+        }
+    }
+}

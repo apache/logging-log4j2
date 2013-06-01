@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+  <properties>
+    <title>Log4j 2 API Messages</title>
+    <author email="rgoers@apache.org">Ralph Goers</author>
+  </properties>
+
+  <body>
+    <section name="Log4j 2 API">
+      <a name="Messages"/>
+      <subsection name="Messages">
+        <p>
+          Although Log4j 2 provides Logger methods that accept Strings and Objects, all of these are ultimately
+          captured in Message objects that are then associated with the log event. Applications are free to
+          construct Messages of their own and pass them to the Logger. Although it may seem more expensive than
+          passing the message format and parameters directly to the event, testing has shown that with modern
+          JVMs the cost of creating and destroying events is minor, especially when complex tasks are encapsulated
+          in the Message instead of the application. In addition, when using the methods that accept Strings and
+          parameters, the underlying Message object will only be created if any configured global filters
+          or the Logger's log level allow the message to be processed.
+        </p>
+        <p>
+          Consider an application that has a Map object containing {"Name" = "John Doe", "Address" = "123 Main
+          St.",
+          "Phone" = "(999) 555-1212"} and a User object that has a getId method that returns "jdoe". The developer
+          would like to add an informational message that returns "User John Doe has logged in using id jdoe". The
+          way this could be accomplished is by doing:
+        </p>
+        <pre class="prettyprint">logger.info("User {} has logged in using id {}", map.get("Name"), user.getId());</pre>
+        <p>
+          While there is nothing inherently wrong with this, as the complexity of the objects and desired output
+          increases this technique becomes harder to use. As an alternative, using Messages allows:
+        </p>
+        <pre class="prettyprint">logger.info(new LoggedInMessage(map, user));</pre>
+        <p>
+          In this alternative the formatting is delegated to the LoggedInMessage object's getFormattedMessage
+          method.
+          Although in this alternative a new object is created, none of the methods on the objects passed to the
+          LoggedInMessage are invoked until the LoggedInMessage is formatted. This is especially useful when an
+          Object's toString method does not produce the information you would like to appear in the log.
+        </p>
+        <p>
+          Another advantage to Messages is that they simplify writing Layouts. In other logging frameworks the
+          Layout must loop through the parameters individually and determine what to do based on what objects
+          are encountered. With Messages the Layout has the option of delegating the formatting to the Message or
+          performing its formatting based on the type of Message encountered.
+        </p>
+        <p>
+          Borrowing from the earlier example illustrating Markers to identify SQL statements being logged, Messages
+          can also be leveraged. First, the Message is defined.
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+public class SQLMessage implements Message {
+  public enum SQLType {
+      UPDATE,
+      QUERY
+  };
+
+  prviate final SQLType type;
+  private final String table;
+  private final Map<String, String> cols;
+
+  public SQLMessage(SQLType type, String table) {
+      this(type, table, null);
+  }
+
+  public SQLMessage(SQLType type, String table, Map<String, String> cols) {
+      this.type = type;
+      this.table = table;
+      this.cols = cols;
+  }
+
+  public String getFormattedMessage() {
+      switch (type) {
+          case UPDATE:
+            return createUpdateString();
+            break;
+          case QUERY:
+            return createQueryString();
+            break;
+          default;
+      }
+  }
+
+  public String getMessageFormat() {
+      return type + " " + table;
+  }
+
+  public Object getParameters() {
+      return cols;
+  }
+
+  private String createUpdateString() {
+  }
+
+  private String createQueryString() {
+  }
+
+  private String formatCols(Map<String, String> cols) {
+      StringBuilder sb = new StringBuilder();
+      boolean first = true;
+      for (Map.Entry<String, String> entry : cols.entrySet()) {
+          if (!first) {
+              sb.append(", ");
+          }
+          sb.append(entry.getKey()).append("=").append(entry.getValue());
+          first = false;
+      }
+      return sb.toString();
+  }
+}]]></pre>
+      <p>
+        Next we can use the message in our application.
+      </p>
+        <pre class="prettyprint linenums"><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.Map;
+
+public class MyApp {
+
+    private Logger logger = LogManager.getLogger(MyApp.class.getName());
+    private static final Marker SQL_MARKER = MarkerManager.getMarker("SQL");
+    private static final Marker UPDATE_MARKER = MarkerManager.getMarker("SQL_UPDATE", SQL_MARKER);
+    private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
+
+    public String doQuery(String table) {
+        logger.entry(param);
+
+        logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table);
+
+        return logger.exit();
+    }
+
+    public String doUpdate(String table, Map<String, String> params) {
+        logger.entry(param);
+
+        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas);
+
+        return logger.exit();
+    }
+}]]></pre>
+        <p>
+          Notice that in contrast to the prior version of this example, the logger.debug in doUpdate no longer
+          needs to be wrapped in an isDebugEnabled call as creation of the SQLMessage is on the same order of
+          magnitude of performing that check. Furthermore, all the formatting of the SQL columns is now hidden
+          in the SQLMessage instead of having to take place in the business logic. Finally, if desired, Filters
+          and/or Layouts can be written to take special action when an SQLMessage is encountered.
+        </p>
+      <a name="FormattedMessage"/>
+      <h4>FormattedMessage</h4>
+        <p>
+          The message pattern passed to a
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage.html">FormattedMessage</a>
+          is first checked to see if it is a valid java.text.MessageFormat pattern. If it is, a MessageFormatMessage is
+          used to format it. If not it is next checked to see if it contains any tokens that are valid format
+          specifiers for String.format(). If so, a StringFormattedMessage is used to format it. Finally, if the
+          pattern doesn't match either of those then a ParameterizedMessage is used to format it.
+        </p>
+      <a name="LocalizedMessage"/>
+      <h4>LocalizedMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/LocalizedMessage.html">LocalizedMessage</a>
+          is provided primarily to provide compatibility with Log4j 1.x. Generally,
+          the best approach to localization is to have the client UI render the events in the client's locale.
+        </p>
+        <p>
+          LocalizedMessage incorporates a ResourceBundle and allows the message pattern parameter to be the key to
+          the message pattern in the bundle. If no bundle is specified,
+          LocalizedMessage will attempt to locate a bundle with the name of the Logger used to log the event. The
+          message retrieved from the bundle will be formatted using a FormattedMessage.
+        </p>
+      <a name="LoggerNameAwareMessage"/>
+      <h4>LoggerNameAwareMessage</h4>
+        <p>
+          LoggerNameAwareMessage is an interface with a setLoggerName method. This method will be called during
+          event construction so that the Message has the name of the Logger used to log the event when the
+          message is being formatted.
+        </p>
+      <a name="MapMessage"/>
+      <h4>MapMessage</h4>
+        <p>
+          A MapMessage contains a Map of String keys and values. MapMessage implements FormattedMessage and accepts
+          a format specifier of "XML", in which case the Map will be formatted as XML. Otherwise, the Map will be
+          formatted as "key1=value1 key2=value2...".
+        </p>
+        <a name="MessageFormatMessage"/>
+        <h4>MessageFormatMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
+          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html">conversion format</a>.
+          While this Message has more flexibility than ParameterizedMessage, it is also about two times slower.
+        </p>
+      <a name="MultiformatMessage"/>
+      <h4>MultiformatMessage</h4>
+        <p>
+          A MultiformatMessage will have a getFormats method and a getFormattedMessage method that accepts and array
+          of format Strings. The getFormats method may be called by a Layout to provide it information on what
+          formatting optionsthe Message supports. The Layout may then call getFormattedMessage with one or more
+          for the formats. If the Message doesn't recognize the format name it will simply format the data using its
+          default format. An example of this is the StructuredDataMessage which accepts a format String of "XML"
+          which will cause it to format the event data as XML instead of the RFC 5424 format.
+        </p>
+      <a name="ObjectMessage"/>
+      <h4>ObjectMessage</h4>
+        <p>
+          Formats an Object by calling its toString method.
+        </p>
+      <a name="ParameterizedMessage"/>
+      <h4>ParameterizedMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/ParameterizedMessage.html">ParameterizedMessage</a>
+          handles messages that contain "{}" in the format to represent replaceable tokens and the replacement
+          parameters.
+        </p>
+      <a name="SimpleMessage"/>
+      <h4>SimpleMessage</h4>
+        <p>
+          SimpleMessage contains a String that requires no formatting.
+        </p>
+      <a name="StringFormattedMessage"/>
+      <h4>StringFormattedMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StringFormattedMessage.html">StringFormattedMessage</a>
+          handles messages that use a <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">conversion format</a>
+          that is compliant with <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#format(java.lang.String, java.lang.Object...)">java.lang.String.format()</a>.
+          While this Message has more flexibility than ParameterizedMessage, it is also 5 to 10 times slower.
+        </p>
+      <a name="StructuredDataMessage"/>
+      <h4>StructuredDataMessage</h4>
+        <p>
+          <a href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
+          allows applications to add items to a Map as well as set the id to allow a message to be formatted as a
+          Structured Data element in accordance with <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+        </p>
+      <a name="ThreadDumpMessage"/>
+      <h4>ThreadDumpMessage</h4>
+        <p>
+          A ThreadDumpMessage, if logged, will generate stack traces for all threads. If running on Java 6+ the
+          stack traces will include any locks that are held.
+        </p>
+      <a name="TimestampMessage"/>
+      <h4>TimestampMessage</h4>
+        <p>
+          A TimestampMessage will provide a getTimestamp method that is called during event construction. The
+          timestamp in the Message will be used in lieu of the current timestamp.
+        </p>
+      </subsection>
+    </section>
+  </body>
+</document>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <File name="File" fileName="target/AsyncLoggerConfigTest.log" bufferedIO="false" immediateFlush="true" append="false">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
+      </PatternLayout>
+    </File>
+  </appenders>
+  
+  <loggers>
+    <asyncLogger name="com.foo.Bar" level="trace" includeLocation="false">
+      <appender-ref ref="File"/>
+    </asyncLogger>
+    <root level="info">
+      <appender-ref ref="File"/>
+    </root>
+  </loggers>
+</configuration>

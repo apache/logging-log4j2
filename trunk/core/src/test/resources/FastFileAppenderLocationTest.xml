@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <FastFile name="FastFile" fileName="target/FastFileAppenderLocationTest.log" immediateFlush="false" append="false">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
+        <!--  
+        <pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</pattern>
+        -->
+      </PatternLayout>
+    </FastFile>
+  </appenders>
+  
+  <loggers>
+    <asyncRoot level="info" includeLocation="true">
+      <appender-ref ref="FastFile"/>
+    </asyncRoot>
+  </loggers>
+</configuration>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Maven and Ivy Artifacts</title>
+  </properties>
+
+  <body>
+    <section name="Maven and Ivy Artifacts">
+
+      <subsection name="Using Log4j in your Apache Maven build">
+        <p>
+          To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
+          <code>pom.xml</code> file.
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+      </subsection>
+      <subsection name="Using Log4j in your Apache Ivy build">
+        <p>
+          To build with <a href="https://ant.apache.org/ivy/">Apache Ivy</a>, add the dependencies listed below to your
+          <code>ivy.xml</code> file.
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
+  <dependency org="org.apache.logging.log4j" name="log4j-core" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+      </subsection>
+      <subsection name="Optional Components">
+        <p>
+          Log4j 2.x contains several optional components that can be included in an application.
+        </p>
+        <h4>Log4j 1.x API Bridge</h4>
+        <p>If there are existing components that are written to use Log4j 1.x and it is desired to have this
+          logging routed to Log4j 2 then remove any log4j 1.x dependencies and add the following.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-1.2-api</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-1.2-api" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>Apache Commons Logging Bridge</h4>
+        <p>Commons Logging is used in many components as a way of letting applications choose the specific
+          logging implementation. To route logging from those components into Log4j 2 include the
+          following dependency and do not remove the Commons Logging jar.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-jcl</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-jcl" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>SLF4J Bridge</h4>
+        <p>SLF4J is another popular logging API that may be bound to Log4j 2 by including the following
+          dependency along with the SLF4J dependencies.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>Tag Library</h4>
+        <p>The Log4j Log Tag Library creates the capability of inserting log statements in JSPs without
+          the use of Java scripting. It uses the standard Log4j 2 API to log messages according to
+          your Log4j configuration.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-taglib</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-taglib" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>Log4j Web</h4>
+        <p>The Log4j Web artifact contains classes that can be used to initialize logging within a web application.</p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-web</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-web" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>Apache Flume NG Appender</h4>
+        <p>The Flume NG Appender allows applications to send events to Flume NG Agents.</p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-flume-ng</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-flume-ng" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+        <h4>Log4j to SLF4J Adapter</h4>
+        <p>The Log4j 2 to SLF4J Adapter allows applications coded to the Log4j 2 API to be routed to SLF4J. Use of this
+          adapter may cause some loss of performance as the Log4j 2 Messages must be formatted before they can be passed
+          to SLF4J. The SLF4J Bridge must NOT be on the class path when this is in use.</p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-to-slf4j</artifactId>
+    <version>${Log4jReleaseVersion}</version>
+  </dependency>
+</dependencies>
+]]></pre>
+        <code>ivy.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencies>
+  <dependency org="org.apache.logging.log4j" name="log4j-to-slf4j" rev="${Log4jReleaseVersion}" />
+</dependencies>
+]]></pre>
+      </subsection>
+    </section>
+  </body>
+</document>

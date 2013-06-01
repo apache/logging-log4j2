@@ -1,0 +1,1084 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+#set($dollar = '$')
+
+<document>
+    <properties>
+        <title>Configuring Log4j 2</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+      <section name="Configuration">
+        #if (!$alignedFileName)
+            #set ($isPDF = true)
+        #else
+            #set ($isPDF = false)
+        #end
+        <p>Inserting log requests into the application code requires a fair
+          amount of planning and effort. Observation shows that approximately 4
+          percent of code is dedicated to logging. Consequently, even moderately
+          sized applications will have thousands of logging statements embedded
+          within their code.  Given their number, it becomes imperative to
+          manage these log statements without the need to modify them manually.
+        </p>
+        <p>
+          Configuration of Log4j 2 can be accomplished in 1 of 4 ways:
+          <ol>
+            <li>Through a configuration file written in XML or JSON.</li>
+            <li>Programmatically, by creating a ConfigurationFactory and Configuration implementation.</li>
+            <li>Programmatically, by calling the APIs exposed in the Configuration interface to add
+              components to the default configuration.</li>
+            <li>Programmatically, by calling methods on the internal Logger class.</li>
+          </ol>
+        </p>
+        <p>
+          This page focuses primarily on configuring Log4j through a configuration file. Information on
+          programmatically configuring Log4j can be found at <a href="./extending.html">Extending Log4j 2</a>.
+        </p>
+        <p>
+          Note that unlike Log4j 1.x, the public Log4j 2 API does not expose methods to add, modify or remove
+          appenders and filters or manipulate the configuration in any way.
+        </p>
+        <a name="AutomaticConfiguration"/>
+        <subsection name="Automatic Configuration">
+          <p>
+            Log4j has the ability to automatically configure itself during initialization.
+            When Log4j starts it will locate all the ConfigurationFactory plugins and arrange then in weighted
+            order from highest to lowest. As delivered, Log4j contains two ConfigurationFactory implementations,
+            one for JSON and one for XML.
+            <ol>
+              <li>Log4j will inspect the "log4j.configurationFile" system property and, if set,  will attempt to
+                load the configuration using the <code>ConfigurationFactory</code> that matches the file
+                extension.</li>
+              <li>If no system property is set the JSON ConfigurationFactory will look for log4j2-test.json or
+                log4j2-test.jsn in the classpath.</li>
+              <li>If no such file is found the XML ConfigurationFactory will look for log4j2-test.xml in the
+                classpath.</li>
+              <li>If a test file cannot be located the JSON ConfigurationFactory will look for log4j2.json or log4j2.jsn
+                on the classpath.</li>
+              <li>If a JSON file cannot be located the XML ConfigurationFactory will try to locate
+                log4j2.xml on the classpath.</li>
+              <li>If no configuration file could be located the <code>DefaultConfiguration</code> will
+                be used. This will cause logging output to go to the console.</li>
+            </ol>
+          </p>
+          <p>An example application named <code>MyApp</code> that uses log4j can be used to illustrate how
+            this is done.
+          </p>
+          <p>
+<pre class="prettyprint linenums">
+import com.foo.Bar;
+
+// Import log4j classes.
+import org.apache.logging.log4j.Logger;
+
+public class MyApp {
+
+// Define a static logger variable so that it references the
+// Logger instance named "MyApp".
+Logger logger = LogManager.getLogger(MyApp.class.getName());
+
+public static void main(String[] args) {
+
+// Set up a simple configuration that logs on the console.
+
+logger.trace("Entering application.");
+Bar bar = new Bar();
+if (!bar.doIt() {
+  logger.error("Didn't do it.");
+}
+logger.trace("Exiting application.");                 }
+}</pre>
+          </p>
+          <p>
+            <code>MyApp</code> begins by importing log4j related classes. It
+            then defines a static logger variable with the name <code>MyApp</code>
+            which happens to be the fully qualified name of the class.
+          </p>
+          <p>
+            <code>MyApp</code> uses the <code>Bar</code> class defined in the package<code>com.foo</code>.
+          </p>
+          <p>
+<pre class="prettyprint linenums">
+package com.foo;
+import org.apache.logging.log4j.Logger;
+
+public class Bar {
+  static Logger logger = LogManager.getLogger(Bar.class.getName());
+
+  public boolean doIt() {
+    logger.entry();
+    logger.error("Did it again!");
+    return logger.exit(false);
+  }
+}</pre>
+          </p>
+          <p>
+            Log4j will provide a default configuration if it cannot locate a configuration file. The default
+            configuration, provided in the DefaultConfiguration class, will set up:
+            <ul>
+              <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/appender/ConsoleAppender.html">ConsoleAppender</a>
+                attached to the root logger.</li>
+              <li>A <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/layout/PatternLayout.html">PatternLayout</a>
+                set to the pattern "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" attached to the ConsoleAppender</li>
+            </ul>
+          </p>
+          <p>
+            Note that by default Log4j assigns the root logger to <code>Level.ERROR</code>.
+          </p>
+          <p>The output of MyApp would be similar to:
+<pre class="prettyprint linenums">
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] ERROR MyApp - Didn't do it.</pre>
+          </p>
+          <p>
+            As was described previously, Log4j will first attempt to configure itself from configuration files. A
+            configuration equivalent to the default would look like:
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+            Once the file above is placed into the classpath as log4j2.xml you will get results identical to
+            those listed above. Changing the root level to trace will result in results similar to:
+             <pre>
+17:13:01.540 [main] TRACE MyApp - Entering application.
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] TRACE com.foo.Bar - exit with (false)
+17:13:01.540 [main] ERROR MyApp - Didn't do it.
+17:13:01.540 [main] TRACE MyApp - Exiting application.</pre>
+          </p>
+          <p>
+            Note that status logging is disabled when the default configuration is used.
+          </p>
+          <p>
+            Perhaps it is desired to eliminate all the TRACE output from everything except <code>com.foo.Bar</code>. Simply
+            changing the log level would not accomplish the task. Instead, the solution is to
+            add a new logger definition to the configuration:
+          </p>
+            <pre class="prettyprint linenums"><![CDATA[
+<logger name="com.foo.Bar" level="TRACE"/>
+<root level="ERROR">
+  <appender-ref ref="STDOUT">
+</root>]]></pre>
+          <p>
+            With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error events will
+            be recorded from all other components.
+          </p>
+        </subsection>
+        <a name="Additivity"/>
+        <subsection name="Additivity">
+          <p>
+            In the previous example all the events from <code>com.foo.Bar</code> were still written to the Console. This is
+            because the logger for <code>com.foo.Bar</code> did not have any appenders configured while its parent did. In fact,
+            the following configuration
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="com.foo.Bar" level="trace">
+      <appender-ref ref="Console"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          <p>would result in</p>
+             <pre class="prettyprint linenums">
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] TRACE com.foo.Bar - entry
+17:13:01.540 [main] ERROR com.foo.Bar - Did it again!
+17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
+17:13:01.540 [main] TRACE com.foo.Bar - exit (false)
+17:13:01.540 [main] ERROR MyApp - Didn't do it.</pre>
+          <p>Notice that the trace messages from <code>com.foo.Bar</code> appear twice. This is because the appender associated
+            with logger <code>com.foo.Bar</code> is first used, which writes the first instance to the Console. Next, the parent
+            of <code>com.foo.Bar</code>, which in this case is the root logger, is referenced. The event is then passed to its
+            appender, which is also writes to the Console, resulting in the second instance. This is known as
+            additivity. While additivity can be quite a convenient feature (as in the first previous example where
+            no appender reference needed to be configured), in many cases this behavior is considered undesirable
+            and so it is possible to disable it by setting the additivity attribute on the logger to false:
+          </p>
+           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="com.foo.Bar" level="trace" additivity="false">
+      <appender-ref ref="Console"/>
+    </logger>
+    <root level="error">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          <p>
+            Once an event reaches a logger with its additivity set to false the event will not be passed to
+            any of its parent loggers, regardless of their additivity setting.
+          </p>
+        </subsection>
+        <a name="AutomaticReconfiguration"/>
+        <subsection name="Automatic Reconfiguration">
+          <p>
+            When configured from a File, Log4j has the ability to automatically detect changes to the configuration
+            file and reconfigure itself. If the monitorInterval attribute is specified on the configuration element
+            and is set to a non-zero value then the file will be checked the next time a log event is evaluated
+            and/or logged and the monitorInterval has elapsed since the last check. The example below shows how
+            to configure the attribute so that the configuration file will be checked for changes only after at
+            least 30 seconds have elapsed.  The minimum interval is 5 seconds.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration monitorInterval="30">
+...
+</configuration>]]></pre>
+        </subsection>
+        <a name="AdvertisingAppenderConfigurations"/>
+        <subsection name="Advertising Appender Configurations">
+          <p>
+            Log4j provides the ability to expose appender configurations to external systems when the 'advertiser'
+            attribute of the configuration element has been specified.  Advertisement is enabled for individual appenders by setting
+            the 'advertise' attribute of the appender to 'true'.
+          </p>
+          <p>
+            Log4j currently provides one Advertiser implementation: a Multicast DNS advertiser, which can be used to retrieve and parse
+            a log file or process events from a socket-based appender.  Additional Advetiser implementations could be
+            written which leverage other mechanisms for exposing the appender configuration - for example, by exposing the
+            configuration via JMX or storing it in a database.
+          </p>
+          <p>
+            Chainsaw supports discovery of the Multicast DNS-exposed appender configurations for file-based and socket-based appenders.  When
+            Chainsaw discovers an advertised appender, Chainsaw will display an entry for the appender in the 'ZeroConf' screen, and the user can
+            double-click on the entry in order to begin receiving events generated by that appender, with no further user configuration required.
+          </p>
+          <p>
+            Note that individual appenders may require that additional information provided in the appender configuration.  For example,
+            a FileAppender must specify an advertiseURI which can be used to retrieve the file contents.
+            file://, http:// and Apache Commons VFS-supported URIs are all supported by Chainsaw.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration advertiser="multicastdns">
+...
+</configuration>
+<appenders>
+  <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
+  ...
+  </File>
+</appenders>]]></pre>
+</subsection>
+        <a name="ConfigurationSyntax"/>
+        <subsection name="Configuration Syntax">
+          <p>
+            As the previous examples have shown as well as those to follow, Log4j allows you to easily
+            redefine logging behavior without needing to modify your application. It is possible to
+            disable logging for certain parts of the application, log only when specific criteria are met such
+            as the action being performed for a specific user, route output to Flume or a log reporting system,
+            etc. Being able to do this requires understanding the syntax of the configuration files.
+          </p>
+        <a name="XML"/>
+          <h4>Configuration with XML</h4>
+          <p>
+            The configuration element in the XML file accepts several attributes:
+            <table>
+              <tr>
+                <th>Attribute Name</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td>dest</td>
+                <td>Either "err", which will send output to stderr, or a file path or URL.</td>
+              </tr>
+              <tr>
+                <td>monitorInterval</td>
+                <td>The minimum amount of time, in seconds, that must elapse before the file configuration
+                  is checked for changes.</td>
+              </tr>
+              <tr>
+                <td>name</td>
+                <td>The name of the configuration.</td>
+              </tr>
+              <tr>
+                <td>packages</td>
+                <td>A comma separated list of package names to search for plugins. Plugins are only loaded
+                  once per classloader so changing this value may not have any effect upon reconfiguration.</td>
+              </tr>
+              <tr>
+                <td>schema</td>
+                <td>Identifies the location for the classloader to located the XML Schema to use to validate
+                  the configuration. Only valid when strict is set to true. If not set no schema validation
+                  will take place.</td>
+              </tr>
+              <tr>
+                <td>status</td>
+                <td>The level of internal Log4j events that should be logged to the console.</td>
+              </tr>
+              <tr>
+                <td>strict</td>
+                <td>Enables the use of the strict XML format. Not supported in JSON configurations.</td>
+              </tr>
+              <tr>
+                <td>verbose</td>
+                <td>Enables diagnostic information while loading plugins.</td>
+              </tr>
+            </table>
+          </p>
+          <p>
+            Log4j can be configured using two XML flavors; concise and strict. The concise format makes
+            configuration very easy as the element names match the components they represent however it
+            cannot be validated with an XML schema. For example, the ConsoleAppender is configured by
+            declaring an XML element named Console under its parent appenders element. However, element
+            and attribute names are are not case sensitive. In addition, attributes can either be specified
+            as an XML attribute or as an XML element that has no attributes and has a text value. So
+          </p>
+          <pre class="prettyprint"><![CDATA[<patternLayout pattern="%m%n"/>]]></pre>
+          <p>and</p>
+          <pre class="prettyprint"><![CDATA[
+<PatternLayout>
+  <pattern>%m%n</pattern>
+</PatternLayout>]]></pre>
+          <p>
+            are equivalent.
+          </p>
+          <p>
+            The file below represents the structure of an XML configuration, but note
+            that the elements in italics below represent the concise element names that would appear in their place.
+          </p>
+
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>;
+<configuration>
+  <properties>
+    <property name="name1">value</property>
+    <property name="name2" value="value2"/>
+  </properties>
+  <]]><i>filter</i>  ... <![CDATA[/>
+  <appenders>
+    <]]><i>appender</i> ... <![CDATA[>
+      <]]><i>filter</i>  ... <![CDATA[/>
+    </]]><i>appender</i><![CDATA[>
+    ...
+  </appenders>
+  <loggers>
+    <logger name="name1">
+      <]]><i>filter</i>  ... <![CDATA[/>
+    </logger>
+    ...
+    <root level="level">
+      <appender-ref ref="name"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          <p>
+            See the many examples on this page for sample appender, filter and logger declarations.
+          </p>
+            <h5>Strict XML</h5>
+          <p>
+            In addition to the concise XML format above, Log4j allows configurations to be specified in a
+            more "normal" XML manner that can be validated using an XML Schema. This is accomplished by
+            replacing the friendly element names above with their object type as shown below. For example,
+            instead of the ConsoleAppender being configuerd using an element named Console it is instead
+            configured as an appender element with a type attribute containing "Console".
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>;
+<configuration>
+  <properties>
+    <property name="name1">value</property>
+    <property name="name2" value="value2"/>
+  </properties>
+  <filter type="type" ... />
+  <appenders>
+    <appender type="type" name="name">
+      <filter type="type" ... />
+    </appender>
+    ...
+  </appenders>
+  <loggers>
+    <logger name="name1">
+      <filter type="type" ... />
+    </logger>
+    ...
+    <root level="level">
+      <appender-ref ref="name"/>
+    </root>
+  </loggers>
+</configuration>]]></pre>
+          <p>
+            Below is a sample configuration using the strict format.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug" strict="true" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
+  <properties>
+    <property name="filename">target/test.log</property>
+  </properties>
+  <filter type="ThresholdFilter" level="trace"/>
+
+  <appenders>
+    <appender type="Console" name="STDOUT">
+      <layout type="PatternLayout" pattern="%m MDC%X%n"/>
+      <filters>
+        <filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+      </filters>
+    </appender>
+    <appender type="Console" name="FLOW">
+      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class & line number -->
+      <filters>
+        <filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </filters>
+    </appender>
+    <appender type="File" name="File" fileName="${filename}">
+      <layout type="PatternLayout">
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </layout>
+    </appender>
+    <appender type="List" name="List">
+    </appender>
+  </appenders>
+
+  <loggers>
+    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <filter type="ThreadContextMapFilter">
+        <KeyValuePair key="test" value="123"/>
+      </filter>
+      <appender-ref ref="STDOUT"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <appender-ref ref="File"/>
+    </logger>>
+
+    <root level="trace">
+      <appender-ref ref="List"/>
+    </root>
+  </loggers>
+
+</configuration>]]></pre>
+        <a name="JSON"/>
+          <h4>Configuration with JSON</h4>
+          <p>
+            In addition to XML, Log4j can be configured using JSON. The JSON format is very similar to the
+            concise XML format. Each key represents the name of a plugin and the key/value pairs associated
+            with it are its attributes. Where a key contains more than a simple value it itself will be a
+            subordinate plugin. In the example below, ThresholdFilter, Console, and PatternLayout are all
+            plugins while the Console plugin will be assigned a value of STDOUT for its name attribute and the
+            ThresholdFilter will be assigned a level of debug.
+          </p>
+          <pre class="prettyprint linenums">
+{ "configuration": { "status": "error", "name": "RoutingTest",
+                     "packages": "org.apache.logging.log4j.test",
+      "properties": {
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log" }
+      },
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "Console": { "name": "STDOUT",
+        "PatternLayout": { "pattern": "%m%n" }
+      },
+      "List": { "name": "List",
+        "ThresholdFilter": { "level": "debug" }
+      },
+      "Routing": { "name": "Routing",
+        "Routes": { "pattern": "${dollar}${dollar}{sd:type}",
+          "Route": [
+            {
+              "RollingFile": {
+                "name": "Rolling-${dollar}{sd:type}", "fileName": "${dollar}{filename}",
+                "filePattern": "target/rolling1/test1-${dollar}{sd:type}.%i.log.gz",
+                "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
+                "SizeBasedTriggeringPolicy": { "size": "500" }
+              }
+            },
+            { "appender-ref": "STDOUT", "key": "Audit"},
+            { "appender-ref": "List", "key": "Service"}
+          ]
+        }
+      }
+    },
+    "loggers": {
+      "logger": { "name": "EventLogger", "level": "info", "additivity": "false",
+                  "appender-ref": { "ref": "Routing" }},
+      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+    }
+  }
+}</pre>
+           <p>
+            Note that in the RoutingAppender the Route element has been declared as an array. This is
+            valid because each array element will be a Route component. This won't work for elements such as
+            appenders and filters, where each element has a different name in the concise format. Appenders and
+            filters can be defined as array elements if each appender or filter declares an attribute named "type"
+            that contains the type of the appender. The following example illustrates this as well as how to
+            declare multiple loggers as an array.
+          </p>
+           <pre class="prettyprint linenums">{ "configuration": { "status": "debug", "name": "RoutingTest",
+                      "packages": "org.apache.logging.log4j.test",
+      "properties": {
+        "property": { "name": "filename",
+                      "value" : "target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log" }
+      },
+    "ThresholdFilter": { "level": "debug" },
+    "appenders": {
+      "appender": [
+         { "type": "Console", "name": "STDOUT", "PatternLayout": { "pattern": "%m%n" }},
+         { "type": "List", "name": "List", "ThresholdFilter": { "level": "debug" }},
+         { "type": "Routing",  "name": "Routing",
+          "Routes": { "pattern": "${dollar}${dollar}{sd:type}",
+            "Route": [
+              {
+                "RollingFile": {
+                  "name": "Rolling-${dollar}{sd:type}", "fileName": "${dollar}{filename}",
+                  "filePattern": "target/rolling1/test1-${dollar}{sd:type}.%i.log.gz",
+                  "PatternLayout": {"pattern": "%d %p %c{1.} [%t] %m%n"},
+                  "SizeBasedTriggeringPolicy": { "size": "500" }
+                }
+              },
+              { "appender-ref": "STDOUT", "key": "Audit"},
+              { "appender-ref": "List", "key": "Service"}
+            ]
+          }
+        }
+      ]
+    },
+    "loggers": {
+      "logger": [
+        { "name": "EventLogger", "level": "info", "additivity": "false",
+          "appender-ref": { "ref": "Routing" }},
+        { "name": "com.foo.bar", "level": "error", "additivity": "false",
+          "appender-ref": { "ref": "Console" }}
+      ],
+      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+    }
+  }
+}</pre>
+          <p>
+            The JSON support uses the Jackson Data Processor to parse the JSON files. These dependencies must be added
+            to a project that wants to use JSON for configuration:
+          <pre class="prettyprint linenums"><![CDATA[
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <version>2.2.1</version>
+</dependency>
+
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.2.1</version>
+</dependency>]]></pre>
+          </p>
+        <a name="Loggers"/>
+          <h4>Configuring loggers</h4>
+          <p>
+            An understanding of how loggers work in Log4j is critical before trying to configure them.
+            Please reference the Log4j <a href="./architecture.html">architecture</a> if more information is
+            required. Trying to configure Log4j without understanding those concepts will lead to frustration.
+          </p>
+          <p>
+            A LoggerConfig is configured using the <code>logger</code> element. The <code>logger</code> element
+            must have a name attribute specified, will usually have a level attribute specified and may
+            also have an additivity attribute specified.  The level may be configured with one of TRACE,
+            DEBUG, INFO, WARN, ERROR, ALL or OFF. If no level is specified it will default to ERROR. The
+            additivity attribute may be assigned a value of true or false. If the attribute is omitted
+            the default value of false will be used.
+          </p>
+          <p>
+            A LoggerConfig (including the root LoggerConfig) can be configured with properties that will be added
+            to the properties copied from the ThreadContextMap. These properties can be referenced from Appenders,
+            Filters, Layouts, etc just as if they were part of the ThreadContext Map. The properties can contain
+            variables that will be resolved either when the configuration is parsed or dynamically when each
+            event is logged. See <a href="#PropertySubstitution">Property Substitution</a> for more information on
+            using variables.
+          </p>
+          <p>
+            The LoggerConfig may also be configured with one or more appender-ref elements. Each appender
+            referenced will become associated with the specified LoggerConfig. If multiple appenders
+            are configured on the LoggerConfig each of them be called when processing logging events.
+          </p>
+          <p>
+            <b><em>Every configuration must have a root logger</em></b>. If one is not configured the default root LoggerConfig,
+            which has a level of ERROR and has a Console appender attached, will be used. The main differences
+            between the root logger and other loggers are
+            <ol>
+              <li>The root logger does not have a name attribute.</li>
+              <li>The root logger does not support the additivity attribute since it has no parent.</li>
+            </ol>
+          </p>
+        <a name="Appenders"/>
+          <h4>Configuring Appenders</h4>
+          <p>
+            An appender is configured either using the specific appender plugin's name or with an appender
+            element and the type attibute containing the appender plugin's name. In addition each appender
+            must have a name attribute specified with a value that is unique within the set of appenders.
+            The name will be used by loggers to reference the appender as described in the previous section.
+          </p>
+          <p>
+            Most appenders also support a layout to be configured (which again may be specified either
+            using the specific Layout plugin's name as the element or with "layout" as the element name
+            along with a type attribute that contains the layout plugin's name. The various appenders
+            will contain other attributes or elements that are required for them to function properly.
+          </p>
+        <a name="Filters"/>
+          <h4>Configuring Filters</h4>
+          <p>
+            Log4j allows a filter to be specified in any of 4 places:
+            <ol>
+              <li>At the same level as the appenders, loggers and properties elements. These filters can accept
+              or reject events before they have been passed to a LoggerConfig.</li>
+              <li>In a logger element. These filters can accept or reject events for specific loggers.</li>
+              <li>In an appender element. These filters can prevent or cause events to be processed by
+                the appender.</li>
+              <li>In an appender reference element. These filters are used to determine if a Logger should route
+                the event to an appender.</li>
+            </ol>
+          </p>
+          <p>
+            Although only a single <code>filter</code> element can be configured, that element may be the
+            <code>filters</code> element which represents the CompositeFilter. The <code>filters</code> element
+            allows any number of <code>filter</code> elements to be configured within it. The following example
+            shows how multiple filters can be configured on the ConsoleAppender.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+  <properties>
+    <property name="filename">target/test.log</property>
+  </properties>
+  <ThresholdFilter level="trace"/>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m MDC%X%n"/>
+    </Console>
+    <Console name="FLOW">
+      <!-- this pattern outputs class name and line number -->
+      <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
+      <filters>
+        <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+      </filters>
+    </Console>
+    <File name="File" fileName="${dollar}{filename}">
+      <PatternLayout>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+    </File>
+    <List name="List">
+    </List>
+  </appenders>
+
+  <loggers>
+    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+      <ThreadContextMapFilter>
+        <KeyValuePair key="test" value="123"/>
+      </ThreadContextMapFilter>
+      <appender-ref ref="STDOUT"/>
+    </logger>>
+
+    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <property name="user">${dollar}{sys:user.name}</property>
+      <appender-ref ref="File">
+        <ThreadContextMapFilter>
+          <KeyValuePair key="test" value="123"/>
+        </ThreadContextMapFilter>
+      </appender-ref>
+      <appender-ref ref="STDOUT" level="error"/>
+    </logger>>
+
+    <root level="trace">
+      <appender-ref ref="List"/>
+    </root>
+  </loggers>
+
+</configuration>]]></pre>
+        </subsection>
+        <a name="PropertySubstitution"/>
+        <subsection name="Property Substitution">
+          <p>
+            Log4j 2 supports the ability to specify tokens in the configuration as references to properties defined
+            elsewhere. Some of these properties will be resolved when the configuration file is interpreted while
+            others may be passed to components where they will be evaluated at runtime. To accomplish this, Log4j
+            uses variations of Apache Commons Lang's
+            <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrSubstitutor">StrSubstitutor</a>
+            and <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup">StrLookup</a>
+            classes. In a manner similar to Ant or Maven, this allows variables declared as <code>${name}</code>
+            to be resolved using properties declared in the configuration itself. For example, the following example
+            shows the filename for the rolling file appender being declared as a property.
+          </p>
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+  <properties>
+    <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
+  </properties>
+  <ThresholdFilter level="debug"/>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <ThresholdFilter level="debug"/>
+    </List>
+    <Routing name="Routing">
+      <Routes pattern="${dollar}${dollar}{sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${dollar}{sd:type}" fileName="${dollar}{filename}"
+                       filePattern="target/rolling1/test1-${dollar}{sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route appender-ref="STDOUT" key="Audit"/>
+        <Route appender-ref="List" key="Service"/>
+      </Routes>
+    </Routing>
+  </appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="Routing"/>
+    </logger>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>]]></pre>
+          <p>
+            While this is useful, there are many more places properties can originate from. To accommodate this,
+            Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
+            that variable name should be evaluated in a specific context. The contexts that are built in to Logj4
+            are:
+            <table>
+              <tr>
+                <th>Prefix</th>
+                <th>Context</th>
+              </tr>
+              <tr>
+                <td>ctx</td>
+                <td>Thread Context Map (MDC)</td>
+              </tr>
+              <tr>
+                <td>date</td>
+                <td>Inserts the current date and/or time using the specified format</td>
+              </tr>
+              <tr>
+                <td>env</td>
+                <td>System environment variables</td>
+              </tr>
+              <tr>
+                <td>map</td>
+                <td>A value from a MapMessage</td>
+              </tr>
+              <tr>
+                <td>sd</td>
+                <td>A value from a StructuredDataMessage. The key "id" will return the name of the StructuredDataId
+                  without the enterprise number. The key "type" will return the message type. Other keys will
+                  retrieve individual elements from the Map.</td>
+              </tr>
+              <tr>
+                <td>sys</td>
+                <td>System properties</td>
+              </tr>
+            </table>
+          </p>
+          <p>
+            A default property map can be declared in the configuration file. If the value cannot be located in
+            the specified lookup the value in the default property map will be used. The default map is
+            pre-populated with a value for "hostName" that is the current system's host name or ip address and
+            the "contextName" with is the value of the current logging context.
+          </p>
+          <p>
+            An interesting feature of StrLookup processing is that when a variable reference is declared with
+            multiple leading '$' characters each time the variable is resolved the leading '$' is simply removed.
+            In the previous example the "Routes" element is capable of resolving the variable at runtime. To allow
+            this the prefix value is specified as a variable with two leading '$' characters. When the configuration
+            file is first processed the first variable is simply removed. Thus, when the Routes element is evaluated
+            at runtime it is the variable declaration "${dollar}{sd:type}" which causes the event to be inspected for a
+            StructuredDataMessage and if one is present the value of its type attribute to be used as the routing key.
+            Not all elements support resolving variables at runtime. Components that do will specifically call that
+            out in their documentation.
+          </p>
+          <p>
+            If no value is found for the key in the Lookup associated with the prefix then the value associated with
+            the key in the properties declaration in the configuration file will be used. If no value is found
+            the variable declaration will be returned as the value. Default values may be declared in the configuration
+            by doing:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <properties>
+    <property name="type">Audit</property>
+  </properties>
+  ...
+</configuration>]]></pre>
+          <p>
+            <i>As a footnote, it is worth pointing out that the variables in the RollingFile appender declaration
+            will also not be evaluated when the configuration is processed. This is simply because the resolution
+            of the whole RollingFile element is deferred until a match occurs.
+            See <a href="../appenders.html#RoutingAppender">RoutingAppender</a> for more information.</i>
+          </p>
+        </subsection>
+        <a name="StatusMessages"/>
+        <subsection name="Status Messages">
+          <p>
+            Just as it is desirable to be able to diagnose problems in applications, it is frequently necessary
+            to be able to diagnose problems in the logging configuration or in the configured components. Since
+            logging has not been configured, "normal" logging cannot be used during initialization. In addition,
+            normal logging within appenders could create infinite recursion which Log4j will detect and cause
+            the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
+            <a href="../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
+            Components declare an instance of the StatusLogger similar to:
+          </p>
+          <pre class="prettyprint">protected final static Logger logger = StatusLogger.getLogger();</pre>
+          <p>
+            Since StatusLogger implements the Log4j 2 API's Logger interface, all the normal Logger methods may
+            be used.
+          </p>
+          <p>
+            When configuring Log4j it is sometimes necessary to view the generated status events. This can be
+            accomplished by adding the status attribute to the configuration element. The following
+            configuration has the status attribute set to debug.
+
+<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
+<configuration status="debug" name="RoutingTest"
+               packages="org.apache.logging.log4j.test">
+  <properties>
+    <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
+  </properties>
+  <ThresholdFilter level="debug"/>
+
+  <appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="List">
+      <ThresholdFilter level="debug"/>
+    </List>
+    <Routing name="Routing">
+      <Routes pattern="${dollar}${dollar}{sd:type}">
+        <Route>
+          <RollingFile name="Rolling-${dollar}{sd:type}" fileName="${dollar}{filename}"
+                       filePattern="target/rolling1/test1-${dollar}{sd:type}.%i.log.gz">
+            <PatternLayout>
+              <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+        </Route>
+        <Route appender-ref="STDOUT" key="Audit"/>
+        <Route appender-ref="List" key="Service"/>
+      </Routes>
+    </Routing>
+  </appenders>
+
+  <loggers>
+    <logger name="EventLogger" level="info" additivity="false">
+      <appender-ref ref="Routing"/>
+    </logger>
+
+    <root level="error">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </loggers>
+
+</configuration>]]></pre>
+            During startup this configuration produces:
+#if ($isPDF)
+    <pre>
+2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
+2011-11-23 17:08:00,789 DEBUG Calling createProperty on class org.apache.logging.log4j.core.
+       config.Property for element property with params(name="filename",
+       value="target/rolling1/rollingtest-${dollar}{sd:type}.log")
+2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.
+       core.config.plugins.PropertiesPlugin for element properties with
+       params(properties={filename=target/rolling1/rollingtest-${dollar}{sd:type}.log})
+2011-11-23 17:08:00,794 DEBUG Generated plugins in 0.001362000 seconds
+2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.
+       filter.ThresholdFilter for element ThresholdFilter with params(level="debug",
+       onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.
+       layout.PatternLayout for element PatternLayout with params(pattern="%m%n",
+       Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
+2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.
+       appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null,
+       target="null", name="STDOUT", suppressExceptions="null")
+2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.
+       filter.ThresholdFilter for element ThresholdFilter with params(level="debug",
+       onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.
+       appender.ListAppender for element List with params(name="List", entryPerNewLine="null",
+       raw="null", null, ThresholdFilter(DEBUG))
+2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
+       routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
+2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
+       routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
+2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
+       routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
+2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.
+       routing.Routes for element Routes with params(pattern="${dollar}{sd:type}",
+       routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'),
+       Route(type=static Reference=List key='Service')})
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.
+       routing.RoutingAppender for element Routing with params(name="Routing",
+       suppressExceptions="null", Routes({Route(type=dynamic default),Route(type=static
+       Reference=STDOUT key='Audit'),
+       Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.
+       plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
+       config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
+2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
+       LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger",
+       appender-ref={Routing}, null)
+2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
+       config.plugins.AppenderRefPlugin for element appender-ref with params(ref="STDOUT")</pre>
+            <pre class="prettyprint linenums">
+2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
+       LoggerConfig$RootLogger for element root with params(additivity="null", level="error",
+       appender-ref={STDOUT}, null)
+2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.
+       config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
+2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
+2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.
+       layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n",
+       Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.
+       appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with
+       params(size="500")
+2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.
+       appender.RollingFileAppender for element RollingFile with
+       params(fileName="target/rolling1/rollingtest-Unknown.log",
+       filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown",
+       bufferedIO="null", immediateFlush="null",
+       SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null,
+       PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
+2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
+2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.
+       Launcher$AppClassLoader@37b90b39
+2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
+2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
+2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
+2011-11-23 17:08:00,965 WARN No Loggers were configured, using default
+2011-11-23 17:08:00,976 DEBUG Reconfiguration completed</pre>
+#else
+<pre>
+2011-11-23 17:08:00,769 DEBUG Generated plugins in 0.003374000 seconds
+2011-11-23 17:08:00,789 DEBUG Calling createProperty on class org.apache.logging.log4j.core.config.Property for element property with params(name="filename", value="target/rolling1/rollingtest-${dollar}{sd:type}.log")
+2011-11-23 17:08:00,792 DEBUG Calling configureSubstitutor on class org.apache.logging.log4j.core.config.plugins.PropertiesPlugin for element properties with params(properties={filename=target/rolling1/rollingtest-${dollar}{sd:type}.log})
+2011-11-23 17:08:00,794 DEBUG Generated plugins in 0.001362000 seconds
+2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%m%n", Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
+2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", suppressExceptions="null")
+2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
+2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
+2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
+2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
+2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
+2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", suppressExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
+2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
+2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", appender-ref={Routing}, null)
+2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="STDOUT")
+2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", appender-ref={STDOUT}, null)
+2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
+2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
+2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
+2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
+2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
+2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
+2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
+2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds
+2011-11-23 17:08:00,959 DEBUG Generated plugins in 0.001239000 seconds
+2011-11-23 17:08:00,961 DEBUG Generated plugins in 0.001197000 seconds
+2011-11-23 17:08:00,965 WARN No Loggers were configured, using default
+2011-11-23 17:08:00,976 DEBUG Reconfiguration completed</pre>
+#end
+          </p>
+          <p>
+            If the status attribute is set to error than only error messages will be written to the console. This
+            makes troubleshooting configuration errors possible. As an example, if the configuration above is changed
+            to have the status set to error and the logger declaration is:</p>
+<pre class="prettyprint linenums"><![CDATA[<logger name="EventLogger" level="info" additivity="false">
+  <appender-ref ref="Routng"/>
+</logger>]]></pre>
+          <p>
+            the following error message will be produced.
+            <pre class="prettyprint linenums">
+2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger</pre>
+          </p>
+          <p>
+            Applications may wish to direct the status output to some other destination. This can be accomplished
+            by setting the dest attribute to either "err" to send the output to stderr or to a file location or URL.
+            This can also be done by insuring the configured status is set to OFF and then configuring the application
+            programmatically such as:
+<pre class="prettyprint linenums">
+StatusConsoleListener listener = new StatusConsoleListener(Level.ERROR);
+((StatusLogger) logger).registerListener(listener);
+</pre>
+          </p>
+        </subsection>
+        <a name="UnitTestingInMaven"/>
+        <subsection name="Testing in Maven">
+        <p>
+          Maven can run unit and functional tests during the build cycle. By default, any files placed in
+          <code>src/test/resources</code> are automatically copied to target/test-classes and are included
+          in the classpath during execution of any tests. As such, placing a log4j2-test.xml into this directory
+          will cause it to be used instead of a log4j2.xml or log4j2.json that might be present.  Thus a different
+          log configuration can be used during testing than what is used in production.
+        </p>
+        <p>
+          A second approach, which is extensively used by Log4j 2, is to set the log4j.configurationFile property
+          in the method annotated with @BeforeClass in the junit test class. This will allow an arbitrarily
+          named file to be used during the test.
+        </p>
+        </subsection>
+      </section>
+    </body>
+</document>

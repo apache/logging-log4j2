@@ -1,0 +1,181 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache license, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the license at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the license.
+
+-->
+<project name="Log4j">
+  <body>
+    <menu name="Apache Log4j™ 2" inherit="top" img="icon-home">
+      <item name="About" href="/index.html"/>
+      <item name="Download" href="/download.html"/>
+      <item name="Maven and Ivy" href="/maven-artifacts.html"/>
+      <item name="Build" href="/build.html"/>
+      <item name="Changelog" href="/changelog.html"/>
+    </menu>
+
+    <menu name="Manual" inherit="top" img="icon-book">
+      <item name="Introduction" href="/manual/index.html"/>
+      <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="Log4j 1.x Migration" href="manual/migration.html"/>
+
+      <item name="API" href="/manual/api.html" collapse="true">
+        <item name="Flow Tracing" href="manual/flowtracing.html"/>
+        <item name="Markers" href="manual/markers.html"/>
+        <item name="Event Logging" href="/manual/eventlogging.html"/>
+        <item name="Messages" href="/manual/messages.html"/>
+        <item name="ThreadContext" href="/manual/thread-context.html"/>
+      </item>
+
+      <item name="Configuration" href="/manual/configuration.html" collapse="true">
+        <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
+        <item name="Additivity" href="/manual/configuration.html#Additivity"/>
+        <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>
+        <item name="Advertising Appender Config" href="/manual/configuration.html#AdvertisingAppenderConfigurations"/>
+        <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />
+        <item name="XML Syntax" href="/manual/configuration.html#XML"/>
+        <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>
+        <item name="Configuring Loggers" href="/manual/configuration.html#Loggers"/>
+        <item name="Configuring Appenders" href="/manual/configuration.html#Appenders"/>
+        <item name="Configuring Filters" href="/manual/configuration.html#Filters"/>
+        <item name="Property Substitution" href="/manual/configuration.html#PropertySubstitution"/>
+        <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
+        <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
+      </item>
+
+      <item name="Plugins" href="/manual/plugins.html" collapse="true">
+        <item name="Core" href="/manual/plugins.html#Core"/>
+        <item name="Converters" href="/manual/plugins.html#Converters"/>
+        <item name="Lookups" href="/manual/plugins.html#Lookups"/>
+      </item>
+
+      <item name="Lookups" href="/manual/lookups.html" collapse="true">
+        <item name="ContextMap" href="/manual/lookups.html#ContextMapLookup"/>
+        <item name="Date" href="/manual/lookups.html#DateLookcup"/>
+        <item name="Environment" href="/manual/lookups.html#EnvironmentLookup"/>
+        <item name="Map" href="/manual/lookups.html#MapLookup"/>
+        <item name="StructuredData" href="/manual/lookups.html#StructuredDataLookup"/>
+        <item name="SystemProperties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+      </item>
+
+      <item name="Appenders" href="/manual/appenders.html" collapse="true">
+        <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
+        <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
+        <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
+        <item name="FastFile" href="/manual/appenders.html#FastFileAppender"/>
+        <item name="FastRollingFile" href="/manual/appenders.html#FastRollingFileAppender"/>
+        <item name="File" href="/manual/appenders.html#FileAppender"/>
+        <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
+        <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>
+        <item name="JMSQueue" href="/manual/appenders.html#JMSQueueAppender"/>
+        <item name="JMSTopic" href="/manual/appenders.html#JMSTopicAppender"/>
+        <item name="JPA" href="/manual/appenders.html#JPAAppender"/>
+        <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
+        <item name="OutputStream" href="/manual/appenders.html#OutputStreamAppender"/>
+        <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
+        <item name="RollingFile" href="/manual/appenders.html#RollingFileAppender"/>
+        <item name="Routing" href="/manual/appenders.html#RoutingAppender"/>
+        <item name="SMTP" href="/manual/appenders.html#SMTPAppender"/>
+        <item name="Socket" href="/manual/appenders.html#SocketAppender"/>
+        <item name="Syslog" href="/manual/appenders.html#SyslogAppender"/>
+      </item>
+
+      <item name="Layouts" href="/manual/layouts.html" collapse="true">
+        <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
+        <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
+        <item name="RFC5424" href="/manual/layouts.html#RFC5424Layout"/>
+        <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
+        <item name="Syslog" href="/manual/layouts.html#SyslogLayout"/>
+        <item name="XML" href="/manual/layouts.html#XMLLayout"/>
+        <item name="Location Information" href="/manual/layouts.html#LocationInformation"/>
+      </item>
+
+      <item name="Filters" href="/manual/filters.html" collapse="true">
+        <item name="Burst" href="/manual/filters.html#BurstFilter"/>
+        <item name="CompositeFilter" href="/manual/filters.html#CompositeFilter"/>
+        <item name="DynamicThreshold" href="/manual/filters.html#DynamicThresholdFilter"/>
+        <item name="Map" href="/manual/filters.html#MapFilter"/>
+        <item name="Marker" href="/manual/filters.html#MarkerFilter"/>
+        <item name="Regex" href="/manual/filters.html#RegexFilter"/>
+        <item name="StructuredData" href="/manual/filters.html#StructuredDataFilter"/>
+        <item name="ThreadContextMap" href="/manual/filters.html#ThreadContextMapFilter"/>
+        <item name="Threshold" href="/manual/filters.html#ThresholdFilter"/>
+        <item name="Time" href="/manual/filters.html#TimeFilter"/>
+      </item>
+
+      <item name="Async Loggers" href="/manual/async.html" collapse="true">
+        <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>
+        <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>
+        <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>
+        <item name="Location" href="/manual/async.html#Location"/>
+        <item name="Performance" href="/manual/async.html#Performance"/>
+        <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
+      </item>
+
+      <item name="JMX" href="/manual/jmx.html"/>
+      <item name="Logging Separation" href="/manual/logsep.html"/>
+
+      <item name="Extending Log4j" href="/manual/extending.html" collapse="true">
+        <item name="LoggerContextFactory" href="/manual/extending.html#LoggerContextFactory"/>
+        <item name="ContextSelector" href="/manual/extending.html#ContextSelector"/>
+        <item name="ConfigurationFactory" href="/manual/extending.html#ConfigurationFactory"/>
+        <item name="LoggerConfig" href="/manual/extending.html#LoggerConfig"/>
+        <item name="Lookups" href="/manual/extending.html#Lookups"/>
+        <item name="Filters" href="/manual/extending.html#Filters"/>
+        <item name="Appenders" href="/manual/extending.html#Appenders"/>
+        <item name="Layouts" href="/manual/extending.html#Layouts"/>
+        <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
+        <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
+      </item>
+    </menu>
+
+    <menu name="Components" inherit="top" img="icon-cog">
+      <item name="API" href="log4j-api/index.html"/>
+      <item name="Implementation" href="log4j-core/index.html"/>
+      <item name="Commons Logging Bridge" href="log4j-jcl/index.html"/>
+      <item name="Log4j 1.2 API" href="log4j-1.2-api/index.html"/>
+      <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
+      <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
+      <item name="Apache Flume" href="log4j-flume-ng/index.html"/>
+      <item name="Log4j Web" href="log4j-web/index.html"/>
+      <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
+      <item name="Log4j JMX GUI" href="log4j-jmx-gui/index.html"/>
+    </menu>
+
+    <menu name="Project Information" img="icon-info-sign">
+      <item name="Dependencies" href="/dependencies.html" />
+      <item name="Dependency Convergence" href="/dependency-convergence.html" />
+      <item name="Dependency Management" href="/dependency-management.html" />
+      <item name="Project Team" href="/team-list.html" />
+      <item name="Mailing Lists" href="/mail-lists.html" />
+      <item name="Issue Tracking" href="/issue-tracking.html" />
+      <item name="Project License" href="/license.html" />
+      <item name="Source Repository" href="/source-repository.html" />
+      <item name="Project Summary" href="/project-summary.html" />
+    </menu>
+
+    <menu name="Project Reports" img="icon-cog">
+      <item name="Changes Report" href="/changes-report.html" />
+      <item name="JIRA Report" href="/jira-report.html" />
+      <item name="Surefire Report" href="/surefire-report.html" />
+      <item name="RAT Report" href="/rat-report.html" />
+    </menu>
+
+    <links>
+      <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>
+      <item name="Apache" href="http://www.apache.org/"/>
+      <item name="Logging Services" href="http://logging.apache.org/"/>
+    </links>
+  </body>
+</project>
