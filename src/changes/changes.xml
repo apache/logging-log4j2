@@ -84,7 +84,7 @@
       <action issue="LOG4J2-254" dev="rgoers" type="fix">
         Mark OutputStream in OutputStreamManager as volatile. Mark header and footer as final.
       </action>
-      <action issue="LOG4J-244" dev="rgoers" type="fix">
+      <action issue="LOG4J2-244" dev="rgoers" type="fix">
         Rewrite Appender was ignoring filters on referenced appenders.
       </action>
       <action issue="LOG4J2-245" dev="rgoers" type="fix">

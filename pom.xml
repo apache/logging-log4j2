@@ -566,7 +566,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.3</version>
+        <!-- Do not upgrade to versions 3.1,  3.2 or 3.3. 3.2 & 3.3 cause a NullPointerException in site:stage-deploy
+        and the site is broken in all of them -->
+        <version>3.0</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
@@ -877,6 +879,8 @@
             <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
+                <exclude>dist/target/.plxarc</exclude>
+                <exclude>dist/target/*.asc</exclude>
                 <exclude>dist/target/**/*</exclude>
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
                 <exclude>.idea/**/*</exclude>
