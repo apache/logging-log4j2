@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.0-beta8-SNAPSHOT</version>
+    <version>2.0-beta7-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-to-slf4j</artifactId>
@@ -175,6 +175,12 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
         <version>${cobertura.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <!-- Disabled as it makes the site build very slow and causes the performance unit test to fail -->
+            <reports />
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
