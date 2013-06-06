@@ -385,12 +385,12 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private String getId(final StructuredDataId id) {
         final StringBuilder sb = new StringBuilder();
-        if (id.getName() == null) {
+        if (id == null || id.getName() == null) {
             sb.append(defaultId);
         } else {
             sb.append(id.getName());
         }
-        int ein = id.getEnterpriseNumber();
+        int ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
         if (ein < 0) {
             ein = enterpriseNumber;
         }
