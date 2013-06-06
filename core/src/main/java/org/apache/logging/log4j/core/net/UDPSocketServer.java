@@ -49,7 +49,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
  */
 public class UDPSocketServer extends AbstractServer implements Runnable {
 
-    private static Logger logger;
+    private final Logger logger;
 
     private static final int MAX_PORT = 65534;
 
@@ -69,11 +69,8 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
      *             If an error occurs.
      */
     public UDPSocketServer(final int port) throws IOException {
-        server = new DatagramSocket(port);
-        if (logger == null) {
-            logger = LogManager.getLogger(this);
-            // logger = LogManager.getLogger(getClass().getName() + '.' + port);
-        }
+        this.server = new DatagramSocket(port);
+        this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
     }
 
     /**
@@ -99,14 +96,13 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        logger = LogManager.getLogger(UDPSocketServer.class.getName());
         final UDPSocketServer sserver = new UDPSocketServer(port);
         final Thread server = new Thread(sserver);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             final String line = reader.readLine();
-            if (line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
+            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
                 sserver.shutdown();
                 server.join();
                 break;
