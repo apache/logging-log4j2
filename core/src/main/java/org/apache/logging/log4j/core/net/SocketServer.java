@@ -98,7 +98,7 @@ public class SocketServer extends AbstractServer implements Runnable {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
         while (true) {
             final String line = reader.readLine();
-            if (line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
+            if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
                 sserver.shutdown();
                 server.join();
                 break;
