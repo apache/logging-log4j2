@@ -194,32 +194,30 @@ final class CachedDateFormat extends DateFormat {
          */
         if (plusMagic.length() != formatted.length()) {
             return UNRECOGNIZED_MILLISECONDS;
-        } else {
-            // find first difference between values
-            for (int i = 0; i < formatted.length(); i++) {
-                if (formatted.charAt(i) != plusMagic.charAt(i)) {
-                    //
-                    //   determine the expected digits for the base time
-                    final StringBuffer formattedMillis = new StringBuffer("ABC");
-                    millisecondFormat(millis, formattedMillis, 0);
+        }
+        // find first difference between values
+        for (int i = 0; i < formatted.length(); i++) {
+            if (formatted.charAt(i) != plusMagic.charAt(i)) {
+                //
+                //   determine the expected digits for the base time
+                final StringBuffer formattedMillis = new StringBuffer("ABC");
+                millisecondFormat(millis, formattedMillis, 0);
 
-                    final String plusZero = formatter.format(new Date(slotBegin));
+                final String plusZero = formatter.format(new Date(slotBegin));
 
-                    //   If the next 3 characters match the magic
-                    //      string and the expected string
-                    if (
-                        (plusZero.length() == formatted.length())
-                            && magicString.regionMatches(
-                            0, plusMagic, i, magicString.length())
-                            && formattedMillis.toString().regionMatches(
-                            0, formatted, i, magicString.length())
-                            && ZERO_STRING.regionMatches(
-                            0, plusZero, i, ZERO_STRING.length())) {
-                        return i;
-                    } else {
-                        return UNRECOGNIZED_MILLISECONDS;
-                    }
+                //   If the next 3 characters match the magic
+                //      string and the expected string
+                if (
+                    (plusZero.length() == formatted.length())
+                        && magicString.regionMatches(
+                        0, plusMagic, i, magicString.length())
+                        && formattedMillis.toString().regionMatches(
+                        0, formatted, i, magicString.length())
+                        && ZERO_STRING.regionMatches(
+                        0, plusZero, i, ZERO_STRING.length())) {
+                    return i;
                 }
+                return UNRECOGNIZED_MILLISECONDS;
             }
         }
 
