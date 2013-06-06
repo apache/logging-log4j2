@@ -31,8 +31,6 @@ import org.apache.log4j.Logger;
  * <p>Please take the time to contact the author in case you discover
  * that errors are not properly handled. You are most welcome to
  * suggest new error handling policies or criticize existing policies.
- *
- * @author Ceki G&uuml;lc&uuml;
  */
 public interface ErrorHandler {
 
