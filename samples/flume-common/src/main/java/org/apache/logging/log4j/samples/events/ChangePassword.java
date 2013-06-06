@@ -20,8 +20,6 @@ import org.apache.logging.log4j.samples.dto.Constraint;
 
 /**
  * Member change their password.
- *
- * @author generated
  */
 
 public interface ChangePassword extends org.apache.logging.log4j.samples.dto.AuditEvent {
