@@ -69,7 +69,7 @@ public class ParameterizedMessage implements Message {
     private static final char ESCAPE_CHAR = '\\';
 
     private final String messagePattern;
-    private String[] stringArgs;
+    private final String[] stringArgs;
     private transient Object[] argArray;
     private transient String formattedMessage;
     private transient Throwable throwable;
@@ -90,9 +90,7 @@ public class ParameterizedMessage implements Message {
     public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.throwable = throwable;
-        if (arguments != null) {
-            parseArguments(arguments);
-        }
+        this.stringArgs = parseArguments(arguments);
     }
 
     /**
@@ -109,9 +107,7 @@ public class ParameterizedMessage implements Message {
      */
     public ParameterizedMessage(final String messagePattern, final Object[] arguments) {
         this.messagePattern = messagePattern;
-        if (arguments != null) {
-            parseArguments(arguments);
-        }
+        this.stringArgs = parseArguments(arguments);
     }
 
     /**
@@ -133,7 +129,10 @@ public class ParameterizedMessage implements Message {
         this(messagePattern, new Object[]{arg1, arg2});
     }
 
-    private void parseArguments(final Object[] arguments) {
+    private String[] parseArguments(final Object[] arguments) {
+        if (arguments == null) {
+            return null;
+        }
         final int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;
         if (argsCount < arguments.length) {
@@ -147,16 +146,18 @@ public class ParameterizedMessage implements Message {
             argArray[i] = arguments[i];
         }
 
+        String[] strArgs;
         if (argsCount == 1 && throwable == null && arguments.length > 1) {
             // special case
-            stringArgs = new String[1];
-            stringArgs[0] = deepToString(arguments);
+            strArgs = new String[1];
+            strArgs[0] = deepToString(arguments);
         } else {
-            stringArgs = new String[resultArgCount];
-            for (int i = 0; i < stringArgs.length; i++) {
-                stringArgs[i] = deepToString(arguments[i]);
+            strArgs = new String[resultArgCount];
+            for (int i = 0; i < strArgs.length; i++) {
+                strArgs[i] = deepToString(arguments[i]);
             }
         }
+        return strArgs;
     }
 
     /**
