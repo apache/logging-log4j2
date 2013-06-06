@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Implementation of a LogEvent.
  */
-public class Log4jLogEvent implements LogEvent, Serializable {
+public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -1351367343806656055L;
     private static final String NOT_AVAIL = "?";
