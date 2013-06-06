@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SocketServer extends AbstractServer implements Runnable {
 
-    private static Logger logger;
+    private final Logger logger;
 
     private static final int MAX_PORT = 65534;
 
@@ -64,11 +64,8 @@ public class SocketServer extends AbstractServer implements Runnable {
      * @throws IOException If an error occurs.
      */
     public SocketServer(final int port) throws IOException {
-        server = new ServerSocket(port);
-        if (logger == null) {
-            logger = LogManager.getLogger(this);
-            // logger = LogManager.getLogger(getClass().getName() + '.' + port);
-        }
+        this.server = new ServerSocket(port);
+        this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
     }
      /**
      * Main startup for the server.
@@ -90,7 +87,6 @@ public class SocketServer extends AbstractServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        logger = LogManager.getLogger(SocketServer.class.getName());
         final SocketServer sserver = new SocketServer(port);
         final Thread server = new Thread(sserver);
         server.start();
