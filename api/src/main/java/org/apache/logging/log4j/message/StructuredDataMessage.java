@@ -144,7 +144,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Set the id from a String.
+     * Sets the id from a String.
      * @param id The String id.
      */
     protected void setId(final String id) {
@@ -152,7 +152,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Set the id.
+     * Sets the id.
      * @param id The StructuredDataId.
      */
     protected void setId(final StructuredDataId id) {
@@ -160,7 +160,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Set the type.
+     * Sets the type.
      * @return the type.
      */
     public String getType() {
@@ -169,10 +169,11 @@ public class StructuredDataMessage extends MapMessage {
 
     protected void setType(final String type) {
         if (type.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("Structured data type exceeds maximum length of 32 characters: " + type);
+            throw new IllegalArgumentException("structured data type exceeds maximum length of 32 characters: " + type);
         }
         this.type = type;
     }
+    
     /**
      * Returns the message.
      * @return the message.
@@ -205,7 +206,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the structured data as described in RFC 5424.
      *
      * @return The formatted String.
      */
@@ -215,7 +216,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the structured data as described in RFC 5424.
      *
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
@@ -231,7 +232,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Format the Structured data as described in RFC 5424.
+     * Formats the structured data as described in RFC 5424.
      *
      * @param format           "full" will include the type and message. null will return only the STRUCTURED-DATA as
      *                         described in RFC 5424
@@ -273,7 +274,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Format the message and return it.
+     * Formats the message and return it.
      * @return the formatted message.
      */
     @Override
@@ -282,7 +283,7 @@ public class StructuredDataMessage extends MapMessage {
     }
 
     /**
-     * Format the message according the the specified format.
+     * Formats the message according the the specified format.
      * @param formats An array of Strings that provide extra information about how to format the message.
      * StructuredDataMessage accepts only a format of "FULL" which will cause the event type to be
      * prepended and the event message to be appended. Specifying any other value will cause only the
