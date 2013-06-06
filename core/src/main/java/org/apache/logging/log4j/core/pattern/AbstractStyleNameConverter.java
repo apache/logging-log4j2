@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -359,7 +360,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         if (parser == null) {
-            LOGGER.error("No PatternParser created for config=" + config + ", options=" + options);
+            LOGGER.error("No PatternParser created for config=" + config + ", options=" + Arrays.toString(options));
             return null;
         }
         return parser.parse(options[0]);
