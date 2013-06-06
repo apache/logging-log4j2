@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.LogEvent;
  * For example, it would be possible to implement a lookup that used the
  * key as a primary key, and looked up the value on demand from the database
  *
- * @author Apache Software Foundation
  * @version $Id$
  */
 public interface StrLookup {
