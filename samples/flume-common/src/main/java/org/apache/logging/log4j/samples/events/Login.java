@@ -18,8 +18,6 @@ package org.apache.logging.log4j.samples.events;
 
 /**
  * Member logged in successfully.
- *
- * @author generated
  */
 
 public interface Login extends org.apache.logging.log4j.samples.dto.AuditEvent {

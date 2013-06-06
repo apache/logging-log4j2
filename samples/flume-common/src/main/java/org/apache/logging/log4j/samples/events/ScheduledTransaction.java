@@ -18,8 +18,6 @@ package org.apache.logging.log4j.samples.events;
 
 /**
  * Member set up scheduled transaction request.
- *
- * @author generated
  */
 
 public interface ScheduledTransaction extends org.apache.logging.log4j.samples.dto.AuditEvent {

@@ -20,8 +20,6 @@ import org.apache.logging.log4j.samples.dto.Constraint;
 
 /**
  * Member requested transfer.
- *
- * @author generated
  */
 
 public interface Transfer extends org.apache.logging.log4j.samples.dto.AuditEvent {
