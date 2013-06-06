@@ -75,7 +75,7 @@ public class ParameterizedMessage implements Message {
     private transient Throwable throwable;
 
     /**
-     * Create the parameterizedMessage.
+     * Creates a parameterized message.
      * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
      * where parameters should be substituted.
      * @param stringArgs The arguments for substitution.
@@ -87,10 +87,17 @@ public class ParameterizedMessage implements Message {
         this.throwable = throwable;
     }
 
-    public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    /**
+     * Creates a parameterized message.
+     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
+     * where parameters should be substituted.
+     * @param objectArgs The arguments for substitution.
+     * @param throwable A Throwable.
+     */
+    public ParameterizedMessage(final String messagePattern, final Object[] objectArgs, final Throwable throwable) {
         this.messagePattern = messagePattern;
         this.throwable = throwable;
-        this.stringArgs = parseArguments(arguments);
+        this.stringArgs = parseArguments(objectArgs);
     }
 
     /**
