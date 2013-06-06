@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests of Level.
  *
- * @author Curt Arnold
  * @since 1.2.12
  */
 public class LevelTest {

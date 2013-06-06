@@ -70,8 +70,6 @@ import org.osgi.framework.wiring.BundleWiring;
  *
  * <p>This class was copied from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
  * </p>
- *
- * @author Tim Fennell
  */
 public class ResolverUtil {
     /** An instance of Log to use for logging in this class. */
