@@ -87,8 +87,8 @@ public class JMSQueueReceiver extends AbstractJMSReceiver {
         // Loop until the word "exit" is typed
         System.out.println("Type \"exit\" to quit JMSQueueReceiver.");
         while (true) {
-            final String s = stdin.readLine();
-            if (s.equalsIgnoreCase("exit")) {
+            final String line = stdin.readLine();
+            if (line.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting. Kill the application if it does not exit "
                     + "due to daemon threads.");
                 return;
