@@ -35,7 +35,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 public abstract class AbstractAppender<T extends Serializable> extends AbstractFilterable
-    implements Appender<T>, LifeCycle {
+    implements Appender<T> {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
