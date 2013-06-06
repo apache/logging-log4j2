@@ -301,9 +301,8 @@ public class StructuredDataMessage extends MapMessage {
                 }
             }
             return asString(null, null);
-        } else {
-            return asString(Format.FULL, null);
         }
+        return asString(Format.FULL, null);
     }
 
     private String asXML() {
