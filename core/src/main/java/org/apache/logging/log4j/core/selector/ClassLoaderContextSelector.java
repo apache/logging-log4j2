@@ -208,16 +208,15 @@ public class ClassLoaderContextSelector implements ContextSelector {
             CONTEXT_MAP.putIfAbsent(loader.toString(), r);
             ctx = CONTEXT_MAP.get(name).get().get();
             return ctx;
-        } else {
-            final WeakReference<LoggerContext> r = ref.get();
-            LoggerContext ctx = r.get();
-            if (ctx != null) {
-                return ctx;
-            }
-            ctx = new LoggerContext(name, null, configLocation);
-            ref.compareAndSet(r, new WeakReference<LoggerContext>(ctx));
+        }
+        final WeakReference<LoggerContext> r = ref.get();
+        LoggerContext ctx = r.get();
+        if (ctx != null) {
             return ctx;
         }
+        ctx = new LoggerContext(name, null, configLocation);
+        ref.compareAndSet(r, new WeakReference<LoggerContext>(ctx));
+        return ctx;
     }
 
     private static void setupCallerCheck() {
