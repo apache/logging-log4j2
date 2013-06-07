@@ -30,12 +30,12 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Generates a unique id. The generated UUID will be unique for approximately 8,925 years so long as
- * less than 4095 ids are generated per millisecond on the same device (as identified by its MAC adddress).
+ * Generates a unique ID. The generated UUID will be unique for approximately 8,925 years so long as
+ * less than 4095 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UUIDUtil {
     /**
-     * System property that may be used to seed the uuid generation with an integer value.
+     * System property that may be used to seed the UUID generation with an integer value.
      */
     public static final String UUID_SEQUENCE = "org.apache.logging.log4j.uuidSequence";
 
