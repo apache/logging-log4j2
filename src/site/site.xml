@@ -176,6 +176,7 @@
       <item name="Logging Wiki" href="http://wiki.apache.org/logging"/>
       <item name="Apache" href="http://www.apache.org/"/>
       <item name="Logging Services" href="http://logging.apache.org/"/>
+      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
     </links>
   </body>
 </project>
