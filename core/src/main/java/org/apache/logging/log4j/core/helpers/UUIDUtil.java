@@ -140,6 +140,7 @@ public final class UUIDUtil {
                 for (final long sequence : sequences) {
                     if (sequence == rand) {
                         duplicate = true;
+                        break;
                     }
                 }
                 if (duplicate) {

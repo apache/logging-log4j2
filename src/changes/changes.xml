@@ -19,7 +19,14 @@
   <properties>
     <title>Changes</title>
     <author email="rgoers@apache.org">Ralph Goers</author>
+    <author email="ggregory@apache.org">Gary Gregory</author>
   </properties>
+  <body>
+    <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-274" dev="ggregory" type="update">
+        Wasted work in UUIDUtil initialization.
+      </action>
+    </release>
   <body>
     <release version="2.0-beta7" date="2013-06-01" description="Bug fixes and enhancements">
       <action issue="LOG4J2-249" dev="rgoers" type="update">
