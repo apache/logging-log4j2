@@ -208,7 +208,7 @@ public class XMLLayout extends AbstractStringLayout {
 
 
     /**
-     * Returns appropriate XML headers.
+     * Returns appropriate XML footer.
      * @return a byte array containing the footer.
      */
     @Override
@@ -216,9 +216,7 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             return null;
         }
-        final StringBuilder sbuf = new StringBuilder();
-        sbuf.append("</log4j:eventSet>\r\n");
-        return sbuf.toString().getBytes(getCharset());
+        return "</log4j:eventSet>\r\n".getBytes(getCharset());
     }
 
     /**
