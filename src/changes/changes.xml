@@ -26,6 +26,9 @@
       <action issue="LOG4J2-274" dev="ggregory" type="update">
         Wasted work in UUIDUtil initialization.
       </action>
+      <action issue="LOG4J2-273" dev="ggregory" type="update">
+        Wasted work in XMLLayout.toSerializable().
+      </action>
     </release>
   <body>
     <release version="2.0-beta7" date="2013-06-01" description="Bug fixes and enhancements">
