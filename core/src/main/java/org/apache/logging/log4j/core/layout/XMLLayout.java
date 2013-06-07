@@ -125,6 +125,7 @@ public class XMLLayout extends AbstractStringLayout {
                 for (final String format : formats) {
                     if (format.equalsIgnoreCase("XML")) {
                         xmlSupported = true;
+                        break;
                     }
                 }
             }
