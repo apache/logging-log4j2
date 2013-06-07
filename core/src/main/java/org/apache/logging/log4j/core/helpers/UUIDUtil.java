@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Generates a unique ID. The generated UUID will be unique for approximately 8,925 years so long as
- * less than 4095 IDs are generated per millisecond on the same device (as identified by its MAC address).
+ * less than 10,000 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UUIDUtil {
     /**
