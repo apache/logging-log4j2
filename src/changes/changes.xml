@@ -23,6 +23,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-275" dev="rgoers" type="fix">
+        FlumeAvroManager fails to notify client of failing event if Flume RPCClient cannot be created.
+      </action>
       <action issue="LOG4J2-274" dev="ggregory" type="update">
         Wasted work in UUIDUtil initialization.
       </action>
