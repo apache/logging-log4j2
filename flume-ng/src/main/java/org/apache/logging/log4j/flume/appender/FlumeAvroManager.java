@@ -144,6 +144,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 LOGGER.warn(msg, ex);
                 throw new AppenderRuntimeException("No Flume agents are available");
             }
+        }  else {
+            String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                agents[current].getPort();
+            LOGGER.warn(msg);
+            throw new AppenderRuntimeException("No Flume agents are available");
         }
     }
 
@@ -164,6 +169,11 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 LOGGER.warn(msg, ex);
                 throw new AppenderRuntimeException("No Flume agents are available");
             }
+        } else {
+            String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                agents[current].getPort();
+            LOGGER.warn(msg);
+            throw new AppenderRuntimeException("No Flume agents are available");
         }
     }
 

@@ -435,12 +435,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                             LOGGER.error("Error sending event", ioe);
                                             break;
                                         }
-                                        if (!errors) {
-                                            try {
-                                                cursor.delete();
-                                            } catch (Exception ex) {
-                                                LOGGER.error("Unable to delete event", ex);
-                                            }
+                                        try {
+                                            cursor.delete();
+                                        } catch (Exception ex) {
+                                            LOGGER.error("Unable to delete event", ex);
                                         }
                                     }
                                     status = cursor.getNext(key, data, LockMode.RMW);
