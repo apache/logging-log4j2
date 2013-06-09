@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * The Syslog Appender.
@@ -112,6 +114,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginConfiguration final Configuration config,
                                                 @PluginAttr("charset") final String charsetName,
                                                 @PluginAttr("exceptionPattern") final String exceptionPattern,
+                                                @PluginElement("LoggerFields") LoggerFields loggerFields,
                                                 @PluginAttr("advertise") final String advertise) {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
@@ -123,7 +126,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>)(RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
-                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, config) :
+                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, loggerFields, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
 
         if (name == null) {
