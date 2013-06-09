@@ -1050,6 +1050,15 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
                 Defaults to true.</td>
             </tr>
             <tr>
+              <td>loggerFields</td>
+              <td>List of KeyValuePairs</td>
+              <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
+                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
+                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
+                specifies the key name which will be used to identify the field within the MDC Structured Data element,
+                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
+            </tr>
+            <tr>
               <td>mdcExcludes</td>
               <td>String</td>
               <td>A comma separated list of mdc keys that should be excluded from the LogEvent. This is mutually
@@ -1168,9 +1177,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         <subsection name="Location Information">
         <p>
 			If one of the layouts is
-			configured with a location-related attribute like 
+			configured with a location-related attribute like
 			HTML <a href="#HtmlLocationInfo">locationInfo</a>,
-			or one of the patterns 
+			or one of the patterns
 			<a href="#PatternClass">%C or $class</a>,
 			<a href="#PatternFile">%F or %file</a>,
 			<a href="#PatternLocation">%l or %location</a>,
@@ -1183,7 +1192,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 			This is an expensive operation: 1.3 - 5 times slower for
 			synchronous loggers. Synchronous loggers wait as
 			long as possible before they take this stack snapshot. If no
-			location is required, the snapshot will never be taken. 
+			location is required, the snapshot will never be taken.
 			</p><p>
 			However,
 			asynchronous loggers need to make this decision before passing the
@@ -1195,8 +1204,8 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 			For this reason, asynchronous loggers and asynchronous
 			appenders do not include location information by default.
 			</p><p>
-			You can override the default behaviour in your logger 
-			or asynchronous appender configuration 
+			You can override the default behaviour in your logger
+			or asynchronous appender configuration
 			by specifying
 			<tt>includeLocation="true"</tt>.
 			</p>

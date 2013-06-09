@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -81,7 +82,7 @@ public class RFC5424LayoutTest {
         }
         // set up appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
 
         appender.start();
@@ -143,9 +144,9 @@ public class RFC5424LayoutTest {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
-        // set up appender
+        // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null);
+            null, null, "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
         final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
 
         appender.start();
@@ -199,16 +200,16 @@ public class RFC5424LayoutTest {
     }
 
     /**
-     * Test case for MDC conversion pattern.
+     * Test case for MDC exception conversion pattern.
      */
     @Test
     public void testException() throws Exception {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
-        // set up appender
+        // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", "%xEx", null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", "%xEx", null, null);
         final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
         appender.start();
 
@@ -227,6 +228,47 @@ public class RFC5424LayoutTest {
 
             assertTrue("Not enough list entries", list.size() > 1);
             assertTrue("No Exception", list.get(1).contains("IllegalArgumentException"));
+
+            appender.clear();
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+    }
+
+    /**
+     * Test case for MDC logger field inclusion.
+     */
+    @Test
+    public void testMDCLoggerFields() throws Exception {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        
+        LoggerFields loggerFields = LoggerFields.createLoggerFields(new KeyValuePair[] {
+        		new KeyValuePair("source", "%C.%M")
+        });
+        
+        // set up layout/appender
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+        final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
+        appender.start();
+
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        // output starting message
+        root.info("starting logger fields test");
+
+        try {
+
+            final List<String> list = appender.getMessages();
+            assertTrue("Not enough list entries", list.size() > 0);
+            assertTrue("No class/method", list.get(0).contains("RFC5424LayoutTest.testMDCLoggerFields"));
 
             appender.clear();
         } finally {

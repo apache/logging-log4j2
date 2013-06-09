@@ -343,7 +343,7 @@
 		                to disk but could impact performance.</p>
 		                <p>Flushing after every write is only useful when using this
 						appender with synchronous loggers. Asynchronous loggers and
-						appenders will automatically flush at the end of a batch of events, 
+						appenders will automatically flush at the end of a batch of events,
 						even if immediateFlush is set to false. This also guarantees
 						the data is written to disk but is more efficient.</p>
 		              </td>
@@ -505,7 +505,7 @@
 		                to disk but could impact performance.</p>
 		                <p>Flushing after every write is only useful when using this
 						appender with synchronous loggers. Asynchronous loggers and
-						appenders will automatically flush at the end of a batch of events, 
+						appenders will automatically flush at the end of a batch of events,
 						even if immediateFlush is set to false. This also guarantees
 						the data is written to disk but is more efficient.</p>
 		              </td>
@@ -697,7 +697,7 @@
                 to disk but could impact performance.</p>
                 <p>Flushing after every write is only useful when using this
 				appender with synchronous loggers. Asynchronous loggers and
-				appenders will automatically flush at the end of a batch of events, 
+				appenders will automatically flush at the end of a batch of events,
 				even if immediateFlush is set to false. This also guarantees
 				the data is written to disk but is more efficient.</p>
               </td>
@@ -878,7 +878,7 @@
               <td>Property[]</td>
               <td><p>One or more Property elements that are used to configure the Flume Agent. The properties must be
                 configured without the agent name (the appender name is used for this) and no sources can be
-                configured. Interceptors can be specified for the source using "sources.log4j-source.interceptors". 
+                configured. Interceptors can be specified for the source using "sources.log4j-source.interceptors".
                 All other Flume configuration properties are allowed. Specifying both Agent and Property
                 elements will result in an error.</p>
                 <p>When used to configure in Persistent mode the valid properties are:
@@ -2090,7 +2090,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
                 to disk but could impact performance.</p>
                 <p>Flushing after every write is only useful when using this
 				appender with synchronous loggers. Asynchronous loggers and
-				appenders will automatically flush at the end of a batch of events, 
+				appenders will automatically flush at the end of a batch of events,
 				even if immediateFlush is set to false. This also guarantees
 				the data is written to disk but is more efficient.</p>
               </td>
@@ -2639,7 +2639,7 @@ public class JpaLogEntity extends LogEventWrapperEntity {
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td>When set to true - the default, each write will be followed by a flush. 
+              <td>When set to true - the default, each write will be followed by a flush.
                 This will guarantee the data is written
                 to disk but could impact performance.</td>
             </tr>
@@ -2842,6 +2842,15 @@ public class JpaLogEntity extends LogEventWrapperEntity {
               <td>boolean</td>
               <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
                 false exceptions will be percolated to the caller.</td>
+            </tr>
+            <tr>
+              <td>loggerFields</td>
+              <td>List of KeyValuePairs</td>
+              <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
+                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
+                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
+                specifies the key name which will be used to identify the field within the MDC Structured Data element,
+                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
             </tr>
             <caption align="top">SyslogAppender Parameters</caption>
           </table>
