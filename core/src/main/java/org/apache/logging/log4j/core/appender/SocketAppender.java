@@ -115,8 +115,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
             return null;
         }
 
-        final String prot = protocol != null ? protocol : Protocol.TCP.name();
-        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
+        final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol != null ? protocol : Protocol.TCP.name());
         if (p.equals(Protocol.UDP)) {
             isFlush = true;
         }
