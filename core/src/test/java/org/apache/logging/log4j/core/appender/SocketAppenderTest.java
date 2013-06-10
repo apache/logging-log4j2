@@ -122,6 +122,15 @@ public class SocketAppenderTest {
         assertTrue("Message not delivered via TCP", tcpCount > 1);
     }
 
+    @Test
+    public void testDefaultProtocol() throws Exception {
+
+        final SocketAppender appender = SocketAppender.createAppender("localhost", PORT, null, "-1",
+            "false", "Test", null, null, null, null, null, null);
+        assertNotNull(appender);
+    }
+
+
 
     @Test
     public void testUDPAppender() throws Exception {

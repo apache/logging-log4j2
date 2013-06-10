@@ -23,6 +23,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-139" dev="rgoers" type="fix">
+        Fix NullPointerException (regression due to fix for LOG4J2-228)
+      </action>
       <action issue="LOG4J2-168" dev="rgoers" type="update" due-to="Scott Severtson">
         Allow elements of the logging event to be added to the mdc structured data in RFC5424Layout.
       </action>
