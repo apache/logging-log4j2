@@ -27,7 +27,7 @@
         Fix NullPointerException (regression due to fix for LOG4J2-228)
       </action>
       <action issue="LOG4J2-168" dev="rgoers" type="update" due-to="Scott Severtson">
-        Allow elements of the logging event to be added to the MDC structured data in RFC5424Layout.
+        Include arbitrary message fields in RFC-5424 structured data.
       </action>
       <action issue="LOG4J2-275" dev="rgoers" type="fix">
         FlumeAvroManager fails to notify client of failing event if Flume RPCClient cannot be created.
