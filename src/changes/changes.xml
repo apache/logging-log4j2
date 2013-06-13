@@ -23,6 +23,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-277" dev="gregory" type="update">
+        Wasted work in RollingAppenderSizeTest.testAppender() and others.
+      </action>
       <action issue="LOG4J2-139" dev="rgoers" type="fix">
         Fix NullPointerException (regression due to fix for LOG4J2-228)
       </action>

@@ -69,6 +69,9 @@ public class AdvertiserTest {
         boolean foundSocket1 = false;
         boolean foundSocket2 = false;
         for (Map<String, String>entry:entries.values()) {
+            if (foundFile1 && foundFile2 && foundSocket1 && foundSocket2) {
+               break;
+            }
             if (entry.get("name").equals("File1")) {
                 foundFile1 = true;
             }
