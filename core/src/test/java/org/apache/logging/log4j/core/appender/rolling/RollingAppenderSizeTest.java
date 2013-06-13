@@ -69,6 +69,7 @@ public class RollingAppenderSizeTest {
         for (final File file : files) {
             if (file.getName().endsWith(".gz")) {
                 found = true;
+                break;
             }
         }
         assertTrue("No compressed files found", found);

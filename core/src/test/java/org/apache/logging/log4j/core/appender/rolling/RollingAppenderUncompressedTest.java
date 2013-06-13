@@ -70,6 +70,7 @@ public class RollingAppenderUncompressedTest {
             final String name = file.getName();
             if (name.startsWith("test1") && name.endsWith(".log")) {
                 found = true;
+                break;
             }
         }
         assertTrue("No archived files found", found);
