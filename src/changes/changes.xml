@@ -23,6 +23,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-286" dev="gregory" type="update">
+        Update test H2 JDBC driver to 1.172 from 1.171.
+      </action>
       <action issue="LOG4J2-285" dev="gregory" type="update">
         Update Jansi jar to 1.11 from 1.9.
       </action>
