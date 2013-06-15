@@ -23,6 +23,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-283" dev="gregory" type="update">
+        Remove dependency on Apache ORO jar.
+      </action>
       <action issue="LOG4J2-277" dev="gregory" type="update">
         Wasted work in RollingAppenderSizeTest.testAppender() and others.
       </action>
