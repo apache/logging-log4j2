@@ -82,7 +82,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
 
     /**
      * All eventual accessor methods must call this method and delegate the method call to the underlying wrapped event.
-     * Annotated {@link @Transient} so as not to be included in the persisted entity.
+     * Annotated {@link Transient} so as not to be included in the persisted entity.
      * 
      * @return The underlying event from which information is obtained.
      */
