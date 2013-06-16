@@ -279,6 +279,9 @@
          project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <links>
+            <link>http://docs.oracle.com/javaee/6/api/</link> 
+          </links>
           <tags>
             <tag>
               <name>issue</name>
