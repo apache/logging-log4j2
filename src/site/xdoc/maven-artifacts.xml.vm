@@ -30,6 +30,7 @@
           To build with <a href="http://maven.apache.org/">Apache Maven</a>, add the dependencies listed below to your
           <code>pom.xml</code> file.
         </p>
+        <code>pom.xml</code>
         <pre class="prettyprint linenums"><![CDATA[
 <dependencies>
   <dependency>
@@ -50,6 +51,7 @@
           To build with <a href="https://ant.apache.org/ivy/">Apache Ivy</a>, add the dependencies listed below to your
           <code>ivy.xml</code> file.
         </p>
+        <code>ivy.xml</code>
         <pre class="prettyprint linenums"><![CDATA[
 <dependencies>
   <dependency org="org.apache.logging.log4j" name="log4j-api" rev="${Log4jReleaseVersion}" />
