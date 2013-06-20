@@ -1198,7 +1198,7 @@
 <configuration status="error">
   <appenders>
     <Jdbc name="databaseAppender" tableName="application_log">
-      <DriverManager jdbcUrl="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
+      <DriverManager url="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
