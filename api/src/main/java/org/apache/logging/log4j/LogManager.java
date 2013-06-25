@@ -295,8 +295,7 @@ public class LogManager {
      * Short-hand for {@code getLogger(name, StringFormatterMessageFactory.INSTANCE)}
      * </p>
      *
-     * @param name
-     *            The logger name.
+     * @param name The logger name. If null it will default to the name of the calling class.
      * @return The Logger, created with a {@link StringFormatterMessageFactory}
      * @see Logger#fatal(Marker, String, Object...)
      * @see Logger#fatal(String, Object...)
@@ -321,7 +320,8 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
-     * @param clazz The Class whose name should be used as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
+     *              class.
      * @return The Logger.
      */
     public static Logger getLogger(final Class<?> clazz) {
@@ -330,7 +330,8 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
-     * @param clazz The Class whose name should be used as the Logger name.
+     * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
+     *              class.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
      *                       the logger but will log a warning if mismatched.
      * @return The Logger.
@@ -341,7 +342,8 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
-     * @param value The value whose class name should be used as the Logger name.
+     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
+     *              class will be used as the logger name.
      * @return The Logger.
      */
     public static Logger getLogger(final Object value) {
@@ -353,7 +355,8 @@ public class LogManager {
 
     /**
      * Returns a Logger using the fully qualified class name of the value as the Logger name.
-     * @param value The value whose class name should be used as the Logger name.
+     * @param value The value whose class name should be used as the Logger name. If null the name of the calling
+     *              class will be used as the logger name.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
      *                       the logger but will log a warning if mismatched.
      * @return The Logger.
@@ -368,7 +371,7 @@ public class LogManager {
     /**
      * Returns a Logger with the specified name.
      *
-     * @param name The logger name.
+     * @param name The logger name. If null the name of the calling class will be used.
      * @return The Logger.
      */
     public static Logger getLogger(final String name) {
@@ -381,7 +384,7 @@ public class LogManager {
     /**
      * Returns a Logger with the specified name.
      *
-     * @param name The logger name.
+     * @param name The logger name. If null the name of the calling class will be used.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
      *                       the logger but will log a warning if mismatched.
      * @return The Logger.
@@ -393,11 +396,20 @@ public class LogManager {
         return getLogger(getClassName(2), messageFactory);
     }
 
+    /**
+     * Returns a Logger with the name of the calling class.
+     * @return The Logger for the calling class.
+     */
     public static Logger getLogger() {
         return getLogger(getClassName(2));
     }
 
-
+    /**
+     * Returns a Logger with the name of the calling class.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The Logger for the calling class.
+     */
     public static Logger getLogger(final MessageFactory messageFactory) {
         return getLogger(getClassName(2), messageFactory);
     }
