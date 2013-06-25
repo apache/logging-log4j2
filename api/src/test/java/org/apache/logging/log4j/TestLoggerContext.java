@@ -19,14 +19,22 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
 public class TestLoggerContext implements LoggerContext {
-    private final Logger logger = new TestLogger();
+    private Map<String, Logger> map = new HashMap<String, Logger>();
 
     @Override
     public Logger getLogger(final String name) {
+        if (map.containsKey(name)) {
+            return map.get(name);
+        }
+        Logger logger = new TestLogger(name);
+        map.put(name, logger);
         return logger;
     }
 

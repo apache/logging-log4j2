@@ -37,9 +37,9 @@
             <h4>Hello World!</h4>
             <p>
               No introduction would be complete without the customary Hello, World example. Here is ours. First,
-              a Logger with the name "HelloWorld" is obtained from the 
-              <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html">LogManager</a>. 
-              Next, the logger is used to write the "Hello, World!" message, however the message will be written 
+              a Logger with the name "HelloWorld" is obtained from the
+              <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html">LogManager</a>.
+              Next, the logger is used to write the "Hello, World!" message, however the message will be written
               only if the Logger is configured to allow informational messages.
             </p>
             <pre class="prettyprint linenums">import org.apache.logging.log4j.LogManager;
@@ -77,12 +77,12 @@ public class HelloWorld {
             <h4>Formatting Parameters</h4>
             <p>
               Substituting parameters leaves formatting up to you if <code>toString()</code> is not what you want.
-              To facilitate formatting, you can use the same format strings as Java's 
+              To facilitate formatting, you can use the same format strings as Java's
               <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">Formatter</a>.
               For example:
             </p>
             <pre class="prettyprint linenums">public static Logger logger = LogManager.getFormatterLogger("Foo");
-            
+
 logger.debug("Logging in user %s with birthday %s", user.getName(), user.getBirthdayCalendar());
 logger.debug("Logging in user %1$s with birthday %2$tm %2$te,%2$tY", user.getName(), user.getBirthdayCalendar());
 logger.debug("Integer.MAX_VALUE = %,d", Integer.MAX_VALUE);
@@ -98,6 +98,29 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
 2012-12-12 11:56:19,643 [main] DEBUG: Integer.MAX_VALUE = 2,147,483,647
 2012-12-12 11:56:19,643 [main] DEBUG: Long.MAX_VALUE = 9,223,372,036,854,775,807
 </pre>
+          <h4>Logger NAmes</h4>
+            <p>
+              Most logging implementations use a hierarchical scheme for matching logger names with logging
+              configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
+              logger name, in a fashion very similar to the hierarchy used for Java package names. For example,
+              org.apache.logging.appender and org.apache.logging.filter both have org.apache.logging as their parent.
+              In most cases, applications name their loggers by passing the current class's name to
+              LogManager.getLogger.  Because this usage is so common, Log4j 2 provides that as the default when
+              the logger name parameter is either omitted or is null. For example, in both examples below the Logger will
+              have a name of "org.apache.test.MyTest".
+            </p>
+            <pre class="prettyprint linenums">package org.apache.test;
+
+public class MyTest {
+    private static Logger logger = LogManager.getLogger(MyTest.class.getName());
+}
+            </pre>
+            <pre class="prettyprint linenums">package org.apache.test;
+
+              public class MyTest {
+              private static Logger logger = LogManager.getLogger();
+              }
+            </pre>
           </subsection>
         </section>
     </body>
