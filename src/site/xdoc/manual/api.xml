@@ -98,7 +98,7 @@ logger.debug("Long.MAX_VALUE = %,d", Long.MAX_VALUE);
 2012-12-12 11:56:19,643 [main] DEBUG: Integer.MAX_VALUE = 2,147,483,647
 2012-12-12 11:56:19,643 [main] DEBUG: Long.MAX_VALUE = 9,223,372,036,854,775,807
 </pre>
-          <h4>Logger NAmes</h4>
+          <h4>Logger names</h4>
             <p>
               Most logging implementations use a hierarchical scheme for matching logger names with logging
               configuration. In this scheme the logger name hierarchy is represented by '.' characters in the
