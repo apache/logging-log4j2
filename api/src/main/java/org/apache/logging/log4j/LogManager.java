@@ -247,10 +247,7 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final Class<?> clazz) {
-        if (clazz != null) {
-            return getLogger(clazz, StringFormatterMessageFactory.INSTANCE);
-        }
-        return getLogger(getClassName(2), StringFormatterMessageFactory.INSTANCE);
+        return getLogger(clazz != null ? clazz.getName() : getClassName(2), StringFormatterMessageFactory.INSTANCE);
     }
 
     /**
@@ -280,10 +277,8 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final Object value) {
-        if (value != null) {
-            return getLogger(value, StringFormatterMessageFactory.INSTANCE);
-        }
-        return getLogger(getClassName(2), StringFormatterMessageFactory.INSTANCE);
+        return getLogger(value != null ? value.getClass().getName() : getClassName(2),
+                StringFormatterMessageFactory.INSTANCE);
     }
 
     /**
@@ -312,10 +307,7 @@ public class LogManager {
      * @see StringFormatterMessageFactory
      */
     public static Logger getFormatterLogger(final String name) {
-        if (name != null) {
-            return getLogger(name, StringFormatterMessageFactory.INSTANCE);
-        }
-        return getLogger(getClassName(2), StringFormatterMessageFactory.INSTANCE);
+        return getLogger(name != null ? name : getClassName(2), StringFormatterMessageFactory.INSTANCE);
     }
 
     /**
@@ -347,10 +339,7 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final Object value) {
-        if (value != null) {
-            return getLogger(value.getClass().getName());
-        }
-        return getLogger(getClassName(2));
+        return getLogger(value != null ? value.getClass().getName() : getClassName(2));
     }
 
     /**
@@ -362,10 +351,7 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final Object value, final MessageFactory messageFactory) {
-        if (value != null) {
-            return getLogger(value.getClass().getName(), messageFactory);
-        }
-        return getLogger(getClassName(2), messageFactory);
+        return getLogger(value != null ? value.getClass().getName() : getClassName(2), messageFactory);
     }
 
     /**
@@ -375,10 +361,8 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final String name) {
-        if (name != null) {
-            return factory.getContext(LogManager.class.getName(), null, false).getLogger(name);
-        }
-        return getLogger(getClassName(2));
+        String actualName = name != null ? name : getClassName(2);
+        return factory.getContext(LogManager.class.getName(), null, false).getLogger(actualName);
     }
 
     /**
@@ -390,10 +374,8 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final String name, final MessageFactory messageFactory) {
-        if (name != null) {
-            return factory.getContext(LogManager.class.getName(), null, false).getLogger(name, messageFactory);
-        }
-        return getLogger(getClassName(2), messageFactory);
+        String actualName = name != null ? name : getClassName(2);
+        return factory.getContext(LogManager.class.getName(), null, false).getLogger(actualName, messageFactory);
     }
 
     /**
@@ -425,6 +407,12 @@ public class LogManager {
         return factory.getContext(fqcn, null, false).getLogger(name);
     }
 
+    /**
+     * Gets the class name of the caller in the current stack at the given {@code depth}.
+     * 
+     * @param depth a 0-based index in the current stack.
+     * @return a class name  
+     */
     private static String getClassName(int depth) {
         return new Throwable().getStackTrace()[depth].getClassName();
     }
