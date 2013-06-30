@@ -21,6 +21,18 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-295" dev="rpopma" type="fix">
+        Fast(Rolling)FileAppender now correctly handles messages exceeding the buffer size.
+      </action>
+      <action issue="LOG4J2-271" dev="rpopma" type="fix">
+        FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false.
+      </action>
+      <action issue="LOG4J2-267" dev="rpopma" type="fix">
+        FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false.
+      </action>
+      <action issue="LOG4J2-292" dev="rpopma" type="fix">
+        Fast(Rolling)FileAppender now correctly appends to (does not overwrite) existing file.
+      </action>
       <action issue="LOG4J2-294" dev="rgoers" type="update">
         LogManager.getLogger can now be called without a logger name or with a null logger name.
       </action>
