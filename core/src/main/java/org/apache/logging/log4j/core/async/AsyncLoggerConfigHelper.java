@@ -63,7 +63,9 @@ class AsyncLoggerConfigHelper {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static volatile Disruptor<Log4jEventWrapper> disruptor;
-    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static ExecutorService executor = Executors
+            .newSingleThreadExecutor(new DaemonThreadFactory(
+                    "AsyncLoggerConfig-"));
 
     private static volatile int count = 0;
 
@@ -104,10 +106,10 @@ class AsyncLoggerConfigHelper {
         }
         int ringBufferSize = calculateRingBufferSize();
         WaitStrategy waitStrategy = createWaitStrategy();
-        disruptor = new Disruptor<Log4jEventWrapper>(FACTORY,
-                ringBufferSize, executor, ProducerType.MULTI, waitStrategy);
+        disruptor = new Disruptor<Log4jEventWrapper>(FACTORY, ringBufferSize,
+                executor, ProducerType.MULTI, waitStrategy);
         EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
-                new Log4jEventWrapperHandler() };
+        new Log4jEventWrapperHandler() };
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(handlers);
 

@@ -82,7 +82,7 @@ public class AsyncLogger extends Logger {
     private static Clock clock = ClockFactory.getClock();
 
     private static ExecutorService executor = Executors
-            .newSingleThreadExecutor();
+            .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
     private ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
