@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
@@ -33,7 +32,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * I/O.
  */
 public class FastRollingFileManager extends RollingFileManager {
-    private static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
+    static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
     private static final FastRollingFileManagerFactory FACTORY = new FastRollingFileManagerFactory();
 
@@ -75,10 +74,17 @@ public class FastRollingFileManager extends RollingFileManager {
     protected synchronized void write(byte[] bytes, int offset, int length) {
         super.write(bytes, offset, length); // writes to dummy output stream
 
-        if (length > buffer.remaining()) {
-            flush();
-        }
-        buffer.put(bytes, offset, length);
+        int chunk = 0;
+        do {
+            if (length > buffer.remaining()) {
+                flush();
+            }
+            chunk = Math.min(length, buffer.remaining());
+            buffer.put(bytes, offset, chunk);
+            offset += chunk;
+            length -= chunk;
+        } while (length > 0);
+
         if (isImmediateFlush || isEndOfBatch.get() == Boolean.TRUE) {
             flush();
         }
@@ -134,18 +140,24 @@ public class FastRollingFileManager extends RollingFileManager {
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
             }
+
             if (!data.append) {
                 file.delete();
             }
-            long size = data.append ? file.length() : 0;
-            long time = file.lastModified();
+            final long size = data.append ? file.length() : 0;
+            final long time = file.exists() ? file.lastModified() : System.currentTimeMillis();
 
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");
+                if (data.append) {
+                    raf.seek(raf.length());
+                } else {
+                    raf.setLength(0);
+                }
                 return new FastRollingFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
                         data.immediateFlush, size, time, data.policy, data.strategy, data.advertiseURI, data.layout);
-            } catch (FileNotFoundException ex) {
+            } catch (IOException ex) {
                 LOGGER.error("FastRollingFileManager (" + name + ") " + ex);
             }
             return null;
@@ -153,7 +165,7 @@ public class FastRollingFileManager extends RollingFileManager {
     }
 
     /** {@code OutputStream} subclass that does not write anything. */
-    private static class DummyOutputStream extends OutputStream {
+    static class DummyOutputStream extends OutputStream {
         @Override
         public void write(int b) throws IOException {
         }
