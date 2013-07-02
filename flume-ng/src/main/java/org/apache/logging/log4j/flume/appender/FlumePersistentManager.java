@@ -287,6 +287,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 for (Map.Entry<String, String> entry : properties.entrySet()) {
                     if (entry.getKey().equalsIgnoreCase(KEY_PROVIDER)) {
                         key = entry.getValue();
+                        break;
                     }
                 }
                 if (key != null) {
