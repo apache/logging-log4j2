@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-298" dev="ggregory" type="fix">
+        Wasted work in StyleConverterTest.setupClass.
+      </action>
       <action issue="LOG4J2-280" dev="rpopma" type="fix">
         AsyncLogger threads are now daemon threads and won't prevent the JVM from shutting down anymore.
       </action>
