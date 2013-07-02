@@ -199,6 +199,7 @@ public class TestConfigurator {
         for (Map.Entry<String, Appender<?>> entry: map.entrySet()) {
             if (entry.getKey().equals("List2")) {
                 app = entry.getValue();
+                break;
             }
         }
         assertNotNull("No ListAppender named List2", app);
