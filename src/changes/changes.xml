@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-278" dev="rgoers" type="fix">
+        Filter calls from Avro or Flume to be ignored by the FlumeAppender.
+      </action>
+      <action issue="LOG4J2-279" dev="rgoers" type="fix">
+        FlumePersistentManager now calls Berkeley DB from threads to avoid encountering interrupts in the application.
+      </action>
       <action issue="LOG4J2-296" dev="ggregory" type="fix">
         Wasted work in FlumePersistentManager.createManager.
       </action>
