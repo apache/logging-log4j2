@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
@@ -28,19 +36,12 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
 /**
  * Class that is both a Flume and Log4j Event.
  */
 public class FlumeEvent extends SimpleEvent implements LogEvent {
 
+    static final String GUID = "guId";
     /**
      * Generated serial version ID.
      */
@@ -53,8 +54,6 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     private static final String EVENT_TYPE = "eventType";
 
     private static final String EVENT_ID = "eventId";
-
-    static final String GUID = "guId";
 
     private static final String TIMESTAMP = "timeStamp";;
 

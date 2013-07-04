@@ -16,6 +16,35 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+
+import org.apache.flume.Event;
+import org.apache.flume.event.SimpleEvent;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
+
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
 import com.sleepycat.je.Database;
@@ -27,34 +56,13 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.StatsConfig;
 import com.sleepycat.je.Transaction;
-import org.apache.flume.Event;
-import org.apache.flume.event.SimpleEvent;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Manager that persists data to Berkeley DB before passing it on to Flume.
  */
 public class FlumePersistentManager extends FlumeAvroManager {
 
+    /** Attribute name for the key provider. */
     public static final String KEY_PROVIDER = "keyProvider";
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -62,6 +70,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
     private static final String SHUTDOWN = "Shutdown";
 
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
+
+    private static final int SHUTDOWN_WAIT = 60;
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
@@ -77,12 +87,21 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private final int delay;
 
+    private final ExecutorService threadPool;
+
     /**
      * Constructor
      * @param name The unique name of this manager.
+     * @param shortName Original name for the Manager.
      * @param agents An array of Agents.
      * @param batchSize The number of events to include in a batch.
+     * @param retries The number of times to retry connecting before giving up.
+     * @param connectionTimeout The amount of time to wait for a connection to be established.
+     * @param requestTimeout The amount of time to wair for a response to a request.
+     * @param delay The amount of time to wait between retries.
      * @param database The database to write to.
+     * @param environment The database environment.
+     * @param secretKey The SecretKey to use for encryption.
      */
     protected FlumePersistentManager(final String name, final String shortName, final Agent[] agents,
                                      final int batchSize, final int retries, final int connectionTimeout,
@@ -95,6 +114,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         this.worker = new WriterThread(database, environment, this, queue, batchSize, secretKey);
         this.worker.start();
         this.secretKey = secretKey;
+        this.threadPool = Executors.newCachedThreadPool(new DaemonThreadFactory());
     }
 
 
@@ -102,7 +122,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * Returns a FlumeAvroManager.
      * @param name The name of the manager.
      * @param agents The agents to use.
+     * @param properties Properties to pass to the Manager.
      * @param batchSize The number of events to include in a batch.
+     * @param retries The number of times to retry connecting before giving up.
+     * @param connectionTimeout The amount of time to wait to establish a connection.
+     * @param requestTimeout The amount of time to wait for a response to a request.
+     * @param delay Amount of time to delay before delivering a batch.
+     * @param dataDir The location of the Berkeley database.
      * @return A FlumeAvroManager.
      */
     public static FlumePersistentManager getManager(final String name, final Agent[] agents, Property[] properties,
@@ -156,19 +182,18 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
                 eventData = cipher.doFinal(eventData);
             }
-            final DatabaseEntry key = new DatabaseEntry(keyData);
-            final DatabaseEntry data = new DatabaseEntry(eventData);
-            Transaction txn = environment.beginTransaction(null, null);
-            try {
-                database.put(txn, key, data);
-                txn.commit();
-                queue.add(keyData);
-            } catch (Exception ex) {
-                if (txn != null) {
-                    txn.abort();
+            Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database, queue));
+            boolean interrupted = false;
+            int count = 0;
+            do {
+                try {
+                    future.get();
+                } catch (InterruptedException ie) {
+                    interrupted = true;
+                    ++count;
                 }
-                throw ex;
-            }
+            } while (interrupted && count <= 1);
+
         } catch (Exception ex) {
             throw new LoggingException("Exception occurred writing log event", ex);
         }
@@ -178,6 +203,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
     protected void releaseSub() {
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
+        threadPool.shutdown();
+        try {
+            threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
+        } catch (InterruptedException ie) {
+            LOGGER.warn("PersistentManager Thread pool failed to shut down");
+        }
         try {
             worker.join();
         } catch (InterruptedException ex) {
@@ -201,6 +232,44 @@ public class FlumePersistentManager extends FlumeAvroManager {
     private void doSend(final SimpleEvent event) {
         LOGGER.debug("Sending event to Flume");
         super.send(event);
+    }
+
+    /**
+     * Thread for writing to Berkeley DB to avoid having interrupts close the database.
+     */
+    private static class BDBWriter implements Callable<Integer> {
+        private final byte[] eventData;
+        private final byte[] keyData;
+        private final Environment environment;
+        private final Database database;
+        private final LinkedBlockingQueue<byte[]> queue;
+
+        public BDBWriter(byte[] keyData, byte[] eventData, Environment environment, Database database,
+                         LinkedBlockingQueue<byte[]> queue) {
+            this.keyData = keyData;
+            this.eventData = eventData;
+            this.environment = environment;
+            this.database = database;
+            this.queue = queue;
+        }
+
+        @Override
+        public  Integer call() throws Exception {
+            final DatabaseEntry key = new DatabaseEntry(keyData);
+            final DatabaseEntry data = new DatabaseEntry(eventData);
+            Transaction txn = environment.beginTransaction(null, null);
+            try {
+                database.put(txn, key, data);
+                txn.commit();
+                queue.add(keyData);
+            } catch (Exception ex) {
+                if (txn != null) {
+                    txn.abort();
+                }
+                throw ex;
+            }
+            return eventData.length;
+        }
     }
 
     /**
@@ -326,6 +395,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
     }
 
+    /**
+     * Thread that sends data to Flume and pulls it from Berkeley DB.
+     */
     private static class WriterThread extends Thread  {
         private volatile boolean shutdown = false;
         private final Database database;
@@ -520,6 +592,33 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 LOGGER.error("Error retrieving event", ex);
                 return null;
             }
+        }
+
+    }
+
+    /**
+     * Factory that creates Daemon threads that can be properly shut down.
+     */
+    private static class DaemonThreadFactory implements ThreadFactory {
+        private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        public DaemonThreadFactory() {
+            SecurityManager securityManager = System.getSecurityManager();
+            group = (securityManager != null) ? securityManager.getThreadGroup() :
+                Thread.currentThread().getThreadGroup();
+            namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
+        }
+
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            thread.setDaemon(true);
+            if (thread.getPriority() != Thread.NORM_PRIORITY) {
+                thread.setPriority(Thread.NORM_PRIORITY);
+            }
+            return thread;
         }
 
     }
