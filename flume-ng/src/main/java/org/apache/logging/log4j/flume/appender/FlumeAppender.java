@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.Serializable;
+import java.util.Locale;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,14 +30,14 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Flume", category = "Core", elementType = "appender", printObject = true)
 public final class FlumeAppender<T extends Serializable> extends AbstractAppender<T> implements FlumeEventFactory {
+
+    private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};
 
     private final AbstractFlumeManager manager;
 
@@ -50,6 +53,9 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
 
     private final FlumeEventFactory factory;
 
+    /**
+     * Which Manager will be used by the appender instance.
+     */
     private enum ManagerType {
         AVRO, EMBEDDED, PERSISTENT;
 
@@ -79,7 +85,14 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      */
     @Override
     public void append(final LogEvent event) {
-
+        String name = event.getLoggerName();
+        if (name != null) {
+            for (String pkg : EXCLUDED_PACKAGES) {
+                if (name.startsWith(pkg)) {
+                    return;
+                }
+            }
+        }
         final FlumeEvent flumeEvent = factory.createEvent(event, mdcIncludes, mdcExcludes, mdcRequired, mdcPrefix,
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
@@ -136,6 +149,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * @param factory The factory to use to create Flume events.
      * @param layout The layout to format the event.
      * @param filter A Filter to filter events.
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
+     *
      * @return A Flume Avro Appender.
      */
     @PluginFactory
@@ -172,7 +187,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                     managerType = ManagerType.getType(type);
                     LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
                 } catch (Exception ex) {
-                    LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type + " is invalid.");
+                    LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type +
+                        " is invalid.");
                     managerType = ManagerType.EMBEDDED;
                 }
             } else {
@@ -196,8 +212,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
         final int delay = maxDelay == null ? 60000 : Integer.parseInt(maxDelay);
 
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
                     null, null, null, excludes, includes, required, null, null, null, null);
             layout = l;
         }
