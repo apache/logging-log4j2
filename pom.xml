@@ -147,7 +147,7 @@
     <osgi.private />
     <pmd.plugin.version>3.0.1</pmd.plugin.version>
     <changes.plugin.version>2.9</changes.plugin.version>
-    <javadoc.plugin.version>2.9</javadoc.plugin.version>
+    <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
     <surefire.plugin.version>2.14.1</surefire.plugin.version>
     <rat.plugin.version>0.8</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
@@ -477,24 +477,6 @@
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.adoptopenjdk.maven.plugins</groupId>
-          <artifactId>javadoc-updater-maven-plugin</artifactId>
-          <version>0.1-SNAPSHOT</version>
-          <executions>
-            <execution>
-              <phase>site</phase>
-              <goals>
-                <goal>fixjavadoc</goal>
-              </goals>
-              <configuration>
-                <!-- by default check target/site if apidocs are not here change the value
-                <directory>${project.reporting.outputDirectory}</directory>
-                -->
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
