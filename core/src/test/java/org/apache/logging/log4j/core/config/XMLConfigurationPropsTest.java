@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,6 +32,7 @@ import static org.junit.Assert.*;
 public class XMLConfigurationPropsTest {
 
     private static final String CONFIG = "log4j-props.xml";
+    private static final String CONFIG1 = "log4j-props1.xml";
     private static final String LOGFILE = "target/test.log";
 
     @BeforeClass
@@ -47,11 +49,28 @@ public class XMLConfigurationPropsTest {
 
     @Test
     public void testNoProps() {
+        System.out.println("No status");
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
+    }
+
+
+    @Test
+    public void testDefaultStatus() {
+        System.out.println("Default status");
+        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
+        System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "DEBUG");
+        try {
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+            ctx.reconfigure();
+            final Configuration config = ctx.getConfiguration();
+            assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
+        } finally {
+            System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
+        }
     }
 
     @Test

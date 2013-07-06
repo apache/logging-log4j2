@@ -880,7 +880,8 @@ public class Bar {
           </p>
           <p>
             When configuring Log4j it is sometimes necessary to view the generated status events. This can be
-            accomplished by adding the status attribute to the configuration element. The following
+            accomplished by adding the status attribute to the configuration element or a default value can be
+            provided by setting the "Log4jDefaultStatusLevel" system property. The following
             configuration has the status attribute set to debug.
 
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;

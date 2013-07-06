@@ -60,7 +60,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     private final List<Status> status = new ArrayList<Status>();
 
     private Map<String, String> advertisedConfiguration;
-    
+
     private Object advertisement;
 
     private JsonNode root;
@@ -85,7 +85,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                 root = i.next();
             }
             processAttributes(rootNode, root);
-            Level status = Level.OFF;
+            Level status = getDefaultStatus();
             boolean verbose = false;
             PrintStream stream = System.out;
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {

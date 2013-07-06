@@ -43,15 +43,18 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import com.sun.org.apache.bcel.internal.classfile.ConstantString;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -103,16 +106,17 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             final Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            Level status = Level.OFF;
+            Level status = getDefaultStatus();
             boolean verbose = false;
             PrintStream stream = System.out;
 
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    status = Level.toLevel(getSubst().replace(entry.getValue()), null);
-                    if (status == null) {
-                        status = Level.ERROR;
-                        messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to ERROR");
+                    Level stat = Level.toLevel(getSubst().replace(entry.getValue()), null);
+                    if (stat != null) {
+                        status = stat;
+                    } else {
+                        messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to " + status);
                     }
                 } else if ("dest".equalsIgnoreCase(entry.getKey())) {
                     final String dest = entry.getValue();

@@ -23,11 +23,17 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class Constants {
 
+    /**
+     * Name of the system property to use to identify the LogEvent factory.
+     */
     public static final String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
+
     /**
      * Name of the system property to use to identify the ContextSelector Class.
      */
     public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
+
+    public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
      * JNDI context name string literal.
