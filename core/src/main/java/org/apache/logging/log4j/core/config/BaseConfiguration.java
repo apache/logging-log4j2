@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -150,6 +151,16 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     protected void setup() {
+    }
+
+    protected Level getDefaultStatus() {
+        String statusLevel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL,
+            Level.ERROR.name());
+        try {
+            return Level.toLevel(statusLevel);
+        } catch (Exception ex) {
+            return Level.ERROR;
+        }
     }
 
     @Override
