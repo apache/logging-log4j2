@@ -34,8 +34,19 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
  */
-class Log4jWebInitializerImpl implements Log4jWebInitializer {
+final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     private static final Object MUTEX = new Object();
+
+    static {
+        try {
+            Class.forName("org.apache.logging.log4j.core.web.JNDIContextFilter");
+            throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct " +
+                    "log4j-web artifact. This is not supported and could cause serious runtime problems. Please" +
+                    "remove the log4j-web JAR file from your application.");
+        } catch (ClassNotFoundException ignore) {
+            /* Good. They don't have the old log4j-web artifact loaded. */
+        }
+    }
 
     private final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
     private final ServletContext servletContext;
@@ -63,15 +74,13 @@ class Log4jWebInitializerImpl implements Log4jWebInitializer {
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
             String location = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
-            boolean isJndi = "true".equals(this.servletContext.getInitParameter(LOG4J_CONFIG_IS_JNDI));
+            boolean isJndi = "true".equals(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
 
             if (isJndi) {
                 this.initializeJndi(location);
             } else {
                 this.initializeNonJndi(location);
             }
-
-            this.setLoggerContext(); // the application is just now starting to start up
         }
     }
 
@@ -119,7 +128,7 @@ class Log4jWebInitializerImpl implements Log4jWebInitializer {
             return;
         }
 
-        this.loggerContext = Configurator.initialize(this.name, getClassLoader(), location);
+        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), location);
     }
 
     @Override
@@ -132,14 +141,13 @@ class Log4jWebInitializerImpl implements Log4jWebInitializer {
         if (!this.deinitialized) {
             this.deinitialized = true;
 
-            this.clearLoggerContext(); // the application is finished shutting down now
-
             if (this.loggerContext != null) {
                 this.servletContext.log("Removing LoggerContext for [" + this.name + "].");
                 if (this.selector != null) {
                     this.selector.removeContext(this.name);
                 }
                 this.loggerContext.stop();
+                this.loggerContext = null;
             }
         }
     }
@@ -159,13 +167,22 @@ class Log4jWebInitializerImpl implements Log4jWebInitializer {
     private ClassLoader getClassLoader() {
         try {
             // if container is Servlet 3.0, use its getClassLoader method
-            return (ClassLoader) this.servletContext.getClass().getMethod("getClassLoader").invoke(this.servletContext);
-        } catch (Exception ignore) {
+            // this may look odd, but the call below will throw NoSuchMethodError if user is on Servlet 2.5
+            // we compile against 3.0 to support Log4jServletContainerInitializer, but we don't require 3.0
+            return this.servletContext.getClassLoader();
+        } catch (Throwable ignore) {
             // otherwise, use this class's class loader
             return Log4jWebInitializerImpl.class.getClassLoader();
         }
     }
 
+    /**
+     * Get the current initializer from the {@link ServletContext}. If the initializer does not exist, create a new one
+     * and add it to the {@link ServletContext}, then return that.
+     *
+     * @param servletContext The {@link ServletContext} for this web application
+     * @return the initializer.
+     */
     static Log4jWebInitializer getLog4jWebInitializer(final ServletContext servletContext) {
         synchronized (MUTEX) {
             Log4jWebInitializer initializer = (Log4jWebInitializer) servletContext.getAttribute(INITIALIZER_ATTRIBUTE);

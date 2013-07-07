@@ -36,10 +36,11 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
 
         Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
         initializer.initialize();
+        initializer.setLoggerContext(); // the application is just now starting to start up
 
         servletContext.addListener(new Log4jServletContextListener());
 
-        FilterRegistration.Dynamic filter = servletContext.addFilter("Log4jServletFilter", new Log4jServletFilter());
+        FilterRegistration.Dynamic filter = servletContext.addFilter("log4jServletFilter", new Log4jServletFilter());
         filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
     }
 }

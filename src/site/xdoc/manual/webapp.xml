@@ -47,6 +47,13 @@
           the application deploys and shutting down when the application undeploys.
         </p>
         <p>
+          <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs and do not scan
+          them for web-fragments and <code>ServletContainerInitializer</code>s. For example, Tomcat 7 &lt;7.0.42 ignores
+          all JAR files named log4j*.jar, which prevents this feature from working. This has been fixed in
+          Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.42 you will need to change catalina.properties and
+          remove "log4j*.jar" from the jarsToSkip property.
+        </p>
+        <p>
           <b>The Long Story</b><br />
           The Log4j 2 Core JAR file is a web-fragment configured to order before any other web fragments in your
           application. It contains a <code>ServletContainerInitializer</code>
@@ -141,10 +148,10 @@
     </context-param>]]></pre>
         </p>
         <p>
-          <b>Set the Configuration Path/File/URI to "/etc/myApp/log4j.xml"</b>
+          <b>Set the Configuration Path/File/URI to "/etc/myApp/myLogging.xml"</b>
           <pre class="prettyprint linenums"><![CDATA[    <context-param>
         <param-name>log4jConfiguration</param-name>
-        <param-value>file:///etc/myApp/log4j.xml</param-value>
+        <param-value>file:///etc/myApp/myLogging.xml</param-value>
     </context-param>]]></pre>
         </p>
         <p>
@@ -159,7 +166,7 @@
     </context-param>
     <context-param>
         <param-name>log4jConfiguration</param-name>
-        <param-value>file://D:\conf\log4j.xml</param-value>
+        <param-value>file://D:\conf\myLogging.xml</param-value>
     </context-param>]]></pre>
           Note that in this case you must also set the "Log4jContextSelector" system property to
           "org.apache.logging.log4j.core.selector.JNDIContextSelector."

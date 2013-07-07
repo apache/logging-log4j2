@@ -24,25 +24,26 @@ import javax.servlet.UnavailableException;
  */
 interface Log4jWebInitializer {
     /**
-     * The {@link javax.servlet.ServletContext} context-param name for the name of the {@link org.apache.logging.log4j.core.LoggerContext}.
+     * The {@link javax.servlet.ServletContext} context-param name for the name of the
+     * {@link org.apache.logging.log4j.core.LoggerContext}.
      */
-    public static final String LOG4J_CONTEXT_NAME = "log4jContextName";
+    final String LOG4J_CONTEXT_NAME = "log4jContextName";
 
     /**
      * The {@link javax.servlet.ServletContext} context-param name for the location of the configuration.
      */
-    public static final String LOG4J_CONFIG_LOCATION = "log4jConfiguration";
+    final String LOG4J_CONFIG_LOCATION = "log4jConfiguration";
 
     /**
      * The {@link javax.servlet.ServletContext} context-param name for the JNDI flag.
      */
-    public static final String LOG4J_CONFIG_IS_JNDI = "isLog4jContextSelectorNamed";
+    final String IS_LOG4J_CONTEXT_SELECTOR_NAMED = "isLog4jContextSelectorNamed";
 
     /**
      * The attribute key for the {@link javax.servlet.ServletContext} attribute that the singleton initializer instance
      * is stored in.
      */
-    static final String INITIALIZER_ATTRIBUTE = Log4jWebInitializer.class.getName() + ".INSTANCE";
+    final String INITIALIZER_ATTRIBUTE = Log4jWebInitializer.class.getName() + ".INSTANCE";
 
     /**
      * Starts up Log4j in the web application. Calls {@link #setLoggerContext()} after initialization is complete.

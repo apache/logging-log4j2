@@ -39,6 +39,7 @@ public class Log4jServletContextListener implements ServletContextListener {
         this.initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
         try {
             this.initializer.initialize();
+            this.initializer.setLoggerContext(); // the application is just now starting to start up
         } catch (UnavailableException e) {
             throw new RuntimeException("Failed to initialize Log4j properly.", e);
         }
@@ -51,6 +52,7 @@ public class Log4jServletContextListener implements ServletContextListener {
         }
         this.servletContext.log("Log4jServletContextListener ensuring that Log4j shuts down properly.");
 
+        this.initializer.clearLoggerContext(); // the application is finished shutting down now
         this.initializer.deinitialize();
     }
 }
