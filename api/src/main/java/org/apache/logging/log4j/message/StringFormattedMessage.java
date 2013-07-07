@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
- * Handles messages that consist of a format string conforming to java.util.Formatter.
+ * Handles messages that consist of a format string conforming to {@link java.util.Formatter}.
  */
 public class StringFormattedMessage implements Message {
 
@@ -106,11 +106,8 @@ public class StringFormattedMessage implements Message {
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
         }
-        if (!Arrays.equals(stringArgs, that.stringArgs)) {
-            return false;
-        }
 
-        return true;
+        return Arrays.equals(stringArgs, that.stringArgs);
     }
 
     @Override

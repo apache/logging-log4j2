@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Utility class to help with accessing System Properties.

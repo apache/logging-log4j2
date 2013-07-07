@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.io.PrintStream;
 
 /**
  * StatusListener that writes to the Console.

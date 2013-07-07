@@ -33,8 +33,9 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     private static final long serialVersionUID = 5050501L;
 
-    private final boolean useStack;
     private static ThreadLocal<List<String>> stack = new ThreadLocal<List<String>>();
+
+    private final boolean useStack;
 
     public DefaultThreadContextStack(boolean useStack) {
         this.useStack = useStack;
@@ -95,7 +96,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         }
         final List<String> copy = new ArrayList<String>();
         int count = Math.min(depth, list.size());
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             copy.add(list.get(i));
         }
         stack.set(copy);

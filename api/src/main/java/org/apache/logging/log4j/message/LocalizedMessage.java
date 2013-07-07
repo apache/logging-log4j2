@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This class is not the recommended way to Localize messages. It is provided to provide some level

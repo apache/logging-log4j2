@@ -199,8 +199,9 @@ public class StructuredDataMessage extends MapMessage {
         }
         char[] chars = key.toCharArray();
         for (char c : chars) {
-            if (c < 33 || c > 126 || c == '=' || c == ']' || c == '"') {
-                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters and may not contain a space, =, ], or \"");
+            if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
+                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
+                        "and may not contain a space, =, ], or \"");
             }
         }
     }

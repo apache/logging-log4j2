@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +23,9 @@ import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Handles messages that contain a format String. Dynamically determines if the format conforms to

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.ThreadContext;
-
 import java.io.Serializable;
 import java.util.Collection;
+
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  *

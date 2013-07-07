@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,6 +23,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
