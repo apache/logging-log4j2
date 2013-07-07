@@ -34,6 +34,9 @@
   <!-- Disallow sun.* imports as they are not guaranteed to be the same across all JVMs -->
   <disallow pkg="sun" />
 
+  <!-- Disallow Servlet classes everywhere except in specific packages -->
+  <disallow pkg="javax.servlet" />
+
   <!-- Disallow optional dependencies JPA, MongoDB, CouchDB, etc. everywhere except in specific packages -->
   <disallow pkg="javax.persistence" />
   <disallow pkg="com.mongodb" />
@@ -77,6 +80,14 @@
       <allow pkg="com.fasterxml.jackson" />
     </subpackage>
 
+    <subpackage name="web">
+      <allow pkg="javax.servlet" />
+    </subpackage>
+
+  </subpackage>
+
+  <subpackage name="taglib">
+    <allow pkg="javax.servlet" />
   </subpackage>
 
 </import-control>

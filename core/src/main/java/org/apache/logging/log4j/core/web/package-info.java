@@ -14,7 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 /**
- * Classes to aid integration with Java EE.
+ * The classes in this package are responsible for properly initializing and deinitializing Log4j in a Java EE web
+ * application.
  */
 package org.apache.logging.log4j.core.web;

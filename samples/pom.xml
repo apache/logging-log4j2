@@ -36,11 +36,6 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-web</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
         <version>${project.version}</version>
       </dependency>

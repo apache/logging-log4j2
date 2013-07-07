@@ -144,24 +144,6 @@
   <dependency org="org.apache.logging.log4j" name="log4j-taglib" rev="${Log4jReleaseVersion}" />
 </dependencies>
 ]]></pre>
-        <h4>Log4j Web</h4>
-        <p>The Log4j Web artifact contains classes that can be used to initialize logging within a web application.</p>
-        <code>pom.xml</code>
-        <pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-web</artifactId>
-    <version>${Log4jReleaseVersion}</version>
-  </dependency>
-</dependencies>
-]]></pre>
-        <code>ivy.xml</code>
-        <pre class="prettyprint linenums"><![CDATA[
-<dependencies>
-  <dependency org="org.apache.logging.log4j" name="log4j-web" rev="${Log4jReleaseVersion}" />
-</dependencies>
-]]></pre>
         <h4>Apache Flume NG Appender</h4>
         <p>The Flume NG Appender allows applications to send events to Flume NG Agents.</p>
         <code>pom.xml</code>

@@ -43,7 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * The main downside to this ContextSelector is that Configuration is more challenging.
  *
- * This ContextSelector should not be used with a Servlet Filter such as the JNDIContextFilter.
+ * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
 public class ClassLoaderContextSelector implements ContextSelector {
 

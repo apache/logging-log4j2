@@ -54,6 +54,12 @@
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
       </item>
 
+      <item name="Web Applications" href="/manual/webapp.html" collapse="true">
+        <item name="Servlet 3.0 and Newer" href="/manual/webapp.html#Servlet-3.0" />
+        <item name="Servlet 2.5" href="/manual/webapp.html#Servlet-2.5" />
+        <item name="Context Parameters" href="/manual/webapp.html#ContextParams" />
+      </item>
+
       <item name="Plugins" href="/manual/plugins.html" collapse="true">
         <item name="Core" href="/manual/plugins.html#Core"/>
         <item name="Converters" href="/manual/plugins.html#Converters"/>
@@ -148,7 +154,6 @@
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume" href="log4j-flume-ng/index.html"/>
-      <item name="Log4j Web" href="log4j-web/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
       <item name="Log4j JMX GUI" href="log4j-jmx-gui/index.html"/>
     </menu>
