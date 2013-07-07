@@ -1157,7 +1157,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
             a correct XML file.
           </p>
           <p>For example, if <code>abc</code> is the name of the file where
-            the XMLLayout ouput goes, then a well-formed XML file would be:
+            the XMLLayout output goes, then a well-formed XML file would be:
           </p>
           <pre class="prettyprint linenums">&lt;?xml version="1.0" ?&gt;
 &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
