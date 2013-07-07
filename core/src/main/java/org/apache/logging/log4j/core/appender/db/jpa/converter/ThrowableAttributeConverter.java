@@ -50,6 +50,10 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
 
     @Override
     public String convertToDatabaseColumn(final Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder();
         this.convertThrowable(builder, throwable);
         return builder.toString();

@@ -36,9 +36,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
     private final String persistenceUnitName;
 
-    private EntityManager entityManager;
     private EntityManagerFactory entityManagerFactory;
-    private EntityTransaction transaction;
 
     private JPADatabaseManager(final String name, final int bufferSize,
                                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
@@ -53,18 +51,10 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     @Override
     protected void connectInternal() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory(this.persistenceUnitName);
-        this.entityManager = this.entityManagerFactory.createEntityManager();
-        this.transaction = this.entityManager.getTransaction();
     }
 
     @Override
     protected void disconnectInternal() {
-        this.transaction = null;
-
-        if (this.entityManager != null && this.entityManager.isOpen()) {
-            this.entityManager.close();
-        }
-
         if (this.entityManagerFactory != null && this.entityManagerFactory.isOpen()) {
             this.entityManagerFactory.close();
         }
@@ -72,8 +62,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected void writeInternal(final LogEvent event) {
-        if (!this.isConnected() || this.transaction == null || this.entityManager == null
-                || this.entityManagerFactory == null) {
+        if (!this.isConnected() || this.entityManagerFactory == null) {
             LOGGER.error("Cannot write logging event; manager [{}] not connected to the database.", this.getName());
             return;
         }
@@ -86,13 +75,22 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
             return;
         }
 
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
         try {
-            this.transaction.begin();
-            this.entityManager.persist(entity);
-            this.transaction.commit();
+            entityManager = this.entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(entity);
+            transaction.commit();
         } catch (final Exception e) {
             LOGGER.error("Failed to persist log event entity.", e);
-            this.transaction.rollback();
+            if (transaction != null && transaction.isActive())
+                transaction.rollback();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 

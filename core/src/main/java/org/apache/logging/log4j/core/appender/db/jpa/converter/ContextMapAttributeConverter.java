@@ -31,6 +31,10 @@ import javax.persistence.Converter;
 public class ContextMapAttributeConverter implements AttributeConverter<Map<String, String>, String> {
     @Override
     public String convertToDatabaseColumn(final Map<String, String> contextMap) {
+        if (contextMap == null) {
+            return null;
+        }
+
         return contextMap.toString();
     }
 

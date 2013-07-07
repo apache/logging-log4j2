@@ -32,6 +32,10 @@ import org.apache.logging.log4j.ThreadContext;
 public class ContextStackAttributeConverter implements AttributeConverter<ThreadContext.ContextStack, String> {
     @Override
     public String convertToDatabaseColumn(final ThreadContext.ContextStack contextStack) {
+        if (contextStack == null) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder();
         for (String value : contextStack.asList()) {
             if (builder.length() > 0) {

@@ -24,10 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter;
 
@@ -59,39 +56,9 @@ public class TestBasicEntity extends BasicLogEventEntity {
     }
 
     @Override
-    @Transient
-    public StackTraceElement getSource() {
-        return super.getSource();
-    }
-
-    @Override
-    @Transient
-    public Marker getMarker() {
-        return super.getMarker();
-    }
-
-    @Override
-    @Transient
-    public String getThreadName() {
-        return super.getThreadName();
-    }
-
-    @Override
     @Convert(converter = ContextMapJsonAttributeConverter.class)
     @Column(name = "contextMapJson")
     public Map<String, String> getContextMap() {
         return super.getContextMap();
-    }
-
-    @Override
-    @Transient
-    public ThreadContext.ContextStack getContextStack() {
-        return super.getContextStack();
-    }
-
-    @Override
-    @Transient
-    public String getFQCN() {
-        return super.getFQCN();
     }
 }

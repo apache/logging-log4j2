@@ -121,4 +121,15 @@ public class StackTraceElementAttributeConverterTest {
         assertEquals("The line number is not correct.", -2, reversed.getLineNumber());
         assertTrue("The native flag should be true.", reversed.isNativeMethod());
     }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    }
+
+    @Test
+    public void testConvertNullOrBlankToEntityAttribute() {
+        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
+        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    }
 }

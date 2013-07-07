@@ -1217,7 +1217,7 @@
 <configuration status="error">
   <appenders>
     <Jdbc name="databaseAppender" tableName="dbo.application_log">
-      <DataSource jndiName="java:/comp/env/jdbc/ApplicationDataSource" />
+      <DataSource jndiName="java:/comp/env/jdbc/LoggingDataSource" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
@@ -1472,9 +1472,13 @@
         </subsection>
         <a name="JPAAppender"/>
         <subsection name="JPAAppender">
-          <p>The JPAAppender writes log events to a relational database table using the Java Persistence API.
+          <p>The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1.
             It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
-            configured to persist to the table desired.</p>
+            configured to persist to the table desired. The entity should either extend
+            org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity (if you mostly want to use the default
+            mappings) or org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity (if you want to
+            significantly customize the mappings). See the Javadoc for these two classes for more information. You can
+            also consult the source code of these two classes as an example of how to implement the entity.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -1519,13 +1523,17 @@
             <caption align="top">JPAAppender Parameters</caption>
           </table>
           <p>
-            Here is a sample configurations for the JPAAppender. The first XML sample is the Log4j configuration file,
-            the second is the persistence.xml file. Hibernate ORM is assumed here, but any JPA provider will do:
+            Here is a sample configuration for the JPAAppender. The first XML sample is the Log4j configuration file,
+            the second is the persistence.xml file. EclipseLink is assumed here, but any JPA provider will do. You
+            should <em>always</em> create a <em>separate</em> persistence unit for logging, for two reasons. First,
+            &lt;shared-cache-mode&gt; <em>must</em> be set to "NONE," which is usually not desired in normal JPA usage.
+            Also, for performance reasons the logging entity should be isolated in its own persistence unit away from
+            all other entities.
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="error">
   <appenders>
-    <Jpa name="databaseAppender" persistenceUnitName="appPersistenceUnit"
+    <Jpa name="databaseAppender" persistenceUnitName="loggingPersistenceUnit"
          entityClassName="com.example.logging.JpaLogEntity" />
   </appenders>
   <loggers>
@@ -1536,26 +1544,26 @@
 </configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
-                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
-             version="1.0">
-  <persistence-unit name="appPersistenceUnit">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jpa-data-source>jdbc/ApplicationDataSource</jpa-data-source>
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+  <persistence-unit name="loggingPersistenceUnit">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <non-jta-data-source>jdbc/LoggingDataSource</non-jta-data-source>
     <class>com.example.logging.JpaLogEntity</class>
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
-    </properties>
+    <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
+
 </persistence>]]></pre>
 
             <pre class="prettyprint linenums lang-java"><![CDATA[package com.example.logging;
 ...
 @Entity
 @Table(name="application_log", schema="dbo")
-public class JpaLogEntity extends LogEventWrapperEntity {
+public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
     private long id = 0L;
 

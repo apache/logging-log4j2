@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -25,6 +23,8 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ContextStackAttributeConverterTest {
     private ContextStackAttributeConverter converter;
@@ -56,6 +56,11 @@ public class ContextStackAttributeConverterTest {
         assertEquals("The converted value is not correct.",
                 "key1\nvalue2\nmy3",
                 this.converter.convertToDatabaseColumn(stack));
+    }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
     }
 
     @Test(expected = UnsupportedOperationException.class)
