@@ -1457,7 +1457,7 @@ public abstract class AbstractLogger implements Logger {
      * @param data   The Message.
      * @param t      A Throwable or null.
      */
-    protected abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
+    public abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
 
     /**
      * Logs a Throwable to be thrown.
