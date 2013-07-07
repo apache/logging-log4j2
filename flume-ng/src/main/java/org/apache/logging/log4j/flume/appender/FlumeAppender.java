@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
 public final class FlumeAppender<T extends Serializable> extends AbstractAppender<T> implements FlumeEventFactory {
 
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};
+    private static final int DEFAULT_MAX_DELAY = 60000;
 
     private final AbstractFlumeManager manager;
 
@@ -209,10 +210,10 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
         final int connectTimeout = connectionTimeout == null ? 0 : Integer.parseInt(connectionTimeout);
         final int reqTimeout = requestTimeout == null ? 0 : Integer.parseInt(requestTimeout);
         final int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
-        final int delay = maxDelay == null ? 60000 : Integer.parseInt(maxDelay);
+        final int delay = maxDelay == null ? DEFAULT_MAX_DELAY : Integer.parseInt(maxDelay);
 
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable" })
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
             Layout<S> l = (Layout<S>) RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
                     null, null, null, excludes, includes, required, null, null, null, null);
             layout = l;

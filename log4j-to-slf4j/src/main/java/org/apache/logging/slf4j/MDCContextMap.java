@@ -16,10 +16,10 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.slf4j.MDC;
-
-import java.util.Map;
 
 /**
  * Bind the ThreadContextMap to the SLF4J MDC.

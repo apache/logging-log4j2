@@ -34,53 +34,55 @@ public class PropertySetter {
     public PropertySetter(final Object obj) {
     }
 
-    /**
-     Set the properties of an object passed as a parameter in one
-     go. The <code>properties</code> are parsed relative to a
-     <code>prefix</code>.
-
-     @param obj The object to configure.
-     @param properties A java.util.Properties containing keys and values.
-     @param prefix Only keys having the specified prefix will be set.
-     */
-    public static void setProperties(final Object obj, final Properties properties, final String prefix) {
-    }
-
 
     /**
      * Set the properties for the object that match the <code>prefix</code> passed as parameter.
+     *
+     * @param properties The properties
+     * @param prefix The prefix
      */
     public void setProperties(final Properties properties, final String prefix) {
     }
 
     /**
-     Set a property on this PropertySetter's Object. If successful, this
-     method will invoke a setter method on the underlying Object. The
-     setter is the one for the specified property name and the value is
-     determined partly from the setter argument type and partly from the
-     value specified in the call to this method.
-
-     <p>If the setter expects a String no conversion is necessary.
-     If it expects an int, then an attempt is made to convert 'value'
-     to an int using new Integer(value). If the setter expects a boolean,
-     the conversion is by new Boolean(value).
-
-     @param name    name of the property
-     @param value   String value of the property
+     * Set a property on this PropertySetter's Object. If successful, this
+     * method will invoke a setter method on the underlying Object. The
+     * setter is the one for the specified property name and the value is
+     * determined partly from the setter argument type and partly from the
+     * value specified in the call to this method.
+     *
+     * <p>If the setter expects a String no conversion is necessary.
+     * If it expects an int, then an attempt is made to convert 'value'
+     * to an int using new Integer(value). If the setter expects a boolean,
+     * the conversion is by new Boolean(value).
+     *
+     * @param name    name of the property
+     * @param value   String value of the property
      */
     public void setProperty(final String name, final String value) {
     }
 
     /**
-     Set the named property given a {@link PropertyDescriptor}.
-
-     @param prop A PropertyDescriptor describing the characteristics
-     of the property to set.
-     @param name The named of the property to set.
-     @param value The value of the property.
+     * Set the named property given a {@link PropertyDescriptor}.
+     *
+     * @param prop A PropertyDescriptor describing the characteristics of the property to set.
+     * @param name The named of the property to set.
+     * @param value The value of the property.
+     * @throws PropertySetterException (Never actually throws this exception. Kept for historical purposes.)
      */
     public void setProperty(final PropertyDescriptor prop, final String name, final String value)
         throws PropertySetterException {
     }
 
+    /**
+     * Set the properties of an object passed as a parameter in one
+     * go. The <code>properties</code> are parsed relative to a
+     * <code>prefix</code>.
+     *
+     * @param obj The object to configure.
+     * @param properties A java.util.Properties containing keys and values.
+     * @param prefix Only keys having the specified prefix will be set.
+     */
+    public static void setProperties(final Object obj, final Properties properties, final String prefix) {
+    }
 }

@@ -50,12 +50,18 @@ public interface ErrorHandler {
      * Equivalent to the {@link #error(String, Exception, int,
      * LoggingEvent)} with the the event parameter set to
      * <code>null</code>.
+     *
+     * @param message   The message associated with the error.
+     * @param e         The Exception that was thrown when the error occurred.
+     * @param errorCode The error code associated with the error.
      */
     void error(String message, Exception e, int errorCode);
 
     /**
      * This method is normally used to just print the error message
      * passed as a parameter.
+     *
+     * @param message   The message associated with the error.
      */
     void error(String message);
 
@@ -75,6 +81,7 @@ public interface ErrorHandler {
      * Set the appender for which errors are handled. This method is
      * usually called when the error handler is configured.
      *
+     * @param appender The appender
      * @since 1.2
      */
     void setAppender(Appender appender);
@@ -82,6 +89,7 @@ public interface ErrorHandler {
     /**
      * Set the appender to fallback upon in case of failure.
      *
+     * @param appender The backup appender
      * @since 1.2
      */
     void setBackupAppender(Appender appender);

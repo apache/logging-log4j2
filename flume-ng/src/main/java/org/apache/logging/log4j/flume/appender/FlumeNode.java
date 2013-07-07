@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import com.google.common.base.Preconditions;
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.node.NodeConfiguration;
@@ -24,6 +23,8 @@ import org.apache.flume.node.NodeManager;
 import org.apache.flume.node.nodemanager.NodeConfigurationAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 /**
  *

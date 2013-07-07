@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.apache.flume.Channel;
 import org.apache.flume.ChannelFactory;
 import org.apache.flume.ChannelSelector;
@@ -49,14 +57,6 @@ import org.apache.flume.source.DefaultSourceFactory;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * See Flume's PropertiesFileConfigurationProvider. This class would extend that if it were possible.

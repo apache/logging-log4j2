@@ -16,14 +16,14 @@
  */
 package org.apache.log4j;
 
+import java.util.Enumeration;
+
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.logging.log4j.core.LoggerContext;
-
-import java.util.Enumeration;
 
 /**
  *

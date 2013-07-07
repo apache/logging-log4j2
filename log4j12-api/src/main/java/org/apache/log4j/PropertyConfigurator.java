@@ -16,81 +16,34 @@
  */
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggerRepository;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.log4j.spi.LoggerRepository;
+
 /**
- *
- * @since 0.8.1
+ * A configurator for properties.
  */
 public class PropertyConfigurator {
 
+    /**
+     * Read configuration options from configuration file.
+     *
+     * @param configFileName The configuration file
+     * @param hierarchy The hierarchy
+     */
     public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {
 
     }
 
-    public static void configure(final String configFileName) {
-    }
-
     /**
-     Read configuration options from url <code>configURL</code>.
-
-     @since 0.8.2
-     */
-    public static void configure(final URL configURL) {
-    }
-
-    /**
-     Reads configuration options from an InputStream.
-
-     @since 1.2.17
-     */
-    public static void configure(final InputStream inputStream) {
-    }
-
-
-    /**
-     Read configuration options from <code>properties</code>.
-
-     See {@link #doConfigure(String, LoggerRepository)} for the expected format.
-     */
-    public static void configure(final Properties properties) {
-    }
-
-    /**
-     Like {@link #configureAndWatch(String, long)} except that the
-     default delay as defined by FileWatchdog.DEFAULT_DELAY is
-     used.
-
-     @param configFilename A file in key=value format.
-
-     */
-    public static void configureAndWatch(final String configFilename) {
-    }
-
-
-    /**
-     Read the configuration file <code>configFilename</code> if it
-     exists. Moreover, a thread will be created that will periodically
-     check if <code>configFilename</code> has been created or
-     modified. The period is determined by the <code>delay</code>
-     argument. If a change or file creation is detected, then
-     <code>configFilename</code> is read to configure log4j.
-
-     @param configFilename A file in key=value format.
-     @param delay The delay in milliseconds to wait between each check.
-     */
-    public static void configureAndWatch(final String configFilename, final long delay) {
-    }
-
-
-    /**
-     Read configuration options from <code>properties</code>.
-
-     See {@link #doConfigure(String, LoggerRepository)} for the expected format.
+     * Read configuration options from <code>properties</code>.
+     *
+     * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
+     *
+     * @param properties The properties
+     * @param hierarchy The hierarchy
      */
     public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {
     }
@@ -98,14 +51,76 @@ public class PropertyConfigurator {
     /**
      * Read configuration options from an InputStream.
      *
-     * @since 1.2.17
+     * @param inputStream The input stream
+     * @param hierarchy The hierarchy
      */
     public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
     }
 
     /**
-     Read configuration options from url <code>configURL</code>.
+     * Read configuration options from url <code>configURL</code>.
+     *
+     * @param configURL The configuration URL
+     * @param hierarchy The hierarchy
      */
     public void doConfigure(final java.net.URL configURL, final LoggerRepository hierarchy) {
+    }
+
+    /**
+     * Read configuration options from configuration file.
+     *
+     * @param configFileName The configuration file.
+     */
+    public static void configure(final String configFileName) {
+    }
+
+    /**
+     * Read configuration options from url <code>configURL</code>.
+     *
+     * @param configURL The configuration URL
+     */
+    public static void configure(final URL configURL) {
+    }
+
+    /**
+     * Reads configuration options from an InputStream.
+     *
+     * @param inputStream The input stream
+     */
+    public static void configure(final InputStream inputStream) {
+    }
+
+    /**
+     * Read configuration options from <code>properties</code>.
+     *
+     * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
+     *
+     * @param properties The properties
+     */
+    public static void configure(final Properties properties) {
+    }
+
+    /**
+     * Like {@link #configureAndWatch(String, long)} except that the
+     * default delay as defined by FileWatchdog.DEFAULT_DELAY is
+     * used.
+     *
+     * @param configFilename A file in key=value format.
+     */
+    public static void configureAndWatch(final String configFilename) {
+    }
+
+    /**
+     * Read the configuration file <code>configFilename</code> if it
+     * exists. Moreover, a thread will be created that will periodically
+     * check if <code>configFilename</code> has been created or
+     * modified. The period is determined by the <code>delay</code>
+     * argument. If a change or file creation is detected, then
+     * <code>configFilename</code> is read to configure log4j.
+     *
+     * @param configFilename A file in key=value format.
+     * @param delay The delay in milliseconds to wait between each check.
+     */
+    public static void configureAndWatch(final String configFilename, final long delay) {
     }
 }
