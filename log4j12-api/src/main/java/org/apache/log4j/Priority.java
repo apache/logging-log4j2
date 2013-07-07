@@ -134,6 +134,11 @@ public class Priority {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return this.level;
+    }
+
     /**
      * Returns the syslog equivalent of this priority as an integer.
      * @return The equivalent syslog value.

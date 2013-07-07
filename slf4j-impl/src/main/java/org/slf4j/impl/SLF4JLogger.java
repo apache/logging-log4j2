@@ -16,6 +16,8 @@
  */
 package org.slf4j.impl;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -27,8 +29,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.slf4j.ext.EventData;
 import org.slf4j.spi.LocationAwareLogger;
-
-import java.util.Map;
 
 /**
  *

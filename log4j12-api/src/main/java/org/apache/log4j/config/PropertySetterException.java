@@ -24,12 +24,26 @@ package org.apache.log4j.config;
  */
 public class PropertySetterException extends Exception {
     private static final long serialVersionUID = -1352613734254235861L;
+
+    /**
+     * The root cause.
+     */
     protected Throwable rootCause;
 
+    /**
+     * Construct the exception with the given message.
+     *
+     * @param msg The message
+     */
     public PropertySetterException(final String msg) {
         super(msg);
     }
 
+    /**
+     * Construct the exception with the given root cause.
+     *
+     * @param rootCause The root cause
+     */
     public PropertySetterException(final Throwable rootCause) {
         super();
         this.rootCause = rootCause;
@@ -37,6 +51,8 @@ public class PropertySetterException extends Exception {
 
     /**
      * Returns descriptive text on the cause of this exception.
+     *
+     * @return the descriptive text.
      */
     @Override
     public String getMessage() {

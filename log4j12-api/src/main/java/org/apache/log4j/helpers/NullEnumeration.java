@@ -24,14 +24,14 @@ import java.util.NoSuchElementException;
  *
  * @since version 1.0
  */
-public class NullEnumeration implements Enumeration {
-    private static final NullEnumeration instance = new NullEnumeration();
+public final class NullEnumeration implements Enumeration {
+    private static final NullEnumeration INSTANCE = new NullEnumeration();
 
     private NullEnumeration() {
     }
 
     public static NullEnumeration getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override

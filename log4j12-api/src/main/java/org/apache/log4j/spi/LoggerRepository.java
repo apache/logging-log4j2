@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.spi;
 
+import java.util.Enumeration;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import java.util.Enumeration;
 
 /**
  * A <code>LoggerRepository</code> is used to create and retrieve
@@ -39,6 +39,8 @@ public interface LoggerRepository {
 
     /**
      * Add a {@link HierarchyEventListener} event to the repository.
+     *
+     * @param listener The listener
      */
     void addHierarchyEventListener(HierarchyEventListener listener);
 
@@ -47,6 +49,9 @@ public interface LoggerRepository {
      * level. The answer depends on the repository threshold and the
      * <code>level</code> parameter. See also {@link #setThreshold}
      * method.
+     *
+     * @param level The level
+     * @return whether this repository is disabled.
      */
     boolean isDisabled(int level);
 
@@ -54,20 +59,25 @@ public interface LoggerRepository {
      * Set the repository-wide threshold. All logging requests below the
      * threshold are immediately dropped. By default, the threshold is
      * set to <code>Level.ALL</code> which has the lowest possible rank.
+     *
+     * @param level The level
      */
     void setThreshold(Level level);
 
     /**
      * Another form of {@link #setThreshold(Level)} accepting a string
      * parameter instead of a <code>Level</code>.
+     *
+     * @param val The threshold value
      */
     void setThreshold(String val);
 
     void emitNoAppenderWarning(Category cat);
 
     /**
-     * Get the repository-wide threshold. See {@link
-     * #setThreshold(Level)} for an explanation.
+     * Get the repository-wide threshold. See {@link #setThreshold(Level)} for an explanation.
+     *
+     * @return the level.
      */
     Level getThreshold();
 
@@ -77,20 +87,20 @@ public interface LoggerRepository {
 
     Logger getRootLogger();
 
-    abstract Logger exists(String name);
+    Logger exists(String name);
 
-    abstract void shutdown();
+    void shutdown();
 
     Enumeration getCurrentLoggers();
 
     /**
      * Deprecated. Please use {@link #getCurrentLoggers} instead.
+     *
+     * @return an enumeration of loggers.
      */
     Enumeration getCurrentCategories();
 
+    void fireAddAppenderEvent(Category logger, Appender appender);
 
-    abstract void fireAddAppenderEvent(Category logger, Appender appender);
-
-    abstract void resetConfiguration();
-
+    void resetConfiguration();
 }

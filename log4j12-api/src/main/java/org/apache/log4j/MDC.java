@@ -16,11 +16,11 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.ThreadContext;
-
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  * This class behaves just like Log4j's MDC would - and so can cause issues with the redeployment of web

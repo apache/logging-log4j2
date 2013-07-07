@@ -14,25 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.flume.appender;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.flume.Event;
-
 /**
- *
+ * Log4j 1.x compatibility layer.
  */
-public class BatchEvent {
-
-    private List<Event> events = new ArrayList<Event>();
-
-    public void addEvent(Event event) {
-        events.add(event);
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-}
+package org.apache.log4j.spi;

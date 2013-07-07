@@ -20,7 +20,7 @@
    limitations under the License.
 -->
 
-<import-control pkg="org.apache.logging.log4j">
+<import-control pkg="org">
   <!-- Allow all by default -->
   <allow pkg="java" />
   <allow pkg="javax" />
@@ -45,49 +45,61 @@
   <disallow pkg="org.codehaus.jackson" />
   <disallow pkg="com.fasterxml.jackson" />
 
-  <subpackage name="core">
+  <subpackage name="apache">
 
-    <subpackage name="appender">
+    <subpackage name="logging">
 
-      <subpackage name="db">
+      <subpackage name="log4j">
 
-        <subpackage name="jpa">
-          <allow pkg="javax.persistence" />
+        <subpackage name="core">
 
-          <subpackage name="converter">
+          <subpackage name="appender">
+
+            <subpackage name="db">
+
+              <subpackage name="jpa">
+                <allow pkg="javax.persistence" />
+
+                <subpackage name="converter">
+                  <allow pkg="com.fasterxml.jackson" />
+                </subpackage>
+              </subpackage>
+
+              <subpackage name="nosql">
+
+                <subpackage name="mongo">
+                  <allow pkg="com.mongodb" />
+                  <allow pkg="org.bson" />
+                </subpackage>
+
+                <subpackage name="couch">
+                  <allow pkg="org.lightcouch" />
+                </subpackage>
+
+              </subpackage>
+
+            </subpackage>
+
+          </subpackage>
+
+          <subpackage name="config">
             <allow pkg="com.fasterxml.jackson" />
           </subpackage>
+
+          <subpackage name="web">
+            <allow pkg="javax.servlet" />
+          </subpackage>
+
         </subpackage>
 
-        <subpackage name="nosql">
-
-          <subpackage name="mongo">
-            <allow pkg="com.mongodb" />
-            <allow pkg="org.bson" />
-          </subpackage>
-
-          <subpackage name="couch">
-            <allow pkg="org.lightcouch" />
-          </subpackage>
-
+        <subpackage name="taglib">
+          <allow pkg="javax.servlet" />
         </subpackage>
 
       </subpackage>
 
     </subpackage>
 
-    <subpackage name="config">
-      <allow pkg="com.fasterxml.jackson" />
-    </subpackage>
-
-    <subpackage name="web">
-      <allow pkg="javax.servlet" />
-    </subpackage>
-
-  </subpackage>
-
-  <subpackage name="taglib">
-    <allow pkg="javax.servlet" />
   </subpackage>
 
 </import-control>

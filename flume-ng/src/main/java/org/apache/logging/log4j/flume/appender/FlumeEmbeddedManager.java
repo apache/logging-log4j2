@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.flume.Event;
 import org.apache.flume.SourceRunner;
 import org.apache.flume.node.NodeConfiguration;
@@ -26,9 +29,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.util.Locale;
-import java.util.Properties;
-
 /**
  *
  */
@@ -37,11 +37,11 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
     /** Name for the Flume source */
     protected static final String SOURCE_NAME = "log4j-source";
 
-    private static FlumeManagerFactory factory = new FlumeManagerFactory();
-
-    private static final String FiLE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
+    private static final String FILE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
 
     private static final String IN_MEMORY = "InMemory";
+
+    private static FlumeManagerFactory factory = new FlumeManagerFactory();
 
     private final FlumeNode node;
 
@@ -214,8 +214,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                         props.put(name + ".channels", "primary");
                         props.put(name + ".channels.primary.type", "file");
 
-                        if (!dataDir.endsWith(FiLE_SEP)) {
-                            dataDir = dataDir + FiLE_SEP;
+                        if (!dataDir.endsWith(FILE_SEP)) {
+                            dataDir = dataDir + FILE_SEP;
                         }
 
                         props.put(name + ".channels.primary.checkpointDir", dataDir + "checkpoint");

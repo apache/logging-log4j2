@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.util.Properties;
+
 import org.apache.flume.Event;
 import org.apache.flume.api.RpcClient;
 import org.apache.flume.api.RpcClientFactory;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-
-import java.util.Properties;
 
 /**
  * Manager for FlumeAvroAppenders.
@@ -30,6 +30,7 @@ import java.util.Properties;
 public class FlumeAvroManager extends AbstractFlumeManager {
 
     private static final int MAX_RECONNECTS = 3;
+    private static final int MINIMUM_TIMEOUT = 1000;
 
     private static AvroManagerFactory factory = new AvroManagerFactory();
 
@@ -73,6 +74,9 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @param name The name of the manager.
      * @param agents The agents to use.
      * @param batchSize The number of events to include in a batch.
+     * @param retries The number of times to retry connecting before giving up.
+     * @param connectTimeout The connection timeout in ms.
+     * @param requestTimeout The request timeout in ms.
      * @return A FlumeAvroManager.
      */
     public static FlumeAvroManager getManager(final String name, final Agent[] agents, int batchSize,
@@ -209,10 +213,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 }
                 props.put("max-attempts", Integer.toString(retries * agents.length));
             }
-            if (requestTimeout >= 1000) {
+            if (requestTimeout >= MINIMUM_TIMEOUT) {
                 props.put("request-timeout", Integer.toString(requestTimeout));
             }
-            if (connectTimeout >= 1000) {
+            if (connectTimeout >= MINIMUM_TIMEOUT) {
                 props.put("connect-timeout", Integer.toString(connectTimeout));
             }
             return RpcClientFactory.getInstance(props);
