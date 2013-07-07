@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.status;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.message.Message;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * The Status data.

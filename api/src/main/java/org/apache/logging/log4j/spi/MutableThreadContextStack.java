@@ -79,7 +79,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         }
         final List<String> copy = new ArrayList<String>(list.size());
         int count = Math.min(depth, list.size());
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             copy.add(list.get(i));
         }
         list.clear();

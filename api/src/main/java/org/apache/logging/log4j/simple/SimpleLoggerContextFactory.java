@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.simple;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-
-import java.net.URI;
 
 /**
  *

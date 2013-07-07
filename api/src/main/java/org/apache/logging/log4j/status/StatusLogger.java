@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.status;
 
-import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +24,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Mechanism to record events that occur in the logging system.

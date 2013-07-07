@@ -17,7 +17,6 @@
 package org.apache.logging.log4j;
 
 import java.net.URI;
-import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
@@ -223,7 +222,7 @@ public class LogManager {
     /**
      * Returns a formatter Logger using the fully qualified name of the Class as the Logger name.
      * <p>
-     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * This logger let you use a {@link java.util.Formatter} string in the message to format parameters.
      * </p>
      * <p>
      * Short-hand for {@code getLogger(clazz, StringFormatterMessageFactory.INSTANCE)}
@@ -253,7 +252,7 @@ public class LogManager {
     /**
      * Returns a formatter Logger using the fully qualified name of the value's Class as the Logger name.
      * <p>
-     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * This logger let you use a {@link java.util.Formatter} string in the message to format parameters.
      * </p>
      * <p>
      * Short-hand for {@code getLogger(value, StringFormatterMessageFactory.INSTANCE)}
@@ -284,7 +283,7 @@ public class LogManager {
     /**
      * Returns a formatter Logger with the specified name.
      * <p>
-     * This logger let you use a {@link Formatter} string in the message to format parameters.
+     * This logger let you use a {@link java.util.Formatter} string in the message to format parameters.
      * </p>
      * <p>
      * Short-hand for {@code getLogger(name, StringFormatterMessageFactory.INSTANCE)}
@@ -411,7 +410,7 @@ public class LogManager {
      * Gets the class name of the caller in the current stack at the given {@code depth}.
      * 
      * @param depth a 0-based index in the current stack.
-     * @return a class name  
+     * @return a class name
      */
     private static String getClassName(int depth) {
         return new Throwable().getStackTrace()[depth].getClassName();
