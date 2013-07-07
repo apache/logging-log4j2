@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
  * Able to handle the contents of the LogEvent's MDC and either

@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HTMLLayout;
 import org.apache.logging.log4j.core.net.SMTPManager;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-
-import java.io.Serializable;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -47,6 +47,8 @@ import java.io.Serializable;
  * By default, an email message will be sent when an ERROR or higher severity
  * message is appended. This can be modified by setting a filter for the
  * appender.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "SMTP", category = "Core", elementType = "appender", printObject = true)
 public final class SMTPAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -100,6 +102,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
      * @param suppressExceptions
      *            "true" if exceptions should be hidden from the application,
      *            "false" otherwise (defaults to "true").
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The SMTPAppender.
      */
     @PluginFactory
@@ -131,8 +134,8 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)HTMLLayout.createLayout(null, null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) HTMLLayout.createLayout(null, null, null, null, null, null);
             layout = l;
         }
         if (filter == null) {

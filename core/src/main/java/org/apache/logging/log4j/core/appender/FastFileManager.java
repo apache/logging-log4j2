@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Layout;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,6 +23,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream,

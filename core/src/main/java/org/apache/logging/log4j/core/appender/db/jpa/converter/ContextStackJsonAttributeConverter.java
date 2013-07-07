@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.PersistenceException;
 

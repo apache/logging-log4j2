@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Transform;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
 

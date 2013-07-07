@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -26,6 +23,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * File utilities.

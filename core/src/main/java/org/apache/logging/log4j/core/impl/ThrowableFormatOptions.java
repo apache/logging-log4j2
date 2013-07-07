@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.core.helpers.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import org.apache.logging.log4j.core.helpers.Constants;
 
 /**
  * Contains options which control how a {@code throwable} pattern is formatted.

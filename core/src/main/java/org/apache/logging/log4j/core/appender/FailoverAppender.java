@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -29,15 +34,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
+ *
+ * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
 public final class FailoverAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -178,7 +180,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     *                 The default is "true".
+     * @param <S> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
      * @return The FailoverAppender that was created.
      */
     @PluginFactory

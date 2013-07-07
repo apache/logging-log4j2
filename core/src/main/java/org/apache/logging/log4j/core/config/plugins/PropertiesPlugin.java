@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Handles properties defined in the configuration.

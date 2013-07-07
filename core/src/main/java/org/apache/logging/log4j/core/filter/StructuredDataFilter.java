@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,11 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Filter based on data in a StructuredDataMessage.

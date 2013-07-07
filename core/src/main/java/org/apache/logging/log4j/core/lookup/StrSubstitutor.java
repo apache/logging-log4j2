@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Substitutes variables within a string by values.

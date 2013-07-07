@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.lang.management.ManagementFactory;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
-import java.lang.management.ManagementFactory;
 
 /**
  * Trigger a rollover on every restart. The target file's timestamp is compared with the JVM start time

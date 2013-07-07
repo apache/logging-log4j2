@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -23,8 +24,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-
-import java.io.OutputStream;
 
 /**
  * Socket Manager for UDP connections.

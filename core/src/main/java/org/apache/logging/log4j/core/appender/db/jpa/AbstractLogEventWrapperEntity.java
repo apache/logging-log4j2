@@ -208,8 +208,8 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     /**
-     * Indicates whether the source of the logging request is required downstream. Annotated {@link Transient @Transient} so as
-     * not to be included in the persisted entity.
+     * Indicates whether the source of the logging request is required downstream. Annotated
+     * {@link Transient @Transient} so as to not be included in the persisted entity.
      *
      * @return whether the source of the logging request is required downstream.
      */
@@ -225,8 +225,8 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     }
 
     /**
-     * Indicates whether this event is the last one in a batch. Annotated {@link Transient @Transient} so as not to be included
-     * in the persisted entity.
+     * Indicates whether this event is the last one in a batch. Annotated {@link Transient @Transient} so as to not be
+     * included in the persisted entity.
      *
      * @return whether this event is the last one in a batch.
      */
@@ -241,7 +241,12 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
         this.getWrappedEvent().setEndOfBatch(endOfBatch);
     }
 
+    /**
+     * A no-op log event class to prevent {@code NullPointerException}s. O/RMs tend to create instances of entities in
+     * order to "play around" with them.
+     */
     private static class NullLogEvent implements LogEvent {
+        private static final long serialVersionUID = 1L;
 
         @Override
         public Level getLevel() {

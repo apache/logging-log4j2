@@ -43,18 +43,15 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import com.sun.org.apache.bcel.internal.classfile.ConstantString;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
-import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

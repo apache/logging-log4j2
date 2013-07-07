@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * ConfigurationFactory allows the configuration implementation to be

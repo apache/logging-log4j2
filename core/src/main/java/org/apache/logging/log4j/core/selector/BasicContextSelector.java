@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.

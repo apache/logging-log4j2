@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginManager;
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -29,6 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class

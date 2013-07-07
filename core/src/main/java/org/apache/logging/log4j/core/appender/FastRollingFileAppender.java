@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,13 +37,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * An appender that writes to random access files and can roll over at
  * intervals.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "FastRollingFile", category = "Core", elementType = "appender", printObject = true)
 public final class FastRollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -136,6 +138,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
      * @param config The Configuration.
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A FastRollingFileAppender.
      */
     @PluginFactory
@@ -191,8 +194,8 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
         }
 
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
 

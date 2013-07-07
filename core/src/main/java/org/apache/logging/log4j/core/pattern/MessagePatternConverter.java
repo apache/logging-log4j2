@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.message.MultiformatMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MultiformatMessage;
 
 /**
  * Returns the event's rendered message in a StringBuffer.

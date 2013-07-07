@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
 import org.apache.logging.log4j.core.appender.rolling.helper.FileRenameAction;
@@ -28,10 +32,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files

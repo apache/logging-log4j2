@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -26,9 +29,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 /**
  * Receives Log Events over a JMS Queue. This implementation expects that all messages will

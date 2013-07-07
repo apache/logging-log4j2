@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Parse the rollover pattern.

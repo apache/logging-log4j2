@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,12 +32,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * File Appender.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "FastFile", category = "Core", elementType = "appender", printObject = true)
 public final class FastFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -114,6 +116,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
      * @param config The Configuration.
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The FileAppender.
      */
     @PluginFactory
@@ -148,8 +151,8 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
         FastFileManager manager = FastFileManager.getFileManager(fileName, isAppend, isFlush, advertiseURI, layout);

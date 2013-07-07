@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -31,20 +37,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 /**
  * Appends to one or more Appenders asynchronously.  You can configure an
  * AsyncAppender with one or more Appenders and an Appender to append to if the
  * queue is full. The AsyncAppender does not allow a filter to be specified on
  * the Appender references.
  *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
+ * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
 public final class AsyncAppender<T extends Serializable> extends AbstractAppender<T> {

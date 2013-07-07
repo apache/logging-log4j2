@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-
 import java.net.URI;
+
+import org.apache.logging.log4j.core.LoggerContext;
 
 /**
  * ContextSelectors that have a name.

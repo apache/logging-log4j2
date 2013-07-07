@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,13 +34,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
+ *
+ * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
 public final class RewriteAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -98,6 +100,7 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
      * @param config The Configuration.
      * @param rewritePolicy The policy to use to modify the event.
      * @param filter A Filter to filter events.
+     * @param <S> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
      * @return The created RewriteAppender.
      */
     @PluginFactory

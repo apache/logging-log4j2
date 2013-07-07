@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Load resources (or images) from various sources.

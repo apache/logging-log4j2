@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -27,12 +31,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * File Appender.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
 public final class FileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -45,8 +47,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
                          final String filename, final boolean handleException, final boolean immediateFlush,
                          Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
-        if (advertiser != null)
-        {
+        if (advertiser != null) {
             Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -91,6 +92,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The FileAppender.
      */
     @PluginFactory
@@ -130,8 +132,8 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
 

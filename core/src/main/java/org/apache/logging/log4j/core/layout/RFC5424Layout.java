@@ -16,7 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,17 +48,6 @@ import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**

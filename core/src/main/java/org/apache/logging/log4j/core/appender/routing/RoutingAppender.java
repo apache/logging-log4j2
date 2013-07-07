@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * This Appender "routes" between various Appenders, some of which can be references to
  * Appenders defined earlier in the configuration while others can be dynamically created
@@ -42,6 +42,8 @@ import java.util.concurrent.ConcurrentMap;
  * the Routing appender declaration. The pattern should contain one or more substitution patterns of
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
+ *
+ * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Routing", category = "Core", elementType = "appender", printObject = true)
 public final class RoutingAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -171,6 +173,7 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
      * @param config The Configuration (automatically added by the Configuration).
      * @param rewritePolicy A RewritePolicy, if any.
      * @param filter A Filter to restrict events processed by the Appender or null.
+     * @param <S> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
      * @return The RoutingAppender
      */
     @PluginFactory

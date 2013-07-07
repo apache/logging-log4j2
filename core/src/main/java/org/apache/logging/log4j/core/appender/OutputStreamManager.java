@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Layout;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.apache.logging.log4j.core.Layout;
 
 /**
  * Manage an OutputStream so that it can be shared by multiple Appenders and will

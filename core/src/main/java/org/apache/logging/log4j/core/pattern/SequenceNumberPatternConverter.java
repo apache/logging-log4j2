@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 
 /**

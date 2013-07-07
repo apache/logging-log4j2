@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 public abstract class AbstractOutputStreamAppender<T extends Serializable> extends AbstractAppender<T> {
 

@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractServer;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.XMLConfiguration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
@@ -42,6 +34,15 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractServer;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.XMLConfiguration;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 
 /**
  * Listens for events over a socket connection.

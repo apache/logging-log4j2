@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Initializes and configure the Logging system.

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractServer;
-import org.apache.logging.log4j.core.LogEvent;
-
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractServer;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Abstract base class for receiving LogEvents over JMS. This class expects all messages to be serialized log events.

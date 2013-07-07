@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.helpers.Constants;
-
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.helpers.Constants;
 
 
 /**

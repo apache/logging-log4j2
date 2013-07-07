@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -28,6 +26,8 @@ import java.util.Enumeration;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Generates a unique ID. The generated UUID will be unique for approximately 8,925 years so long as

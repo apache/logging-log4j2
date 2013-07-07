@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -32,12 +36,10 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TCPSocketManager;
 import org.apache.logging.log4j.util.EnglishEnums;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
 public class SocketAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -48,8 +50,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                              final AbstractSocketManager manager, final boolean handleException,
                              final boolean immediateFlush, Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
-        if (advertiser != null)
-        {
+        if (advertiser != null) {
             Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -82,6 +83,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
      * @param filter The Filter or null.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param config The Configuration
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A SocketAppender.
      */
     @PluginFactory
@@ -105,7 +107,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }

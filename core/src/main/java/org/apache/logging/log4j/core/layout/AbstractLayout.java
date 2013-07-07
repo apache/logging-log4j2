@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.Serializable;
 
 /**
  * Abstract base class for Layouts.
