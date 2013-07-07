@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Map;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -55,6 +57,7 @@ import org.apache.logging.log4j.message.Message;
  * @see BasicLogEventEntity
  */
 @MappedSuperclass
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     private static final long serialVersionUID = 1L;
 
@@ -67,7 +70,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      */
     @SuppressWarnings("unused")
     protected AbstractLogEventWrapperEntity() {
-        this(null);
+        this(new NullLogEvent());
     }
 
     /**
@@ -77,6 +80,9 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * @param wrappedEvent The underlying event from which information is obtained.
      */
     protected AbstractLogEventWrapperEntity(final LogEvent wrappedEvent) {
+        if (wrappedEvent == null) {
+            throw new IllegalArgumentException("The wrapped event cannot be null.");
+        }
         this.wrappedEvent = wrappedEvent;
     }
 
@@ -233,5 +239,83 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     @Override
     public final void setEndOfBatch(final boolean endOfBatch) {
         this.getWrappedEvent().setEndOfBatch(endOfBatch);
+    }
+
+    private static class NullLogEvent implements LogEvent {
+
+        @Override
+        public Level getLevel() {
+            return null;
+        }
+
+        @Override
+        public String getLoggerName() {
+            return null;
+        }
+
+        @Override
+        public StackTraceElement getSource() {
+            return null;
+        }
+
+        @Override
+        public Message getMessage() {
+            return null;
+        }
+
+        @Override
+        public Marker getMarker() {
+            return null;
+        }
+
+        @Override
+        public String getThreadName() {
+            return null;
+        }
+
+        @Override
+        public long getMillis() {
+            return 0;
+        }
+
+        @Override
+        public Throwable getThrown() {
+            return null;
+        }
+
+        @Override
+        public Map<String, String> getContextMap() {
+            return null;
+        }
+
+        @Override
+        public ThreadContext.ContextStack getContextStack() {
+            return null;
+        }
+
+        @Override
+        public String getFQCN() {
+            return null;
+        }
+
+        @Override
+        public boolean isIncludeLocation() {
+            return false;
+        }
+
+        @Override
+        public void setIncludeLocation(boolean locationRequired) {
+
+        }
+
+        @Override
+        public boolean isEndOfBatch() {
+            return false;
+        }
+
+        @Override
+        public void setEndOfBatch(boolean endOfBatch) {
+
+        }
     }
 }

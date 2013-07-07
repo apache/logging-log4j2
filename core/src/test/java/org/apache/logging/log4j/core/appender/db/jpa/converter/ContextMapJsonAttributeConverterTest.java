@@ -70,4 +70,15 @@ public class ContextMapJsonAttributeConverterTest {
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", map, reversed);
     }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    }
+
+    @Test
+    public void testConvertNullOrBlankToEntityAttribute() {
+        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
+        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    }
 }

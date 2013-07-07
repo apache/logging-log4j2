@@ -73,6 +73,17 @@ public class ThrowableAttributeConverterTest {
         assertEquals("The reversed value is not correct.", stackTrace, getStackTrace(reversed));
     }
 
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    }
+
+    @Test
+    public void testConvertNullOrBlankToEntityAttribute() {
+        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
+        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    }
+
     private static String getStackTrace(Throwable throwable) {
         String returnValue = throwable.toString() + "\n";
 

@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -53,8 +52,10 @@ public class JPAAppenderTest {
 
         statement = this.connection.createStatement();
         statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( " +
-                    "id INTEGER IDENTITY, millis BIGINT, level VARCHAR(10), logger VARCHAR(255), " +
-                    "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576)" +
+                    "id INTEGER IDENTITY, millis BIGINT, level VARCHAR(10), loggerName VARCHAR(255), " +
+                    "message VARCHAR(1024), thrown VARCHAR(1048576), contextMapJson VARCHAR(1048576)," +
+                    "fqcn VARCHAR(1024), contextStack VARCHAR(1048576), marker VARCHAR(255), source VARCHAR(2048)," +
+                    "threadName VARCHAR(255)" +
                 " )");
         statement.close();
 
@@ -89,7 +90,8 @@ public class JPAAppenderTest {
                     if (statement != null) {
                         statement.close();
                     }
-                } catch (final SQLException ignore) { /* */
+                } catch (final SQLException ignore) {
+                    /* */
                 }
             }
 
@@ -145,7 +147,6 @@ public class JPAAppenderTest {
     }
 
     @Test
-    @Ignore("Until Hibernate fixes https://hibernate.atlassian.net/browse/HHH-8111")
     public void testBaseJpaEntityAppender() throws SQLException {
         try {
             this.setUp("log4j2-jpa-base.xml");
@@ -208,7 +209,6 @@ public class JPAAppenderTest {
     }
 
     @Test
-    @Ignore("Until Hibernate fixes https://hibernate.atlassian.net/browse/HHH-8111")
     public void testBasicJpaEntityAppender() throws SQLException {
         try {
             this.setUp("log4j2-jpa-basic.xml");
@@ -237,10 +237,10 @@ public class JPAAppenderTest {
             assertTrue("The date should be later than pre-logging (1).", date >= millis);
             assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (1).", logger1.getName(), resultSet.getString("logger"));
+            assertEquals("The logger column is not correct (1).", logger1.getName(), resultSet.getString("loggerName"));
             assertEquals("The message column is not correct (1).", "Test my debug 01.",
                     resultSet.getString("message"));
-            assertNull("The exception column is not correct (1).", resultSet.getString("exception"));
+            assertNull("The exception column is not correct (1).", resultSet.getString("thrown"));
 
             assertTrue("There should be at least two rows.", resultSet.next());
 
@@ -248,10 +248,10 @@ public class JPAAppenderTest {
             assertTrue("The date should be later than pre-logging (2).", date >= millis);
             assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (2).", logger1.getName(), resultSet.getString("logger"));
+            assertEquals("The logger column is not correct (2).", logger1.getName(), resultSet.getString("loggerName"));
             assertEquals("The message column is not correct (2).", "This is another warning 02.",
                     resultSet.getString("message"));
-            assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("exception"));
+            assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("thrown"));
 
             assertTrue("There should be three rows.", resultSet.next());
 
@@ -259,10 +259,10 @@ public class JPAAppenderTest {
             assertTrue("The date should be later than pre-logging (3).", date >= millis);
             assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
             assertEquals("The level column is not correct (3).", "FATAL", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (3).", logger2.getName(), resultSet.getString("logger"));
+            assertEquals("The logger column is not correct (3).", logger2.getName(), resultSet.getString("loggerName"));
             assertEquals("The message column is not correct (3).", "A fatal warning has been issued.",
                     resultSet.getString("message"));
-            assertNull("The exception column is not correct (3).", resultSet.getString("exception"));
+            assertNull("The exception column is not correct (3).", resultSet.getString("thrown"));
 
             assertFalse("There should not be four rows.", resultSet.next());
         } finally {

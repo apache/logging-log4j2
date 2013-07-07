@@ -30,6 +30,10 @@ import org.apache.logging.log4j.MarkerManager;
 public class MarkerAttributeConverter implements AttributeConverter<Marker, String> {
     @Override
     public String convertToDatabaseColumn(final Marker marker) {
+        if (marker == null) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder(marker.getName());
         Marker parent = marker.getParent();
         int levels = 0;
@@ -51,6 +55,10 @@ public class MarkerAttributeConverter implements AttributeConverter<Marker, Stri
 
     @Override
     public Marker convertToEntityAttribute(final String s) {
+        if (s == null || s.length() == 0) {
+            return null;
+        }
+
         int bracket = s.indexOf("[");
 
         return bracket < 1 ? MarkerManager.getMarker(s) : MarkerManager.getMarker(s.substring(0, bracket));

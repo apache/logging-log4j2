@@ -38,6 +38,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 public class ContextStackJsonAttributeConverter implements AttributeConverter<ThreadContext.ContextStack, String> {
     @Override
     public String convertToDatabaseColumn(final ThreadContext.ContextStack contextStack) {
+        if (contextStack == null) {
+            return null;
+        }
+
         try {
             return ContextMapJsonAttributeConverter.OBJECT_MAPPER.writeValueAsString(contextStack.asList());
         } catch (IOException e) {

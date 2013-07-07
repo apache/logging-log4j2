@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ContextMapAttributeConverterTest {
     private ContextMapAttributeConverter converter;
@@ -57,6 +58,11 @@ public class ContextMapAttributeConverterTest {
 
         assertEquals("The converted value is not correct.", map.toString(),
                 this.converter.convertToDatabaseColumn(map));
+    }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
     }
 
     @Test(expected = UnsupportedOperationException.class)

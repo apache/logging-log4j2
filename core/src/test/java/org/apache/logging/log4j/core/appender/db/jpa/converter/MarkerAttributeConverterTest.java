@@ -75,4 +75,15 @@ public class MarkerAttributeConverterTest {
         assertNotNull("The second parent should not be null.", marker.getParent().getParent());
         assertEquals("The second parent is not correct.", "finalConvert03", marker.getParent().getParent().getName());
     }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    }
+
+    @Test
+    public void testConvertNullOrBlankToEntityAttribute() {
+        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
+        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    }
 }

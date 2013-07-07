@@ -81,68 +81,69 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "level")
     public Level getLevel() {
-        return getWrappedEvent().getLevel();
+        return this.getWrappedEvent().getLevel();
     }
 
     @Override
     @Basic
     @Column(name = "logger")
     public String getLoggerName() {
-        return getWrappedEvent().getLoggerName();
+        return this.getWrappedEvent().getLoggerName();
     }
 
     @Override
     @Transient
     public StackTraceElement getSource() {
-        return getWrappedEvent().getSource();
+        return this.getWrappedEvent().getSource();
     }
 
     @Override
     @Convert(converter = MessageAttributeConverter.class)
+    @Column(name = "message")
     public Message getMessage() {
-        return getWrappedEvent().getMessage();
+        return this.getWrappedEvent().getMessage();
     }
 
     @Override
     @Transient
     public Marker getMarker() {
-        return getWrappedEvent().getMarker();
+        return this.getWrappedEvent().getMarker();
     }
 
     @Override
     @Transient
     public String getThreadName() {
-        return getWrappedEvent().getThreadName();
+        return this.getWrappedEvent().getThreadName();
     }
 
     @Override
     @Transient
     public long getMillis() {
-        return getWrappedEvent().getMillis();
+        return this.getWrappedEvent().getMillis();
     }
 
     @Override
     @Convert(converter = ThrowableAttributeConverter.class)
     @Column(name = "exception")
     public Throwable getThrown() {
-        return getWrappedEvent().getThrown();
+        return this.getWrappedEvent().getThrown();
     }
 
     @Override
     @Transient
     public Map<String, String> getContextMap() {
-        return getWrappedEvent().getContextMap();
+        return this.getWrappedEvent().getContextMap();
     }
 
     @Override
     @Transient
     public ThreadContext.ContextStack getContextStack() {
-        return getWrappedEvent().getContextStack();
+        return this.getWrappedEvent().getContextStack();
     }
 
     @Override
     @Transient
     public String getFQCN() {
-        return getWrappedEvent().getFQCN();
+        return this.getWrappedEvent().getFQCN();
     }
 }

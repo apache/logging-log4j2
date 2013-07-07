@@ -29,11 +29,19 @@ public class StackTraceElementAttributeConverter implements AttributeConverter<S
 
     @Override
     public String convertToDatabaseColumn(final StackTraceElement element) {
+        if (element == null) {
+            return null;
+        }
+
         return element.toString();
     }
 
     @Override
     public StackTraceElement convertToEntityAttribute(final String s) {
+        if (s == null || s.length() == 0) {
+            return null;
+        }
+
         return StackTraceElementAttributeConverter.convertString(s);
     }
 

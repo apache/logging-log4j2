@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -25,6 +23,8 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;
@@ -73,5 +73,16 @@ public class ContextStackJsonAttributeConverterTest {
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", stack.asList(),
                 reversed.asList());
+    }
+
+    @Test
+    public void testConvertNullToDatabaseColumn() {
+        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    }
+
+    @Test
+    public void testConvertNullOrBlankToEntityAttribute() {
+        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
+        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
     }
 }

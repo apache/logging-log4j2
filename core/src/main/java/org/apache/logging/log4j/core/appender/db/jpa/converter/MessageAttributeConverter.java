@@ -32,11 +32,19 @@ public class MessageAttributeConverter implements AttributeConverter<Message, St
 
     @Override
     public String convertToDatabaseColumn(final Message message) {
+        if (message == null) {
+            return null;
+        }
+
         return message.getFormattedMessage();
     }
 
     @Override
     public Message convertToEntityAttribute(final String s) {
+        if (s == null || s.length() == 0) {
+            return null;
+        }
+
         return log.getMessageFactory().newMessage(s);
     }
 }
