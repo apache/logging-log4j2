@@ -38,7 +38,7 @@ import javax.servlet.ServletResponse;
  */
 public class Log4jServletFilter implements Filter {
 
-    private static final String ALREADY_FILTERED_ATTRIBUTE = Log4jServletFilter.class.getName() + ".FILTERED";
+    static final String ALREADY_FILTERED_ATTRIBUTE = Log4jServletFilter.class.getName() + ".FILTERED";
 
     private ServletContext servletContext;
     private Log4jWebInitializer initializer;
