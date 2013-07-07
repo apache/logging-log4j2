@@ -149,7 +149,7 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
-    protected void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
             if (currentEvent.markerName != null) {

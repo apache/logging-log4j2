@@ -46,7 +46,7 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected void log(final Marker marker, final String fqcn, final Level level, final Message data,
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data,
                        final Throwable t) {
         if (locationAwareLogger != null) {
             if (data instanceof LoggerNameAwareMessage) {
