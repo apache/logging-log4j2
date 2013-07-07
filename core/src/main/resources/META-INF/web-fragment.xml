@@ -14,23 +14,20 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
-<configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test"
-    monitorInterval="5">
-  <appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <List name="List">
-    </List>
-  </appenders>
-  <loggers>
-    <logger name="org.apache.test" level="trace" additivity="false">
-      <appender-ref ref="List"/>
-    </logger>
-    <root level="error">
-      <appender-ref ref="STDOUT"/>
-    </root>
-  </loggers>
-</configuration>
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                                  http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+              version="3.0" metadata-complete="true">
+    <!-- The Log4j web fragment must be loaded before all other fragments. The configuration below should make this
+        happen automatically. If you experience problems, try specifying an <absolute-ordering> in your web.xml
+        deployment descriptor. -->
+    <name>log4j</name>
+    <distributable />
+    <ordering>
+        <before>
+            <others />
+        </before>
+    </ordering>
+</web-fragment>

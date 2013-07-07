@@ -44,14 +44,16 @@
             <p>
               A typical web application will be packaged as a WAR file and will include all of its dependencies in
               WEB-INF/lib and will have its configuration file located in the class path or in a location
-              configured in the web.xml.
+              configured in the web.xml. Be sure to follow the <a href="webapp.html">instructions to initialize Log4j 2
+              in a web application</a>.
             </p>
           <h4>Java EE Applications</h4>
             <p>
               A Java EE application will consist of one or more WAR files and possible some EJBs, typically all
               packaged in an EAR file. Usually, it is desirable to have a single configuration that applies to
               all the components in the EAR. The logging classes will generally be placed in a location shared
-              across all the components and the configuration needs to also be shareable.
+              across all the components and the configuration needs to also be shareable.  Be sure to follow the
+              <a href="webapp.html">instructions to initialize Log4j 2 in a web application</a>.
             </p>
           <h4>"Shared" Web Applications and REST Service Containers</h4>
             <p>
@@ -83,21 +85,25 @@
                   applications.</li>
                 <li>
                   Place the logging jars in the container's classpath and use the default ClassLoaderContextSelector.
-                  Include the Log4jContextListener in each web application. Each ContextListener can be configured
-                  to share the same configuration used at the container or they can be individually configured. If
-                  status logging is set to debug in the configuration there will be output from when logging is
-                  initialized in the container and then again in each web application.
+                  Follow the <a href="webapp.html">instructions to initialize Log4j 2 in a web application</a>. Each
+                  application can be configured to share the same configuration used at the container or can be
+                  individually configured. If status logging is set to debug in the configuration there will be output
+                  from when logging is initialized in the container and then again in each web application.
                 </li>
                 <li>
-                  Use the JNDIContextFilter and set the system property "Log4jContextSelector" to
-                  "org.apache.logging.log4j.core.selector.JNDIContextSelector". This will cause the container to
-                  use JNDI to locate each's web application's LoggerContext.
+                  Follow the <a href="webapp.html">instructions to initialize Log4j 2 in a web application</a> and set
+                  the system property "Log4jContextSelector" to
+                  "org.apache.logging.log4j.core.selector.JNDIContextSelector." This will cause the container to
+                  use JNDI to locate each web application's <code>LoggerContext</code>. Be sure to set the
+                  <code>isLog4jContextSelectorNamed</code> context parameter to <code>true</code> and also set the
+                  <code>log4jContextName</code> and <code>log4jConfiguration</code> context parameters.
                 </li>
               </ol>
             </p>
-            <p>The exact method for setting system properties depends on the container.
-            For Tomcat, edit $CATALINA_HOME/conf/catalina.properties. 
-            Consult the documentation for other web containers.</p>
+            <p>
+              The exact method for setting system properties depends on the container. For Tomcat, edit
+              $CATALINA_HOME/conf/catalina.properties. Consult the documentation for other web containers.
+            </p>
         </subsection>
       </section>
     </body>

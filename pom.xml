@@ -758,7 +758,6 @@
     <module>log4j-to-slf4j</module>
     <module>jcl-bridge</module>
     <module>flume-ng</module>
-    <module>web</module>
     <module>taglib</module>
     <module>jmx-gui</module>
     <module>samples</module>

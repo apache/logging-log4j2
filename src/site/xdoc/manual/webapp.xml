@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+  <properties>
+    <title>Log4j 2 Web Applications</title>
+    <author email="nickwilliams@apache.org">Nick Williams</author>
+  </properties>
+
+  <body>
+    <section name="Using Log4j 2 in Web Applications">
+      <p>
+        You must take particular care when using Log4j or any other logging framework within a Java EE web application.
+        It's important for logging resources to be properly cleaned up (database connections closed, files closed, etc.)
+        when the container shuts down or the web application is undeployed. Because of the nature of class loaders
+        within web applications, Log4j resources cannot be cleaned up through normal means. Log4j must be "started" when
+        the web application deploys and "shut down" when the web application undeploys. How this works varies depending
+        on whether your application is a <a href="#Servlet-3.0">Servlet 3.0 or newer</a> or
+        <a href="#Servlet-2.5">Servlet 2.5</a> web application.
+      </p>
+      <a name="Servlet-3.0" />
+      <subsection name="Servlet 3.0 and Newer Web Applications">
+        <p>
+          A Servlet 3.0 or newer web application is any <code>&lt;web-app&gt;</code> whose <code>version</code>
+          attribute has a value of "3.0" or higher. Of course, the application must also be running in a compatible
+          web container. Some examples are: Tomcat 7.0 and higher, GlassFish 3.0 and higher, JBoss 7.0 and higher,
+          Oracle WebLogic 12c and higher, and IBM WebSphere 8.0 and higher.
+        </p>
+        <p>
+          <b>The Short Story</b><br />
+          Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when
+          the application deploys and shutting down when the application undeploys.
+        </p>
+        <p>
+          <b>The Long Story</b><br />
+          The Log4j 2 Core JAR file is a web-fragment configured to order before any other web fragments in your
+          application. It contains a <code>ServletContainerInitializer</code>
+          (<a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContainerInitializer.html"
+            >Log4jServletContainerInitializer</a>) that the container automatically discovers and initializes. This adds
+          the <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContextListener.html"
+            >Log4jServletContextListener</a> and
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletFilter.html"
+            >Log4jServletFilter</a> to the <code>ServletContext</code>. These classes properly initialize
+          and deinitialize the Log4j configuration.
+        </p>
+        <p>
+          You can customize the behavior of the listener and filter using the <code>log4jContextName</code>,
+          <code>log4jConfiguration</code>, and/or <code>isLog4jContextSelectorNamed</code> context parameters. Read more
+          about this in the <a href="#ContextParams">Context Parameters</a> section below.
+        </p>
+      </subsection>
+      <a name="Servlet-2.5" />
+      <subsection name="Servlet 2.5 Web Applications">
+        <p>
+          A Servlet 2.5 web application is any <code>&lt;web-app&gt;</code> whose <code>version</code> attribute has a
+          value of "2.5." Note that Log4j 2 does not support Servlet 2.4 and older web applications. The
+          <code>version</code> attribute is the only thing that matters; even if the web application is running in a
+          Servlet 3.0 or newer container, it is a Servlet 2.5 web application if the <code>version</code> attribute
+          is "2.5."
+        </p>
+        <p>
+          If you are using Log4j in a Servlet 2.5 web application, you <em>must</em> configure the
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContextListener.html"
+            >Log4jServletContextListener</a> and
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletFilter.html"
+            >Log4jServletFilter</a> in the deployment descriptor. The filter should match all requests of any type. The
+          listener should be the very first listener defined in the deployment descriptor, and the filter should be the
+          very first filter defined and mapped in the deployment descriptor. This is easily accomplished using the
+          following <code>web.xml</code> code:
+          <pre class="prettyprint linenums"><![CDATA[    <listener>
+        <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>]]></pre>
+        </p>
+        <p>
+          You can customize the behavior of the listener and filter using the <code>log4jContextName</code>,
+          <code>log4jConfiguration</code>, and/or <code>isLog4jContextSelectorNamed</code> context parameters. Read more
+          about this in the <a href="#ContextParams">Context Parameters</a> section below.
+        </p>
+      </subsection>
+      <a name="ContextParams" />
+      <subsection name="Context Parameters">
+        <p>
+          By default, Log4j 2 uses the <code>ServletContext</code>'s context name as the <code>LoggerContext</code> name
+          and uses the standard pattern for locating the Log4j configuration file. There are three context parameters
+          that you can use to control this behavior. The first, <code>isLog4jContextSelectorNamed</code>, specifies
+          whether the context should be selected using the
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JNDIContextSelector.html"
+            >JNDIContextSelector</a>. If <code>isLog4jContextSelectorNamed</code> is not specified or is anything other
+          than <code>true</code>, it is assumed to be <code>false</code>.
+        </p>
+        <p>
+          If <code>isLog4jContextSelectorNamed</code> is <code>true</code>, <code>log4jContextName</code> must be
+          specified; otherwise, the application will fail to start with an exception. <code>log4jConfiguration</code>
+          <em>should</em> also be specified in this case, and must be a valid URI for the configuration; however, this
+          parameter is not required.
+        </p>
+        <p>
+          If <code>isLog4jContextSelectorNamed</code> is not <code>true</code>, <code>log4jConfiguration</code> may be a
+          valid URI or a path to a file, or it may start with "classpath:" to denote a file that can be found on the
+          classpath.
+        </p>
+        <p>
+          When specifying these context parameters, you must specify them in the deployment descriptor
+          (<code>web.xml</code>) even in a Servlet 3.0 or never application. If you add them to the
+          <code>ServletContext</code> within a listener, Log4j will initialize before the context parameters are
+          available and they will have no effect. Here are some sample uses of these context parameters.
+        </p>
+        <p>
+          <b>Set the Logging Context Name to "myApplication"</b>
+          <pre class="prettyprint linenums"><![CDATA[    <context-param>
+        <param-name>log4jContextName</param-name>
+        <param-value>myApplication</param-value>
+    </context-param>]]></pre>
+        </p>
+        <p>
+          <b>Set the Configuration Path/File/URI to "/etc/myApp/log4j.xml"</b>
+          <pre class="prettyprint linenums"><![CDATA[    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>file:///etc/myApp/log4j.xml</param-value>
+    </context-param>]]></pre>
+        </p>
+        <p>
+          <b>Use the <code>JNDIContextSelector</code></b>
+          <pre class="prettyprint linenums"><![CDATA[    <context-param>
+        <param-name>isLog4jContextSelectorNamed</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jContextName</param-name>
+        <param-value>appWithJndiSelector</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>file://D:\conf\log4j.xml</param-value>
+    </context-param>]]></pre>
+          Note that in this case you must also set the "Log4jContextSelector" system property to
+          "org.apache.logging.log4j.core.selector.JNDIContextSelector."
+        </p>
+      </subsection>
+    </section>
+  </body>
+
+</document>
