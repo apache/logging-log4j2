@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
 import java.io.IOException;
-
 import java.util.List;
 
 

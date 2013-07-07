@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
@@ -27,6 +23,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * OutputStream for UDP connections.

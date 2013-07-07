@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -27,9 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Compare against a log level that is associated with an MDC value.

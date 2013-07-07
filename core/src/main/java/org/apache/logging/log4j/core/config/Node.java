@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.config.plugins.PluginType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.config.plugins.PluginType;
 
 /**
  * A Configuration node.

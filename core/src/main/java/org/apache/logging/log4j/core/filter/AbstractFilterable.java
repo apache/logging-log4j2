@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Iterator;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
-
-import java.util.Iterator;
 
 /**
  * Enhances a Class by allowing it to contain Filters.

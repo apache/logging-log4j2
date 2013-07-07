@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This class can be used to define a

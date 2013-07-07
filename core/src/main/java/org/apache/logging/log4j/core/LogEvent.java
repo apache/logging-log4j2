@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.core;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
-
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  *

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,10 +28,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSQueueManager;
 
-import java.io.Serializable;
-
 /**
  * Appender to write to a JMS Queue.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "JMSQueue", category = "Core", elementType = "appender", printObject = true)
 public final class JMSQueueAppender<T extends Serializable> extends AbstractAppender<T> {
@@ -72,7 +74,8 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     *                 The default is "true".
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The JMSQueueAppender.
      */
     @PluginFactory
@@ -101,7 +104,7 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }

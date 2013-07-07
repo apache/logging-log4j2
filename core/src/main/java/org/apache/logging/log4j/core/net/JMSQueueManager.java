@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-
+import java.io.Serializable;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -27,7 +26,8 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import java.io.Serializable;
+
+import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 /**
  * Manager for a JMS Queue.

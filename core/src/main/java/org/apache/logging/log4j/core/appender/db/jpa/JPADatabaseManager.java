@@ -85,8 +85,9 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
             transaction.commit();
         } catch (final Exception e) {
             LOGGER.error("Failed to persist log event entity.", e);
-            if (transaction != null && transaction.isActive())
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
+            }
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();

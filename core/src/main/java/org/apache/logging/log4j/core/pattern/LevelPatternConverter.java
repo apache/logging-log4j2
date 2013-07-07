@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.EnumMap;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-
-import java.util.EnumMap;
 
 /**
  * Returns the event's level in a StringBuffer.

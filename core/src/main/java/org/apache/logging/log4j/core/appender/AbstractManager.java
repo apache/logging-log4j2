@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class used to register managers.
@@ -132,10 +132,11 @@ public abstract class AbstractManager {
     }
 
     /**
-     * Provide a description of the content format supported by this Manager.  Default implementation returns an empty (unspecified) Map.
+     * Provide a description of the content format supported by this Manager.  Default implementation returns an empty
+     * (unspecified) Map.
      *
-     * @return a Map of key/value pairs describing the Manager-specific content format, or an empty Map if no content format descriptors are specified. 
-     *
+     * @return a Map of key/value pairs describing the Manager-specific content format, or an empty Map if no content
+     * format descriptors are specified.
      */
     public Map<String, String> getContentFormat() {
         return new HashMap<String, String>();

@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
  * Filters events that fall within a specified time period in each day.

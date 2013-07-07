@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -26,14 +34,6 @@ import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.nio.charset.Charset;
-
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The
@@ -43,6 +43,8 @@ import java.nio.charset.Charset;
  * is handled within the Layout. Typically, a Layout will generate a String
  * and then call getBytes which may use a configured encoding or the system
  * default. OTOH, a Writer cannot print byte streams.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -73,7 +75,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
      * @param follow If true will follow changes to the underlying output stream.
      * @param name The name of the Appender (required).
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     *                 The default is "true".
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The ConsoleAppender.
      */
     @PluginFactory
@@ -88,8 +91,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({"unchecked"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
         final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);

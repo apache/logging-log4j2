@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Layout;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +26,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.Layout;
 
 
 /**
@@ -56,6 +56,7 @@ public class FileManager extends OutputStreamManager {
      * @param locking true if the file should be locked while writing, false otherwise.
      * @param bufferedIO true if the contents should be buffered as they are written.
      * @param advertiseURI the URI to use when advertising the file
+     * @param layout The layout
      * @return A FileManager for the File.
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
@@ -122,13 +123,12 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * FileManager's content format is specified by:<p/>
-     * Key: "fileURI" Value: provided "advertiseURI" param
+     * FileManager's content format is specified by: <code>Key: "fileURI" Value: provided "advertiseURI" param</code>.
+     *
      * @return Map of content format keys supporting FileManager
      */
     @Override
-    public Map<String, String> getContentFormat()
-    {
+    public Map<String, String> getContentFormat() {
         Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
-
-import java.util.Map;
 
 /**
  * Interface that must be implemented to create a configuration.

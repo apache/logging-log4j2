@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.appender.AbstractManager;
-
+import java.io.Serializable;
+import java.util.Properties;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
@@ -28,8 +28,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import java.io.Serializable;
-import java.util.Properties;
+
+import org.apache.logging.log4j.core.appender.AbstractManager;
 
 /**
  * Base Class for Managers of JMS connections.

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Properties;
-
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;

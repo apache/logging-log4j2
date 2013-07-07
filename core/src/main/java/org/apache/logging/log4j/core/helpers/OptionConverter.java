@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.util.Locale;
-import java.util.Properties;
 
 /**
  * A convenience class to convert property values to specific types.

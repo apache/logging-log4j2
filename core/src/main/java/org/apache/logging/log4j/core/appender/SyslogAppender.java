@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -32,11 +34,10 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.util.EnglishEnums;
 
-import java.io.Serializable;
-import java.util.Map;
-
 /**
  * The Syslog Appender.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
@@ -84,6 +85,9 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
      * @param config The Configuration.
      * @param charsetName The character set to use when converting the syslog String to a byte array.
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
+     * @param loggerFields The logger fields
+     * @param advertise Whether to advertise
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A SyslogAppender.
      */
     @PluginFactory
@@ -124,7 +128,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         @SuppressWarnings("unchecked")
-        final Layout<S> layout = (Layout<S>)(RFC5424.equalsIgnoreCase(format) ?
+        final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
                 escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, loggerFields, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));

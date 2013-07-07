@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.UUID;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.helpers.UUIDUtil;
-
-import java.util.UUID;
 
 /**
  * Formats the event sequence number.

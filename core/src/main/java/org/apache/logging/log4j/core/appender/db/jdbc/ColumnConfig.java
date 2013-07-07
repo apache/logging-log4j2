@@ -91,6 +91,8 @@ public final class ColumnConfig {
      * @param eventTimestamp If {@code "true"}, indicates that this column is a date-time column in which the event
      *                       timestamp should be inserted. Mutually exclusive with {@code pattern!=null} and
      *                       {@code literalValue!=null}.
+     * @param unicode If {@code "true"}, indicates that the column is a unicode String.
+     * @param clob If {@code "true"}, indicates that the column is a character LOB (CLOB).
      * @return the created column config.
      */
     @PluginFactory

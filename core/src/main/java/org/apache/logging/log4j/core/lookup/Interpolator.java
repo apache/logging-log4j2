@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The Interpolator is a StrLookup that acts as a proxy for all the other StrLookups.

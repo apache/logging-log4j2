@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -26,9 +29,6 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 /**
  * Receives Topic messages that contain LogEvents. This implementation expects that all messages

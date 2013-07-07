@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -28,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.IOException;
 
 
 /**

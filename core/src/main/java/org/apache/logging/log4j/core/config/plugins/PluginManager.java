@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -36,6 +32,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Loads and manages all the plugins.

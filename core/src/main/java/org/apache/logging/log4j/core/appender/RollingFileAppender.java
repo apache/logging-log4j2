@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -32,12 +36,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * An appender that writes to files and can roll over at intervals.
+ *
+ * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "RollingFile", category = "Core", elementType = "appender", printObject = true)
 public final class RollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
@@ -53,8 +55,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
                                 final String filePattern, final boolean handleException, final boolean immediateFlush,
                                 Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
-        if (advertiser != null)
-        {
+        if (advertiser != null) {
             Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -118,6 +119,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
+     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A RollingFileAppender.
      */
     @PluginFactory
@@ -167,8 +169,8 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
         }
 
         if (layout == null) {
-            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            Layout<S> l = (Layout<S>)PatternLayout.createLayout(null, null, null, null, null);
+            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
 
