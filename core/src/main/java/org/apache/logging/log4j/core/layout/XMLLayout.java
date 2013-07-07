@@ -49,7 +49,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * the XMLLayout ouput goes, then a well-formed XML file would be:
  * <p/>
  * <pre>
- * &lt;?xml version="1.0" ?&gt;
+ * &lt;?xml version="1.0" encoding=&quotUTF-8&quot?&gt;
  *
  * &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
  *
