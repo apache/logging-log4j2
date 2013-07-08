@@ -156,7 +156,7 @@ public class JPAAppenderTest {
             final PrintWriter writer = new PrintWriter(outputStream);
             exception.printStackTrace(writer);
             writer.close();
-            final String stackTrace = outputStream.toString();
+            final String stackTrace = outputStream.toString().replace("\r\n", "\n");
 
             final long millis = System.currentTimeMillis();
 
@@ -218,7 +218,7 @@ public class JPAAppenderTest {
             final PrintWriter writer = new PrintWriter(outputStream);
             exception.printStackTrace(writer);
             writer.close();
-            final String stackTrace = outputStream.toString();
+            final String stackTrace = outputStream.toString().replace("\r\n", "\n");
 
             final long millis = System.currentTimeMillis();
 
