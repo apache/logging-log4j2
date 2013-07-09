@@ -109,7 +109,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    Level stat = Level.toLevel(getSubst().replace(entry.getValue()), null);
+                    final Level stat = Level.toLevel(getSubst().replace(entry.getValue()), null);
                     if (stat != null) {
                         status = stat;
                     } else {
@@ -167,9 +167,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                                 {
                                     advertisedConfiguration.put("location", configSource.getLocation());
                                 }
-                            } catch (InstantiationException e) {
+                            } catch (final InstantiationException e) {
                                 System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
-                            } catch (IllegalAccessException e) {
+                            } catch (final IllegalAccessException e) {
                                 System.err.println("IllegalAccessException attempting to instantiate advertiser: " + advertiserString);
                             }
                         }

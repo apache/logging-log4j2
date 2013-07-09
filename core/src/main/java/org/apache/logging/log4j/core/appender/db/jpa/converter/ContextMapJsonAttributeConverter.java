@@ -43,7 +43,7 @@ public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<
 
         try {
             return OBJECT_MAPPER.writeValueAsString(contextMap);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new PersistenceException("Failed to convert map to JSON string.", e);
         }
     }
@@ -55,7 +55,7 @@ public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<
         }
         try {
             return OBJECT_MAPPER.readValue(s, new TypeReference<Map<String, String>>() { });
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new PersistenceException("Failed to convert JSON string to map.", e);
         }
     }

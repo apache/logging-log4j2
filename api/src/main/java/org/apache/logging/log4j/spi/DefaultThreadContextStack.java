@@ -37,7 +37,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
 
     private final boolean useStack;
 
-    public DefaultThreadContextStack(boolean useStack) {
+    public DefaultThreadContextStack(final boolean useStack) {
         this.useStack = useStack;
     }
 
@@ -95,7 +95,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return;
         }
         final List<String> copy = new ArrayList<String>();
-        int count = Math.min(depth, list.size());
+        final int count = Math.min(depth, list.size());
         for (int i = 0; i < count; i++) {
             copy.add(list.get(i));
         }
@@ -124,7 +124,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result == null || result.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public boolean contains(final Object o) {
         final List<String> result = stack.get();
         return result != null && result.contains(o);
     }
@@ -146,8 +146,8 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result.toArray(new Object[result.size()]);
     }
 
-    public <T> T[] toArray(T[] ts) {
-        List<String> result = stack.get();
+    public <T> T[] toArray(final T[] ts) {
+        final List<String> result = stack.get();
         if (result == null) {
             if (ts.length > 0) { // as per the contract of j.u.List#toArray(T[])
                 ts[0] = null;
@@ -157,7 +157,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result.toArray(ts);
     }
 
-    public boolean add(String s) {
+    public boolean add(final String s) {
         if (!useStack) {
             return false;
         }
@@ -169,7 +169,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return true;
     }
 
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         if (!useStack) {
             return false;
         }
@@ -183,7 +183,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result;
     }
 
-    public boolean containsAll(Collection<?> objects) {
+    public boolean containsAll(final Collection<?> objects) {
         if (objects.isEmpty()) { // quick check before accessing the ThreadLocal
             return true; // looks counter-intuitive, but see
                          // j.u.AbstractCollection
@@ -192,7 +192,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return list != null && list.containsAll(objects);
     }
 
-    public boolean addAll(Collection<? extends String> strings) {
+    public boolean addAll(final Collection<? extends String> strings) {
         if (!useStack || strings.isEmpty()) {
             return false;
         }
@@ -204,7 +204,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return true;
     }
 
-    public boolean removeAll(Collection<?> objects) {
+    public boolean removeAll(final Collection<?> objects) {
         if (!useStack || objects.isEmpty()) {
             return false;
         }
@@ -213,12 +213,12 @@ public class DefaultThreadContextStack implements ThreadContextStack {
             return false;
         }
         final List<String> copy = new ArrayList<String>(list);
-        boolean result = copy.removeAll(objects);
+        final boolean result = copy.removeAll(objects);
         stack.set(Collections.unmodifiableList(copy));
         return result;
     }
 
-    public boolean retainAll(Collection<?> objects) {
+    public boolean retainAll(final Collection<?> objects) {
         if (!useStack || objects.isEmpty()) {
             return false;
         }

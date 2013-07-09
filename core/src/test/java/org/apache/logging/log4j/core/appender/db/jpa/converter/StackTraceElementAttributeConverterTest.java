@@ -37,15 +37,15 @@ public class StackTraceElementAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        StackTraceElement element = new StackTraceElement("TestNoPackage", "testConvert01", "TestNoPackage.java", 1234);
+        final StackTraceElement element = new StackTraceElement("TestNoPackage", "testConvert01", "TestNoPackage.java", 1234);
 
-        String converted = this.converter.convertToDatabaseColumn(element);
+        final String converted = this.converter.convertToDatabaseColumn(element);
 
         assertNotNull("The converted value should not be null.", converted);
         assertEquals("The converted value is not correct.", "TestNoPackage.testConvert01(TestNoPackage.java:1234)",
                 converted);
 
-        StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
+        final StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The class name is not correct.", "TestNoPackage", reversed.getClassName());
@@ -57,17 +57,17 @@ public class StackTraceElementAttributeConverterTest {
 
     @Test
     public void testConvert02() {
-        StackTraceElement element = new StackTraceElement("org.apache.logging.TestWithPackage",
+        final StackTraceElement element = new StackTraceElement("org.apache.logging.TestWithPackage",
                 "testConvert02", "TestWithPackage.java", -1);
 
-        String converted = this.converter.convertToDatabaseColumn(element);
+        final String converted = this.converter.convertToDatabaseColumn(element);
 
         assertNotNull("The converted value should not be null.", converted);
         assertEquals("The converted value is not correct.",
                 "org.apache.logging.TestWithPackage.testConvert02(TestWithPackage.java)",
                 converted);
 
-        StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
+        final StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The class name is not correct.", "org.apache.logging.TestWithPackage", reversed.getClassName());
@@ -79,17 +79,17 @@ public class StackTraceElementAttributeConverterTest {
 
     @Test
     public void testConvert03() {
-        StackTraceElement element = new StackTraceElement("org.apache.logging.TestNoSource",
+        final StackTraceElement element = new StackTraceElement("org.apache.logging.TestNoSource",
                 "testConvert03", null, -1);
 
-        String converted = this.converter.convertToDatabaseColumn(element);
+        final String converted = this.converter.convertToDatabaseColumn(element);
 
         assertNotNull("The converted value should not be null.", converted);
         assertEquals("The converted value is not correct.",
                 "org.apache.logging.TestNoSource.testConvert03(Unknown Source)",
                 converted);
 
-        StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
+        final StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The class name is not correct.", "org.apache.logging.TestNoSource", reversed.getClassName());
@@ -101,17 +101,17 @@ public class StackTraceElementAttributeConverterTest {
 
     @Test
     public void testConvert04() {
-        StackTraceElement element = new StackTraceElement("org.apache.logging.TestIsNativeMethod",
+        final StackTraceElement element = new StackTraceElement("org.apache.logging.TestIsNativeMethod",
                 "testConvert04", null, -2);
 
-        String converted = this.converter.convertToDatabaseColumn(element);
+        final String converted = this.converter.convertToDatabaseColumn(element);
 
         assertNotNull("The converted value should not be null.", converted);
         assertEquals("The converted value is not correct.",
                 "org.apache.logging.TestIsNativeMethod.testConvert04(Native Method)",
                 converted);
 
-        StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
+        final StackTraceElement reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The class name is not correct.", "org.apache.logging.TestIsNativeMethod",

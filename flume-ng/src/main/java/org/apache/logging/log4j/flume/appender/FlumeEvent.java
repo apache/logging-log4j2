@@ -293,7 +293,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     @Override
-    public void setIncludeLocation(boolean includeLocation) {
+    public void setIncludeLocation(final boolean includeLocation) {
         event.setIncludeLocation(includeLocation);
     }
 
@@ -303,7 +303,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     }
 
     @Override
-    public void setEndOfBatch(boolean endOfBatch) {
+    public void setEndOfBatch(final boolean endOfBatch) {
         event.setEndOfBatch(endOfBatch);
     }
 }

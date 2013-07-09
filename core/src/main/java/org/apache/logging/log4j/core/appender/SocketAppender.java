@@ -48,10 +48,10 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
 
     protected SocketAppender(final String name, final Layout<T> layout, final Filter filter,
                              final AbstractSocketManager manager, final boolean handleException,
-                             final boolean immediateFlush, Advertiser advertiser) {
+                             final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         if (advertiser != null) {
-            Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -101,13 +101,14 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginConfiguration final Configuration config) {
 
         boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }

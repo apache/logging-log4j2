@@ -85,16 +85,16 @@ class AsyncLoggerConfigHelper {
      */
     private final EventTranslator<Log4jEventWrapper> translator = new EventTranslator<Log4jEventWrapper>() {
         @Override
-        public void translateTo(Log4jEventWrapper event, long sequence) {
+        public void translateTo(final Log4jEventWrapper event, final long sequence) {
             event.event = currentLogEvent.get();
             event.loggerConfig = asyncLoggerConfig;
         }
     };
 
-    private ThreadLocal<LogEvent> currentLogEvent = new ThreadLocal<LogEvent>();
-    private AsyncLoggerConfig asyncLoggerConfig;
+    private final ThreadLocal<LogEvent> currentLogEvent = new ThreadLocal<LogEvent>();
+    private final AsyncLoggerConfig asyncLoggerConfig;
 
-    public AsyncLoggerConfigHelper(AsyncLoggerConfig asyncLoggerConfig) {
+    public AsyncLoggerConfigHelper(final AsyncLoggerConfig asyncLoggerConfig) {
         this.asyncLoggerConfig = asyncLoggerConfig;
         initDisruptor();
     }
@@ -104,11 +104,11 @@ class AsyncLoggerConfigHelper {
         if (disruptor != null) {
             return;
         }
-        int ringBufferSize = calculateRingBufferSize();
-        WaitStrategy waitStrategy = createWaitStrategy();
+        final int ringBufferSize = calculateRingBufferSize();
+        final WaitStrategy waitStrategy = createWaitStrategy();
         disruptor = new Disruptor<Log4jEventWrapper>(FACTORY, ringBufferSize,
                 executor, ProducerType.MULTI, waitStrategy);
-        EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
+        final EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
         new Log4jEventWrapperHandler() };
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(handlers);
@@ -120,7 +120,7 @@ class AsyncLoggerConfigHelper {
     }
 
     private static WaitStrategy createWaitStrategy() {
-        String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
+        final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
         LOGGER.debug("property AsyncLoggerConfig.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             LOGGER.debug("disruptor event handler uses SleepingWaitStrategy");
@@ -138,7 +138,7 @@ class AsyncLoggerConfigHelper {
 
     private static int calculateRingBufferSize() {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        String userPreferredRBSize = System.getProperty(
+        final String userPreferredRBSize = System.getProperty(
                 "AsyncLoggerConfig.RingBufferSize",
                 String.valueOf(ringBufferSize));
         try {
@@ -150,7 +150,7 @@ class AsyncLoggerConfigHelper {
                         userPreferredRBSize, RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.warn("Invalid RingBufferSize {}, using default size {}.",
                     userPreferredRBSize, ringBufferSize);
         }
@@ -158,19 +158,20 @@ class AsyncLoggerConfigHelper {
     }
 
     private static ExceptionHandler getExceptionHandler() {
-        String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
+        final String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
         if (cls == null) {
             LOGGER.debug("No AsyncLoggerConfig.ExceptionHandler specified");
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
+            final
             Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
                     .forName(cls);
-            ExceptionHandler result = klass.newInstance();
+            final ExceptionHandler result = klass.newInstance();
             LOGGER.debug("AsyncLoggerConfig.ExceptionHandler=" + result);
             return result;
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
             LOGGER.debug(
                     "AsyncLoggerConfig.ExceptionHandler not set: error creating "
                             + cls + ": ", ignored);
@@ -197,13 +198,13 @@ class AsyncLoggerConfigHelper {
         private int counter;
 
         @Override
-        public void setSequenceCallback(Sequence sequenceCallback) {
+        public void setSequenceCallback(final Sequence sequenceCallback) {
             this.sequenceCallback = sequenceCallback;
         }
 
         @Override
-        public void onEvent(Log4jEventWrapper event, long sequence,
-                boolean endOfBatch) throws Exception {
+        public void onEvent(final Log4jEventWrapper event, final long sequence,
+                final boolean endOfBatch) throws Exception {
             event.event.setEndOfBatch(endOfBatch);
             event.loggerConfig.asyncCallAppenders(event.event);
 
@@ -221,7 +222,7 @@ class AsyncLoggerConfigHelper {
         if (--count > 0) {
             return;
         }
-        Disruptor<Log4jEventWrapper> temp = disruptor;
+        final Disruptor<Log4jEventWrapper> temp = disruptor;
         if (temp == null) {
             return; // disruptor was already shut down by another thread
         }
@@ -232,7 +233,7 @@ class AsyncLoggerConfigHelper {
         temp.shutdown();
 
         // wait up to 10 seconds for the ringbuffer to drain
-        RingBuffer<Log4jEventWrapper> ringBuffer = temp.getRingBuffer();
+        final RingBuffer<Log4jEventWrapper> ringBuffer = temp.getRingBuffer();
         for (int i = 0; i < MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN; i++) {
             if (ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize())) {
                 break;
@@ -240,14 +241,14 @@ class AsyncLoggerConfigHelper {
             try {
                 // give ringbuffer some time to drain...
                 Thread.sleep(HALF_A_SECOND);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignored
             }
         }
         executor.shutdown(); // finally, kill the processor thread
     }
 
-    public void callAppendersFromAnotherThread(LogEvent event) {
+    public void callAppendersFromAnotherThread(final LogEvent event) {
         currentLogEvent.set(event);
         disruptor.publishEvent(translator);
     }

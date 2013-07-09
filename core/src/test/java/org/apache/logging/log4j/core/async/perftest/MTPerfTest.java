@@ -22,23 +22,23 @@ import com.lmax.disruptor.collections.Histogram;
 
 public class MTPerfTest extends PerfTest {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		new MTPerfTest().doMain(args);
 	}
 
 	@Override
 	public void runTestAndPrintResult(final IPerfTestRunner runner,
-			final String name, final int threadCount, String resultFile)
+			final String name, final int threadCount, final String resultFile)
 			throws Exception {
 
 		// ThreadContext.put("aKey", "mdcVal");
 		PerfTest.println("Warming up the JVM...");
-		long t1 = System.nanoTime();
+		final long t1 = System.nanoTime();
 
 		// warmup at least 2 rounds and at most 1 minute
 		final Histogram warmupHist = PerfTest.createHistogram();
 		final long stop = System.currentTimeMillis() + (60 * 1000);
-		Runnable run1 = new Runnable() {
+		final Runnable run1 = new Runnable() {
 			@Override
             public void run() {
 				for (int i = 0; i < 10; i++) {
@@ -50,8 +50,8 @@ public class MTPerfTest extends PerfTest {
 				}
 			}
 		};
-		Thread thread1 = new Thread(run1);
-		Thread thread2 = new Thread(run1);
+		final Thread thread1 = new Thread(run1);
+		final Thread thread2 = new Thread(run1);
 		thread1.start();
 		thread2.start();
 		thread1.join();
@@ -74,7 +74,7 @@ public class MTPerfTest extends PerfTest {
 	}
 
 	private void multiThreadedTestRun(final IPerfTestRunner runner,
-			final String name, final int threadCount, String resultFile)
+			final String name, final int threadCount, final String resultFile)
 			throws Exception {
 
 		final Histogram[] histograms = new Histogram[threadCount];
@@ -83,28 +83,28 @@ public class MTPerfTest extends PerfTest {
 		}
 		final int LINES = 256 * 1024;
 
-		Thread[] threads = new Thread[threadCount];
+		final Thread[] threads = new Thread[threadCount];
 		for (int i = 0; i < threads.length; i++) {
 			final Histogram histogram = histograms[i];
 			threads[i] = new Thread() {
 				@Override
                 public void run() {
 //				    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
-				    int latencyCount = 5000000;
-					int count = PerfTest.throughput ? LINES / threadCount
+				    final int latencyCount = 5000000;
+					final int count = PerfTest.throughput ? LINES / threadCount
 							: latencyCount;
 					runTest(runner, count, "end", histogram, threadCount);
 				}
 			};
 		}
-		for (Thread thread : threads) {
+		for (final Thread thread : threads) {
 			thread.start();
 		}
-		for (Thread thread : threads) {
+		for (final Thread thread : threads) {
 			thread.join();
 		}
 
-		for (Histogram histogram : histograms) {
+		for (final Histogram histogram : histograms) {
 			PerfTest.reportResult(resultFile, name, histogram);
 		}
 	}

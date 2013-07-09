@@ -164,7 +164,7 @@ public abstract class AbstractLogger implements Logger {
      * @param level The logging level.
      * @param t The Throwable.
      */
-    protected void catching(String fqcn, final Level level, final Throwable t) {
+    protected void catching(final String fqcn, final Level level, final Throwable t) {
         if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
             log(CATCHING_MARKER, fqcn, level, messageFactory.newMessage(CATCHING), t);
         }
@@ -1493,7 +1493,7 @@ public abstract class AbstractLogger implements Logger {
      * @param t The Throwable.
      * @return the Throwable.
      */
-    protected <T extends Throwable> T throwing(String fqcn, final Level level, final T t) {
+    protected <T extends Throwable> T throwing(final String fqcn, final Level level, final T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
             log(THROWING_MARKER, fqcn, level, messageFactory.newMessage(THROWING), t);
         }

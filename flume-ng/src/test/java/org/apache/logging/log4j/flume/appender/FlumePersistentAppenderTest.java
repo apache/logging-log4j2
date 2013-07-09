@@ -95,7 +95,7 @@ public class FlumePersistentAppenderTest {
         * Clear out all other appenders associated with this logger to ensure we're
         * only hitting the Avro appender.
         */
-        int[] ports = findFreePorts(2);
+        final int[] ports = findFreePorts(2);
         System.setProperty("primaryPort", Integer.toString(ports[0]));
         System.setProperty("alternatePort", Integer.toString(ports[1]));
         primary = new EventCollector(ports[0]);
@@ -145,7 +145,7 @@ public class FlumePersistentAppenderTest {
             msg.put("counter", Integer.toString(i));
             EventLogger.logEvent(msg);
         }
-        boolean[] fields = new boolean[10];
+        final boolean[] fields = new boolean[10];
         for (int i = 0; i < 10; ++i) {
             final Event event = primary.poll();
             Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
@@ -221,8 +221,8 @@ public class FlumePersistentAppenderTest {
     @Test
     public void testSingle() throws InterruptedException, IOException {
 
-        Logger logger = LogManager.getLogger("EventLogger");
-        Marker marker = MarkerManager.getMarker("EVENT");
+        final Logger logger = LogManager.getLogger("EventLogger");
+        final Marker marker = MarkerManager.getMarker("EVENT");
         logger.info(marker, "This is a test message");
 
         final Event event = primary.poll();
@@ -279,8 +279,8 @@ public class FlumePersistentAppenderTest {
         private final NettyServer nettyServer;
 
 
-        public EventCollector(int port) {
-            Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
+        public EventCollector(final int port) {
+            final Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
             nettyServer = new NettyServer(responder, new InetSocketAddress(HOSTNAME, port));
             nettyServer.start();
         }
@@ -294,7 +294,7 @@ public class FlumePersistentAppenderTest {
             AvroFlumeEvent avroEvent = null;
             try {
                 avroEvent = eventQueue.poll(30000, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 // Ignore the exception.
             }
             if (avroEvent != null) {
@@ -307,33 +307,33 @@ public class FlumePersistentAppenderTest {
         }
 
         @Override
-        public Status append(AvroFlumeEvent event) throws AvroRemoteException {
+        public Status append(final AvroFlumeEvent event) throws AvroRemoteException {
             eventQueue.add(event);
             //System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             return Status.OK;
         }
 
         @Override
-        public Status appendBatch(List<AvroFlumeEvent> events) throws AvroRemoteException {
+        public Status appendBatch(final List<AvroFlumeEvent> events) throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));
-            for (AvroFlumeEvent event : events) {
+            for (final AvroFlumeEvent event : events) {
                // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             }
             return Status.OK;
         }
     }
 
-    private static Map<String, String> toStringMap(Map<CharSequence, CharSequence> charSeqMap) {
-        Map<String, String> stringMap = new HashMap<String, String>();
-        for (Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
+    private static Map<String, String> toStringMap(final Map<CharSequence, CharSequence> charSeqMap) {
+        final Map<String, String> stringMap = new HashMap<String, String>();
+        for (final Map.Entry<CharSequence, CharSequence> entry : charSeqMap.entrySet()) {
             stringMap.put(entry.getKey().toString(), entry.getValue().toString());
         }
         return stringMap;
     }
 
-    private static int[] findFreePorts(int count) throws IOException {
-        int[] ports = new int[count];
-        ServerSocket[] sockets = new ServerSocket[count];
+    private static int[] findFreePorts(final int count) throws IOException {
+        final int[] ports = new int[count];
+        final ServerSocket[] sockets = new ServerSocket[count];
         try {
             for (int i = 0; i < count; ++i) {
                 sockets[i] = new ServerSocket(0);
@@ -344,7 +344,7 @@ public class FlumePersistentAppenderTest {
                 if (sockets[i] != null) {
                     try {
                         sockets[i].close();
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         // Ignore the error.
                     }
                 }

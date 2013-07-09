@@ -29,21 +29,21 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testEmptyIfConstructedWithEmptyList() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         assertTrue(stack.isEmpty());
     }
 
     @Test
     public void testConstructorCopiesListContents() {
-        List<String> initial = Arrays.asList("a", "b", "c");
-        MutableThreadContextStack stack = new MutableThreadContextStack(initial);
+        final List<String> initial = Arrays.asList("a", "b", "c");
+        final MutableThreadContextStack stack = new MutableThreadContextStack(initial);
         assertFalse(stack.isEmpty());
         assertTrue(stack.containsAll(initial));
     }
 
     @Test
     public void testPushAndAddIncreaseStack() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -54,7 +54,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testPeekReturnsLastAddedItem() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -69,7 +69,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testPopRemovesLastAddedItem() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -93,7 +93,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testAsList() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -105,7 +105,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testTrim() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -120,7 +120,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testCopy() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -128,7 +128,7 @@ public class MutableThreadContextStackTest {
         stack.push("msg3");
         assertEquals(3, stack.size());
         
-        ThreadContextStack copy = stack.copy();
+        final ThreadContextStack copy = stack.copy();
         assertEquals(3, copy.size());
         assertTrue(copy.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
 
@@ -156,7 +156,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testClear() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -170,7 +170,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testContains() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -185,7 +185,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testIteratorReturnsInListOrderNotStackOrder() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -193,7 +193,7 @@ public class MutableThreadContextStackTest {
         stack.push("msg3");
         assertEquals(3, stack.size());
         
-        Iterator<String> iter = stack.iterator();
+        final Iterator<String> iter = stack.iterator();
         assertTrue(iter.hasNext());
         assertEquals("msg1", iter.next());
         assertTrue(iter.hasNext());
@@ -205,7 +205,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testToArray() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -213,13 +213,13 @@ public class MutableThreadContextStackTest {
         stack.push("msg3");
         assertEquals(3, stack.size());
         
-        String[] expecteds = {"msg1", "msg2", "msg3"};
+        final String[] expecteds = {"msg1", "msg2", "msg3"};
         assertArrayEquals(expecteds, stack.toArray());
     }
 
     @Test
     public void testToArrayTArray() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -227,15 +227,15 @@ public class MutableThreadContextStackTest {
         stack.push("msg3");
         assertEquals(3, stack.size());
         
-        String[] expecteds = {"msg1", "msg2", "msg3"};
-        String[] result = new String[3] ;
+        final String[] expecteds = {"msg1", "msg2", "msg3"};
+        final String[] result = new String[3] ;
         assertArrayEquals(expecteds, stack.toArray(result));
         assertSame(result, stack.toArray(result));
     }
 
     @Test
     public void testRemove() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -257,7 +257,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testContainsAll() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -270,7 +270,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testAddAll() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -289,7 +289,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testRemoveAll() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");
@@ -306,7 +306,7 @@ public class MutableThreadContextStackTest {
 
     @Test
     public void testRetainAll() {
-        MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
+        final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         stack.clear();
         assertTrue(stack.isEmpty());
         stack.push("msg1");

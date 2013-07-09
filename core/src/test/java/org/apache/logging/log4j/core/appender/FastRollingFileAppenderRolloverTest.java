@@ -40,32 +40,32 @@ public class FastRollingFileAppenderRolloverTest {
 
     @Test
     public void testRollover() throws Exception {
-        File f = new File("target", "FastRollingFileAppenderTest.log");
+        final File f = new File("target", "FastRollingFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
-        File after1 = new File("target", "afterRollover-1.log");
+        final File after1 = new File("target", "afterRollover-1.log");
         f.delete();
         after1.delete();
 
-        Logger log = LogManager.getLogger("com.foo.Bar");
-        String msg = "First a short message that does not trigger rollover";
+        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final String msg = "First a short message that does not trigger rollover";
         log.info(msg);
         Thread.sleep(50);
 
         BufferedReader reader = new BufferedReader(new FileReader(f));
-        String line1 = reader.readLine();
+        final String line1 = reader.readLine();
         assertTrue(line1.contains(msg));
         reader.close();
 
         assertFalse("afterRollover-1.log not created yet", after1.exists());
 
         String exceed = "Long message that exceeds rollover size... ";
-        char[] padding = new char[250];
+        final char[] padding = new char[250];
         Arrays.fill(padding, 'X');
         exceed += new String(padding);
         log.warn(exceed);
         assertFalse("exceeded size but afterRollover-1.log not created yet", after1.exists());
 
-        String trigger = "This message triggers rollover.";
+        final String trigger = "This message triggers rollover.";
         log.warn(trigger);
 
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
@@ -73,18 +73,18 @@ public class FastRollingFileAppenderRolloverTest {
         assertTrue("afterRollover-1.log created", after1.exists());
 
         reader = new BufferedReader(new FileReader(f));
-        String new1 = reader.readLine();
+        final String new1 = reader.readLine();
         assertTrue("after rollover only new msg", new1.contains(trigger));
         assertNull("No more lines", reader.readLine());
         reader.close();
         f.delete();
 
         reader = new BufferedReader(new FileReader(after1));
-        String old1 = reader.readLine();
+        final String old1 = reader.readLine();
         assertTrue("renamed file line 1", old1.contains(msg));
-        String old2 = reader.readLine();
+        final String old2 = reader.readLine();
         assertTrue("renamed file line 2", old2.contains(exceed));
-        String line = reader.readLine();
+        final String line = reader.readLine();
         assertNull("No more lines", line);
         reader.close();
         after1.delete();

@@ -61,7 +61,7 @@ public final class Configurator {
     public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation) {
 
         try {
-            org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
@@ -90,10 +90,10 @@ public final class Configurator {
             URI configLocation = null;
             try {
                 configLocation = source.getLocation() == null ? null : new URI(source.getLocation());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Invalid source location.
             }
-            org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);

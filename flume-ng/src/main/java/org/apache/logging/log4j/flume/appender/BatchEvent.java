@@ -26,9 +26,9 @@ import org.apache.flume.Event;
  */
 public class BatchEvent {
 
-    private List<Event> events = new ArrayList<Event>();
+    private final List<Event> events = new ArrayList<Event>();
 
-    public void addEvent(Event event) {
+    public void addEvent(final Event event) {
         events.add(event);
     }
 

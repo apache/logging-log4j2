@@ -197,8 +197,8 @@ public class StructuredDataMessage extends MapMessage {
         if (key.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Structured data keys are limited to 32 characters. key: " + key);
         }
-        char[] chars = key.toCharArray();
-        for (char c : chars) {
+        final char[] chars = key.toCharArray();
+        for (final char c : chars) {
             if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
                 throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
                         "and may not contain a space, =, ], or \"");

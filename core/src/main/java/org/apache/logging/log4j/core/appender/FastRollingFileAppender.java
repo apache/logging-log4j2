@@ -51,13 +51,13 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastRollingFileAppender(String name, Layout<T> layout,
-            Filter filter, RollingFileManager manager, String fileName,
-            String filePattern, boolean handleException,
-            boolean immediateFlush, Advertiser advertiser) {
+    private FastRollingFileAppender(final String name, final Layout<T> layout,
+            final Filter filter, final RollingFileManager manager, final String fileName,
+            final String filePattern, final boolean handleException,
+            final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         if (advertiser != null) {
-            Map<String, String> configuration = new HashMap<String, String>(
+            final Map<String, String> configuration = new HashMap<String, String>(
                     layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
@@ -83,7 +83,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
      */
     @Override
     public void append(final LogEvent event) {
-        FastRollingFileManager manager = (FastRollingFileManager) getManager();
+        final FastRollingFileManager manager = (FastRollingFileManager) getManager();
         manager.checkRollover(event);
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
@@ -163,7 +163,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
                 .valueOf(suppress);
         final boolean isFlush = immediateFlush == null ? true : Boolean
                 .valueOf(immediateFlush);
-        boolean isAdvertise = advertise == null ? false : Boolean
+        final boolean isAdvertise = advertise == null ? false : Boolean
                 .valueOf(advertise);
 
         if (name == null) {
@@ -195,6 +195,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
 
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }

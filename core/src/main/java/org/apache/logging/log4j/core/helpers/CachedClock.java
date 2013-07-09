@@ -35,7 +35,7 @@ public final class CachedClock implements Clock {
         @Override
         public void run() {
             while (true) {
-                long time = System.currentTimeMillis();
+                final long time = System.currentTimeMillis();
                 millis = time;
                 
                 // avoid explicit dependency on sun.misc.Util

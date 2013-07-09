@@ -39,7 +39,7 @@ public class FastRollingFileManager extends RollingFileManager {
     private final boolean isImmediateFlush;
     private RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
-    private ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
     public FastRollingFileManager(final RandomAccessFile raf, final String fileName,
             final String pattern, final OutputStream os, final boolean append,
@@ -66,12 +66,12 @@ public class FastRollingFileManager extends RollingFileManager {
         return isEndOfBatch.get();
     }
 
-    public void setEndOfBatch(boolean isEndOfBatch) {
+    public void setEndOfBatch(final boolean isEndOfBatch) {
         this.isEndOfBatch.set(Boolean.valueOf(isEndOfBatch));
     }
 
     @Override
-    protected synchronized void write(byte[] bytes, int offset, int length) {
+    protected synchronized void write(final byte[] bytes, int offset, int length) {
         super.write(bytes, offset, length); // writes to dummy output stream
 
         int chunk = 0;
@@ -103,8 +103,8 @@ public class FastRollingFileManager extends RollingFileManager {
         buffer.flip();
         try {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
-        } catch (IOException ex) {
-            String msg = "Error writing to RandomAccessFile " + getName();
+        } catch (final IOException ex) {
+            final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderRuntimeException(msg, ex);
         }
         buffer.clear();
@@ -134,8 +134,8 @@ public class FastRollingFileManager extends RollingFileManager {
          * @return a RollingFileManager.
          */
         @Override
-        public FastRollingFileManager createManager(String name, FactoryData data) {
-            File file = new File(name);
+        public FastRollingFileManager createManager(final String name, final FactoryData data) {
+            final File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
@@ -157,7 +157,7 @@ public class FastRollingFileManager extends RollingFileManager {
                 }
                 return new FastRollingFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
                         data.immediateFlush, size, time, data.policy, data.strategy, data.advertiseURI, data.layout);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.error("FastRollingFileManager (" + name + ") " + ex);
             }
             return null;
@@ -167,11 +167,11 @@ public class FastRollingFileManager extends RollingFileManager {
     /** {@code OutputStream} subclass that does not write anything. */
     static class DummyOutputStream extends OutputStream {
         @Override
-        public void write(int b) throws IOException {
+        public void write(final int b) throws IOException {
         }
 
         @Override
-        public void write(byte[] b, int off, int len) throws IOException {
+        public void write(final byte[] b, final int off, final int len) throws IOException {
         }
     }
 

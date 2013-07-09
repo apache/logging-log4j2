@@ -67,24 +67,24 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
      * @param executor used to send notifications asynchronously
      * @param loggerContext the instrumented object
      */
-    public LoggerContextAdmin(LoggerContext loggerContext, Executor executor) {
+    public LoggerContextAdmin(final LoggerContext loggerContext, final Executor executor) {
         super(executor, createNotificationInfo());
         this.loggerContext = Assert.isNotNull(loggerContext, "loggerContext");
         try {
-            String ctxName = Server.escape(loggerContext.getName());
-            String name = String.format(PATTERN, ctxName);
+            final String ctxName = Server.escape(loggerContext.getName());
+            final String name = String.format(PATTERN, ctxName);
             objectName = new ObjectName(name);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
         loggerContext.addPropertyChangeListener(this);
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        String[] notifTypes = new String[] {//
+        final String[] notifTypes = new String[] {//
                 NOTIF_TYPE_RECONFIGURED };
-        String name = Notification.class.getName();
-        String description = "Configuration reconfigured";
+        final String name = Notification.class.getName();
+        final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
     }
 
@@ -114,12 +114,12 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public void setConfigLocationURI(String configLocation)
+    public void setConfigLocationURI(final String configLocation)
             throws URISyntaxException, IOException {
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location "
                 + configLocation);
-        URI uri = new URI(configLocation);
+        final URI uri = new URI(configLocation);
 
         // validate the location first: invalid location will result in
         // default configuration being configured, try to avoid that...
@@ -130,7 +130,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
         if (!LoggerContext.PROPERTY_CONFIG.equals(evt.getPropertyName())) {
             return;
         }
@@ -138,7 +138,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         if (loggerContext.getConfiguration().getName() != null) {
             customConfigText = null;
         }
-        Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED,
+        final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED,
                 getObjectName(), nextSeqNo(), now(), null);
         sendNotification(notif);
     }
@@ -149,50 +149,50 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
     }
 
     @Override
-    public String getConfigText(String charsetName) throws IOException {
+    public String getConfigText(final String charsetName) throws IOException {
         if (customConfigText != null) {
             return customConfigText;
         }
         try {
-            Charset charset = Charset.forName(charsetName);
+            final Charset charset = Charset.forName(charsetName);
             return readContents(new URI(getConfigLocationURI()), charset);
-        } catch (Exception ex) {
-            StringWriter sw = new StringWriter(BUFFER_SIZE);
+        } catch (final Exception ex) {
+            final StringWriter sw = new StringWriter(BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));
             return sw.toString();
         }
     }
 
     @Override
-    public void setConfigText(String configText, String charsetName) {
-        String old = customConfigText;
+    public void setConfigText(final String configText, final String charsetName) {
+        final String old = customConfigText;
         customConfigText = Assert.isNotNull(configText, "configText");
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure from config text.");
 
         try {
-            InputStream in = new ByteArrayInputStream(
+            final InputStream in = new ByteArrayInputStream(
                     configText.getBytes(charsetName));
-            ConfigurationSource source = new ConfigurationSource(in);
-            Configuration updated = ConfigurationFactory.getInstance()
+            final ConfigurationSource source = new ConfigurationSource(in);
+            final Configuration updated = ConfigurationFactory.getInstance()
                     .getConfiguration(source);
             loggerContext.start(updated);
             LOGGER.debug("Completed remote request to reconfigure from config text.");
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             customConfigText = old;
-            String msg = "Could not reconfigure from config text";
+            final String msg = "Could not reconfigure from config text";
             LOGGER.error(msg, ex);
             throw new IllegalArgumentException(msg, ex);
         }
     }
 
-    private String readContents(URI uri, Charset charset) throws IOException {
+    private String readContents(final URI uri, final Charset charset) throws IOException {
         InputStream in = null;
         try {
             in = uri.toURL().openStream();
-            Reader reader = new InputStreamReader(in, charset);
-            StringBuilder result = new StringBuilder(TEXT_BUFFER);
-            char[] buff = new char[PAGE];
+            final Reader reader = new InputStreamReader(in, charset);
+            final StringBuilder result = new StringBuilder(TEXT_BUFFER);
+            final char[] buff = new char[PAGE];
             int count = -1;
             while ((count = reader.read(buff)) >= 0) {
                 result.append(buff, 0, count);
@@ -201,7 +201,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         } finally {
             try {
                 in.close();
-            } catch (Exception ignored) {
+            } catch (final Exception ignored) {
                 // ignored
             }
         }

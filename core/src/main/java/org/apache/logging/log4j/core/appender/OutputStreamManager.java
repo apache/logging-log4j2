@@ -130,7 +130,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     protected void close() {
-        OutputStream stream = os; // access volatile field only once per method
+        final OutputStream stream = os; // access volatile field only once per method
         if (stream == System.out || stream == System.err) {
             return;
         }

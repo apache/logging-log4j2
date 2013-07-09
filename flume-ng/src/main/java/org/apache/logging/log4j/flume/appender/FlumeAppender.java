@@ -60,7 +60,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
     private enum ManagerType {
         AVRO, EMBEDDED, PERSISTENT;
 
-        public static ManagerType getType(String type) {
+        public static ManagerType getType(final String type) {
             return valueOf(type.toUpperCase(Locale.US));
         }
     }
@@ -86,9 +86,9 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      */
     @Override
     public void append(final LogEvent event) {
-        String name = event.getLoggerName();
+        final String name = event.getLoggerName();
         if (name != null) {
-            for (String pkg : EXCLUDED_PACKAGES) {
+            for (final String pkg : EXCLUDED_PACKAGES) {
                 if (name.startsWith(pkg)) {
                     return;
                 }
@@ -187,7 +187,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                 try {
                     managerType = ManagerType.getType(type);
                     LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type +
                         " is invalid.");
                     managerType = ManagerType.EMBEDDED;
@@ -195,7 +195,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
             } else {
                 try {
                     managerType = ManagerType.getType(type);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     LOGGER.warn("Type " + type + " is invalid.");
                     managerType = ManagerType.EMBEDDED;
                 }
@@ -214,6 +214,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
 
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+			final
             Layout<S> l = (Layout<S>) RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
                     null, null, null, excludes, includes, required, null, null, null, null);
             layout = l;

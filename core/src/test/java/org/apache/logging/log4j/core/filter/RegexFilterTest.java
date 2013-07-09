@@ -55,7 +55,7 @@ public class RegexFilterTest {
 
     @Test
     public void TestNoMsg() {
-        RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
+        final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertTrue(filter.filter(null, Level.DEBUG, null, (String)null, (Throwable)null) == Filter.Result.DENY);

@@ -41,7 +41,7 @@ public class ContextStackAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn01() {
-        ThreadContext.ContextStack stack = new MutableThreadContextStack(
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("value1", "another2"));
 
         assertEquals("The converted value is not correct.", "value1\nanother2",
@@ -50,7 +50,7 @@ public class ContextStackAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn02() {
-        ThreadContext.ContextStack stack = new MutableThreadContextStack(
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("key1", "value2", "my3"));
 
         assertEquals("The converted value is not correct.",

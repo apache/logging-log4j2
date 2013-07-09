@@ -28,15 +28,15 @@ public class DaemonThreadFactory implements ThreadFactory {
     final AtomicInteger threadNumber = new AtomicInteger(1);
     final String threadNamePrefix;
 
-    public DaemonThreadFactory(String threadNamePrefix) {
+    public DaemonThreadFactory(final String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
-        SecurityManager securityManager = System.getSecurityManager();
+        final SecurityManager securityManager = System.getSecurityManager();
         group = (securityManager != null) ? securityManager.getThreadGroup()
                 : Thread.currentThread().getThreadGroup();
     }
 
-    public Thread newThread(Runnable runnable) {
-        Thread thread = new Thread(group, runnable, threadNamePrefix
+    public Thread newThread(final Runnable runnable) {
+        final Thread thread = new Thread(group, runnable, threadNamePrefix
                 + threadNumber.getAndIncrement(), 0);
         if (!thread.isDaemon()) {
             thread.setDaemon(true);

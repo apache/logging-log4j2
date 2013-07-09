@@ -112,7 +112,7 @@ public class RewriteAppenderTest {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         msg.put("Key1", "Value2");
         msg.put("Key2", "Value1");
-        Logger logger = LogManager.getLogger("org.apache.logging.log4j.core.Logging");
+        final Logger logger = LogManager.getLogger("org.apache.logging.log4j.core.Logging");
         logger.debug(msg);
         msg = new StructuredDataMessage("Test", "This is a test", "Service");
         msg.put("Key1", "Value1");

@@ -151,12 +151,12 @@ public final class ThrowableFormatOptions {
      */
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
+        final StringBuilder s = new StringBuilder();
         s.append("{").append(allLines() ? FULL : this.lines == 2 ? SHORT : anyLines() ? String.valueOf(this.lines) : NONE).append("}");
         s.append("{separator(").append(this.separator).append(")}");
         if (hasPackages()) {
             s.append("{filters(");
-            for (String p : this.packages) {
+            for (final String p : this.packages) {
                 s.append(p).append(",");
             }
             s.deleteCharAt(s.length() - 1);

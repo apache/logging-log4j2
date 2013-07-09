@@ -40,7 +40,7 @@ public class FastFileManager extends OutputStreamManager {
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
-    private ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
+    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
     protected FastFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
@@ -79,12 +79,12 @@ public class FastFileManager extends OutputStreamManager {
         return isEndOfBatch.get();
     }
 
-    public void setEndOfBatch(boolean isEndOfBatch) {
+    public void setEndOfBatch(final boolean isEndOfBatch) {
         this.isEndOfBatch.set(Boolean.valueOf(isEndOfBatch));
     }
 
     @Override
-    protected synchronized void write(byte[] bytes, int offset, int length) {
+    protected synchronized void write(final byte[] bytes, int offset, int length) {
         super.write(bytes, offset, length); // writes to dummy output stream
 
         int chunk = 0;
@@ -108,8 +108,8 @@ public class FastFileManager extends OutputStreamManager {
         buffer.flip();
         try {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
-        } catch (IOException ex) {
-            String msg = "Error writing to RandomAccessFile " + getName();
+        } catch (final IOException ex) {
+            final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderRuntimeException(msg, ex);
         }
         buffer.clear();
@@ -138,11 +138,11 @@ public class FastFileManager extends OutputStreamManager {
     /** {@code OutputStream} subclass that does not write anything. */
     static class DummyOutputStream extends OutputStream {
         @Override
-        public void write(int b) throws IOException {
+        public void write(final int b) throws IOException {
         }
 
         @Override
-        public void write(byte[] b, int off, int len) throws IOException {
+        public void write(final byte[] b, final int off, final int len) throws IOException {
         }
     }
 
@@ -155,7 +155,7 @@ public class FastFileManager extends OutputStreamManager {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        Map<String, String> result = new HashMap<String, String>(
+        final Map<String, String> result = new HashMap<String, String>(
                 super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
@@ -198,8 +198,8 @@ public class FastFileManager extends OutputStreamManager {
          * @return The FastFileManager for the File.
          */
         @Override
-        public FastFileManager createManager(String name, FactoryData data) {
-            File file = new File(name);
+        public FastFileManager createManager(final String name, final FactoryData data) {
+            final File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
                 parent.mkdirs();
@@ -208,7 +208,7 @@ public class FastFileManager extends OutputStreamManager {
                 file.delete();
             }
 
-            OutputStream os = new DummyOutputStream();
+            final OutputStream os = new DummyOutputStream();
             RandomAccessFile raf;
             try {
                 raf = new RandomAccessFile(name, "rw");
@@ -219,7 +219,7 @@ public class FastFileManager extends OutputStreamManager {
                 }
                 return new FastFileManager(raf, name, os, data.immediateFlush,
                         data.advertiseURI, data.layout);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("FastFileManager (" + name + ") " + ex);
             }
             return null;

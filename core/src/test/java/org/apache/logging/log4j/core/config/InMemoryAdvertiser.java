@@ -28,20 +28,20 @@ public class InMemoryAdvertiser implements Advertiser {
 
     public static Map<Object, Map<String, String>> getAdvertisedEntries()
     {
-        Map<Object, Map<String, String>> result = new HashMap<Object, Map<String, String>>();
+        final Map<Object, Map<String, String>> result = new HashMap<Object, Map<String, String>>();
         result.putAll(properties);
         return result;
     }
 
     @Override
-    public Object advertise(Map<String, String> newEntry) {
-        Object object = new Object();
+    public Object advertise(final Map<String, String> newEntry) {
+        final Object object = new Object();
         properties.put(object, new HashMap<String, String>(newEntry));
         return object;
     }
 
     @Override
-    public void unadvertise(Object advertisedObject) {
+    public void unadvertise(final Object advertisedObject) {
         properties.remove(advertisedObject);
     }
 }

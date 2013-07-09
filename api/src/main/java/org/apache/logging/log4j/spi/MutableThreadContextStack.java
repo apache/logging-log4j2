@@ -33,11 +33,11 @@ public class MutableThreadContextStack implements ThreadContextStack {
      */
     private final List<String> list;
 
-    public MutableThreadContextStack(List<String> list) {
+    public MutableThreadContextStack(final List<String> list) {
         this.list = new ArrayList<String>(list);
     }
 
-    private MutableThreadContextStack(MutableThreadContextStack stack) {
+    private MutableThreadContextStack(final MutableThreadContextStack stack) {
         this.list = new ArrayList<String>(stack.list);
     }
 
@@ -78,7 +78,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
             return;
         }
         final List<String> copy = new ArrayList<String>(list.size());
-        int count = Math.min(depth, list.size());
+        final int count = Math.min(depth, list.size());
         for (int i = 0; i < count; i++) {
             copy.add(list.get(i));
         }
@@ -102,7 +102,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         return list.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public boolean contains(final Object o) {
         return list.contains(o);
     }
 
@@ -114,31 +114,31 @@ public class MutableThreadContextStack implements ThreadContextStack {
         return list.toArray();
     }
 
-    public <T> T[] toArray(T[] ts) {
+    public <T> T[] toArray(final T[] ts) {
         return list.toArray(ts);
     }
 
-    public boolean add(String s) {
+    public boolean add(final String s) {
         return list.add(s);
     }
 
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return list.remove(o);
     }
 
-    public boolean containsAll(Collection<?> objects) {
+    public boolean containsAll(final Collection<?> objects) {
         return list.containsAll(objects);
     }
 
-    public boolean addAll(Collection<? extends String> strings) {
+    public boolean addAll(final Collection<? extends String> strings) {
         return list.addAll(strings);
     }
 
-    public boolean removeAll(Collection<?> objects) {
+    public boolean removeAll(final Collection<?> objects) {
         return list.removeAll(objects);
     }
 
-    public boolean retainAll(Collection<?> objects) {
+    public boolean retainAll(final Collection<?> objects) {
         return list.retainAll(objects);
     }
 }

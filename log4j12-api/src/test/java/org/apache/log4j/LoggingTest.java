@@ -59,7 +59,7 @@ public class LoggingTest {
     @Test
     public void testParent() {
         final Logger a = Logger.getLogger("org.apache.test.logging.Test");
-        Category parent = a.getParent();
+        final Category parent = a.getParent();
         assertNotNull("No parent Logger", parent);
         assertTrue("Incorrect parent logger", parent.getName().equals("org.apache.test.logging"));
     }

@@ -32,7 +32,7 @@ public class Log4jServletContextListener implements ServletContextListener {
     private Log4jWebInitializer initializer;
 
     @Override
-    public void contextInitialized(ServletContextEvent event) {
+    public void contextInitialized(final ServletContextEvent event) {
         this.servletContext = event.getServletContext();
         this.servletContext.log("Log4jServletContextListener ensuring that Log4j starts up properly.");
 
@@ -40,13 +40,13 @@ public class Log4jServletContextListener implements ServletContextListener {
         try {
             this.initializer.initialize();
             this.initializer.setLoggerContext(); // the application is just now starting to start up
-        } catch (UnavailableException e) {
+        } catch (final UnavailableException e) {
             throw new RuntimeException("Failed to initialize Log4j properly.", e);
         }
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent event) {
+    public void contextDestroyed(final ServletContextEvent event) {
         if (this.servletContext == null || this.initializer == null) {
             throw new IllegalStateException("Context destroyed before it was initialized.");
         }

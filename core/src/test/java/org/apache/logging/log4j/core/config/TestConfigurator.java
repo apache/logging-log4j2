@@ -189,24 +189,24 @@ public class TestConfigurator {
     public void testEnvironment() throws Exception {
         final LoggerContext ctx = Configurator.initialize("-config", null, (String) null);
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
-        Configuration config = ctx.getConfiguration();
+        final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
         assertTrue("Incorrect Configuration. Expected " + CONFIG_NAME + " but found " + config.getName(),
             CONFIG_NAME.equals(config.getName()));
         final Map<String, Appender<?>> map = config.getAppenders();
         assertNotNull("No Appenders", map != null && map.size() > 0);
         Appender<?> app = null;
-        for (Map.Entry<String, Appender<?>> entry: map.entrySet()) {
+        for (final Map.Entry<String, Appender<?>> entry: map.entrySet()) {
             if (entry.getKey().equals("List2")) {
                 app = entry.getValue();
                 break;
             }
         }
         assertNotNull("No ListAppender named List2", app);
-        Layout layout = app.getLayout();
+        final Layout layout = app.getLayout();
         assertNotNull("Appender List2 does not have a Layout", layout);
         assertTrue("Appender List2 is not configured with a PatternLayout", layout instanceof PatternLayout);
-        String pattern = ((PatternLayout) layout).getConversionPattern();
+        final String pattern = ((PatternLayout) layout).getConversionPattern();
         assertNotNull("No conversion pattern for List2 PatternLayout", pattern);
         assertFalse("Environment variable was not substituted", pattern.startsWith("${env:PATH}"));
     }

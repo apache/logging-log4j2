@@ -165,7 +165,7 @@ public class SocketAppenderTest {
 
             root.debug("This message is written because a deadlock never.");
 
-            LogEvent event = list.poll(3, TimeUnit.SECONDS);
+            final LogEvent event = list.poll(3, TimeUnit.SECONDS);
             assertNotNull("No event retrieved", event);
     }
 
@@ -183,7 +183,7 @@ public class SocketAppenderTest {
         try {
             root.debug("This message is written because a deadlock never.");
             fail("No Exception was thrown");
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             // Failure is expected.
         }
     }
@@ -228,7 +228,7 @@ public class SocketAppenderTest {
         private final ServerSocket sock;
         private boolean shutdown = false;
 
-        public TCPSocketServer(int port) throws IOException {
+        public TCPSocketServer(final int port) throws IOException {
             this.sock = new ServerSocket(port);
         }
 

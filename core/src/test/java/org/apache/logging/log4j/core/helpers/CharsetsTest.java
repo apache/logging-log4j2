@@ -28,19 +28,19 @@ public class CharsetsTest {
 
     @Test
     public void testReturnDefaultIfNameIsNull() {
-        Charset actual = Charsets.getSupportedCharset(null);
+        final Charset actual = Charsets.getSupportedCharset(null);
         assertSame(Charset.defaultCharset(), actual);
     }
 
     @Test
     public void testReturnDefaultIfNameIsUnsupported() {
-        Charset actual = Charsets.getSupportedCharset("INeedMoreSupport");
+        final Charset actual = Charsets.getSupportedCharset("INeedMoreSupport");
         assertSame(Charset.defaultCharset(), actual);
     }
 
     @Test(expected = IllegalCharsetNameException.class)
     public void testThrowsExceptionIfNameIsIllegal() {
-        Charset actual = Charsets.getSupportedCharset("spaces not allowed");
+        final Charset actual = Charsets.getSupportedCharset("spaces not allowed");
         assertSame(Charset.defaultCharset(), actual);
     }
 
@@ -48,16 +48,16 @@ public class CharsetsTest {
     public void testReturnRequestedCharsetIfSupported() {
         // See http://docs.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
         // for a list of required charsets.
-        Charset actual1 = Charsets.getSupportedCharset("UTF-8");
+        final Charset actual1 = Charsets.getSupportedCharset("UTF-8");
         assertSame(Charset.forName("UTF-8"), actual1);
 
-        Charset actual2 = Charsets.getSupportedCharset("ISO-8859-1");
+        final Charset actual2 = Charsets.getSupportedCharset("ISO-8859-1");
         assertSame(Charset.forName("ISO-8859-1"), actual2);
 
         // This part of the test is NOT portable across all Java platforms.
         // There is no guarantee that KOI8-R is on any given platform
         if (Charset.isSupported("KOI8-R")) {
-            Charset actual3 = Charsets.getSupportedCharset("KOI8-R");
+            final Charset actual3 = Charsets.getSupportedCharset("KOI8-R");
             assertSame(Charset.forName("KOI8-R"), actual3);
         }
     }

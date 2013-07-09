@@ -95,7 +95,7 @@ public abstract class AbstractSocketServerTest {
             try {
                 testServer(m1, m2);
 
-            } catch (AppenderRuntimeException are) {
+            } catch (final AppenderRuntimeException are) {
                 assertTrue("", are.getCause() != null && are.getCause() instanceof IOException);
                 // Failure expected.
             }

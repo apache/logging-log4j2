@@ -248,7 +248,7 @@ public class Log4jLogEvent implements LogEvent {
         return location;
     }
 
-    public static StackTraceElement calcLocation(String fqcnOfLogger) {
+    public static StackTraceElement calcLocation(final String fqcnOfLogger) {
         if (fqcnOfLogger == null) {
             return null;
         }
@@ -278,7 +278,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     @Override
-    public void setIncludeLocation(boolean includeLocation) {
+    public void setIncludeLocation(final boolean includeLocation) {
         this.includeLocation = includeLocation;
     }
 
@@ -288,7 +288,7 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     @Override
-    public void setEndOfBatch(boolean endOfBatch) {
+    public void setEndOfBatch(final boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
     }
 
@@ -311,7 +311,7 @@ public class Log4jLogEvent implements LogEvent {
         }
         if (event instanceof LogEventProxy) {
             final LogEventProxy proxy = (LogEventProxy) event;
-            Log4jLogEvent result = new Log4jLogEvent(proxy.name, proxy.marker,
+            final Log4jLogEvent result = new Log4jLogEvent(proxy.name, proxy.marker,
                     proxy.fqcnOfLogger, proxy.level, proxy.message,
                     proxy.throwable, proxy.mdc, proxy.ndc, proxy.threadName,
                     proxy.location, proxy.timestamp);
@@ -356,7 +356,7 @@ public class Log4jLogEvent implements LogEvent {
         private final boolean isLocationRequired;
         private final boolean isEndOfBatch;
 
-        public LogEventProxy(final Log4jLogEvent event, boolean includeLocation) {
+        public LogEventProxy(final Log4jLogEvent event, final boolean includeLocation) {
             this.fqcnOfLogger = event.fqcnOfLogger;
             this.marker = event.marker;
             this.level = event.level;
@@ -377,7 +377,7 @@ public class Log4jLogEvent implements LogEvent {
          * @return Log4jLogEvent.
          */
         protected Object readResolve() {
-            Log4jLogEvent result = new Log4jLogEvent(name, marker, fqcnOfLogger,
+            final Log4jLogEvent result = new Log4jLogEvent(name, marker, fqcnOfLogger,
                     level, message, throwable, mdc, ndc, threadName, location,
                     timestamp);
             result.setEndOfBatch(isEndOfBatch);

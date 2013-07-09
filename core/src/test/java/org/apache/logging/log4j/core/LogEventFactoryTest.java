@@ -82,12 +82,12 @@ public class LogEventFactoryTest {
 
     @Test
     public void testEvent() {
-        org.apache.logging.log4j.Logger logger = LogManager.getLogger("org.apache.test.LogEventFactory");
+        final org.apache.logging.log4j.Logger logger = LogManager.getLogger("org.apache.test.LogEventFactory");
         logger.error("error message");
-        List<LogEvent> events = app.getEvents();
+        final List<LogEvent> events = app.getEvents();
         assertNotNull("No events", events);
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
-        LogEvent event = events.get(0);
+        final LogEvent event = events.get(0);
         assertTrue("Test LogEventFactory wasn't used", event.getLoggerName().equals("Test"));
     }
 

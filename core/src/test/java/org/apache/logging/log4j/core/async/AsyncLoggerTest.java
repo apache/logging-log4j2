@@ -49,22 +49,22 @@ public class AsyncLoggerTest {
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        File f = new File("target", "AsyncLoggerTest.log");
+        final File f = new File("target", "AsyncLoggerTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
-        Logger log = LogManager.getLogger("com.foo.Bar");
-        String msg = "Async logger msg";
+        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final String msg = "Async logger msg";
         log.info(msg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
-        BufferedReader reader = new BufferedReader(new FileReader(f));
-        String line1 = reader.readLine();
+        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final String line1 = reader.readLine();
         reader.close();
         f.delete();
         assertNotNull("line1", line1);
         assertTrue("line1 correct", line1.contains(msg));
 
-        String location = "testAsyncLogWritesToLog";
+        final String location = "testAsyncLogWritesToLog";
         assertTrue("no location", !line1.contains(location));
     }
 

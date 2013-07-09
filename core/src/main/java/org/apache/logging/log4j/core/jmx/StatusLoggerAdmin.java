@@ -44,28 +44,28 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      * 
      * @param executor used to send notifications asynchronously
      */
-    public StatusLoggerAdmin(Executor executor) {
+    public StatusLoggerAdmin(final Executor executor) {
         super(executor, createNotificationInfo());
         try {
             objectName = new ObjectName(NAME);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
         StatusLogger.getLogger().registerListener(this);
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        String[] notifTypes = new String[] {//
+        final String[] notifTypes = new String[] {//
         NOTIF_TYPE_DATA, NOTIF_TYPE_MESSAGE };
-        String name = Notification.class.getName();
-        String description = "StatusLogger has logged an event";
+        final String name = Notification.class.getName();
+        final String description = "StatusLogger has logged an event";
         return new MBeanNotificationInfo(notifTypes, name, description);
     }
 
     @Override
     public String[] getStatusDataHistory() {
-        List<StatusData> data = getStatusData();
-        String[] result = new String[data.size()];
+        final List<StatusData> data = getStatusData();
+        final String[] result = new String[data.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = data.get(i).getFormattedStatus();
         }
@@ -83,7 +83,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     }
 
     @Override
-    public void setLevel(String level) {
+    public void setLevel(final String level) {
         StatusLogger.getLogger().setLevel(Level.valueOf(level));
     }
 
@@ -95,12 +95,12 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      * .log4j.status.StatusData)
      */
     @Override
-    public void log(StatusData data) {
-        Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE,
+    public void log(final StatusData data) {
+        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE,
                 getObjectName(), nextSeqNo(), now(), data.getFormattedStatus());
         sendNotification(notifMsg);
 
-        Notification notifData = new Notification(NOTIF_TYPE_DATA,
+        final Notification notifData = new Notification(NOTIF_TYPE_DATA,
                 getObjectName(), nextSeqNo(), now());
         notifData.setUserData(data);
         sendNotification(notifData);

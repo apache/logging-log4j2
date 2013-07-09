@@ -83,16 +83,16 @@ public class AsyncLogger extends Logger {
 
     private static ExecutorService executor = Executors
             .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
-    private ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
+    private final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
-        int ringBufferSize = calculateRingBufferSize();
+        final int ringBufferSize = calculateRingBufferSize();
 
-        WaitStrategy waitStrategy = createWaitStrategy();
+        final WaitStrategy waitStrategy = createWaitStrategy();
         disruptor = new Disruptor<RingBufferLogEvent>(
                 RingBufferLogEvent.FACTORY, ringBufferSize, executor,
                 ProducerType.MULTI, waitStrategy);
-        EventHandler<RingBufferLogEvent>[] handlers = new RingBufferLogEventHandler[] {//
+        final EventHandler<RingBufferLogEvent>[] handlers = new RingBufferLogEventHandler[] {//
         new RingBufferLogEventHandler() };
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(handlers);
@@ -105,7 +105,7 @@ public class AsyncLogger extends Logger {
 
     private static int calculateRingBufferSize() {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        String userPreferredRBSize = System.getProperty(
+        final String userPreferredRBSize = System.getProperty(
                 "AsyncLogger.RingBufferSize", String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
@@ -116,7 +116,7 @@ public class AsyncLogger extends Logger {
                         userPreferredRBSize, RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.warn("Invalid RingBufferSize {}, using default size {}.",
                     userPreferredRBSize, ringBufferSize);
         }
@@ -124,7 +124,7 @@ public class AsyncLogger extends Logger {
     }
 
     private static WaitStrategy createWaitStrategy() {
-        String strategy = System.getProperty("AsyncLogger.WaitStrategy");
+        final String strategy = System.getProperty("AsyncLogger.WaitStrategy");
         LOGGER.debug("property AsyncLogger.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             LOGGER.debug("disruptor event handler uses SleepingWaitStrategy");
@@ -141,19 +141,20 @@ public class AsyncLogger extends Logger {
     }
 
     private static ExceptionHandler getExceptionHandler() {
-        String cls = System.getProperty("AsyncLogger.ExceptionHandler");
+        final String cls = System.getProperty("AsyncLogger.ExceptionHandler");
         if (cls == null) {
             LOGGER.debug("No AsyncLogger.ExceptionHandler specified");
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
+            final
             Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
                     .forName(cls);
-            ExceptionHandler result = klass.newInstance();
+            final ExceptionHandler result = klass.newInstance();
             LOGGER.debug("AsyncLogger.ExceptionHandler=" + result);
             return result;
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
             LOGGER.debug(
                     "AsyncLogger.ExceptionHandler not set: error creating "
                             + cls + ": ", ignored);
@@ -169,8 +170,8 @@ public class AsyncLogger extends Logger {
      * @param name name of this logger
      * @param messageFactory message factory of this logger
      */
-    public AsyncLogger(LoggerContext context, String name,
-            MessageFactory messageFactory) {
+    public AsyncLogger(final LoggerContext context, final String name,
+            final MessageFactory messageFactory) {
         super(context, name, messageFactory);
     }
 
@@ -183,8 +184,8 @@ public class AsyncLogger extends Logger {
     }
 
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message data,
-            Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data,
+            final Throwable t) {
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info();
@@ -193,7 +194,7 @@ public class AsyncLogger extends Logger {
             threadlocalInfo.set(info);
         }
 
-        boolean includeLocation = config.loggerConfig.isIncludeLocation();
+        final boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, data,
                 t, //
 
@@ -222,7 +223,7 @@ public class AsyncLogger extends Logger {
         disruptor.publishEvent(info.translator);
     }
 
-    private StackTraceElement location(String fqcnOfLogger) {
+    private StackTraceElement location(final String fqcnOfLogger) {
         return Log4jLogEvent.calcLocation(fqcnOfLogger);
     }
 
@@ -232,15 +233,15 @@ public class AsyncLogger extends Logger {
      * 
      * @param event the event to log
      */
-    public void actualAsyncLog(RingBufferLogEvent event) {
-        Map<Property, Boolean> properties = config.loggerConfig.getProperties();
+    public void actualAsyncLog(final RingBufferLogEvent event) {
+        final Map<Property, Boolean> properties = config.loggerConfig.getProperties();
         event.mergePropertiesIntoContextMap(properties,
                 config.config.getSubst());
         config.logEvent(event);
     }
 
     public static void stop() {
-        Disruptor<RingBufferLogEvent> temp = disruptor;
+        final Disruptor<RingBufferLogEvent> temp = disruptor;
 
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
@@ -248,7 +249,7 @@ public class AsyncLogger extends Logger {
         temp.shutdown();
 
         // wait up to 10 seconds for the ringbuffer to drain
-        RingBuffer<RingBufferLogEvent> ringBuffer = temp.getRingBuffer();
+        final RingBuffer<RingBufferLogEvent> ringBuffer = temp.getRingBuffer();
         for (int i = 0; i < MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN; i++) {
             if (ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize())) {
                 break;
@@ -256,7 +257,7 @@ public class AsyncLogger extends Logger {
             try {
                 // give ringbuffer some time to drain...
                 Thread.sleep(HALF_A_SECOND);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 // ignored
             }
         }

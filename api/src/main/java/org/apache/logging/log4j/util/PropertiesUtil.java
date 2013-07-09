@@ -82,7 +82,7 @@ public class PropertiesUtil {
         if (prop != null) {
             try {
                 return Integer.parseInt(prop);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 return defaultValue;
             }
         }
@@ -103,7 +103,7 @@ public class PropertiesUtil {
         if (prop != null) {
             try {
                 return Long.parseLong(prop);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 return defaultValue;
             }
         }

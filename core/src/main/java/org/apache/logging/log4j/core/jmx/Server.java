@@ -61,11 +61,11 @@ public final class Server {
      *            {@link ObjectName}.
      * @return the escaped name
      */
-    public static String escape(String name) {
-        StringBuilder sb = new StringBuilder(name.length() * 2);
+    public static String escape(final String name) {
+        final StringBuilder sb = new StringBuilder(name.length() * 2);
         boolean needsQuotes = false;
         for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
+            final char c = name.charAt(i);
             switch (c) {
             case ',':
             case '=':
@@ -95,7 +95,7 @@ public final class Server {
      * @throws JMException
      *             if a problem occurs during registration
      */
-    public static void registerMBeans(ContextSelector selector)
+    public static void registerMBeans(final ContextSelector selector)
             throws JMException {
 
         // avoid creating Platform MBean Server if JMX disabled
@@ -104,7 +104,7 @@ public final class Server {
                     "JMX disabled for log4j2. Not registering MBeans.");
             return;
         }
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         registerMBeans(selector, mbs);
     }
 
@@ -120,7 +120,7 @@ public final class Server {
      * @throws JMException
      *             if a problem occurs during registration
      */
-    public static void registerMBeans(ContextSelector selector,
+    public static void registerMBeans(final ContextSelector selector,
             final MBeanServer mbs) throws JMException {
 
         if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
@@ -132,14 +132,14 @@ public final class Server {
         registerStatusLogger(mbs, executor);
         registerContextSelector(selector, mbs, executor);
 
-        List<LoggerContext> contexts = selector.getLoggerContexts();
+        final List<LoggerContext> contexts = selector.getLoggerContexts();
         registerContexts(contexts, mbs, executor);
 
         for (final LoggerContext context : contexts) {
             context.addPropertyChangeListener(new PropertyChangeListener() {
 
                 @Override
-                public void propertyChange(PropertyChangeEvent evt) {
+                public void propertyChange(final PropertyChangeEvent evt) {
                     if (!LoggerContext.PROPERTY_CONFIG.equals(evt
                             .getPropertyName())) {
                         return;
@@ -154,7 +154,7 @@ public final class Server {
                     try {
                         registerLoggerConfigs(context, mbs, executor);
                         registerAppenders(context, mbs, executor);
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         StatusLogger.getLogger().error(
                                 "Could not register mbeans", ex);
                     }
@@ -163,87 +163,87 @@ public final class Server {
         }
     }
 
-    private static void registerStatusLogger(MBeanServer mbs, Executor executor)
+    private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
             throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        StatusLoggerAdmin mbean = new StatusLoggerAdmin(executor);
+        final StatusLoggerAdmin mbean = new StatusLoggerAdmin(executor);
         mbs.registerMBean(mbean, mbean.getObjectName());
     }
 
-    private static void registerContextSelector(ContextSelector selector,
-            MBeanServer mbs, Executor executor)
+    private static void registerContextSelector(final ContextSelector selector,
+            final MBeanServer mbs, final Executor executor)
             throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        ContextSelectorAdmin mbean = new ContextSelectorAdmin(selector);
+        final ContextSelectorAdmin mbean = new ContextSelectorAdmin(selector);
         mbs.registerMBean(mbean, mbean.getObjectName());
     }
 
-    private static void registerContexts(List<LoggerContext> contexts,
-            MBeanServer mbs, Executor executor)
+    private static void registerContexts(final List<LoggerContext> contexts,
+            final MBeanServer mbs, final Executor executor)
             throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        for (LoggerContext ctx : contexts) {
-            LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
+        for (final LoggerContext ctx : contexts) {
+            final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
             mbs.registerMBean(mbean, mbean.getObjectName());
         }
     }
 
-    private static void unregisterLoggerConfigs(LoggerContext context,
-            MBeanServer mbs) {
-        String pattern = LoggerConfigAdminMBean.PATTERN;
-        String search = String.format(pattern, context.getName(), "*");
+    private static void unregisterLoggerConfigs(final LoggerContext context,
+            final MBeanServer mbs) {
+        final String pattern = LoggerConfigAdminMBean.PATTERN;
+        final String search = String.format(pattern, context.getName(), "*");
         unregisterAllMatching(search, mbs);
     }
 
-    private static void unregisterAppenders(LoggerContext context,
-            MBeanServer mbs) {
-        String pattern = AppenderAdminMBean.PATTERN;
-        String search = String.format(pattern, context.getName(), "*");
+    private static void unregisterAppenders(final LoggerContext context,
+            final MBeanServer mbs) {
+        final String pattern = AppenderAdminMBean.PATTERN;
+        final String search = String.format(pattern, context.getName(), "*");
         unregisterAllMatching(search, mbs);
     }
 
-    private static void unregisterAllMatching(String search, MBeanServer mbs) {
+    private static void unregisterAllMatching(final String search, final MBeanServer mbs) {
         try {
-            ObjectName pattern = new ObjectName(search);
-            Set<ObjectName> found = mbs.queryNames(pattern, null);
-            for (ObjectName objectName : found) {
+            final ObjectName pattern = new ObjectName(search);
+            final Set<ObjectName> found = mbs.queryNames(pattern, null);
+            for (final ObjectName objectName : found) {
                 mbs.unregisterMBean(objectName);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             StatusLogger.getLogger()
                     .error("Could not unregister " + search, ex);
         }
     }
 
-    private static void registerLoggerConfigs(LoggerContext ctx,
-            MBeanServer mbs, Executor executor)
+    private static void registerLoggerConfigs(final LoggerContext ctx,
+            final MBeanServer mbs, final Executor executor)
             throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        Map<String, LoggerConfig> map = ctx.getConfiguration().getLoggers();
-        for (String name : map.keySet()) {
-            LoggerConfig cfg = map.get(name);
-            LoggerConfigAdmin mbean = new LoggerConfigAdmin(ctx.getName(), cfg);
+        final Map<String, LoggerConfig> map = ctx.getConfiguration().getLoggers();
+        for (final String name : map.keySet()) {
+            final LoggerConfig cfg = map.get(name);
+            final LoggerConfigAdmin mbean = new LoggerConfigAdmin(ctx.getName(), cfg);
             mbs.registerMBean(mbean, mbean.getObjectName());
         }
     }
 
-    private static void registerAppenders(LoggerContext ctx, MBeanServer mbs,
-            Executor executor) throws MalformedObjectNameException,
+    private static void registerAppenders(final LoggerContext ctx, final MBeanServer mbs,
+            final Executor executor) throws MalformedObjectNameException,
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        Map<String, Appender<?>> map = ctx.getConfiguration().getAppenders();
-        for (String name : map.keySet()) {
-            Appender<?> appender = map.get(name);
-            AppenderAdmin mbean = new AppenderAdmin(ctx.getName(), appender);
+        final Map<String, Appender<?>> map = ctx.getConfiguration().getAppenders();
+        for (final String name : map.keySet()) {
+            final Appender<?> appender = map.get(name);
+            final AppenderAdmin mbean = new AppenderAdmin(ctx.getName(), appender);
             mbs.registerMBean(mbean, mbean.getObjectName());
         }
     }

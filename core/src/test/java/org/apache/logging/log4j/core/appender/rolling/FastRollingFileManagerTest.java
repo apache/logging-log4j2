@@ -40,23 +40,23 @@ public class FastRollingFileManagerTest {
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        OutputStream os = new FastRollingFileManager.DummyOutputStream();
-        boolean append = false;
-        boolean flushNow = false;
-        long triggerSize = Long.MAX_VALUE;
-        long time = System.currentTimeMillis();
-        TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        final OutputStream os = new FastRollingFileManager.DummyOutputStream();
+        final boolean append = false;
+        final boolean flushNow = false;
+        final long triggerSize = Long.MAX_VALUE;
+        final long time = System.currentTimeMillis();
+        final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(
                 triggerSize);
-        RolloverStrategy rolloverStrategy = null;
-        FastRollingFileManager manager = new FastRollingFileManager(raf,
+        final RolloverStrategy rolloverStrategy = null;
+        final FastRollingFileManager manager = new FastRollingFileManager(raf,
                 file.getName(), "", os, append, flushNow, triggerSize, time,
                 triggerPolicy, rolloverStrategy, null, null);
 
-        int size = FastRollingFileManager.DEFAULT_BUFFER_SIZE * 3;
-        byte[] data = new byte[size];
+        final int size = FastRollingFileManager.DEFAULT_BUFFER_SIZE * 3;
+        final byte[] data = new byte[size];
         manager.write(data, 0, data.length); // no buffer overflow exception
 
         // buffer is full but not flushed yet
@@ -71,23 +71,23 @@ public class FastRollingFileManagerTest {
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        OutputStream os = new FastRollingFileManager.DummyOutputStream();
-        boolean append = false;
-        boolean flushNow = false;
-        long triggerSize = 0;
-        long time = System.currentTimeMillis();
-        TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        final OutputStream os = new FastRollingFileManager.DummyOutputStream();
+        final boolean append = false;
+        final boolean flushNow = false;
+        final long triggerSize = 0;
+        final long time = System.currentTimeMillis();
+        final TriggeringPolicy triggerPolicy = new SizeBasedTriggeringPolicy(
                 triggerSize);
-        RolloverStrategy rolloverStrategy = null;
-        FastRollingFileManager manager = new FastRollingFileManager(raf,
+        final RolloverStrategy rolloverStrategy = null;
+        final FastRollingFileManager manager = new FastRollingFileManager(raf,
                 file.getName(), "", os, append, flushNow, triggerSize, time,
                 triggerPolicy, rolloverStrategy, null, null);
 
-        int size = FastRollingFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
-        byte[] data = new byte[size];
+        final int size = FastRollingFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
+        final byte[] data = new byte[size];
         manager.write(data, 0, data.length); // no exception
         assertEquals(FastRollingFileManager.DEFAULT_BUFFER_SIZE * 3,
                 raf.length());
@@ -98,12 +98,12 @@ public class FastRollingFileManagerTest {
 
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
-        boolean isAppend = true;
-        File file = File.createTempFile("log4j2", "test");
+        final boolean isAppend = true;
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         assertEquals(0, file.length());
 
-        byte[] bytes = new byte[4 * 1024];
+        final byte[] bytes = new byte[4 * 1024];
 
         // create existing file
         FileOutputStream fos = null;
@@ -116,31 +116,31 @@ public class FastRollingFileManagerTest {
         }
         assertEquals("all flushed to disk", bytes.length, file.length());
 
-        FastRollingFileManager manager = FastRollingFileManager
+        final FastRollingFileManager manager = FastRollingFileManager
                 .getFastRollingFileManager(
                         //
                         file.getAbsolutePath(), "", isAppend, true,
                         new SizeBasedTriggeringPolicy(Long.MAX_VALUE), //
                         null, null, null);
         manager.write(bytes, 0, bytes.length);
-        int expected = bytes.length * 2;
+        final int expected = bytes.length * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }
 
     @Test
     public void testFileTimeBasedOnSystemClockWhenAppendIsFalse()
             throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         LockSupport.parkNanos(1000000); // 1 millisec
 
         // append is false deletes the file if it exists
-        boolean isAppend = false;
-        long expectedMin = System.currentTimeMillis();
-        long expectedMax = expectedMin + 50;
+        final boolean isAppend = false;
+        final long expectedMin = System.currentTimeMillis();
+        final long expectedMax = expectedMin + 50;
         assertTrue(file.lastModified() < expectedMin);
         
-        FastRollingFileManager manager = FastRollingFileManager
+        final FastRollingFileManager manager = FastRollingFileManager
                 .getFastRollingFileManager(
                         //
                         file.getAbsolutePath(), "", isAppend, true,
@@ -153,14 +153,14 @@ public class FastRollingFileManagerTest {
     @Test
     public void testFileTimeBasedOnFileModifiedTimeWhenAppendIsTrue()
             throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         LockSupport.parkNanos(1000000); // 1 millisec
 
-        boolean isAppend = true;
+        final boolean isAppend = true;
         assertTrue(file.lastModified() < System.currentTimeMillis());
         
-        FastRollingFileManager manager = FastRollingFileManager
+        final FastRollingFileManager manager = FastRollingFileManager
                 .getFastRollingFileManager(
                         //
                         file.getAbsolutePath(), "", isAppend, true,

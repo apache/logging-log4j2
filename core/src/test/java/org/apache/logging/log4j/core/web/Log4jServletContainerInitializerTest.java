@@ -54,10 +54,10 @@ public class Log4jServletContainerInitializerTest {
 
     @Test
     public void testOnStartup() throws Exception {
-        FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
+        final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
-        Capture<EventListener> listenerCapture = new Capture<EventListener>();
-        Capture<Filter> filterCapture = new Capture<Filter>();
+        final Capture<EventListener> listenerCapture = new Capture<EventListener>();
+        final Capture<Filter> filterCapture = new Capture<Filter>();
 
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
@@ -81,7 +81,7 @@ public class Log4jServletContainerInitializerTest {
 
     @Test
     public void testOnStartupFailed() throws Exception {
-        UnavailableException exception = new UnavailableException("");
+        final UnavailableException exception = new UnavailableException("");
 
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
@@ -94,7 +94,7 @@ public class Log4jServletContainerInitializerTest {
         try {
             this.containerInitializer.onStartup(null, this.servletContext);
             fail("");
-        } catch (UnavailableException e) {
+        } catch (final UnavailableException e) {
             assertSame("The exception is not correct.", exception, e);
         }
     }

@@ -178,9 +178,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
         if (loggerFields != null && !loggerFields.isEmpty()) {
             final PatternParser fieldParser = createPatternParser(config, null);
 
-            Map<String, List<PatternFormatter>> map = new HashMap<String, List<PatternFormatter>>();
-            for (Map.Entry<String, String> entry : loggerFields.entrySet()) {
-                List<PatternFormatter> formatters = fieldParser.parse(entry.getValue(), false);
+            final Map<String, List<PatternFormatter>> map = new HashMap<String, List<PatternFormatter>>();
+            for (final Map.Entry<String, String> entry : loggerFields.entrySet()) {
+                final List<PatternFormatter> formatters = fieldParser.parse(entry.getValue(), false);
                 map.put(entry.getKey(), formatters);
             }
             this.fieldFormatters = map;
@@ -219,7 +219,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         result.put("structured", "true");
         result.put("formatType", "RFC5424");
         return result;
@@ -451,7 +451,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
     }
 
-    private String escapeSDParams(String value) {
+    private String escapeSDParams(final String value) {
         return PARAM_VALUE_ESCAPE_PATTERN.matcher(value).replaceAll("\\\\$0");
     }
 
@@ -534,8 +534,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("enterpriseNumber") final String ein,
                                              @PluginAttr("includeMDC") final String includeMDC,
                                              @PluginAttr("mdcId") String mdcId,
-                                             @PluginAttr("mdcPrefix") String mdcPrefix,
-                                             @PluginAttr("eventPrefix") String eventPrefix,
+                                             @PluginAttr("mdcPrefix") final String mdcPrefix,
+                                             @PluginAttr("eventPrefix") final String eventPrefix,
                                              @PluginAttr("newLine") final String includeNL,
                                              @PluginAttr("newLineEscape") final String escapeNL,
                                              @PluginAttr("appName") final String appName,

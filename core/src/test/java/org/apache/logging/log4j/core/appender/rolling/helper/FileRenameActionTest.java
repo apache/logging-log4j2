@@ -35,7 +35,7 @@ public class FileRenameActionTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        File file = new File(DIR);
+        final File file = new File(DIR);
         file.mkdirs();
     }
 
@@ -51,15 +51,15 @@ public class FileRenameActionTest {
 
     @Test
     public void testRename1() throws Exception {
-        File file = new File("target/fileRename/fileRename.log");
-        PrintStream pos = new PrintStream(file);
+        final File file = new File("target/fileRename/fileRename.log");
+        final PrintStream pos = new PrintStream(file);
         for (int i = 0; i < 100; ++i) {
             pos.println("This is line " + i);
         }
         pos.close();
 
-        File dest = new File("target/fileRename/newFile.log");
-        FileRenameAction action = new FileRenameAction(file, dest, false);
+        final File dest = new File("target/fileRename/newFile.log");
+        final FileRenameAction action = new FileRenameAction(file, dest, false);
         action.execute();
         assertTrue("Renamed file does not exist", dest.exists());
         assertTrue("Old file exists", !file.exists());
@@ -67,12 +67,12 @@ public class FileRenameActionTest {
 
     @Test
     public void testEmpty() throws Exception {
-        File file = new File("target/fileRename/fileRename.log");
-        PrintStream pos = new PrintStream(file);
+        final File file = new File("target/fileRename/fileRename.log");
+        final PrintStream pos = new PrintStream(file);
         pos.close();
 
-        File dest = new File("target/fileRename/newFile.log");
-        FileRenameAction action = new FileRenameAction(file, dest, false);
+        final File dest = new File("target/fileRename/newFile.log");
+        final FileRenameAction action = new FileRenameAction(file, dest, false);
         action.execute();
         assertTrue("Renamed file does not exist", !dest.exists());
         assertTrue("Old file does not exist", !file.exists());
@@ -81,16 +81,16 @@ public class FileRenameActionTest {
 
     @Test
     public void testNoParent() throws Exception {
-        File file = new File("fileRename.log");
-        PrintStream pos = new PrintStream(file);
+        final File file = new File("fileRename.log");
+        final PrintStream pos = new PrintStream(file);
         for (int i = 0; i < 100; ++i) {
             pos.println("This is line " + i);
         }
         pos.close();
 
-        File dest = new File("newFile.log");
+        final File dest = new File("newFile.log");
         try {
-            FileRenameAction action = new FileRenameAction(file, dest, false);
+            final FileRenameAction action = new FileRenameAction(file, dest, false);
             action.execute();
             assertTrue("Renamed file does not exist", dest.exists());
             assertTrue("Old file exists", !file.exists());
@@ -98,7 +98,7 @@ public class FileRenameActionTest {
             try {
                 dest.delete();
                 file.delete();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 System.out.println("Unable to cleanup files written to main directory");
             }
         }

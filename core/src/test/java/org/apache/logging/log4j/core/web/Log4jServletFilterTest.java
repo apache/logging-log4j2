@@ -98,9 +98,9 @@ public class Log4jServletFilterTest {
         verify(this.filterConfig, this.servletContext, this.initializer);
         reset(this.filterConfig, this.servletContext, this.initializer);
 
-        ServletRequest request = createStrictMock(ServletRequest.class);
-        ServletResponse response = createStrictMock(ServletResponse.class);
-        FilterChain chain = createStrictMock(FilterChain.class);
+        final ServletRequest request = createStrictMock(ServletRequest.class);
+        final ServletResponse response = createStrictMock(ServletResponse.class);
+        final FilterChain chain = createStrictMock(FilterChain.class);
 
         expect(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).andReturn(null);
         request.setAttribute(eq(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE), eq(Boolean.TRUE));
@@ -135,9 +135,9 @@ public class Log4jServletFilterTest {
         verify(this.filterConfig, this.servletContext, this.initializer);
         reset(this.filterConfig, this.servletContext, this.initializer);
 
-        ServletRequest request = createStrictMock(ServletRequest.class);
-        ServletResponse response = createStrictMock(ServletResponse.class);
-        FilterChain chain = createStrictMock(FilterChain.class);
+        final ServletRequest request = createStrictMock(ServletRequest.class);
+        final ServletResponse response = createStrictMock(ServletResponse.class);
+        final FilterChain chain = createStrictMock(FilterChain.class);
 
         expect(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE)).andReturn(true);
         expectLastCall();
