@@ -76,7 +76,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
             return null;
         }
 
-        int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
+        final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
 
         try {
