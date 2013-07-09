@@ -29,6 +29,8 @@ public class Integers {
      * @param defaultValue
      *            the return value, use {@code defaultValue} if {@code s} is {@code null} or {@code ""}
      * @return the integer value represented by the argument in decimal.
+     * @throws NumberFormatException
+     *             if the string does not contain a parsable integer.
      */
     public static int parseInt(String s, int defaultValue) {
         return Strings.isEmpty(s) ? defaultValue : Integer.parseInt(s);
@@ -42,6 +44,8 @@ public class Integers {
      * @param defaultValue
      *            the return value, use {@code 0} if {@code s} is {@code null} or {@code ""}
      * @return the integer value represented by the argument in decimal.
+     * @throws NumberFormatException
+     *             if the string does not contain a parsable integer.
      */
     public static int parseInt(String s) {
         return parseInt(s, 0);
