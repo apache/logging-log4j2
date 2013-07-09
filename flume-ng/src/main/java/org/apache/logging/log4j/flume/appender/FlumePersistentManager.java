@@ -612,7 +612,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
             namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
         }
 
-        public Thread newThread(final Runnable r) {
+        @Override
+		public Thread newThread(final Runnable r) {
             final Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             thread.setDaemon(true);
             if (thread.getPriority() != Thread.NORM_PRIORITY) {

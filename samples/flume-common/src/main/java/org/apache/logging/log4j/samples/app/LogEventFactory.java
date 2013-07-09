@@ -51,7 +51,8 @@ public class LogEventFactory {
             this.intrface = intrface;
         }
 
-        public Object invoke(final Object o, final Method method, final Object[] objects)
+        @Override
+		public Object invoke(final Object o, final Method method, final Object[] objects)
             throws Throwable {
             if (method.getName().equals("logEvent")) {
 

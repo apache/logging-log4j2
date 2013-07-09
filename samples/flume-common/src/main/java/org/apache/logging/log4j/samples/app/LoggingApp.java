@@ -94,7 +94,8 @@ public class LoggingApp {
             this.member = member;
         }
 
-        public void run() {
+        @Override
+		public void run() {
             System.out.println("STARTING..................");
 
             while (!shutdown) {
