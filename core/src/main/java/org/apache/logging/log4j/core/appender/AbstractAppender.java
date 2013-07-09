@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -52,6 +53,15 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * Appenders set this by calling super.start().
      */
     private boolean started = false;
+
+    public static int parseInt(String s, int defaultValue) {
+        try {
+            return Integers.parseInt(s, defaultValue);
+        } catch (NumberFormatException e) {
+            LOGGER.error("Could not parse \"{}\" as an integer,  using default value {}: {}", s, defaultValue, e);
+            return defaultValue;
+        }
+    }
 
     /**
      * Constructor that defaults to suppressing exceptions.
