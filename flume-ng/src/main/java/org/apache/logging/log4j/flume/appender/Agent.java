@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -72,22 +73,18 @@ public final class Agent {
      */
     @PluginFactory
     public static Agent createAgent(@PluginAttr("host") String host,
-                                    @PluginAttr("port") final String port) {
-        if (host == null) {
-            host = DEFAULT_HOST;
-        }
+			@PluginAttr("port") final String port) {
+		if (host == null) {
+			host = DEFAULT_HOST;
+		}
 
-        int portNum;
-        if (port != null) {
-            try {
-                portNum = Integer.parseInt(port);
-            } catch (final Exception ex) {
-                LOGGER.error("Error parsing port number " + port, ex);
-                return null;
-            }
-        } else {
-            portNum = DEFAULT_PORT;
-        }
-        return new Agent(host, portNum);
-    }
+		int portNum;
+		try {
+			portNum = Integers.parseInt(port, DEFAULT_PORT);
+		} catch (final Exception ex) {
+			LOGGER.error("Error parsing port number " + port, ex);
+			return null;
+		}
+		return new Agent(host, portNum);
+	}
 }
