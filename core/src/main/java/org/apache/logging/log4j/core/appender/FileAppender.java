@@ -109,18 +109,18 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
                                               @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {
 
-        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        final boolean isLocking = locking == null ? false : Boolean.valueOf(locking);
-        boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
-        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAppend = append == null ? true : Boolean.parseBoolean(append);
+        final boolean isLocking = locking == null ? false : Boolean.parseBoolean(locking);
+        boolean isBuffered = bufferedIO == null ? true : Boolean.parseBoolean(bufferedIO);
+        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
                 LOGGER.warn("Locking and buffering are mutually exclusive. No buffering will occur for " + fileName);
             }
             isBuffered = false;
         }
-        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
