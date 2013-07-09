@@ -111,7 +111,7 @@ public final class ColumnConfig {
 
         final boolean isPattern = pattern != null && pattern.length() > 0;
         final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
-        final boolean isEventTimestamp = eventTimestamp != null && Boolean.parseBoolean(eventTimestamp);
+        final boolean isEventTimestamp = Boolean.parseBoolean(eventTimestamp);
         final boolean isUnicode = Strings.isEmpty(unicode) || Boolean.parseBoolean(unicode);
         final boolean isClob = clob != null && Boolean.parseBoolean(clob);
 
