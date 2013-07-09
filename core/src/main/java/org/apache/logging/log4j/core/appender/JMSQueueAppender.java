@@ -97,7 +97,7 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
         final JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
