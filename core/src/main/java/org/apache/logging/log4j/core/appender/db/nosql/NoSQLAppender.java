@@ -82,7 +82,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
             bufferSizeInt = 0;
         }
 
-        final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
 
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";

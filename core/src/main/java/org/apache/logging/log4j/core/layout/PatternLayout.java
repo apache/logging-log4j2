@@ -213,7 +213,7 @@ public final class PatternLayout extends AbstractStringLayout {
                                              @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("suppressExceptions") final String suppressExceptions) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
-        final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
                 handleExceptions);
     }

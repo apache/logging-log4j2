@@ -83,7 +83,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
             bufferSizeInt = 0;
         }
 
-        final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
 
         try {
             @SuppressWarnings("unchecked")
