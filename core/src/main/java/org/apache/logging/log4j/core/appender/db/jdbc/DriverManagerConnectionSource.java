@@ -78,7 +78,7 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
                                                                        @PluginAttr("username") String username,
                                                                        @PluginAttr("password") String password) {
         if (Strings.isEmpty(url)) {
-            LOGGER.error("No JDBC URL specified for the database.", url);
+            LOGGER.error("No JDBC URL specified for the database.");
             return null;
         }
 
