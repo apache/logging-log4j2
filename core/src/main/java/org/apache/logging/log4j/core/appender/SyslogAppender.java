@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -123,9 +124,9 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
+        final int reconnectDelay = Integers.parseInt(delay);
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
-        final int port = portNum == null ? 0 : Integer.parseInt(portNum);
+        final int port = Integers.parseInt(portNum);
         final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?

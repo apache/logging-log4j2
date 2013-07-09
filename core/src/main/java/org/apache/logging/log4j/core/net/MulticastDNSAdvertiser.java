@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -74,7 +75,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
         final String zone = "._log4j._"+(protocol != null ? protocol : "tcp") + ".local.";
         //default to 4555 if "port" was not set
         final String portString = truncatedProperties.get("port");
-        final int port = (portString != null ? Integer.parseInt(portString) : 4555);
+        final int port = Integers.parseInt(portString, 4555);
 
         final String name = truncatedProperties.get("name");
 

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -104,8 +105,8 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
         final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
-        final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
-        final int port = portNum == null ? 0 : Integer.parseInt(portNum);
+        final int reconnectDelay = Integers.parseInt(delay);
+        final int port = Integers.parseInt(portNum);
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
             final

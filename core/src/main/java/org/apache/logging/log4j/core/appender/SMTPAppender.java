@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.HTMLLayout;
 import org.apache.logging.log4j.core.net.SMTPManager;
 
@@ -129,7 +130,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
         }
 
         final boolean isHandleExceptions = suppressExceptions == null ? true : Boolean.valueOf(suppressExceptions);
-        final int smtpPort = smtpPortNum == null ? 0 : Integer.parseInt(smtpPortNum);
+        final int smtpPort = Integers.parseInt(smtpPortNum); 
         final boolean isSmtpDebug = smtpDebug == null ? false : Boolean.valueOf(smtpDebug);
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 
