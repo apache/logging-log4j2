@@ -40,18 +40,18 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    /**
-     * Appenders set this by calling super.start().
-     */
-    private boolean started = false;
+    private final boolean handleException;
+
+    private ErrorHandler handler = new DefaultErrorHandler(this);
 
     private final Layout<T> layout;
 
     private final String name;
 
-    private final boolean handleException;
-
-    private ErrorHandler handler = new DefaultErrorHandler(this);
+    /**
+     * Appenders set this by calling super.start().
+     */
+    private boolean started = false;
 
     /**
      * Constructor that defaults to suppressing exceptions.
@@ -80,12 +80,76 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
     }
 
     /**
+     * Handle an error with a message.
+     * @param msg The message.
+     */
+    public void error(final String msg) {
+        handler.error(msg);
+    }
+
+    /**
+     * Handle an error with a message, and exception and a logging event.
+     * @param msg The message.
+     * @param event The LogEvent.
+     * @param t The Throwable.
+     */
+    public void error(final String msg, final LogEvent event, final Throwable t) {
+        handler.error(msg, event, t);
+    }
+
+    /**
+     * Handle an error with a message and an exception.
+     * @param msg The message.
+     * @param t The Throwable.
+     */
+    public void error(final String msg, final Throwable t) {
+        handler.error(msg, t);
+    }
+
+    /**
      * Returns the ErrorHandler, if any.
      * @return The ErrorHandler.
      */
     @Override
     public ErrorHandler getHandler() {
         return handler;
+    }
+
+    /**
+     * Returns the Layout for the appender.
+     * @return The Layout used to format the event.
+     */
+    @Override
+    public Layout<T> getLayout() {
+        return layout;
+    }
+
+    /**
+     * Returns the name of the Appender.
+     * @return The name of the Appender.
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Some appenders need to propagate exceptions back to the application. When suppressException is false the
+     * AppenderControl will allow the exception to percolate.
+     * @return true if exceptions will be suppressed, false otherwise.
+     */
+    @Override
+    public boolean isExceptionSuppressed() {
+        return handleException;
+    }
+
+    /**
+     * Returns true if the Appender is started, false otherwise.
+     * @return true if the Appender is started, false otherwise.
+     */
+    @Override
+    public boolean isStarted() {
+        return started;
     }
 
     /**
@@ -102,34 +166,6 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
             return;
         }
         this.handler = handler;
-    }
-
-    /**
-     * Returns the name of the Appender.
-     * @return The name of the Appender.
-     */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the Layout for the appender.
-     * @return The Layout used to format the event.
-     */
-    @Override
-    public Layout<T> getLayout() {
-        return layout;
-    }
-
-    /**
-     * Some appenders need to propagate exceptions back to the application. When suppressException is false the
-     * AppenderControl will allow the exception to percolate.
-     * @return true if exceptions will be suppressed, false otherwise.
-     */
-    @Override
-    public boolean isExceptionSuppressed() {
-        return handleException;
     }
 
     /**
@@ -150,45 +186,9 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
         stopFilter();
     }
 
-    /**
-     * Returns true if the Appender is started, false otherwise.
-     * @return true if the Appender is started, false otherwise.
-     */
-    @Override
-    public boolean isStarted() {
-        return started;
-    }
-
     @Override
     public String toString() {
         return name;
-    }
-
-    /**
-     * Handle an error with a message.
-     * @param msg The message.
-     */
-    public void error(final String msg) {
-        handler.error(msg);
-    }
-
-    /**
-     * Handle an error with a message and an exception.
-     * @param msg The message.
-     * @param t The Throwable.
-     */
-    public void error(final String msg, final Throwable t) {
-        handler.error(msg, t);
-    }
-
-    /**
-     * Handle an error with a message, and exception and a logging event.
-     * @param msg The message.
-     * @param event The LogEvent.
-     * @param t The Throwable.
-     */
-    public void error(final String msg, final LogEvent event, final Throwable t) {
-        handler.error(msg, event, t);
     }
 
 }
