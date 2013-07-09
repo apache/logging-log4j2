@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
@@ -147,12 +148,12 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
                 LOGGER.warn("No port specified, using default port [{}] for protocol [{}].", portInt, protocol);
             }
 
-            if (server == null || server.length() == 0) {
+            if (Strings.isEmpty(server)) {
                 server = "localhost";
                 LOGGER.warn("No server specified, using default server localhost.");
             }
 
-            if (username == null || username.length() == 0 || password == null || password.length() == 0) {
+            if (Strings.isEmpty(username) || Strings.isEmpty(password)) {
                 LOGGER.error("You must provide a username and password for the CouchDB provider.");
                 return null;
             }

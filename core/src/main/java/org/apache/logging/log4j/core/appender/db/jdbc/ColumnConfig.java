@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -103,7 +104,7 @@ public final class ColumnConfig {
                                                   @PluginAttr("isEventTimestamp") final String eventTimestamp,
                                                   @PluginAttr("isUnicode") final String unicode,
                                                   @PluginAttr("isClob") final String clob) {
-        if (name == null || name.length() == 0) {
+        if (Strings.isEmpty(name)) {
             LOGGER.error("The column config is not valid because it does not contain a column name.");
             return null;
         }
@@ -111,7 +112,7 @@ public final class ColumnConfig {
         final boolean isPattern = pattern != null && pattern.length() > 0;
         final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
         final boolean isEventTimestamp = eventTimestamp != null && Boolean.parseBoolean(eventTimestamp);
-        final boolean isUnicode = unicode == null || unicode.length() == 0 || Boolean.parseBoolean(unicode);
+        final boolean isUnicode = Strings.isEmpty(unicode) || Boolean.parseBoolean(unicode);
         final boolean isClob = clob != null && Boolean.parseBoolean(clob);
 
         if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Properties;
+
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.helpers.CyclicBuffer;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.NetUtils;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -77,7 +79,7 @@ public class SMTPManager extends AbstractManager {
                                              final String subject, String protocol, final String host,
                                              final int port, final String username, final String password,
                                              final boolean isDebug, final String filterName, final int numElements) {
-        if (protocol == null || protocol.length() == 0) {
+        if (Strings.isEmpty(protocol)) {
             protocol = "smtp";
         }
 

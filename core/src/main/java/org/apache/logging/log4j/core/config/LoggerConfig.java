@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -428,7 +429,7 @@ public class LoggerConfig extends AbstractFilterable {
 
     @Override
     public String toString() {
-        return name == null || name.length() == 0 ? "root" : name;
+        return Strings.isEmpty(name) ? "root" : name;
     }
 
     /**

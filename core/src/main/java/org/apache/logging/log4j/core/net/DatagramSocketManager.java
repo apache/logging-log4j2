@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * Socket Manager for UDP connections.
@@ -54,7 +55,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @return A DatagramSocketManager.
      */
     public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout layout) {
-        if (host == null || host.length() == 0) {
+        if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {

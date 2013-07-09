@@ -20,12 +20,14 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -68,7 +70,7 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
     @PluginFactory
     public static FactoryMethodConnectionSource createConnectionSource(@PluginAttr("class") final String className,
                                                                        @PluginAttr("method") final String methodName) {
-        if (className == null || className.length() == 0 || methodName == null || methodName.length() == 0) {
+        if (Strings.isEmpty(className) || Strings.isEmpty(methodName)) {
             LOGGER.error("No class name or method name specified for the connection factory method.");
             return null;
         }

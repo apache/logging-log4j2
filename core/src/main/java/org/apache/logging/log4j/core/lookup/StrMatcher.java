@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.core.helpers.Strings;
+
 /**
  * A matcher class that can be queried to determine if a character array
  * portion matches.
@@ -186,7 +188,7 @@ public abstract class StrMatcher {
      * @return a new Matcher for the given characters
      */
     public static StrMatcher charSetMatcher(final String chars) {
-        if (chars == null || chars.length() == 0) {
+        if (Strings.isEmpty(chars)) {
             return NONE_MATCHER;
         }
         if (chars.length() == 1) {
@@ -202,7 +204,7 @@ public abstract class StrMatcher {
      * @return a new Matcher for the given String
      */
     public static StrMatcher stringMatcher(final String str) {
-        if (str == null || str.length() == 0) {
+        if (Strings.isEmpty(str)) {
             return NONE_MATCHER;
         }
         return new StringMatcher(str);

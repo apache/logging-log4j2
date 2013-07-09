@@ -44,8 +44,7 @@ public final class Transform {
         //Check if the string is null, zero length or devoid of special characters
         // if so, return what was sent in.
 
-        if (input == null
-            || input.length() == 0
+        if (Strings.isEmpty(input)
             || (input.indexOf('"') == -1 &&
             input.indexOf('&') == -1 &&
             input.indexOf('<') == -1 &&

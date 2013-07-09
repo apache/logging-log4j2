@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -534,9 +535,8 @@ public final class PatternParser {
         if (pc == null) {
             StringBuilder msg;
 
-            if (converterId == null || converterId.length() == 0) {
-                msg =
-                    new StringBuilder("Empty conversion specifier starting at position ");
+            if (Strings.isEmpty(converterId)) {
+                msg = new StringBuilder("Empty conversion specifier starting at position ");
             } else {
                 msg = new StringBuilder("Unrecognized conversion specifier [");
                 msg.append(converterId);

@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * Manager of TCP Socket connections.
@@ -94,7 +95,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     public static TCPSocketManager getSocketManager(final String host, int port, int delay,
                                                     final boolean immediateFail, final Layout layout ) {
-        if (host == null || host.length() == 0) {
+        if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
         if (port <= 0) {

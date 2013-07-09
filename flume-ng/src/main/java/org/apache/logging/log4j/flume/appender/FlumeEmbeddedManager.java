@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.NameUtil;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -259,7 +260,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 for (final Property property : properties) {
                     final String key = property.getName();
 
-                    if (key == null || key.length() == 0) {
+                    if (Strings.isEmpty(key)) {
                         final String msg = "A property name must be provided";
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);
@@ -282,7 +283,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                     }
 
                     final String value = property.getValue();
-                    if (value == null || value.length() == 0) {
+                    if (Strings.isEmpty(value)) {
                         final String msg = "A value for property " + key + " must be provided";
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);

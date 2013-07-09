@@ -18,8 +18,11 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import java.io.IOException;
 import java.util.Map;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.PersistenceException;
+
+import org.apache.logging.log4j.core.helpers.Strings;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +53,7 @@ public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<
 
     @Override
     public Map<String, String> convertToEntityAttribute(final String s) {
-        if (s == null || s.length() == 0) {
+        if (Strings.isEmpty(s)) {
             return null;
         }
         try {
