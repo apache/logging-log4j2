@@ -74,8 +74,8 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
                                               @PluginAttr("tableName") final String tableName,
                                               @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
 
-        int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
+        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
 
         final StringBuilder managerName = new StringBuilder("jdbcManager{ description=").append(name)
                 .append(", bufferSize=").append(bufferSizeInt).append(", connectionSource=")
