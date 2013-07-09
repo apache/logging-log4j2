@@ -554,8 +554,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         final int enterpriseNumber = Integers.parseInt(ein, DEFAULT_ENTERPRISE_NUMBER);
-        final boolean isMdc = includeMDC == null ? true : Boolean.valueOf(includeMDC);
-        final boolean includeNewLine = includeNL == null ? false : Boolean.valueOf(includeNL);
+        final boolean isMdc = includeMDC == null ? true : Boolean.parseBoolean(includeMDC);
+        final boolean includeNewLine = includeNL == null ? false : Boolean.parseBoolean(includeNL);
         final Map<String, String> loggerFieldValues = loggerFields == null ? null : loggerFields.getMap();
         if (mdcId == null) {
             mdcId = DEFAULT_MDCID;
