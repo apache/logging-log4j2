@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
@@ -73,7 +74,7 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
                                               @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
         int bufferSizeInt;
         try {
-            bufferSizeInt = bufferSize == null || bufferSize.length() == 0 ? 0 : Integer.parseInt(bufferSize);
+            bufferSizeInt = Strings.isEmpty(bufferSize) ? 0 : Integer.parseInt(bufferSize);
         } catch (final NumberFormatException e) {
             LOGGER.warn("Buffer size [" + bufferSize + "] not an integer, using no buffer.");
             bufferSizeInt = 0;

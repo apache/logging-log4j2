@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -41,7 +42,7 @@ public class MessageAttributeConverter implements AttributeConverter<Message, St
 
     @Override
     public Message convertToEntityAttribute(final String s) {
-        if (s == null || s.length() == 0) {
+        if (Strings.isEmpty(s)) {
             return null;
         }
 

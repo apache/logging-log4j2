@@ -21,6 +21,7 @@ import javax.persistence.Converter;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * A JPA 2.1 attribute converter for {@link Marker}s in {@link org.apache.logging.log4j.core.LogEvent}s. This
@@ -55,7 +56,7 @@ public class MarkerAttributeConverter implements AttributeConverter<Marker, Stri
 
     @Override
     public Marker convertToEntityAttribute(final String s) {
-        if (s == null || s.length() == 0) {
+        if (Strings.isEmpty(s)) {
             return null;
         }
 

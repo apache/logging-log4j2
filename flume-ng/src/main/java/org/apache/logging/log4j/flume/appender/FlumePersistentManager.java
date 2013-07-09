@@ -32,6 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
@@ -44,6 +45,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.helpers.SecretKeyProvider;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
@@ -141,7 +143,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         if (batchSize <= 0) {
             batchSize = 1;
         }
-        final String dataDirectory = dataDir == null || dataDir.length() == 0 ? DEFAULT_DATA_DIR : dataDir;
+        final String dataDirectory = Strings.isEmpty(dataDir) ? DEFAULT_DATA_DIR : dataDir;
 
         final StringBuilder sb = new StringBuilder("FlumePersistent[");
         boolean first = true;

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a
@@ -69,15 +70,14 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                                              @PluginAttr("bufferSize") final String bufferSize,
                                              @PluginAttr("entityClassName") final String entityClassName,
                                              @PluginAttr("persistenceUnitName") final String persistenceUnitName) {
-        if (entityClassName == null || entityClassName.length() == 0 ||
-                persistenceUnitName == null || persistenceUnitName.length() == 0) {
+        if (Strings.isEmpty(entityClassName) || Strings.isEmpty(persistenceUnitName)) {
             LOGGER.error("Attributes entityClassName and persistenceUnitName are required for JPA Appender.");
             return null;
         }
 
         int bufferSizeInt;
         try {
-            bufferSizeInt = bufferSize == null || bufferSize.length() == 0 ? 0 : Integer.parseInt(bufferSize);
+            bufferSizeInt = Strings.isEmpty(bufferSize) ? 0 : Integer.parseInt(bufferSize);
         } catch (final NumberFormatException e) {
             LOGGER.warn("Buffer size [" + bufferSize + "] not an integer, using no buffer.");
             bufferSizeInt = 0;

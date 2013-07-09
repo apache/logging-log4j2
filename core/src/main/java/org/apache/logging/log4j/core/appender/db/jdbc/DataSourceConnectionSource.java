@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -62,7 +64,7 @@ public final class DataSourceConnectionSource implements ConnectionSource {
      */
     @PluginFactory
     public static DataSourceConnectionSource createConnectionSource(@PluginAttr("jndiName") final String jndiName) {
-        if (jndiName == null || jndiName.length() == 0) {
+        if (Strings.isEmpty(jndiName)) {
             LOGGER.error("No JNDI name provided.");
             return null;
         }
