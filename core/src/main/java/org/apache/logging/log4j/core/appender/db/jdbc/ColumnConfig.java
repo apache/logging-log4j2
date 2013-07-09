@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -112,7 +113,7 @@ public final class ColumnConfig {
         final boolean isPattern = pattern != null && pattern.length() > 0;
         final boolean isLiteralValue = literalValue != null && literalValue.length() > 0;
         final boolean isEventTimestamp = Boolean.parseBoolean(eventTimestamp);
-        final boolean isUnicode = Strings.isEmpty(unicode) || Boolean.parseBoolean(unicode);
+        final boolean isUnicode = Booleans.parseBoolean(unicode, true);
         final boolean isClob = Boolean.parseBoolean(clob);
 
         if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {
