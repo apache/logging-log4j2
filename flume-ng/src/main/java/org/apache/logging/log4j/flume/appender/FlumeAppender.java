@@ -177,10 +177,10 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                                                    @PluginElement("layout") Layout<S> layout,
                                                    @PluginElement("filters") final Filter filter) {
 
-        final boolean embed = embedded != null ? Boolean.valueOf(embedded) :
+        final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        final boolean compress = compressBody == null ? true : Boolean.valueOf(compressBody);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean compress = compressBody == null ? true : Boolean.parseBoolean(compressBody);
         ManagerType managerType;
         if (type != null) {
             if (embed && embedded != null) {
