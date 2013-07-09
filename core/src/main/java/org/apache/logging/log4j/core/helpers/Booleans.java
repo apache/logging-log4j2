@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.helpers;
 
+/**
+ * Boolean helpers.
+ */
 public class Booleans {
 
     /**
