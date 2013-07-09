@@ -105,7 +105,7 @@ public final class PatternLayout extends AbstractStringLayout {
      *                         exceptions will be written even if the pattern does not specify so).
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final Charset charset, boolean handleExceptions) {
+                          final Charset charset, final boolean handleExceptions) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;
@@ -145,7 +145,7 @@ public final class PatternLayout extends AbstractStringLayout {
     @Override
     public Map<String, String> getContentFormat()
     {
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         result.put("structured", "false");
         result.put("formatType", "conversion");
         result.put("format", conversionPattern);
@@ -213,7 +213,7 @@ public final class PatternLayout extends AbstractStringLayout {
                                              @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("suppressExceptions") final String suppressExceptions) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
-        boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
+        final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
                 handleExceptions);
     }
