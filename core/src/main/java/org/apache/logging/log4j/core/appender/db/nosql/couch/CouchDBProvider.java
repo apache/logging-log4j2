@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db.nosql.couch;
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -137,16 +138,7 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
                 LOGGER.warn("No protocol specified, using default port [http].");
             }
 
-            int portInt = protocol.equals("https") ? HTTPS : HTTP;
-            if (port != null && port.length() > 0) {
-                try {
-                    portInt = Integer.parseInt(port);
-                } catch (final NumberFormatException ignore) {
-                    // we don't care
-                }
-            } else {
-                LOGGER.warn("No port specified, using default port [{}] for protocol [{}].", portInt, protocol);
-            }
+            final int portInt = AbstractAppender.parseInt(port, protocol.equals("https") ? HTTPS : HTTP);
 
             if (Strings.isEmpty(server)) {
                 server = "localhost";
