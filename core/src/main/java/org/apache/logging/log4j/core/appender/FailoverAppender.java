@@ -176,7 +176,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
      * @param name The name of the Appender (required).
      * @param primary The name of the primary Appender (required).
      * @param failovers The name of one or more Appenders to fail over to (at least one is required).
-     * @param intervalSeconds The retry intervalMillis.
+     * @param retryIntervalString The retry intervalMillis.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
      * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
@@ -188,7 +188,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
     public static <S extends Serializable> FailoverAppender<S> createAppender(@PluginAttr("name") final String name,
                                                   @PluginAttr("primary") final String primary,
                                                   @PluginElement("failovers") final String[] failovers,
-                                                  @PluginAttr("retryInterval") final String intervalSeconds,
+                                                  @PluginAttr("retryInterval") final String retryIntervalString,
                                                   @PluginConfiguration final Configuration config,
                                                   @PluginElement("filters") final Filter filter,
                                                   @PluginAttr("suppressExceptions") final String suppress) {
@@ -205,12 +205,12 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
             return null;
         }
 
-        final int seconds = parseInt(intervalSeconds, DEFAULT_INTERVAL_SECONDS);
+        final int seconds = parseInt(retryIntervalString, DEFAULT_INTERVAL_SECONDS);
         int retryIntervalMillis;
         if (seconds >= 0) {
             retryIntervalMillis = seconds * Constants.MILLIS_IN_SECONDS;
         } else {
-            LOGGER.warn("Interval " + intervalSeconds + " is less than zero. Using default");
+            LOGGER.warn("Interval " + retryIntervalString + " is less than zero. Using default");
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 
