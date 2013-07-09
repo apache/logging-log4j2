@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 
 /**
  * Triggering Policy that causes a rollover based on time.
@@ -80,7 +81,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     @PluginFactory
     public static TimeBasedTriggeringPolicy createPolicy(@PluginAttr("interval") final String interval,
                                                          @PluginAttr("modulate") final String modulate) {
-        final int increment = interval == null ? 1 : Integer.parseInt(interval);
+        final int increment = Integers.parseInt(interval, 1);
         final boolean mod = modulate == null ? false : Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);
     }

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 /**
@@ -182,7 +183,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         }
 
         final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
-        final int queueSize = size == null ? DEFAULT_QUEUE_SIZE : Integer.parseInt(size);
+        final int queueSize = Integers.parseInt(size, DEFAULT_QUEUE_SIZE);        
         final boolean isIncludeLocation = includeLocation != null && Boolean.parseBoolean(includeLocation);
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
