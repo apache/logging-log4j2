@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-300" dev="rgoers" type="fix">
+        WriterThread was ending when no agents are available which caused an OutOfMemoryError.
+      </action>
       <action issue="LOG4J2-282" dev="rgoers" type="update">
         Allow the default status level to be specified as a system property.
       </action>
