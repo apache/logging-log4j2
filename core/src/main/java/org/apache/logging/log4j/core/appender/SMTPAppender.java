@@ -131,7 +131,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
         }
 
         final boolean isHandleExceptions = Booleans.parseBoolean(suppressExceptions, true);
-        final int smtpPort = Integers.parseInt(smtpPortNum); 
+        final int smtpPort = AbstractAppender.parseInt(smtpPortNum, 0); 
         final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 

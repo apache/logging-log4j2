@@ -125,9 +125,9 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
-        final int reconnectDelay = Integers.parseInt(delay);
+        final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
-        final int port = Integers.parseInt(portNum);
+        final int port = AbstractAppender.parseInt(portNum, 0);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
