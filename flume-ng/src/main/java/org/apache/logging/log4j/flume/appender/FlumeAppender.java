@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
 /**
@@ -207,11 +208,11 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
            managerType = ManagerType.AVRO;
         }
 
-        final int batchCount = batchSize == null ? 1 : Integer.parseInt(batchSize);
-        final int connectTimeout = connectionTimeout == null ? 0 : Integer.parseInt(connectionTimeout);
-        final int reqTimeout = requestTimeout == null ? 0 : Integer.parseInt(requestTimeout);
-        final int retries = agentRetries == null ? 0 : Integer.parseInt(agentRetries);
-        final int delay = maxDelay == null ? DEFAULT_MAX_DELAY : Integer.parseInt(maxDelay);
+        final int batchCount = Integers.parseInt(batchSize, 1);
+        final int connectTimeout = Integers.parseInt(connectionTimeout, 0);
+        final int reqTimeout = Integers.parseInt(requestTimeout, 0);
+        final int retries = Integers.parseInt(agentRetries, 0);
+        final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY );
 
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
