@@ -184,7 +184,7 @@ public class XMLLayout extends AbstractStringLayout {
             buf.append("</log4j:properties>\r\n");
         }
 
-        buf.append("</log4j:event>\r\n\r\n");
+        buf.append("</log4j:event>\r\n");
 
         return buf.toString();
     }
