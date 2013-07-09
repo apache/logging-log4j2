@@ -113,7 +113,7 @@ public final class RegexFilter extends AbstractFilter {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        final boolean raw = useRawMsg == null ? false : Boolean.parseBoolean(useRawMsg);
+        final boolean raw = Boolean.parseBoolean(useRawMsg);
         Pattern pattern;
         try {
             pattern = Pattern.compile(regex);
