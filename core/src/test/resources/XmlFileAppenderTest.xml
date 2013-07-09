@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <File name="XmlFile" fileName="target/XmlFileAppenderTest.log" immediateFlush="false" append="false">
+      <XMLLayout complete="true"/>
+    </File>
+  </appenders>
+  
+  <loggers>
+    <asyncRoot level="info" includeLocation="false">
+      <appender-ref ref="XmlFile"/>
+    </asyncRoot>
+  </loggers>
+</configuration>
