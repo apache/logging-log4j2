@@ -55,7 +55,7 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
     private final DatagramSocket server;
 
     // max size so we only have to deal with one packet
-    private int maxBufferSize = 1024 * 65 + 1024;
+    private final int maxBufferSize = 1024 * 65 + 1024;
 
     /**
      * Constructor.
@@ -126,10 +126,10 @@ public class UDPSocketServer extends AbstractServer implements Runnable {
     public void run() {
         while (isActive) {
             try {
-                byte[] buf = new byte[maxBufferSize];
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                final byte[] buf = new byte[maxBufferSize];
+                final DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 server.receive(packet);
-                ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()));
+                final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()));
                 final LogEvent event = (LogEvent) ois.readObject();
                 if (event != null) {
                     log(event);

@@ -35,11 +35,11 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    URI configLocation) {
+                                    final URI configLocation) {
         return context;
     }
 
     @Override
-    public void removeContext(LoggerContext context) {
+    public void removeContext(final LoggerContext context) {
     }
 }

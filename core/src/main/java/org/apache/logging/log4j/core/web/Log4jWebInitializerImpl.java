@@ -43,7 +43,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             throw new IllegalStateException("You are using Log4j 2 in a web application with the old, extinct " +
                     "log4j-web artifact. This is not supported and could cause serious runtime problems. Please" +
                     "remove the log4j-web JAR file from your application.");
-        } catch (ClassNotFoundException ignore) {
+        } catch (final ClassNotFoundException ignore) {
             /* Good. They don't have the old log4j-web artifact loaded. */
         }
     }
@@ -58,7 +58,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     private boolean initialized = false;
     private boolean deinitialized = false;
 
-    private Log4jWebInitializerImpl(ServletContext servletContext) {
+    private Log4jWebInitializerImpl(final ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
@@ -73,8 +73,8 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             this.initialized = true;
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
-            String location = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
-            boolean isJndi = "true".equals(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
+            final String location = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
+            final boolean isJndi = "true".equals(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
 
             if (isJndi) {
                 this.initializeJndi(location);
@@ -84,12 +84,12 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
         }
     }
 
-    private void initializeJndi(String location) throws UnavailableException {
+    private void initializeJndi(final String location) throws UnavailableException {
         URI configLocation = null;
         if (location != null) {
             try {
                 configLocation = new URI(location);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 this.servletContext.log("Unable to convert configuration location [" + location + "] to a URI!", e);
             }
         }
@@ -99,9 +99,9 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
         }
 
         LoggerContext loggerContext;
-        LoggerContextFactory factory = LogManager.getFactory();
+        final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
-            ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
+            final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.selector = (NamedContextSelector) selector;
                 loggerContext = this.selector.locateContext(this.name, configLocation);
@@ -118,7 +118,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
                 loggerContext.getClass().getClassLoader() + "].");
     }
 
-    private void initializeNonJndi(String location) {
+    private void initializeNonJndi(final String location) {
         if (this.name == null) {
             this.name = this.servletContext.getServletContextName();
         }
@@ -170,7 +170,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             // this may look odd, but the call below will throw NoSuchMethodError if user is on Servlet 2.5
             // we compile against 3.0 to support Log4jServletContainerInitializer, but we don't require 3.0
             return this.servletContext.getClassLoader();
-        } catch (Throwable ignore) {
+        } catch (final Throwable ignore) {
             // otherwise, use this class's class loader
             return Log4jWebInitializerImpl.class.getClassLoader();
         }

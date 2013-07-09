@@ -36,21 +36,21 @@ public class LoggingApp {
      */
     private static Logger logger = LogManager.getLogger(LoggingApp.class);
 
-    private Random ran = new Random();
+    private final Random ran = new Random();
 
     private List<AuditEvent> events;
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         String member = "fakemember";
         if (args.length == 1) {
             member = args[0];
         }
-        LoggingApp app = new LoggingApp(member);
+        final LoggingApp app = new LoggingApp(member);
         app.runApp(member);
         System.out.println("Job ended");
     }
 
-    public LoggingApp(String member) {
+    public LoggingApp(final String member) {
 
         ThreadContext.clear();
 
@@ -67,18 +67,18 @@ public class LoggingApp {
         }
     }
 
-    public void runApp(String member) {
-        Worker worker = new Worker(member);
+    public void runApp(final String member) {
+        final Worker worker = new Worker(member);
         worker.start();
         sleep(30000);
         worker.shutdown();
         sleep(5000);
     }
 
-    private void sleep(long millis) {
+    private void sleep(final long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             //
         }
     }
@@ -90,7 +90,7 @@ public class LoggingApp {
 
         private boolean shutdown = false;
 
-        public Worker(String member) {
+        public Worker(final String member) {
             this.member = member;
         }
 
@@ -99,19 +99,19 @@ public class LoggingApp {
 
             while (!shutdown) {
                 // Generate rand number between 1 to 10
-                int rand = ran.nextInt(9) + 1;
+                final int rand = ran.nextInt(9) + 1;
 
                 // Sleep for rand seconds
                 try {
                     Thread.sleep(rand * 1000);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     logger.warn("WARN", e);
                 }
 
                 // Write rand number of logs
                 for (int i = 0; i < rand; i++) {
-                    int eventIndex = (Math.abs(ran.nextInt())) % events.size();
-                    AuditEvent event = events.get(eventIndex);
+                    final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
+                    final AuditEvent event = events.get(eventIndex);
                     RequestContext.setUserId(member);
                     event.logEvent();
 
@@ -133,7 +133,7 @@ public class LoggingApp {
             this.shutdown = true;
             try {
                 this.join();
-            } catch (InterruptedException ie) {
+            } catch (final InterruptedException ie) {
                 //
             }
             System.out.println("SHUTDOWN.......................");

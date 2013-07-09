@@ -49,17 +49,17 @@ public class RingBufferLogEventTranslator implements
 
     // @Override
     @Override
-    public void translateTo(RingBufferLogEvent event, long sequence) {
+    public void translateTo(final RingBufferLogEvent event, final long sequence) {
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
                 thrown, contextMap, contextStack, threadName, location,
                 currentTimeMillis);
     }
 
-    public void setValues(AsyncLogger asyncLogger, String loggerName,
-            Marker marker, String fqcn, Level level, Message message,
-            Throwable thrown, Map<String, String> contextMap,
-            ContextStack contextStack, String threadName,
-            StackTraceElement location, long currentTimeMillis) {
+    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
+            final Marker marker, final String fqcn, final Level level, final Message message,
+            final Throwable thrown, final Map<String, String> contextMap,
+            final ContextStack contextStack, final String threadName,
+            final StackTraceElement location, final long currentTimeMillis) {
         this.asyncLogger = asyncLogger;
         this.loggerName = loggerName;
         this.marker = marker;

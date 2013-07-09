@@ -150,7 +150,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                     shutdownThread = new ShutdownThread(this);
                     try {
                         Runtime.getRuntime().addShutdownHook(shutdownThread);
-                    } catch (SecurityException se) {
+                    } catch (final SecurityException se) {
                         LOGGER.warn("Unable to register shutdown hook due to security restrictions");
                         shutdownThread = null;
                     }
@@ -173,7 +173,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                     shutdownThread = new ShutdownThread(this);
                     try {
                         Runtime.getRuntime().addShutdownHook(shutdownThread);
-                    } catch (SecurityException se) {
+                    } catch (final SecurityException se) {
                         LOGGER.warn("Unable to register shutdown hook due to security restrictions");
                         shutdownThread = null;
                     }
@@ -198,7 +198,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                 Runtime.getRuntime().removeShutdownHook(shutdownThread);
                 shutdownThread = null;
             }
-            Configuration prev = config;
+            final Configuration prev = config;
             config = new NullConfiguration();
             updateLoggers();
             prev.stop();
@@ -337,18 +337,18 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
 
         // notify listeners
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config);
-        for (PropertyChangeListener listener : propertyChangeListeners) {
+        final PropertyChangeEvent evt = new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config);
+        for (final PropertyChangeListener listener : propertyChangeListeners) {
             listener.propertyChange(evt);
         }
         return prev;
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
         propertyChangeListeners.add(Assert.isNotNull(listener, "listener"));
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    public void removePropertyChangeListener(final PropertyChangeListener listener) {
         propertyChangeListeners.remove(listener);
     }
 
@@ -356,7 +356,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         return configLocation;
     }
 
-    public synchronized void setConfigLocation(URI configLocation) {
+    public synchronized void setConfigLocation(final URI configLocation) {
         this.configLocation = configLocation;
         reconfigure();
     }
@@ -419,7 +419,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
         private final LoggerContext context;
 
-        public ShutdownThread(LoggerContext context) {
+        public ShutdownThread(final LoggerContext context) {
             this.context = context;
         }
 

@@ -131,7 +131,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
                     // wait for free slots in the queue
                     queue.put(Log4jLogEvent.serialize((Log4jLogEvent) event, includeLocation));
                     appendSuccessful = true;
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     LOGGER.warn("Interrupted while waiting for a free slot in the AsyncAppender LogEvent-queue {}",
                             getName());
                 }
@@ -241,7 +241,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
             // Process any remaining items in the queue.
             while (!queue.isEmpty()) {
                 try {
-                    Serializable s = queue.take();
+                    final Serializable s = queue.take();
                     if (s instanceof Log4jLogEvent) {
                         final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                         event.setEndOfBatch(queue.isEmpty());

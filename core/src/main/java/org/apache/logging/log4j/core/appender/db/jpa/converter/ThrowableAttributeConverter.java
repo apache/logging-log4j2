@@ -43,7 +43,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             THROWABLE_CAUSE.setAccessible(true);
             THROWABLE_MESSAGE = Throwable.class.getDeclaredField("detailMessage");
             THROWABLE_MESSAGE.setAccessible(true);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new IllegalStateException("Something is wrong with java.lang.Throwable.", e);
         }
     }
@@ -54,14 +54,14 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         this.convertThrowable(builder, throwable);
         return builder.toString();
     }
 
     private void convertThrowable(final StringBuilder builder, final Throwable throwable) {
         builder.append(throwable.toString()).append('\n');
-        for (StackTraceElement element : throwable.getStackTrace()) {
+        for (final StackTraceElement element : throwable.getStackTrace()) {
             builder.append("\tat ").append(element).append('\n');
         }
         if (throwable.getCause() != null) {
@@ -76,16 +76,16 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             return null;
         }
 
-        List<String> lines = Arrays.asList(s.split("(\n|\r\n)"));
+        final List<String> lines = Arrays.asList(s.split("(\n|\r\n)"));
         return this.convertString(lines.listIterator(), false);
     }
 
-    private Throwable convertString(final ListIterator<String> lines, boolean removeCausedBy) {
+    private Throwable convertString(final ListIterator<String> lines, final boolean removeCausedBy) {
         String firstLine = lines.next();
         if (removeCausedBy) {
             firstLine = firstLine.substring(CAUSED_BY_STRING_LENGTH);
         }
-        int colon = firstLine.indexOf(":");
+        final int colon = firstLine.indexOf(":");
         String throwableClassName;
         String message = null;
         if (colon > 1) {
@@ -97,10 +97,10 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             throwableClassName = firstLine;
         }
 
-        List<StackTraceElement> stackTrace = new ArrayList<StackTraceElement>();
+        final List<StackTraceElement> stackTrace = new ArrayList<StackTraceElement>();
         Throwable cause = null;
         while (lines.hasNext()) {
-            String line = lines.next();
+            final String line = lines.next();
 
             if (line.startsWith("Caused by ")) {
                 lines.previous();
@@ -121,6 +121,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                                    final StackTraceElement[] stackTrace) {
         try {
             @SuppressWarnings("unchecked")
+            final
             Class<Throwable> throwableClass = (Class<Throwable>) Class.forName(throwableClassName);
 
             if (!Throwable.class.isAssignableFrom(throwableClass)) {
@@ -172,7 +173,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             }
             throwable.setStackTrace(stackTrace);
             return throwable;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -180,9 +181,10 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final String message, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
+            final
             Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
-            for (Constructor<Throwable> constructor : constructors) {
-                Class<?>[] parameterTypes = constructor.getParameterTypes();
+            for (final Constructor<Throwable> constructor : constructors) {
+                final Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 2) {
                     if (String.class == parameterTypes[0] && Throwable.class.isAssignableFrom(parameterTypes[1])) {
                         return constructor.newInstance(message, cause);
@@ -193,7 +195,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                 }
             }
             return null;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -201,15 +203,16 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final Throwable cause) {
         try {
             @SuppressWarnings("unchecked")
+            final
             Constructor<Throwable>[] constructors = (Constructor<Throwable>[]) throwableClass.getConstructors();
-            for (Constructor<Throwable> constructor : constructors) {
-                Class<?>[] parameterTypes = constructor.getParameterTypes();
+            for (final Constructor<Throwable> constructor : constructors) {
+                final Class<?>[] parameterTypes = constructor.getParameterTypes();
                 if (parameterTypes.length == 1 && Throwable.class.isAssignableFrom(parameterTypes[0])) {
                     return constructor.newInstance(cause);
                 }
             }
             return null;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -217,7 +220,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass, final String message) {
         try {
             return throwableClass.getConstructor(String.class).newInstance(message);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -225,7 +228,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private Throwable getThrowable(final Class<Throwable> throwableClass) {
         try {
             return throwableClass.newInstance();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }

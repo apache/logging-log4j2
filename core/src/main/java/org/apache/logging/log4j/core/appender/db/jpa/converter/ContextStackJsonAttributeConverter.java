@@ -43,7 +43,7 @@ public class ContextStackJsonAttributeConverter implements AttributeConverter<Th
 
         try {
             return ContextMapJsonAttributeConverter.OBJECT_MAPPER.writeValueAsString(contextStack.asList());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new PersistenceException("Failed to convert stack list to JSON string.", e);
         }
     }
@@ -57,11 +57,11 @@ public class ContextStackJsonAttributeConverter implements AttributeConverter<Th
         List<String> list;
         try {
             list = ContextMapJsonAttributeConverter.OBJECT_MAPPER.readValue(s, new TypeReference<List<String>>() { });
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new PersistenceException("Failed to convert JSON string to list for stack.", e);
         }
 
-        DefaultThreadContextStack result = new DefaultThreadContextStack(true);
+        final DefaultThreadContextStack result = new DefaultThreadContextStack(true);
         result.addAll(list);
         return result;
     }

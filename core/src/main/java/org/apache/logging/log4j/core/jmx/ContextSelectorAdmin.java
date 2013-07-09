@@ -34,12 +34,12 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
      * 
      * @param selector the instrumented object
      */
-    public ContextSelectorAdmin(ContextSelector selector) {
+    public ContextSelectorAdmin(final ContextSelector selector) {
         super();
         this.selector = Assert.isNotNull(selector, "ContextSelector");
         try {
             objectName = new ObjectName(NAME);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }

@@ -34,9 +34,9 @@ public class BaseConfigurationTest {
     @Test
     public void testMissingRootLogger() throws Exception {
         PluginManager.addPackage("org.apache.logging.log4j.test.appender");
-        LoggerContext ctx = Configurator.initialize("Test1", null, "missingRootLogger.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", null, "missingRootLogger.xml");
         final Logger logger = LogManager.getLogger("sample.Logger1");
-        Configuration config = ctx.getConfiguration();
+        final Configuration config = ctx.getConfiguration();
         assertNotNull("Config not null", config);
 //        final String MISSINGROOT = "MissingRootTest";
 //        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
@@ -53,15 +53,15 @@ public class BaseConfigurationTest {
         // only the sample logger, no root logger in loggerMap!
         assertTrue("contains key=sample", loggerMap.containsKey("sample"));
         
-        LoggerConfig sample = loggerMap.get("sample");
-        Map<String, Appender<?>> sampleAppenders = sample.getAppenders();
+        final LoggerConfig sample = loggerMap.get("sample");
+        final Map<String, Appender<?>> sampleAppenders = sample.getAppenders();
         assertEquals("sampleAppenders Size", 1, sampleAppenders.size());
         // sample only has List appender, not Console!
         assertTrue("sample has appender List", sampleAppenders.containsKey("List"));
         
-        BaseConfiguration baseConfig = (BaseConfiguration) config;
-        LoggerConfig root = baseConfig.getRootLogger();
-        Map<String, Appender<?>> rootAppenders = root.getAppenders();
+        final BaseConfiguration baseConfig = (BaseConfiguration) config;
+        final LoggerConfig root = baseConfig.getRootLogger();
+        final Map<String, Appender<?>> rootAppenders = root.getAppenders();
         assertEquals("rootAppenders Size", 1, rootAppenders.size());
         // root only has Console appender!
         assertTrue("root has appender Console", rootAppenders.containsKey("Console"));

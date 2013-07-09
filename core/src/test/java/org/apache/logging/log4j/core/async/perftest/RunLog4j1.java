@@ -24,32 +24,32 @@ import com.lmax.disruptor.collections.Histogram;
 public class RunLog4j1 implements IPerfTestRunner {
 
     @Override
-    public void runThroughputTest(int lines, Histogram histogram) {
-        long s1 = System.nanoTime();
-        Logger logger = LogManager.getLogger(getClass());
+    public void runThroughputTest(final int lines, final Histogram histogram) {
+        final long s1 = System.nanoTime();
+        final Logger logger = LogManager.getLogger(getClass());
         for (int j = 0; j < lines; j++) {
             logger.info(THROUGHPUT_MSG);
         }
-        long s2 = System.nanoTime();
-        long opsPerSec = (1000L * 1000L * 1000L * lines) / (s2 - s1);
+        final long s2 = System.nanoTime();
+        final long opsPerSec = (1000L * 1000L * 1000L * lines) / (s2 - s1);
         histogram.addObservation(opsPerSec);
     }
 
     @Override
-    public void runLatencyTest(int samples, Histogram histogram,
-            long nanoTimeCost, int threadCount) {
-        Logger logger = LogManager.getLogger(getClass());
+    public void runLatencyTest(final int samples, final Histogram histogram,
+            final long nanoTimeCost, final int threadCount) {
+        final Logger logger = LogManager.getLogger(getClass());
         for (int i = 0; i < samples; i++) {
-            long s1 = System.nanoTime();
+            final long s1 = System.nanoTime();
             logger.info(LATENCY_MSG);
-            long s2 = System.nanoTime();
-            long value = s2 - s1 - nanoTimeCost;
+            final long s2 = System.nanoTime();
+            final long value = s2 - s1 - nanoTimeCost;
             if (value > 0) {
                 histogram.addObservation(value);
             }
             // wait 1 microsec
             final long PAUSE_NANOS = 10000 * threadCount;
-            long pauseStart = System.nanoTime();
+            final long pauseStart = System.nanoTime();
             while (PAUSE_NANOS > (System.nanoTime() - pauseStart)) {
                 // busy spin
             }
@@ -62,8 +62,8 @@ public class RunLog4j1 implements IPerfTestRunner {
     }
 
     @Override
-    public void log(String finalMessage) {
-        Logger logger = LogManager.getLogger(getClass());
+    public void log(final String finalMessage) {
+        final Logger logger = LogManager.getLogger(getClass());
         logger.info(finalMessage);
     }
 }

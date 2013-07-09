@@ -29,7 +29,7 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testDoesNothingIfConstructedWithUseMapIsFalse() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(false);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(false);
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         map.put("key", "value");
@@ -41,7 +41,7 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testPut() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         map.put("key", "value");
@@ -58,7 +58,7 @@ public class DefaultThreadContextMapTest {
      */
     @Test
     public void testRemove() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         assertTrue(map.isEmpty());
         map.put("key", "value");
         map.put("key2", "value2");
@@ -72,7 +72,7 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testClear() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         assertTrue(map.isEmpty());
         map.put("key", "value");
         map.put("key2", "value2");
@@ -87,9 +87,9 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testGetCopyReturnsMutableMap() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         assertTrue(map.isEmpty());
-        Map<String, String> copy = map.getCopy();
+        final Map<String, String> copy = map.getCopy();
         assertTrue(copy.isEmpty());
 
         copy.put("key", "value"); // mutable
@@ -101,10 +101,10 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testGetCopyReturnsMutableCopy() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
-        Map<String, String> copy = map.getCopy();
+        final Map<String, String> copy = map.getCopy();
         assertEquals("value1", copy.get("key1")); // copy has values too
 
         copy.put("key", "value"); // copy is mutable
@@ -122,18 +122,18 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testGetImmutableMapReturnsNullIfEmpty() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         assertTrue(map.isEmpty());
         assertNull(map.getImmutableMapOrNull());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableMapReturnsImmutableMapIfNonEmpty() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
 
-        Map<String, String> immutable = map.getImmutableMapOrNull();
+        final Map<String, String> immutable = map.getImmutableMapOrNull();
         assertEquals("value1", immutable.get("key1")); // copy has values too
 
         // immutable
@@ -142,11 +142,11 @@ public class DefaultThreadContextMapTest {
 
     @Test
     public void testGetImmutableMapCopyNotAffectdByContextMapChanges() {
-        DefaultThreadContextMap map = new DefaultThreadContextMap(true);
+        final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
 
-        Map<String, String> immutable = map.getImmutableMapOrNull();
+        final Map<String, String> immutable = map.getImmutableMapOrNull();
         assertEquals("value1", immutable.get("key1")); // copy has values too
 
         // clearing context map does not affect copy

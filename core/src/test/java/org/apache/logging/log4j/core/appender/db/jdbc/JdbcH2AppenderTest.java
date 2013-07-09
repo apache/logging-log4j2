@@ -45,7 +45,7 @@ public class JdbcH2AppenderTest extends AbstractJdbcAppenderTest {
     }
 
     @Override
-    protected String toCreateTableSqlString(String tableName) {
+    protected String toCreateTableSqlString(final String tableName) {
         return "CREATE TABLE " + tableName + " ( " +
                     "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), " +
                     "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB" +

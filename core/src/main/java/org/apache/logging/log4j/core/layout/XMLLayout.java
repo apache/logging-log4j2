@@ -227,7 +227,7 @@ public class XMLLayout extends AbstractStringLayout {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         result.put("dtd", "log4j.dtd");
         result.put("version", "1.2");
         return result;

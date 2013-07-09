@@ -69,7 +69,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    URI configLocation) {
+                                    final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -176,7 +176,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
                     ref = CONTEXT_MAP.get(parent.toString());
                     if (ref != null) {
                         final WeakReference<LoggerContext> r = ref.get();
-                        LoggerContext ctx = r.get();
+                        final LoggerContext ctx = r.get();
                         if (ctx != null) {
                             return ctx;
                         }

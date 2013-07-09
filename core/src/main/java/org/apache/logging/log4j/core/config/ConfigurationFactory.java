@@ -100,7 +100,7 @@ public abstract class ConfigurationFactory {
         if (factories == null) {
             synchronized(TEST_PREFIX) {
                 if (factories == null) {
-                    List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
+                    final List<ConfigurationFactory> list = new ArrayList<ConfigurationFactory>();
                     final String factoryClass = PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);

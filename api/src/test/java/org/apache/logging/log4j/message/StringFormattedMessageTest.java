@@ -58,7 +58,7 @@ public class StringFormattedMessageTest {
         final String result = msg.getFormattedMessage();
         final String expected = "Test message Apache";
         assertEquals(expected, result);
-        Throwable t = msg.getThrowable();
+        final Throwable t = msg.getThrowable();
         assertNotNull("No Throwable", t);
     }
 }

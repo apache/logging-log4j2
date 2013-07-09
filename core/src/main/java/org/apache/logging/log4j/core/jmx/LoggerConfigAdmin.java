@@ -40,16 +40,16 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
      * @param contextName used in the {@code ObjectName} for this mbean
      * @param loggerConfig the instrumented object
      */
-    public LoggerConfigAdmin(String contextName, LoggerConfig loggerConfig) {
+    public LoggerConfigAdmin(final String contextName, final LoggerConfig loggerConfig) {
         // super(executor); // no notifications for now
         this.contextName = Assert.isNotNull(contextName, "contextName");
         this.loggerConfig = Assert.isNotNull(loggerConfig, "loggerConfig");
         try {
-            String ctxName = Server.escape(this.contextName);
-            String configName = Server.escape(loggerConfig.getName());
-            String name = String.format(PATTERN, ctxName, configName);
+            final String ctxName = Server.escape(this.contextName);
+            final String configName = Server.escape(loggerConfig.getName());
+            final String name = String.format(PATTERN, ctxName, configName);
             objectName = new ObjectName(name);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -75,7 +75,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
     }
 
     @Override
-    public void setLevel(String level) {
+    public void setLevel(final String level) {
         loggerConfig.setLevel(Level.valueOf(level));
     }
 
@@ -85,7 +85,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
     }
 
     @Override
-    public void setAdditive(boolean additive) {
+    public void setAdditive(final boolean additive) {
         loggerConfig.setAdditive(additive);
     }
 
@@ -101,8 +101,8 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
 
     @Override
     public String[] getAppenderRefs() {
-        List<AppenderRef> refs = loggerConfig.getAppenderRefs();
-        String[] result = new String[refs.size()];
+        final List<AppenderRef> refs = loggerConfig.getAppenderRefs();
+        final String[] result = new String[refs.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = refs.get(i).getRef();
         }

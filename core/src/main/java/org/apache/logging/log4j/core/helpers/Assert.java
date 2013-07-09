@@ -50,7 +50,7 @@ public final class Assert {
      *            {@code null}
      * @return the specified parameter
      */
-    public static <T> T isNotNull(T checkMe, String name) {
+    public static <T> T isNotNull(final T checkMe, final String name) {
         if (checkMe == null) {
             throw new NullPointerException(name + " is null");
         }

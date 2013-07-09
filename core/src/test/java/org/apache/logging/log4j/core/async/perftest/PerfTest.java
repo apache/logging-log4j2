@@ -33,7 +33,7 @@ public class PerfTest {
 	// determine how long it takes to call System.nanoTime() (on average)
 	static long calcNanoTimeCost() {
 		final long iterations = 10000000;
-		long start = System.nanoTime();
+		final long start = System.nanoTime();
 		long finish = start;
 
 		for (int i = 0; i < iterations; i++) {
@@ -49,7 +49,7 @@ public class PerfTest {
 	}
 
 	static Histogram createHistogram() {
-		long[] intervals = new long[31];
+		final long[] intervals = new long[31];
 		long intervalUpperBound = 1L;
 		for (int i = 0, size = intervals.length - 1; i < size; i++) {
 			intervalUpperBound *= 2;
@@ -60,17 +60,17 @@ public class PerfTest {
 		return new Histogram(intervals);
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		new PerfTest().doMain(args);
 	}
 
-	public void doMain(String[] args) throws Exception {
-		String runnerClass = args[0];
-		IPerfTestRunner runner = (IPerfTestRunner) Class.forName(runnerClass)
+	public void doMain(final String[] args) throws Exception {
+		final String runnerClass = args[0];
+		final IPerfTestRunner runner = (IPerfTestRunner) Class.forName(runnerClass)
 				.newInstance();
-		String name = args[1];
-		String resultFile = args.length > 2 ? args[2] : null;
-		for (String arg : args) {
+		final String name = args[1];
+		final String resultFile = args.length > 2 ? args[2] : null;
+		for (final String arg : args) {
 			if (verbose && throughput) { 
 			   break;
 			}
@@ -81,7 +81,7 @@ public class PerfTest {
 				throughput = true;
 			}
 		}
-		int threadCount = args.length > 2 ? Integer.parseInt(args[3]) : 3;
+		final int threadCount = args.length > 2 ? Integer.parseInt(args[3]) : 3;
 		printf("Starting %s %s (%d)...%n", getClass().getSimpleName(), name,
 				threadCount);
 		runTestAndPrintResult(runner, name, threadCount, resultFile);
@@ -89,14 +89,14 @@ public class PerfTest {
 		System.exit(0);
 	}
 
-	public void runTestAndPrintResult(IPerfTestRunner runner,
-			final String name, int threadCount, String resultFile)
+	public void runTestAndPrintResult(final IPerfTestRunner runner,
+			final String name, final int threadCount, final String resultFile)
 			throws Exception {
-		Histogram warmupHist = createHistogram();
+		final Histogram warmupHist = createHistogram();
 
 		// ThreadContext.put("aKey", "mdcVal");
 		println("Warming up the JVM...");
-		long t1 = System.nanoTime();
+		final long t1 = System.nanoTime();
 
 		// warmup at least 2 rounds and at most 1 minute
 		final long stop = System.currentTimeMillis() + (60 * 1000);
@@ -124,46 +124,46 @@ public class PerfTest {
 		runSingleThreadedTest(runner, name, resultFile);
 	}
 
-	private int runSingleThreadedTest(IPerfTestRunner runner, String name,
-			String resultFile) throws IOException {
-		Histogram latency = createHistogram();
+	private int runSingleThreadedTest(final IPerfTestRunner runner, final String name,
+			final String resultFile) throws IOException {
+		final Histogram latency = createHistogram();
 		final int LINES = throughput ? 50000 : 5000000;
 		runTest(runner, LINES, "end", latency, 1);
 		reportResult(resultFile, name, latency);
 		return LINES;
 	}
 
-	static void reportResult(String file, String name, Histogram histogram)
+	static void reportResult(final String file, final String name, final Histogram histogram)
 			throws IOException {
-		String result = createSamplingReport(name, histogram);
+		final String result = createSamplingReport(name, histogram);
 		println(result);
 
 		if (file != null) {
-			FileWriter writer = new FileWriter(file, true);
+			final FileWriter writer = new FileWriter(file, true);
 			writer.write(result);
 			writer.write(System.getProperty("line.separator"));
 			writer.close();
 		}
 	}
 
-	static void printf(String msg, Object... objects) {
+	static void printf(final String msg, final Object... objects) {
 		if (verbose) {
 			System.out.printf(msg, objects);
 		}
 	}
 
-	static void println(String msg) {
+	static void println(final String msg) {
 		if (verbose) {
 			System.out.println(msg);
 		}
 	}
 
-	static String createSamplingReport(String name, Histogram histogram) {
-		Histogram data = histogram;
+	static String createSamplingReport(final String name, final Histogram histogram) {
+		final Histogram data = histogram;
 		if (throughput) {
 			return data.getMax() + " operations/second";
 		}
-		String result = String.format(
+		final String result = String.format(
 				"avg=%.0f 99%%=%d 99.99%%=%d sampleCount=%d", data.getMean(), //
 				data.getTwoNinesUpperBound(), //
 				data.getFourNinesUpperBound(), //
@@ -172,12 +172,12 @@ public class PerfTest {
 		return result;
 	}
 
-	public void runTest(IPerfTestRunner runner, int lines, String finalMessage,
-			Histogram histogram, int threadCount) {
+	public void runTest(final IPerfTestRunner runner, final int lines, final String finalMessage,
+			final Histogram histogram, final int threadCount) {
 		if (throughput) {
 			runner.runThroughputTest(lines, histogram);
 		} else {
-			long nanoTimeCost = calcNanoTimeCost();
+			final long nanoTimeCost = calcNanoTimeCost();
 			runner.runLatencyTest(lines, histogram, nanoTimeCost, threadCount);
 		}
 		if (finalMessage != null) {

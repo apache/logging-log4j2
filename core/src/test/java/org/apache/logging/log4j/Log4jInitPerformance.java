@@ -29,7 +29,7 @@ public class Log4jInitPerformance {
 
     @Test
     public void testInitialize() throws Exception {
-        String log4jConfigString =
+        final String log4jConfigString =
             "<configuration name=\"ConfigTest\" status=\"debug\" >" +
                 "<appenders>" +
                 " <Console name=\"STDOUT\">" +
@@ -45,9 +45,9 @@ public class Log4jInitPerformance {
         final InputStream is = new ByteArrayInputStream(log4jConfigString.getBytes());
         final ConfigurationFactory.ConfigurationSource source =
             new ConfigurationFactory.ConfigurationSource(is);
-        long begin = System.currentTimeMillis();
+        final long begin = System.currentTimeMillis();
         Configurator.initialize(null, source);
-        long tookForInit = System.currentTimeMillis() - begin;
+        final long tookForInit = System.currentTimeMillis() - begin;
         System.out.println("log4j 2.0 initialization took " + tookForInit + "ms");
     }
 

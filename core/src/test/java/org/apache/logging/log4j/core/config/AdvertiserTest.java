@@ -63,12 +63,12 @@ public class AdvertiserTest {
         file.delete();
     }
 
-    private void verifyExpectedEntriesAdvertised(Map<Object, Map<String, String>> entries) {
+    private void verifyExpectedEntriesAdvertised(final Map<Object, Map<String, String>> entries) {
         boolean foundFile1 = false;
         boolean foundFile2 = false;
         boolean foundSocket1 = false;
         boolean foundSocket2 = false;
-        for (Map<String, String>entry:entries.values()) {
+        for (final Map<String, String>entry:entries.values()) {
             if (foundFile1 && foundFile2 && foundSocket1 && foundSocket2) {
                break;
             }
@@ -103,7 +103,7 @@ public class AdvertiserTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.stop();
 
-        Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
+        final Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
         assertTrue("Entries found: " + entries, entries.isEmpty());
 
         //reconfigure for subsequent testing
@@ -117,7 +117,7 @@ public class AdvertiserTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.stop();
 
-        Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
+        final Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
         assertTrue("Entries found: " + entries, entries.isEmpty());
 
         ctx.start();

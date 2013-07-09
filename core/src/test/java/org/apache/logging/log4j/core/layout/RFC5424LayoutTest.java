@@ -247,7 +247,7 @@ public class RFC5424LayoutTest {
             root.removeAppender(appender);
         }
         
-        LoggerFields loggerFields = LoggerFields.createLoggerFields(new KeyValuePair[] {
+        final LoggerFields loggerFields = LoggerFields.createLoggerFields(new KeyValuePair[] {
         		new KeyValuePair("source", "%C.%M")
         });
         

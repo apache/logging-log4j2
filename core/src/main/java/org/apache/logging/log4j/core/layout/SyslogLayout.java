@@ -135,7 +135,7 @@ public class SyslogLayout extends AbstractStringLayout {
     @Override
     public Map<String, String> getContentFormat()
     {
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         result.put("structured", "false");
         result.put("formatType", "logfilepatternreceiver");
         result.put("dateFormat", dateFormat.toPattern());

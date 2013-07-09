@@ -52,7 +52,7 @@ public class SocketReconnectTest {
     @Test
     public void testReconnect() throws Exception {
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         TestSocketServer server = new TestSocketServer(list);
         server.start();
         Thread.sleep(300);
@@ -62,7 +62,7 @@ public class SocketReconnectTest {
 
         String message = "Log #1";
         logger.error(message);
-        String expectedHeader = "Header";
+        final String expectedHeader = "Header";
 
         String msg = null;
         String header = null;
@@ -126,10 +126,10 @@ public class SocketReconnectTest {
 
     private static class TestSocketServer extends Thread {
         private volatile boolean shutdown = false;
-        private List<String> list;
+        private final List<String> list;
         private Socket client;
 
-        public TestSocketServer(List<String> list) {
+        public TestSocketServer(final List<String> list) {
             this.list = list;
         }
 
@@ -141,28 +141,28 @@ public class SocketReconnectTest {
                 server = new ServerSocket(SOCKET_PORT);
                 client = server.accept();
                 while (!shutdown) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                    String line = reader.readLine();
+                    final BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                    final String line = reader.readLine();
                     if (line.equals("Shutdown")) {
                         shutdown = true;
                     } else {
                         list.add(line);
                     }
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 ex.printStackTrace();
             } finally {
                 if (client != null) {
                     try {
                         client.close();
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         System.out.println("Unable to close socket " + ex.getMessage());
                     }
                 }
                 if (server != null) {
                     try {
                         server.close();
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         System.out.println("Unable to close server socket " + ex.getMessage());
                     }
                 }

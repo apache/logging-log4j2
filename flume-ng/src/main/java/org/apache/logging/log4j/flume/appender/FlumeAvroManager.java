@@ -44,7 +44,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     private final int requestTimeout;
 
-    private int current = 0;
+    private final int current = 0;
 
     private RpcClient rpcClient = null;
 
@@ -143,13 +143,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             } catch (final Exception ex) {
                 rpcClient.close();
                 rpcClient = null;
-                String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
                 throw new AppenderRuntimeException("No Flume agents are available");
             }
         }  else {
-            String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                 agents[current].getPort();
             LOGGER.warn(msg);
             throw new AppenderRuntimeException("No Flume agents are available");
@@ -168,13 +168,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             } catch (final Exception ex) {
                 rpcClient.close();
                 rpcClient = null;
-                String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+                final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
                 throw new AppenderRuntimeException("No Flume agents are available");
             }
         } else {
-            String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
+            final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                 agents[current].getPort();
             LOGGER.warn(msg);
             throw new AppenderRuntimeException("No Flume agents are available");
@@ -187,19 +187,19 @@ public class FlumeAvroManager extends AbstractFlumeManager {
      * @return The FlumeEventAvroServer.
      */
 
-    private RpcClient connect(final Agent[] agents, int retries, int connectTimeout, int requestTimeout) {
+    private RpcClient connect(final Agent[] agents, int retries, final int connectTimeout, final int requestTimeout) {
         try {
-            Properties props = new Properties();
+            final Properties props = new Properties();
 
             props.put("client.type", agents.length > 1 ? "default_failover" : "default");
 
             int count = 1;
-            StringBuilder sb = new StringBuilder();
-            for (Agent agent : agents) {
+            final StringBuilder sb = new StringBuilder();
+            for (final Agent agent : agents) {
                 if (sb.length() > 0) {
                     sb.append(" ");
                 }
-                String hostName = "host" + count++;
+                final String hostName = "host" + count++;
                 props.put("hosts." + hostName, agent.getHost() + ":" + agent.getPort());
                 sb.append(hostName);
             }
@@ -220,7 +220,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 props.put("connect-timeout", Integer.toString(connectTimeout));
             }
             return RpcClientFactory.getInstance(props);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to create Flume RPCClient: {}", ex.getMessage());
             return null;
         }

@@ -42,14 +42,14 @@ public class ContextStackJsonAttributeConverterTest {
     @Test
     public void testConvert01() {
         ThreadContext.clearStack();
-        ThreadContext.ContextStack stack = new MutableThreadContextStack(
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("value1", "another2"));
 
-        String converted = this.converter.convertToDatabaseColumn(stack);
+        final String converted = this.converter.convertToDatabaseColumn(stack);
 
         assertNotNull("The converted value should not be null.", converted);
 
-        ThreadContext.ContextStack reversed = this.converter
+        final ThreadContext.ContextStack reversed = this.converter
                 .convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
@@ -60,14 +60,14 @@ public class ContextStackJsonAttributeConverterTest {
     @Test
     public void testConvert02() {
         ThreadContext.clearStack();
-        ThreadContext.ContextStack stack = new MutableThreadContextStack(
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
                 Arrays.asList("key1", "value2", "my3"));
 
-        String converted = this.converter.convertToDatabaseColumn(stack);
+        final String converted = this.converter.convertToDatabaseColumn(stack);
 
         assertNotNull("The converted value should not be null.", converted);
 
-        ThreadContext.ContextStack reversed = this.converter
+        final ThreadContext.ContextStack reversed = this.converter
                 .convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);

@@ -26,14 +26,14 @@ import java.util.Map;
  *
  */
 public class TestLoggerContext implements LoggerContext {
-    private Map<String, Logger> map = new HashMap<String, Logger>();
+    private final Map<String, Logger> map = new HashMap<String, Logger>();
 
     @Override
     public Logger getLogger(final String name) {
         if (map.containsKey(name)) {
             return map.get(name);
         }
-        Logger logger = new TestLogger(name);
+        final Logger logger = new TestLogger(name);
         map.put(name, logger);
         return logger;
     }

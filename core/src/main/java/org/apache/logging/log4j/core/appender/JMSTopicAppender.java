@@ -106,6 +106,7 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
         }
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }

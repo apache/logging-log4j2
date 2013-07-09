@@ -41,7 +41,7 @@ public class ContextMapAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn01() {
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("test1", "another1");
         map.put("key2", "value2");
 
@@ -51,7 +51,7 @@ public class ContextMapAttributeConverterTest {
 
     @Test
     public void testConvertToDatabaseColumn02() {
-        Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("someKey", "coolValue");
         map.put("anotherKey", "testValue");
         map.put("myKey", "yourValue");

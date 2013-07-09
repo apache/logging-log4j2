@@ -32,13 +32,13 @@ public class LocationPerfCheck {
 
     @Test
     public void testLocation() {
-        Timer timer = new Timer("LogEvent", LOOP_COUNT);
+        final Timer timer = new Timer("LogEvent", LOOP_COUNT);
         timer.start();
         for (int i = 0; i < LOOP_COUNT; ++i) {
             final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.impl.Log4jLogEvent",
                 Level.INFO, new SimpleMessage("Hello, world!"), null);
-            StackTraceElement element = event1.getSource();
+            final StackTraceElement element = event1.getSource();
         }
         timer.stop();
         System.out.println(timer.toString());

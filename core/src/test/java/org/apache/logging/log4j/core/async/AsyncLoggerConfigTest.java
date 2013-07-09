@@ -39,17 +39,17 @@ public class AsyncLoggerConfigTest {
 
     @Test
     public void testAdditivity() throws Exception {
-        File f = new File("target", "AsyncLoggerConfigTest.log");
+        final File f = new File("target", "AsyncLoggerConfigTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
-        Logger log = LogManager.getLogger("com.foo.Bar");
-        String msg = "Additive logging: 2 for the price of 1!";
+        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final String msg = "Additive logging: 2 for the price of 1!";
         log.info(msg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
-        BufferedReader reader = new BufferedReader(new FileReader(f));
-        String line1 = reader.readLine();
-        String line2 = reader.readLine();
+        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final String line1 = reader.readLine();
+        final String line2 = reader.readLine();
         reader.close();
         f.delete();
         assertNotNull("line1", line1);
@@ -57,7 +57,7 @@ public class AsyncLoggerConfigTest {
         assertTrue("line1 correct", line1.contains(msg));
         assertTrue("line2 correct", line2.contains(msg));
 
-        String location = "testAdditivity";
+        final String location = "testAdditivity";
         assertTrue("location",
                 line1.contains(location) || line2.contains(location));
     }

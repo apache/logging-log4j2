@@ -75,9 +75,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
-    private Database database;
+    private final Database database;
 
-    private Environment environment;
+    private final Environment environment;
 
     private final WriterThread worker;
 
@@ -106,7 +106,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     protected FlumePersistentManager(final String name, final String shortName, final Agent[] agents,
                                      final int batchSize, final int retries, final int connectionTimeout,
                                      final int requestTimeout, final int delay, final Database database,
-                                     final Environment environment, SecretKey secretKey) {
+                                     final Environment environment, final SecretKey secretKey) {
         super(name, shortName, agents, batchSize, retries, connectionTimeout, requestTimeout);
         this.delay = delay;
         this.database = database;
@@ -131,7 +131,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param dataDir The location of the Berkeley database.
      * @return A FlumeAvroManager.
      */
-    public static FlumePersistentManager getManager(final String name, final Agent[] agents, Property[] properties,
+    public static FlumePersistentManager getManager(final String name, final Agent[] agents, final Property[] properties,
                                                     int batchSize, final int retries, final int connectionTimeout,
                                                     final int requestTimeout, final int delay, final String dataDir) {
         if (agents == null || agents.length == 0) {
@@ -141,7 +141,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         if (batchSize <= 0) {
             batchSize = 1;
         }
-        String dataDirectory = dataDir == null || dataDir.length() == 0 ? DEFAULT_DATA_DIR : dataDir;
+        final String dataDirectory = dataDir == null || dataDir.length() == 0 ? DEFAULT_DATA_DIR : dataDir;
 
         final StringBuilder sb = new StringBuilder("FlumePersistent[");
         boolean first = true;
@@ -164,37 +164,37 @@ public class FlumePersistentManager extends FlumeAvroManager {
             throw new LoggingException("Unable to record event");
         }
 
-        Map<String, String> headers = event.getHeaders();
-        byte[] keyData = headers.get(FlumeEvent.GUID).getBytes(UTF8);
+        final Map<String, String> headers = event.getHeaders();
+        final byte[] keyData = headers.get(FlumeEvent.GUID).getBytes(UTF8);
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream daos = new DataOutputStream(baos);
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final DataOutputStream daos = new DataOutputStream(baos);
             daos.writeInt(event.getBody().length);
             daos.write(event.getBody(), 0, event.getBody().length);
             daos.writeInt(event.getHeaders().size());
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
+            for (final Map.Entry<String, String> entry : headers.entrySet()) {
                 daos.writeUTF(entry.getKey());
                 daos.writeUTF(entry.getValue());
             }
             byte[] eventData = baos.toByteArray();
             if (secretKey != null) {
-                Cipher cipher = Cipher.getInstance("AES");
+                final Cipher cipher = Cipher.getInstance("AES");
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
                 eventData = cipher.doFinal(eventData);
             }
-            Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database, queue));
+            final Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database, queue));
             boolean interrupted = false;
             int count = 0;
             do {
                 try {
                     future.get();
-                } catch (InterruptedException ie) {
+                } catch (final InterruptedException ie) {
                     interrupted = true;
                     ++count;
                 }
             } while (interrupted && count <= 1);
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             throw new LoggingException("Exception occurred writing log event", ex);
         }
     }
@@ -206,12 +206,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
         threadPool.shutdown();
         try {
             threadPool.awaitTermination(SHUTDOWN_WAIT, TimeUnit.SECONDS);
-        } catch (InterruptedException ie) {
+        } catch (final InterruptedException ie) {
             LOGGER.warn("PersistentManager Thread pool failed to shut down");
         }
         try {
             worker.join();
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.debug("Interrupted while waiting for worker to complete");
         }
         try {
@@ -244,8 +244,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final Database database;
         private final LinkedBlockingQueue<byte[]> queue;
 
-        public BDBWriter(byte[] keyData, byte[] eventData, Environment environment, Database database,
-                         LinkedBlockingQueue<byte[]> queue) {
+        public BDBWriter(final byte[] keyData, final byte[] eventData, final Environment environment, final Database database,
+                         final LinkedBlockingQueue<byte[]> queue) {
             this.keyData = keyData;
             this.eventData = eventData;
             this.environment = environment;
@@ -257,12 +257,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
         public  Integer call() throws Exception {
             final DatabaseEntry key = new DatabaseEntry(keyData);
             final DatabaseEntry data = new DatabaseEntry(eventData);
-            Transaction txn = environment.beginTransaction(null, null);
+            final Transaction txn = environment.beginTransaction(null, null);
             try {
                 database.put(txn, key, data);
                 txn.commit();
                 queue.add(keyData);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 if (txn != null) {
                     txn.abort();
                 }
@@ -326,16 +326,16 @@ public class FlumePersistentManager extends FlumeAvroManager {
             Database database;
             Environment environment;
 
-            Map<String, String> properties = new HashMap<String, String>();
+            final Map<String, String> properties = new HashMap<String, String>();
             if (data.properties != null) {
-                for (Property property : data.properties) {
+                for (final Property property : data.properties) {
                     properties.put(property.getName(), property.getValue());
                 }
             }
 
             try {
 
-                File dir = new File(data.dataDir);
+                final File dir = new File(data.dataDir);
                 FileUtils.mkdir(dir, true);
                 final EnvironmentConfig dbEnvConfig = new EnvironmentConfig();
                 dbEnvConfig.setTransactional(true);
@@ -353,7 +353,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
             try {
                 String key = null;
-                for (Map.Entry<String, String> entry : properties.entrySet()) {
+                for (final Map.Entry<String, String> entry : properties.entrySet()) {
                     if (entry.getKey().equalsIgnoreCase(KEY_PROVIDER)) {
                         key = entry.getValue();
                         break;
@@ -365,15 +365,15 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     final Map<String, PluginType> plugins = manager.getPlugins();
                     if (plugins != null) {
                         boolean found = false;
-                        for (Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+                        for (final Map.Entry<String, PluginType> entry : plugins.entrySet()) {
                             if (entry.getKey().equalsIgnoreCase(key)) {
                                 found = true;
-                                Class cl = entry.getValue().getPluginClass();
+                                final Class cl = entry.getValue().getPluginClass();
                                 try {
-                                    SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
+                                    final SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
                                     secretKey = provider.getSecretKey();
                                     LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
-                                } catch (Exception ex) {
+                                } catch (final Exception ex) {
                                     LOGGER.error("Unable to create SecretKeyProvider {}, encryption will be disabled",
                                         cl.getName());
                                 }
@@ -387,7 +387,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                         LOGGER.error("Unable to locate SecretKey provider {}, encryption will be disabled", key);
                     }
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Error setting up encryption - encryption will be disabled", ex);
             }
             return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.retries,
@@ -407,8 +407,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final SecretKey secretKey;
         private final int batchSize;
 
-        public WriterThread(Database database, Environment environment, FlumePersistentManager manager,
-                            LinkedBlockingQueue<byte[]> queue, int batchsize, SecretKey secretKey) {
+        public WriterThread(final Database database, final Environment environment, final FlumePersistentManager manager,
+                            final LinkedBlockingQueue<byte[]> queue, final int batchsize, final SecretKey secretKey) {
             this.database = database;
             this.environment = environment;
             this.manager = manager;
@@ -450,9 +450,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             try {
                                 status = cursor.getFirst(key, data, null);
 
-                                BatchEvent batch = new BatchEvent();
+                                final BatchEvent batch = new BatchEvent();
                                 for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
-                                    SimpleEvent event = createEvent(data);
+                                    final SimpleEvent event = createEvent(data);
                                     if (event != null) {
                                         batch.addEvent(event);
                                     }
@@ -460,31 +460,31 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 }
                                 try {
                                     manager.send(batch);
-                                } catch (Exception ioe) {
+                                } catch (final Exception ioe) {
                                     LOGGER.error("Error sending events", ioe);
                                     break;
                                 }
                                 cursor.close();
                                 cursor = null;
-                                Transaction txn = environment.beginTransaction(null, null);
+                                final Transaction txn = environment.beginTransaction(null, null);
                                 try {
-                                    for (Event event : batch.getEvents()) {
+                                    for (final Event event : batch.getEvents()) {
                                         try {
-                                            Map<String, String> headers = event.getHeaders();
+                                            final Map<String, String> headers = event.getHeaders();
                                             key = new DatabaseEntry(headers.get(FlumeEvent.GUID).getBytes(UTF8));
                                             database.delete(txn, key);
-                                        } catch (Exception ex) {
+                                        } catch (final Exception ex) {
                                             LOGGER.error("Error deleting key from database", ex);
                                         }
                                     }
                                     txn.commit();
-                                } catch (Exception ex) {
+                                } catch (final Exception ex) {
                                     LOGGER.error("Unable to commit transaction", ex);
                                     if (txn != null) {
                                         txn.abort();
                                     }
                                 }
-                            } catch (Exception ex) {
+                            } catch (final Exception ex) {
                                 LOGGER.error("Error reading database", ex);
                                 shutdown = true;
                                 break;
@@ -499,18 +499,18 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             try {
                                 status = cursor.getFirst(key, data, LockMode.RMW);
                                 while (status == OperationStatus.SUCCESS) {
-                                    SimpleEvent event = createEvent(data);
+                                    final SimpleEvent event = createEvent(data);
                                     if (event != null) {
                                         try {
                                             manager.doSend(event);
-                                        } catch (Exception ioe) {
+                                        } catch (final Exception ioe) {
                                             errors = true;
                                             LOGGER.error("Error sending event", ioe);
                                             break;
                                         }
                                         try {
                                             cursor.delete();
-                                        } catch (Exception ex) {
+                                        } catch (final Exception ex) {
                                             LOGGER.error("Unable to delete event", ex);
                                         }
                                     }
@@ -522,7 +522,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 }
                                 txn.commit();
                                 txn = null;
-                            } catch (Exception ex) {
+                            } catch (final Exception ex) {
                                 LOGGER.error("Error reading or writing to database", ex);
                                 shutdown = true;
                                 break;
@@ -539,17 +539,17 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             Thread.sleep(manager.delay);
                             continue;
                         }
-                    } catch (Exception ex) {
+                    } catch (final Exception ex) {
                         LOGGER.warn("WriterThread encountered an exception. Continuing.", ex);
                     }
                 } else {
                     while (!shutdown && (database.count() == 0 || database.count() < batchSize && nextBatch > now)) {
                         try {
-                            long interval = nextBatch - now;
+                            final long interval = nextBatch - now;
                             queue.poll(interval, TimeUnit.MILLISECONDS);
-                        } catch (InterruptedException ie) {
+                        } catch (final InterruptedException ie) {
                             LOGGER.warn("WriterThread interrupted, continuing");
-                        } catch (Exception ex) {
+                        } catch (final Exception ex) {
                             LOGGER.error("WriterThread encountered an exception waiting for work", ex);
                             break;
                         }
@@ -564,31 +564,31 @@ public class FlumePersistentManager extends FlumeAvroManager {
             LOGGER.trace("WriterThread exiting");
         }
 
-        private SimpleEvent createEvent(DatabaseEntry data) {
-            SimpleEvent event = new SimpleEvent();
+        private SimpleEvent createEvent(final DatabaseEntry data) {
+            final SimpleEvent event = new SimpleEvent();
             try {
                 byte[] eventData = data.getData();
                 if (secretKey != null) {
-                    Cipher cipher = Cipher.getInstance("AES");
+                    final Cipher cipher = Cipher.getInstance("AES");
                     cipher.init(Cipher.DECRYPT_MODE, secretKey);
                     eventData = cipher.doFinal(eventData);
                 }
-                ByteArrayInputStream bais = new ByteArrayInputStream(eventData);
-                DataInputStream dais = new DataInputStream(bais);
+                final ByteArrayInputStream bais = new ByteArrayInputStream(eventData);
+                final DataInputStream dais = new DataInputStream(bais);
                 int length = dais.readInt();
-                byte[] bytes = new byte[length];
+                final byte[] bytes = new byte[length];
                 dais.read(bytes, 0, length);
                 event.setBody(bytes);
                 length = dais.readInt();
-                Map<String, String> map = new HashMap<String, String>(length);
+                final Map<String, String> map = new HashMap<String, String>(length);
                 for (int i = 0; i < length; ++i) {
-                    String headerKey = dais.readUTF();
-                    String value = dais.readUTF();
+                    final String headerKey = dais.readUTF();
+                    final String value = dais.readUTF();
                     map.put(headerKey, value);
                 }
                 event.setHeaders(map);
                 return event;
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Error retrieving event", ex);
                 return null;
             }
@@ -606,14 +606,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final String namePrefix;
 
         public DaemonThreadFactory() {
-            SecurityManager securityManager = System.getSecurityManager();
+            final SecurityManager securityManager = System.getSecurityManager();
             group = (securityManager != null) ? securityManager.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
             namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
         }
 
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+        public Thread newThread(final Runnable r) {
+            final Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             thread.setDaemon(true);
             if (thread.getPriority() != Thread.NORM_PRIORITY) {
                 thread.setPriority(Thread.NORM_PRIORITY);

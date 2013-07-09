@@ -61,7 +61,7 @@ public class ThreadContextTest {
     @Test
     public void perfTest() throws Exception {
         ThreadContext.clear();
-        Timer complete = new Timer("ThreadContextTest");
+        final Timer complete = new Timer("ThreadContextTest");
         complete.start();
         ThreadContext.put("Var1", "value 1");
         ThreadContext.put("Var2", "value 2");
@@ -74,10 +74,10 @@ public class ThreadContextTest {
         ThreadContext.put("Var9", "value 9");
         ThreadContext.put("Var10", "value 10");
         final int loopCount = 1000000;
-        Timer timer = new Timer("ThreadContextCopy", loopCount);
+        final Timer timer = new Timer("ThreadContextCopy", loopCount);
         timer.start();
         for (int i = 0; i < loopCount; ++i) {
-            Map<String, String> map = ThreadContext.getImmutableContext();
+            final Map<String, String> map = ThreadContext.getImmutableContext();
             assertNotNull(map);
         }
         timer.stop();
@@ -95,7 +95,7 @@ public class ThreadContextTest {
     @Test
     public void testGetContextReturnsMutableCopy() {
         ThreadContext.clear();
-        Map<String, String> map1 = ThreadContext.getContext();
+        final Map<String, String> map1 = ThreadContext.getContext();
         assertTrue(map1.isEmpty());
         map1.put("K", "val"); // no error
         assertEquals("val", map1.get("K"));
@@ -104,7 +104,7 @@ public class ThreadContextTest {
         assertTrue(ThreadContext.getContext().isEmpty());
 
         ThreadContext.put("key", "val2");
-        Map<String, String> map2 = ThreadContext.getContext();
+        final Map<String, String> map2 = ThreadContext.getContext();
         assertEquals(1, map2.size());
         assertEquals("val2", map2.get("key"));
         map2.put("K", "val"); // no error
@@ -125,14 +125,14 @@ public class ThreadContextTest {
     public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContext.clear();
         ThreadContext.put("key", "val");
-        Map<String, String> immutable = ThreadContext.getImmutableContext();
+        final Map<String, String> immutable = ThreadContext.getImmutableContext();
         immutable.put("otherkey", "otherval");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContext.clear();
-        Map<String, String> immutable = ThreadContext.getImmutableContext();
+        final Map<String, String> immutable = ThreadContext.getImmutableContext();
         immutable.put("otherkey", "otherval");
     }
 

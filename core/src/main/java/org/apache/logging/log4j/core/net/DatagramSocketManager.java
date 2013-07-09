@@ -41,7 +41,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param port The port on the host.
      * @param layout The layout
      */
-    protected DatagramSocketManager(final String name, final OutputStream os, InetAddress address, final String host,
+    protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress address, final String host,
                                     final int port, final Layout layout) {
         super(name, os, address, host, port, layout);
     }
@@ -73,7 +73,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
     @Override
     public Map<String, String> getContentFormat()
     {
-        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("protocol", "udp");
         result.put("direction", "out");
 

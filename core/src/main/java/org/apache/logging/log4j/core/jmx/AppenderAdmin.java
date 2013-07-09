@@ -37,16 +37,16 @@ public class AppenderAdmin implements AppenderAdminMBean {
      * @param contextName used in the {@code ObjectName} for this mbean
      * @param appender the instrumented object
      */
-    public AppenderAdmin(String contextName, Appender<?> appender) {
+    public AppenderAdmin(final String contextName, final Appender<?> appender) {
         // super(executor); // no notifications for now
         this.contextName = Assert.isNotNull(contextName, "contextName");
         this.appender = Assert.isNotNull(appender, "appender");
         try {
-            String ctxName = Server.escape(this.contextName);
-            String configName = Server.escape(appender.getName());
-            String name = String.format(PATTERN, ctxName, configName);
+            final String ctxName = Server.escape(this.contextName);
+            final String configName = Server.escape(appender.getName());
+            final String name = String.format(PATTERN, ctxName, configName);
             objectName = new ObjectName(name);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }

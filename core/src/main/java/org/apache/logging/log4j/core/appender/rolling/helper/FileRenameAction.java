@@ -105,7 +105,7 @@ public class FileRenameAction extends AbstractAction {
         } else {
             try {
                 source.delete();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.error("Unable to delete empty file " + source.getAbsolutePath());
             }
         }

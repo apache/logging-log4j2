@@ -64,7 +64,7 @@ public class Logger extends AbstractLogger {
      * @return The parent Logger.
      */
     public Logger getParent() {
-        LoggerConfig lc = config.loggerConfig.getName().equals(getName()) ? config.loggerConfig.getParent() :
+        final LoggerConfig lc = config.loggerConfig.getName().equals(getName()) ? config.loggerConfig.getParent() :
             config.loggerConfig;
         if (lc == null) {
             return null;
@@ -268,7 +268,7 @@ public class Logger extends AbstractLogger {
         }
 
         // LOG4J2-151: changed visibility to public
-        public void logEvent(LogEvent event) {
+        public void logEvent(final LogEvent event) {
             config.getConfigurationMonitor().checkConfiguration();
             loggerConfig.log(event);
         }

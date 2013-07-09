@@ -48,7 +48,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
     protected SyslogAppender(final String name, final Layout<T> layout, final Filter filter,
                              final boolean handleException, final boolean immediateFlush,
-                             final AbstractSocketManager manager, Advertiser advertiser) {
+                             final AbstractSocketManager manager, final Advertiser advertiser) {
         super(name, layout, filter, manager, handleException, immediateFlush, advertiser);
 
     }
@@ -118,7 +118,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginConfiguration final Configuration config,
                                                 @PluginAttr("charset") final String charsetName,
                                                 @PluginAttr("exceptionPattern") final String exceptionPattern,
-                                                @PluginElement("LoggerFields") LoggerFields loggerFields,
+                                                @PluginElement("LoggerFields") final LoggerFields loggerFields,
                                                 @PluginAttr("advertise") final String advertise) {
 
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
@@ -126,7 +126,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
         final int reconnectDelay = delay == null ? 0 : Integer.parseInt(delay);
         final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
         final int port = portNum == null ? 0 : Integer.parseInt(portNum);
-        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,

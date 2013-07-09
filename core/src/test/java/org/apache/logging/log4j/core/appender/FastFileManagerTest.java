@@ -38,15 +38,15 @@ public class FastFileManagerTest {
      */
     @Test
     public void testWrite_multiplesOfBufferSize() throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        OutputStream os = new FastFileManager.DummyOutputStream();
-        FastFileManager manager = new FastFileManager(raf, file.getName(), os,
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        final OutputStream os = new FastFileManager.DummyOutputStream();
+        final FastFileManager manager = new FastFileManager(raf, file.getName(), os,
                 false, null, null);
 
-        int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3;
-        byte[] data = new byte[size];
+        final int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3;
+        final byte[] data = new byte[size];
         manager.write(data); // no buffer overflow exception
 
         // buffer is full but not flushed yet
@@ -60,15 +60,15 @@ public class FastFileManagerTest {
      */
     @Test
     public void testWrite_dataExceedingBufferSize() throws IOException {
-        File file = File.createTempFile("log4j2", "test");
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        OutputStream os = new FastFileManager.DummyOutputStream();
-        FastFileManager manager = new FastFileManager(raf, file.getName(), os,
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        final OutputStream os = new FastFileManager.DummyOutputStream();
+        final FastFileManager manager = new FastFileManager(raf, file.getName(), os,
                 false, null, null);
 
-        int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
-        byte[] data = new byte[size];
+        final int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
+        final byte[] data = new byte[size];
         manager.write(data); // no exception
         assertEquals(FastFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
 
@@ -78,12 +78,12 @@ public class FastFileManagerTest {
 
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
-        boolean isAppend = true;
-        File file = File.createTempFile("log4j2", "test");
+        final boolean isAppend = true;
+        final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         assertEquals(0, file.length());
 
-        byte[] bytes = new byte[4 * 1024];
+        final byte[] bytes = new byte[4 * 1024];
 
         // create existing file
         FileOutputStream fos = null;
@@ -96,10 +96,10 @@ public class FastFileManagerTest {
         }
         assertEquals("all flushed to disk", bytes.length, file.length());
 
-        FastFileManager manager = FastFileManager.getFileManager(
+        final FastFileManager manager = FastFileManager.getFileManager(
                 file.getAbsolutePath(), isAppend, true, null, null);
         manager.write(bytes, 0, bytes.length);
-        int expected = bytes.length * 2;
+        final int expected = bytes.length * 2;
         assertEquals("appended, not overwritten", expected, file.length());
     }
 }

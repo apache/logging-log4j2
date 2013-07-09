@@ -46,25 +46,25 @@ public class StackTraceElementAttributeConverter implements AttributeConverter<S
     }
 
     static StackTraceElement convertString(final String s) {
-        int open = s.indexOf("(");
+        final int open = s.indexOf("(");
 
-        String classMethod = s.substring(0, open);
-        String className = classMethod.substring(0, classMethod.lastIndexOf("."));
-        String methodName = classMethod.substring(classMethod.lastIndexOf(".") + 1);
+        final String classMethod = s.substring(0, open);
+        final String className = classMethod.substring(0, classMethod.lastIndexOf("."));
+        final String methodName = classMethod.substring(classMethod.lastIndexOf(".") + 1);
 
-        String parenthesisContents = s.substring(open + 1, s.indexOf(")"));
+        final String parenthesisContents = s.substring(open + 1, s.indexOf(")"));
 
         String fileName = null;
         int lineNumber = UNKNOWN_SOURCE;
         if ("Native Method".equals(parenthesisContents)) {
             lineNumber = NATIVE_METHOD;
         } else if (!"Unknown Source".equals(parenthesisContents)) {
-            int colon = parenthesisContents.indexOf(":");
+            final int colon = parenthesisContents.indexOf(":");
             if (colon > UNKNOWN_SOURCE) {
                 fileName = parenthesisContents.substring(0, colon);
                 try {
                     lineNumber = Integer.parseInt(parenthesisContents.substring(colon + 1));
-                } catch (NumberFormatException ignore) {
+                } catch (final NumberFormatException ignore) {
                     // we don't care
                 }
             } else {

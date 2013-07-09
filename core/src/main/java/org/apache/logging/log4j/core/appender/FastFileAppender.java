@@ -44,12 +44,12 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastFileAppender(String name, Layout<T> layout, Filter filter,
-            FastFileManager manager, String filename, boolean handleException,
-            boolean immediateFlush, Advertiser advertiser) {
+    private FastFileAppender(final String name, final Layout<T> layout, final Filter filter,
+            final FastFileManager manager, final String filename, final boolean handleException,
+            final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         if (advertiser != null) {
-            Map<String, String> configuration = new HashMap<String, String>(
+            final Map<String, String> configuration = new HashMap<String, String>(
                     layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -74,7 +74,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
      * @param event The LogEvent.
      */
     @Override
-    public void append(LogEvent event) {
+    public void append(final LogEvent event) {
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
         // we can signal the file manager that it needs to flush the buffer
@@ -121,23 +121,23 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
      */
     @PluginFactory
     public static <S extends Serializable> FastFileAppender<S> createAppender(
-            @PluginAttr("fileName") String fileName,
-            @PluginAttr("append") String append,
-            @PluginAttr("name") String name,
-            @PluginAttr("immediateFlush") String immediateFlush,
-            @PluginAttr("suppressExceptions") String suppress,
+            @PluginAttr("fileName") final String fileName,
+            @PluginAttr("append") final String append,
+            @PluginAttr("name") final String name,
+            @PluginAttr("immediateFlush") final String immediateFlush,
+            @PluginAttr("suppressExceptions") final String suppress,
             @PluginElement("layout") Layout<S> layout,
             @PluginElement("filters") final Filter filter,
             @PluginAttr("advertise") final String advertise,
             @PluginAttr("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
 
-        boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        boolean isFlush = immediateFlush == null ? true : Boolean
+        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
+        final boolean isFlush = immediateFlush == null ? true : Boolean
                 .valueOf(immediateFlush);
-        boolean handleExceptions = suppress == null ? true : Boolean
+        final boolean handleExceptions = suppress == null ? true : Boolean
                 .valueOf(suppress);
-        boolean isAdvertise = advertise == null ? false : Boolean
+        final boolean isAdvertise = advertise == null ? false : Boolean
                 .valueOf(advertise);
 
         if (name == null) {
@@ -152,10 +152,11 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
         }
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
-        FastFileManager manager = FastFileManager.getFileManager(fileName, isAppend, isFlush, advertiseURI, layout);
+        final FastFileManager manager = FastFileManager.getFileManager(fileName, isAppend, isFlush, advertiseURI, layout);
         if (manager == null) {
             return null;
         }

@@ -36,8 +36,8 @@ public class ContextStackAttributeConverter implements AttributeConverter<Thread
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
-        for (String value : contextStack.asList()) {
+        final StringBuilder builder = new StringBuilder();
+        for (final String value : contextStack.asList()) {
             if (builder.length() > 0) {
                 builder.append('\n');
             }

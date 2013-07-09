@@ -41,14 +41,14 @@ public class MessageAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        Message message = log.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
+        final Message message = log.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
 
-        String converted = this.converter.convertToDatabaseColumn(message);
+        final String converted = this.converter.convertToDatabaseColumn(message);
 
         assertNotNull("The converted value should not be null.", converted);
         assertEquals("The converted value is not correct.", "Message #3 said [Hello].", converted);
 
-        Message reversed = this.converter.convertToEntityAttribute(converted);
+        final Message reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
         assertEquals("The reversed value is not correct.", "Message #3 said [Hello].", reversed.getFormattedMessage());

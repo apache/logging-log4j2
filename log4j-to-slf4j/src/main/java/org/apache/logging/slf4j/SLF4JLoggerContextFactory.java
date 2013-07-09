@@ -33,7 +33,7 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
         try {
             Class.forName("org.slf4j.helpers.Log4jLoggerFactory");
             misconfigured = true;
-        } catch (ClassNotFoundException classNotFoundIsGood) {
+        } catch (final ClassNotFoundException classNotFoundIsGood) {
             // org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!
         }
         if (misconfigured) {
@@ -49,11 +49,11 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    URI configLocation) {
+                                    final URI configLocation) {
         return context;
     }
 
     @Override
-    public void removeContext(LoggerContext context) {
+    public void removeContext(final LoggerContext context) {
     }
 }

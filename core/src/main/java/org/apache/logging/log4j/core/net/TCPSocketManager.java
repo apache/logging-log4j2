@@ -153,7 +153,7 @@ public class TCPSocketManager extends AbstractSocketManager {
     @Override
     public Map<String, String> getContentFormat()
     {
-        Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
+        final Map<String, String> result = new HashMap<String, String>(super.getContentFormat());
         result.put("protocol", "tcp");
         result.put("direction", "out");
         return result;
@@ -164,7 +164,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     private class Reconnector extends Thread {
 
-        private CountDownLatch latch = new CountDownLatch(1);
+        private final CountDownLatch latch = new CountDownLatch(1);
 
         private boolean shutdown = false;
 

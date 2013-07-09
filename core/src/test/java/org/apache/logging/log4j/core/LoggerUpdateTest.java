@@ -97,9 +97,9 @@ public class LoggerUpdateTest {
         List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration config = ctx.getConfiguration();
-        LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        final LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         /* You could also specify the actual logger name as below and it will return the LoggerConfig used by the Logger.
            LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
         */

@@ -45,7 +45,7 @@ public class BasicLayout extends AbstractStringLayout {
     }
 
     @Override
-    public String toSerializable(LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         return event.getMessage().getFormattedMessage() + Constants.LINE_SEP;
     }
 

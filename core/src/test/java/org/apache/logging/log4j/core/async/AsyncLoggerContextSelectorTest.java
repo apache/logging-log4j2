@@ -29,24 +29,24 @@ public class AsyncLoggerContextSelectorTest {
 
     @Test
     public void testContextReturnsAsyncLoggerContext() {
-        AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        LoggerContext context = selector.getContext(null, null, false);
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final LoggerContext context = selector.getContext(null, null, false);
 
         assertTrue(context instanceof AsyncLoggerContext);
     }
 
     @Test
     public void testContext2ReturnsAsyncLoggerContext() {
-        AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        LoggerContext context = selector.getContext(null, null, false, null);
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final LoggerContext context = selector.getContext(null, null, false, null);
 
         assertTrue(context instanceof AsyncLoggerContext);
     }
 
     @Test
     public void testLoggerContextsReturnsAsyncLoggerContext() {
-        AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        List<LoggerContext> list = selector.getLoggerContexts();
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final List<LoggerContext> list = selector.getLoggerContexts();
 
         assertEquals(1, list.size());
         assertTrue(list.get(0) instanceof AsyncLoggerContext);
@@ -54,8 +54,8 @@ public class AsyncLoggerContextSelectorTest {
 
     @Test
     public void testContextNameIsAsyncLoggerContext() {
-        AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
-        LoggerContext context = selector.getContext(null, null, false);
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final LoggerContext context = selector.getContext(null, null, false);
         
         assertEquals("AsyncLoggerContext", context.getName());
     }

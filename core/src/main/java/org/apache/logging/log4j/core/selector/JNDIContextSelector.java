@@ -101,7 +101,7 @@ public class JNDIContextSelector implements NamedContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    URI configLocation) {
+                                    final URI configLocation) {
 
         final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {

@@ -32,9 +32,9 @@ public class ThrowableProxyTest {
     public void testStack() {
         final Map<String, ThrowableProxy.CacheEntry> map = new HashMap<String, ThrowableProxy.CacheEntry>();
         final Stack<Class<?>> stack = new Stack<Class<?>>();
-        Throwable throwable = new IllegalStateException("This is a test");
-        ThrowableProxy proxy = new ThrowableProxy(throwable);
-        StackTracePackageElement[] callerPackageData = proxy.resolvePackageData(stack, map, null,
+        final Throwable throwable = new IllegalStateException("This is a test");
+        final ThrowableProxy proxy = new ThrowableProxy(throwable);
+        final StackTracePackageElement[] callerPackageData = proxy.resolvePackageData(stack, map, null,
             throwable.getStackTrace());
         Assert.assertNotNull("No package data returned", callerPackageData);;
     }

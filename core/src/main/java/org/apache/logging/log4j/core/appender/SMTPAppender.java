@@ -135,6 +135,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
 
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) HTMLLayout.createLayout(null, null, null, null, null, null);
             layout = l;
         }

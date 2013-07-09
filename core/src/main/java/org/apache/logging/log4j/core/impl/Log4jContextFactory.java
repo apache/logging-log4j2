@@ -57,7 +57,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
         }
         try {
             Server.registerMBeans(selector);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Could not start JMX", ex);
         }
     }
@@ -98,7 +98,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      */
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-            URI configLocation) {
+            final URI configLocation) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
@@ -113,7 +113,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * @param context The context to remove.
      */
     @Override
-    public void removeContext(org.apache.logging.log4j.spi.LoggerContext context) {
+    public void removeContext(final org.apache.logging.log4j.spi.LoggerContext context) {
         if (context instanceof LoggerContext) {
             selector.removeContext((LoggerContext) context);
         }

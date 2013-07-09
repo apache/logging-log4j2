@@ -93,7 +93,7 @@ public class Log4jServletContextListenerTest {
         try {
             this.listener.contextInitialized(this.event);
             fail("Expected a RuntimeException.");
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             assertEquals("The message is not correct.", "Failed to initialize Log4j properly.", e.getMessage());
         }
     }
@@ -105,7 +105,7 @@ public class Log4jServletContextListenerTest {
         try {
             this.listener.contextDestroyed(this.event);
             fail("Expected an IllegalStateException.");
-        } catch (IllegalStateException ignore) {
+        } catch (final IllegalStateException ignore) {
 
         }
     }

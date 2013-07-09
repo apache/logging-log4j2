@@ -102,7 +102,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * {@link #asyncCallAppenders(LogEvent)}.
      */
     @Override
-    protected void callAppenders(LogEvent event) {
+    protected void callAppenders(final LogEvent event) {
         // populate lazily initialized fields
         event.getSource();
         event.getThreadName();
@@ -112,7 +112,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     /** Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler. */
-    void asyncCallAppenders(LogEvent event) {
+    void asyncCallAppenders(final LogEvent event) {
         super.callAppenders(event);
     }
 
@@ -183,7 +183,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE
-    protected static boolean includeLocation(String includeLocationConfigValue) {
+    protected static boolean includeLocation(final String includeLocationConfigValue) {
         if (includeLocationConfigValue == null) {
             return false;
         }

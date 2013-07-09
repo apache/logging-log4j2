@@ -290,7 +290,7 @@ public class FlumeAppenderTest {
         try {
             avroLogger.info("Test message");
             Assert.fail("Exception should have been thrown");
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
 
         }
 
@@ -308,10 +308,10 @@ public class FlumeAppenderTest {
 
         avroLogger.info("Test message 2");
 
-        Transaction transaction = channel.getTransaction();
+        final Transaction transaction = channel.getTransaction();
         transaction.begin();
 
-        Event event = channel.take();
+        final Event event = channel.take();
         Assert.assertNotNull(event);
         Assert.assertTrue("Channel contained event, but not expected message",
             getBody(event).endsWith("Test message 2"));

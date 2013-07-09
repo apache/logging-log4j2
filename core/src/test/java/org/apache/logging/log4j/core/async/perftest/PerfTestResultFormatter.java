@@ -42,7 +42,7 @@ class PerfTestResultFormatter {
 		double latency99Pct;
 		double latency99_99Pct;
 
-		Stats(String throughput, String avg, String lat99, String lat99_99)
+		Stats(final String throughput, final String avg, final String lat99, final String lat99_99)
 				throws ParseException {
 			this.throughput = NUM.parse(throughput.trim()).longValue();
 			this.avgLatency = Double.parseDouble(avg.trim());
@@ -51,40 +51,40 @@ class PerfTestResultFormatter {
 		}
 	}
 
-	private Map<String, Map<String, Stats>> results = new TreeMap<String, Map<String, Stats>>();
+	private final Map<String, Map<String, Stats>> results = new TreeMap<String, Map<String, Stats>>();
 
 	public PerfTestResultFormatter() {
 	}
 
-	public String format(String text) throws ParseException {
+	public String format(final String text) throws ParseException {
 		results.clear();
-		String[] lines = text.split("[\\r\\n]+");
-		for (String line : lines) {
+		final String[] lines = text.split("[\\r\\n]+");
+		for (final String line : lines) {
 			process(line);
 		}
 		return latencyTable() + LF + throughputTable();
 	}
 
 	private String latencyTable() {
-		StringBuilder sb = new StringBuilder(4 * 1024);
-		Set<String> subKeys = results.values().iterator().next().keySet();
-		char[] tabs = new char[subKeys.size()];
+		final StringBuilder sb = new StringBuilder(4 * 1024);
+		final Set<String> subKeys = results.values().iterator().next().keySet();
+		final char[] tabs = new char[subKeys.size()];
 		Arrays.fill(tabs, '\t');
-		String sep = new String(tabs);
+		final String sep = new String(tabs);
 		sb.append("\tAverage latency").append(sep).append("99% less than").append(sep).append("99.99% less than");
 		sb.append(LF);
 		for (int i = 0; i < 3; i++) {
-			for (String subKey : subKeys) {
+			for (final String subKey : subKeys) {
 				sb.append("\t").append(subKey);
 			}
 		}
 		sb.append(LF);
-		for (String key : results.keySet()) {
+		for (final String key : results.keySet()) {
 			sb.append(key);
 			for (int i = 0; i < 3; i++) {
-				Map<String, Stats> sub = results.get(key);
-				for (String subKey : sub.keySet()) {
-					Stats stats = sub.get(subKey);
+				final Map<String, Stats> sub = results.get(key);
+				for (final String subKey : sub.keySet()) {
+					final Stats stats = sub.get(subKey);
 					switch (i) {
 					case 0:
 						sb.append("\t").append((long) stats.avgLatency);
@@ -104,19 +104,19 @@ class PerfTestResultFormatter {
 	}
 
 	private String throughputTable() {
-		StringBuilder sb = new StringBuilder(4 * 1024);
-		Set<String> subKeys = results.values().iterator().next().keySet();
+		final StringBuilder sb = new StringBuilder(4 * 1024);
+		final Set<String> subKeys = results.values().iterator().next().keySet();
 		sb.append("\tThroughput per thread (msg/sec)");
 		sb.append(LF);
-		for (String subKey : subKeys) {
+		for (final String subKey : subKeys) {
 			sb.append("\t").append(subKey);
 		}
 		sb.append(LF);
-		for (String key : results.keySet()) {
+		for (final String key : results.keySet()) {
 			sb.append(key);
-			Map<String, Stats> sub = results.get(key);
-			for (String subKey : sub.keySet()) {
-				Stats stats = sub.get(subKey);
+			final Map<String, Stats> sub = results.get(key);
+			for (final String subKey : sub.keySet()) {
+				final Stats stats = sub.get(subKey);
 				sb.append("\t").append(stats.throughput);
 			}
 			sb.append(LF);
@@ -124,19 +124,19 @@ class PerfTestResultFormatter {
 		return sb.toString();
 	}
 
-	private void process(String line) throws ParseException {
-		String key = line.substring(line.indexOf('.') + 1, line.indexOf('('));
-		String sub = line.substring(line.indexOf('(') + 1, line.indexOf(')'));
-		String throughput = line.substring(line.indexOf("throughput: ")
+	private void process(final String line) throws ParseException {
+		final String key = line.substring(line.indexOf('.') + 1, line.indexOf('('));
+		final String sub = line.substring(line.indexOf('(') + 1, line.indexOf(')'));
+		final String throughput = line.substring(line.indexOf("throughput: ")
 				+ "throughput: ".length(), line.indexOf(" ops"));
-		String avg = line.substring(line.indexOf("avg=") + "avg=".length(),
+		final String avg = line.substring(line.indexOf("avg=") + "avg=".length(),
 				line.indexOf(" 99%"));
-		String pct99 = line.substring(
+		final String pct99 = line.substring(
 				line.indexOf("99% < ") + "99% < ".length(),
 				line.indexOf(" 99.99%"));
-		String pct99_99 = line.substring(line.indexOf("99.99% < ")
+		final String pct99_99 = line.substring(line.indexOf("99.99% < ")
 				+ "99.99% < ".length(), line.lastIndexOf('(') - 1);
-		Stats stats = new Stats(throughput, avg, pct99, pct99_99);
+		final Stats stats = new Stats(throughput, avg, pct99, pct99_99);
 		Map<String, Stats> map = results.get(key.trim());
 		if (map == null) {
 			map = new TreeMap<String, Stats>(sort());
@@ -156,9 +156,9 @@ class PerfTestResultFormatter {
 					"64 threads");
 
 			@Override
-			public int compare(String o1, String o2) {
-				int i1 = expected.indexOf(o1);
-				int i2 = expected.indexOf(o2);
+			public int compare(final String o1, final String o2) {
+				final int i1 = expected.indexOf(o1);
+				final int i2 = expected.indexOf(o2);
 				if (i1 < 0 || i2 < 0) {
 					return o1.compareTo(o2);
 				}
@@ -167,9 +167,9 @@ class PerfTestResultFormatter {
 		};
 	}
 
-	public static void main(String[] args) throws Exception {
-		PerfTestResultFormatter fmt = new PerfTestResultFormatter();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
+	public static void main(final String[] args) throws Exception {
+		final PerfTestResultFormatter fmt = new PerfTestResultFormatter();
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(
 				System.in));
 		String line;
 		while ((line = reader.readLine()) != null) {

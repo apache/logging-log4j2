@@ -34,7 +34,7 @@ public class MarkerAttributeConverter implements AttributeConverter<Marker, Stri
             return null;
         }
 
-        StringBuilder builder = new StringBuilder(marker.getName());
+        final StringBuilder builder = new StringBuilder(marker.getName());
         Marker parent = marker.getParent();
         int levels = 0;
         boolean hasParent = false;
@@ -59,7 +59,7 @@ public class MarkerAttributeConverter implements AttributeConverter<Marker, Stri
             return null;
         }
 
-        int bracket = s.indexOf("[");
+        final int bracket = s.indexOf("[");
 
         return bracket < 1 ? MarkerManager.getMarker(s) : MarkerManager.getMarker(s.substring(0, bracket));
     }

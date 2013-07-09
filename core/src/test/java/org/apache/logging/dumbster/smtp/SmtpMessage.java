@@ -139,9 +139,9 @@ public class SmtpMessage {
     public String toString() {
         final StringBuilder msg = new StringBuilder();
         for (final Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            String name = entry.getKey();
-            List<String> values = entry.getValue();
-            for (String value : values) {
+            final String name = entry.getKey();
+            final List<String> values = entry.getValue();
+            for (final String value : values) {
                 msg.append(name);
                 msg.append(": ");
                 msg.append(value);

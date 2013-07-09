@@ -27,27 +27,27 @@ import org.apache.logging.log4j.message.MessageFactory;
  */
 public class AsyncLoggerContext extends LoggerContext {
 
-    public AsyncLoggerContext(String name) {
+    public AsyncLoggerContext(final String name) {
         super(name);
     }
 
-    public AsyncLoggerContext(String name, Object externalContext) {
+    public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
     }
 
-    public AsyncLoggerContext(String name, Object externalContext,
-            URI configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext,
+            final URI configLocn) {
         super(name, externalContext, configLocn);
     }
 
-    public AsyncLoggerContext(String name, Object externalContext,
-            String configLocn) {
+    public AsyncLoggerContext(final String name, final Object externalContext,
+            final String configLocn) {
         super(name, externalContext, configLocn);
     }
 
     @Override
-    protected Logger newInstance(LoggerContext ctx, String name,
-            MessageFactory messageFactory) {
+    protected Logger newInstance(final LoggerContext ctx, final String name,
+            final MessageFactory messageFactory) {
         return new AsyncLogger(ctx, name, messageFactory);
     }
 

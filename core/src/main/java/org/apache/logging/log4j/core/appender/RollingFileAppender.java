@@ -53,10 +53,10 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
     private RollingFileAppender(final String name, final Layout<T> layout, final Filter filter,
                                 final RollingFileManager manager, final String fileName,
                                 final String filePattern, final boolean handleException, final boolean immediateFlush,
-                                Advertiser advertiser) {
+                                final Advertiser advertiser) {
         super(name, layout, filter, handleException, immediateFlush, manager);
         if (advertiser != null) {
-            Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
+            final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
             configuration.put("name", name);
             advertisement = advertiser.advertise(configuration);
@@ -143,7 +143,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
         final boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
         final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
             return null;
@@ -170,6 +170,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
 
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }

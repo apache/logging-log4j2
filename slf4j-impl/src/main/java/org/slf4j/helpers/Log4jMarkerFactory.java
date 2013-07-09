@@ -39,7 +39,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
             return marker;
         }
         marker = new MarkerWrapper(name);
-        Marker existing = markerMap.putIfAbsent(name, marker);
+        final Marker existing = markerMap.putIfAbsent(name, marker);
         return existing == null ? marker : existing;
     }
 

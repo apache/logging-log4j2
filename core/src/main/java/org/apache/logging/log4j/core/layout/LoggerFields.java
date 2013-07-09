@@ -31,9 +31,9 @@ import org.apache.logging.log4j.core.helpers.KeyValuePair;
 @Plugin(name = "LoggerFields", category = "Core", printObject = true)
 public final class LoggerFields {
 
-    private Map<String, String> map;
+    private final Map<String, String> map;
 
-    private LoggerFields(Map<String, String> map) {
+    private LoggerFields(final Map<String, String> map) {
         this.map = Collections.unmodifiableMap(map);
     }
 

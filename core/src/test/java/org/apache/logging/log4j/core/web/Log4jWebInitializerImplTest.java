@@ -36,7 +36,7 @@ public class Log4jWebInitializerImplTest {
 
     @Before
     public void setUp() {
-        Capture<Log4jWebInitializer> initializerCapture = new Capture<Log4jWebInitializer>();
+        final Capture<Log4jWebInitializer> initializerCapture = new Capture<Log4jWebInitializer>();
 
         this.servletContext = createStrictMock(ServletContext.class);
         expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(null);
@@ -45,7 +45,7 @@ public class Log4jWebInitializerImplTest {
 
         replay(this.servletContext);
 
-        Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
+        final Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(this.servletContext);
 
         assertNotNull("The initializer should not be null.", initializer);
         assertSame("The capture is not correct.", initializer, initializerCapture.getValue());
@@ -68,7 +68,7 @@ public class Log4jWebInitializerImplTest {
         try {
             this.initializer.deinitialize();
             fail("Expected an IllegalStateException.");
-        } catch (IllegalStateException ignore) {
+        } catch (final IllegalStateException ignore) {
 
         }
     }
@@ -117,7 +117,7 @@ public class Log4jWebInitializerImplTest {
 
         this.initializer.setLoggerContext();
 
-        LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
+        final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("The context should not be null.", context);
 
         this.initializer.clearLoggerContext();
@@ -168,7 +168,7 @@ public class Log4jWebInitializerImplTest {
 
         this.initializer.setLoggerContext();
 
-        LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
+        final LoggerContext context = ContextAnchor.THREAD_CONTEXT.get();
         assertNotNull("The context should not be null.", context);
 
         this.initializer.clearLoggerContext();
@@ -258,7 +258,7 @@ public class Log4jWebInitializerImplTest {
         try {
             this.initializer.initialize();
             fail("Expected an IllegalStateException.");
-        } catch (IllegalStateException ignore) {
+        } catch (final IllegalStateException ignore) {
 
         }
     }
@@ -305,7 +305,7 @@ public class Log4jWebInitializerImplTest {
         try {
             this.initializer.initialize();
             fail("Expected an UnavailableException.");
-        } catch (UnavailableException ignore) {
+        } catch (final UnavailableException ignore) {
 
         }
     }

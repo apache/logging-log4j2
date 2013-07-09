@@ -257,7 +257,7 @@ public class LoggerTest {
 
     @Test
     public void testAdditivity() throws Exception {
-        Logger localLogger = (Logger) LogManager.getLogger("org.apache.test");
+        final Logger localLogger = (Logger) LogManager.getLogger("org.apache.test");
         localLogger.error("Test parent additivity");
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);

@@ -240,7 +240,7 @@ public class PluginManager {
             } finally {
                 try {
                     dis.close();
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
                     // nothing we can do here...
                 }
             }
@@ -275,7 +275,7 @@ public class PluginManager {
         } finally {
             try {
                 dos.close();
-            } catch (Exception ignored) {
+            } catch (final Exception ignored) {
                 // nothing we can do here...
             }
         }

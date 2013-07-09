@@ -178,7 +178,7 @@ public class LogManager {
      * @return a LoggerContext.
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
-                                           URI configLocation) {
+                                           final URI configLocation) {
         return factory.getContext(LogManager.class.getName(), loader, currentContext, configLocation);
     }
 
@@ -360,7 +360,7 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final String name) {
-        String actualName = name != null ? name : getClassName(2);
+        final String actualName = name != null ? name : getClassName(2);
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(actualName);
     }
 
@@ -373,7 +373,7 @@ public class LogManager {
      * @return The Logger.
      */
     public static Logger getLogger(final String name, final MessageFactory messageFactory) {
-        String actualName = name != null ? name : getClassName(2);
+        final String actualName = name != null ? name : getClassName(2);
         return factory.getContext(LogManager.class.getName(), null, false).getLogger(actualName, messageFactory);
     }
 
@@ -412,7 +412,7 @@ public class LogManager {
      * @param depth a 0-based index in the current stack.
      * @return a class name
      */
-    private static String getClassName(int depth) {
+    private static String getClassName(final int depth) {
         return new Throwable().getStackTrace()[depth].getClassName();
     }
 }

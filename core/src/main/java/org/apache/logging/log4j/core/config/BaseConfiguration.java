@@ -154,11 +154,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     protected Level getDefaultStatus() {
-        String statusLevel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL,
+        final String statusLevel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL,
             Level.ERROR.name());
         try {
             return Level.toLevel(statusLevel);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             return Level.ERROR;
         }
     }
@@ -259,7 +259,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected PluginManager getPluginManager() {
         //don't cache a pluginmanager instance - packages may be updated, requiring
         // re-discovery of plugins
-        PluginManager mgr = new PluginManager("Core");
+        final PluginManager mgr = new PluginManager("Core");
         mgr.collectPlugins();
         return mgr;
     }
@@ -331,7 +331,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     @Override
-    public void setConfigurationMonitor(ConfigurationMonitor monitor) {
+    public void setConfigurationMonitor(final ConfigurationMonitor monitor) {
         this.monitor = monitor;
     }
 
@@ -341,7 +341,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     @Override
-    public void setAdvertiser(Advertiser advertiser) {
+    public void setAdvertiser(final Advertiser advertiser) {
         this.advertiser = advertiser;
     }
 

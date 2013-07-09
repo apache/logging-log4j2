@@ -92,6 +92,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
         }
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
+            final
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
@@ -114,10 +115,10 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             printStream = target == Target.SYSTEM_OUT ?
             follow ? new PrintStream(new SystemOutStream(), true, enc) : System.out :
             follow ? new PrintStream(new SystemErrStream(), true, enc) : System.err;
-        } catch (UnsupportedEncodingException ex) { // should never happen
+        } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        PropertiesUtil propsUtil = PropertiesUtil.getProperties();
+        final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
         if (!propsUtil.getStringProperty("os.name").startsWith("Windows") ||
             propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return printStream;

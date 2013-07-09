@@ -30,7 +30,7 @@ public class AsyncLoggerContextTest {
 
     @Test
     public void testNewInstanceReturnsAsyncLogger() {
-        Logger logger = new AsyncLoggerContext("a").newInstance(
+        final Logger logger = new AsyncLoggerContext("a").newInstance(
                 new LoggerContext("a"), "a", null);
         assertTrue(logger instanceof AsyncLogger);
 

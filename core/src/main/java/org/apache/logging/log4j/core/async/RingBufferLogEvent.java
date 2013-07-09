@@ -66,11 +66,11 @@ public class RingBufferLogEvent implements LogEvent {
     private boolean endOfBatch;
     private boolean includeLocation;
 
-    public void setValues(AsyncLogger asyncLogger, String loggerName,
-            Marker marker, String fqcn, Level level, Message data, Throwable t,
-            Map<String, String> map, ContextStack contextStack,
-            String threadName, StackTraceElement location,
-            long currentTimeMillis) {
+    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
+            final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t,
+            final Map<String, String> map, final ContextStack contextStack,
+            final String threadName, final StackTraceElement location,
+            final long currentTimeMillis) {
         this.asyncLogger = asyncLogger;
         this.loggerName = loggerName;
         this.marker = marker;
@@ -92,7 +92,7 @@ public class RingBufferLogEvent implements LogEvent {
      * @param endOfBatch flag to indicate if this is the last event in a batch
      *            from the RingBuffer
      */
-    public void execute(boolean endOfBatch) {
+    public void execute(final boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
         asyncLogger.actualAsyncLog(this);
     }
@@ -110,7 +110,7 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
-    public void setEndOfBatch(boolean endOfBatch) {
+    public void setEndOfBatch(final boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
     }
 
@@ -120,7 +120,7 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
-    public void setIncludeLocation(boolean includeLocation) {
+    public void setIncludeLocation(final boolean includeLocation) {
         this.includeLocation = includeLocation;
     }
 
@@ -202,20 +202,20 @@ public class RingBufferLogEvent implements LogEvent {
      * @param strSubstitutor used to lookup values of variables in properties
      */
     public void mergePropertiesIntoContextMap(
-            Map<Property, Boolean> properties, StrSubstitutor strSubstitutor) {
+            final Map<Property, Boolean> properties, final StrSubstitutor strSubstitutor) {
         if (properties == null) {
             return; // nothing to do
         }
 
-        Map<String, String> map = (contextMap == null) ? new HashMap<String, String>()
+        final Map<String, String> map = (contextMap == null) ? new HashMap<String, String>()
                 : new HashMap<String, String>(contextMap);
 
-        for (Map.Entry<Property, Boolean> entry : properties.entrySet()) {
-            Property prop = entry.getKey();
+        for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
+            final Property prop = entry.getKey();
             if (map.containsKey(prop.getName())) {
                 continue; // contextMap overrides config properties
             }
-            String value = entry.getValue() ? strSubstitutor.replace(prop
+            final String value = entry.getValue() ? strSubstitutor.replace(prop
                     .getValue()) : prop.getValue();
             map.put(prop.getName(), value);
         }

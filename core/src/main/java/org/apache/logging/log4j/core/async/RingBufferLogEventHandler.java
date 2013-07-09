@@ -33,13 +33,13 @@ public class RingBufferLogEventHandler implements
     private int counter;
 
     @Override
-    public void setSequenceCallback(Sequence sequenceCallback) {
+    public void setSequenceCallback(final Sequence sequenceCallback) {
         this.sequenceCallback = sequenceCallback;
     }
 
     @Override
-    public void onEvent(RingBufferLogEvent event, long sequence,
-            boolean endOfBatch) throws Exception {
+    public void onEvent(final RingBufferLogEvent event, final long sequence,
+            final boolean endOfBatch) throws Exception {
         event.execute(endOfBatch);
         
         // notify the BatchEventProcessor that the sequence has progressed.
