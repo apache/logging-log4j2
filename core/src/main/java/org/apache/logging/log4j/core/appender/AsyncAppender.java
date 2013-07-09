@@ -183,7 +183,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
             LOGGER.error("No appender references provided to AsyncAppender {}", name);
         }
 
-        final boolean isBlocking = blocking == null ? true : Boolean.parseBoolean(blocking);
+        final boolean isBlocking = Booleans.parseBoolean(blocking, true);
         final int queueSize = Integers.parseInt(size, DEFAULT_QUEUE_SIZE);        
         final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
         final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
