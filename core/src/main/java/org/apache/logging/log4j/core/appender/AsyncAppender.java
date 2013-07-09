@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
@@ -182,11 +183,10 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
             LOGGER.error("No appender references provided to AsyncAppender {}", name);
         }
 
-        final boolean isBlocking = blocking == null ? true : Boolean.valueOf(blocking);
+        final boolean isBlocking = blocking == null ? true : Boolean.parseBoolean(blocking);
         final int queueSize = Integers.parseInt(size, DEFAULT_QUEUE_SIZE);        
         final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
-
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
 
         return new AsyncAppender<S>(name, filter, appenderRefs, errorRef,
                 queueSize, isBlocking, handleExceptions, config, isIncludeLocation);
