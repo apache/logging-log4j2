@@ -52,7 +52,7 @@ public class FastFileAppenderTest {
         reader.close();
         f.delete();
         assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertTrue("line1 incorrect", line1.contains(msg));
 
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !line1.contains(location));
