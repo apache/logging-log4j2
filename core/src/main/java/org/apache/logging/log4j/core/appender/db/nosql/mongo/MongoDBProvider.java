@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -154,15 +155,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
             description = "database=" + databaseName;
             try {
                 if (server != null && server.length() > 0) {
-                    int portInt = 0;
-                    if (port != null && port.length() > 0) {
-                        try {
-                            portInt = Integer.parseInt(port);
-                        } catch (final NumberFormatException ignore) {
-                            // we don't care
-                        }
-                    }
-
+                    final int portInt = AbstractAppender.parseInt(port, 0);
                     description += ", server=" + server;
                     if (portInt > 0) {
                         description += ", port=" + portInt;
