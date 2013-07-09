@@ -107,12 +107,12 @@ public final class OptionConverter {
      * <p/>
      * <p>Case of value is unimportant.
      * @param value The value to convert.
-     * @param dEfault The default value.
+     * @param defaultValue The default value.
      * @return true or false, depending on the value and/or default.
      */
-    public static boolean toBoolean(final String value, final boolean dEfault) {
+    public static boolean toBoolean(final String value, final boolean defaultValue) {
         if (value == null) {
-            return dEfault;
+            return defaultValue;
         }
         final String trimmedVal = value.trim();
         if ("true".equalsIgnoreCase(trimmedVal)) {
@@ -121,16 +121,16 @@ public final class OptionConverter {
         if ("false".equalsIgnoreCase(trimmedVal)) {
             return false;
         }
-        return dEfault;
+        return defaultValue;
     }
 
     /**
      * Convert the String value to an int.
      * @param value The value as a String.
-     * @param dEfault The default value.
+     * @param defaultValue The default value.
      * @return The value as an int.
      */
-    public static int toInt(final String value, final int dEfault) {
+    public static int toInt(final String value, final int defaultValue) {
         if (value != null) {
             final String s = value.trim();
             try {
@@ -140,7 +140,7 @@ public final class OptionConverter {
                 e.printStackTrace();
             }
         }
-        return dEfault;
+        return defaultValue;
     }
 
     /**
