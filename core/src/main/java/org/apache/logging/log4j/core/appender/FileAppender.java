@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
@@ -109,18 +110,18 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
                                               @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {
 
-        final boolean isAppend = append == null ? true : Boolean.parseBoolean(append);
-        final boolean isLocking = locking == null ? false : Boolean.parseBoolean(locking);
-        boolean isBuffered = bufferedIO == null ? true : Boolean.parseBoolean(bufferedIO);
-        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
+        final boolean isAppend = Booleans.parseBoolean(append, true);
+        final boolean isLocking = Boolean.parseBoolean(locking);
+        boolean isBuffered = Booleans.parseBoolean(bufferedIO, true);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
         if (isLocking && isBuffered) {
             if (bufferedIO != null) {
                 LOGGER.warn("Locking and buffering are mutually exclusive. No buffering will occur for " + fileName);
             }
             isBuffered = false;
         }
-        final boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");

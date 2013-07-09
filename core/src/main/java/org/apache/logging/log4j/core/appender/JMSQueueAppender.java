@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSQueueManager;
 
@@ -97,7 +98,7 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         final JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {

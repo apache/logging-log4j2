@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 
 /**
@@ -179,8 +180,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
-        final boolean compress = compressBody == null ? true : Boolean.parseBoolean(compressBody);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean compress = Booleans.parseBoolean(compressBody, true);
         ManagerType managerType;
         if (type != null) {
             if (embed && embedded != null) {

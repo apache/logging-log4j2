@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 
 /**
  * This Appender "routes" between various Appenders, some of which can be references to
@@ -184,8 +185,7 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
                                           @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
                                           @PluginElement("filters") final Filter filter) {
 
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
-
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         if (name == null) {
             LOGGER.error("No name provided for RoutingAppender");
             return null;

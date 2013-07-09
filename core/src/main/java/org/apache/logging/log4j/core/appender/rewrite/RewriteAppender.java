@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
@@ -111,8 +112,7 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
                                           @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
                                           @PluginElement("filter") final Filter filter) {
 
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
-
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         if (name == null) {
             LOGGER.error("No name provided for RewriteAppender");
             return null;

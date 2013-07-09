@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Advertiser;
 
@@ -132,13 +133,10 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
             @PluginAttr("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
 
-        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        final boolean isFlush = immediateFlush == null ? true : Boolean
-                .valueOf(immediateFlush);
-        final boolean handleExceptions = suppress == null ? true : Boolean
-                .valueOf(suppress);
-        final boolean isAdvertise = advertise == null ? false : Boolean
-                .valueOf(advertise);
+        final boolean isAppend = Booleans.parseBoolean(append, true);
+        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");

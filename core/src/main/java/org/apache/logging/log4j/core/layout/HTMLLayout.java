@@ -325,7 +325,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         final FontSize fs = FontSize.getFontSize(fontSize);
         fontSize = fs.getFontSize();
         final String headerSize = fs.larger().getFontSize();
-        final boolean info = locationInfo == null ? false : Boolean.parseBoolean(locationInfo);
+        final boolean info = Boolean.parseBoolean(locationInfo);
         if (title == null) {
             title = DEFAULT_TITLE;
         }
