@@ -106,7 +106,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
-        final int reconnectDelay = Integers.parseInt(delay);
+        final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
         final int port = Integers.parseInt(portNum);
         if (layout == null) {
             @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
