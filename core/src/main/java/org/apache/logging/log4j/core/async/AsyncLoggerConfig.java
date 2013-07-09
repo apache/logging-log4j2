@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -175,8 +176,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             level = Level.ERROR;
         }
         final String name = loggerName.equals("root") ? "" : loggerName;
-        final boolean additive = additivity == null ? true : Boolean
-                .parseBoolean(additivity);
+        final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new AsyncLoggerConfig(name, appenderRefs, filter, level,
                 additive, properties, config, includeLocation(includeLocation));
@@ -212,8 +212,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                         levelName);
                 level = Level.ERROR;
             }
-            final boolean additive = additivity == null ? true : Boolean
-                    .parseBoolean(additivity);
+            final boolean additive = Booleans.parseBoolean(additivity, true);
 
             return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME,
                     appenderRefs, filter, level, additive, properties, config,

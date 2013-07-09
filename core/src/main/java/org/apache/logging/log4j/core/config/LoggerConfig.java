@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -471,8 +472,7 @@ public class LoggerConfig extends AbstractFilterable {
             level = Level.ERROR;
         }
         final String name = loggerName.equals("root") ? "" : loggerName;
-        final boolean additive = additivity == null ? true : Boolean
-                .parseBoolean(additivity);
+        final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new LoggerConfig(name, appenderRefs, filter, level, additive,
                 properties, config, includeLocation(includeLocation));
@@ -514,8 +514,7 @@ public class LoggerConfig extends AbstractFilterable {
                         levelName);
                 level = Level.ERROR;
             }
-            final boolean additive = additivity == null ? true : Boolean
-                    .parseBoolean(additivity);
+            final boolean additive = Booleans.parseBoolean(additivity, true);
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs,
                     filter, level, additive, properties, config,
