@@ -271,7 +271,6 @@ public final class OptionConverter {
      * <code>val</code> contains a start delimeter "${" which is not
      * balanced by a stop delimeter "}". </p>
      * <p/>
-     * <p><b>Author</b> Avy Sharell</a></p>
      *
      * @param val The string on which variable substitution is performed.
      * @param props The properties to use for substitution.
