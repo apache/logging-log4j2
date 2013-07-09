@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
@@ -45,7 +44,7 @@ import org.apache.logging.log4j.core.helpers.Strings;
 @Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
 public final class FailoverAppender<T extends Serializable> extends AbstractAppender<T> {
 
-    private static final int DEFAULT_INTERVAL_MILLIS = 60 * Constants.MILLIS_IN_SECONDS;
+    private static final int DEFAULT_INTERVAL_SECONDS = 60;
 
     private final String primaryRef;
 
@@ -206,22 +205,13 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
             return null;
         }
 
+        final int seconds = parseInt(intervalSeconds, DEFAULT_INTERVAL_SECONDS);
         int retryIntervalMillis;
-        if (Strings.isEmpty(intervalSeconds)) {
-            retryIntervalMillis = DEFAULT_INTERVAL_MILLIS;
+        if (seconds >= 0) {
+            retryIntervalMillis = seconds * Constants.MILLIS_IN_SECONDS;
         } else {
-            try {
-                final int seconds = Integer.parseInt(intervalSeconds);
-                if (seconds >= 0) {
-                    retryIntervalMillis = seconds * Constants.MILLIS_IN_SECONDS;
-                } else {
-                    LOGGER.warn("Interval " + intervalSeconds + " is less than zero. Using default");
-                    retryIntervalMillis = DEFAULT_INTERVAL_MILLIS;
-                }
-            } catch (final NumberFormatException nfe) {
-                LOGGER.error("Interval " + intervalSeconds + " is non-numeric. Using default");
-                retryIntervalMillis = DEFAULT_INTERVAL_MILLIS;
-            }
+            LOGGER.warn("Interval " + intervalSeconds + " is less than zero. Using default");
+            retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 
         final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
