@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Constants;
 
 /**
@@ -214,7 +215,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
 
         return new FailoverAppender<S>(name, filter, primary, failovers, retryIntervalMillis, config, handleExceptions);
     }
