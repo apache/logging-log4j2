@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -96,8 +97,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
-        final boolean isFollow = follow == null ? false : Boolean.valueOf(follow);
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean isFollow = Boolean.parseBoolean(follow);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
         return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target, layout), handleExceptions);
     }

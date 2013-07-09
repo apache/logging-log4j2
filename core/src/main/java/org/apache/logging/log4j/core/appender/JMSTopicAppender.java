@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.JMSTopicManager;
 
@@ -98,7 +99,7 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         final JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
         if (manager == null) {

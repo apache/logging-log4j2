@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
@@ -101,10 +102,10 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginAttr("advertise") final String advertise,
                                                 @PluginConfiguration final Configuration config) {
 
-        boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
-        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
-        final boolean fail = immediateFail == null ? true : Boolean.parseBoolean(immediateFail);
+        boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int reconnectDelay = Integers.parseInt(delay);
         final int port = Integers.parseInt(portNum);
         if (layout == null) {

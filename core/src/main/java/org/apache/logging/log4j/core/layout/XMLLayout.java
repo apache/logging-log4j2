@@ -282,9 +282,9 @@ public class XMLLayout extends AbstractStringLayout {
                                          @PluginAttr("complete") final String complete,
                                          @PluginAttr("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
-        final boolean info = locationInfo == null ? false : Boolean.parseBoolean(locationInfo);
-        final boolean props = properties == null ? false : Boolean.parseBoolean(properties);
-        final boolean comp = complete == null ? false : Boolean.parseBoolean(complete);
+        final boolean info = Boolean.parseBoolean(locationInfo);
+        final boolean props = Boolean.parseBoolean(properties);
+        final boolean comp = Boolean.parseBoolean(complete);
         return new XMLLayout(info, props, comp, charset);
     }
 }

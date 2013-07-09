@@ -157,7 +157,7 @@ public class SyslogLayout extends AbstractStringLayout {
                                             @PluginAttr("newLineEscape") final String escapeNL,
                                             @PluginAttr("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
-        final boolean includeNewLine = includeNL == null ? false : Boolean.parseBoolean(includeNL);
+        final boolean includeNewLine = Boolean.parseBoolean(includeNL);
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         return new SyslogLayout(f, includeNewLine, escapeNL, charset);
     }

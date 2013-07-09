@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.helpers.NetUtils;
@@ -554,8 +555,8 @@ public final class RFC5424Layout extends AbstractStringLayout {
         }
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);
         final int enterpriseNumber = Integers.parseInt(ein, DEFAULT_ENTERPRISE_NUMBER);
-        final boolean isMdc = includeMDC == null ? true : Boolean.parseBoolean(includeMDC);
-        final boolean includeNewLine = includeNL == null ? false : Boolean.parseBoolean(includeNL);
+        final boolean isMdc = Booleans.parseBoolean(includeMDC, true);
+        final boolean includeNewLine = Boolean.parseBoolean(includeNL);
         final Map<String, String> loggerFieldValues = loggerFields == null ? null : loggerFields.getMap();
         if (mdcId == null) {
             mdcId = DEFAULT_MDCID;

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
@@ -122,12 +123,12 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginElement("LoggerFields") final LoggerFields loggerFields,
                                                 @PluginAttr("advertise") final String advertise) {
 
-        final boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
-        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
+        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
         final int reconnectDelay = Integers.parseInt(delay);
-        final boolean fail = immediateFail == null ? true : Boolean.parseBoolean(immediateFail);
+        final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int port = Integers.parseInt(portNum);
-        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
+        final boolean isAdvertise = Boolean.parseBoolean(advertise);
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
