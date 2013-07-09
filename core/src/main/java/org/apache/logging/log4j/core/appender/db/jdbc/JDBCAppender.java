@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -72,14 +73,8 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
                                               @PluginAttr("bufferSize") final String bufferSize,
                                               @PluginAttr("tableName") final String tableName,
                                               @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
-        int bufferSizeInt;
-        try {
-            bufferSizeInt = Strings.isEmpty(bufferSize) ? 0 : Integer.parseInt(bufferSize);
-        } catch (final NumberFormatException e) {
-            LOGGER.warn("Buffer size [" + bufferSize + "] not an integer, using no buffer.");
-            bufferSizeInt = 0;
-        }
 
+        int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean handleExceptions = suppressExceptions == null || !Boolean.parseBoolean(suppressExceptions);
 
         final StringBuilder managerName = new StringBuilder("jdbcManager{ description=").append(name)
