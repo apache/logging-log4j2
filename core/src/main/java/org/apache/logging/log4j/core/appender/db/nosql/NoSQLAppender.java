@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.nosql;
 
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
@@ -74,14 +75,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
             return null;
         }
 
-        int bufferSizeInt;
-        try {
-            bufferSizeInt = Strings.isEmpty(bufferSize) ? 0 : Integer.parseInt(bufferSize);
-        } catch (final NumberFormatException e) {
-            LOGGER.warn("Buffer size [" + bufferSize + "] not an integer, using no buffer.");
-            bufferSizeInt = 0;
-        }
-
+        final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
 
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
