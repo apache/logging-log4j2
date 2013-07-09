@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
@@ -206,7 +207,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
         }
 
         int retryInterval;
-        if (interval == null) {
+        if (Strings.isEmpty(interval)) {
             retryInterval = DEFAULT_INTERVAL;
         } else {
             try {
