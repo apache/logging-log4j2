@@ -111,7 +111,7 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
                                           @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
                                           @PluginElement("filter") final Filter filter) {
 
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
 
         if (name == null) {
             LOGGER.error("No name provided for RewriteAppender");
