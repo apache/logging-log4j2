@@ -214,7 +214,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
 
         return new FailoverAppender<S>(name, filter, primary, failovers, retryIntervalMillis, config, handleExceptions);
     }
