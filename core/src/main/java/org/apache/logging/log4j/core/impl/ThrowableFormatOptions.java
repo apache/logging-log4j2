@@ -191,9 +191,9 @@ public final class ThrowableFormatOptions {
             int lines = DEFAULT.lines;
             String separator = DEFAULT.separator;
             List<String> packages = DEFAULT.packages;
-            for (int i = 0; i < options.length; i++) {
-                if (options[i] != null) {
-                    final String option = options[i].trim();
+            for (String rawOption : options) {
+                if (rawOption != null) {
+                    final String option = rawOption.trim();
                     if (option.length() == 0) {
                         // continue;
                     } else if (option.startsWith("separator(") && option.endsWith(")")) {
