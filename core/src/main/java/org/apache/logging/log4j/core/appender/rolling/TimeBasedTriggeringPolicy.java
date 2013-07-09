@@ -82,7 +82,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     public static TimeBasedTriggeringPolicy createPolicy(@PluginAttr("interval") final String interval,
                                                          @PluginAttr("modulate") final String modulate) {
         final int increment = Integers.parseInt(interval, 1);
-        final boolean mod = modulate == null ? false : Boolean.parseBoolean(modulate);
+        final boolean mod = Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);
     }
 }

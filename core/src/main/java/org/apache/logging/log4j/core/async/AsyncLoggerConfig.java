@@ -184,9 +184,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     // Note: for asynchronous loggers, includeLocation default is FALSE
     protected static boolean includeLocation(final String includeLocationConfigValue) {
-        if (includeLocationConfigValue == null) {
-            return false;
-        }
         return Boolean.parseBoolean(includeLocationConfigValue);
     }
 
