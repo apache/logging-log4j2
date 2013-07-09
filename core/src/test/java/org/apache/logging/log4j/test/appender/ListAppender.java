@@ -165,8 +165,8 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
             return null;
         }
 
-        final boolean nl = newLine != null && Boolean.parseBoolean(newLine);
-        final boolean r = raw != null && Boolean.parseBoolean(raw);
+        final boolean nl = Boolean.parseBoolean(newLine);
+        final boolean r = Boolean.parseBoolean(raw);
 
         return new ListAppender<S>(name, filter, layout, nl, r);
     }
