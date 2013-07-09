@@ -95,7 +95,7 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
             return null;
         }
 
-        if (username == null || username.trim().length() == 0) {
+        if (username == null || username.trim().isEmpty()) {
             username = null;
             password = null;
         }

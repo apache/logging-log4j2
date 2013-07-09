@@ -105,7 +105,7 @@ public class XMLLayout extends AbstractStringLayout {
 
         buf.append("<log4j:event logger=\"");
         String name = event.getLoggerName();
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             name = "root";
         }
         buf.append(Transform.escapeTags(name));

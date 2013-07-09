@@ -329,7 +329,7 @@ public class Log4jLogEvent implements LogEvent {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        final String n = name.length() == 0 ? "root" : name;
+        final String n = name.isEmpty() ? "root" : name;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
         sb.append(" Message=").append(message.getFormattedMessage());
