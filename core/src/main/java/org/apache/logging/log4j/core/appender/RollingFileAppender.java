@@ -139,11 +139,11 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
                                               @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {
 
-        final boolean isAppend = append == null ? true : Boolean.valueOf(append);
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        final boolean isBuffered = bufferedIO == null ? true : Boolean.valueOf(bufferedIO);
-        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAppend = append == null ? true : Boolean.parseBoolean(append);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean isBuffered = bufferedIO == null ? true : Boolean.parseBoolean(bufferedIO);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
+        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
             return null;
