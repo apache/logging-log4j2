@@ -122,12 +122,12 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginElement("LoggerFields") final LoggerFields loggerFields,
                                                 @PluginAttr("advertise") final String advertise) {
 
-        final boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        final boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
         final int reconnectDelay = Integers.parseInt(delay);
-        final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
+        final boolean fail = immediateFail == null ? true : Boolean.parseBoolean(immediateFail);
         final int port = Integers.parseInt(portNum);
-        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
+        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
         @SuppressWarnings("unchecked")
         final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
