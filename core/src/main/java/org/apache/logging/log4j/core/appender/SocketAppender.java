@@ -101,10 +101,10 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginAttr("advertise") final String advertise,
                                                 @PluginConfiguration final Configuration config) {
 
-        boolean isFlush = immediateFlush == null ? true : Boolean.valueOf(immediateFlush);
-        final boolean isAdvertise = advertise == null ? false : Boolean.valueOf(advertise);
-        final boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
-        final boolean fail = immediateFail == null ? true : Boolean.valueOf(immediateFail);
+        boolean isFlush = immediateFlush == null ? true : Boolean.parseBoolean(immediateFlush);
+        final boolean isAdvertise = advertise == null ? false : Boolean.parseBoolean(advertise);
+        final boolean handleExceptions = suppress == null ? true : Boolean.parseBoolean(suppress);
+        final boolean fail = immediateFail == null ? true : Boolean.parseBoolean(immediateFail);
         final int reconnectDelay = Integers.parseInt(delay);
         final int port = Integers.parseInt(portNum);
         if (layout == null) {
