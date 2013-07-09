@@ -46,7 +46,7 @@ public abstract class NameAbbreviator {
             //     use MaxElementAbbreviator
             final String trimmed = pattern.trim();
 
-            if (trimmed.length() == 0) {
+            if (trimmed.isEmpty()) {
                 return DEFAULT;
             }
 

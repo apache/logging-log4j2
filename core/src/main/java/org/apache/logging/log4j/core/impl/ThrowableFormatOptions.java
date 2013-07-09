@@ -194,7 +194,7 @@ public final class ThrowableFormatOptions {
             for (String rawOption : options) {
                 if (rawOption != null) {
                     final String option = rawOption.trim();
-                    if (option.length() == 0) {
+                    if (option.isEmpty()) {
                         // continue;
                     } else if (option.startsWith("separator(") && option.endsWith(")")) {
                         separator = option.substring("separator(".length(), option.length() - 1);
