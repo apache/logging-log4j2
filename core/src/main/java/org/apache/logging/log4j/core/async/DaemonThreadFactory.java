@@ -35,6 +35,7 @@ public class DaemonThreadFactory implements ThreadFactory {
                 : Thread.currentThread().getThreadGroup();
     }
 
+    @Override
     public Thread newThread(final Runnable runnable) {
         final Thread thread = new Thread(group, runnable, threadNamePrefix
                 + threadNumber.getAndIncrement(), 0);

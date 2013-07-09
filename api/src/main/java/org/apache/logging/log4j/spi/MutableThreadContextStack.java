@@ -41,6 +41,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         this.list = new ArrayList<String>(stack.list);
     }
 
+    @Override
     public String pop() {
         if (list.isEmpty()) {
             return null;
@@ -50,6 +51,7 @@ public class MutableThreadContextStack implements ThreadContextStack {
         return result;
     }
 
+    @Override
     public String peek() {
         if (list.isEmpty()) {
             return null;
@@ -58,18 +60,22 @@ public class MutableThreadContextStack implements ThreadContextStack {
         return list.get(last);
     }
 
+    @Override
     public void push(final String message) {
         list.add(message);
     }
 
+    @Override
     public int getDepth() {
         return list.size();
     }
 
+    @Override
     public List<String> asList() {
         return list;
     }
 
+    @Override
     public void trim(final int depth) {
         if (depth < 0) {
             throw new IllegalArgumentException("Maximum stack depth cannot be negative");
@@ -86,58 +92,72 @@ public class MutableThreadContextStack implements ThreadContextStack {
         list.addAll(copy);
     }
 
+    @Override
     public ThreadContextStack copy() {
         return new MutableThreadContextStack(this);
     }
 
+    @Override
     public void clear() {
         list.clear();
     }
 
+    @Override
     public int size() {
         return list.size();
     }
 
+    @Override
     public boolean isEmpty() {
         return list.isEmpty();
     }
 
+    @Override
     public boolean contains(final Object o) {
         return list.contains(o);
     }
 
+    @Override
     public Iterator<String> iterator() {
         return list.iterator();
     }
 
+    @Override
     public Object[] toArray() {
         return list.toArray();
     }
 
+    @Override
     public <T> T[] toArray(final T[] ts) {
         return list.toArray(ts);
     }
 
+    @Override
     public boolean add(final String s) {
         return list.add(s);
     }
 
+    @Override
     public boolean remove(final Object o) {
         return list.remove(o);
     }
 
+    @Override
     public boolean containsAll(final Collection<?> objects) {
         return list.containsAll(objects);
     }
 
+    @Override
     public boolean addAll(final Collection<? extends String> strings) {
         return list.addAll(strings);
     }
 
+    @Override
     public boolean removeAll(final Collection<?> objects) {
         return list.removeAll(objects);
     }
 
+    @Override
     public boolean retainAll(final Collection<?> objects) {
         return list.retainAll(objects);
     }

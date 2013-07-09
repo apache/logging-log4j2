@@ -41,6 +41,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         this.useStack = useStack;
     }
 
+    @Override
     public String pop() {
         if (!useStack) {
             return "";
@@ -56,6 +57,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result;
     }
 
+    @Override
     public String peek() {
         final List<String> list = stack.get();
         if (list == null || list.size() == 0) {
@@ -65,6 +67,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return list.get(last);
     }
 
+    @Override
     public void push(final String message) {
         if (!useStack) {
             return;
@@ -72,11 +75,13 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         add(message);
     }
 
+    @Override
     public int getDepth() {
         final List<String> list = stack.get();
         return list == null ? 0 : list.size();
     }
 
+    @Override
     public List<String> asList() {
         final List<String> list = stack.get();
         if (list == null) {
@@ -85,6 +90,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return list;
     }
 
+    @Override
     public void trim(final int depth) {
         if (depth < 0) {
             throw new IllegalArgumentException(
@@ -102,6 +108,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         stack.set(copy);
     }
 
+    @Override
     public ThreadContextStack copy() {
         List<String> result = null;
         if (!useStack || (result = stack.get()) == null) {
@@ -110,25 +117,30 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return new MutableThreadContextStack(result);
     }
 
+    @Override
     public void clear() {
         stack.remove();
     }
 
+    @Override
     public int size() {
         final List<String> result = stack.get();
         return result == null ? 0 : result.size();
     }
 
+    @Override
     public boolean isEmpty() {
         final List<String> result = stack.get();
         return result == null || result.isEmpty();
     }
 
+    @Override
     public boolean contains(final Object o) {
         final List<String> result = stack.get();
         return result != null && result.contains(o);
     }
 
+    @Override
     public Iterator<String> iterator() {
         final List<String> immutable = stack.get();
         if (immutable == null) {
@@ -138,6 +150,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return immutable.iterator();
     }
 
+    @Override
     public Object[] toArray() {
         final List<String> result = stack.get();
         if (result == null) {
@@ -146,6 +159,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result.toArray(new Object[result.size()]);
     }
 
+    @Override
     public <T> T[] toArray(final T[] ts) {
         final List<String> result = stack.get();
         if (result == null) {
@@ -157,6 +171,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result.toArray(ts);
     }
 
+    @Override
     public boolean add(final String s) {
         if (!useStack) {
             return false;
@@ -169,6 +184,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return true;
     }
 
+    @Override
     public boolean remove(final Object o) {
         if (!useStack) {
             return false;
@@ -183,6 +199,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result;
     }
 
+    @Override
     public boolean containsAll(final Collection<?> objects) {
         if (objects.isEmpty()) { // quick check before accessing the ThreadLocal
             return true; // looks counter-intuitive, but see
@@ -192,6 +209,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return list != null && list.containsAll(objects);
     }
 
+    @Override
     public boolean addAll(final Collection<? extends String> strings) {
         if (!useStack || strings.isEmpty()) {
             return false;
@@ -204,6 +222,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return true;
     }
 
+    @Override
     public boolean removeAll(final Collection<?> objects) {
         if (!useStack || objects.isEmpty()) {
             return false;
@@ -218,6 +237,7 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         return result;
     }
 
+    @Override
     public boolean retainAll(final Collection<?> objects) {
         if (!useStack || objects.isEmpty()) {
             return false;
