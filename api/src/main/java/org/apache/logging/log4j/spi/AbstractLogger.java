@@ -23,6 +23,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -1445,6 +1446,33 @@ public abstract class AbstractLogger implements Logger {
     public void log(final Level level, final String message, final Throwable t) {
         if (isEnabled(level, null, message, t)) {
             log(null, FQCN, level, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a formatted message using the specified format string and arguments.
+     * @param level The logging Level.
+     * @param format The format String.
+     * @param params Arguments specified by the format.
+     */
+    public void printf(Level level, String format, Object... params) {
+        if (isEnabled(level, null, format, params)) {
+            Message msg = new StringFormattedMessage(format, params);
+            log(null, FQCN, level, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a formatted message using the specified format string and arguments.
+     * @param level The logging Level.
+     * @param marker the marker data specific to this log statement.
+     * @param format The format String.
+     * @param params Arguments specified by the format.
+     */
+    public void printf(Level level, Marker marker, String format, Object... params) {
+        if (isEnabled(level, null, format, params)) {
+            Message msg = new StringFormattedMessage(format, params);
+            log(marker, FQCN, level, msg, msg.getThrowable());
         }
     }
 
