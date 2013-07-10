@@ -251,4 +251,10 @@ public class DefaultThreadContextStack implements ThreadContextStack {
         stack.set(Collections.unmodifiableList(copy));
         return result;
     }
+    
+    @Override
+    public String toString() {
+        final List<String> list = stack.get();
+        return list == null ? "[]" : list.toString();
+    }
 }

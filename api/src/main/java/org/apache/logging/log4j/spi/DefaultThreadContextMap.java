@@ -139,4 +139,10 @@ public class DefaultThreadContextMap implements ThreadContextMap {
         final Map<String, String> map = localMap.get();
         return map == null || map.size() == 0;
     }
+
+    @Override
+    public String toString() {
+        Map<String, String> map = localMap.get();
+        return map == null ? "{}" : map.toString();
+    }
 }
