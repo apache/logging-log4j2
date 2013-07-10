@@ -20,7 +20,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+    <release version="2.0-beta8" date="2013-07-10" description="Bug fixes and enhancements">
       <action issue="LOG4J2-302" dev="rpopma" type="fix">
         Added toString methods to ThreadContextStack/Map implementation classes.
       </action>
