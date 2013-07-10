@@ -33,11 +33,12 @@ o LOG4J2-139:  Fix NullPointerException (regression due to fix for LOG4J2-228)
 o LOG4J2-275:  FlumeAvroManager fails to notify client of failing event if Flume RPCClient cannot be created. 
 
 Changes:
+o LOG4J2-270:  Improved logging initialization in Servlet containers, especially Servlet 3.0 and newer where Log4j now
+        initializes and deinitializes automatically with no deployment descriptor configuration. 
 o LOG4J2-301:  Add printf methods to Logger API. 
 o LOG4J2-282:  Allow the default status level to be specified as a system property. 
 o LOG4J2-294:  LogManager.getLogger can now be called without a logger name or with a null logger name. 
 o LOG4J2-288:  Update JUnit to 4.11 from 4.7. 
-o LOG4J2-287:  Update Hibernate to 4.3 beta3 from beta2. 
 o LOG4J2-286:  Update test H2 JDBC driver to 1.172 from 1.171. 
 o LOG4J2-285:  Update Jansi jar to 1.11 from 1.9. 
 o LOG4J2-284:  Update Log4j 1 dependency to 1.2.17 from 1.2.16. 

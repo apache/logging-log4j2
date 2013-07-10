@@ -1470,7 +1470,7 @@ public abstract class AbstractLogger implements Logger {
      * @param params Arguments specified by the format.
      */
     public void printf(Level level, Marker marker, String format, Object... params) {
-        if (isEnabled(level, null, format, params)) {
+        if (isEnabled(level, marker, format, params)) {
             Message msg = new StringFormattedMessage(format, params);
             log(marker, FQCN, level, msg, msg.getThrowable());
         }
