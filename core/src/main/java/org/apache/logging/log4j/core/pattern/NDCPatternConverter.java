@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 
 /**
- * Returns the event's NDC in a StringBuffer.
+ * Returns the event's NDC in a StringBuilder.
  */
 @Plugin(name = "NDCPatternConverter", category = "Converter")
 @ConverterKeys({"x", "NDC" })
