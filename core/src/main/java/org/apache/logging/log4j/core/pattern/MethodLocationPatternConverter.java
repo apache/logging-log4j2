@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 
 /**
- * Returns the event's line location information in a StringBuffer.
+ * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "MethodLocationPatternConverter", category = "Converter")
 @ConverterKeys({"M", "method" })

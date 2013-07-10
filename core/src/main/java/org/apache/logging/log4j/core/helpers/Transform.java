@@ -52,7 +52,7 @@ public final class Transform {
             return input;
         }
 
-        //Use a StringBuffer in lieu of String concatenation -- it is
+        //Use a StringBuilder in lieu of String concatenation -- it is
         //much more efficient this way.
 
         final StringBuilder buf = new StringBuilder(input.length() + 6);
@@ -82,7 +82,7 @@ public final class Transform {
      * Ensures that embedded CDEnd strings (]]>) are handled properly
      * within message, NDC and throwable tag text.
      *
-     * @param buf StringBuffer holding the XML data to this point.  The
+     * @param buf StringBuilder holding the XML data to this point.  The
      *            initial CDStart (<![CDATA[) and final CDEnd (]]>) of the CDATA
      *            section are the responsibility of the calling method.
      * @param str The String that is inserted into an existing CDATA Section within buf.

@@ -55,7 +55,7 @@ public final class OptionConverter {
     public static String convertSpecialChars(final String s) {
         char c;
         final int len = s.length();
-        final StringBuffer sbuf = new StringBuffer(len);
+        final StringBuilder sbuf = new StringBuilder(len);
 
         int i = 0;
         while (i < len) {

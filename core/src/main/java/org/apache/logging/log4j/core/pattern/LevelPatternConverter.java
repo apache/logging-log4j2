@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 /**
- * Returns the event's level in a StringBuffer.
+ * Returns the event's level in a StringBuilder.
  */
 @Plugin(name = "LevelPatternConverter", category = "Converter")
 @ConverterKeys({"p", "level" })

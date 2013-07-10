@@ -285,7 +285,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private void constructHierarchy(final Node node, final Element element) {
         processAttributes(node, element);
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         final NodeList list = element.getChildNodes();
         final List<Node> children = node.getChildren();
         for (int i = 0; i < list.getLength(); i++) {
