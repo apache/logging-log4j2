@@ -47,7 +47,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
      */
     private static final long serialVersionUID = -8988674608627854140L;
 
-    private static final String DEFAULT_MDC_PREFIX = "mdc:";
+    private static final String DEFAULT_MDC_PREFIX = "";
 
     private static final String DEFAULT_EVENT_PREFIX = "";
 
@@ -156,11 +156,15 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     protected void addContextData(final String prefix, final Map<String, String> fields,
                                   final Map<String, String> context) {
+        Map<String, String> map = new HashMap<String, String>();
         for (final Map.Entry<String, String> entry : context.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 fields.put(prefix + entry.getKey(), entry.getValue());
+                map.put(prefix + entry.getKey(), entry.getValue());
             }
         }
+        context.clear();
+        context.putAll(map);
     }
 
     /**
