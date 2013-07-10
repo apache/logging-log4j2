@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta8" date="2013-??-??" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-302" dev="rpopma" type="fix">
+        Added toString methods to ThreadContextStack/Map implementation classes.
+      </action>
       <action issue="LOG4J2-301" dev="rgoers" type="update">
         Add printf methods to Logger API.
       </action>
