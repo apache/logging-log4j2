@@ -238,6 +238,15 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
+    @Test
+    public void printf() {
+        logger.printf(Level.DEBUG, "Debug message %d", 1);
+        logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
+        assertEquals(2, results.size());
+        assertTrue("Incorrect message", results.get(0).startsWith(" DEBUG Debug message 1"));
+        assertTrue("Incorrect message", results.get(1).startsWith(" DEBUG Debug message 2"));
+    }
+
     public void getLoggerByNullClass() {
         // Returns a SimpleLogger
         Assert.assertNotNull(LogManager.getLogger((Class<?>) null));

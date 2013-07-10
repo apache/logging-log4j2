@@ -841,6 +841,23 @@ public interface Logger {
   void log(Level level, String message, Throwable t);
 
   /**
+   * Logs a formatted message using the specified format string and arguments.
+   * @param level The logging Level.
+   * @param format The format String.
+   * @param params Arguments specified by the format.
+   */
+  void printf(Level level, String format, Object... params);
+
+  /**
+   * Logs a formatted message using the specified format string and arguments.
+   * @param level The logging Level.
+   * @param marker the marker data specific to this log statement.
+   * @param format The format String.
+   * @param params Arguments specified by the format.
+   */
+  void printf(Level level, Marker marker, String format, Object... params);
+
+  /**
    * Logs an exception or error to be thrown. This may be coded as <br />
    *    throw logger.throwing(debug, myException);
    * @param <T> the Throwable type.
