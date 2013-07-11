@@ -66,8 +66,9 @@ public class RingBufferLogEvent implements LogEvent {
     private boolean endOfBatch;
     private boolean includeLocation;
 
-    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
-            final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t,
+    public void setValues(final AsyncLogger asyncLogger,
+            final String loggerName, final Marker marker, final String fqcn,
+            final Level level, final Message data, final Throwable t,
             final Map<String, String> map, final ContextStack contextStack,
             final String threadName, final StackTraceElement location,
             final long currentTimeMillis) {
@@ -124,31 +125,26 @@ public class RingBufferLogEvent implements LogEvent {
         this.includeLocation = includeLocation;
     }
 
-    // @Override
     @Override
     public String getLoggerName() {
         return loggerName;
     }
 
-    // @Override
     @Override
     public Marker getMarker() {
         return marker;
     }
 
-    // @Override
     @Override
     public String getFQCN() {
         return fqcn;
     }
 
-    // @Override
     @Override
     public Level getLevel() {
         return level;
     }
 
-    // @Override
     @Override
     public Message getMessage() {
         if (message == null) {
@@ -157,37 +153,31 @@ public class RingBufferLogEvent implements LogEvent {
         return message;
     }
 
-    // @Override
     @Override
     public Throwable getThrown() {
         return thrown;
     }
 
-    // @Override
     @Override
     public Map<String, String> getContextMap() {
         return contextMap;
     }
 
-    // @Override
     @Override
     public ContextStack getContextStack() {
         return contextStack;
     }
 
-    // @Override
     @Override
     public String getThreadName() {
         return threadName;
     }
 
-    // @Override
     @Override
     public StackTraceElement getSource() {
         return location;
     }
 
-    // @Override
     @Override
     public long getMillis() {
         return currentTimeMillis;
@@ -202,7 +192,8 @@ public class RingBufferLogEvent implements LogEvent {
      * @param strSubstitutor used to lookup values of variables in properties
      */
     public void mergePropertiesIntoContextMap(
-            final Map<Property, Boolean> properties, final StrSubstitutor strSubstitutor) {
+            final Map<Property, Boolean> properties,
+            final StrSubstitutor strSubstitutor) {
         if (properties == null) {
             return; // nothing to do
         }
@@ -220,5 +211,25 @@ public class RingBufferLogEvent implements LogEvent {
             map.put(prop.getName(), value);
         }
         contextMap = map;
+    }
+
+    /**
+     * Release references held by ring buffer to allow objects to be
+     * garbage-collected.
+     */
+    public void clear() {
+        setValues(null, // asyncLogger
+                null, // loggerName
+                null, // marker
+                null, // fqcn
+                null, // level
+                null, // data
+                null, // t
+                null, // map
+                null, // contextStack
+                null, // threadName
+                null, // location
+                0 // currentTimeMillis
+        );
     }
 }

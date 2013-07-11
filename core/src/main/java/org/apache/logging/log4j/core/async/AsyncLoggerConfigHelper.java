@@ -85,7 +85,8 @@ class AsyncLoggerConfigHelper {
      */
     private final EventTranslator<Log4jEventWrapper> translator = new EventTranslator<Log4jEventWrapper>() {
         @Override
-        public void translateTo(final Log4jEventWrapper event, final long sequence) {
+        public void translateTo(final Log4jEventWrapper event,
+                final long sequence) {
             event.event = currentLogEvent.get();
             event.loggerConfig = asyncLoggerConfig;
         }
@@ -120,7 +121,8 @@ class AsyncLoggerConfigHelper {
     }
 
     private static WaitStrategy createWaitStrategy() {
-        final String strategy = System.getProperty("AsyncLoggerConfig.WaitStrategy");
+        final String strategy = System
+                .getProperty("AsyncLoggerConfig.WaitStrategy");
         LOGGER.debug("property AsyncLoggerConfig.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
             LOGGER.debug("disruptor event handler uses SleepingWaitStrategy");
@@ -158,15 +160,15 @@ class AsyncLoggerConfigHelper {
     }
 
     private static ExceptionHandler getExceptionHandler() {
-        final String cls = System.getProperty("AsyncLoggerConfig.ExceptionHandler");
+        final String cls = System
+                .getProperty("AsyncLoggerConfig.ExceptionHandler");
         if (cls == null) {
             LOGGER.debug("No AsyncLoggerConfig.ExceptionHandler specified");
             return null;
         }
         try {
             @SuppressWarnings("unchecked")
-            final
-            Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
+            final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
                     .forName(cls);
             final ExceptionHandler result = klass.newInstance();
             LOGGER.debug("AsyncLoggerConfig.ExceptionHandler=" + result);
@@ -186,6 +188,15 @@ class AsyncLoggerConfigHelper {
     private static class Log4jEventWrapper {
         private AsyncLoggerConfig loggerConfig;
         private LogEvent event;
+
+        /**
+         * Release references held by ring buffer to allow objects to be
+         * garbage-collected.
+         */
+        public void clear() {
+            loggerConfig = null;
+            event = null;
+        }
     }
 
     /**
@@ -207,6 +218,7 @@ class AsyncLoggerConfigHelper {
                 final boolean endOfBatch) throws Exception {
             event.event.setEndOfBatch(endOfBatch);
             event.loggerConfig.asyncCallAppenders(event.event);
+            event.clear();
 
             // notify the BatchEventProcessor that the sequence has progressed.
             // Without this callback the sequence would not be progressed
