@@ -48,7 +48,7 @@
                 <li>Calls to <code>Logger.getLogger()</code> must be modified to <code>LogManager.getLogger()</code>.
                 </li>
                 <li>Calls to <code>Logger.getRootLogger()</code> or <code>LogManager.getRootLogger()</code> must be 
-                  replaced with <code>LogManager.getLogger("")</code>.</li>
+                  replaced with <code>LogManager.getRootLogger()</code>.</li>
                 <li>Calls to <code>LogManager.getLogger</code> that accept a <code>LoggerFactory</code> must remove the
                   <code>LoggerFactory</code> and use one of Log4j 2's other extension mechanisms.</li>
                 <li>Calls to <code>logger.setLevel()</code> or similar methods are not supported in the API. 
