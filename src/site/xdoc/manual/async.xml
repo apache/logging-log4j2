@@ -517,6 +517,8 @@
 						result in messages per second.</li>
 					<li>Repeat the test 5 times and average the results.</li>
 				</ul>
+				<p>The results below were obtained with log4j-2.0-beta5, disruptor-3.0.0.beta3,
+				log4j-1.2.17 and logback-1.0.10.</p>
 				<h4>Logging Throughput</h4>
 				<p>
 				The graph below compares the throughput of synchronous loggers,
