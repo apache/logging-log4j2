@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-306" dev="ggregory" type="update">
+        Update JSON Jackson library to 2.2.2 from 2.2.1.
+      </action>
       <action issue="LOG4J2-305" dev="ggregory" type="add">
         Ease porting from 1.x Logger.getRootLogger(): add LogManager.getRootLogger().
       </action>
