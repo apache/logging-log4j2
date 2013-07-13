@@ -36,16 +36,17 @@ import org.apache.logging.log4j.util.ProviderUtil;
  * The anchor point for the logging system.
  */
 public class LogManager {
+	
+    private static LoggerContextFactory factory;
+
+    private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     /**
      * The name of the root Logger.
      */
     public static final String ROOT_LOGGER_NAME = "";
-
-    private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
-
-    private static LoggerContextFactory factory;
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Scans the classpath to find all logging implementation. Currently, only one will
@@ -121,9 +122,13 @@ public class LogManager {
     }
 
     /**
-     * Prevents instantiation
+     * Gets the class name of the caller in the current stack at the given {@code depth}.
+     * 
+     * @param depth a 0-based index in the current stack.
+     * @return a class name
      */
-    protected LogManager() {
+    private static String getClassName(final int depth) {
+        return new Throwable().getStackTrace()[depth].getClassName();
     }
 
     /**
@@ -310,6 +315,14 @@ public class LogManager {
     }
 
     /**
+     * Returns a Logger with the name of the calling class.
+     * @return The Logger for the calling class.
+     */
+    public static Logger getLogger() {
+        return getLogger(getClassName(2));
+    }
+
+    /**
      * Returns a Logger using the fully qualified name of the Class as the Logger name.
      * @param clazz The Class whose name should be used as the Logger name. If null it will default to the calling
      *              class.
@@ -329,6 +342,16 @@ public class LogManager {
      */
     public static Logger getLogger(final Class<?> clazz, final MessageFactory messageFactory) {
         return getLogger(clazz != null ? clazz.getName() : getClassName(2), messageFactory);
+    }
+
+    /**
+     * Returns a Logger with the name of the calling class.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The Logger for the calling class.
+     */
+    public static Logger getLogger(final MessageFactory messageFactory) {
+        return getLogger(getClassName(2), messageFactory);
     }
 
     /**
@@ -378,24 +401,6 @@ public class LogManager {
     }
 
     /**
-     * Returns a Logger with the name of the calling class.
-     * @return The Logger for the calling class.
-     */
-    public static Logger getLogger() {
-        return getLogger(getClassName(2));
-    }
-
-    /**
-     * Returns a Logger with the name of the calling class.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The Logger for the calling class.
-     */
-    public static Logger getLogger(final MessageFactory messageFactory) {
-        return getLogger(getClassName(2), messageFactory);
-    }
-
-    /**
      * Returns a Logger with the specified name.
      *
      * @param fqcn The fully qualified class name of the class that this method is a member of.
@@ -407,12 +412,9 @@ public class LogManager {
     }
 
     /**
-     * Gets the class name of the caller in the current stack at the given {@code depth}.
-     * 
-     * @param depth a 0-based index in the current stack.
-     * @return a class name
+     * Prevents instantiation
      */
-    private static String getClassName(final int depth) {
-        return new Throwable().getStackTrace()[depth].getClassName();
+    protected LogManager() {
     }
+
 }
