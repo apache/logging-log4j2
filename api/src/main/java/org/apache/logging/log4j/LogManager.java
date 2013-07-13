@@ -412,6 +412,15 @@ public class LogManager {
     }
 
     /**
+     * Returns the root logger.
+     * 
+     * @return the root logger, named {@link #ROOT_LOGGER_NAME}.
+     */
+	public static Logger getRootLogger() {
+		return getLogger(ROOT_LOGGER_NAME);
+	}
+
+    /**
      * Prevents instantiation
      */
     protected LogManager() {
