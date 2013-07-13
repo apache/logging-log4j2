@@ -60,7 +60,7 @@ public class LoggerTest {
         configure(CONFIG);
         logger = LogManager.getLogger(LoggerTest.class);
         assertTrue("Incorrect SLF4J Logger", ((SLF4JLogger) logger).getLogger() == slf4jLogger);
-        root = LogManager.getLogger("");
+        root = LogManager.getRootLogger();
         rootLogger = context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         list = (StringListAppender<ILoggingEvent>) rootLogger.getAppender("LIST");
         rootLogger.detachAppender("console");

@@ -271,6 +271,15 @@ public class LoggerTest {
     }
 
     @Test
+    public void getRootLogger() {
+        assertNotNull(LogManager.getRootLogger());
+        assertNotNull(LogManager.getLogger(""));
+        assertNotNull(LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
+        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(""));
+        assertEquals(LogManager.getRootLogger(), LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
+    }
+
+    @Test
     public void isAllEnabled() {
         assertTrue("Incorrect level", logger.isEnabled(Level.ALL));
     }
