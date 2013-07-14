@@ -21,8 +21,11 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-308" dev="rpopma" type="update">
+        Clarified which library versions were used in Async Loggers performance test.
+      </action>
       <action issue="LOG4J2-307" dev="rpopma" type="update">
-        Update Async Loggers' LMAX Disruptor library from 3.0.1 to 3.1.1.
+        Updated Async Loggers' LMAX Disruptor library from 3.0.1 to 3.1.1.
       </action>
       <action issue="LOG4J2-306" dev="ggregory" type="update">
         Update JSON Jackson library to 2.2.2 from 2.2.1.
