@@ -61,8 +61,8 @@ public class SyslogLayout extends AbstractStringLayout {
 
 
 
-    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset c) {
-        super(c);
+    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
+        super(charset);
         this.facility = facility;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
