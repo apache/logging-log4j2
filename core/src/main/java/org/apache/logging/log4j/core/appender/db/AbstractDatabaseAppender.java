@@ -20,6 +20,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -99,16 +100,14 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         this.readLock.lock();
         try {
             this.getManager().write(event);
-        } catch (final RuntimeException e) {
+        } catch (final LoggingException e) {
             LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
                     this.getName(), e);
-            if(!this.isExceptionSuppressed())
-                throw e;
+            throw e;
         } catch (final Exception e) {
             LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
                     this.getName(), e);
-            if(!this.isExceptionSuppressed())
-                throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
+            throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
         } finally {
             this.readLock.unlock();
         }
