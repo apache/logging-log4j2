@@ -27,24 +27,22 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests a "complete" XML file a.k.a. a well-formed XML file.
+ * Tests a "compact" XML file, no extra spaces or end of lines.
  */
-public class FastXmlFileAppenderTest {
+public class XmlCompactFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "FastXmlFileAppenderTest.xml");
+                "XmlCompactFileAppenderTest.xml");
     }
 
     @Test
-    @Ignore
     public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "FastXmlFileAppenderTest.log");
+        final File f = new File("target", "XmlCompactFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
@@ -54,35 +52,29 @@ public class FastXmlFileAppenderTest {
 
         final BufferedReader reader = new BufferedReader(new FileReader(f));
         String line1;
-        String line2;
-        String line3;
-        String line4;
         try {
             line1 = reader.readLine();
-            line2 = reader.readLine();
-            line3 = reader.readLine();
-            line4 = reader.readLine();
         } finally {
             reader.close();
             f.delete();
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
-        
-        assertNotNull("line2", line2);
-        final String msg2 = "<log4j:events xmlns:log4j=\"http://logging.apache.org/log4j/\">";
-        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
-        
-        assertNotNull("line3", line3);
-        final String msg3 = "<log4j:event ";
-        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.contains(msg1));
 
-        assertNotNull("line4", line4);
+        final String msg2 = "<events xmlns=\"http://logging.apache.org/log4j/2.0/\">";
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + "]", line1.contains(msg2));
+
+        final String msg3 = "<event ";
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + "]", line1.contains(msg3));
+
         final String msg4 = logMsg;
-        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + "]", line4.contains(msg4));
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg4 + "]", line1.contains(msg4));
 
         final String location = "testFlushAtEndOfBatch";
         assertTrue("no location", !line1.contains(location));
+
+        assertTrue(line1.indexOf('\r') == -1);
+        assertTrue(line1.indexOf('\n') == -1);
     }
 }

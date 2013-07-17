@@ -27,24 +27,22 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
-public class FastXmlFileAppenderTest {
+public class XmlCompleteFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "FastXmlFileAppenderTest.xml");
+                "XmlCompleteFileAppenderTest.xml");
     }
 
     @Test
-    @Ignore
     public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "FastXmlFileAppenderTest.log");
+        final File f = new File("target", "XmlCompleteFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
@@ -71,11 +69,11 @@ public class FastXmlFileAppenderTest {
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
         
         assertNotNull("line2", line2);
-        final String msg2 = "<log4j:events xmlns:log4j=\"http://logging.apache.org/log4j/\">";
+        final String msg2 = "<events xmlns=\"http://logging.apache.org/log4j/2.0/\">";
         assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
         
         assertNotNull("line3", line3);
-        final String msg3 = "<log4j:event ";
+        final String msg3 = "<event ";
         assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
 
         assertNotNull("line4", line4);

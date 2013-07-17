@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class XMLLayoutTest {
     private static final String body =
-        "<log4j:message><![CDATA[empty mdc]]></log4j:message>";
+        "<message><![CDATA[empty mdc]]></message>";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @AfterClass
@@ -60,13 +60,13 @@ public class XMLLayoutTest {
 
     @Test
     public void testContentType() {
-        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null);
+        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null, null, null);
         assertEquals("text/xml; charset=UTF-8", layout.getContentType());
     }
 
     @Test
     public void testDefaultCharset() {
-        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null);
+        final XMLLayout layout = XMLLayout.createLayout(null, null, null, null, null, null);
         assertEquals(Charsets.UTF_8, layout.getCharset());
     }
 
@@ -77,7 +77,7 @@ public class XMLLayoutTest {
     public void testLayout() throws Exception {
 
         // set up appender
-        final XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null);
+        final XMLLayout layout = XMLLayout.createLayout("true", "true", "true", null, null, null);
         final ListAppender<String> appender = new ListAppender<String>("List", null, layout, true, false);
         appender.start();
 
@@ -107,7 +107,7 @@ public class XMLLayoutTest {
         assertTrue("Incorrect number of lines. Require at least 50 " + list.size(), list.size() > 50);
         final String string = list.get(0);
         assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</log4j:eventSet>"));
-        assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(8), list.get(8).equals(body));
+        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</events>"));
+        assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(7), list.get(7).trim().equals(body));
     }
 }
