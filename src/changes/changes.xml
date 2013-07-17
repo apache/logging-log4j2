@@ -42,6 +42,9 @@
       <action issue="LOG4J2-304" dev="rpopma" type="fix">
         Fixed Async Loggers memory leak.
       </action>
+      <action issue="LOG4J2-291" dev="nickwilliams" type="fix">
+        Fixed JDBC, JPA, and NoSQL appenders so that the failover appender properly fails over on error.
+      </action>
     </release>
     <release version="2.0-beta8" date="2013-07-10" description="Bug fixes and enhancements">
       <action issue="LOG4J2-270" dev="nickwilliams" type="update">
