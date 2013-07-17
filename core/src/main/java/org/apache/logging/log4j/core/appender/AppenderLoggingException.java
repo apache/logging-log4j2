@@ -14,24 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.core.appender;
+
+import org.apache.logging.log4j.LoggingException;
 
 /**
- * Exception thrown when an error occurs while logging.  In most cases exceptions will be handled
- * within Log4j but certain Appenders may be configured to allow exceptions to propagate to the
- * application. This is a RuntimeException so that the exception may be thrown in those cases without
- * requiring all Logger methods be contained with try/catch blocks.
+ * Thrown from an appender when a log event could not be written. Appenders should not thrown an exception if an error
+ * occurs that does <em>not</em> stop the event from being successfully written. Those types of errors should be logged
+ * using the {@link org.apache.logging.log4j.status.StatusLogger}. Appenders should only throw exceptions when an error
+ * prevents an event from being written. Appenders <em>must</em> throw an exception in this case so that error-handling
+ * features like the {@link FailoverAppender} work properly.
+ *
+ * Also note that appenders <em>must</em> provide a way to suppress exceptions when the user desires and abide by
+ * that instruction. See {@link org.apache.logging.log4j.core.Appender#isExceptionSuppressed()}, which is the standard
+ * way to do this.
  */
-public class LoggingException extends RuntimeException {
+public class AppenderLoggingException extends LoggingException {
 
-    private static final long serialVersionUID = 6366395965071580537L;
+    private static final long serialVersionUID = 6545990597472958303L;
 
     /**
      * Construct an exception with a message.
      *
      * @param message The reason for the exception
      */
-    public LoggingException(final String message) {
+    public AppenderLoggingException(final String message) {
         super(message);
     }
 
@@ -41,7 +48,7 @@ public class LoggingException extends RuntimeException {
      * @param message The reason for the exception
      * @param cause The underlying cause of the exception
      */
-    public LoggingException(final String message, final Throwable cause) {
+    public AppenderLoggingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -50,7 +57,7 @@ public class LoggingException extends RuntimeException {
      *
      * @param cause The underlying cause of the exception
      */
-    public LoggingException(final Throwable cause) {
+    public AppenderLoggingException(final Throwable cause) {
         super(cause);
     }
 }

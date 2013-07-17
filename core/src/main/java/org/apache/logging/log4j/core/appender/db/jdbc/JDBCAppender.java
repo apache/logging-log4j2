@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
@@ -38,9 +37,9 @@ import org.apache.logging.log4j.core.helpers.Strings;
 public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseManager> {
     private final String description;
 
-    private JDBCAppender(final String name, final Filter filter, final boolean handleException,
+    private JDBCAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                          final JDBCDatabaseManager manager) {
-        super(name, filter, handleException, manager);
+        super(name, filter, exceptionSuppressed, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -75,7 +74,7 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
                                               @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
+        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
 
         final StringBuilder managerName = new StringBuilder("jdbcManager{ description=").append(name)
                 .append(", bufferSize=").append(bufferSizeInt).append(", connectionSource=")
@@ -98,6 +97,6 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
             return null;
         }
 
-        return new JDBCAppender(name, filter, handleExceptions, manager);
+        return new JDBCAppender(name, filter, exceptionSuppressed, manager);
     }
 }

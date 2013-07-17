@@ -25,7 +25,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -65,7 +65,7 @@ public class DatagramOutputStream extends OutputStream {
         } catch (final UnknownHostException ex) {
             final String msg = "Could not find host " + host;
             LOGGER.error(msg, ex);
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
 
         try {
@@ -73,7 +73,7 @@ public class DatagramOutputStream extends OutputStream {
         } catch (final SocketException ex) {
             final String msg = "Could not instantiate DatagramSocket to " + host;
             LOGGER.error(msg, ex);
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
     }
 

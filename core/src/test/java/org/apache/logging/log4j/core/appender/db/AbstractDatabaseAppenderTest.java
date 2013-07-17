@@ -67,7 +67,7 @@ public class AbstractDatabaseAppenderTest {
     }
 
     @Test
-    public void testStartAndStop() {
+    public void testStartAndStop() throws Exception {
         this.setUp("name");
 
         this.manager.connectInternal();
@@ -86,7 +86,7 @@ public class AbstractDatabaseAppenderTest {
     }
 
     @Test
-    public void testReplaceManager() {
+    public void testReplaceManager() throws Exception {
         this.setUp("name");
 
         replay(this.manager, this.appender);
@@ -149,9 +149,9 @@ public class AbstractDatabaseAppenderTest {
 
     private static abstract class LocalAbstractDatabaseAppender extends
             AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
-        public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean handleException,
+        public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                                              final LocalAbstractDatabaseManager manager) {
-            super(name, filter, handleException, manager);
+            super(name, filter, exceptionSuppressed, manager);
         }
     }
 }

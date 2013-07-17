@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -23,7 +29,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
@@ -32,14 +38,7 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -95,7 +94,7 @@ public abstract class AbstractSocketServerTest {
             try {
                 testServer(m1, m2);
 
-            } catch (final AppenderRuntimeException are) {
+            } catch (final AppenderLoggingException are) {
                 assertTrue("", are.getCause() != null && are.getCause() instanceof IOException);
                 // Failure expected.
             }

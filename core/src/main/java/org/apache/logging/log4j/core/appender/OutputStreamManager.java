@@ -107,7 +107,7 @@ public class OutputStreamManager extends AbstractManager {
      * @param bytes The serialized Log event.
      * @param offset The offset into the byte array.
      * @param length The number of bytes to write.
-     * @throws AppenderRuntimeException if an error occurs.
+     * @throws AppenderLoggingException if an error occurs.
      */
     protected synchronized void write(final byte[] bytes, final int offset, final int length)  {
         //System.out.println("write " + count);
@@ -115,7 +115,7 @@ public class OutputStreamManager extends AbstractManager {
             os.write(bytes, offset, length);
         } catch (final IOException ex) {
             final String msg = "Error writing to stream " + getName();
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
     }
 
@@ -123,7 +123,7 @@ public class OutputStreamManager extends AbstractManager {
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
      * @param bytes The serialized Log event.
-     * @throws AppenderRuntimeException if an error occurs.
+     * @throws AppenderLoggingException if an error occurs.
      */
     protected void write(final byte[] bytes)  {
         write(bytes, 0, bytes.length);
@@ -149,7 +149,7 @@ public class OutputStreamManager extends AbstractManager {
             os.flush();
         } catch (final IOException ex) {
             final String msg = "Error flushing stream " + getName();
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
     }
 }

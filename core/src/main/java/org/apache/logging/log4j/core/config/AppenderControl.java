@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.filter.Filterable;
 
@@ -89,7 +89,7 @@ public class AppenderControl<T extends Serializable> extends AbstractFilterable 
                 appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
                 if (!appender.isExceptionSuppressed()) {
-                    throw new AppenderRuntimeException(
+                    throw new AppenderLoggingException(
                         "Attempted to append to non-started appender " + appender.getName());
                 }
             }
@@ -108,7 +108,7 @@ public class AppenderControl<T extends Serializable> extends AbstractFilterable 
             } catch (final Exception ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
                 if (!appender.isExceptionSuppressed()) {
-                    throw new AppenderRuntimeException(ex);
+                    throw new AppenderLoggingException(ex);
                 }
             }
         } finally {

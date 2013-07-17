@@ -117,7 +117,7 @@ public abstract class AbstractOutputStreamAppender<T extends Serializable> exten
                     manager.flush();
                 }
             }
-        } catch (final AppenderRuntimeException ex) {
+        } catch (final AppenderLoggingException ex) {
             error("Unable to write to stream " + manager.getName() + " for appender " + getName());
             throw ex;
         } finally {

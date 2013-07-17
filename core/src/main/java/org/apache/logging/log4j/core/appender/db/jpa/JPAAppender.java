@@ -39,9 +39,9 @@ import org.apache.logging.log4j.core.helpers.Strings;
 public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
     private final String description;
 
-    private JPAAppender(final String name, final Filter filter, final boolean handleException,
+    private JPAAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
             final JPADatabaseManager manager) {
-        super(name, filter, handleException, manager);
+        super(name, filter, exceptionSuppressed, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -77,7 +77,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
         }
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
+        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
 
         try {
             @SuppressWarnings("unchecked")
@@ -110,7 +110,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                 return null;
             }
 
-            return new JPAAppender(name, filter, handleExceptions, manager);
+            return new JPAAppender(name, filter, exceptionSuppressed, manager);
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not load entity class [{}].", entityClassName, e);
             return null;

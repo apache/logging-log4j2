@@ -18,10 +18,9 @@ package org.apache.logging.log4j.core.appender.db.nosql.couch;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 
@@ -29,8 +28,6 @@ import org.lightcouch.Response;
  * The Apache CouchDB implementation of {@link NoSQLConnection}.
  */
 public final class CouchDBConnection implements NoSQLConnection<Map<String, Object>, CouchDBObject> {
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private final CouchDbClient client;
     private boolean closed = false;
 
@@ -53,10 +50,12 @@ public final class CouchDBConnection implements NoSQLConnection<Map<String, Obje
         try {
             final Response response = this.client.save(object.unwrap());
             if (response.getError() != null && response.getError().length() > 0) {
-                LOGGER.error("Failed to write log event to CouchDB due to error: [{}].", response.getError());
+                throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " +
+                        response.getError() + ".");
             }
         } catch (final Exception e) {
-            LOGGER.error("Failed to write log event to CouchDB due to error.", e);
+            throw new AppenderLoggingException("Failed to write log event to CouchDB due to error: " + e.getMessage(),
+                    e);
         }
     }
 

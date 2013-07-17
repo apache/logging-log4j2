@@ -17,20 +17,29 @@
 package org.apache.logging.log4j.core.config;
 
 /**
- *
+ * This exception is thrown when an error occurs reading from, parsing, using, or initializing the Log4j 2
+ * configuration. It is also thrown if an appender cannot be created based on the configuration provided.
  */
 public class ConfigurationException extends RuntimeException {
 
-    /**
-     * Generated serial version ID.
-     */
     private static final long serialVersionUID = -2413951820300775294L;
 
-    public ConfigurationException(final String msg) {
-        super(msg);
+    /**
+     * Construct an exception with a message.
+     *
+     * @param message The reason for the exception
+     */
+    public ConfigurationException(final String message) {
+        super(message);
     }
 
-    public ConfigurationException(final String msg, final Exception ex) {
-        super(msg, ex);
+    /**
+     * Construct an exception with a message and underlying cause.
+     *
+     * @param message The reason for the exception
+     * @param cause The underlying cause of the exception
+     */
+    public ConfigurationException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }

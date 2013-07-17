@@ -48,7 +48,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
      * Implementations should implement this method to perform any proprietary connection operations. This method will
      * never be called twice on the same instance. It is safe to throw any exceptions from this method.
      */
-    protected abstract void connectInternal();
+    protected abstract void connectInternal() throws Exception;
 
     /**
      * This method is called within the appender when the appender is started. If it has not already been called, it
@@ -60,7 +60,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
                 this.connectInternal();
                 this.connected = true;
             } catch (final Exception e) {
-                LOGGER.error("Could not connect database logging manager.", e);
+                LOGGER.error("Could not connect to database using logging manager [{}].", this.getName(), e);
             }
         }
     }
@@ -70,7 +70,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
      * method will never be called twice on the same instance, and it will only be called <em>after</em>
      * {@link #connectInternal()}. It is safe to throw any exceptions from this method.
      */
-    protected abstract void disconnectInternal();
+    protected abstract void disconnectInternal() throws Exception;
 
     /**
      * This method is called from the {@link #release()} method when the appender is stopped or the appender's manager
@@ -83,7 +83,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
             try {
                 this.disconnectInternal();
             } catch (final Exception e) {
-                LOGGER.warn("Error while disconnecting database logging manager.", e);
+                LOGGER.warn("Error while disconnecting from database using logging manager [{}].", this.getName(), e);
             } finally {
                 this.connected = false;
             }

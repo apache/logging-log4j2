@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.mongo;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -33,8 +32,6 @@ import com.mongodb.WriteResult;
  * The MongoDB implementation of {@link NoSQLConnection}.
  */
 public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, MongoDBObject> {
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private final DBCollection collection;
     private final Mongo mongo;
     private final WriteConcern writeConcern;
@@ -59,11 +56,17 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     public void insertObject(final NoSQLObject<BasicDBObject> object) {
         try {
             final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
+            if (result.getError() != null && result.getError().length() > 0) {
+                throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " +
+                        result.getError() + ".");
+            }
             if (result.getN() < 1) {
-                LOGGER.error("Failed to write log event to MongoDB due to invalid result [{}].", result.getN());
+                throw new AppenderLoggingException("Failed to write log event to MongoDB. Number of records written: " +
+                        result.getN() + ".");
             }
         } catch (final MongoException e) {
-            LOGGER.error("Failed to write log event to MongoDB due to error.", e);
+            throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
+                    e);
         }
     }
 
