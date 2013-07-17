@@ -96,7 +96,7 @@
             data, e.g. category, priority, date, thread name. The format modifiers control such things as field width,
             padding, left and right justification. The following is a simple example.
           </p>
-          <p>Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume that the log4j environment was set to
+          <p>Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume that the Log4j environment was set to
             use a PatternLayout. Then the statements
  <pre>Logger logger = LogManager.getLogger("MyLogger");
 logger.debug("Message 1");
@@ -1155,7 +1155,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <h4>Complete well-formed XML vs. fragment XML</h4>
           <p>
           If you configure <code>complete="true"</code>, the appender outputs a well-formed XML document where the 
-          default namespace is the log4j namespace <code>"http://logging.apache.org/log4j/2.0/"</code>.  By default, 
+          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/"</code>.  By default, 
           with <code>complete="false"</code>, you should include the output as an <em>external entity</em> in a 
           separate file to form a well-formed XML document, in which case the appender uses 
           <code>namespacePrefix</code> with a default of <code>"log4j"</code>.
