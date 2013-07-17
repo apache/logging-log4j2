@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <File name="XmlFile" fileName="target/XmlFileAppenderTest.log" immediateFlush="false" append="false">
-      <XMLLayout/>
+    <File name="XmlFile" fileName="target/XmlCompactFileAppenderTest.log" immediateFlush="false" append="false">
+      <XMLLayout complete="true" compact="true"/>
     </File>
   </appenders>
   

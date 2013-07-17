@@ -136,8 +136,8 @@ element. -->
 <!-- ==================================================================== -->
 <!--                       A logging event                                -->
 <!-- ==================================================================== -->
-<!ELEMENT log4j:eventSet (log4j:event*)>
-<!ATTLIST log4j:eventSet
+<!ELEMENT log4j:events (log4j:event*)>
+<!ATTLIST log4j:events
   xmlns:log4j             CDATA #FIXED "http://jakarta.apache.org/log4j/" 
   version                (1.1|1.2) "1.2" 
   includesLocationInfo   (true|false) "true"
