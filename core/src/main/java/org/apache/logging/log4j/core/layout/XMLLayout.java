@@ -55,14 +55,14 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * 
  * <pre>
  * &lt;?xml version="1.0" encoding=&quotUTF-8&quot?&gt;
- * &lt;events xmlns="http://logging.apache.org/log4j/2.0"&gt;
- * &nbsp;&nbsp;&lt;event logger="com.foo.Bar" timestamp="1373436580419" level="INFO" thread="main"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;&lt;message>&lt;![CDATA[This is a log message 1]]&gt;&lt;/message&gt;
- * &nbsp;&nbsp;&lt;/event&gt;
- * &nbsp;&nbsp;&lt;event logger="com.foo.Baz" timestamp="1373436580420" level="INFO" thread="main"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;&lt;message>&lt;![CDATA[This is a log message 2]]&gt;&lt;/message&gt;
- * &nbsp;&nbsp;&lt;/event&gt;
- * &lt;/events&gt;
+ * &lt;Events xmlns="http://logging.apache.org/log4j/2.0"&gt;
+ * &nbsp;&nbsp;&lt;Event logger="com.foo.Bar" timestamp="1373436580419" level="INFO" thread="main"&gt;
+ * &nbsp;&nbsp;&nbsp;&nbsp;&lt;Message>&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
+ * &nbsp;&nbsp;&lt;/Event&gt;
+ * &nbsp;&nbsp;&lt;Event logger="com.foo.Baz" timestamp="1373436580420" level="INFO" thread="main"&gt;
+ * &nbsp;&nbsp;&nbsp;&nbsp;&lt;Message>&lt;![CDATA[This is a log message 2]]&gt;&lt;/Message&gt;
+ * &nbsp;&nbsp;&lt;/Event&gt;
+ * &lt;/Events&gt;
  * </pre>
  * <p>
  * If {@code complete="false"}, the appender does not write the XML processing instruction and the root element.
@@ -85,7 +85,8 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 @Plugin(name = "XMLLayout", category = "Core", elementType = "layout", printObject = true)
 public class XMLLayout extends AbstractStringLayout {
 
-    private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/";
+    private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0";
+    private static final String ROOT_TAG = "Events";
     private static final int DEFAULT_SIZE = 256;
     
     // We yield to \r\n for the default.
@@ -134,7 +135,7 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             buf.append(this.namespacePrefix);
         }
-        buf.append("event logger=\"");
+        buf.append("Event logger=\"");
         String name = event.getLoggerName();
         if (name.isEmpty()) {
             name = "root";
@@ -166,7 +167,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("message>");
+            buf.append("Message>");
             if (xmlSupported) {
                 buf.append(((MultiformatMessage) msg).getFormattedMessage(FORMATS));
             } else {
@@ -180,7 +181,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("message>");
+            buf.append("Message>");
             buf.append(this.eol);
         }
 
@@ -208,7 +209,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("throwable><![CDATA[");
+            buf.append("Throwable><![CDATA[");
             for (final String str : s) {
                 Transform.appendEscapingCDATA(buf, str);
                 buf.append(this.eol);
@@ -217,7 +218,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("throwable>");
+            buf.append("Throwable>");
             buf.append(this.eol);
         }
 
@@ -228,7 +229,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("locationInfo class=\"");
+            buf.append("LocationInfo class=\"");
             buf.append(Transform.escapeTags(element.getClassName()));
             buf.append("\" method=\"");
             buf.append(Transform.escapeTags(element.getMethodName()));
@@ -246,7 +247,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("properties>");
+            buf.append("Properties>");
             buf.append(this.eol);
             for (final Map.Entry<String, String> entry : event.getContextMap().entrySet()) {
                 buf.append(this.indent3);
@@ -254,7 +255,7 @@ public class XMLLayout extends AbstractStringLayout {
                 if (!complete) {
                     buf.append(this.namespacePrefix);
                 }
-                buf.append("data name=\"");
+                buf.append("Data name=\"");
                 buf.append(Transform.escapeTags(entry.getKey()));
                 buf.append("\" value=\"");
                 buf.append(Transform.escapeTags(String.valueOf(entry.getValue())));
@@ -266,7 +267,7 @@ public class XMLLayout extends AbstractStringLayout {
             if (!complete) {
                 buf.append(this.namespacePrefix);
             }
-            buf.append("properties>");
+            buf.append("Properties>");
             buf.append(this.eol);
         }
 
@@ -275,7 +276,7 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             buf.append(this.namespacePrefix);
         }
-        buf.append("event>");
+        buf.append("Event>");
         buf.append(this.eol);
 
         return buf.toString();
@@ -301,7 +302,9 @@ public class XMLLayout extends AbstractStringLayout {
         buf.append("\"?>");
         buf.append(this.eol);
         // Make the log4j namespace the default namespace, no need to use more space with a namespace prefix.
-        buf.append("<events xmlns=\"" + XML_NAMESPACE + "\">");
+        buf.append('<');
+        buf.append(ROOT_TAG);
+        buf.append(" xmlns=\"" + XML_NAMESPACE + "\">");
         buf.append(this.eol);
         return buf.toString().getBytes(this.getCharset());
     }
@@ -317,19 +320,20 @@ public class XMLLayout extends AbstractStringLayout {
         if (!complete) {
             return null;
         }
-        return ("</events>" + this.eol).getBytes(getCharset());
+        return ("</" + ROOT_TAG + ">" + this.eol).getBytes(getCharset());
     }
 
     /**
      * XMLLayout's content format is specified by:<p/>
-     * Key: "dtd" Value: "log4j.dtd"<p/>
+     * Key: "dtd" Value: "log4j-events.dtd"<p/>
      * Key: "version" Value: "2.0"
      * @return Map of content format keys supporting XMLLayout
      */
     @Override
     public Map<String, String> getContentFormat() {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("dtd", "log4j.dtd");
+        //result.put("dtd", "log4j-events.dtd");
+        result.put("xsd", "log4j-events.xsd");
         result.put("version", "2.0");
         return result;
     }

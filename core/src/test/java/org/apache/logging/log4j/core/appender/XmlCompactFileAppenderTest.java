@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,30 +43,29 @@ public class XmlCompactFileAppenderTest {
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "XmlCompactFileAppenderTest.log");
-        // System.out.println(f.getAbsolutePath());
-        f.delete();
+        final File file = new File("target", "XmlCompactFileAppenderTest.log");
+        file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=false";
         log.info(logMsg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         String line1;
         try {
             line1 = reader.readLine();
         } finally {
             reader.close();
-            f.delete();
+            file.delete();
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.contains(msg1));
 
-        final String msg2 = "<events xmlns=\"http://logging.apache.org/log4j/2.0/\">";
+        final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0\">";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + "]", line1.contains(msg2));
 
-        final String msg3 = "<event ";
+        final String msg3 = "<Event ";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg3 + "]", line1.contains(msg3));
 
         final String msg4 = logMsg;
@@ -77,4 +77,5 @@ public class XmlCompactFileAppenderTest {
         assertTrue(line1.indexOf('\r') == -1);
         assertTrue(line1.indexOf('\n') == -1);
     }
+    
 }
