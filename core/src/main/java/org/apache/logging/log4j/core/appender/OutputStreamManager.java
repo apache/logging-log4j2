@@ -129,7 +129,7 @@ public class OutputStreamManager extends AbstractManager {
         write(bytes, 0, bytes.length);
     }
 
-    protected void close() {
+    protected synchronized void close() {
         final OutputStream stream = os; // access volatile field only once per method
         if (stream == System.out || stream == System.err) {
             return;
@@ -144,7 +144,7 @@ public class OutputStreamManager extends AbstractManager {
     /**
      * Flush any buffers.
      */
-    public void flush() {
+    public synchronized void flush() {
         try {
             os.flush();
         } catch (final IOException ex) {

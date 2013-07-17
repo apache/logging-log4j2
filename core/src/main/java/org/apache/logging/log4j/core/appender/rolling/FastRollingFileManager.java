@@ -99,7 +99,7 @@ public class FastRollingFileManager extends RollingFileManager {
     }
 
     @Override
-    public void flush() {
+    public synchronized void flush() {
         buffer.flip();
         try {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
@@ -111,7 +111,7 @@ public class FastRollingFileManager extends RollingFileManager {
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         flush();
         try {
             randomAccessFile.close();
