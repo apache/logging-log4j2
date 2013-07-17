@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 
 /**
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
@@ -46,12 +46,12 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * 
      * @param name The appender name.
      * @param filter The filter, if any, to use.
-     * @param handleException Whether logging exceptions should be reported to the application.
+     * @param exceptionSuppressed Whether logging exceptions should be suppressed or reported to the application.
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
-    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean handleException,
+    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                                        final T manager) {
-        super(name, filter, null, handleException);
+        super(name, filter, null, exceptionSuppressed);
         this.manager = manager;
     }
 
@@ -78,7 +78,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     @Override
     public final void start() {
         if (this.getManager() == null) {
-            LOGGER.error("No AbstractDatabaseManager set for the appender named [" + this.getName() + "].");
+            LOGGER.error("No AbstractDatabaseManager set for the appender named [{}].", this.getName());
         }
         super.start();
         if (this.getManager() != null) {
@@ -99,10 +99,16 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         this.readLock.lock();
         try {
             this.getManager().write(event);
-        } catch (final AppenderRuntimeException e) {
-            this.error("Unable to write to database [" + this.getManager().getName() + "] for appender [" +
-                    this.getName() + "].", e);
-            throw e;
+        } catch (final RuntimeException e) {
+            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
+                    this.getName(), e);
+            if(!this.isExceptionSuppressed())
+                throw e;
+        } catch (final Exception e) {
+            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
+                    this.getName(), e);
+            if(!this.isExceptionSuppressed())
+                throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
         } finally {
             this.readLock.unlock();
         }

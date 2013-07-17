@@ -90,7 +90,7 @@ public class FileManager extends OutputStreamManager {
                     lock.release();
                 }
             } catch (final IOException ex) {
-                throw new AppenderRuntimeException("Unable to obtain lock on " + getName(), ex);
+                throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
             }
 
         } else {

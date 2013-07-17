@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
@@ -44,29 +45,21 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
 
     @Override
     protected void connectInternal() {
-        try {
-            this.connection = this.provider.getConnection();
-        } catch (final Exception e) {
-            LOGGER.error("Failed to obtain a connection to the NoSQL database in manager [{}].", this.getName(), e);
-        }
+        this.connection = this.provider.getConnection();
     }
 
     @Override
     protected void disconnectInternal() {
-        try {
-            if (this.connection != null && !this.connection.isClosed()) {
-                this.connection.close();
-            }
-        } catch (final Exception e) {
-            LOGGER.warn("Error while closing NoSQL database connection in manager [{}].", this.getName(), e);
+        if (this.connection != null && !this.connection.isClosed()) {
+            this.connection.close();
         }
     }
 
     @Override
     protected void writeInternal(final LogEvent event) {
         if (!this.isConnected() || this.connection == null || this.connection.isClosed()) {
-            LOGGER.error("Cannot write logging event; manager [{}] not connected to the database.", this.getName());
-            return;
+            throw new AppenderLoggingException(
+                    "Cannot write logging event; NoSQL manager not connected to the database.");
         }
 
         final NoSQLObject<W> entity = this.connection.createObject();

@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -116,7 +116,7 @@ public class TCPSocketManager extends AbstractSocketManager {
             }
             if (socket == null) {
                 final String msg = "Error writing to " + getName() + " socket not available";
-                throw new AppenderRuntimeException(msg);
+                throw new AppenderLoggingException(msg);
             }
         }
         synchronized (this) {
@@ -130,7 +130,7 @@ public class TCPSocketManager extends AbstractSocketManager {
                     connector.start();
                 }
                 final String msg = "Error writing to " + getName();
-                throw new AppenderRuntimeException(msg, ex);
+                throw new AppenderLoggingException(msg, ex);
             }
         }
     }

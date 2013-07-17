@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.apache.flume.Event;
 import org.apache.flume.api.RpcClient;
 import org.apache.flume.api.RpcClientFactory;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 /**
@@ -146,13 +146,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
-                throw new AppenderRuntimeException("No Flume agents are available");
+                throw new AppenderLoggingException("No Flume agents are available");
             }
         }  else {
             final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                 agents[current].getPort();
             LOGGER.warn(msg);
-            throw new AppenderRuntimeException("No Flume agents are available");
+            throw new AppenderLoggingException("No Flume agents are available");
         }
     }
 
@@ -171,13 +171,13 @@ public class FlumeAvroManager extends AbstractFlumeManager {
                 final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                     agents[current].getPort();
                 LOGGER.warn(msg, ex);
-                throw new AppenderRuntimeException("No Flume agents are available");
+                throw new AppenderLoggingException("No Flume agents are available");
             }
         } else {
             final String msg = "Unable to write to " + getName() + " at " + agents[current].getHost() + ":" +
                 agents[current].getPort();
             LOGGER.warn(msg);
-            throw new AppenderRuntimeException("No Flume agents are available");
+            throw new AppenderLoggingException("No Flume agents are available");
         }
     }
 

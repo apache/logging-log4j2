@@ -40,7 +40,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testConnection01() {
+    public void testConnection01() throws Exception {
         this.setUp("testName01", 0);
 
         replay(this.manager);
@@ -68,7 +68,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testConnection02() {
+    public void testConnection02() throws Exception {
         this.setUp("anotherName02", 0);
 
         replay(this.manager);
@@ -114,7 +114,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testBuffering01() {
+    public void testBuffering01() throws Exception {
         this.setUp("name", 0);
 
         final LogEvent event1 = createStrictMock(LogEvent.class);
@@ -149,7 +149,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testBuffering02() {
+    public void testBuffering02() throws Exception {
         this.setUp("name", 4);
 
         final LogEvent event1 = createStrictMock(LogEvent.class);
@@ -183,7 +183,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testBuffering03() {
+    public void testBuffering03() throws Exception {
         this.setUp("name", 10);
 
         final LogEvent event1 = createStrictMock(LogEvent.class);
@@ -214,7 +214,7 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testBuffering04() {
+    public void testBuffering04() throws Exception {
         this.setUp("name", 10);
 
         final LogEvent event1 = createStrictMock(LogEvent.class);

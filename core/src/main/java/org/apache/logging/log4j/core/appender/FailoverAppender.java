@@ -133,7 +133,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
     }
 
     private void failover(final LogEvent event, final Exception ex) {
-        final RuntimeException re = ex != null ? new LoggingException(ex) : null;
+        final RuntimeException re = ex != null ?
+                (ex instanceof LoggingException ? (LoggingException)ex : new LoggingException(ex)) : null;
         boolean written = false;
         Exception failoverException = null;
         for (final AppenderControl control : failoverAppenders) {

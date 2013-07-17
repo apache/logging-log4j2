@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -41,9 +40,9 @@ import org.apache.logging.log4j.core.helpers.Strings;
 public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseManager<?>> {
     private final String description;
 
-    private NoSQLAppender(final String name, final Filter filter, final boolean handleException,
+    private NoSQLAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                           final NoSQLDatabaseManager<?> manager) {
-        super(name, filter, handleException, manager);
+        super(name, filter, exceptionSuppressed, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -76,7 +75,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
         }
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean handleExceptions = !Boolean.parseBoolean(suppressExceptions);
+        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
 
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";
@@ -88,6 +87,6 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
             return null;
         }
 
-        return new NoSQLAppender(name, filter, handleExceptions, manager);
+        return new NoSQLAppender(name, filter, exceptionSuppressed, manager);
     }
 }

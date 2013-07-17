@@ -55,7 +55,7 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
         try {
             manager.send(getLayout().toSerializable(event));
         } catch (final Exception ex) {
-            throw new AppenderRuntimeException(ex);
+            throw new AppenderLoggingException(ex);
         }
     }
 

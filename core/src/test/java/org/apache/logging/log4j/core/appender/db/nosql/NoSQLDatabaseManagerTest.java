@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.db.nosql.couch.CouchDBObject;
 import org.apache.logging.log4j.message.Message;
 import org.easymock.Capture;
@@ -81,7 +82,8 @@ public class NoSQLDatabaseManagerTest {
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }
@@ -99,13 +101,19 @@ public class NoSQLDatabaseManagerTest {
             final LogEvent event = createStrictMock(LogEvent.class);
             replay(this.provider, this.connection, event);
 
-            manager.writeInternal(event);
+            try {
+                manager.writeInternal(event);
+                fail("Expected AppenderLoggingException.");
+            } catch (AppenderLoggingException ignore) {
+                /* */
+            }
 
             verify(event);
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }
@@ -127,7 +135,12 @@ public class NoSQLDatabaseManagerTest {
             expect(this.connection.isClosed()).andReturn(true);
             replay(this.provider, this.connection, event);
 
-            manager.writeInternal(event);
+            try {
+                manager.writeInternal(event);
+                fail("Expected AppenderLoggingException.");
+            } catch (AppenderLoggingException ignore) {
+                /* */
+            }
 
             verify(this.provider, this.connection, event);
             reset(this.provider, this.connection);
@@ -138,7 +151,8 @@ public class NoSQLDatabaseManagerTest {
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }
@@ -223,7 +237,8 @@ public class NoSQLDatabaseManagerTest {
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }
@@ -356,7 +371,8 @@ public class NoSQLDatabaseManagerTest {
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }
@@ -533,7 +549,8 @@ public class NoSQLDatabaseManagerTest {
         } finally {
             try {
                 manager.release();
-            } catch (final Throwable ignore) { /* */
+            } catch (final Throwable ignore) {
+                /* */
             }
         }
     }

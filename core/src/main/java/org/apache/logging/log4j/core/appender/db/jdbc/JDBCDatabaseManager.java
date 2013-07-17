@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -51,32 +52,21 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void connectInternal() {
-        try {
-            this.connection = this.connectionSource.getConnection();
-            this.statement = this.connection.prepareStatement(this.sqlStatement);
-        } catch (final SQLException e) {
-            LOGGER.error("Failed to connect to relational database using JDBC connection source [{}] in manager [{}].",
-                    this.connectionSource, this.getName(), e);
-        }
+    protected void connectInternal() throws SQLException {
+        this.connection = this.connectionSource.getConnection();
+        this.statement = this.connection.prepareStatement(this.sqlStatement);
     }
 
     @Override
-    protected void disconnectInternal() {
+    protected void disconnectInternal() throws SQLException {
         try {
             if (this.statement != null && !this.statement.isClosed()) {
                 this.statement.close();
             }
-        } catch (final SQLException e) {
-            LOGGER.warn("Error while closing prepared statement in database manager [{}].", this.getName(), e);
-        }
-
-        try {
+        } finally {
             if (this.connection != null && !this.connection.isClosed()) {
                 this.connection.close();
             }
-        } catch (final SQLException e) {
-            LOGGER.warn("Error while disconnecting from relational database in manager [{}].", this.getName(), e);
         }
     }
 
@@ -85,8 +75,8 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
         StringReader reader = null;
         try {
             if (!this.isConnected() || this.connection == null || this.connection.isClosed()) {
-                LOGGER.error("Cannot write logging event; manager [{}] not connected to the database.", this.getName());
-                return;
+                throw new AppenderLoggingException(
+                        "Cannot write logging event; JDBC manager not connected to the database.");
             }
 
             int i = 1;
@@ -112,10 +102,12 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             }
 
             if (this.statement.executeUpdate() == 0) {
-                LOGGER.warn("No records inserted in database table for log event in manager [{}].", this.getName());
+                throw new AppenderLoggingException(
+                        "No records inserted in database table for log event in JDBC manager.");
             }
         } catch (final SQLException e) {
-            LOGGER.error("Failed to insert record for log event in manager [{}].", this.getName(), e);
+            throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
+                    e.getMessage(), e);
         } finally {
             if (reader != null) {
                 reader.close();

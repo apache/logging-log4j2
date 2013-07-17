@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Constants;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class SocketReconnectTest {
@@ -90,7 +91,7 @@ public class SocketReconnectTest {
         for (int i = 0; i < 100; ++i) {
             try {
                 logger.error(message);
-            } catch (final AppenderRuntimeException e) {
+            } catch (final AppenderLoggingException e) {
                 exceptionCaught = true;
                 break;
                 // System.err.println("Caught expected exception");

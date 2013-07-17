@@ -23,6 +23,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
@@ -63,16 +64,15 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     @Override
     protected void writeInternal(final LogEvent event) {
         if (!this.isConnected() || this.entityManagerFactory == null) {
-            LOGGER.error("Cannot write logging event; manager [{}] not connected to the database.", this.getName());
-            return;
+            throw new AppenderLoggingException(
+                    "Cannot write logging event; JPA manager not connected to the database.");
         }
 
         AbstractLogEventWrapperEntity entity;
         try {
             entity = this.entityConstructor.newInstance(event);
         } catch (final Exception e) {
-            LOGGER.error("Failed to instantiate entity class {}.", this.entityClassName, e);
-            return;
+            throw new AppenderLoggingException("Failed to instantiate entity class [" + this.entityClassName + "].", e);
         }
 
         EntityManager entityManager = null;
@@ -84,10 +84,11 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
             entityManager.persist(entity);
             transaction.commit();
         } catch (final Exception e) {
-            LOGGER.error("Failed to persist log event entity.", e);
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
+            throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
+                    e.getMessage(), e);
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();

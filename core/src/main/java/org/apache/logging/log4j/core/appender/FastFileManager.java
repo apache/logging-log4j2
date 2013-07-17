@@ -110,7 +110,7 @@ public class FastFileManager extends OutputStreamManager {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
         buffer.clear();
     }

@@ -23,7 +23,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.AppenderRuntimeException;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 
 /**
@@ -105,7 +105,7 @@ public class FastRollingFileManager extends RollingFileManager {
             randomAccessFile.write(buffer.array(), 0, buffer.limit());
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
-            throw new AppenderRuntimeException(msg, ex);
+            throw new AppenderLoggingException(msg, ex);
         }
         buffer.clear();
     }
