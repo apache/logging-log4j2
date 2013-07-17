@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-311" dev="rpopma" type="fix">
+        Synchronized flush() and close() methods in the XxxFileManager and OutputStreamManager classes.
+      </action>
       <action issue="LOG4J2-312" dev="ggregory" type="update">
         XML layout improvements (compact vs. pretty, namespace, namespace prefix, root element).
       </action>
