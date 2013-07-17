@@ -69,11 +69,11 @@ public class XmlCompleteFileAppenderTest {
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
         
         assertNotNull("line2", line2);
-        final String msg2 = "<events xmlns=\"http://logging.apache.org/log4j/2.0/\">";
+        final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0\">";
         assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
         
         assertNotNull("line3", line3);
-        final String msg3 = "<event ";
+        final String msg3 = "<Event ";
         assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
 
         assertNotNull("line4", line4);

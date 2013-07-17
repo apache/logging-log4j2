@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
-  <appenders>
+<Configuration status="OFF">
+  <Appenders>
     <File name="XmlFile" fileName="target/XmlCompleteFileAppenderTest.log" immediateFlush="false" append="false">
-      <XMLLayout complete="true"/>
+      <XMLLayout complete="true" charset="UTF-8"/>
     </File>
-  </appenders>
+  </Appenders>
   
-  <loggers>
-    <asyncRoot level="info" includeLocation="false">
-      <appender-ref ref="XmlFile"/>
-    </asyncRoot>
-  </loggers>
-</configuration>
+  <Loggers>
+    <AsyncRoot level="info" includeLocation="false">
+      <Appender-ref ref="XmlFile"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>
