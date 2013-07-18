@@ -80,6 +80,19 @@
   </PatternLayout>
 </File>]]></pre>
         </subsection>
+        <a name="JNDILookup"/>
+        <subsection name="JNDILookup">
+          <p>
+            The JNDILookup allows variables to be retrieved via JNDI. By default the key will be prefixed with
+            java:comp/env/, however if the key contains a ":" no prefix will be added.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${jndi:logging/context-name} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
+        </subsection>
         <a name="MapLookup"/>
         <subsection name="MapLookup">
           <p>

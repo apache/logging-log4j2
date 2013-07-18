@@ -63,6 +63,7 @@ public class Interpolator implements StrLookup {
         this.defaultLookup = new MapLookup(new HashMap<String, String>());
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
+        lookups.put("jndi", new JndiLookup());
     }
 
      /**
