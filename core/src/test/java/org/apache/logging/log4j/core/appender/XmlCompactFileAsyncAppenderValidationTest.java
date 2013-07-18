@@ -29,63 +29,42 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
  * Tests XML validation for a "compact" XML file, no extra spaces or end of lines.
  */
-public class XmlCompactFileAppenderValidationTest {
+@Ignore
+public class XmlCompactFileAsyncAppenderValidationTest {
 
-    private LoggerContext loggerContext;
-
-    @Before
-    public void before() {
-        this.loggerContext = Configurator.initialize(XmlCompactFileAppenderValidationTest.class.getName(),
-                "target/test-classes/XmlCompactFileAppenderValidationTest.xml");
-    }
-
-    @After
-    public void after() {
-        // Just in case, an @Test blew up
-        Configurator.shutdown(this.loggerContext);
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+                "XmlCompactFileAsyncAppenderValidationTest.xml");
     }
 
     @Test
-    public void validateXmlSchemaThrowable() throws Exception {
-        final File file = new File("target", "XmlCompactFileAppenderValidationTest.log.xml");
-        file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
-        try {
-            throw new IllegalArgumentException("IAE");
-        } catch (final IllegalArgumentException e) {
-            log.warn("Message 1", e);
-        }
-        Configurator.shutdown(this.loggerContext);
-        this.validateXmlSchema(file);
-    }
-
-    @Test
-    public void validateXmlSchema() throws Exception {
-        final File file = new File("target", "XmlCompactFileAppenderValidationTest.log.xml");
+    public void validateXmlSchemaSimple() throws Exception {
+        final File file = new File("target", "XmlCompactFileAsyncAppenderValidationTest.log.xml");
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.warn("Message 1");
         log.info("Message 2");
         log.debug("Message 3");
-        Configurator.shutdown(this.loggerContext);
+        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
         this.validateXmlSchema(file);
     }
 
     @Test
-    public void validateXmlNoEvents() throws Exception {
-        final File file = new File("target", "XmlCompactFileAppenderValidationTest.log.xml");
+    public void validateXmlSchemaNoEvents() throws Exception {
+        final File file = new File("target", "XmlCompactFileAsyncAppenderValidationTest.log.xml");
         file.delete();
-        Configurator.shutdown(this.loggerContext);
+        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
         this.validateXmlSchema(file);
     }
 

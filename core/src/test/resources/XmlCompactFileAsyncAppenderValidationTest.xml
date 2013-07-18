@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
   <Appenders>
-    <File name="XmlFile" fileName="target/XmlCompactFileAppenderValidationTest.log.xml" immediateFlush="false" append="false">
+    <File name="XmlFile" fileName="target/XmlCompactFileAsyncAppenderValidationTest.log.xml" immediateFlush="false" append="false">
       <XMLLayout complete="true" compact="true" charset="UTF-8"/>
     </File>
   </Appenders>
   
   <Loggers>
-    <Root level="info" includeLocation="false">
+    <AsyncRoot level="info" includeLocation="false">
       <appender-ref ref="XmlFile"/>
-    </Root>
+    </AsyncRoot>
   </Loggers>
 </Configuration>
