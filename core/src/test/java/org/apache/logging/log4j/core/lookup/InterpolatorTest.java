@@ -16,16 +16,22 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.logging.log4j.ThreadContext;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockejb.jndi.MockContextFactory;
 
 /**
  *
@@ -35,17 +41,24 @@ public class InterpolatorTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
+    private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
+    private static final String TEST_CONTEXT_NAME = "app-1";
 
     @BeforeClass
-    public static void before() {
+    public static void before() throws NamingException {
         System.setProperty(TESTKEY, TESTVAL);
+
+        MockContextFactory.setAsInitial();
+        Context context = new InitialContext();
+        context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
     }
 
     @AfterClass
     public static void after() {
+        MockContextFactory.revertSetAsInitial();
+
         System.clearProperty(TESTKEY);
     }
-
 
     @Test
     public void testLookup() {
@@ -64,5 +77,18 @@ public class InterpolatorTest {
         ThreadContext.clear();
         value = lookup.lookup("ctx:" + TESTKEY);
         assertEquals(TESTVAL, value);
+        value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
+        assertEquals(TEST_CONTEXT_NAME, value);
+    }
+
+    @Test
+    public void testLookupWithDefaultInterpolator() {
+        final StrLookup lookup = new Interpolator();
+        String value = lookup.lookup("sys:" + TESTKEY);
+        assertEquals(TESTVAL, value);
+        value = lookup.lookup("env:PATH");
+        assertNotNull(value);
+        value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
+        assertEquals(TEST_CONTEXT_NAME, value);
     }
 }
