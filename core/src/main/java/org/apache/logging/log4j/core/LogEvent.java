@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -126,7 +127,7 @@ public interface LogEvent extends Serializable {
      * @see #getSource()
      */
     void setIncludeLocation(boolean locationRequired);
-    
+
     /**
      * Returns {@code true} if this event is the last one in a batch,
      * {@code false} otherwise. Used by asynchronous Loggers and Appenders to
@@ -137,7 +138,7 @@ public interface LogEvent extends Serializable {
      */
     // see also LOG4J2-164
     boolean isEndOfBatch();
-    
+
     /**
      * Sets whether this event is the last one in a batch.
      * Used by asynchronous Loggers and Appenders to signal to buffered

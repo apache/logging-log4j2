@@ -104,12 +104,56 @@ public class Log4jLogEvent implements LogEvent {
                          final Message message, final Throwable t,
                          final Map<String, String> mdc, final ThreadContext.ContextStack ndc, final String threadName,
                          final StackTraceElement location, final long timestamp) {
+        this(loggerName, marker, fqcn, level, message, t == null ? null : new ThrowableProxy(t), mdc, ndc, threadName,
+            location, timestamp);
+    }
+
+    /**
+     * Create a new LogEvent.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A ThrowableProxy or null.
+     * @param mdc The mapped diagnostic context.
+     * @param ndc the nested diagnostic context.
+     * @param threadName The name of the thread.
+     * @param location The locations of the caller.
+     * @param timestamp The timestamp of the event.
+     */
+    public static Log4jLogEvent createEvent(final String loggerName, final Marker marker, final String fqcn,
+                                            final Level level, final Message message, final ThrowableProxy t,
+                                            final Map<String, String> mdc, final ThreadContext.ContextStack ndc,
+                                            final String threadName, final StackTraceElement location,
+                                            final long timestamp) {
+     return new Log4jLogEvent(loggerName, marker, fqcn, level, message, t, mdc, ndc, threadName, location, timestamp);
+    }
+
+    /**
+     * Constructor.
+     * @param loggerName The name of the Logger.
+     * @param marker The Marker or null.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param level The logging Level.
+     * @param message The Message.
+     * @param t A ThrowableProxy or null.
+     * @param mdc The mapped diagnostic context.
+     * @param ndc the nested diagnostic context.
+     * @param threadName The name of the thread.
+     * @param location The locations of the caller.
+     * @param timestamp The timestamp of the event.
+     */
+    private Log4jLogEvent(final String loggerName, final Marker marker, final String fqcn, final Level level,
+                         final Message message, final ThrowableProxy t,
+                         final Map<String, String> mdc, final ThreadContext.ContextStack ndc, final String threadName,
+                         final StackTraceElement location, final long timestamp) {
         name = loggerName;
         this.marker = marker;
         this.fqcnOfLogger = fqcn;
         this.level = level;
         this.message = message;
-        this.throwable = t == null ? null : t instanceof ThrowableProxy ? (ThrowableProxy) t : new ThrowableProxy(t);
+        this.throwable = t;
         this.mdc = mdc;
         this.ndc = ndc;
         this.timestamp = message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestamp;
@@ -192,8 +236,17 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public Throwable getThrown() {
+        return throwable == null ? null : throwable.getThrowable();
+    }
+
+    /**
+     * Returns the ThrowableProxy associated with the event, or null.
+     * @return The ThrowableProxy associated with the event.
+     */
+    public ThrowableProxy getThrownProxy() {
         return throwable;
     }
+
 
     /**
      * Returns the Marker associated with the event, or null.
@@ -348,7 +401,7 @@ public class Log4jLogEvent implements LogEvent {
         private final String name;
         private final Message message;
         private final long timestamp;
-        private final Throwable throwable;
+        private final ThrowableProxy throwable;
         private final Map<String, String> mdc;
         private final ThreadContext.ContextStack ndc;
         private final String threadName;

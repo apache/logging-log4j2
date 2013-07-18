@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.
  */
-public class ThrowableProxy extends Throwable {
+public class ThrowableProxy implements Serializable {
 
     private static final long serialVersionUID = -2752771578252251910L;
 
@@ -47,6 +48,8 @@ public class ThrowableProxy extends Throwable {
 
     private final ThrowableProxy proxyCause;
     private int commonElementCount;
+
+    private final Throwable throwable;
 
     private final String name;
 
@@ -63,11 +66,10 @@ public class ThrowableProxy extends Throwable {
      * @param throwable The Throwable to wrap.
      */
     public ThrowableProxy(final Throwable throwable) {
-        super(throwable.getMessage(), null);
+        this.throwable = throwable;
         this.name = throwable.getClass().getName();
         final Map<String, CacheEntry> map = new HashMap<String, CacheEntry>();
         final Stack<Class<?>> stack = getCurrentStack();
-        super.setStackTrace(throwable.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, null, throwable.getStackTrace());
         this.proxyCause = throwable.getCause() == null ? null :
             new ThrowableProxy(throwable, stack, map, throwable.getCause());
@@ -84,47 +86,52 @@ public class ThrowableProxy extends Throwable {
      */
     private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
                            final Throwable cause) {
-        super(cause.getMessage(), null);
+        this.throwable = cause;
         this.name = cause.getClass().getName();
-        super.setStackTrace(cause.getStackTrace());
         callerPackageData = resolvePackageData(stack, map, parent.getStackTrace(), cause.getStackTrace());
         this.proxyCause = cause.getCause() == null ? null :
             new ThrowableProxy(parent, stack, map, cause.getCause());
         setSuppressed(cause);
     }
 
-
-    @Override
-    public void setStackTrace(final StackTraceElement[] stackTraceElements) {
-        throw new UnsupportedOperationException("Cannot set the stack trace on a ThrowableProxy");
+    public Throwable getThrowable() {
+        return throwable;
     }
 
-    @Override
-    public Throwable getCause() {
+    public ThrowableProxy getCause() {
         return proxyCause;
     }
 
-    @Override
-    public Throwable initCause(final Throwable throwable) {
-        throw new IllegalStateException("Cannot set the cause on a ThrowableProxy");
+    /**
+     * Return the FQCN of the Throwable.
+     * @return The FQCN of the Throwable.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Return the number of elements that are being ommitted because they are common with the parent Throwable's
+     * stack trace.
+     * @return The number of elements ommitted from the stack trace.
+     */
+    public int getCommonElementCount() {
+        return commonElementCount;
+    }
+
+    /**
+     * Return the package data associated with the stack trace.
+     * @return The package data associated with the stack trace.
+     */
+    public StackTracePackageElement[] getPackageData() {
+        return callerPackageData;
     }
 
     @Override
     public String toString() {
-        final String msg = getMessage();
+        final String msg = throwable.getMessage();
         return msg != null ? name + ": " + msg : name;
     }
-
-    @Override
-    public Throwable fillInStackTrace() {
-        return this;
-    }
-
-    /*
-    @Override
-    public StackTraceElement[] getStackTrace() {
-        return callerData;
-    } */
 
     /**
      * Format the Throwable that is the cause of this Throwable.
@@ -147,7 +154,7 @@ public class ThrowableProxy extends Throwable {
         }
         sb.append(toString());
         sb.append("\n");
-        formatElements(sb, 0, getStackTrace(), callerPackageData, packages);
+        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         return sb.toString();
     }
 
@@ -167,13 +174,14 @@ public class ThrowableProxy extends Throwable {
      * @param packages The List of packages to be suppressed from the trace.
      */
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
-        final Throwable caused = cause.getCause();
+        final Throwable caused = cause.getCause() != null ? cause.getCause().getThrowable() : null;
         if (caused != null) {
             formatWrapper(sb, cause.proxyCause);
             sb.append("Wrapped by: ");
         }
         sb.append(cause).append("\n");
-        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
+        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
+            packages);
     }
 
     /**
@@ -191,12 +199,12 @@ public class ThrowableProxy extends Throwable {
      */
     public String getExtendedStackTrace(final List<String> packages) {
         final StringBuilder sb = new StringBuilder(name);
-        final String msg = getMessage();
+        final String msg = throwable.getMessage();
         if (msg != null) {
-            sb.append(": ").append(getMessage());
+            sb.append(": ").append(throwable.getMessage());
         }
         sb.append("\n");
-        formatElements(sb, 0, getStackTrace(), callerPackageData, packages);
+        formatElements(sb, 0, throwable.getStackTrace(), callerPackageData, packages);
         if (proxyCause != null) {
             formatCause(sb, proxyCause, packages);
         }
@@ -208,7 +216,7 @@ public class ThrowableProxy extends Throwable {
      * @return The formatted suppressed Throwables.
      */
     public String getSuppressedStackTrace() {
-        final ThrowableProxy[] suppressed = getSuppressedProxies();
+        final ThrowableProxy[] suppressed = getSuppressed();
         if (suppressed == null || suppressed.length == 0) {
             return "";
         }
@@ -221,7 +229,8 @@ public class ThrowableProxy extends Throwable {
 
     private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         sb.append("Caused by: ").append(cause).append("\n");
-        formatElements(sb, cause.commonElementCount, cause.getStackTrace(), cause.callerPackageData, packages);
+        formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
+            packages);
         if (cause.getCause() != null) {
             formatCause(sb, cause.proxyCause, packages);
         }
@@ -509,10 +518,10 @@ public class ThrowableProxy extends Throwable {
         }
     }
 
-    private ThrowableProxy[] getSuppressedProxies() {
+    public ThrowableProxy[] getSuppressed() {
         if (getSuppressed != null) {
             try {
-                return (ThrowableProxy[]) getSuppressed.invoke(this);
+                return (ThrowableProxy[]) getSuppressed.invoke(throwable);
             } catch (final Exception ignore) {
                 return null;
             }

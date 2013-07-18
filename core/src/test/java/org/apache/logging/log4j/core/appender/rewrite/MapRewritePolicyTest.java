@@ -141,8 +141,8 @@ public class MapRewritePolicyTest {
 		Assert.assertEquals("Marker changed", orig.getMarker(), changed.getMarker());
 		Assert.assertEquals("FQCN changed", orig.getFQCN(), changed.getFQCN());
 		Assert.assertEquals("Level changed", orig.getLevel(), changed.getLevel());
-		Assert.assertEquals("Thrown changed", (orig.getThrown() == null ? null : ((ThrowableProxy)orig.getThrown()).getExtendedStackTrace()),
-				(changed.getThrown() == null ? null : ((ThrowableProxy)changed.getThrown()).getExtendedStackTrace()));
+		Assert.assertEquals("Throwable changed", orig.getThrown() == null ? null : ((Log4jLogEvent) orig).getThrownProxy().getExtendedStackTrace(),
+				changed.getThrown() == null ? null : ((Log4jLogEvent) changed).getThrownProxy().getExtendedStackTrace());
 		Assert.assertEquals("ContextMap changed", orig.getContextMap(), changed.getContextMap());
 		Assert.assertEquals("ContextStack changed", orig.getContextStack(), changed.getContextStack());
 		Assert.assertEquals("ThreadName changed", orig.getThreadName(), changed.getThreadName());
