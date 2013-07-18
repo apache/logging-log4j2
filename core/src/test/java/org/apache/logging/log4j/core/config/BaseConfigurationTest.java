@@ -34,7 +34,7 @@ public class BaseConfigurationTest {
     @Test
     public void testMissingRootLogger() throws Exception {
         PluginManager.addPackage("org.apache.logging.log4j.test.appender");
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "missingRootLogger.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "missingRootLogger.xml");
         final Logger logger = LogManager.getLogger("sample.Logger1");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("Config not null", config);

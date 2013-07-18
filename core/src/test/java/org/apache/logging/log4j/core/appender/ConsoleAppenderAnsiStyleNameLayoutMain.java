@@ -32,7 +32,7 @@ public class ConsoleAppenderAnsiStyleNameLayoutMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleNameLayoutMain.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), null,
+        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
                 "target/test-classes/log4j2-console-style-name-ansi.xml");
         try {
             LOG.fatal("Fatal message.");

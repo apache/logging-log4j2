@@ -54,6 +54,16 @@ public final class Configurator {
     /**
      * Initializes the Logging Context.
      * @param name The Context name.
+     * @param configLocation The configuration for the logging context.
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final String name, final String configLocation) {
+        return initialize(name, null, configLocation);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param name The Context name.
      * @param loader The ClassLoader for the Context (or null).
      * @param configLocation The configuration for the logging context.
      * @return The LoggerContext.
