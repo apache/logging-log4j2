@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-299" dev="rgoers" type="fix">
+        Add getThrowable method to ThrowableProxy.
+      </action>
+      <action issue="LOG4J2-216" dev="rgoers" type="fix">
+        ThrowableProxy no longer extends Throwable.
+      </action>
       <action issue="LOG4J2-311" dev="rpopma" type="fix">
         Synchronized flush() and close() methods in the XxxFileManager and OutputStreamManager classes.
       </action>

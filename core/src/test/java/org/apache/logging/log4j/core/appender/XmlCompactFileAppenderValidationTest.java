@@ -33,12 +33,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
  * Tests XML validation for a "compact" XML file, no extra spaces or end of lines.
  */
+@Ignore
 public class XmlCompactFileAppenderValidationTest {
 
     private LoggerContext loggerContext;

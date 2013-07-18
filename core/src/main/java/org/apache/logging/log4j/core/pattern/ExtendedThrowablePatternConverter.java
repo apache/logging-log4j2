@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
 /**
@@ -58,14 +59,17 @@ public final class ExtendedThrowablePatternConverter extends ThrowablePatternCon
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
+        ThrowableProxy proxy = null;
+        if (event instanceof Log4jLogEvent) {
+            proxy = ((Log4jLogEvent) event).getThrownProxy();
+        }
         final Throwable throwable = event.getThrown();
         if (throwable != null && options.anyLines()) {
-            if (!(throwable instanceof ThrowableProxy)) {
+            if (proxy == null) {
                 super.format(event, toAppendTo);
                 return;
             }
-            final ThrowableProxy t = (ThrowableProxy) throwable;
-            final String trace = t.getExtendedStackTrace(options.getPackages());
+            final String trace = proxy.getExtendedStackTrace(options.getPackages());
             final int len = toAppendTo.length();
             if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
                 toAppendTo.append(" ");
