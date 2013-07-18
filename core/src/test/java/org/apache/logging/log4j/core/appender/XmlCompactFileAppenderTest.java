@@ -62,7 +62,7 @@ public class XmlCompactFileAppenderTest {
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.contains(msg1));
 
-        final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0\">";
+        final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg2 + "]", line1.contains(msg2));
 
         final String msg3 = "<Event ";

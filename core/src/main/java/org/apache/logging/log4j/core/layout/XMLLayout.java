@@ -55,7 +55,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * 
  * <pre>
  * &lt;?xml version="1.0" encoding=&quotUTF-8&quot?&gt;
- * &lt;Events xmlns="http://logging.apache.org/log4j/2.0"&gt;
+ * &lt;Events xmlns="http://logging.apache.org/log4j/2.0/events"&gt;
  * &nbsp;&nbsp;&lt;Event logger="com.foo.Bar" timestamp="1373436580419" level="INFO" thread="main"&gt;
  * &nbsp;&nbsp;&nbsp;&nbsp;&lt;Message>&lt;![CDATA[This is a log message 1]]&gt;&lt;/Message&gt;
  * &nbsp;&nbsp;&lt;/Event&gt;
@@ -85,7 +85,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 @Plugin(name = "XMLLayout", category = "Core", elementType = "layout", printObject = true)
 public class XMLLayout extends AbstractStringLayout {
 
-    private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0";
+    private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";
     private static final String ROOT_TAG = "Events";
     private static final int DEFAULT_SIZE = 256;
     

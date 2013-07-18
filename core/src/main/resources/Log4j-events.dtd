@@ -6,7 +6,7 @@
 <!--namespace prefix to namespace uri mappings-->
 <!ENTITY % log4j_prefix.. "%log4j_prefix;:">
 <!--namespaces attributes for root element-->
-<!ENTITY % documentElementAttributes " xmlns:%log4j_prefix; CDATA 'http://logging.apache.org/log4j/2.0'">
+<!ENTITY % documentElementAttributes " xmlns:%log4j_prefix; CDATA 'http://logging.apache.org/log4j/2.0/events'">
 <!--the declarations below should not be modified-->
 <!--element name mappings-->
 <!ENTITY % log4j..Events "%log4j_prefix..;Events">

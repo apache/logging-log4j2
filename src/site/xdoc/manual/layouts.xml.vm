@@ -1155,7 +1155,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <h4>Complete well-formed XML vs. fragment XML</h4>
           <p>
           If you configure <code>complete="true"</code>, the appender outputs a well-formed XML document where the 
-          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/"</code>.  By default, 
+          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/events"</code>.  By default, 
           with <code>complete="false"</code>, you should include the output as an <em>external entity</em> in a 
           separate file to form a well-formed XML document, in which case the appender uses 
           <code>namespacePrefix</code> with a default of <code>"log4j"</code>.
@@ -1164,7 +1164,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           A well-formed XML document follows this pattern:
           </p>
           <pre class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;events xmlns=&quot;http://logging.apache.org/log4j/2.0&quot;&gt;
+&lt;events xmlns=&quot;http://logging.apache.org/log4j/2.0/events&quot;&gt;
   &lt;event logger=&quot;com.foo.Bar&quot; timestamp=&quot;1373436580419&quot; level=&quot;INFO&quot; thread=&quot;main&quot;&gt;
     &lt;message&gt;&lt;![CDATA[This is a log message 1]]&gt;&lt;/message&gt;
   &lt;/event&gt;
