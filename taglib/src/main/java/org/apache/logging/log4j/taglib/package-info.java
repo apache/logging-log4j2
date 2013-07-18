@@ -15,8 +15,8 @@
  * limitations under the license.
  */
 /**
- +  Classes (JSP tags) to enable logging in JSPs without using Java scripting.
- +
- +  @since 2.0
+ * Classes (JSP tags) to enable logging in JSPs without using Java scripting.
+ *
+ * @since 2.0
  */
 package org.apache.logging.log4j.taglib;
