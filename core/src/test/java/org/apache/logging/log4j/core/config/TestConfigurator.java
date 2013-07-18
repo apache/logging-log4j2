@@ -68,7 +68,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromFile() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -125,7 +125,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPath() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "log4j2-config.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "log4j2-config.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -142,7 +142,7 @@ public class TestConfigurator {
 
     @Test
     public void testByName() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("-config", null, (String) null);
+        final LoggerContext ctx = Configurator.initialize("-config", (String) null);
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -161,7 +161,7 @@ public class TestConfigurator {
     public void testReconfiguration() throws Exception {
         final File file = new File("target/test-classes/log4j2-config.xml");
         file.setLastModified(System.currentTimeMillis() - 120000);
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -187,7 +187,7 @@ public class TestConfigurator {
 
     @Test
     public void testEnvironment() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("-config", null, (String) null);
+        final LoggerContext ctx = Configurator.initialize("-config", (String) null);
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -213,7 +213,7 @@ public class TestConfigurator {
 
     @Test
     public void testNoLoggers() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-loggers.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-loggers.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -222,7 +222,7 @@ public class TestConfigurator {
 
     @Test
     public void testBadStatus() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-status.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-status.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -234,7 +234,7 @@ public class TestConfigurator {
 
     @Test
     public void testBadFilterParam() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badfilterparam.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-badfilterparam.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -247,7 +247,7 @@ public class TestConfigurator {
 
     @Test
     public void testNoFilters() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-nofilter.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-nofilter.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -262,7 +262,7 @@ public class TestConfigurator {
 
     @Test
     public void testBadLayout() throws Exception {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badlayout.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-badlayout.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
@@ -279,7 +279,7 @@ public class TestConfigurator {
         }
         final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "bad/log4j-badfilename.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "bad/log4j-badfilename.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);

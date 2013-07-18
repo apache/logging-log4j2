@@ -41,7 +41,7 @@ public class LoggingTest {
 
     @BeforeClass
     public static void setupClass() {
-        ctx = Configurator.initialize("Test1", null, CONFIG);
+        ctx = Configurator.initialize("Test1", CONFIG);
     }
 
     @AfterClass

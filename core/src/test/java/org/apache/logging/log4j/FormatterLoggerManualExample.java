@@ -40,7 +40,7 @@ public class FormatterLoggerManualExample {
      * @param args
      */
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(FormatterLoggerManualExample.class.getName(), null,
+        final LoggerContext ctx = Configurator.initialize(FormatterLoggerManualExample.class.getName(),
                 "target/test-classes/log4j2-console.xml");
         try {
             final User user = new User();

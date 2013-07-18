@@ -32,7 +32,7 @@ public class ConsoleAppenderHighlightLayoutMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderHighlightLayoutMain.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), null,
+        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
                 "target/test-classes/log4j2-console-highlight.xml");
         try {
             LOG.fatal("Fatal message.");

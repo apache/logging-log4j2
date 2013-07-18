@@ -36,7 +36,13 @@ public class TestConfiguratorError {
     }
 
     @Test
-    public void testError() throws Exception {
+    public void testErrorNoClassLoader() throws Exception {
+        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
+        assertNull("No LoggerContext should have been returned", ctx);
+    }
+
+    @Test
+    public void testErrorNullClassLoader() throws Exception {
         final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml");
         assertNull("No LoggerContext should have been returned", ctx);
     }

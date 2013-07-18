@@ -32,7 +32,7 @@ public class ConsoleAppenderAnsiMessagesMain {
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiMessagesMain.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), null,
+        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
                 "target/test-classes/log4j2-console.xml");
         try {
             LOG.fatal("\u001b[1;35mFatal message.\u001b[0m");

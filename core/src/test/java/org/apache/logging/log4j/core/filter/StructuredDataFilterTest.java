@@ -66,7 +66,7 @@ public class StructuredDataFilterTest {
 
     @Test
     public void testConfig() {
-        final LoggerContext ctx = Configurator.initialize("Test1", null, "target/test-classes/log4j2-sdfilter.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-sdfilter.xml");
         final Configuration config = ctx.getConfiguration();
         final Filter filter = config.getFilter();
         assertNotNull("No StructuredDataFilter", filter);
