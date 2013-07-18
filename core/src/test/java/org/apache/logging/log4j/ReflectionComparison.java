@@ -56,7 +56,7 @@ public class ReflectionComparison {
             }
         } catch (final ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
-            throw  new RuntimeException(cnfe);
+            throw new RuntimeException(cnfe);
         }
     }
 
