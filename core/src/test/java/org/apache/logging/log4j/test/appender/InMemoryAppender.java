@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 
 /**
  *
@@ -30,8 +30,8 @@ import java.io.Serializable;
 public class InMemoryAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     public InMemoryAppender(final String name, final Layout<T> layout, final CompositeFilter filters,
-                            final boolean handleException) {
-        super(name, layout, filters, handleException, true, new InMemoryManager(name, layout));
+                            final boolean ignoreExceptions) {
+        super(name, layout, filters, ignoreExceptions, true, new InMemoryManager(name, layout));
     }
 
     @Override

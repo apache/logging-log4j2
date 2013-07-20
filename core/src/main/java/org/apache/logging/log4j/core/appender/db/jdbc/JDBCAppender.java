@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
@@ -37,9 +38,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseManager> {
     private final String description;
 
-    private JDBCAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
+    private JDBCAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                          final JDBCDatabaseManager manager) {
-        super(name, filter, exceptionSuppressed, manager);
+        super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -52,8 +53,8 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
      * Factory method for creating a JDBC appender within the plugin manager.
      *
      * @param name The name of the appender.
-     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
-     *                           {@code "false"} otherwise.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param filter The filter, if any, to use.
      * @param connectionSource The connections source from which database connections should be retrieved.
      * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
@@ -65,7 +66,7 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
      */
     @PluginFactory
     public static JDBCAppender createAppender(@PluginAttr("name") final String name,
-                                              @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                              @PluginAttr("ignoreExceptions") final String ignore,
                                               @PluginElement("filter") final Filter filter,
                                               @PluginElement("connectionSource") final ConnectionSource
                                                       connectionSource,
@@ -74,7 +75,7 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
                                               @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         final StringBuilder managerName = new StringBuilder("jdbcManager{ description=").append(name)
                 .append(", bufferSize=").append(bufferSizeInt).append(", connectionSource=")
@@ -97,6 +98,6 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
             return null;
         }
 
-        return new JDBCAppender(name, filter, exceptionSuppressed, manager);
+        return new JDBCAppender(name, filter, ignoreExceptions, manager);
     }
 }

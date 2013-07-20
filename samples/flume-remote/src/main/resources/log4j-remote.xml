@@ -20,7 +20,7 @@
 	<MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL" />
 	<appenders>
 
-		<Flume name="flume" suppressExceptions="false" mdcPrefix="ReqCtx_" compress="false">
+		<Flume name="flume" ignoreExceptions="false" mdcPrefix="ReqCtx_" compress="false">
 			<Agent host="localhost" port="8800" />
 			<RFC5424Layout enterpriseNumber="12293" includeMDC="true" mdcId="RequestContext" appName="GL" />
 		</Flume>

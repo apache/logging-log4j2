@@ -40,8 +40,8 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
     private final JMSQueueManager manager;
 
     private JMSQueueAppender(final String name, final Filter filter, final Layout<T> layout,
-                             final JMSQueueManager manager, final boolean handleExceptions) {
-        super(name, filter, layout, handleExceptions);
+                             final JMSQueueManager manager, final boolean ignoreExceptions) {
+        super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
     }
 
@@ -70,12 +70,12 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
      * @param securityCredentials The security credentials of the Principal.
      * @param factoryBindingName The name to locate in the Context that provides the QueueConnectionFactory.
      * @param queueBindingName The name to use to locate the Queue.
-     * @param userName The userid to use to create the Queue Connection.
+     * @param userName The user ID to use to create the Queue Connection.
      * @param password The password to use to create the Queue Connection.
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     *                 The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The JMSQueueAppender.
      */
@@ -93,12 +93,12 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
                                                 @PluginAttr("password") final String password,
                                                 @PluginElement("layout") Layout<S> layout,
                                                 @PluginElement("filter") final Filter filter,
-                                                @PluginAttr("suppressExceptions") final String suppress) {
+                                                @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
@@ -110,6 +110,6 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }
-        return new JMSQueueAppender<S>(name, filter, layout, manager, handleExceptions);
+        return new JMSQueueAppender<S>(name, filter, layout, manager, ignoreExceptions);
     }
 }

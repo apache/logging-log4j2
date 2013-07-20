@@ -19,7 +19,7 @@
 <configuration packages="" status="error" name="Flume">
   <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
   <Appenders>
-    <Flume name="eventLogger" suppressExceptions="false" mdcPrefix="." compress="true">
+    <Flume name="eventLogger" ignoreExceptions="false" mdcPrefix="." compress="true">
       <Agent host="192.168.10.101" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" mdcId="RequestContext" appName="MyApp"/>
     </Flume>

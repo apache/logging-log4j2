@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="info" name="MyApp" packages="org.apache.logging.log4j.flume.test">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="persistent" dataDir="target/persistent"
+    <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="persistent" dataDir="target/persistent"
         batchsize="100" maxDelay="500">
       <Agent host="localhost" port="${sys:primaryPort}"/>
       <Agent host="localhost" port="${sys:alternatePort}"/>

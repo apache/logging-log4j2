@@ -50,13 +50,14 @@ public interface Appender<T extends Serializable> extends LifeCycle {
     Layout<T> getLayout();
 
     /**
-     * If set to true any exceptions thrown by the Appender will be logged but not thrown.
-     * @return true if Exceptions should be suppressed, false otherwise.
+     * Some appenders need to propagate exceptions back to the application. When {@code ignoreExceptions} is
+     * {@code false} the AppenderControl will allow the exception to percolate.
+     *
+     * @return {@code true} if exceptions will be logged but now thrown, {@code false} otherwise.
      */
-    boolean isExceptionSuppressed();
+    boolean ignoreExceptions();
 
     ErrorHandler getHandler();
 
     void setHandler(ErrorHandler handler);
-
 }

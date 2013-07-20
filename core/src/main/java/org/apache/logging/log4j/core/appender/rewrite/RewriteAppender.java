@@ -47,10 +47,10 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
     private final RewritePolicy rewritePolicy;
     private final AppenderRef[] appenderRefs;
 
-    private RewriteAppender(final String name, final Filter filter, final boolean handleException,
+    private RewriteAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                             final AppenderRef[] appenderRefs, final RewritePolicy rewritePolicy,
                             final Configuration config) {
-        super(name, filter, null, handleException);
+        super(name, filter, null, ignoreExceptions);
         this.config = config;
         this.rewritePolicy = rewritePolicy;
         this.appenderRefs = appenderRefs;
@@ -96,7 +96,8 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
     /**
      * Create a RewriteAppender.
      * @param name The name of the Appender.
-     * @param suppress If true, exceptions will be handled in the Appender.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param appenderRefs An array of Appender names to call.
      * @param config The Configuration.
      * @param rewritePolicy The policy to use to modify the event.
@@ -106,13 +107,13 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
      */
     @PluginFactory
     public static <S extends Serializable> RewriteAppender<S> createAppender(@PluginAttr("name") final String name,
-                                          @PluginAttr("suppressExceptions") final String suppress,
+                                          @PluginAttr("ignoreExceptions") final String ignore,
                                           @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
                                           @PluginConfiguration final Configuration config,
                                           @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
                                           @PluginElement("filter") final Filter filter) {
 
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {
             LOGGER.error("No name provided for RewriteAppender");
             return null;
@@ -121,6 +122,6 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
             LOGGER.error("No appender references defined for RewriteAppender");
             return null;
         }
-        return new RewriteAppender<S>(name, filter, handleExceptions, appenderRefs, rewritePolicy, config);
+        return new RewriteAppender<S>(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config);
     }
 }

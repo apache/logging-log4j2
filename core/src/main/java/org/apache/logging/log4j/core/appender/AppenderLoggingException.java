@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LoggingException;
  * features like the {@link FailoverAppender} work properly.
  *
  * Also note that appenders <em>must</em> provide a way to suppress exceptions when the user desires and abide by
- * that instruction. See {@link org.apache.logging.log4j.core.Appender#isExceptionSuppressed()}, which is the standard
+ * that instruction. See {@link org.apache.logging.log4j.core.Appender#ignoreExceptions()}, which is the standard
  * way to do this.
  */
 public class AppenderLoggingException extends LoggingException {

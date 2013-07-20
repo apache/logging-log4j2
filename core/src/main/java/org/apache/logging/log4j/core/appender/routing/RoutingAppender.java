@@ -56,9 +56,9 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
             new ConcurrentHashMap<String, AppenderControl<T>>();
     private final RewritePolicy rewritePolicy;
 
-    private RoutingAppender(final String name, final Filter filter, final boolean handleException, final Routes routes,
+    private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
                             final RewritePolicy rewritePolicy, final Configuration config) {
-        super(name, filter, null, handleException);
+        super(name, filter, null, ignoreExceptions);
         this.routes = routes;
         this.config = config;
         this.rewritePolicy = rewritePolicy;
@@ -172,8 +172,8 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
     /**
      * Create a RoutingAppender.
      * @param name The name of the Appender.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param routes The routing definitions.
      * @param config The Configuration (automatically added by the Configuration).
      * @param rewritePolicy A RewritePolicy, if any.
@@ -183,13 +183,13 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
      */
     @PluginFactory
     public static <S extends Serializable> RoutingAppender<S> createAppender(@PluginAttr("name") final String name,
-                                          @PluginAttr("suppressExceptions") final String suppress,
+                                          @PluginAttr("ignoreExceptions") final String ignore,
                                           @PluginElement("routes") final Routes routes,
                                           @PluginConfiguration final Configuration config,
                                           @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
                                           @PluginElement("filters") final Filter filter) {
 
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {
             LOGGER.error("No name provided for RoutingAppender");
             return null;
@@ -198,6 +198,6 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
             LOGGER.error("No routes defined for RoutingAppender");
             return null;
         }
-        return new RoutingAppender<S>(name, filter, handleExceptions, routes, rewritePolicy, config);
+        return new RoutingAppender<S>(name, filter, ignoreExceptions, routes, rewritePolicy, config);
     }
 }

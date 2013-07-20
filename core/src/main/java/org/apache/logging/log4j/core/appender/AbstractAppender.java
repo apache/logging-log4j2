@@ -41,7 +41,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final boolean handleException;
+    private final boolean ignoreExceptions;
 
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
@@ -78,15 +78,15 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param name The Appender name.
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
-     * @param handleException If true, exceptions will be logged and suppressed. If false errors will be
+     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
     protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout,
-                               final boolean handleException) {
+                               final boolean ignoreExceptions) {
         super(filter);
         this.name = name;
         this.layout = layout;
-        this.handleException = handleException;
+        this.ignoreExceptions = ignoreExceptions;
     }
 
     /**
@@ -144,13 +144,14 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
     }
 
     /**
-     * Some appenders need to propagate exceptions back to the application. When suppressException is false the
-     * AppenderControl will allow the exception to percolate.
-     * @return true if exceptions will be suppressed, false otherwise.
+     * Some appenders need to propagate exceptions back to the application. When {@code ignoreExceptions} is
+     * {@code false} the AppenderControl will allow the exception to percolate.
+     *
+     * @return {@code true} if exceptions will be logged but now thrown, {@code false} otherwise.
      */
     @Override
-    public boolean isExceptionSuppressed() {
-        return handleException;
+    public boolean ignoreExceptions() {
+        return ignoreExceptions;
     }
 
     /**

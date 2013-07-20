@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.RFC5424Layout;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -44,14 +43,12 @@ import org.apache.logging.log4j.util.EnglishEnums;
 @Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
 
-    private static final String BSD = "bsd";
-
     private static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout<T> layout, final Filter filter,
-                             final boolean handleException, final boolean immediateFlush,
+                             final boolean ignoreExceptions, final boolean immediateFlush,
                              final AbstractSocketManager manager, final Advertiser advertiser) {
-        super(name, layout, filter, manager, handleException, immediateFlush, advertiser);
+        super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser);
 
     }
 
@@ -64,8 +61,8 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param facility The Facility is used to try to classify the message.
      * @param id The default structured data id to use when formatting according to RFC 5424.
      * @param ein The IANA enterprise number.
@@ -100,7 +97,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginAttr("immediateFail") final String immediateFail,
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
-                                                @PluginAttr("suppressExceptions") final String suppress,
+                                                @PluginAttr("ignoreExceptions") final String ignore,
                                                 @PluginAttr("facility") final String facility,
                                                 @PluginAttr("id") final String id,
                                                 @PluginAttr("enterpriseNumber") final String ein,
@@ -124,7 +121,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginAttr("advertise") final String advertise) {
 
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int port = AbstractAppender.parseInt(portNum, 0);
@@ -139,14 +136,13 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
             LOGGER.error("No name provided for SyslogAppender");
             return null;
         }
-        final String prot = protocol != null ? protocol : Protocol.UDP.name();
         final Protocol p = EnglishEnums.valueOf(Protocol.class, protocol);
         final AbstractSocketManager manager = createSocketManager(p, host, port, reconnectDelay, fail, layout);
         if (manager == null) {
             return null;
         }
 
-        return new SyslogAppender<S>(name, layout, filter, handleExceptions, isFlush, manager,
+        return new SyslogAppender<S>(name, layout, filter, ignoreExceptions, isFlush, manager,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

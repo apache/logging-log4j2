@@ -31,11 +31,11 @@
         <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
-    <Socket name="Socket1" host="localhost" port="5560" protocol="TCP" suppressExceptions="false"
+    <Socket name="Socket1" host="localhost" port="5560" protocol="TCP" ignoreExceptions="false"
               reconnectionDelay="250" advertise="true">
       <PatternLayout pattern="%msg%n"/>
     </Socket>
-    <Socket name="Socket2" host="localhost" port="5565" protocol="UDP" suppressExceptions="false"
+    <Socket name="Socket2" host="localhost" port="5565" protocol="UDP" ignoreExceptions="false"
           reconnectionDelay="250">
       <PatternLayout pattern="%msg%n"/>
     </Socket>

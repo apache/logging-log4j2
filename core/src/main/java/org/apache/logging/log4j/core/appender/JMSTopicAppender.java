@@ -40,8 +40,8 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
     private final JMSTopicManager manager;
 
     private JMSTopicAppender(final String name, final Filter filter, final Layout<T> layout,
-                             final JMSTopicManager manager, final boolean handleExceptions) {
-        super(name, filter, layout, handleExceptions);
+                             final JMSTopicManager manager, final boolean ignoreExceptions) {
+        super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
     }
 
@@ -74,8 +74,8 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
      * @param password The password to use to create the Topic Connection.
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     *                 The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The JMSTopicAppender.
      */
@@ -93,13 +93,13 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
                                                 @PluginAttr("password") final String password,
                                                 @PluginElement("layout") Layout<S> layout,
                                                 @PluginElement("filters") final Filter filter,
-                                                @PluginAttr("suppressExceptions") final String suppress) {
+                                                @PluginAttr("ignoreExceptions") final String ignore) {
 
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
             securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
         if (manager == null) {
@@ -111,6 +111,6 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
             Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
             layout = l;
         }
-        return new JMSTopicAppender<S>(name, filter, layout, manager, handleExceptions);
+        return new JMSTopicAppender<S>(name, filter, layout, manager, ignoreExceptions);
     }
 }

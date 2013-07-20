@@ -20,14 +20,14 @@
   <Appenders>
     <List name="List"/>
     <JMSQueue name="Log4j2Queue" queueBindingName="Log4j2Queue" factoryBindingName="QueueConnectionFactory"
-        suppressExceptions="false"/>
-    <Rewrite name="Rewrite" suppressExceptions="false">
+              ignoreExceptions="false"/>
+    <Rewrite name="Rewrite" ignoreExceptions="false">
       <PropertiesRewritePolicy>
         <Property name="appender">List</Property>
       </PropertiesRewritePolicy>
       <appender-ref ref="Log4j2Queue"/>
     </Rewrite>
-    <Failover name="Failover" primary="Rewrite" suppressExceptions="false">
+    <Failover name="Failover" primary="Rewrite" ignoreExceptions="false">
       <Failovers>
         <appender-ref ref="List"/>
       </Failovers>
