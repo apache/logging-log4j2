@@ -265,4 +265,40 @@ public abstract class AbstractJdbcAppenderTest {
 
         assertFalse("There should not be three rows.", resultSet.next());
     }
+
+    @Test
+    public void testPerformanceOfAppenderWith10000Events() throws Exception {
+        this.setUp("dmLogEntry", "log4j2-" + this.databaseType + "-driver-manager.xml");
+
+        final RuntimeException exception = new RuntimeException("Hello, world!");
+
+        final Logger logger = LogManager.getLogger(this.getClass().getName() +
+                ".testPerformanceOfAppenderWith10000Events");
+        logger.info("This is a warm-up message.");
+
+        System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + ".");
+
+        long start = System.nanoTime();
+
+        for(int i = 0; i < 10000; i++) {
+            if (i % 25 == 0) {
+                logger.warn("This is an exception message.", exception);
+            } else {
+                logger.info("This is an info message.");
+            }
+        }
+
+        long elapsed = System.nanoTime() - start;
+        long elapsedMilli = elapsed / 1000000;
+
+        final Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY);
+        final ResultSet resultSet = statement.executeQuery("SELECT * FROM dmLogEntry ORDER BY id");
+
+        resultSet.last();
+        assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
+
+        System.out.println("Wrote 10,000 log events in " + elapsed + " nanoseconds (" + elapsedMilli +
+                " milliseconds) for " + this.databaseType + ".");
+    }
 }

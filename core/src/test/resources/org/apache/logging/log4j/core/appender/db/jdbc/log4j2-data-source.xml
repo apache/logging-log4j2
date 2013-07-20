@@ -21,7 +21,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
-    <Jdbc name="databaseAppender" tableName="dsLogEntry">
+    <Jdbc name="databaseAppender" tableName="dsLogEntry" ignoreExceptions="false">
       <DataSource jndiName="java:/comp/env/jdbc/TestDataSourceAppender" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="literalColumn" literal="'Literal Value of Data Source'" />

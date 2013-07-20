@@ -21,7 +21,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
-    <Jdbc name="databaseAppender" tableName="fmLogEntry">
+    <Jdbc name="databaseAppender" tableName="fmLogEntry" ignoreExceptions="false">
       <ConnectionFactory class="org.apache.logging.log4j.core.appender.db.jdbc.JdbcHyperSqlAppenderTest"
                          method="getConfigConnection" />
       <Column name="eventDate" isEventTimestamp="true" />
