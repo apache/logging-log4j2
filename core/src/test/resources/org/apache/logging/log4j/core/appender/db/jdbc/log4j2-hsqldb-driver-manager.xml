@@ -21,7 +21,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
-    <Jdbc name="databaseAppender" tableName="dmLogEntry">
+    <Jdbc name="databaseAppender" tableName="dmLogEntry" ignoreExceptions="false">
       <DriverManager url="jdbc:hsqldb:mem:Log4j;ifexists=true" username="sa" password="" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="literalColumn" literal="'Literal Value Test String'" />
@@ -33,7 +33,7 @@
   </appenders>
 
   <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.db" level="debug">
+    <logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
       <appender-ref ref="databaseAppender" />
     </logger>
 
