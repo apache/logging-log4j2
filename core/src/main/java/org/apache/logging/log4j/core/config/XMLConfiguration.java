@@ -116,7 +116,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to " + status);
                     }
                 } else if ("dest".equalsIgnoreCase(entry.getKey())) {
-                    final String dest = entry.getValue();
+                    final String dest = getSubst().replace(entry.getValue());
                     if (dest != null) {
                         if (dest.equalsIgnoreCase("err")) {
                             stream = System.err;
@@ -130,6 +130,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                             }
                         }
                     }
+                } else if ("shutdownHook".equalsIgnoreCase(entry.getKey())) {
+                    String hook = getSubst().replace(entry.getValue());
+                    isShutdownHookEnabled = !hook.equalsIgnoreCase("disable");
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(getSubst().replace(entry.getKey()))) {

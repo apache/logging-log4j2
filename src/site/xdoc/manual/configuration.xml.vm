@@ -326,6 +326,7 @@ public class Bar {
                 <td>dest</td>
                 <td>Either "err", which will send output to stderr, or a file path or URL.</td>
               </tr>
+
               <tr>
                 <td>monitorInterval</td>
                 <td>The minimum amount of time, in seconds, that must elapse before the file configuration
@@ -345,6 +346,11 @@ public class Bar {
                 <td>Identifies the location for the classloader to located the XML Schema to use to validate
                   the configuration. Only valid when strict is set to true. If not set no schema validation
                   will take place.</td>
+              </tr>
+              <tr>
+                 <td>shutdownHook</td>
+                 <td>Specifies whether or not Log4j should automatically shutdown when the JVM shuts down. The
+                 shutdown hook is enabled by default but may be disabled by setting this attribute to "disable"</td>
               </tr>
               <tr>
                 <td>status</td>

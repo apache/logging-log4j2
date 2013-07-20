@@ -81,10 +81,12 @@ public interface Configuration extends Filterable {
     void addComponent(String name, Object object);
 
     void setConfigurationMonitor(ConfigurationMonitor monitor);
-    
+
     ConfigurationMonitor getConfigurationMonitor();
-    
+
     void setAdvertiser(Advertiser advertiser);
-    
+
     Advertiser getAdvertiser();
+
+    boolean isShutdownHookEnabled();
 }

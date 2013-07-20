@@ -110,6 +110,9 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                             }
                         }
                     }
+                } else if ("shutdownHook".equalsIgnoreCase(entry.getKey())) {
+                    String hook = getSubst().replace(entry.getValue());
+                    isShutdownHookEnabled = !hook.equalsIgnoreCase("disable");
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(entry.getKey())) {
