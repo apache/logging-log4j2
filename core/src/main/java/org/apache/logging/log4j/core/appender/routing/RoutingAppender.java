@@ -132,6 +132,10 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
         }
         if (route == null) {
             route = defaultRoute;
+            control = appenders.get(DEFAULT_KEY);
+            if (control != null) {
+                return control;
+            }
         }
         if (route != null) {
             final Appender<T> app = createAppender(route, event);
