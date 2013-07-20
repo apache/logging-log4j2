@@ -47,12 +47,13 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * 
      * @param name The appender name.
      * @param filter The filter, if any, to use.
-     * @param exceptionSuppressed Whether logging exceptions should be suppressed or reported to the application.
+     * @param ignoreExceptions If {@code true} exceptions encountered when appending events are logged; otherwise
+     *                         they are propagated to the caller.
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
-    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
+    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                                        final T manager) {
-        super(name, filter, null, exceptionSuppressed);
+        super(name, filter, null, ignoreExceptions);
         this.manager = manager;
     }
 

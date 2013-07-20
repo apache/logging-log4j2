@@ -22,15 +22,16 @@ package org.apache.logging.log4j.core.helpers;
 public class Booleans {
 
     /**
-     * @param s
-     *            a {@code String} containing the {@code boolean} representation to parse, may be {@code null} or
-     *            {@code ""}
-     * @param defaultValue
-     *            the return value, use {@code defaultValue} if {@code s} is {@code null} or {@code ""}
-     * @return the boolean value represented by the argument.
+     * Returns {@code true} if {@code s} is {@code "true"} (case-insensitive), {@code false} if {@code s} is
+     * {@code "false"} (case-insensitive), and {@code defaultValue} if {@code s} is anything else (including null or
+     * empty).
+     *
+     * @param s The {@code String} to parse into a {@code boolean}
+     * @param defaultValue The default value to use if {@code s} is neither {@code "true"} nor {@code "false"}
+     * @return the {@code boolean} value represented by the argument, or {@code defaultValue}.
      */
     public static boolean parseBoolean(String s, boolean defaultValue) {
-        return Strings.isEmpty(s) ? defaultValue : Boolean.parseBoolean(s);
+        return "true".equalsIgnoreCase(s) || (defaultValue && !"false".equalsIgnoreCase(s));
     }
 
 }

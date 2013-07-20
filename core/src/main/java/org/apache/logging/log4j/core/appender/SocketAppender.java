@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -49,9 +48,9 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
     private final Advertiser advertiser;
 
     protected SocketAppender(final String name, final Layout<T> layout, final Filter filter,
-                             final AbstractSocketManager manager, final boolean handleException,
+                             final AbstractSocketManager manager, final boolean ignoreExceptions,
                              final boolean immediateFlush, final Advertiser advertiser) {
-        super(name, layout, filter, handleException, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
@@ -79,8 +78,8 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
      * @param immediateFail True if the write should fail if no socket is immediately available.
      * @param name The name of the Appender.
      * @param immediateFlush "true" if data should be flushed on each write.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
@@ -96,7 +95,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginAttr("immediateFail") final String immediateFail,
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
-                                                @PluginAttr("suppressExceptions") final String suppress,
+                                                @PluginAttr("ignoreExceptions") final String ignore,
                                                 @PluginElement("layout") Layout<S> layout,
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginAttr("advertise") final String advertise,
@@ -104,7 +103,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
 
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
         final int port = AbstractAppender.parseInt(portNum, 0);
@@ -130,7 +129,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
             return null;
         }
 
-        return new SocketAppender<S>(name, layout, filter, manager, handleExceptions, isFlush,
+        return new SocketAppender<S>(name, layout, filter, manager, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 

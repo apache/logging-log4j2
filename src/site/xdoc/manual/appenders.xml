@@ -93,10 +93,12 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>includeLocation</td>
@@ -168,10 +170,12 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>target</td>
@@ -236,10 +240,11 @@
               <td>The number of seconds that should pass before retrying the primary Appender. The default is 60.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead.</td>
             </tr>
             <tr>
               <td>target</td>
@@ -254,17 +259,17 @@
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+    <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
+                 ignoreExceptions="false">
       <PatternLayout>
         <pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-    <Console name="STDOUT" target="SYSTEM_OUT">
+    <Console name="STDOUT" target="SYSTEM_OUT" ignoreExceptions="false">
       <PatternLayout pattern="%m%n"/>
     </Console>
-    <Failover name="Failover" primary="RollingFile" suppressExceptions="false">
+    <Failover name="Failover" primary="RollingFile">
       <Failovers>
         <appender-ref ref="Console"/>
       </Failovers>
@@ -358,15 +363,14 @@
 						<td>String</td>
 						<td>The name of the Appender.</td>
 					</tr>
-					<tr>
-						<td>suppressExceptions</td>
-						<td>boolean</td>
-						<td>The default is true, causing exceptions to be internally
-							logged and then ignored. When set to
-							false exceptions will be
-							percolated to the caller.
-						</td>
-					</tr>
+          <tr>
+            <td>ignoreExceptions</td>
+            <td>boolean</td>
+            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+              <a href="#FailoverAppender">FailoverAppender</a>.</td>
+          </tr>
 					<caption align="top">FastFileAppender Parameters</caption>
 				</table>
 				<p>
@@ -534,15 +538,14 @@
 							archive file.
 						</td>
 					</tr>
-					<tr>
-						<td>suppressExceptions</td>
-						<td>boolean</td>
-						<td>The default is true, causing exceptions to be internally
-							logged and then ignored. When set to
-							false exceptions will be
-							percolated to the caller.
-						</td>
-					</tr>
+          <tr>
+            <td>ignoreExceptions</td>
+            <td>boolean</td>
+            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+              <a href="#FailoverAppender">FailoverAppender</a>.</td>
+          </tr>
 					<caption align="top">FastRollingFileAppender Parameters</caption>
 				</table>
 				<a name="FRFA_TriggeringPolicies" />
@@ -723,10 +726,12 @@
               <td>The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <caption align="top">FileAppender Parameters</caption>
           </table>
@@ -892,12 +897,13 @@
               <td>integer</td>
               <td>The number of milliseconds Flume will wait before timing out the request.</td>
             </tr>
-
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>type</td>
@@ -913,7 +919,7 @@
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true">
+    <Flume name="eventLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
@@ -933,7 +939,7 @@
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="persistent" dataDir="./logData">
+    <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
@@ -955,7 +961,7 @@
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
+    <Flume name="eventLogger" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
@@ -981,7 +987,7 @@
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="error" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="Embedded">
+    <Flume name="eventLogger" compress="true" type="Embedded">
       <Property name="channels">file</Property>
       <Property name="channels.file.type">file</Property>
       <Property name="channels.file.checkpointDir">target/file-channel/checkpoint</Property>
@@ -1034,10 +1040,12 @@
               <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
-                exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -1325,10 +1333,12 @@
                 <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>urlPkgPrefixes</td>
@@ -1434,10 +1444,12 @@
                 <a href="http://download.oracle.com/javase/6/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>urlPkgPrefixes</td>
@@ -1491,10 +1503,12 @@
               <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
-                exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -1619,10 +1633,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td><em>Required.</em> The name of the Appender.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to false
-                exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>filter</td>
@@ -1925,10 +1941,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The RewritePolicy that will manipulate the LogEvent.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <caption align="top">RewriteAppender Parameters</caption>
           </table>
@@ -2125,10 +2143,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The strategy to use to determine the name and location of the archive file.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <caption align="top">RollingFileAppender Parameters</caption>
           </table>
@@ -2430,10 +2450,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>Contains one or more Route declarations to identify the criteria for choosing Appenders.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <caption align="top">RoutingAppender Parameters</caption>
           </table>
@@ -2460,7 +2482,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="AuditLogger" suppressExceptions="false" compress="true">
+    <Flume name="AuditLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
@@ -2586,11 +2608,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The username required to authenticate against the SMTP server.</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.
-              </td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>to</td>
@@ -2602,8 +2625,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <SMTP name="Mail" suppressExceptions="false" subject="Error Log" to="errors@logging.apache.org"
-      from="test@logging.apache.org" smtpHost="localhost" smtpPort="25" bufferSize="50">
+    <SMTP name="Mail" subject="Error Log" to="errors@logging.apache.org" from="test@logging.apache.org"
+          smtpHost="localhost" smtpPort="25" bufferSize="50">
     </SMTP>
   </appenders>
   <loggers>
@@ -2676,14 +2699,16 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>integer</td>
               <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
                 the server after waiting the specified number of milliseconds. If the reconnect fails then
-                an exception will be thrown (which can be caught by the application if suppressExceptions is
-                set to false).</td>
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>).</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <caption align="top">SocketAppender Parameters</caption>
           </table>
@@ -2842,14 +2867,16 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>integer</td>
               <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
                 the server after waiting the specified number of milliseconds. If the reconnect fails then
-                an exception will be thrown (which can be caught by the application if suppressExceptions is
-                set to false).</td>
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>).</td>
             </tr>
             <tr>
-              <td>suppressExceptions</td>
+              <td>ignoreExceptions</td>
               <td>boolean</td>
-              <td>The default is true, causing exceptions to be internally logged and then ignored. When set to
-                false exceptions will be percolated to the caller.</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
             </tr>
             <tr>
               <td>loggerFields</td>

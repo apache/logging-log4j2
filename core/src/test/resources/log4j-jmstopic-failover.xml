@@ -20,14 +20,14 @@
   <Appenders>
     <List name="List"/>
     <JMSTopic name="Log4j2Topic" topicBindingName="Log4j2Topic" factoryBindingName="TopicConnectionFactory"
-        suppressExceptions="false"/>
-    <Rewrite name="Rewrite" suppressExceptions="false">
+              ignoreExceptions="false"/>
+    <Rewrite name="Rewrite" ignoreExceptions="false">
       <PropertiesRewritePolicy>
         <Property name="appender">List</Property>
       </PropertiesRewritePolicy>
       <appender-ref ref="Log4j2Topic"/>
     </Rewrite>
-    <Failover name="Failover" primary="Rewrite" suppressExceptions="false">
+    <Failover name="Failover" primary="Rewrite" ignoreExceptions="false">
       <Failovers>
         <appender-ref ref="List"/>
       </Failovers>

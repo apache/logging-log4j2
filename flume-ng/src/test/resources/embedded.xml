@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="warn" name="MyApp" packages="">
   <appenders>
-    <Flume name="eventLogger" suppressExceptions="false" compress="true" type="embedded">
+    <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded">
       <Property name="channels">primary</Property>
       <Property name="channels.primary.type">memory</Property>
       <Property name="sources.log4j-source.interceptors">environment_interceptor</Property>

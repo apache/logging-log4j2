@@ -947,7 +947,7 @@ public class Bar {
 2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
 2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.
        appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null,
-       target="null", name="STDOUT", suppressExceptions="null")
+       target="null", name="STDOUT", ignoreExceptions="null")
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.
        filter.ThresholdFilter for element ThresholdFilter with params(level="debug",
        onMatch="null", onMismatch="null")
@@ -966,7 +966,7 @@ public class Bar {
        Route(type=static Reference=List key='Service')})
 2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.
        routing.RoutingAppender for element Routing with params(name="Routing",
-       suppressExceptions="null", Routes({Route(type=dynamic default),Route(type=static
+      ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static
        Reference=STDOUT key='Audit'),
        Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.
@@ -997,7 +997,7 @@ public class Bar {
        filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown",
        bufferedIO="null", immediateFlush="null",
        SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null,
-       PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
+       PatternLayout(%d %p %c{1.} [%t] %m%n), null, ignoreExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
 2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.
        Launcher$AppClassLoader@37b90b39
@@ -1015,14 +1015,14 @@ public class Bar {
 2011-11-23 17:08:00,797 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
 2011-11-23 17:08:00,800 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%m%n", Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,802 DEBUG Generated plugins in 0.001349000 seconds
-2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", suppressExceptions="null")
+2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", ignoreExceptions="null")
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
 2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
 2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
-2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", suppressExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
+2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", appender-ref={Routing}, null)
@@ -1032,7 +1032,7 @@ public class Bar {
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
 2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
 2011-11-23 17:08:00,849 DEBUG Calling createPolicy on class org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy for element SizeBasedTriggeringPolicy with params(size="500")
-2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, suppressExceptions="null")
+2011-11-23 17:08:00,851 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.RollingFileAppender for element RollingFile with params(fileName="target/rolling1/rollingtest-Unknown.log", filePattern="target/rolling1/test1-Unknown.%i.log.gz", append="null", name="Rolling-Unknown", bufferedIO="null", immediateFlush="null", SizeBasedTriggeringPolicy(SizeBasedTriggeringPolicy(size=500)), null, PatternLayout(%d %p %c{1.} [%t] %m%n), null, ignoreExceptions="null")
 2011-11-23 17:08:00,858 DEBUG Generated plugins in 0.002014000 seconds
 2011-11-23 17:08:00,889 DEBUG Reconfiguration started for context sun.misc.Launcher$AppClassLoader@37b90b39
 2011-11-23 17:08:00,890 DEBUG Generated plugins in 0.001355000 seconds

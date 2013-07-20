@@ -58,9 +58,9 @@ public abstract class AbstractOutputStreamAppender<T extends Serializable> exten
      * @param manager The OutputStreamManager.
      */
     protected AbstractOutputStreamAppender(final String name, final Layout<T> layout, final Filter filter,
-                                           final boolean handleException, final boolean immediateFlush,
+                                           final boolean ignoreExceptions, final boolean immediateFlush,
                                            final OutputStreamManager manager) {
-        super(name, filter, layout, handleException);
+        super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }

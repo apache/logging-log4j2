@@ -64,8 +64,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
 
     private ConsoleAppender(final String name, final Layout<T> layout, final Filter filter,
                             final OutputStreamManager manager,
-                            final boolean handleExceptions) {
-        super(name, layout, filter, handleExceptions, true, manager);
+                            final boolean ignoreExceptions) {
+        super(name, layout, filter, ignoreExceptions, true, manager);
     }
 
     /**
@@ -75,8 +75,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
      * @param t The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".
      * @param follow If true will follow changes to the underlying output stream.
      * @param name The name of the Appender (required).
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     *                 The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The ConsoleAppender.
      */
@@ -86,7 +86,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
                                                  @PluginAttr("target") final String t,
                                                  @PluginAttr("name") final String name,
                                                  @PluginAttr("follow") final String follow,
-                                                 @PluginAttr("suppressExceptions") final String suppress) {
+                                                 @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;
@@ -98,9 +98,9 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             layout = l;
         }
         final boolean isFollow = Boolean.parseBoolean(follow);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target, layout), handleExceptions);
+        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
     }
 
     private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout layout) {

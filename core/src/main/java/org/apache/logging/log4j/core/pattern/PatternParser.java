@@ -137,13 +137,11 @@ public final class PatternParser {
         converterRules = converters;
     }
 
-
     public List<PatternFormatter> parse(final String pattern) {
         return parse(pattern, false);
     }
 
-
-    public List<PatternFormatter> parse(final String pattern, final boolean handleExceptions) {
+    public List<PatternFormatter> parse(final String pattern, final boolean alwaysWriteExceptions) {
         final List<PatternFormatter> list = new ArrayList<PatternFormatter>();
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
@@ -170,7 +168,7 @@ public final class PatternParser {
             }
             list.add(new PatternFormatter(pc, field));
         }
-        if (handleExceptions && !handlesExceptions) {
+        if (alwaysWriteExceptions && !handlesExceptions) {
             final LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(null);
             list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
         }

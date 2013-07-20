@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.layout.HTMLLayout;
 import org.apache.logging.log4j.core.net.SMTPManager;
 
@@ -61,8 +60,8 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
     protected final SMTPManager manager;
 
     private SMTPAppender(final String name, final Filter filter, final Layout<T> layout, final SMTPManager manager,
-                         final boolean handleExceptions) {
-        super(name, filter, layout, handleExceptions);
+                         final boolean ignoreExceptions) {
+        super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
     }
 
@@ -101,9 +100,8 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
      * @param filter
      *            The Filter or null (defaults to ThresholdFilter, level of
      *            ERROR).
-     * @param suppressExceptions
-     *            "true" if exceptions should be hidden from the application,
-     *            "false" otherwise (defaults to "true").
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The SMTPAppender.
      */
@@ -124,13 +122,13 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
                                               @PluginAttr("bufferSize") final String bufferSizeNum,
                                               @PluginElement("layout") Layout<S> layout,
                                               @PluginElement("filter") Filter filter,
-                                              @PluginAttr("suppressExceptions") final String suppressExceptions) {
+                                              @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for SMTPAppender");
             return null;
         }
 
-        final boolean isHandleExceptions = Booleans.parseBoolean(suppressExceptions, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final int smtpPort = AbstractAppender.parseInt(smtpPortNum, 0); 
         final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
@@ -151,7 +149,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
             return null;
         }
 
-        return new SMTPAppender<S>(name, filter, layout, manager, isHandleExceptions);
+        return new SMTPAppender<S>(name, filter, layout, manager, ignoreExceptions);
     }
 
     /**

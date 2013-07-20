@@ -45,9 +45,9 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
     private Object advertisement;
 
     private FileAppender(final String name, final Layout<T> layout, final Filter filter, final FileManager manager,
-                         final String filename, final boolean handleException, final boolean immediateFlush,
+                         final String filename, final boolean ignoreExceptions, final boolean immediateFlush,
                          final Advertiser advertiser) {
-        super(name, layout, filter, handleException, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.putAll(manager.getContentFormat());
@@ -84,8 +84,8 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every write, "false" otherwise. The default
      * is "true".
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param bufferedIO "true" if I/O should be buffered, "false" otherwise. The default is "true".
      * @param layout The layout to use to format the event. If no layout is provided the default PatternLayout
      * will be used.
@@ -102,7 +102,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
                                               @PluginAttr("locking") final String locking,
                                               @PluginAttr("name") final String name,
                                               @PluginAttr("immediateFlush") final String immediateFlush,
-                                              @PluginAttr("suppressExceptions") final String suppress,
+                                              @PluginAttr("ignoreExceptions") final String ignore,
                                               @PluginAttr("bufferedIO") final String bufferedIO,
                                               @PluginElement("layout") Layout<S> layout,
                                               @PluginElement("filters") final Filter filter,
@@ -121,7 +121,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
             isBuffered = false;
         }
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         if (name == null) {
             LOGGER.error("No name provided for FileAppender");
@@ -146,7 +146,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
         }
 
 
-        return new FileAppender<S>(name, layout, filter, manager, fileName, handleExceptions, isFlush,
+        return new FileAppender<S>(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

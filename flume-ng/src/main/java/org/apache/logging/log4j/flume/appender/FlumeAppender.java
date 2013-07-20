@@ -67,11 +67,11 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
         }
     }
 
-    private FlumeAppender(final String name, final Filter filter, final Layout<T> layout, final boolean handleException,
-                          final String includes, final String excludes, final String required, final String mdcPrefix,
-                          final String eventPrefix, final boolean compress,
-                          final FlumeEventFactory factory, final AbstractFlumeManager manager) {
-        super(name, filter, layout, handleException);
+    private FlumeAppender(final String name, final Filter filter, final Layout<T> layout,
+                          final boolean ignoreExceptions, final String includes, final String excludes,
+                          final String required, final String mdcPrefix, final String eventPrefix,
+                          final boolean compress, final FlumeEventFactory factory, final AbstractFlumeManager manager) {
+        super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.mdcIncludes = includes;
         this.mdcExcludes = excludes;
@@ -141,7 +141,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * @param agentRetries The number of times to retry an agent before failing to the next agent.
      * @param maxDelay The maximum number of seconds to wait for a complete batch.
      * @param name The name of the Appender.
-     * @param suppress If true exceptions will be handled in the appender.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param excludes A comma separated list of MDC elements to exclude.
      * @param includes A comma separated list of MDC elements to include.
      * @param required A comma separated list of MDC elements that are required.
@@ -167,7 +168,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                                                    @PluginAttr("agentRetries") final String agentRetries,
                                                    @PluginAttr("maxDelay") final String maxDelay,
                                                    @PluginAttr("name") final String name,
-                                                   @PluginAttr("suppressExceptions") final String suppress,
+                                                   @PluginAttr("ignoreExceptions") final String ignore,
                                                    @PluginAttr("mdcExcludes") final String excludes,
                                                    @PluginAttr("mdcIncludes") final String includes,
                                                    @PluginAttr("mdcRequired") final String required,
@@ -181,7 +182,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean compress = Booleans.parseBoolean(compressBody, true);
         ManagerType managerType;
         if (type != null) {
@@ -261,7 +262,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
             return null;
         }
 
-        return new FlumeAppender<S>(name, filter, layout,  handleExceptions, includes,
+        return new FlumeAppender<S>(name, filter, layout,  ignoreExceptions, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
     }
 }

@@ -88,7 +88,7 @@ public class AppenderControl<T extends Serializable> extends AbstractFilterable 
             if (!appender.isStarted()) {
                 appender.getHandler().error("Attempted to append to non-started appender " + appender.getName());
 
-                if (!appender.isExceptionSuppressed()) {
+                if (!appender.ignoreExceptions()) {
                     throw new AppenderLoggingException(
                         "Attempted to append to non-started appender " + appender.getName());
                 }
@@ -102,12 +102,12 @@ public class AppenderControl<T extends Serializable> extends AbstractFilterable 
                 appender.append(event);
             } catch (final RuntimeException ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.isExceptionSuppressed()) {
+                if (!appender.ignoreExceptions()) {
                     throw ex;
                 }
             } catch (final Exception ex) {
                 appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
-                if (!appender.isExceptionSuppressed()) {
+                if (!appender.ignoreExceptions()) {
                     throw new AppenderLoggingException(ex);
                 }
             }

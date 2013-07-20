@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
-import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 /**
@@ -64,9 +63,9 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                            final String errorRef, final int queueSize, final boolean blocking,
-                           final boolean handleExceptions, final Configuration config,
+                           final boolean ignoreExceptions, final Configuration config,
                            final boolean includeLocation) {
-        super(name, filter, null, handleExceptions);
+        super(name, filter, null, ignoreExceptions);
         this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
         this.blocking = blocking;
         this.config = config;
@@ -159,8 +158,8 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
      * @param includeLocation whether to include location information. The default is false.
      * @param filter The Filter or null.
      * @param config The Configuration.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The actual type of the Serializable.
      * @return The AsyncAppender.
      */
@@ -174,7 +173,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
                 @PluginAttr("includeLocation") final String includeLocation,
                 @PluginElement("filter") final Filter filter,
                 @PluginConfiguration final Configuration config,
-                @PluginAttr("suppressExceptions") final String suppress) {
+                @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;
@@ -186,10 +185,10 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         final boolean isBlocking = Booleans.parseBoolean(blocking, true);
         final int queueSize = AbstractAppender.parseInt(size, DEFAULT_QUEUE_SIZE);        
         final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         return new AsyncAppender<S>(name, filter, appenderRefs, errorRef,
-                queueSize, isBlocking, handleExceptions, config, isIncludeLocation);
+                queueSize, isBlocking, ignoreExceptions, config, isIncludeLocation);
     }
 
     /**

@@ -296,16 +296,16 @@ public final class ThresholdFilter extends AbstractFilter {
 public final class StubAppender extends OutputStreamAppender {
 
     private StubAppender(String name, Layout layout, Filter filter, StubManager manager,
-                         boolean handleExceptions) {
+                         boolean ignoreExceptions) {
     }
 
     @PluginFactory
     public static StubAppender createAppender(@PluginAttr("name") String name,
-                                              @PluginAttr("suppressExceptions") String suppress,
+                                              @PluginAttr("ignoreExceptions") String ignore,
                                               @PluginElement("layout") Layout layout,
                                               @PluginElement("filters") Filter filter) {
 
-        boolean handleExceptions = suppress == null ? true : Boolean.valueOf(suppress);
+        boolean ignoreExceptions = Boolean.parseBoolean(ignore);
 
         if (name == null) {
             LOGGER.error("No name provided for StubAppender");
@@ -319,7 +319,7 @@ public final class StubAppender extends OutputStreamAppender {
         if (layout == null) {
             layout = PatternLayout.createLayout(null, null, null, null);
         }
-        return new StubAppender(name, layout, filter, manager, handleExceptions);
+        return new StubAppender(name, layout, filter, manager, ignoreExceptions);
     }
 }</pre>
           </subsection>

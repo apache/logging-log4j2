@@ -53,9 +53,9 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
 
     private RollingFileAppender(final String name, final Layout<T> layout, final Filter filter,
                                 final RollingFileManager manager, final String fileName,
-                                final String filePattern, final boolean handleException, final boolean immediateFlush,
+                                final String filePattern, final boolean ignoreExceptions, final boolean immediateFlush,
                                 final Advertiser advertiser) {
-        super(name, layout, filter, handleException, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<String, String>(layout.getContentFormat());
             configuration.put("contentType", layout.getContentType());
@@ -115,8 +115,8 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
      * @param strategy The rollover strategy. Defaults to DefaultRolloverStrategy.
      * @param layout The layout to use (defaults to the default PatternLayout).
      * @param filter The Filter or null.
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     * The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
@@ -135,13 +135,13 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
                                               @PluginElement("strategy") RolloverStrategy strategy,
                                               @PluginElement("layout") Layout<S> layout,
                                               @PluginElement("filter") final Filter filter,
-                                              @PluginAttr("suppressExceptions") final String suppress,
+                                              @PluginAttr("ignoreExceptions") final String ignore,
                                               @PluginAttr("advertise") final String advertise,
                                               @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isBuffered = Booleans.parseBoolean(bufferedIO, true);
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
@@ -183,6 +183,6 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
         }
 
         return new RollingFileAppender<S>(name, layout, filter, manager, fileName, filePattern,
-            handleExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
+                ignoreExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
     }
 }

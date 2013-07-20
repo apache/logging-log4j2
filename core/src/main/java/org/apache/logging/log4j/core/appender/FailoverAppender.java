@@ -64,8 +64,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
     private volatile boolean failure = false;
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
-                             final int intervalMillis, final Configuration config, final boolean handleExceptions) {
-        super(name, filter, null, handleExceptions);
+                             final int intervalMillis, final Configuration config, final boolean ignoreExceptions) {
+        super(name, filter, null, ignoreExceptions);
         this.primaryRef = primary;
         this.failovers = failovers;
         this.config = config;
@@ -148,7 +148,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
                 }
             }
         }
-        if (!written && !isExceptionSuppressed()) {
+        if (!written && !ignoreExceptions()) {
             if (re != null) {
                 throw re;
             } else {
@@ -181,8 +181,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
      * @param retryIntervalString The retry intervalMillis.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
-     * @param suppress "true" if exceptions should be hidden from the application, "false" otherwise.
-     *                 The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param <S> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
      * @return The FailoverAppender that was created.
      */
@@ -193,7 +193,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
                                                   @PluginAttr("retryInterval") final String retryIntervalString,
                                                   @PluginConfiguration final Configuration config,
                                                   @PluginElement("filters") final Filter filter,
-                                                  @PluginAttr("suppressExceptions") final String suppress) {
+                                                  @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;
@@ -216,8 +216,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
             retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
         }
 
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        return new FailoverAppender<S>(name, filter, primary, failovers, retryIntervalMillis, config, handleExceptions);
+        return new FailoverAppender<S>(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions);
     }
 }

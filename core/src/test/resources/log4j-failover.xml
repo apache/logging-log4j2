@@ -21,12 +21,12 @@
     <AlwaysFail name="Fail" />
     <FailOnce name="Once"/>
     <List name="List" />
-    <Failover name="Failover" primary="Fail" suppressExceptions="false">
+    <Failover name="Failover" primary="Fail" ignoreExceptions="false">
       <Failovers>
         <appender-ref ref="List"/>
       </Failovers>
     </Failover>
-    <Failover name="FailoverOnce" primary="Once" suppressExceptions="false" retryInterval="1">
+    <Failover name="FailoverOnce" primary="Once" ignoreExceptions="false" retryInterval="1">
       <Failovers>
         <appender-ref ref="List"/>
       </Failovers>

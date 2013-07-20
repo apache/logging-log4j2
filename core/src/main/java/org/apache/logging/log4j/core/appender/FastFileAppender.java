@@ -46,9 +46,9 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
     private final Advertiser advertiser;
 
     private FastFileAppender(final String name, final Layout<T> layout, final Filter filter,
-            final FastFileManager manager, final String filename, final boolean handleException,
+            final FastFileManager manager, final String filename, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
-        super(name, layout, filter, handleException, immediateFlush, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<String, String>(
                     layout.getContentFormat());
@@ -107,8 +107,8 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
      * @param name The name of the Appender.
      * @param immediateFlush "true" if the contents should be flushed on every
      *            write, "false" otherwise. The default is "true".
-     * @param suppress "true" if exceptions should be hidden from the
-     *            application, "false" otherwise. The default is "true".
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param layout The layout to use to format the event. If no layout is
      *            provided the default PatternLayout will be used.
      * @param filter The filter, if any, to use.
@@ -126,7 +126,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
             @PluginAttr("append") final String append,
             @PluginAttr("name") final String name,
             @PluginAttr("immediateFlush") final String immediateFlush,
-            @PluginAttr("suppressExceptions") final String suppress,
+            @PluginAttr("ignoreExceptions") final String ignore,
             @PluginElement("layout") Layout<S> layout,
             @PluginElement("filters") final Filter filter,
             @PluginAttr("advertise") final String advertise,
@@ -135,7 +135,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
-        final boolean handleExceptions = Booleans.parseBoolean(suppress, true);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
 
         if (name == null) {
@@ -154,13 +154,16 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
-        final FastFileManager manager = FastFileManager.getFileManager(fileName, isAppend, isFlush, advertiseURI, layout);
+        final FastFileManager manager = FastFileManager.getFileManager(
+                fileName, isAppend, isFlush, advertiseURI, layout
+        );
         if (manager == null) {
             return null;
         }
 
-        return new FastFileAppender<S>(name, layout, filter, manager, fileName,
-                handleExceptions, isFlush, isAdvertise ? config.getAdvertiser()
-                        : null);
+        return new FastFileAppender<S>(
+                name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
+                isAdvertise ? config.getAdvertiser() : null
+        );
     }
 }

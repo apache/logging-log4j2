@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -40,9 +41,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseManager<?>> {
     private final String description;
 
-    private NoSQLAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
+    private NoSQLAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                           final NoSQLDatabaseManager<?> manager) {
-        super(name, filter, exceptionSuppressed, manager);
+        super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -55,8 +56,8 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
      * Factory method for creating a NoSQL appender within the plugin manager.
      *
      * @param name The name of the appender.
-     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
-     *                           {@code "false"} otherwise.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param filter The filter, if any, to use.
      * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
      *                   the buffer reaches this size.
@@ -65,7 +66,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
      */
     @PluginFactory
     public static NoSQLAppender createAppender(@PluginAttr("name") final String name,
-                                               @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                               @PluginAttr("ignoreExceptions") final String ignore,
                                                @PluginElement("filter") final Filter filter,
                                                @PluginAttr("bufferSize") final String bufferSize,
                                                @PluginElement("noSqlProvider") final NoSQLProvider<?> provider) {
@@ -75,7 +76,7 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
         }
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt
                 + ", provider=" + provider + " }";
@@ -87,6 +88,6 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
             return null;
         }
 
-        return new NoSQLAppender(name, filter, exceptionSuppressed, manager);
+        return new NoSQLAppender(name, filter, ignoreExceptions, manager);
     }
 }

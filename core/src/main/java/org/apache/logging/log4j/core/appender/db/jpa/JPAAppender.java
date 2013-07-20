@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
@@ -39,9 +40,9 @@ import org.apache.logging.log4j.core.helpers.Strings;
 public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
     private final String description;
 
-    private JPAAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
+    private JPAAppender(final String name, final Filter filter, final boolean ignoreExceptions,
             final JPADatabaseManager manager) {
-        super(name, filter, exceptionSuppressed, manager);
+        super(name, filter, ignoreExceptions, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
 
@@ -54,8 +55,8 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
      * Factory method for creating a JPA appender within the plugin manager.
      *
      * @param name The name of the appender.
-     * @param suppressExceptions {@code "true"} (default) if logging exceptions should be hidden from the application,
-     *                           {@code "false"} otherwise.
+     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     *               they are propagated to the caller.
      * @param filter The filter, if any, to use.
      * @param bufferSize If an integer greater than 0, this causes the appender to buffer log events and flush whenever
      *                   the buffer reaches this size.
@@ -66,7 +67,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
      */
     @PluginFactory
     public static JPAAppender createAppender(@PluginAttr("name") final String name,
-                                             @PluginAttr("suppressExceptions") final String suppressExceptions,
+                                             @PluginAttr("ignoreExceptions") final String ignore,
                                              @PluginElement("filter") final Filter filter,
                                              @PluginAttr("bufferSize") final String bufferSize,
                                              @PluginAttr("entityClassName") final String entityClassName,
@@ -77,7 +78,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
         }
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
-        final boolean exceptionSuppressed = Boolean.parseBoolean(suppressExceptions);
+        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
         try {
             @SuppressWarnings("unchecked")
@@ -110,7 +111,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
                 return null;
             }
 
-            return new JPAAppender(name, filter, exceptionSuppressed, manager);
+            return new JPAAppender(name, filter, ignoreExceptions, manager);
         } catch (final ClassNotFoundException e) {
             LOGGER.error("Could not load entity class [{}].", entityClassName, e);
             return null;

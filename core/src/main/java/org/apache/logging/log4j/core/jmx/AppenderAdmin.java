@@ -73,7 +73,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
 
     @Override
     public boolean isExceptionSuppressed() {
-        return appender.isExceptionSuppressed();
+        return appender.ignoreExceptions();
     }
     
     @Override
