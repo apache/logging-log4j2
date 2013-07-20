@@ -86,6 +86,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      */
     protected Advertiser advertiser = new DefaultAdvertiser();
 
+    /**
+     *
+     */
+    protected boolean isShutdownHookEnabled = true;
+
     private String name;
 
     private ConcurrentMap<String, Appender<?>> appenders = new ConcurrentHashMap<String, Appender<?>>();
@@ -148,6 +153,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
         root.stopFilter();
         stopFilter();
+    }
+
+    public boolean isShutdownHookEnabled() {
+        return isShutdownHookEnabled;
     }
 
     protected void setup() {

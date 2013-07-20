@@ -144,15 +144,20 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if (status == Status.INITIALIZED || status == Status.STOPPED) {
+                if ((status == Status.INITIALIZED || status == Status.STOPPED)) {
                     status = Status.STARTING;
                     reconfigure();
-                    shutdownThread = new ShutdownThread(this);
-                    try {
-                        Runtime.getRuntime().addShutdownHook(shutdownThread);
-                    } catch (final SecurityException se) {
-                        LOGGER.warn("Unable to register shutdown hook due to security restrictions");
-                        shutdownThread = null;
+                    if (config.isShutdownHookEnabled()) {
+                        shutdownThread = new ShutdownThread(this);
+                        try {
+                            Runtime.getRuntime().addShutdownHook(shutdownThread);
+                        } catch (final IllegalStateException ise) {
+                            LOGGER.warn("Unable to register shutdown hook due to JVM state");
+                            shutdownThread = null;
+                        } catch (final SecurityException se) {
+                            LOGGER.warn("Unable to register shutdown hook due to security restrictions");
+                            shutdownThread = null;
+                        }
                     }
                     status = Status.STARTED;
                 }
@@ -169,10 +174,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start(final Configuration config) {
         if (configLock.tryLock()) {
             try {
-                if (status == Status.INITIALIZED || status == Status.STOPPED) {
+                if ((status == Status.INITIALIZED || status == Status.STOPPED) && config.isShutdownHookEnabled() ) {
                     shutdownThread = new ShutdownThread(this);
                     try {
                         Runtime.getRuntime().addShutdownHook(shutdownThread);
+                    } catch (final IllegalStateException ise) {
+                        LOGGER.warn("Unable to register shutdown hook due to JVM state");
+                        shutdownThread = null;
                     } catch (final SecurityException se) {
                         LOGGER.warn("Unable to register shutdown hook due to security restrictions");
                         shutdownThread = null;
