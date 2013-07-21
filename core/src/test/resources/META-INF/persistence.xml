@@ -22,15 +22,28 @@
                                  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-  <persistence-unit name="jpaAppenderTestUnit">
+  <persistence-unit name="hyperSqlJpaAppenderTestUnit">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>org.apache.logging.log4j.core.appender.db.jpa.TestBaseEntity</class>
-    <class>org.apache.logging.log4j.core.appender.db.jpa.TestBasicEntity</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:Log4j;ifexists=true"/>
+      <property name="javax.persistence.jdbc.user" value="sa"/>
+      <property name="javax.persistence.jdbc.password" value=""/>
+      <!--<property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/> uncomment to troubleshoot SQL-->
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="h2JpaAppenderTestUnit">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:Log4j"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value=""/>
       <!--<property name="eclipselink.logging.level" value="FINE"/>

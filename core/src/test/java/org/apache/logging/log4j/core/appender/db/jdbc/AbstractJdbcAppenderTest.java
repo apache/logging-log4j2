@@ -94,7 +94,8 @@ public abstract class AbstractJdbcAppenderTest {
                     if (statement != null) {
                         statement.close();
                     }
-                } catch (final SQLException ignore) { /* */
+                } catch (final SQLException ignore) {
+                    /* */
                 }
             }
 
