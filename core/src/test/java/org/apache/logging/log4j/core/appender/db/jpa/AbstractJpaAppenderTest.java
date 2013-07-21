@@ -63,7 +63,7 @@ public abstract class AbstractJpaAppenderTest {
             final Map<String, Appender<?>> list = context.getConfiguration().getAppenders();
             final Appender<?> appender = list.get("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
-            assertTrue("The appender should be a JDBCAppender.", appender instanceof JPAAppender);
+            assertTrue("The appender should be a JPAAppender.", appender instanceof JPAAppender);
             ((JPAAppender) appender).getManager().release();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
@@ -223,7 +223,7 @@ public abstract class AbstractJpaAppenderTest {
                     ".testPerformanceOfAppenderWith10000EventsUsingBasicEntity");
             logger.info("This is a warm-up message.");
 
-            System.out.println("Starting a performance test for JDBC Appender for " + this.databaseType + ".");
+            System.out.println("Starting a performance test for JPA Appender for " + this.databaseType + ".");
 
             long start = System.nanoTime();
 
