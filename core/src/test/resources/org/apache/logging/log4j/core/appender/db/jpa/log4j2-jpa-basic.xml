@@ -26,7 +26,7 @@
   </appenders>
 
   <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.db" level="debug">
+    <logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
       <appender-ref ref="databaseAppender" />
     </logger>
 
