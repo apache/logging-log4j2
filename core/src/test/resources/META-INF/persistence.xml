@@ -33,9 +33,9 @@
       <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:Log4j;ifexists=true"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value=""/>
-      <property name="eclipselink.logging.level" value="FINE"/>
+      <!--<property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.logging.level.sql" value="FINE"/>
-      <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="eclipselink.logging.parameters" value="true"/> uncomment to troubleshoot SQL-->
     </properties>
   </persistence-unit>
 
