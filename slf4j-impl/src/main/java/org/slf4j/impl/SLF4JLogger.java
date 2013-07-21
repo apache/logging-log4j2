@@ -16,18 +16,15 @@
  */
 package org.slf4j.impl;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.slf4j.ext.EventData;
+import org.slf4j.helpers.EventDataConverter;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
@@ -40,11 +37,13 @@ public class SLF4JLogger implements LocationAwareLogger {
     private final boolean eventLogger;
     private final AbstractLoggerWrapper logger;
     private final String name;
+    private final EventDataConverter converter;
 
     public SLF4JLogger(final AbstractLogger logger, final String name) {
         this.logger = new AbstractLoggerWrapper(logger, name, null);
         eventLogger = "EventLogger".equals(name);
         this.name = name;
+        this.converter = createConverter();
     }
 
     @Override
@@ -485,23 +484,8 @@ public class SLF4JLogger implements LocationAwareLogger {
             return;
         }
         Message msg;
-        if (eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
-            try {
-                final EventData data = (objects != null && objects[0] instanceof EventData) ? (EventData) objects[0] :
-                    new EventData(s1);
-                msg = new StructuredDataMessage(data.getEventId(), data.getMessage(), data.getEventType());
-                for (final Map.Entry entry : data.getEventMap().entrySet()) {
-                    final String key = entry.getKey().toString();
-                    if (EventData.EVENT_TYPE.equals(key) || EventData.EVENT_ID.equals(key) ||
-                        EventData.EVENT_MESSAGE.equals(key)) {
-                        continue;
-                    }
-                    ((StructuredDataMessage) msg).put(entry.getKey().toString(), entry.getValue().toString());
-                }
-            } catch (final Exception ex) {
-                msg = new ParameterizedMessage(s1, objects, throwable);
-            }
-
+        if (eventLogger && marker != null && marker.contains(EVENT_MARKER) && converter != null) {
+            msg = converter.convertEvent(s1, objects, throwable);
        } else if (objects == null) {
             msg = new SimpleMessage(s1);
         } else {
@@ -516,6 +500,15 @@ public class SLF4JLogger implements LocationAwareLogger {
     @Override
     public String getName() {
         return name;
+    }
+
+    private EventDataConverter createConverter() {
+        try {
+            Class<?> clazz = Class.forName("org.slf4j.ext.EventData");
+            return new EventDataConverter();
+        } catch (ClassNotFoundException cnfe) {
+            return null;
+        }
     }
 
     private Level getLevel(final int i) {
