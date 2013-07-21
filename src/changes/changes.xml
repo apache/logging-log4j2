@@ -76,7 +76,9 @@
       </action>
       <action dev="nickwilliams" type="update">
         Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to
-        "alwaysWriteExceptions" to more correctly indicate what it does. No behavior change.
+        "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
+        reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
+        until now, it's unlikely this change will affect any users.
       </action>
     </release>
     <release version="2.0-beta8" date="2013-07-10" description="Bug fixes and enhancements">
