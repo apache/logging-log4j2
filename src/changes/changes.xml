@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-165" dev="rgoers" type="fix">
+        The slf4j-ext jar is now an optional dependency of the SLF4J bridge.
+      </action>
       <action issue="LOG4J2-318" dev="rgoers" type="update">
         Allow shutdown hook to be disabled in the configuration.
       </action>
