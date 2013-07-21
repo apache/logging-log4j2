@@ -21,7 +21,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
-    <Jpa name="databaseAppender" persistenceUnitName="jpaAppenderTestUnit"
+    <Jpa name="databaseAppender" persistenceUnitName="h2JpaAppenderTestUnit"
          entityClassName="org.apache.logging.log4j.core.appender.db.jpa.TestBaseEntity" ignoreExceptions="false" />
   </appenders>
 

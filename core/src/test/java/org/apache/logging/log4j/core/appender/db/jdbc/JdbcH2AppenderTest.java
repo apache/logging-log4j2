@@ -24,8 +24,8 @@ import java.sql.SQLException;
  * Tests the JDBC appender with the H2 database in memory.
  */
 public class JdbcH2AppenderTest extends AbstractJdbcAppenderTest {
-    private static final String PASSWORD = "";
     private static final String USER_ID = "sa";
+    private static final String PASSWORD = "";
 
     public JdbcH2AppenderTest() {
         super("h2");

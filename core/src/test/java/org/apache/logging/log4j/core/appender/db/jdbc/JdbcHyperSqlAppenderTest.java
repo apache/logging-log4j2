@@ -24,8 +24,8 @@ import java.sql.SQLException;
  * Tests the JDBC appender with the HyperSQL database (a.k.a. HSQLDB) in memory.
  */
 public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
-    private static final String PASSWORD = "";
     private static final String USER_ID = "sa";
+    private static final String PASSWORD = "";
 
     public JdbcHyperSqlAppenderTest() {
         super("hsqldb");
