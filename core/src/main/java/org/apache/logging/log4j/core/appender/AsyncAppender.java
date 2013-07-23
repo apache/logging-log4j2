@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -60,6 +61,8 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
     private final boolean includeLocation;
     private AppenderControl<?> errorAppender;
     private AsyncThread thread;
+    private static final AtomicLong threadSequence = new AtomicLong(1);
+
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
                            final String errorRef, final int queueSize, final boolean blocking,
@@ -203,6 +206,8 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         public AsyncThread(final List<AppenderControl<?>> appenders, final BlockingQueue<Serializable> queue) {
             this.appenders = appenders;
             this.queue = queue;
+            setDaemon(true);
+            setName("AsyncAppenderThread" + threadSequence.getAndIncrement());
         }
 
         @Override
