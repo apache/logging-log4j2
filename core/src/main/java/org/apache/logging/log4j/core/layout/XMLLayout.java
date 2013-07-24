@@ -389,13 +389,13 @@ public class XMLLayout extends AbstractStringLayout {
                                          @PluginAttr("properties") final String properties,
                                          @PluginAttr("complete") final String completeStr,
                                          @PluginAttr("compact") final String compactStr,
-                                         @PluginAttr("namespacePrefix") final String nanespacePrefix,
+                                         @PluginAttr("namespacePrefix") final String namespacePrefix,
                                          @PluginAttr("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         final boolean info = Boolean.parseBoolean(locationInfo);
         final boolean props = Boolean.parseBoolean(properties);
         final boolean complete = Boolean.parseBoolean(completeStr);
         final boolean compact = Boolean.parseBoolean(compactStr);
-        return new XMLLayout(info, props, complete, compact, nanespacePrefix, charset);
+        return new XMLLayout(info, props, complete, compact, namespacePrefix, charset);
     }
 }
