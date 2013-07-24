@@ -62,7 +62,7 @@ public class HTMLLayoutTest {
 
 
     @Test
-    public void testContentType() {
+    public void testDefaultContentType() {
         final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
         assertEquals("text/html; charset=UTF-8", layout.getContentType());
     }
