@@ -65,7 +65,7 @@ public class PropertiesUtil {
         } catch (final SecurityException e) {
             // Ignore
         }
-        return (prop == null) ? props.getProperty(name) : prop;
+        return prop == null ? props.getProperty(name) : prop;
     }
 
 
