@@ -25,7 +25,9 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
  */
 public final class EventLogger {
 
-    /**
+    private static final String NAME = "EventLogger";
+
+	/**
      * Define the Event Marker.
      */
     public static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");
@@ -35,11 +37,11 @@ public final class EventLogger {
     private static AbstractLoggerWrapper loggerWrapper;
 
     static {
-        final Logger eventLogger = LogManager.getLogger("EventLogger");
+        final Logger eventLogger = LogManager.getLogger(NAME);
         if (!(eventLogger instanceof AbstractLogger)) {
             throw new LoggingException("Logger returned must be based on AbstractLogger");
         }
-        loggerWrapper = new AbstractLoggerWrapper((AbstractLogger) eventLogger, "EventLogger", null);
+        loggerWrapper = new AbstractLoggerWrapper((AbstractLogger) eventLogger, NAME, null);
     }
 
 
