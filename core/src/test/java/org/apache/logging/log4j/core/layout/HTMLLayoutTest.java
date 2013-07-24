@@ -68,6 +68,12 @@ public class HTMLLayoutTest {
     }
     
     @Test
+    public void testContentType() {
+        final HTMLLayout layout = HTMLLayout.createLayout("true", null, "text/html; charset=UTF-16", null, "small", null);
+        assertEquals("text/html; charset=UTF-16", layout.getContentType());
+    }
+    
+    @Test
     public void testDefaultCharset() {
         final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
         assertEquals(Charsets.UTF_8, layout.getCharset());

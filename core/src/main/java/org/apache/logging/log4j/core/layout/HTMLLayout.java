@@ -99,7 +99,7 @@ public final class HTMLLayout extends AbstractStringLayout {
     private final String headerSize;
 
     private HTMLLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
-                       final String font, final String fontSize, final String headerSize) {
+            final String font, final String fontSize, final String headerSize) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;
@@ -208,7 +208,7 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @return The content type.
      */
     public String getContentType() {
-        return "text/html; charset=" + this.getCharset();
+        return contentType;
     }
 
     private void appendThrowableAsHTML(final Throwable throwable, final StringBuilder sbuf) {
@@ -330,7 +330,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             title = DEFAULT_TITLE;
         }
         if (contentType == null) {
-            contentType = DEFAULT_CONTENT_TYPE;
+            contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
         }
         return new HTMLLayout(info, title, contentType, charset, font, fontSize, headerSize);
     }
