@@ -29,21 +29,21 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FastRollingFileAppenderLocationTest {
+public class RandomAccessFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "FastRollingFileAppenderLocationTest.xml");
+                "RandomAccessFileAppenderTest.xml");
     }
 
     @Test
-    public void testLocationIncluded() throws Exception {
-        final File f = new File("target", "FastRollingFileAppenderLocationTest.log");
+    public void testFlushAtEndOfBatch() throws Exception {
+        final File f = new File("target", "RandomAccessFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        final String msg = "Message with location, flushed with immediate flush=false";
+        final String msg = "Message flushed with immediate flush=false";
         log.info(msg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
@@ -52,9 +52,9 @@ public class FastRollingFileAppenderLocationTest {
         reader.close();
         f.delete();
         assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertTrue("line1 incorrect", line1.contains(msg));
 
-        final String location = "testLocationIncluded";
-        assertTrue("has location", line1.contains(location));
+        final String location = "testFlushAtEndOfBatch";
+        assertTrue("no location", !line1.contains(location));
     }
 }

@@ -39,14 +39,14 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "FastFile", category = "Core", elementType = "appender", printObject = true)
-public final class FastFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class RandomAccessFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastFileAppender(final String name, final Layout<T> layout, final Filter filter,
-            final FastFileManager manager, final String filename, final boolean ignoreExceptions,
+    private RandomAccessFileAppender(final String name, final Layout<T> layout, final Filter filter,
+            final RandomAccessFileManager manager, final String filename, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
         if (advertiser != null) {
@@ -83,7 +83,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
         // From a user's point of view, this means that all log events are
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
-        ((FastFileManager) getManager()).setEndOfBatch(event.isEndOfBatch());
+        ((RandomAccessFileManager) getManager()).setEndOfBatch(event.isEndOfBatch());
         super.append(event);
     }
 
@@ -121,7 +121,7 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
      * @return The FileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> FastFileAppender<S> createAppender(
+    public static <S extends Serializable> RandomAccessFileAppender<S> createAppender(
             @PluginAttr("fileName") final String fileName,
             @PluginAttr("append") final String append,
             @PluginAttr("name") final String name,
@@ -154,14 +154,14 @@ public final class FastFileAppender<T extends Serializable> extends AbstractOutp
             Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
             layout = l;
         }
-        final FastFileManager manager = FastFileManager.getFileManager(
+        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 fileName, isAppend, isFlush, advertiseURI, layout
         );
         if (manager == null) {
             return null;
         }
 
-        return new FastFileAppender<S>(
+        return new RandomAccessFileAppender<S>(
                 name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null
         );

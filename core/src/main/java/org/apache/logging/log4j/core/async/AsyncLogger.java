@@ -64,8 +64,8 @@ import com.lmax.disruptor.util.Util;
  * your log4j.xml configuration will produce either a "?" character or no output
  * at all.
  * <p>
- * For best performance, use AsyncLogger with the FastFileAppender or
- * FastRollingFileAppender, with immediateFlush=false. These appenders have
+ * For best performance, use AsyncLogger with the RandomAccessFileAppender or
+ * RollingRandomAccessFileAppender, with immediateFlush=false. These appenders have
  * built-in support for the batching mechanism used by the Disruptor library,
  * and they will flush to disk at the end of each batch. This means that even
  * with immediateFlush=false, there will never be any items left in the buffer;

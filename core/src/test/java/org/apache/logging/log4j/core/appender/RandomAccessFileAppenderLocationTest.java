@@ -29,21 +29,21 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FastRollingFileAppenderTest {
+public class RandomAccessFileAppenderLocationTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "FastRollingFileAppenderTest.xml");
+                "RandomAccessFileAppenderLocationTest.xml");
     }
 
     @Test
-    public void testFlushAtEndOfBatch() throws Exception {
-        final File f = new File("target", "FastRollingFileAppenderTest.log");
+    public void testLocationIncluded() throws Exception {
+        final File f = new File("target", "RandomAccessFileAppenderLocationTest.log");
         // System.out.println(f.getAbsolutePath());
         f.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        final String msg = "Message flushed with immediate flush=false";
+        final String msg = "Message with location, flushed with immediate flush=false";
         log.info(msg);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
@@ -54,7 +54,7 @@ public class FastRollingFileAppenderTest {
         assertNotNull("line1", line1);
         assertTrue("line1 correct", line1.contains(msg));
 
-        final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !line1.contains(location));
+        final String location = "testLocationIncluded";
+        assertTrue("has location", line1.contains(location));
     }
 }
