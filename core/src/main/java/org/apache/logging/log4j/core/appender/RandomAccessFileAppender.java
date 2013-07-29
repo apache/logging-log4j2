@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  *
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-@Plugin(name = "FastFile", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
 public final class RandomAccessFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
