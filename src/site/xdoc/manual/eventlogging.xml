@@ -34,7 +34,7 @@
             </p>
             <p>The recommended way of using the EventLogger in a typical web application is to populate
               the ThreadContext Map with data that is related to the entire lifespan of the request such as the user's
-              id, the user's ip address, the product name, etc. This can easily be done in a servlet filter where
+              id, the user's IP address, the product name, etc. This can easily be done in a servlet filter where
               the ThreadContext Map can also be cleared at the end of the request. When an event that needs to be
               recorded occurs a StructuredDataMessage should be created and populated.
               Then call EventLogger.logEvent(msg) where msg is a reference to the StructuredDataMessage.</p>
