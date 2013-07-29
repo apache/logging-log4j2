@@ -31,17 +31,17 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * this class uses a {@code ByteBuffer} and a {@code RandomAccessFile} to do the
  * I/O.
  */
-public class FastRollingFileManager extends RollingFileManager {
+public class RollingRandomAccessFileManager extends RollingFileManager {
     static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
-    private static final FastRollingFileManagerFactory FACTORY = new FastRollingFileManagerFactory();
+    private static final RollingRandomAccessFileManagerFactory FACTORY = new RollingRandomAccessFileManagerFactory();
 
     private final boolean isImmediateFlush;
     private RandomAccessFile randomAccessFile;
     private final ByteBuffer buffer;
     private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<Boolean>();
 
-    public FastRollingFileManager(final RandomAccessFile raf, final String fileName,
+    public RollingRandomAccessFileManager(final RandomAccessFile raf, final String fileName,
             final String pattern, final OutputStream os, final boolean append,
             final boolean immediateFlush, final long size, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy,
@@ -55,10 +55,10 @@ public class FastRollingFileManager extends RollingFileManager {
         buffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
     }
 
-    public static FastRollingFileManager getFastRollingFileManager(final String fileName, final String filePattern,
+    public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName, final String filePattern,
             final boolean isAppend, final boolean immediateFlush, final TriggeringPolicy policy,
             final RolloverStrategy strategy, final String advertiseURI, final Layout layout) {
-        return (FastRollingFileManager) getManager(fileName, new FactoryData(filePattern, isAppend, immediateFlush,
+        return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend, immediateFlush,
             policy, strategy, advertiseURI, layout), FACTORY);
     }
 
@@ -122,19 +122,19 @@ public class FastRollingFileManager extends RollingFileManager {
     }
 
     /**
-     * Factory to create a FastRollingFileManager.
+     * Factory to create a RollingRandomAccessFileManager.
      */
-    private static class FastRollingFileManagerFactory implements ManagerFactory<FastRollingFileManager, FactoryData> {
+    private static class RollingRandomAccessFileManagerFactory implements ManagerFactory<RollingRandomAccessFileManager, FactoryData> {
 
         /**
-         * Create the FastRollingFileManager.
+         * Create the RollingRandomAccessFileManager.
          *
          * @param name The name of the entity to manage.
          * @param data The data required to create the entity.
          * @return a RollingFileManager.
          */
         @Override
-        public FastRollingFileManager createManager(final String name, final FactoryData data) {
+        public RollingRandomAccessFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             final File parent = file.getParentFile();
             if (null != parent && !parent.exists()) {
@@ -155,10 +155,10 @@ public class FastRollingFileManager extends RollingFileManager {
                 } else {
                     raf.setLength(0);
                 }
-                return new FastRollingFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
+                return new RollingRandomAccessFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
                         data.immediateFlush, size, time, data.policy, data.strategy, data.advertiseURI, data.layout);
             } catch (final IOException ex) {
-                LOGGER.error("FastRollingFileManager (" + name + ") " + ex);
+                LOGGER.error("RollingRandomAccessFileManager (" + name + ") " + ex);
             }
             return null;
         }

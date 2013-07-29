@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastRollingFile name="FastRollingFile" fileName="target/FastRollingFileAppenderLocationTest.log"
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderLocationTest.log"
                  filePattern="test-%d{MM-dd-yyyy}-%i.log.gz" append="false"
                  immediateFlush="false">
       <PatternLayout>
@@ -10,12 +10,12 @@
       <Policies>
         <TimeBasedTriggeringPolicy />
       </Policies>
-    </FastRollingFile>
+    </RollingRandomAccessFile>
   </appenders>
   
   <loggers>
     <asyncRoot level="info" includeLocation="true">
-      <appender-ref ref="FastRollingFile"/>
+      <appender-ref ref="RollingRandomAccessFile"/>
     </asyncRoot>
   </loggers>
 </configuration>

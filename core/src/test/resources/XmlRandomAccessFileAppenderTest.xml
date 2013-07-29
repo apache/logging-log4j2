@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastFile name="FastXmlFile" fileName="target/FastXmlFileAppenderTest.log" immediateFlush="false" append="false">
+    <RandomAccessFile name="XmlRandomAccessFile" fileName="target/XmlRandomAccessFileAppenderTest.log" immediateFlush="false" append="false">
       <XMLLayout complete="true"/>
-    </FastFile>
+    </RandomAccessFile>
   </appenders>
   
   <loggers>
     <asyncRoot level="info" includeLocation="false">
-      <appender-ref ref="FastXmlFile"/>
+      <appender-ref ref="XmlRandomAccessFile"/>
     </asyncRoot>
   </loggers>
 </configuration>

@@ -243,10 +243,10 @@ public class PerfTestDriver {
 
         // appenders
         // tests.add(s("perf1syncFile.xml", LOG20, "FileAppender"));
-        // tests.add(s("perf1syncFastFile.xml", LOG20, "FastFileAppender"));
+        // tests.add(s("perf1syncRandomAccessFile.xml", LOG20, "RandomAccessFileAppender"));
         // tests.add(s("perf2syncRollFile.xml", LOG20, "RollFileAppender"));
-        // tests.add(s("perf2syncRollFastFile.xml", LOG20,
-        // "RollFastFileAppender"));
+        // tests.add(s("perf2syncRollRandomAccessFile.xml", LOG20,
+        // "RollRandomAccessFileAppender"));
 
         final int MAX_THREADS = 16; // 64 takes a LONG time
         for (int i = 2; i <= MAX_THREADS; i *= 2) {
@@ -277,12 +277,12 @@ public class PerfTestDriver {
 
             // appenders
             // tests.add(m("perf1syncFile.xml", LOG20, "FileAppender", i));
-            // tests.add(m("perf1syncFastFile.xml", LOG20, "FastFileAppender",
+            // tests.add(m("perf1syncRandomAccessFile.xml", LOG20, "RandomAccessFileAppender",
             // i));
             // tests.add(m("perf2syncRollFile.xml", LOG20, "RollFileAppender",
             // i));
-            // tests.add(m("perf2syncRollFastFile.xml", LOG20,
-            // "RollFastFileAppender", i));
+            // tests.add(m("perf2syncRollRandomAccessFile.xml", LOG20,
+            // "RollRandomAccessFileAppender", i));
         }
 
         final String java = args.length > 0 ? args[0] : "java";

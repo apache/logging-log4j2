@@ -55,7 +55,7 @@
 					do not need the disruptor jar on the classpath.)
 				</li>
 				<li>(For synchronous and asynchronous use)
-					<b>Fast File Appenders</b>
+					<b>Random Access File Appenders</b>
 					are an alternative to Buffered File
 					Appenders. Under the hood, these
 					new appenders use a ByteBuffer + RandomAccessFile instead 
@@ -64,7 +64,7 @@
 					These appenders can also be used
 					with synchronous loggers
 					and will give the same performance benefits.
-					Fast File Appenders do not need the disruptor jar on the classpath.
+					Random Access File Appenders do not need the disruptor jar on the classpath.
 				</li>
 			</ul>
 			<a name="Trade-offs" />
@@ -154,15 +154,15 @@
 <configuration status="WARN">
   <appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <FastFile name="FastFile" fileName="async.log" immediateFlush="false" append="false">
+    <RandomAccessFile name="RandomAccessFile" fileName="async.log" immediateFlush="false" append="false">
       <PatternLayout>
         <pattern>%d %p %c{1.} [%t] %m %ex%n</pattern>
       </PatternLayout>
-    </FastFile>
+    </RandomAccessFile>
   </appenders>
   <loggers>
     <root level="info" includeLocation="false">
-      <appender-ref ref="FastFile"/>
+      <appender-ref ref="RandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -350,17 +350,17 @@
 <configuration status="WARN">
   <appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-    <FastFile name="FastFile" fileName="asyncWithLocation.log" 
+    <RandomAccessFile name="RandomAccessFile" fileName="asyncWithLocation.log" 
               immediateFlush="false" append="false">
       <PatternLayout>
         <pattern>%d %p %class{1.} [%t] %location %m %ex%n</pattern>
       </PatternLayout>
-    </FastFile>
+    </RandomAccessFile>
   </appenders>
   <loggers>
     <!-- pattern layout actually uses location, so we need to include it -->
     <asyncLogger name="com.foo.Bar" level="trace" includeLocation="true">
-      <appender-ref ref="FastFile"/>
+      <appender-ref ref="RandomAccessFile"/>
     </asyncLogger>
     <root level="info" includeLocation="true">
       <appender-ref ref="FastFile"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastRollingFile name="FastRollingFile" fileName="perftest.log"
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="perftest.log"
                  filePattern="app-%d{MM-dd-yyyy}-%i.log.gz" append="false"
                  immediateFlush="false">
       <PatternLayout>
@@ -10,11 +10,11 @@
       <Policies>
         <TimeBasedTriggeringPolicy />
       </Policies>
-    </FastRollingFile>
+    </RollingRandomAccessFile>
   </appenders>
   <loggers>
     <root level="info" includeLocation="false">
-      <appender-ref ref="FastRollingFile"/>
+      <appender-ref ref="RollingRandomAccessFile"/>
     </root>
   </loggers>
 </configuration>

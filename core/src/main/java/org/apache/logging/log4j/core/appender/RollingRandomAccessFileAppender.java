@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
-import org.apache.logging.log4j.core.appender.rolling.FastRollingFileManager;
+import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
@@ -45,14 +45,14 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "FastRollingFile", category = "Core", elementType = "appender", printObject = true)
-public final class FastRollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class RollingRandomAccessFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
 
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private FastRollingFileAppender(final String name, final Layout<T> layout,
+    private RollingRandomAccessFileAppender(final String name, final Layout<T> layout,
             final Filter filter, final RollingFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
@@ -84,7 +84,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
      */
     @Override
     public void append(final LogEvent event) {
-        final FastRollingFileManager manager = (FastRollingFileManager) getManager();
+        final RollingRandomAccessFileManager manager = (RollingRandomAccessFileManager) getManager();
         manager.checkRollover(event);
 
         // Leverage the nice batching behaviour of async Loggers/Appenders:
@@ -116,7 +116,7 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
     }
 
     /**
-     * Create a FastRollingFileAppender.
+     * Create a RollingRandomAccessFileAppender.
      *
      * @param fileName The name of the file that is actively written to.
      *            (required).
@@ -140,10 +140,10 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
      *            file contents.
      * @param config The Configuration.
      * @param <S> The {@link Layout}'s {@link Serializable} type.
-     * @return A FastRollingFileAppender.
+     * @return A RollingRandomAccessFileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> FastRollingFileAppender<S> createAppender(
+    public static <S extends Serializable> RollingRandomAccessFileAppender<S> createAppender(
             @PluginAttr("fileName") final String fileName,
             @PluginAttr("filePattern") final String filePattern,
             @PluginAttr("append") final String append,
@@ -198,13 +198,13 @@ public final class FastRollingFileAppender<T extends Serializable> extends Abstr
         }
 
 
-        final FastRollingFileManager manager = FastRollingFileManager.getFastRollingFileManager(fileName, filePattern,
+        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(fileName, filePattern,
             isAppend, isFlush, policy, strategy, advertiseURI, layout);
         if (manager == null) {
             return null;
         }
 
-        return new FastRollingFileAppender<S>(name, layout, filter, manager,
+        return new RollingRandomAccessFileAppender<S>(name, layout, filter, manager,
                 fileName, filePattern, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }

@@ -30,17 +30,17 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FastRollingFileAppenderRolloverTest {
+public class RollingRandomAccessFileAppenderRolloverTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "FastRollingFileAppenderTest.xml");
+                "RollingRandomAccessFileAppenderTest.xml");
     }
 
     @Test
     public void testRollover() throws Exception {
-        final File f = new File("target", "FastRollingFileAppenderTest.log");
+        final File f = new File("target", "RollingRandomAccessFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         final File after1 = new File("target", "afterRollover-1.log");
         f.delete();

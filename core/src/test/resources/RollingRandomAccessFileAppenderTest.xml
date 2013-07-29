@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="OFF">
   <appenders>
-    <FastRollingFile name="FastRollingFile" fileName="target/FastRollingFileAppenderTest.log"
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderTest.log"
                  filePattern="target/afterRollover-%i.log" append="false"
                  immediateFlush="false">
       <PatternLayout>
@@ -10,12 +10,12 @@
       <Policies>
         <SizeBasedTriggeringPolicy size="250 B"/>
       </Policies>
-    </FastRollingFile>
+    </RollingRandomAccessFile>
   </appenders>
   
   <loggers>
     <asyncRoot level="info" includeLocation="false">
-      <appender-ref ref="FastRollingFile"/>
+      <appender-ref ref="RollingRandomAccessFile"/>
     </asyncRoot>
   </loggers>
 </configuration>

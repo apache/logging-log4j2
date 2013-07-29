@@ -86,8 +86,8 @@
         <item name="Async" href="/manual/appenders.html#AsyncAppender"/>
         <item name="Console" href="/manual/appenders.html#ConsoleAppender"/>
         <item name="Failover" href="/manual/appenders.html#FailoverAppender"/>
-        <item name="FastFile" href="/manual/appenders.html#FastFileAppender"/>
-        <item name="FastRollingFile" href="/manual/appenders.html#FastRollingFileAppender"/>
+        <item name="RandomAccessFile" href="/manual/appenders.html#RandomAccessFileAppender"/>
+        <item name="RollingRandomAccessFile" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
         <item name="File" href="/manual/appenders.html#FileAppender"/>
         <item name="Flume" href="/manual/appenders.html#FlumeAppender"/>
         <item name="JDBC" href="/manual/appenders.html#JDBCAppender"/>

@@ -27,13 +27,13 @@ import java.io.RandomAccessFile;
 import org.junit.Test;
 
 /**
- * Tests the FastFileManager class.
+ * Tests the RandomAccessFileManager class.
  */
-public class FastFileManagerTest {
+public class RandomAccessFileManagerTest {
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.FastFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
      * .
      */
     @Test
@@ -41,21 +41,21 @@ public class FastFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new FastFileManager.DummyOutputStream();
-        final FastFileManager manager = new FastFileManager(raf, file.getName(), os,
+        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                 false, null, null);
 
-        final int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3;
+        final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
         final byte[] data = new byte[size];
         manager.write(data); // no buffer overflow exception
 
         // buffer is full but not flushed yet
-        assertEquals(FastFileManager.DEFAULT_BUFFER_SIZE * 2, raf.length());
+        assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 2, raf.length());
     }
 
     /**
      * Test method for
-     * {@link org.apache.logging.log4j.core.appender.FastFileManager#write(byte[], int, int)}
+     * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#write(byte[], int, int)}
      * .
      */
     @Test
@@ -63,14 +63,14 @@ public class FastFileManagerTest {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         final RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        final OutputStream os = new FastFileManager.DummyOutputStream();
-        final FastFileManager manager = new FastFileManager(raf, file.getName(), os,
+        final OutputStream os = new RandomAccessFileManager.DummyOutputStream();
+        final RandomAccessFileManager manager = new RandomAccessFileManager(raf, file.getName(), os,
                 false, null, null);
 
-        final int size = FastFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
+        final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
         final byte[] data = new byte[size];
         manager.write(data); // no exception
-        assertEquals(FastFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
+        assertEquals(RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3, raf.length());
 
         manager.flush();
         assertEquals(size, raf.length()); // all data written to file now
@@ -96,7 +96,7 @@ public class FastFileManagerTest {
         }
         assertEquals("all flushed to disk", bytes.length, file.length());
 
-        final FastFileManager manager = FastFileManager.getFileManager(
+        final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 file.getAbsolutePath(), isAppend, true, null, null);
         manager.write(bytes, 0, bytes.length);
         final int expected = bytes.length * 2;
