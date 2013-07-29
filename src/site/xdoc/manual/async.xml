@@ -363,7 +363,7 @@
       <appender-ref ref="RandomAccessFile"/>
     </asyncLogger>
     <root level="info" includeLocation="true">
-      <appender-ref ref="FastFile"/>
+      <appender-ref ref="RandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -897,8 +897,8 @@
 				<img src="../images/async-max-latency-99.99pct.png" />				
 				</p>
 
-				<a name="FastFileAppenderPerformance" />
-				<h4>FileAppender vs. FastFileAppender</h4>
+				<a name="RandomAccessFileAppenderPerformance" />
+				<h4>FileAppender vs. RandomAccessFileAppender</h4>
 				<p>The appender comparison below was done with <em>synchronous loggers</em>.
 				</p>
 				<p>On Windows 7 (64bit) with JDK1.7.0_11, 2-core Intel i5-3317u CPU
@@ -912,7 +912,7 @@
 						<th>8 threads</th>
 					</tr>
 					<tr>
-						<td>FastFileAppender</td>
+						<td>RandomAccessFileAppender</td>
 						<td align="right">250,438</td>
 						<td align="right">169,939</td>
 						<td align="right">109,074</td>
@@ -926,7 +926,7 @@
 						<td align="right">28,846</td>
 					</tr>
 					<tr>
-						<td>RollingFastFileAppender</td>
+						<td>RollingRandomAccessFileAppender</td>
 						<td align="right">278,369</td>
 						<td align="right">213,176</td>
 						<td align="right">125,300</td>
@@ -953,7 +953,7 @@
 						<th>8 threads</th>
 					</tr>
 					<tr>
-						<td>FastFileAppender</td>
+						<td>RandomAccessFileAppender</td>
 						<td align="right">240,760</td>
 						<td align="right">128,713</td>
 						<td align="right">66,555</td>
@@ -967,7 +967,7 @@
 						<td align="right">25,675</td>
 					</tr>
 					<tr>
-						<td>RollingFastFileAppender</td>
+						<td>RollingRandomAccessFileAppender</td>
 						<td align="right">228,491</td>
 						<td align="right">135,355</td>
 						<td align="right">69,277</td>
