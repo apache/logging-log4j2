@@ -49,13 +49,30 @@ public class LoggingController {
     private final Random ran = new Random();
 
     private List<AuditEvent> events;
+    private int timeBase = 1000;
 
     @RequestMapping(value = "/start.do", method = RequestMethod.GET)
     public ModelAndView startLogging(
         @RequestParam(value = "member", required = false, defaultValue = "fakemember") final String member,
+        @RequestParam(value = "interval", required = false, defaultValue = "1000") final String interval,
+        @RequestParam(value = "threads", required = false, defaultValue = "1") final String threadCount,
                       final HttpServletRequest servletRequest) {
-
-        System.out.println("STARTING..................");
+        int numThreads = 1;
+        if (threadCount != null && threadCount.length() > 0) {
+            try {
+                numThreads = Integer.parseInt(threadCount);
+            } catch (Exception ex) {
+                System.out.println("Invalid threadCount specified: " + threadCount);
+            }
+        }
+        if (interval != null && interval.length() > 0) {
+            try {
+                timeBase = Integer.parseInt(interval);
+            } catch (Exception ex) {
+                System.out.println("Invalid interval specified: " + interval);
+            }
+        }
+        System.out.println("STARTING - Using " + numThreads + " threads at interval: " + timeBase);
 
         if (events == null) {
             events = MockEventsSupplier.getAllEvents(member);
@@ -63,52 +80,54 @@ public class LoggingController {
 
         generateLog = true;
 
-        (new Thread() {
+        for (int i = 0; i < numThreads; ++i) {
+            (new Thread() {
 
-            @Override
-            public void run() {
-                ThreadContext.clear();
+                @Override
+                public void run() {
+                    ThreadContext.clear();
 
-                RequestContext.setSessionId("session1234");
-                RequestContext.setIpAddress("127.0.0.1");
-                RequestContext.setClientId("02121");
-                RequestContext.setProductName("IB");
-                RequestContext.setProductVersion("4.18.1");
-                RequestContext.setLocale("en_US");
-                RequestContext.setRegion("prod");
-                while (generateLog) {
-                    // Generate rand number between 1 to 10
-                    final int rand = ran.nextInt(9) + 1;
+                    RequestContext.setSessionId("session1234");
+                    RequestContext.setIpAddress("127.0.0.1");
+                    RequestContext.setClientId("02121");
+                    RequestContext.setProductName("IB");
+                    RequestContext.setProductVersion("4.18.1");
+                    RequestContext.setLocale("en_US");
+                    RequestContext.setRegion("prod");
+                    while (generateLog) {
+                        // Generate rand number between 1 to 10
+                        final int rand = ran.nextInt(9) + 1;
 
-                    // Sleep for rand seconds
-                    try {
-                        Thread.sleep(rand * 1000);
-                    } catch (final InterruptedException e) {
-                        logger.warn("WARN", e);
-                    }
-
-                    // Write rand number of logs
-                    for (int i = 0; i < rand; i++) {
-                        final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
-                        final AuditEvent event = events.get(eventIndex);
-                        RequestContext.setUserId(member);
-                        event.logEvent();
-
-                        if ((rand % 4) == 1) {
-                            logger.debug("DEBUG level logging.....");
-                        } else if ((rand % 4) == 2) {
-                            logger.info("INFO level logging.....");
-                        } else if ((rand % 4) == 3) {
-                            logger.warn("WARN level logging.....");
-                        } else {
-                            logger.error("ERROR level logging.....");
+                        // Sleep for rand seconds
+                        try {
+                            Thread.sleep(rand * timeBase);
+                        } catch (final InterruptedException e) {
+                            logger.warn("WARN", e);
                         }
-                    }
 
+                        // Write rand number of logs
+                        for (int i = 0; i < rand; i++) {
+                            final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
+                            final AuditEvent event = events.get(eventIndex);
+                            RequestContext.setUserId(member);
+                            event.logEvent();
+
+                            if ((rand % 4) == 1) {
+                                logger.debug("DEBUG level logging.....");
+                            } else if ((rand % 4) == 2) {
+                                logger.info("INFO level logging.....");
+                            } else if ((rand % 4) == 3) {
+                                logger.warn("WARN level logging.....");
+                            } else {
+                                logger.error("ERROR level logging.....");
+                            }
+                        }
+
+                    }
+                    ThreadContext.cloneStack();
                 }
-                ThreadContext.cloneStack();
-            }
-        }).start();
+            }).start();
+        }
 
         return new ModelAndView("start.jsp");
     }

@@ -437,7 +437,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
             long nextBatch = System.currentTimeMillis() + manager.delay;
             while (!shutdown) {
                 long now = System.currentTimeMillis();
-                if (database.count() >= batchSize || (database.count() > 0 && nextBatch < now)) {
+                long dbCount = database.count();
+                if (dbCount >= batchSize || (dbCount > 0 && nextBatch < now)) {
                     nextBatch = now + manager.delay;
                     try {
                         boolean errors = false;
@@ -546,7 +547,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                         LOGGER.warn("WriterThread encountered an exception. Continuing.", ex);
                     }
                 } else {
-                    while (!shutdown && (database.count() == 0 || database.count() < batchSize && nextBatch > now)) {
+                    while (!shutdown && (dbCount == 0 || dbCount < batchSize && nextBatch > now)) {
                         try {
                             final long interval = nextBatch - now;
                             gate.waitForOpen(interval, TimeUnit.MILLISECONDS);
@@ -557,7 +558,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             break;
                         }
                         now = System.currentTimeMillis();
-                        if (database.count() == 0) {
+                        dbCount = database.count();
+                        if (!gate.isSignalled()) {
                             nextBatch = now + manager.delay;
                         }
                     }
