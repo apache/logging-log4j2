@@ -75,12 +75,20 @@ public class StatusConsoleListener implements StatusListener {
     }
 
     /**
+     * Return the Log Level for which the Listener should receive events.
+     * @return the Log Level.
+     */
+    public Level getStatusLevel() {
+        return this.level;
+    }
+
+    /**
      * Writes status messages to the console.
      * @param data The StatusData.
      */
     @Override
     public void log(final StatusData data) {
-        if (data.getLevel().isAtLeastAsSpecificAs(level) && !filtered(data)) {
+        if (!filtered(data)) {
             stream.println(data.getFormattedStatus());
         }
     }

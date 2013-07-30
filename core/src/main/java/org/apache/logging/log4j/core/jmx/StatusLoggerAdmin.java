@@ -37,11 +37,12 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     private final AtomicLong sequenceNo = new AtomicLong();
     private final ObjectName objectName;
+    private Level level = Level.WARN;
 
     /**
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
-     * 
+     *
      * @param executor used to send notifications asynchronously
      */
     public StatusLoggerAdmin(final Executor executor) {
@@ -79,17 +80,22 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     @Override
     public String getLevel() {
-        return StatusLogger.getLogger().getLevel().name();
+        return this.level.name();
+    }
+
+    @Override
+    public Level getStatusLevel() {
+        return this.level;
     }
 
     @Override
     public void setLevel(final String level) {
-        StatusLogger.getLogger().setLevel(Level.valueOf(level));
+        this.level = Level.toLevel(level, Level.ERROR);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.status.StatusListener#log(org.apache.logging
      * .log4j.status.StatusData)
@@ -108,7 +114,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see StatusLoggerAdminMBean#NAME
      */

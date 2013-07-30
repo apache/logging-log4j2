@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-329" dev="rgoers" type="fix">
+        StatusLogger now only creates StatusData objects if they are the appropriate logging level.
+      </action>
       <action issue="LOG4J2-328" dev="rgoers" type="fix">
         FlumePersistentManager was calling Berkeley DB's count method too frequently.
       </action>
