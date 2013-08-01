@@ -78,7 +78,8 @@ public class StatusConsoleListener implements StatusListener {
      * Return the Log Level for which the Listener should receive events.
      * @return the Log Level.
      */
-    public Level getStatusLevel() {
+    @Override
+	public Level getStatusLevel() {
         return this.level;
     }
 

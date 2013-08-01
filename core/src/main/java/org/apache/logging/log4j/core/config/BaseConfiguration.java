@@ -155,6 +155,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         stopFilter();
     }
 
+    @Override
     public boolean isShutdownHookEnabled() {
         return isShutdownHookEnabled;
     }
