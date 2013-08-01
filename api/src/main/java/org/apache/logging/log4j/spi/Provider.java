@@ -23,7 +23,8 @@ import java.util.Properties;
  *
  */
 public class Provider {
-    private static final String FACTORY_PRIORITY = "FactoryPriority";
+    private static final Integer DEFAULT_PRIORITY = Integer.valueOf(-1);
+	private static final String FACTORY_PRIORITY = "FactoryPriority";
     private static final String THREAD_CONTEXT_MAP = "ThreadContextMap";
     private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
 
@@ -35,7 +36,7 @@ public class Provider {
     public Provider(final Properties props, final URL url) {
         this.url = url;
         final String weight = props.getProperty(FACTORY_PRIORITY);
-        priority = weight == null ? -1 : Integer.valueOf(weight);
+        priority = weight == null ? DEFAULT_PRIORITY : Integer.valueOf(weight);
         className = props.getProperty(LOGGER_CONTEXT_FACTORY);
         threadContextMap = props.getProperty(THREAD_CONTEXT_MAP);
     }
