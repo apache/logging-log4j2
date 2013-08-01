@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.ProviderUtil;
  * The anchor point for the logging system.
  */
 public class LogManager {
-	
+
     private static LoggerContextFactory factory;
 
     private static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
@@ -123,7 +123,7 @@ public class LogManager {
 
     /**
      * Gets the class name of the caller in the current stack at the given {@code depth}.
-     * 
+     *
      * @param depth a 0-based index in the current stack.
      * @return a class name
      */
@@ -413,7 +413,7 @@ public class LogManager {
 
     /**
      * Returns the root logger.
-     * 
+     *
      * @return the root logger, named {@link #ROOT_LOGGER_NAME}.
      */
 	public static Logger getRootLogger() {

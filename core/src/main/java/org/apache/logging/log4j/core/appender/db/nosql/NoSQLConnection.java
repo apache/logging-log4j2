@@ -21,7 +21,7 @@ import java.io.Closeable;
 /**
  * Represents a connection to the NoSQL database. Serves as a factory for new (empty) objects and an endpoint for
  * inserted objects.
- * 
+ *
  * @param <T> Specifies which implementation of {@link NoSQLObject} this connection provides.
  * @param <W> Specifies which type of database object is wrapped by the {@link NoSQLObject} implementation provided.
  */

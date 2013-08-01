@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 public class Timer implements Serializable
 {
     private static final long serialVersionUID = 9175191792439630013L;
-    
+
     private final String m_name;              // The timer's name
     private String m_status;            // The timer's status
     private long m_startTime;           // The start time

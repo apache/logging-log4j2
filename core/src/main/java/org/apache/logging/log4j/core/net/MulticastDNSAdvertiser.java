@@ -31,7 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Advertise an entity via ZeroConf/MulticastDNS and the JmDNS library.
  *
- * The length of property names and values must be 255 bytes or less.  
+ * The length of property names and values must be 255 bytes or less.
  * Entries with names or values larger than 255 bytes will be removed prior to advertisement.
  *
  */
@@ -54,9 +54,9 @@ public class MulticastDNSAdvertiser implements Advertiser {
      * Properties map provided in advertise method must include a "name" entry
      * but may also provide "protocol" (tcp/udp) as well as a "port" entry
      *
-     * The length of property names and values must be 255 bytes or less.  
+     * The length of property names and values must be 255 bytes or less.
      * Entries with names or values larger than 255 bytes will be removed prior to advertisement.
-     * 
+     *
      * @param properties the properties representing the entity to advertise
      * @return the object which can be used to unadvertise, or null if advertisement was unsuccessful
      */

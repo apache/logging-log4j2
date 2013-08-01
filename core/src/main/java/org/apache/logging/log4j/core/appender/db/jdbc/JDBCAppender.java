@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
  * {@link ColumnConfig}s with which it determines how to save the event data into the appropriate columns in the table.
  * A {@link ConnectionSource} plugin instance instructs the appender (and {@link JDBCDatabaseManager}) how to connect to
  * the database. This appender can be reconfigured at run time.
- * 
+ *
  * @see ColumnConfig
  * @see ConnectionSource
  */

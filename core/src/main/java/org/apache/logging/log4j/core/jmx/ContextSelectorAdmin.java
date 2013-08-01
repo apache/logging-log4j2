@@ -31,7 +31,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
 
     /**
      * Constructs a new {@code ContextSelectorAdmin}.
-     * 
+     *
      * @param selector the instrumented object
      */
     public ContextSelectorAdmin(final ContextSelector selector) {
@@ -46,7 +46,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see ContextSelectorAdminMBean#NAME
      */

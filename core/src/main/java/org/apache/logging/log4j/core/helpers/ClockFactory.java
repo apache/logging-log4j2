@@ -51,7 +51,7 @@ public final class ClockFactory {
      * If no value is specified, or if the specified value could not correctly
      * be instantiated or did not implement the {@code Clock} interface, then an
      * instance of {@link SystemClock} is returned.
-     * 
+     *
      * @return a {@code Clock} instance
      */
     public static Clock getClock() {

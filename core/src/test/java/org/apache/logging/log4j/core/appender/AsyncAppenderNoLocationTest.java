@@ -69,7 +69,7 @@ public class AsyncAppenderNoLocationTest {
     public void after() {
         app.clear();
     }
-    
+
     @Test
     public void testNoLocation() throws Exception {
         final Logger logger = LogManager.getLogger(AsyncAppender.class);

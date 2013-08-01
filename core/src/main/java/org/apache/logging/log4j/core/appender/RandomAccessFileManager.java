@@ -58,7 +58,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
     /**
      * Returns the RandomAccessFileManager.
-     * 
+     *
      * @param fileName The name of the file to manage.
      * @param append true if the file should be appended to, false if it should
      *            be overwritten.
@@ -128,7 +128,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
     /**
      * Returns the name of the File being managed.
-     * 
+     *
      * @return The name of the File being managed.
      */
     public String getFileName() {
@@ -150,7 +150,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      * FileManager's content format is specified by:
      * <p/>
      * Key: "fileURI" Value: provided "advertiseURI" param.
-     * 
+     *
      * @return Map of content format keys supporting FileManager
      */
     @Override
@@ -172,7 +172,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
         /**
          * Constructor.
-         * 
+         *
          * @param append Append status.
          */
         public FactoryData(final boolean append, final boolean immediateFlush,
@@ -192,7 +192,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
         /**
          * Create a RandomAccessFileManager.
-         * 
+         *
          * @param name The name of the File.
          * @param data The FactoryData
          * @return The RandomAccessFileManager for the File.

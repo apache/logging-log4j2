@@ -71,7 +71,7 @@ public class PerfTest {
 		final String name = args[1];
 		final String resultFile = args.length > 2 ? args[2] : null;
 		for (final String arg : args) {
-			if (verbose && throughput) { 
+			if (verbose && throughput) {
 			   break;
 			}
 			if ("-verbose".equalsIgnoreCase(arg)) {

@@ -33,7 +33,7 @@ import org.junit.Test;
  * Use this class to analyze Log4j-only performance.
  * <p/>
  * See {@linkplain PerformanceComparison} to compare performance with other logging frameworks.
- * 
+ *
  * @version $Id$
  */
 public class PerformanceRun {

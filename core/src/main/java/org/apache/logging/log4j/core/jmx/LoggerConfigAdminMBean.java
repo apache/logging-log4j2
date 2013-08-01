@@ -49,21 +49,21 @@ public interface LoggerConfigAdminMBean {
 
     /**
      * Returns the name of the instrumented {@code LoggerConfig}.
-     * 
+     *
      * @return the name of the LoggerConfig
      */
     String getName();
 
     /**
      * Returns the {@code LoggerConfig} level as a String.
-     * 
+     *
      * @return the {@code LoggerConfig} level.
      */
     String getLevel();
 
     /**
      * Sets the {@code LoggerConfig} level to the specified value.
-     * 
+     *
      * @param level the new {@code LoggerConfig} level.
      * @throws IllegalArgumentException if the specified level is not one of
      *             "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE",
@@ -73,7 +73,7 @@ public interface LoggerConfigAdminMBean {
 
     /**
      * Returns whether the instrumented {@code LoggerConfig} is additive.
-     * 
+     *
      * @return {@code true} if the LoggerConfig is additive, {@code false}
      *         otherwise
      */
@@ -81,7 +81,7 @@ public interface LoggerConfigAdminMBean {
 
     /**
      * Sets whether the instrumented {@code LoggerConfig} should be additive.
-     * 
+     *
      * @param additive {@code true} if the instrumented LoggerConfig should be
      *            additive, {@code false} otherwise
      */
@@ -90,7 +90,7 @@ public interface LoggerConfigAdminMBean {
     /**
      * Returns whether the instrumented {@code LoggerConfig} is configured to
      * include location.
-     * 
+     *
      * @return whether location should be passed downstream
      */
     boolean isIncludeLocation();
@@ -98,7 +98,7 @@ public interface LoggerConfigAdminMBean {
     /**
      * Returns a string description of all filters configured for the
      * instrumented {@code LoggerConfig}.
-     * 
+     *
      * @return a string description of all configured filters for this
      *         LoggerConfig
      */
@@ -107,7 +107,7 @@ public interface LoggerConfigAdminMBean {
     /**
      * Returns a String array with the appender refs configured for the
      * instrumented {@code LoggerConfig}.
-     * 
+     *
      * @return the appender refs for the instrumented {@code LoggerConfig}.
      */
     String[] getAppenderRefs();

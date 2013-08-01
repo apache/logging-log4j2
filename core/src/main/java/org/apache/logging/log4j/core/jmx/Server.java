@@ -47,7 +47,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public final class Server {
 
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
-    
+
     private Server() {
     }
 
@@ -55,7 +55,7 @@ public final class Server {
      * Either returns the specified name as is, or returns a quoted value
      * containing the specified name with the special characters (comma, equals,
      * colon, quote, asterisk, or question mark) preceded with a backslash.
-     * 
+     *
      * @param name
      *            the name to escape so it can be used as a value in an
      *            {@link ObjectName}.
@@ -89,7 +89,7 @@ public final class Server {
      * Creates MBeans to instrument the specified selector and other classes in
      * the log4j class hierarchy and registers the MBeans in the platform MBean
      * server so they can be accessed by remote clients.
-     * 
+     *
      * @param selector
      *            starting point in the log4j class hierarchy
      * @throws JMException
@@ -112,7 +112,7 @@ public final class Server {
      * Creates MBeans to instrument the specified selector and other classes in
      * the log4j class hierarchy and registers the MBeans in the specified MBean
      * server so they can be accessed by remote clients.
-     * 
+     *
      * @param selector
      *            starting point in the log4j class hierarchy
      * @param mbs

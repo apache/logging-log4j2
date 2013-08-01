@@ -139,7 +139,7 @@ public class RollingRandomAccessFileManagerTest {
         final long expectedMin = System.currentTimeMillis();
         final long expectedMax = expectedMin + 50;
         assertTrue(file.lastModified() < expectedMin);
-        
+
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                 .getRollingRandomAccessFileManager(
                         //
@@ -159,7 +159,7 @@ public class RollingRandomAccessFileManagerTest {
 
         final boolean isAppend = true;
         assertTrue(file.lastModified() < System.currentTimeMillis());
-        
+
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                 .getRollingRandomAccessFileManager(
                         //

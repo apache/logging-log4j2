@@ -46,7 +46,7 @@ public class Client {
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     * 
+     *
      * @param connector used to create the MBean server connection through which
      *            to communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
@@ -64,7 +64,7 @@ public class Client {
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     * 
+     *
      * @param mBeanServerConnection the MBean server connection through which to
      *            communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
@@ -103,7 +103,7 @@ public class Client {
     /**
      * Returns a proxy that allows operations to be performed on the remote
      * {@code ContextSelectorAdminMBean}.
-     * 
+     *
      * @return a proxy to the remote {@code ContextSelectorAdminMBean}
      */
     public ContextSelectorAdminMBean getContextSelectorAdmin() {
@@ -113,7 +113,7 @@ public class Client {
     /**
      * Returns a list of proxies that allow operations to be performed on the
      * remote {@code LoggerContextAdminMBean}s.
-     * 
+     *
      * @return a list of proxies to the remote {@code LoggerContextAdminMBean}s
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() {
@@ -135,7 +135,7 @@ public class Client {
     /**
      * Returns the MBean server connection through which to communicate with the
      * remote mbeans.
-     * 
+     *
      * @return the MBean server connection
      */
     public MBeanServerConnection getConnection() {
@@ -145,7 +145,7 @@ public class Client {
     /**
      * Returns a proxy that allows operations to be performed on the remote
      * {@code StatusLoggerAdminMBean}.
-     * 
+     *
      * @return a proxy to the remote {@code StatusLoggerAdminMBean}
      */
     public StatusLoggerAdminMBean getStatusLoggerAdmin() {

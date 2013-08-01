@@ -23,7 +23,7 @@ public class Integers {
 
     /**
      * Parses the string argument as a signed decimal integer.
-     * 
+     *
      * @param s
      *            a {@code String} containing the {@code int} representation to parse, may be {@code null} or {@code ""}
      * @param defaultValue
@@ -38,7 +38,7 @@ public class Integers {
 
     /**
      * Parses the string argument as a signed decimal integer.
-     * 
+     *
      * @param s
      *            a {@code String} containing the {@code int} representation to parse, may be {@code null} or {@code ""}
      * @param defaultValue

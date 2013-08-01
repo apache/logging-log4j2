@@ -22,7 +22,7 @@ package org.apache.logging.log4j.core.helpers;
 public interface Clock {
     /**
      * Returns the time in milliseconds since the epoch.
-     * 
+     *
      * @return the time in milliseconds since the epoch
      */
     long currentTimeMillis();

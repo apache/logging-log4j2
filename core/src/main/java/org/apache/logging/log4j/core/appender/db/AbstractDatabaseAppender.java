@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
  * should inherit from this base appender. Three implementations are currently provided:
  * {@link org.apache.logging.log4j.core.appender.db.jdbc JDBC}, {@link org.apache.logging.log4j.core.appender.db.jpa
  * JPA}, and {@link org.apache.logging.log4j.core.appender.db.nosql NoSQL}.
- * 
+ *
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
 public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender<LogEvent> {
@@ -44,7 +44,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
 
     /**
      * Instantiates the base appender.
-     * 
+     *
      * @param name The appender name.
      * @param filter The filter, if any, to use.
      * @param ignoreExceptions If {@code true} exceptions encountered when appending events are logged; otherwise
@@ -60,7 +60,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     /**
      * This always returns {@code null}, as database appenders do not use a single layout. The JPA and NoSQL appenders
      * do not use a layout at all. The JDBC appender has a layout-per-column pattern.
-     * 
+     *
      * @return {@code null}.
      */
     @Override
@@ -70,7 +70,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
 
     /**
      * Returns the underlying manager in use within this appender.
-     * 
+     *
      * @return the manager.
      */
     public final T getManager() {

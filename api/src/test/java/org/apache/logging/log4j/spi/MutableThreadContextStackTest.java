@@ -112,7 +112,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         stack.trim(1);
         assertEquals(1, stack.size());
         assertEquals("msg1", stack.peek());
@@ -127,7 +127,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         final ThreadContextStack copy = stack.copy();
         assertEquals(3, copy.size());
         assertTrue(copy.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
@@ -142,12 +142,12 @@ public class MutableThreadContextStackTest {
         copy.add("other");
         assertEquals(4, copy.size()); // not affected
         assertTrue(stack.isEmpty());
-        
+
         // adding to stack does not affect copy
         stack.push("newStackMsg");
         assertEquals(1, stack.size());
         assertEquals(4, copy.size()); // not affected
-        
+
         // clearing copy does not affect stack
         copy.clear();
         assertTrue(copy.isEmpty());
@@ -163,7 +163,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         stack.clear();
         assertTrue(stack.isEmpty());
     }
@@ -177,7 +177,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         assertTrue(stack.contains("msg1"));
         assertTrue(stack.contains("msg2"));
         assertTrue(stack.contains("msg3"));
@@ -192,7 +192,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         final Iterator<String> iter = stack.iterator();
         assertTrue(iter.hasNext());
         assertEquals("msg1", iter.next());
@@ -212,7 +212,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         final String[] expecteds = {"msg1", "msg2", "msg3"};
         assertArrayEquals(expecteds, stack.toArray());
     }
@@ -226,7 +226,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         final String[] expecteds = {"msg1", "msg2", "msg3"};
         final String[] result = new String[3] ;
         assertArrayEquals(expecteds, stack.toArray(result));
@@ -243,12 +243,12 @@ public class MutableThreadContextStackTest {
         stack.push("msg3");
         assertEquals(3, stack.size());
         assertTrue(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
-        
+
         stack.remove("msg1");
         assertEquals(2, stack.size());
         assertTrue(stack.containsAll(Arrays.asList("msg2", "msg3")));
         assertEquals("msg3", stack.peek());
-        
+
         stack.remove("msg3");
         assertEquals(1, stack.size());
         assertTrue(stack.containsAll(Arrays.asList("msg2")));
@@ -277,7 +277,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         stack.addAll(Arrays.asList("msg4", "msg5"));
         assertEquals(5, stack.size());
         assertTrue(stack.contains("msg1"));
@@ -296,7 +296,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         stack.removeAll(Arrays.asList("msg1", "msg3"));
         assertEquals(1, stack.size());
         assertFalse(stack.contains("msg1"));
@@ -313,7 +313,7 @@ public class MutableThreadContextStackTest {
         stack.add("msg2");
         stack.push("msg3");
         assertEquals(3, stack.size());
-        
+
         stack.retainAll(Arrays.asList("msg1", "msg3"));
         assertEquals(2, stack.size());
         assertTrue(stack.contains("msg1"));
@@ -325,12 +325,12 @@ public class MutableThreadContextStackTest {
     public void testToStringShowsListContents() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<String>());
         assertEquals("[]", stack.toString());
-        
+
         stack.push("msg1");
         stack.add("msg2");
         stack.push("msg3");
         assertEquals("[msg1, msg2, msg3]", stack.toString());
-        
+
         stack.retainAll(Arrays.asList("msg1", "msg3"));
         assertEquals("[msg1, msg3]", stack.toString());
     }

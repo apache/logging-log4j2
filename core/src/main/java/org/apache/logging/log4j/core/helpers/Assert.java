@@ -28,7 +28,7 @@ public final class Assert {
      * {@code null}, otherwise returns the specified parameter.
      * <p>
      * Usage:
-     * 
+     *
      * <pre>
      * // earlier you would write this:
      * public SomeConstructor(Object param) {
@@ -37,13 +37,13 @@ public final class Assert {
      *     }
      *     this.field = param;
      * }
-     * 
+     *
      * // now you can do the same in one line:
      * public SomeConstructor(Object param) {
      *     this.field = Assert.isNotNull(param);
      * }
      * </pre>
-     * 
+     *
      * @param <T> the type of the parameter to check and return
      * @param checkMe the parameter to check
      * @param name name of the parameter to use in the error message if

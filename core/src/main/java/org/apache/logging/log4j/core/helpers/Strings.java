@@ -32,7 +32,7 @@ public class Strings {
      * <p>NOTE: This method changed in Lang version 2.0.
      * It no longer trims the CharSequence.
      * That functionality is available in isBlank().</p>
-     * 
+     *
      * <p>Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.isEmpty(CharSequence)</p>
      *
      * @param cs  the CharSequence to check, may be null
@@ -54,7 +54,7 @@ public class Strings {
      * </pre>
      *
      * <p>Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.isNotEmpty(CharSequence)</p>
-     * 
+     *
      * @param cs  the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is not empty and not null
      * @since 3.0 Changed signature from isNotEmpty(String) to isNotEmpty(CharSequence)

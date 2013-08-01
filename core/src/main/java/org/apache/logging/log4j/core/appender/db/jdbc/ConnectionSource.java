@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public interface ConnectionSource {
     /**
      * This should return a new connection every time it is called.
-     * 
+     *
      * @return the SQL connection object.
      * @throws SQLException if a database error occurs.
      */

@@ -58,21 +58,21 @@ public interface LoggerContextAdminMBean {
 
     /**
      * Returns the status of the instrumented {@code LoggerContext}.
-     * 
+     *
      * @return the LoggerContext status.
      */
     String getStatus();
 
     /**
      * Returns the name of the instrumented {@code LoggerContext}.
-     * 
+     *
      * @return the name of the instrumented {@code LoggerContext}.
      */
     String getName();
 
     /**
      * Returns the configuration location URI as a String.
-     * 
+     *
      * @return the configuration location
      */
     String getConfigLocationURI();
@@ -80,7 +80,7 @@ public interface LoggerContextAdminMBean {
     /**
      * Sets the configuration location to the specified URI. This will cause the
      * instrumented {@code LoggerContext} to reconfigure.
-     * 
+     *
      * @param configLocation location of the configuration file in
      *            {@link java.net.URI} format.
      * @throws URISyntaxException if the format of the specified
@@ -95,7 +95,7 @@ public interface LoggerContextAdminMBean {
      * configuration file or the text that was last set with a call to
      * {@code setConfigText}. If reading a file, this method assumes the file's
      * character encoding is UTF-8.
-     * 
+     *
      * @return the configuration text
      * @throws IOException if a problem occurred reading the contents of the
      *             config file.
@@ -106,7 +106,7 @@ public interface LoggerContextAdminMBean {
      * Returns the configuration text, which may be the contents of the
      * configuration file or the text that was last set with a call to
      * {@code setConfigText}.
-     * 
+     *
      * @param charsetName the encoding to use to convert the file's bytes into
      *            the resulting string.
      * @return the configuration text
@@ -119,7 +119,7 @@ public interface LoggerContextAdminMBean {
      * Sets the configuration text. This does not replace the contents of the
      * configuration file, but <em>does</em> cause the instrumented
      * {@code LoggerContext} to be reconfigured with the specified text.
-     * 
+     *
      * @param configText the configuration text in XML or JSON format
      * @param charsetName name of the {@code Charset} used to convert the
      *            specified configText to bytes
@@ -130,7 +130,7 @@ public interface LoggerContextAdminMBean {
 
     /**
      * Returns the name of the Configuration of the instrumented LoggerContext.
-     * 
+     *
      * @return the Configuration name
      */
     String getConfigName();
@@ -138,7 +138,7 @@ public interface LoggerContextAdminMBean {
     /**
      * Returns the class name of the {@code Configuration} of the instrumented
      * LoggerContext.
-     * 
+     *
      * @return the class name of the {@code Configuration}.
      */
     String getConfigClassName();
@@ -146,7 +146,7 @@ public interface LoggerContextAdminMBean {
     /**
      * Returns a string description of all Filters configured in the
      * {@code Configuration} of the instrumented LoggerContext.
-     * 
+     *
      * @return a string description of all Filters configured
      */
     String getConfigFilter();
@@ -154,7 +154,7 @@ public interface LoggerContextAdminMBean {
     /**
      * Returns the class name of the object that is monitoring the configuration
      * file for modifications.
-     * 
+     *
      * @return the class name of the object that is monitoring the configuration
      *         file for modifications
      */
@@ -162,7 +162,7 @@ public interface LoggerContextAdminMBean {
 
     /**
      * Returns a map with configured properties.
-     * 
+     *
      * @return a map with configured properties.
      */
     Map<String, String> getConfigProperties();

@@ -33,7 +33,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
     /**
      * Constructs a new {@code AppenderAdmin} with the specified contextName
      * and appender.
-     * 
+     *
      * @param contextName used in the {@code ObjectName} for this mbean
      * @param appender the instrumented object
      */
@@ -53,7 +53,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see AppenderAdminMBean#PATTERN
      */
@@ -65,7 +65,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
     public String getName() {
         return appender.getName();
     }
-    
+
     @Override
     public String getLayout() {
         return String.valueOf(appender.getLayout());
@@ -75,7 +75,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
     public boolean isExceptionSuppressed() {
         return appender.ignoreExceptions();
     }
-    
+
     @Override
     public String getErrorHandler() {
         return String.valueOf(appender.getHandler());

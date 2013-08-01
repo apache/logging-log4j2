@@ -234,7 +234,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see LoggerContextAdminMBean#PATTERN
      */

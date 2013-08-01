@@ -28,7 +28,7 @@ public interface ContextSelectorAdminMBean {
     /**
      * Returns the name of the class implementing the {@code ContextSelector}
      * interface.
-     * 
+     *
      * @return the name of the {@code ContextSelector} implementation class.
      */
     String getImplementationClassName();

@@ -41,7 +41,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
 
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
- * 
+ *
  * <h4>Complete well-formed XML vs. fragment XML</h4>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace
@@ -52,7 +52,7 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  * <p>
  * A well-formed XML document follows this pattern:
  * </p>
- * 
+ *
  * <pre>
  * &lt;?xml version="1.0" encoding=&quotUTF-8&quot?&gt;
  * &lt;Events xmlns="http://logging.apache.org/log4j/2.0/events"&gt;
@@ -88,7 +88,7 @@ public class XMLLayout extends AbstractStringLayout {
     private static final String XML_NAMESPACE = "http://logging.apache.org/log4j/2.0/events";
     private static final String ROOT_TAG = "Events";
     private static final int DEFAULT_SIZE = 256;
-    
+
     // We yield to \r\n for the default.
     private static final String DEFAULT_EOL = "\r\n";
     private static final String COMPACT_EOL = "";
@@ -288,7 +288,7 @@ public class XMLLayout extends AbstractStringLayout {
      * <li>XML processing instruction</li>
      * <li>XML root element</li>
      * </ol>
-     * 
+     *
      * @return a byte array containing the header.
      */
     @Override
@@ -312,7 +312,7 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Returns appropriate XML footer.
-     * 
+     *
      * @return a byte array containing the footer, closing the XML root element.
      */
     @Override
@@ -374,7 +374,7 @@ public class XMLLayout extends AbstractStringLayout {
 
     /**
      * Creates an XML Layout.
-     * 
+     *
      * @param locationInfo If "true", includes the location information in the generated XML.
      * @param properties If "true", includes the thread context in the generated XML.
      * @param completeStr If "true", includes the XML header and footer, defaults to "false".

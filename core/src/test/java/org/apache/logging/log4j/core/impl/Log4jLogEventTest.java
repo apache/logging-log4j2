@@ -33,15 +33,15 @@ public class Log4jLogEventTest {
     public void testJavaIoSerializable() throws Exception {
         final Log4jLogEvent evt = new Log4jLogEvent("some.test", null, "",
                 Level.INFO, new SimpleMessage("abc"), null);
-        
+
         final ByteArrayOutputStream arr = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(arr);
         out.writeObject(evt);
-        
+
         final ByteArrayInputStream inArr = new ByteArrayInputStream(arr.toByteArray());
         final ObjectInputStream in = new ObjectInputStream(inArr);
         final Log4jLogEvent evt2 = (Log4jLogEvent) in.readObject();
-        
+
         assertEquals(evt.getMillis(), evt2.getMillis());
         assertEquals(evt.getFQCN(), evt2.getFQCN());
         assertEquals(evt.getLevel(), evt2.getLevel());

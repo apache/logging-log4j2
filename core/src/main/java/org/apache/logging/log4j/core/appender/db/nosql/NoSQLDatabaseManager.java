@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for all NoSQL databases.
- * 
+ *
  * @param <W> A type parameter for reassuring the compiler that all operations are using the same {@link NoSQLObject}.
  */
 public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
