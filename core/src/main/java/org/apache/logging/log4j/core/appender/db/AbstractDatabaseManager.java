@@ -33,7 +33,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
 
     /**
      * Instantiates the base manager.
-     * 
+     *
      * @param name The manager name, which should include any configuration details that one might want to be able to
      *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
      * @param bufferSize The size of the log event buffer.

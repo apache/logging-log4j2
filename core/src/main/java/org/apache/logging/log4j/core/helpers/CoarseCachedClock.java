@@ -32,7 +32,7 @@ public final class CoarseCachedClock implements Clock {
             while (true) {
                 final long time = System.currentTimeMillis();
                 millis = time;
-                
+
                 // avoid explicit dependency on sun.misc.Util
                 LockSupport.parkNanos(1000 * 1000);
             }
@@ -46,7 +46,7 @@ public final class CoarseCachedClock implements Clock {
 
     /**
      * Returns the singleton instance.
-     * 
+     *
      * @return the singleton instance
      */
     public static CoarseCachedClock instance() {

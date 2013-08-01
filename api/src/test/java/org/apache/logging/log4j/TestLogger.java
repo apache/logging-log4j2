@@ -30,7 +30,7 @@ import java.util.Map;
  *
  */
 public class TestLogger extends AbstractLogger {
-    
+
     public TestLogger() {
         super();
     }

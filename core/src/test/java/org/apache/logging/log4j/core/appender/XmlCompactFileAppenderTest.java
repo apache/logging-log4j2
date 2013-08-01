@@ -77,5 +77,5 @@ public class XmlCompactFileAppenderTest {
         assertTrue(line1.indexOf('\r') == -1);
         assertTrue(line1.indexOf('\n') == -1);
     }
-    
+
 }

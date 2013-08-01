@@ -165,7 +165,7 @@ public class AsyncLogger extends Logger {
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and
      * message factory.
-     * 
+     *
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
@@ -230,7 +230,7 @@ public class AsyncLogger extends Logger {
     /**
      * This method is called by the EventHandler that processes the
      * RingBufferLogEvent in a separate thread.
-     * 
+     *
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {

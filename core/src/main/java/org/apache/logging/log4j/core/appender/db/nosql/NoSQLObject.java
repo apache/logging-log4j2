@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.db.nosql;
 
 /**
  * Represents a simple POJO object inserted into a NoSQL object.
- * 
+ *
  * @param <W> Specifies what type of underlying object (such as a MongoDB BasicDBObject) this NoSQLObject wraps.
  */
 public interface NoSQLObject<W> {

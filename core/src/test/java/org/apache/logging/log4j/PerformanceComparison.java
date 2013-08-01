@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Use this class to analyze performance between Log4j and other logging frameworks.
- * 
+ *
  * @version $Id$
  */
 public class PerformanceComparison {

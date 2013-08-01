@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
  * (org.mongodb:mongo-java-driver:2.11.1 or newer must be on the classpath) and Apache CouchDB
  * (org.lightcouch:lightcouch:0.0.5 or newer must be on the classpath). For examples on how to write your own NoSQL
  * provider, see the simple source code for the MongoDB and CouchDB providers.
- * 
+ *
  * @see NoSQLObject
  * @see NoSQLConnection
  * @see NoSQLProvider

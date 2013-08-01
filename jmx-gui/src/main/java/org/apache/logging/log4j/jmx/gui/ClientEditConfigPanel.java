@@ -48,7 +48,7 @@ public class ClientEditConfigPanel extends JPanel {
     private static final int CONFIG_TEXT_COLS = 60;
     private static final int CONFIG_TEXT_ROWS = 20;
     private static final int BUFFER_SIZE = 2048;
-    
+
     private JTextField locationTextField;
     private JLabel locationLabel;
     private JButton buttonSendLocation;

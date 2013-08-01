@@ -156,7 +156,7 @@ public class ThreadContextTest {
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
-        
+
         ThreadContext.remove("testKey");
         assertNull(ThreadContext.get("testKey"));
         assertTrue(ThreadContext.isEmpty());
@@ -168,7 +168,7 @@ public class ThreadContextTest {
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertTrue(ThreadContext.containsKey("testKey"));
-        
+
         ThreadContext.remove("testKey");
         assertFalse(ThreadContext.containsKey("testKey"));
     }

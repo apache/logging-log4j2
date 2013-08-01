@@ -173,7 +173,7 @@ public class StructuredDataMessage extends MapMessage {
         }
         this.type = type;
     }
-    
+
     /**
      * Returns the message.
      * @return the message.

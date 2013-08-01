@@ -109,7 +109,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
 
     /**
      * Removes knowledge of a LoggerContext.
-     * 
+     *
      * @param context The context to remove.
      */
     @Override

@@ -36,7 +36,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
     /**
      * Constructs a new {@code LoggerConfigAdmin} with the specified contextName
      * and logger config.
-     * 
+     *
      * @param contextName used in the {@code ObjectName} for this mbean
      * @param loggerConfig the instrumented object
      */
@@ -56,7 +56,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see LoggerConfigAdminMBean#PATTERN
      */

@@ -46,19 +46,19 @@ public class BaseConfigurationTest {
         assertEquals("Appenders Size", 2, map.size());
         assertTrue("Contains List", map.containsKey("List"));
         assertTrue("Contains Console", map.containsKey("Console"));
-        
+
         final Map<String, LoggerConfig> loggerMap = config.getLoggers();
         assertNotNull("loggerMap not null", loggerMap);
         assertEquals("loggerMap Size", 1, loggerMap.size());
         // only the sample logger, no root logger in loggerMap!
         assertTrue("contains key=sample", loggerMap.containsKey("sample"));
-        
+
         final LoggerConfig sample = loggerMap.get("sample");
         final Map<String, Appender<?>> sampleAppenders = sample.getAppenders();
         assertEquals("sampleAppenders Size", 1, sampleAppenders.size());
         // sample only has List appender, not Console!
         assertTrue("sample has appender List", sampleAppenders.containsKey("List"));
-        
+
         final BaseConfiguration baseConfig = (BaseConfiguration) config;
         final LoggerConfig root = baseConfig.getRootLogger();
         final Map<String, Appender<?>> rootAppenders = root.getAppenders();

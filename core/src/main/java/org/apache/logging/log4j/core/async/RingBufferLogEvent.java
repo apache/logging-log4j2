@@ -89,7 +89,7 @@ public class RingBufferLogEvent implements LogEvent {
     /**
      * Event processor that reads the event from the ringbuffer can call this
      * method.
-     * 
+     *
      * @param endOfBatch flag to indicate if this is the last event in a batch
      *            from the RingBuffer
      */
@@ -101,7 +101,7 @@ public class RingBufferLogEvent implements LogEvent {
     /**
      * Returns {@code true} if this event is the end of a batch, {@code false}
      * otherwise.
-     * 
+     *
      * @return {@code true} if this event is the end of a batch, {@code false}
      *         otherwise
      */
@@ -187,7 +187,7 @@ public class RingBufferLogEvent implements LogEvent {
      * Merges the contents of the specified map into the contextMap, after
      * replacing any variables in the property values with the
      * StrSubstitutor-supplied actual values.
-     * 
+     *
      * @param properties configured properties
      * @param strSubstitutor used to lookup values of variables in properties
      */

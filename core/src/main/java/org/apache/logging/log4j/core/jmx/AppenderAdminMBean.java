@@ -50,7 +50,7 @@ public interface AppenderAdminMBean {
 
     /**
      * Returns the name of the instrumented {@code Appender}.
-     * 
+     *
      * @return the name of the Appender
      */
     String getName();
@@ -58,7 +58,7 @@ public interface AppenderAdminMBean {
     /**
      * Returns the result of calling {@code toString} on the {@code Layout}
      * object of the instrumented {@code Appender}.
-     * 
+     *
      * @return the {@code Layout} of the instrumented {@code Appender} as a
      *         string
      */
@@ -67,7 +67,7 @@ public interface AppenderAdminMBean {
     /**
      * Returns how exceptions thrown on the instrumented {@code Appender} are
      * handled.
-     * 
+     *
      * @return {@code true} if any exceptions thrown by the Appender will be
      *         logged or {@code false} if such exceptions are re-thrown.
      */
@@ -76,7 +76,7 @@ public interface AppenderAdminMBean {
     /**
      * Returns the result of calling {@code toString} on the error handler of
      * this appender, or {@code "null"} if no error handler was set.
-     * 
+     *
      * @return result of calling {@code toString} on the error handler of this
      *         appender, or {@code "null"}
      */

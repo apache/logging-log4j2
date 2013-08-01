@@ -246,11 +246,11 @@ public class RFC5424LayoutTest {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
-        
+
         final LoggerFields loggerFields = LoggerFields.createLoggerFields(new KeyValuePair[] {
         		new KeyValuePair("source", "%C.%M")
         });
-        
+
         // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
             null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);

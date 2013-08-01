@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.db.nosql;
 /**
  * Implementations of this class are plugins for configuring the {@link NoSQLAppender} with the proper provider
  * (MongoDB, etc.).
- * 
+ *
  * @param <C> Specifies which implementation of {@link NoSQLConnection} this provider provides.
  */
 public interface NoSQLProvider<C extends NoSQLConnection<?, ? extends NoSQLObject<?>>> {

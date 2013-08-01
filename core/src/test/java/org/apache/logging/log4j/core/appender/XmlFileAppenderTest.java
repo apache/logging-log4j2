@@ -63,7 +63,7 @@ public class XmlFileAppenderTest {
             f.delete();
         }
         assertNotNull("line1", line1);
-        
+
         assertNotNull("line1", line1);
         final String msg1 = "<log4j:Event ";
         assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.contains(msg1));

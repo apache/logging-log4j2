@@ -31,7 +31,7 @@ public class ThreadedPerfTest {
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(ThreadedPerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
     private static final int LOOP_CNT = 10000000;
-    private static final int THREADS = 10;     
+    private static final int THREADS = 10;
 
     @Test
     public void debugDisabled() {

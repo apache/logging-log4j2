@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.helpers.Strings;
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a
  * pre-configured JPA persistence unit and a concrete implementation of the abstract
  * {@link AbstractLogEventWrapperEntity} class decorated with JPA annotations.
- * 
+ *
  * @see AbstractLogEventWrapperEntity
  */
 @Plugin(name = "Jpa", category = "Core", elementType = "appender", printObject = true)

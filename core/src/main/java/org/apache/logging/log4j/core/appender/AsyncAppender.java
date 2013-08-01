@@ -186,7 +186,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         }
 
         final boolean isBlocking = Booleans.parseBoolean(blocking, true);
-        final int queueSize = AbstractAppender.parseInt(size, DEFAULT_QUEUE_SIZE);        
+        final int queueSize = AbstractAppender.parseInt(size, DEFAULT_QUEUE_SIZE);
         final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 

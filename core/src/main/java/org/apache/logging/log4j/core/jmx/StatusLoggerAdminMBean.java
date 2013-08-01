@@ -46,11 +46,11 @@ public interface StatusLoggerAdminMBean {
      * <p>
      * Note that the returned objects may contain {@code Throwable}s from
      * external libraries.
-     * 
+     *
      * JMX clients calling this method must be prepared to deal with the errors
      * that occur if they do not have the class definition for such
      * {@code Throwable}s in their classpath.
-     * 
+     *
      * @return the most recent messages logged by the {@code StatusLogger}.
      */
     List<StatusData> getStatusData();
@@ -59,21 +59,21 @@ public interface StatusLoggerAdminMBean {
      * Returns a string array with the most recent messages in the status
      * history. The list has up to 200 entries by default but the length can be
      * configured with system property {@code "log4j2.status.entries"}.
-     * 
+     *
      * @return the most recent messages logged by the {@code StatusLogger}.
      */
     String[] getStatusDataHistory();
 
     /**
      * Returns the {@code StatusLogger} level as a String.
-     * 
+     *
      * @return the {@code StatusLogger} level.
      */
     String getLevel();
 
     /**
      * Sets the {@code StatusLogger} level to the specified value.
-     * 
+     *
      * @param level the new {@code StatusLogger} level.
      * @throws IllegalArgumentException if the specified level is not one of
      *             "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE",
