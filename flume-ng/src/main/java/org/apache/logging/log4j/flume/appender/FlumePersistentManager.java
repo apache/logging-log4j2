@@ -632,11 +632,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private static class Synchronizer extends AbstractQueuedSynchronizer {
             boolean isSignalled() { return getState() != 0; }
 
-            protected int tryAcquireShared(int ignore) {
+            @Override
+			protected int tryAcquireShared(int ignore) {
                 return isSignalled()? 1 : -1;
             }
 
-            protected boolean tryReleaseShared(int state) {
+            @Override
+			protected boolean tryReleaseShared(int state) {
                 setState(state);
                 return true;
             }
