@@ -299,8 +299,9 @@ public class ResolverUtil {
      */
     private void loadImplementationsInDirectory(final Test test, final String parent, final File location) {
         final File[] files = location.listFiles();
-        if(files == null)
+        if (files == null) {
             return;
+        }
 
         StringBuilder builder;
         for (final File file : files) {
