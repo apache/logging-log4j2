@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.core.helpers.Constants;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

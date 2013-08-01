@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Test;
 
 import java.io.File;
