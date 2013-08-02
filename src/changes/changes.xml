@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-331" dev="nickwilliams" type="fix">
+        Removed erroneous check for affected MongoDB records, which always returns zero on inserts.
+      </action>
+      <action issue="LOG4J2-330" dev="nickwilliams" type="fix">
+        Added a BSON Transformer so that MongoDB can persist Log4j events.
+      </action>
       <action issue="LOG4J2-329" dev="rgoers" type="fix">
         StatusLogger now only creates StatusData objects if they are the appropriate logging level.
       </action>
