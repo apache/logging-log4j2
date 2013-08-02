@@ -131,6 +131,10 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         return requestTimeout;
     }
 
+    public int getBatchSize() {
+        return batchSize;
+    }
+
     public synchronized void send(final BatchEvent events) {
         if (rpcClient == null) {
             rpcClient = connect(agents, retries, connectTimeout, requestTimeout);
