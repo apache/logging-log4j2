@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.nosql.mongo;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
+import org.bson.BSON;
+import org.bson.Transformer;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -32,6 +35,19 @@ import com.mongodb.WriteResult;
  * The MongoDB implementation of {@link NoSQLConnection}.
  */
 public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, MongoDBObject> {
+
+    static {
+        BSON.addDecodingHook(Level.class, new Transformer() {
+            @Override
+            public Object transform(Object o) {
+                if (o instanceof Level) {
+                    return ((Level) o).name();
+                }
+                return o;
+            }
+        });
+    }
+
     private final DBCollection collection;
     private final Mongo mongo;
     private final WriteConcern writeConcern;
