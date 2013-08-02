@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-335" dev="rgoers" type="fix">
+        FlumePersistentManager's writer thread had high CPU usage.
+      </action>
       <action issue="LOG4J2-331" dev="nickwilliams" type="fix">
         Removed erroneous check for affected MongoDB records, which always returns zero on inserts.
       </action>
