@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Utility class to help with accessing System Properties.
+ * Helps access System Properties.
  */
 public class PropertiesUtil {
 
