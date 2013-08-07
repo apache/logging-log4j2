@@ -58,17 +58,17 @@ public final class ProviderUtil {
 
         if (enumResources != null) {
             while (enumResources.hasMoreElements()) {
-                final Properties props = new Properties();
                 final URL url = enumResources.nextElement();
+                Properties props;
                 try {
-                    props.load(url.openStream());
+                    props = PropertiesUtil.loadClose(url.openStream(), url);
+                    if (!validVersion(props.getProperty(API_VERSION))) {
+                        continue;
+                    }
+                    PROVIDERS.add(new Provider(props, url));
                 } catch (final IOException ioe) {
-                    LOGGER.error("Unable to read " + url.toString(), ioe);
+                    LOGGER.error("Unable to open " + url.toString(), ioe);
                 }
-                if (!validVersion(props.getProperty(API_VERSION))) {
-                    continue;
-                }
-                PROVIDERS.add(new Provider(props, url));
             }
         }
     }
