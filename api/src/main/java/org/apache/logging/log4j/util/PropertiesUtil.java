@@ -18,41 +18,61 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Helps access System Properties.
+ * Helps access properties.
  */
 public class PropertiesUtil {
 
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    
     private final Properties props;
 
     public PropertiesUtil(final Properties props) {
         this.props = props;
     }
 
-    public PropertiesUtil(final String propsLocn) {
-        this.props = new Properties();
-        final ClassLoader loader = ProviderUtil.findClassLoader();
-        final InputStream in = loader.getResourceAsStream(propsLocn);
-        if (null != in) {
-            try {
-                this.props.load(in);
-            } catch (final IOException e) {
-                // ignored
-            } finally {
-                try {
-                    in.close();
-                } catch (final IOException e) {
-                    // ignored
-                }
-            }
-        }
-    }
+	/**
+	 * Loads and closes the given property input stream.
+	 * If an error occurs, log to the status logger.
+	 * 
+	 * @param in
+	 *            a property input stream.
+	 * @param source
+	 *            a source object describing the source, like a resource string
+	 *            or a URL.
+	 * @return a new Properties object
+	 */
+	static Properties loadClose(InputStream in, Object source) {
+		Properties props = new Properties();
+		if (null != in) {
+			try {
+				props.load(in);
+			} catch (final IOException e) {
+				LOGGER.error("Unable to read " + source, e);
+			} finally {
+				try {
+					in.close();
+				} catch (final IOException e) {
+					LOGGER.error("Unable to close " + source, e);
+				}
+			}
+		}
+		return props;
+	}
+    
+	public PropertiesUtil(final String propsLocn) {
+		final ClassLoader loader = ProviderUtil.findClassLoader();
+		final InputStream in = loader.getResourceAsStream(propsLocn);
+		this.props = loadClose(in, propsLocn);
+	}
 
     public static PropertiesUtil getProperties() {
         return LOG4J_PROPERTIES;
