@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -99,7 +100,14 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             buffer = toByteArray(configStream);
             configStream.close();
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
-            final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            try {
+                factory.setXIncludeAware(true);
+            } catch (UnsupportedOperationException e) {
+                LOGGER.warn("This DocumentBuilderFactory does not support XInclude: " + factory, e);
+            }
+            final DocumentBuilder builder = factory.newDocumentBuilder();
             final Document document = builder.parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);

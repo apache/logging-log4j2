@@ -16,6 +16,19 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,30 +37,38 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  *
  */
+@RunWith(Parameterized.class)
 public class XMLConfigurationTest {
 
-    private static final String CONFIG = "log4j-test1.xml";
-    private static final String LOGFILE = "target/test.log";
+    public XMLConfigurationTest(String configFile, String logFile) {
+        super();
+        this.configFile = configFile;
+        this.logFile = logFile;
+    }
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+    private final String configFile;
+    private final String logFile ;
+
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                {"log4j-test1.xml", "target/test.log"}, 
+                {"log4j-xinclude.xml", "target/test.log"}});
+    }
+
+    @Before
+    public void setUp() {
+        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configFile);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
@@ -60,8 +81,8 @@ public class XMLConfigurationTest {
         }
     }
 
-    @AfterClass
-    public static void cleanupClass() {
+    @After
+    public void tearDown() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
@@ -87,22 +108,23 @@ public class XMLConfigurationTest {
         assertEquals(a.getName(), "STDOUT");
     }
 
+    @Test
     public void testConfiguredAppenders() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration c = ctx.getConfiguration();
         final Map<String, Appender<?>> apps = c.getAppenders();
         assertNotNull(apps);
-        assertEquals(apps.size(), 3);
+        assertEquals(3, apps.size());
     }
 
     @Test
     public void logToFile() throws Exception {
-        final FileOutputStream fos = new FileOutputStream(LOGFILE, false);
+        final FileOutputStream fos = new FileOutputStream(logFile, false);
         fos.flush();
         fos.close();
         final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
         logger.debug("This is a test");
-        final BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(LOGFILE)));
+        final BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)));
         try {
             int count = 0;
             String str = "";
