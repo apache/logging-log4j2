@@ -69,7 +69,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
-    private static final String LOG4J_XSD = "Log4j-V2.0.xsd";
+    private static final String LOG4J_XSD = "Log4j-config.xsd";
 
     private static final int BUF_SIZE = 16384;
 
