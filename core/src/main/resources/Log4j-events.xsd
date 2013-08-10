@@ -19,7 +19,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:log4j="http://logging.apache.org/log4j/2.0/events" targetNamespace="http://logging.apache.org/log4j/2.0/events" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:element name="Events">
         <xs:annotation>
-            <xs:documentation>Log4J 2.0 XML Schema</xs:documentation>
+            <xs:documentation>Log4J 2.0 XML Schema for XML log event files.</xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
