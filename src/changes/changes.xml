@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-341" dev="ggregory" type="add">
+        Enable XInclude for XML configurations.
+      </action>
       <action issue="LOG4J2-320" dev="ggregory" type="fix">
         JPAAppender stops logging because META-INF/log4j-provider.properties is left open.
       </action>
