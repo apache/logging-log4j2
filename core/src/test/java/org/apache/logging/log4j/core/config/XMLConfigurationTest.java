@@ -134,7 +134,7 @@ public class XMLConfigurationTest {
         final Map<String, Appender<?>> appenders = l.getAppenders();
         assertNotNull(appenders);
         assertTrue("number of appenders = " + appenders.size(), appenders.size() == 1);
-        final Appender a = appenders.get("STDOUT");
+        final Appender<?> a = appenders.get("STDOUT");
         assertNotNull(a);
         assertEquals(a.getName(), "STDOUT");
     }
