@@ -36,7 +36,7 @@ public class LoggingTest {
 
     private static final String CONFIG = "log4j2-config.xml";
     private static Configuration config;
-    private static ListAppender<String> app;
+    private static ListAppender app;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -51,7 +51,6 @@ public class LoggingTest {
     }
 
     @Before
-    @SuppressWarnings("unchecked")
     public void before() {
         config = ctx.getConfiguration();
     }

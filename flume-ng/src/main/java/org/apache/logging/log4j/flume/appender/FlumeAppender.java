@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.layout.RFC5424Layout;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Flume", category = "Core", elementType = "appender", printObject = true)
-public final class FlumeAppender<T extends Serializable> extends AbstractAppender<T> implements FlumeEventFactory {
+public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};
     private static final int DEFAULT_MAX_DELAY = 60000;
@@ -67,7 +67,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
         }
     }
 
-    private FlumeAppender(final String name, final Filter filter, final Layout<T> layout,
+    private FlumeAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
                           final boolean ignoreExceptions, final String includes, final String excludes,
                           final String required, final String mdcPrefix, final String eventPrefix,
                           final boolean compress, final FlumeEventFactory factory, final AbstractFlumeManager manager) {
@@ -158,7 +158,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static <S extends Serializable> FlumeAppender<S> createAppender(@PluginElement("agents") Agent[] agents,
+    public static FlumeAppender createAppender(@PluginElement("agents") Agent[] agents,
                                                    @PluginElement("properties") final Property[] properties,
                                                    @PluginAttr("embedded") final String embedded,
                                                    @PluginAttr("type") final String type,
@@ -177,7 +177,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                                                    @PluginAttr("compress") final String compressBody,
                                                    @PluginAttr("batchSize") final String batchSize,
                                                    @PluginElement("flumeEventFactory") final FlumeEventFactory factory,
-                                                   @PluginElement("layout") Layout<S> layout,
+                                                   @PluginElement("layout") Layout<? extends Serializable> layout,
                                                    @PluginElement("filters") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
@@ -216,11 +216,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
         final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY );
 
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-			final
-            Layout<S> l = (Layout<S>) RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
+            layout = RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
                     null, null, null, excludes, includes, required, null, null, null, null);
-            layout = l;
         }
 
         if (name == null) {
@@ -262,7 +259,7 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
             return null;
         }
 
-        return new FlumeAppender<S>(name, filter, layout,  ignoreExceptions, includes,
+        return new FlumeAppender(name, filter, layout,  ignoreExceptions, includes,
             excludes, required, mdcPrefix, eventPrefix, compress, factory, manager);
     }
 }

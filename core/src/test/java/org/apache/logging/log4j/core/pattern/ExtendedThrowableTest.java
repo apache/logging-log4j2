@@ -30,7 +30,8 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -38,18 +39,17 @@ import static org.junit.Assert.*;
 public class ExtendedThrowableTest {
     private static final String CONFIG = "log4j-throwablefilter.xml";
     private static Configuration config;
-    private static ListAppender<String> app;
+    private static ListAppender app;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender<String>) entry.getValue();
+                app = (ListAppender) entry.getValue();
                 break;
             }
         }

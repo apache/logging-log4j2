@@ -126,9 +126,9 @@ public class XMLConfigurationTest {
     public void testConfiguredAppenders() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration c = ctx.getConfiguration();
-        final Map<String, Appender<?>> apps = c.getAppenders();
+        final Map<String, Appender> apps = c.getAppenders();
         assertNotNull(apps);
-        assertEquals(3, apps.size());
+        assertEquals(apps.size(), 3);
     }
 
     @Test
@@ -142,10 +142,10 @@ public class XMLConfigurationTest {
         final Iterator<Filter> iter = l.getFilters();
         final Filter filter = iter.next();
         assertTrue(filter instanceof ThreadContextMapFilter);
-        final Map<String, Appender<?>> appenders = l.getAppenders();
+        final Map<String, Appender> appenders = l.getAppenders();
         assertNotNull(appenders);
         assertTrue("number of appenders = " + appenders.size(), appenders.size() == 1);
-        final Appender<?> a = appenders.get("STDOUT");
+        final Appender a = appenders.get("STDOUT");
         assertNotNull(a);
         assertEquals(a.getName(), "STDOUT");
     }

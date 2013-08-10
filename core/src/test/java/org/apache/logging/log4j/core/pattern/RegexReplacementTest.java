@@ -42,24 +42,23 @@ import static org.junit.Assert.assertTrue;
 public class RegexReplacementTest {
     private static final String CONFIG = "log4j-replace.xml";
     private static Configuration config;
-    private static ListAppender<String> app;
-    private static ListAppender<String> app2;
+    private static ListAppender app;
+    private static ListAppender app2;
     private static LoggerContext ctx;
 
     private static final String EXPECTED = "/RegexReplacementTest" + Constants.LINE_SEP;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender<String>) entry.getValue();
+                app = (ListAppender) entry.getValue();
             }
             if (entry.getKey().equals("List2")) {
-                app2 = (ListAppender<String>) entry.getValue();
+                app2 = (ListAppender) entry.getValue();
             }
         }
     }

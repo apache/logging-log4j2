@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
  * @see NoSQLProvider
  */
 @Plugin(name = "NoSql", category = "Core", elementType = "appender", printObject = true)
-public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseManager<?>> {
+public final class NoSQLAppender extends AbstractDatabaseAppender {
     private final String description;
 
     private NoSQLAppender(final String name, final Filter filter, final boolean ignoreExceptions,

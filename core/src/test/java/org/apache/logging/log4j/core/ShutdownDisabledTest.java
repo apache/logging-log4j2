@@ -35,7 +35,7 @@ public class ShutdownDisabledTest {
 
     private static final String CONFIG = "log4j-test3.xml";
     private static Configuration config;
-    private static ListAppender<LogEvent> app;
+    private static ListAppender app;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -52,7 +52,6 @@ public class ShutdownDisabledTest {
     }
 
     @Before
-    @SuppressWarnings("unchecked")
     public void before() {
         config = ctx.getConfiguration();
     }

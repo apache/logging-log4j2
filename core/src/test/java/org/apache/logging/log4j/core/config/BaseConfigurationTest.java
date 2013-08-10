@@ -41,7 +41,7 @@ public class BaseConfigurationTest {
 //        final String MISSINGROOT = "MissingRootTest";
 //        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
 //                MISSINGROOT.equals(config.getName()));
-        final Map<String, Appender<?>> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         assertNotNull("Appenders not null", map);
         assertEquals("Appenders Size", 2, map.size());
         assertTrue("Contains List", map.containsKey("List"));
@@ -54,14 +54,14 @@ public class BaseConfigurationTest {
         assertTrue("contains key=sample", loggerMap.containsKey("sample"));
 
         final LoggerConfig sample = loggerMap.get("sample");
-        final Map<String, Appender<?>> sampleAppenders = sample.getAppenders();
+        final Map<String, Appender> sampleAppenders = sample.getAppenders();
         assertEquals("sampleAppenders Size", 1, sampleAppenders.size());
         // sample only has List appender, not Console!
         assertTrue("sample has appender List", sampleAppenders.containsKey("List"));
 
         final BaseConfiguration baseConfig = (BaseConfiguration) config;
         final LoggerConfig root = baseConfig.getRootLogger();
-        final Map<String, Appender<?>> rootAppenders = root.getAppenders();
+        final Map<String, Appender> rootAppenders = root.getAppenders();
         assertEquals("rootAppenders Size", 1, rootAppenders.size());
         // root only has Console appender!
         assertTrue("root has appender Console", rootAppenders.containsKey("Console"));

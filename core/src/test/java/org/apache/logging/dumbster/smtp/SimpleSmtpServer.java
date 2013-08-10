@@ -229,7 +229,7 @@ public class SimpleSmtpServer implements Runnable {
      *
      * @return List of String
      */
-    public synchronized Iterator getReceivedEmail() {
+    public synchronized Iterator<SmtpMessage> getReceivedEmail() {
         return receivedMail.iterator();
     }
 

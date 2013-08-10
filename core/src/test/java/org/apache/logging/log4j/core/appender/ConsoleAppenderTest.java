@@ -52,7 +52,7 @@ public class ConsoleAppenderTest {
     public void testFollow() {
         final PrintStream ps = System.out;
         final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, null);
-        final ConsoleAppender<String> app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true", "false");
+        final ConsoleAppender app = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "true", "false");
         app.start();
         final LogEvent event = new Log4jLogEvent("TestLogger", null, ConsoleAppenderTest.class.getName(), Level.INFO,
             new SimpleMessage("Test"), null);

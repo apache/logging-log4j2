@@ -382,13 +382,13 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 if (key != null) {
                     final PluginManager manager = new PluginManager("KeyProvider", SecretKeyProvider.class);
                     manager.collectPlugins();
-                    final Map<String, PluginType> plugins = manager.getPlugins();
+                    final Map<String, PluginType<?>> plugins = manager.getPlugins();
                     if (plugins != null) {
                         boolean found = false;
-                        for (final Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+                        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
                             if (entry.getKey().equalsIgnoreCase(key)) {
                                 found = true;
-                                final Class cl = entry.getValue().getPluginClass();
+                                final Class<?> cl = entry.getValue().getPluginClass();
                                 try {
                                     final SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
                                     secretKey = provider.getSecretKey();

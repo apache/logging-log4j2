@@ -40,21 +40,20 @@ public class AppenderRefLevelTest {
 
     private static final String CONFIG = "log4j-reference-level.xml";
     private static Configuration config;
-    private static ListAppender<LogEvent> app1;
-    private static ListAppender<LogEvent> app2;
+    private static ListAppender app1;
+    private static ListAppender app2;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("LIST1")) {
-                app1 = (ListAppender<LogEvent>) entry.getValue();
+                app1 = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("LIST2")) {
-                app2 = (ListAppender<LogEvent>) entry.getValue();
+                app2 = (ListAppender) entry.getValue();
             }
         }
     }

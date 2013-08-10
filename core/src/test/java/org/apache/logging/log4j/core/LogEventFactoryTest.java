@@ -47,19 +47,18 @@ public class LogEventFactoryTest {
 
     private static final String CONFIG = "log4j2-config.xml";
     private static Configuration config;
-    private static ListAppender<LogEvent> app;
+    private static ListAppender app;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender<LogEvent>) entry.getValue();
+                app = (ListAppender) entry.getValue();
                 break;
             }
         }

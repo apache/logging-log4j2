@@ -240,9 +240,9 @@ public final class Server {
             InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        final Map<String, Appender<?>> map = ctx.getConfiguration().getAppenders();
+        final Map<String, Appender> map = ctx.getConfiguration().getAppenders();
         for (final String name : map.keySet()) {
-            final Appender<?> appender = map.get(name);
+            final Appender appender = map.get(name);
             final AppenderAdmin mbean = new AppenderAdmin(ctx.getName(), appender);
             mbs.registerMBean(mbean, mbean.getObjectName());
         }

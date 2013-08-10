@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import org.apache.logging.log4j.core.Layout;
@@ -45,7 +46,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String pattern, final OutputStream os, final boolean append,
             final boolean immediateFlush, final long size, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy,
-            final String advertiseURI, final Layout layout) {
+            final String advertiseURI, final Layout<? extends Serializable> layout) {
         super(fileName, pattern, os, append, size, time, policy, strategy, advertiseURI, layout);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = raf;
@@ -57,7 +58,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName, final String filePattern,
             final boolean isAppend, final boolean immediateFlush, final TriggeringPolicy policy,
-            final RolloverStrategy strategy, final String advertiseURI, final Layout layout) {
+            final RolloverStrategy strategy, final String advertiseURI, final Layout<? extends Serializable> layout) {
         return (RollingRandomAccessFileManager) getManager(fileName, new FactoryData(filePattern, isAppend, immediateFlush,
             policy, strategy, advertiseURI, layout), FACTORY);
     }
@@ -185,7 +186,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Create the data for the factory.
@@ -196,7 +197,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          */
         public FactoryData(final String pattern, final boolean append, final boolean immediateFlush,
                            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                           final Layout layout) {
+                           final Layout<? extends Serializable> layout) {
             this.pattern = pattern;
             this.append = append;
             this.immediateFlush = immediateFlush;

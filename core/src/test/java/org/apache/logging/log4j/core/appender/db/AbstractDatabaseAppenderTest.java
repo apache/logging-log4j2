@@ -91,7 +91,7 @@ public class AbstractDatabaseAppenderTest {
 
         replay(this.manager, this.appender);
 
-        final LocalAbstractDatabaseManager manager = this.appender.getManager();
+        final LocalAbstractDatabaseManager manager = (LocalAbstractDatabaseManager) this.appender.getManager();
 
         assertSame("The manager should be the same.", this.manager, manager);
 
@@ -148,7 +148,7 @@ public class AbstractDatabaseAppenderTest {
     }
 
     private static abstract class LocalAbstractDatabaseAppender extends
-            AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
+            AbstractDatabaseAppender {
         public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean exceptionSuppressed,
                                              final LocalAbstractDatabaseManager manager) {
             super(name, filter, exceptionSuppressed, manager);

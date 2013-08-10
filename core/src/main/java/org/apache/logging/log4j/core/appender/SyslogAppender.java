@@ -41,11 +41,11 @@ import org.apache.logging.log4j.util.EnglishEnums;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
-public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
+public class SyslogAppender extends SocketAppender {
 
     private static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(final String name, final Layout<T> layout, final Filter filter,
+    protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                              final boolean ignoreExceptions, final boolean immediateFlush,
                              final AbstractSocketManager manager, final Advertiser advertiser) {
         super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser);
@@ -90,7 +90,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
      * @return A SyslogAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> SyslogAppender<S> createAppender(@PluginAttr("host") final String host,
+    public static <S extends Serializable> SyslogAppender createAppender(@PluginAttr("host") final String host,
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
@@ -126,8 +126,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
         final boolean fail = Booleans.parseBoolean(immediateFail, true);
         final int port = AbstractAppender.parseInt(portNum, 0);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
-        @SuppressWarnings("unchecked")
-        final Layout<S> layout = (Layout<S>) (RFC5424.equalsIgnoreCase(format) ?
+        final Layout<? extends Serializable> layout = (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
                 escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, loggerFields, config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
@@ -142,7 +141,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
             return null;
         }
 
-        return new SyslogAppender<S>(name, layout, filter, ignoreExceptions, isFlush, manager,
+        return new SyslogAppender(name, layout, filter, ignoreExceptions, isFlush, manager,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

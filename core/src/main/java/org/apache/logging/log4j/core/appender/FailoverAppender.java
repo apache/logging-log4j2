@@ -43,7 +43,7 @@ import org.apache.logging.log4j.core.helpers.Constants;
  * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Failover", category = "Core", elementType = "appender", printObject = true)
-public final class FailoverAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class FailoverAppender extends AbstractAppender {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;
 
@@ -53,9 +53,9 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
 
     private final Configuration config;
 
-    private AppenderControl<?> primary;
+    private AppenderControl primary;
 
-    private final List<AppenderControl<?>> failoverAppenders = new ArrayList<AppenderControl<?>>();
+    private final List<AppenderControl> failoverAppenders = new ArrayList<AppenderControl>();
 
     private final long intervalMillis;
 
@@ -74,9 +74,8 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public void start() {
-        final Map<String, Appender<?>> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         int errors = 0;
         if (map.containsKey(primaryRef)) {
             primary = new AppenderControl(map.get(primaryRef), null, null);
@@ -187,7 +186,7 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
      * @return The FailoverAppender that was created.
      */
     @PluginFactory
-    public static <S extends Serializable> FailoverAppender<S> createAppender(@PluginAttr("name") final String name,
+    public static FailoverAppender createAppender(@PluginAttr("name") final String name,
                                                   @PluginAttr("primary") final String primary,
                                                   @PluginElement("failovers") final String[] failovers,
                                                   @PluginAttr("retryInterval") final String retryIntervalString,
@@ -218,6 +217,6 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        return new FailoverAppender<S>(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions);
+        return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions);
     }
 }

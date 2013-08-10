@@ -35,12 +35,12 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
  *
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */
-public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager> extends AbstractAppender<LogEvent> {
+public abstract class AbstractDatabaseAppender extends AbstractAppender {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
 
-    private T manager;
+    private AbstractDatabaseManager manager;
 
     /**
      * Instantiates the base appender.
@@ -52,7 +52,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
     protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                                       final T manager) {
+                                       final AbstractDatabaseManager manager) {
         super(name, filter, null, ignoreExceptions);
         this.manager = manager;
     }
@@ -73,7 +73,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      *
      * @return the manager.
      */
-    public final T getManager() {
+    public final AbstractDatabaseManager getManager() {
         return this.manager;
     }
 
@@ -121,10 +121,10 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      *
      * @param manager The new manager to install.
      */
-    protected final void replaceManager(final T manager) {
+    protected final void replaceManager(final AbstractDatabaseManager manager) {
         this.writeLock.lock();
         try {
-            final T old = this.getManager();
+            final AbstractDatabaseManager old = this.getManager();
             if (!manager.isConnected()) {
                 manager.connect();
             }

@@ -23,7 +23,7 @@ import java.io.Serializable;
  *
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-public interface Appender<T extends Serializable> extends LifeCycle {
+public interface Appender extends LifeCycle {
 
     /**
      * Log in <code>Appender</code> specific way. When appropriate,
@@ -47,7 +47,7 @@ public interface Appender<T extends Serializable> extends LifeCycle {
      *
      * @return the Layout for the Appender or null if none is configured.
      */
-    Layout<T> getLayout();
+    Layout<? extends Serializable> getLayout();
 
     /**
      * Some appenders need to propagate exceptions back to the application. When {@code ignoreExceptions} is

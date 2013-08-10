@@ -52,6 +52,7 @@ public final class NDC {
      *
      * @return Stack A clone of the current thread's  diagnostic context.
      */
+    @SuppressWarnings("rawtypes")
     public static Stack cloneStack() {
         final Stack<String> stack = new Stack<String>();
         for (final String element : org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {

@@ -47,21 +47,20 @@ import static org.junit.Assert.assertEquals;
 public class RewriteAppenderTest {
     private static final String CONFIG = "log4j-rewrite.xml";
     private static Configuration config;
-    private static ListAppender<LogEvent> app;
-    private static ListAppender<String> app2;
+    private static ListAppender app;
+    private static ListAppender app2;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender<LogEvent>) entry.getValue();
+                app = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("List2")) {
-                app2 = (ListAppender<String>) entry.getValue();
+                app2 = (ListAppender) entry.getValue();
             }
         }
     }

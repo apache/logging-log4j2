@@ -138,7 +138,7 @@ public class FileAppenderTest {
 
     private static void writer(final boolean lock, final int count, final String name) throws Exception {
         final Layout<String> layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, null, null, null, null);
-        final FileAppender<String> app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
+        final FileAppender app = FileAppender.createAppender(FILENAME, "true", Boolean.toString(lock), "test", "false",
             "false", "false", layout, null, "false", null, null);
         final Thread t = Thread.currentThread();
         app.start();

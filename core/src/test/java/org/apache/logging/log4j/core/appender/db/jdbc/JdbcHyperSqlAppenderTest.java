@@ -34,7 +34,6 @@ public class JdbcHyperSqlAppenderTest extends AbstractJdbcAppenderTest {
     /**
      * Referred from log4j2-hsqldb-factory-method.xml.
      */
-    @SuppressWarnings("unused")
     public static Connection getConfigConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j;ifexists=true", USER_ID, PASSWORD);
     }
