@@ -42,7 +42,6 @@ import org.apache.logging.log4j.message.Message;
 
 @Entity
 @Table(name = "jpaBaseLogEntry")
-@SuppressWarnings("unused")
 public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
 

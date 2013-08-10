@@ -88,7 +88,6 @@ public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
         assertNull("The appender should be null.", appender);
     }
 
-    @SuppressWarnings("unused")
     public static class BadConstructorEntity1 extends TestBaseEntity {
         private static final long serialVersionUID = 1L;
 
@@ -97,7 +96,6 @@ public class JpaHyperSqlAppenderTest extends AbstractJpaAppenderTest {
         }
     }
 
-    @SuppressWarnings("unused")
     public static class BadConstructorEntity2 extends TestBaseEntity {
         private static final long serialVersionUID = 1L;
 

@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
  */
 public class Profiler {
     private static Object profiler;
-    private static Class profilingModes;
+    private static Class<?> profilingModes;
     private static Class<?> controllerClazz;
 
     static {
@@ -55,7 +55,7 @@ public class Profiler {
                 final Object[] args = new Object[2];
                 args[0] = f.getLong(profilingModes);
                 args[1] = "";
-                final Class[] parms = new Class[] {long.class, String.class};
+                final Class<?>[] parms = new Class<?>[] {long.class, String.class};
                 controllerClazz.getMethod("startCPUProfiling", parms).invoke(profiler, args);
             }
             catch (final Exception e) {
@@ -71,7 +71,7 @@ public class Profiler {
                 final Field f = profilingModes.getDeclaredField("SNAPSHOT_WITHOUT_HEAP");
                 final Object[] args = new Object[1];
                 args[0] = f.getLong(profilingModes);
-                final Class[] parms = new Class[] {long.class};
+                final Class<?>[] parms = new Class<?>[] {long.class};
                 profiler.getClass().getMethod("captureSnapshot", parms).invoke(profiler, args);
                 profiler.getClass().getMethod("stopCPUProfiling").invoke(profiler);
             }

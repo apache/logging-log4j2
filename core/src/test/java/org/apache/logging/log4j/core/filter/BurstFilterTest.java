@@ -40,19 +40,18 @@ public class BurstFilterTest {
     private static final String CONFIG = "log4j-burst.xml";
 
     private static Configuration config;
-    private static ListAppender<String> app;
+    private static ListAppender app;
     private static BurstFilter filter;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("ListAppender")) {
-                app = (ListAppender<String>) entry.getValue();
+                app = (ListAppender) entry.getValue();
                 filter = (BurstFilter) app.getFilter();
                 break;
             }

@@ -38,13 +38,13 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
-public final class FileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class FileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final Advertiser advertiser;
     private Object advertisement;
 
-    private FileAppender(final String name, final Layout<T> layout, final Filter filter, final FileManager manager,
+    private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter, final FileManager manager,
                          final String filename, final boolean ignoreExceptions, final boolean immediateFlush,
                          final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
@@ -97,14 +97,14 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
      * @return The FileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> FileAppender<S> createAppender(@PluginAttr("fileName") final String fileName,
+    public static FileAppender createAppender(@PluginAttr("fileName") final String fileName,
                                               @PluginAttr("append") final String append,
                                               @PluginAttr("locking") final String locking,
                                               @PluginAttr("name") final String name,
                                               @PluginAttr("immediateFlush") final String immediateFlush,
                                               @PluginAttr("ignoreExceptions") final String ignore,
                                               @PluginAttr("bufferedIO") final String bufferedIO,
-                                              @PluginElement("layout") Layout<S> layout,
+                                              @PluginElement("layout") Layout<? extends Serializable> layout,
                                               @PluginElement("filters") final Filter filter,
                                               @PluginAttr("advertise") final String advertise,
                                               @PluginAttr("advertiseURI") final String advertiseURI,
@@ -133,10 +133,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
-            layout = l;
+            layout = PatternLayout.createLayout(null, null, null, null, null);
         }
 
         final FileManager manager = FileManager.getFileManager(fileName, isAppend, isLocking, isBuffered, advertiseURI,
@@ -146,7 +143,7 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
         }
 
 
-        return new FileAppender<S>(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
+        return new FileAppender(name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 }

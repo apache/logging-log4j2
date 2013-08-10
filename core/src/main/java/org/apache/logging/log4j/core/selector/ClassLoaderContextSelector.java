@@ -81,11 +81,11 @@ public class ClassLoaderContextSelector implements ContextSelector {
         } else {
             if (getCallerClass != null) {
                 try {
-                    Class clazz = Class.class;
+                    Class<?> clazz = (Class<?>) Class.class;
                     boolean next = false;
                     for (int index = 2; clazz != null; ++index) {
                         final Object[] params = new Object[] {index};
-                        clazz = (Class) getCallerClass.invoke(null, params);
+                        clazz = (Class<?>) getCallerClass.invoke(null, params);
                         if (clazz == null) {
                             break;
                         }
@@ -106,7 +106,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             }
 
             if (securityManager != null) {
-                final Class clazz = securityManager.getCaller(fqcn);
+                final Class<?> clazz = securityManager.getCaller(fqcn);
                 if (clazz != null) {
                     final ClassLoader ldr = clazz.getClassLoader() != null ? clazz.getClassLoader() :
                         ClassLoader.getSystemClassLoader();
@@ -222,7 +222,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
     private static void setupCallerCheck() {
         try {
             final ClassLoader loader = Loader.getClassLoader();
-            final Class clazz = loader.loadClass("sun.reflect.Reflection");
+            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
             final Method[] methods = clazz.getMethods();
             for (final Method method : methods) {
                 final int modifier = method.getModifiers();
@@ -256,10 +256,10 @@ public class ClassLoaderContextSelector implements ContextSelector {
      */
     private static class PrivateSecurityManager extends SecurityManager {
 
-        public Class getCaller(final String fqcn) {
-            final Class[] classes = getClassContext();
+        public Class<?> getCaller(final String fqcn) {
+            final Class<?>[] classes = getClassContext();
             boolean next = false;
-            for (final Class clazz : classes) {
+            for (final Class<?> clazz : classes) {
                 if (clazz.getName().equals(fqcn)) {
                     next = true;
                     continue;

@@ -93,7 +93,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private String name;
 
-    private ConcurrentMap<String, Appender<?>> appenders = new ConcurrentHashMap<String, Appender<?>>();
+    private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<String, Appender>();
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
 
@@ -205,7 +205,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 subst.setVariableResolver(new Interpolator(lookup));
             }
             if (child.getName().equalsIgnoreCase("appenders")) {
-                appenders = (ConcurrentMap<String, Appender<?>>) child.getObject();
+                appenders = (ConcurrentMap<String, Appender>) child.getObject();
             } else if (child.getObject() instanceof Filter) {
                 addFilter((Filter) child.getObject());
             } else if (child.getName().equalsIgnoreCase("loggers")) {
@@ -253,7 +253,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         final Layout<? extends Serializable> layout =
                 PatternLayout.createLayout("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n",
                         null, null, null, null);
-        final Appender<?> appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
+        final Appender appender = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false",
             "true");
         appender.start();
         addAppender(appender);
@@ -314,7 +314,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The name of the Appender.
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
-    public Appender<?> getAppender(final String name) {
+    public Appender getAppender(final String name) {
         return appenders.get(name);
     }
 
@@ -323,7 +323,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @return A Map containing each Appender's name and the Appender object.
      */
     @Override
-    public Map<String, Appender<?>> getAppenders() {
+    public Map<String, Appender> getAppenders() {
         return appenders;
     }
 
@@ -371,7 +371,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      */
     @Override
     public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
-                                               final Appender<?> appender) {
+                                               final Appender appender) {
         final String name = logger.getName();
         appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(name);
@@ -534,7 +534,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     @Override
     public void createConfiguration(final Node node, final LogEvent event) {
-        final PluginType type = node.getType();
+        final PluginType<?> type = node.getType();
         if (type != null && type.isDeferChildren()) {
             node.setObject(createPluginObject(type, node, event));
         } else {
@@ -567,9 +567,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     * @return the instantiate method or null if there is none by that
     * description.
     */
-    private Object createPluginObject(final PluginType type, final Node node, final LogEvent event)
+    private <T> Object createPluginObject(final PluginType<T> type, final Node node, final LogEvent event)
     {
-        final Class clazz = type.getPluginClass();
+        final Class<T> clazz = type.getPluginClass();
 
         if (Map.class.isAssignableFrom(clazz)) {
             try {
@@ -612,7 +612,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
 
         final Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
-        final Class[] parmClasses = factoryMethod.getParameterTypes();
+        final Class<?>[] parmClasses = factoryMethod.getParameterTypes();
         if (parmArray.length != parmClasses.length) {
             LOGGER.error("Number of parameter annotations does not equal the number of paramters");
         }
@@ -674,7 +674,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         sb.append(name).append("={");
                         boolean first = true;
                         for (final Node child : children) {
-                            final PluginType childType = child.getType();
+                            final PluginType<?> childType = child.getType();
                             if (elem.value().equalsIgnoreCase(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 used.add(child);
@@ -718,7 +718,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         final Class<?> parmClass = parmClasses[index];
                         boolean present = false;
                         for (final Node child : children) {
-                            final PluginType childType = child.getType();
+                            final PluginType<?> childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
                                 sb.append(child.getName()).append("(").append(child.toString()).append(")");

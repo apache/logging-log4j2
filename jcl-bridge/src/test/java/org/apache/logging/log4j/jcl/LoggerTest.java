@@ -70,14 +70,13 @@ public class LoggerTest {
         verify("List", "o.a.l.l.j.LoggerTest Info Message {} MDC{}" + Constants.LINE_SEP);
     }
 
-    @SuppressWarnings("unchecked")
     private void verify(final String name, final String expected) {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Map<String, Appender<?>> list = ctx.getConfiguration().getAppenders();
-        final Appender<?> listApp = list.get(name);
+        final Map<String, Appender> list = ctx.getConfiguration().getAppenders();
+        final Appender listApp = list.get(name);
         assertNotNull("Missing Appender", listApp);
         assertTrue("Not a ListAppender", listApp instanceof ListAppender);
-        final List<String> events = ((ListAppender<String>) listApp).getMessages();
+        final List<String> events = ((ListAppender) listApp).getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);

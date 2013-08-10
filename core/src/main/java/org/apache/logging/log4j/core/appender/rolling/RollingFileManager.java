@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.concurrent.Semaphore;
 
 import org.apache.logging.log4j.core.Layout;
@@ -47,7 +48,7 @@ public class RollingFileManager extends FileManager {
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
                                  final boolean append, final long size, final long time, final TriggeringPolicy policy,
-                                 final RolloverStrategy strategy, final String advertiseURI, final Layout layout) {
+                                 final RolloverStrategy strategy, final String advertiseURI, final Layout<? extends Serializable> layout) {
         super(fileName, os, append, false, advertiseURI, layout);
         this.size = size;
         this.initialTime = time;
@@ -72,7 +73,7 @@ public class RollingFileManager extends FileManager {
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
                                                     final boolean bufferedIO, final TriggeringPolicy policy,
                                                     final RolloverStrategy strategy, final String advertiseURI,
-                                                    final Layout layout) {
+                                                    final Layout<? extends Serializable> layout) {
 
         return (RollingFileManager) getManager(fileName, new FactoryData(pattern, append,
             bufferedIO, policy, strategy, advertiseURI, layout), factory);
@@ -237,7 +238,7 @@ public class RollingFileManager extends FileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Create the data for the factory.
@@ -249,7 +250,7 @@ public class RollingFileManager extends FileManager {
          */
         public FactoryData(final String pattern, final boolean append, final boolean bufferedIO,
                            final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                           final Layout layout) {
+                           final Layout<? extends Serializable> layout) {
             this.pattern = pattern;
             this.append = append;
             this.bufferedIO = bufferedIO;

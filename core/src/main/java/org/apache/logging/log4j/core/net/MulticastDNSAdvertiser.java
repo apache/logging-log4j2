@@ -167,7 +167,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
         //version 1 uses a hashtable
         final Hashtable<String, String> hashtableProperties = new Hashtable<String, String>(properties);
         try {
-            final Class[] args = new Class[6];
+            final Class<?>[] args = new Class<?>[6];
             args[0] = String.class;
             args[1] = String.class;
             args[2] = int.class;
@@ -197,7 +197,7 @@ public class MulticastDNSAdvertiser implements Advertiser {
 
     private Object buildServiceInfoVersion3(final String zone, final int port, final String name, final Map<String, String> properties) {
         try {
-            final Class[] args = new Class[6];
+            final Class<?>[] args = new Class<?>[6];
             args[0] = String.class; //zone/type
             args[1] = String.class; //display name
             args[2] = int.class; //port

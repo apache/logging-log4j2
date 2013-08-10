@@ -32,7 +32,7 @@ public class OutputStreamManager extends AbstractManager {
     private final byte[] footer;
     private final byte[] header;
 
-    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout) {
+    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout) {
         super(streamName);
         this.os = os;
         if (layout != null) {

@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAtt
 
 @Entity
 @Table(name = "jpaBasicLogEntry")
-@SuppressWarnings("unused")
 public class TestBasicEntity extends BasicLogEventEntity {
     private static final long serialVersionUID = 1L;
 

@@ -134,21 +134,18 @@ public class FactoryMethodConnectionSourceTest {
         verify(connection);
     }
 
-    @SuppressWarnings("unused")
     protected static final class BadReturnTypeFactory {
         public static String factoryMethod01() {
             return "hello";
         }
     }
 
-    @SuppressWarnings("unused")
     protected static final class DataSourceFactory {
         public static DataSource factoryMethod02() {
             return (DataSource) holder.get();
         }
     }
 
-    @SuppressWarnings("unused")
     protected static final class ConnectionFactory {
         public static Connection anotherMethod03() {
             return (Connection) holder.get();

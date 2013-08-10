@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
  * @see ConnectionSource
  */
 @Plugin(name = "Jdbc", category = "Core", elementType = "appender", printObject = true)
-public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseManager> {
+public final class JDBCAppender extends AbstractDatabaseAppender {
     private final String description;
 
     private JDBCAppender(final String name, final Filter filter, final boolean ignoreExceptions,

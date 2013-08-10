@@ -22,6 +22,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import sun.reflect.Reflection;
 
 import java.lang.reflect.Constructor;
@@ -39,13 +40,13 @@ public class ReflectionComparison {
 
     private static final int COUNT = 1000000;
 
-    private static Class[] paramTypes = new Class[] {String.class, Object[].class};
+    private static Class<?>[] paramTypes = new Class<?>[] {String.class, Object[].class};
 
     @BeforeClass
     public static void setupCallerCheck() {
         try {
             final ClassLoader loader = Loader.getClassLoader();
-            final Class clazz = loader.loadClass("sun.reflect.Reflection");
+            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
             final Method[] methods = clazz.getMethods();
             for (final Method method : methods) {
                 final int modifier = method.getModifiers();
@@ -109,11 +110,11 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
-    private Class getCallerClass(final Object[] array) {
+    private Class<?> getCallerClass(final Object[] array) {
         if (getCallerClass != null) {
             try {
                 /*Object[] params = new Object[]{index}; */
-                return (Class) getCallerClass.invoke(null, array);
+                return (Class<?>) getCallerClass.invoke(null, array);
             } catch (final Exception ex) {
                 fail(ex.getMessage());
                 // logger.debug("Unable to determine caller class via Sun Reflection", ex);

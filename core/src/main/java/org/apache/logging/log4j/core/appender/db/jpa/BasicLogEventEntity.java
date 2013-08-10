@@ -71,7 +71,6 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
      * entity.
      */
-    @SuppressWarnings("unused")
     public BasicLogEventEntity() {
         super();
     }

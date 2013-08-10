@@ -43,7 +43,6 @@ public class NoSQLAppenderTest {
 
     @Test
     public void testProvider() {
-        @SuppressWarnings("unchecked")
         final NoSQLProvider<?> provider = createStrictMock(NoSQLProvider.class);
 
         replay(provider);
@@ -62,7 +61,6 @@ public class NoSQLAppenderTest {
 
     @Test
     public void testProviderBuffer() {
-        @SuppressWarnings("unchecked")
         final NoSQLProvider<?> provider = createStrictMock(NoSQLProvider.class);
 
         replay(provider);

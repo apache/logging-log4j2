@@ -75,8 +75,8 @@ public abstract class AbstractJdbcAppenderTest {
     public void tearDown() throws SQLException {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         try {
-            final Map<String, Appender<?>> list = context.getConfiguration().getAppenders();
-            final Appender<?> appender = list.get("databaseAppender");
+            final Map<String, Appender> list = context.getConfiguration().getAppenders();
+            final Appender appender = list.get("databaseAppender");
             assertNotNull("The appender should not be null.", appender);
             assertTrue("The appender should be a JDBCAppender.", appender instanceof JDBCAppender);
             ((JDBCAppender) appender).getManager().release();

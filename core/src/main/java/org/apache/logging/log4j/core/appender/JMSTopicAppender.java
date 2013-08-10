@@ -35,11 +35,11 @@ import org.apache.logging.log4j.core.net.JMSTopicManager;
  * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "JMSTopic", category = "Core", elementType = "appender", printObject = true)
-public final class JMSTopicAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class JMSTopicAppender extends AbstractAppender {
 
     private final JMSTopicManager manager;
 
-    private JMSTopicAppender(final String name, final Filter filter, final Layout<T> layout,
+    private JMSTopicAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
                              final JMSTopicManager manager, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
@@ -80,7 +80,7 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
      * @return The JMSTopicAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> JMSTopicAppender<S> createAppender(
+    public static JMSTopicAppender createAppender(
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("factoryName") final String factoryName,
                                                 @PluginAttr("providerURL") final String providerURL,
@@ -91,7 +91,7 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
                                                 @PluginAttr("topicBindingName") final String topicBindingName,
                                                 @PluginAttr("userName") final String userName,
                                                 @PluginAttr("password") final String password,
-                                                @PluginElement("layout") Layout<S> layout,
+                                                @PluginElement("layout") Layout<? extends Serializable> layout,
                                                 @PluginElement("filters") final Filter filter,
                                                 @PluginAttr("ignoreExceptions") final String ignore) {
 
@@ -106,11 +106,8 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
-            layout = l;
+            layout = SerializedLayout.createLayout();
         }
-        return new JMSTopicAppender<S>(name, filter, layout, manager, ignoreExceptions);
+        return new JMSTopicAppender(name, filter, layout, manager, ignoreExceptions);
     }
 }

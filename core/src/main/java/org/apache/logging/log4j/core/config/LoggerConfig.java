@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +42,17 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Logger object that is created via configuration.
  */
@@ -66,7 +65,7 @@ public class LoggerConfig extends AbstractFilterable {
     private static LogEventFactory LOG_EVENT_FACTORY = null;
 
     private List<AppenderRef> appenderRefs = new ArrayList<AppenderRef>();
-    private final Map<String, AppenderControl<?>> appenders = new ConcurrentHashMap<String, AppenderControl<?>>();
+    private final Map<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final String name;
     private LogEventFactory logEventFactory;
     private Level level;
@@ -186,9 +185,9 @@ public class LoggerConfig extends AbstractFilterable {
      * @param level The Level to use.
      * @param filter A Filter for the Appender reference.
      */
-    public <T extends Serializable> void addAppender(final Appender<T> appender, final Level level,
+    public void addAppender(final Appender appender, final Level level,
             final Filter filter) {
-        appenders.put(appender.getName(), new AppenderControl<T>(appender, level,
+        appenders.put(appender.getName(), new AppenderControl(appender, level,
                 filter));
     }
 
@@ -210,9 +209,9 @@ public class LoggerConfig extends AbstractFilterable {
      * @return a Map with the Appender name as the key and the Appender as the
      *         value.
      */
-    public Map<String, Appender<?>> getAppenders() {
-        final Map<String, Appender<?>> map = new HashMap<String, Appender<?>>();
-        for (final Map.Entry<String, AppenderControl<?>> entry : appenders
+    public Map<String, Appender> getAppenders() {
+        final Map<String, Appender> map = new HashMap<String, Appender>();
+        for (final Map.Entry<String, AppenderControl> entry : appenders
                 .entrySet()) {
             map.put(entry.getKey(), entry.getValue().getAppender());
         }
@@ -224,10 +223,10 @@ public class LoggerConfig extends AbstractFilterable {
      */
     protected void clearAppenders() {
         waitForCompletion();
-        final Collection<AppenderControl<?>> controls = appenders.values();
-        final Iterator<AppenderControl<?>> iterator = controls.iterator();
+        final Collection<AppenderControl> controls = appenders.values();
+        final Iterator<AppenderControl> iterator = controls.iterator();
         while (iterator.hasNext()) {
-            final AppenderControl<?> ctl = iterator.next();
+            final AppenderControl ctl = iterator.next();
             iterator.remove();
             cleanupFilter(ctl);
         }

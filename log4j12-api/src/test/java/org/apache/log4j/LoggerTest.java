@@ -17,7 +17,13 @@
 
 package org.apache.log4j;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -33,8 +39,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -119,7 +123,7 @@ public class LoggerTest {
     public void testAdditivity1() {
         final Logger a = Logger.getLogger("a");
         final Logger ab = Logger.getLogger("a.b");
-        final CountingAppender<LogEvent> ca = new CountingAppender<LogEvent>();
+        final CountingAppender ca = new CountingAppender();
         ca.start();
         a.getLogger().addAppender(ca);
 
@@ -147,9 +151,9 @@ public class LoggerTest {
         final Logger abc = Logger.getLogger("a.b.c");
         final Logger x = Logger.getLogger("x");
 
-        final CountingAppender<LogEvent> ca1 = new CountingAppender<LogEvent>();
+        final CountingAppender ca1 = new CountingAppender();
         ca1.start();
-        final CountingAppender<LogEvent> ca2 = new CountingAppender<LogEvent>();
+        final CountingAppender ca2 = new CountingAppender();
         ca2.start();
 
         a.getLogger().addAppender(ca1);
@@ -187,11 +191,11 @@ public class LoggerTest {
         final Logger abc = Logger.getLogger("a.b.c");
         Logger.getLogger("x");
 
-        final CountingAppender<LogEvent> caRoot = new CountingAppender<LogEvent>();
+        final CountingAppender caRoot = new CountingAppender();
         caRoot.start();
-        final CountingAppender<LogEvent> caA = new CountingAppender<LogEvent>();
+        final CountingAppender caA = new CountingAppender();
         caA.start();
-        final CountingAppender<LogEvent> caABC = new CountingAppender<LogEvent>();
+        final CountingAppender caABC = new CountingAppender();
         caABC.start();
 
         root.getLogger().addAppender(caRoot);
@@ -384,7 +388,7 @@ public class LoggerTest {
      */
     @Test
     public void testTrace() {
-        final ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
@@ -411,7 +415,7 @@ public class LoggerTest {
      */
     @Test
     public void testTraceWithException() {
-        final ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
@@ -439,7 +443,7 @@ public class LoggerTest {
      */
     @Test
     public void testIsTraceEnabled() {
-        final ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List");
+        final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
@@ -458,7 +462,7 @@ public class LoggerTest {
     @SuppressWarnings("deprecation")
     public void testLog() {
         final PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null, null);
-        final ListAppender<String> appender = new ListAppender<String>("List", null, layout, false, false);
+        final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
         final Logger root = Logger.getRootLogger();
         root.getLogger().addAppender(appender);
@@ -489,7 +493,7 @@ public class LoggerTest {
         }
     }
 
-    private static class CountingAppender<T extends Serializable> extends AbstractAppender<T> {
+    private static class CountingAppender extends AbstractAppender {
 
         int counter;
 

@@ -68,7 +68,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
      * entity.
      */
-    @SuppressWarnings("unused")
     protected AbstractLogEventWrapperEntity() {
         this(new NullLogEvent());
     }
@@ -102,7 +101,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param level Ignored.
      */
-    @SuppressWarnings("unused")
     public void setLevel(final Level level) {
         // this entity is write-only
     }
@@ -112,7 +110,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param loggerName Ignored.
      */
-    @SuppressWarnings("unused")
     public void setLoggerName(final String loggerName) {
         // this entity is write-only
     }
@@ -122,7 +119,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param source Ignored.
      */
-    @SuppressWarnings("unused")
     public void setSource(final StackTraceElement source) {
         // this entity is write-only
     }
@@ -132,7 +128,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param message Ignored.
      */
-    @SuppressWarnings("unused")
     public void setMessage(final Message message) {
         // this entity is write-only
     }
@@ -142,7 +137,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param marker Ignored.
      */
-    @SuppressWarnings("unused")
     public void setMarker(final Marker marker) {
         // this entity is write-only
     }
@@ -152,7 +146,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param threadName Ignored.
      */
-    @SuppressWarnings("unused")
     public void setThreadName(final String threadName) {
         // this entity is write-only
     }
@@ -162,7 +155,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param millis Ignored.
      */
-    @SuppressWarnings("unused")
     public void setMillis(final long millis) {
         // this entity is write-only
     }
@@ -172,7 +164,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param throwable Ignored.
      */
-    @SuppressWarnings("unused")
     public void setThrown(final Throwable throwable) {
         // this entity is write-only
     }
@@ -182,7 +173,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param contextMap Ignored.
      */
-    @SuppressWarnings("unused")
     public void setContextMap(final Map<String, String> contextMap) {
         // this entity is write-only
     }
@@ -192,7 +182,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param contextStack Ignored.
      */
-    @SuppressWarnings("unused")
     public void setContextStack(final ThreadContext.ContextStack contextStack) {
         // this entity is write-only
     }
@@ -202,7 +191,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      *
      * @param fqcn Ignored.
      */
-    @SuppressWarnings("unused")
     public void setFQCN(final String fqcn) {
         // this entity is write-only
     }

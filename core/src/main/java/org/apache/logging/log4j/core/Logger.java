@@ -139,7 +139,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to add to the Logger.
      */
-    public void addAppender(final Appender<?> appender) {
+    public void addAppender(final Appender appender) {
         config.config.addLoggerAppender(this, appender);
     }
 
@@ -147,7 +147,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @param appender The Appender to remove from the Logger.
      */
-    public void removeAppender(final Appender<?> appender) {
+    public void removeAppender(final Appender appender) {
         config.loggerConfig.removeAppender(appender.getName());
     }
 
@@ -155,7 +155,7 @@ public class Logger extends AbstractLogger {
      * This method is not exposed through the public API and is used primarily for unit testing.
      * @return A Map containing the Appender's name as the key and the Appender as the value.
      */
-    public Map<String, Appender<?>> getAppenders() {
+    public Map<String, Appender> getAppenders() {
          return config.loggerConfig.getAppenders();
     }
 

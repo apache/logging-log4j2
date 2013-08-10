@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     protected RandomAccessFileManager(final RandomAccessFile file,
             final String fileName, final OutputStream os,
             final boolean immediateFlush, final String advertiseURI,
-            final Layout layout) {
+            final Layout<? extends Serializable> layout) {
         super(os, fileName, layout);
         this.isImmediateFlush = immediateFlush;
         this.randomAccessFile = file;
@@ -70,7 +71,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      */
     public static RandomAccessFileManager getFileManager(final String fileName,
             final boolean append, final boolean isFlush,
-            final String advertiseURI, final Layout layout) {
+            final String advertiseURI, final Layout<? extends Serializable> layout) {
         return (RandomAccessFileManager) getManager(fileName, new FactoryData(append,
                 isFlush, advertiseURI, layout), FACTORY);
     }
@@ -168,7 +169,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
         private final boolean append;
         private final boolean immediateFlush;
         private final String advertiseURI;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Constructor.
@@ -176,7 +177,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
          * @param append Append status.
          */
         public FactoryData(final boolean append, final boolean immediateFlush,
-                final String advertiseURI, final Layout layout) {
+                final String advertiseURI, final Layout<? extends Serializable> layout) {
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.advertiseURI = advertiseURI;

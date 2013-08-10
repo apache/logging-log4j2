@@ -372,15 +372,15 @@ public class FlumeAppenderTest {
 
 
     private void removeAppenders(final Logger logger) {
-        final Map<String,Appender<?>> map = logger.getAppenders();
-        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
-            final Appender<?> app = entry.getValue();
+        final Map<String,Appender> map = logger.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             avroLogger.removeAppender(app);
             app.stop();
         }
     }
 
-    private Appender<?> getAppender(final Logger logger, final String name) {
+    private Appender getAppender(final Logger logger, final String name) {
         return logger.getAppenders().get(name);
     }
 

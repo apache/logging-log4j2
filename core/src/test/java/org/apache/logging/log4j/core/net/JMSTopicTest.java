@@ -25,27 +25,25 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.JMSTopicAppender;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
-
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.mockejb.jms.MockTopic;
 import org.mockejb.jms.TopicConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -84,9 +82,9 @@ public class JMSTopicTest {
 
     @After
     public void teardown() {
-        final Map<String,Appender<?>> map = root.getAppenders();
-        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
-            final Appender<?> app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -101,10 +99,10 @@ public class JMSTopicTest {
                 TOPIC_NAME, null, null, null, clientFilters, "true");
         appender.start();
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
-        final ListAppender<Serializable> listApp = new ListAppender<Serializable>("Events", serverFilters, null, false, false);
+        final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null);
-        final ConsoleAppender<? extends Serializable> console =
+        final ConsoleAppender console =
                 ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
         final Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());
