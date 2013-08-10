@@ -23,11 +23,20 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -38,11 +47,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -52,13 +64,12 @@ public class XMLConfigurationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                {"log4j-test1.xml", "target/test.log"}, 
-                {"log4j-xinclude.xml", "target/test.log"}});
+        return Arrays.asList(new Object[][] { { "log4j-test1.xml", "target/test.log" },
+                { "log4j-xinclude.xml", "target/test.log" } });
     }
 
     private final String configFile;
-    private final String logFile ;
+    private final String logFile;
 
     public XMLConfigurationTest(String configFile, String logFile) {
         super();
@@ -102,7 +113,7 @@ public class XMLConfigurationTest {
             ctx.reconfigure();
         }
     }
-   
+
     @After
     public void tearDown() {
         System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
@@ -137,6 +148,19 @@ public class XMLConfigurationTest {
         final Appender<?> a = appenders.get("STDOUT");
         assertNotNull(a);
         assertEquals(a.getName(), "STDOUT");
+    }
+
+    @Test
+    @Ignore
+    public void testValidation() throws SAXException, IOException {
+        URL schemaFile = ClassLoader.getSystemResource("Log4j-config.xsd");
+        URL xmlFile = ClassLoader.getSystemResource(configFile);
+        Assert.assertNotNull(schemaFile);
+        Source xmlSource = new StreamSource(xmlFile.toString());
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema = schemaFactory.newSchema(schemaFile);
+        Validator validator = schema.newValidator();
+        validator.validate(xmlSource);
     }
 
 }
