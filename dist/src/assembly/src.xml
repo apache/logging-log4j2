@@ -70,10 +70,10 @@
         <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?release\.properties]</exclude>
       </excludes>
     </fileSet>
-    <!-- license, readme, etc. calculated at build time -->
+    <!-- license, readme, etc. calculated at build time
     <fileSet>
       <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
       <outputDirectory>/</outputDirectory>
-    </fileSet>
+    </fileSet>  -->
   </fileSets>
 </assembly>

@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-309" dev="rgoers" type="fix">
+        Insure jars and distributions only have a single License and Notice file.
+      </action>
       <action issue="LOG4J2-341" dev="ggregory" type="add">
         Enable XInclude for XML configurations.
       </action>
