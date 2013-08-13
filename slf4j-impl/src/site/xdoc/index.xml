@@ -18,15 +18,15 @@
 
 <document>
     <properties>
-        <title>SLF4J Bridge</title>
+        <title>Log4j 2 SLF4J Binding</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
     </properties>
 
     <body>
-        <section name="SLF4J Bridge">
+        <section name="Log4j 2 SLF4J Binding">
 
             <p>
-              The SLF4J Bridge allows applications coded to the SLF4J API to use
+              The Log4j 2 SLF4J Binding allows applications coded to the SLF4J API to use
               Log4j 2 as the implementation.
             </p>
 
@@ -34,21 +34,21 @@
 
         <section name="Requirements">
            <p>
-             The SLF4J bridge requires at least Java 6 and has a dependency 
+             The Log4j 2 SLF4J Binding requires at least Java 6 and has a dependency 
              on the Log4j 2 API.
           </p>
         </section>
 
       <section name="Usage">
         <p>
-          The SLF4J bindings provided in this Bridge cause all the SLF4J APIs to be routed to Log4j 2. Simply
-          include the SLF4J Bindings jar along with the Log4j 2 jars to cause all SLF4J logging to be handled
+          The SLF4J binding provided in this component cause all the SLF4J APIs to be routed to Log4j 2. Simply
+          include the Log4j 2 SLF4J Binding jar along with the Log4j 2 jars to cause all SLF4J logging to be handled
           by Log4j 2.
         </p>
            <p>
-             <b><em>Use of the SLF4J bridge (log4j-slf4j-impl-2.0.jar) together with 
+             <b><em>Use of the Log4j 2 SLF4J Binding (log4j-slf4j-impl-2.0.jar) together with 
              the SLF4J adapter (log4j-to-slf4j-2.0.jar) should 
-             never be attempted as it will cause events to endlessly be routed between
+             never be attempted, as it will cause events to endlessly be routed between
              SLF4J and Log4j 2.</em></b>
           </p>
       </section>
