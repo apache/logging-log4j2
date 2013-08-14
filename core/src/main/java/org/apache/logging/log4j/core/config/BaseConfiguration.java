@@ -133,7 +133,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         for (final Appender appender : appenders.values()) {
             appender.start();
         }
-
+        root.startFilter(); // LOG4J2-336
         startFilter();
     }
 
