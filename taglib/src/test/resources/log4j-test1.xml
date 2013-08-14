@@ -24,15 +24,15 @@
 
   <loggers>
     <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="EventLogger"/>
+      <AppenderRef ref="EventLogger"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </logger>>
 
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
 
     <logger name="IfEnabledTagTest" level="warn" />

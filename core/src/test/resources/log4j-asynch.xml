@@ -26,13 +26,13 @@
       <PatternLayout pattern="%C %M %m"/>
     </List>
     <Async name="Async" includeLocation="true">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </Async>
   </appenders>
 
   <loggers>
     <root level="debug">
-      <appender-ref ref="Async"/>
+      <AppenderRef ref="Async"/>
     </root>
   </loggers>
 

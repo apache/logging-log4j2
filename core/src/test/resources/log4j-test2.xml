@@ -57,25 +57,25 @@
       <ThreadContextMapFilter>
         <KeyValuePair key="test" value="123"/>
       </ThreadContextMapFilter>
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
-      <appender-ref ref="HostTest"/>
+      <AppenderRef ref="HostTest"/>
     </logger>
 
 
     <logger name="org.apache.logging.log4j.nothrown" level="debug" additivity="false">
-      <appender-ref ref="NoThrowable"/>
+      <AppenderRef ref="NoThrowable"/>
     </logger>
 
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </logger>
     <logger name="org" level="error" additivity="true"/>
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 

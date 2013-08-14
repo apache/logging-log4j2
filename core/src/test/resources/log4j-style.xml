@@ -27,7 +27,7 @@
 
   <loggers>
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 

@@ -48,12 +48,12 @@
 
   <loggers>
     <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="Routing"/>
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="Routing"/>
+      <AppenderRef ref="STDOUT"/>
     </logger>
 
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 

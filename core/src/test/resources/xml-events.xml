@@ -10,10 +10,10 @@
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
-      <appender-ref ref="events"/>
+      <AppenderRef ref="events"/>
     </logger>
     <root level="warn">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>

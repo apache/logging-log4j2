@@ -81,7 +81,7 @@
   </category>
   <root>
     <priority value ="debug" />
-    <appender-ref ref="STDOUT" />
+    <AppenderRef ref="STDOUT" />
   </root>
 </log4j:configuration>]]></pre>
             <p>Log4j 2 XML configuration</p>
@@ -95,7 +95,7 @@
   <loggers>
     <logger name="org.apache.log4j.xml" level="info"/>
     <root level="debug">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -119,11 +119,11 @@
   </appender>
   <category name="org.apache.log4j.xml">
     <priority value="debug" />
-    <appender-ref ref="A1" />
+    <AppenderRef ref="A1" />
   </category>
   <root>
     <priority value ="debug" />
-    <appender-ref ref="STDOUT" />
+    <AppenderRef ref="STDOUT" />
   </root>
 </log4j:configuration>]]></pre>
 
@@ -140,10 +140,10 @@
   </appenders>
   <loggers>
     <logger name="org.apache.log4j.xml" level="debug">
-      <appender-ref ref="A1"/>
+      <AppenderRef ref="A1"/>
     </logger>
     <root level="debug">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -169,11 +169,11 @@
   </appender>
   <category name="org.apache.log4j.xml">
     <priority value="debug"/>
-    <appender-ref ref="A1"/>
+    <AppenderRef ref="A1"/>
   </category>
   <root>
     <priority value="debug"/>
-    <appender-ref ref="STDOUT"/>
+    <AppenderRef ref="STDOUT"/>
   </root>
 </log4j:configuration>]]></pre>
 
@@ -190,10 +190,10 @@
   </appenders>
   <loggers>
     <logger name="org.apache.log4j.xml" level="debug">
-      <appender-ref ref="A1"/>
+      <AppenderRef ref="A1"/>
     </logger>
     <root level="debug">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -204,7 +204,7 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-    <appender-ref ref="TEMP"/>
+    <AppenderRef ref="TEMP"/>
   </appender>
   <appender name="TEMP" class="org.apache.log4j.FileAppender">
     <param name="File" value="temp"/>
@@ -214,7 +214,7 @@
   </appender>
   <root>
     <priority value="debug"/>
-    <appender-ref ref="ASYNC"/>
+    <AppenderRef ref="ASYNC"/>
   </root>
 </log4j:configuration>]]></pre>
 
@@ -226,12 +226,12 @@
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </File>
     <Async name="ASYNC">
-      <appender-ref ref="TEMP"/>
+      <AppenderRef ref="TEMP"/>
     </Async>
   </appenders>
   <loggers>
     <root level="debug">
-      <appender-ref ref="ASYNC"/>
+      <AppenderRef ref="ASYNC"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -243,8 +243,8 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-    <appender-ref ref="TEMP"/>
-    <appender-ref ref="CONSOLE"/>
+    <AppenderRef ref="TEMP"/>
+    <AppenderRef ref="CONSOLE"/>
   </appender>
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
@@ -259,7 +259,7 @@
   </appender>
   <root>
     <priority value="debug"/>
-    <appender-ref ref="ASYNC"/>
+    <AppenderRef ref="ASYNC"/>
   </root>
 </log4j:configuration>]]></pre>
 
@@ -275,13 +275,13 @@
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </File>
     <Async name="ASYNC">
-      <appender-ref ref="TEMP"/>
-      <appender-ref ref="CONSOLE"/>
+      <AppenderRef ref="TEMP"/>
+      <AppenderRef ref="CONSOLE"/>
     </Async>
   </appenders>
   <loggers>
     <root level="debug">
-      <appender-ref ref="ASYNC"/>
+      <AppenderRef ref="ASYNC"/>
     </root>
   </loggers>
 </configuration>]]></pre>

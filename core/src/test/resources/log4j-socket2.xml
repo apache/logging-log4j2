@@ -8,7 +8,7 @@
   </appenders>
   <loggers>
     <root level="debug">
-      <appender-ref ref="socket"/>
+      <AppenderRef ref="socket"/>
     </root>
   </loggers>
 </configuration>

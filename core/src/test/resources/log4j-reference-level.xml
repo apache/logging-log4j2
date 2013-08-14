@@ -27,23 +27,23 @@
 
   <loggers>
     <logger name="org.apache.logging.log4j.test1" level="trace" additivity="false">
-      <appender-ref ref="LIST1" level="trace"/>
-      <appender-ref ref="LIST2" level="error"/>
+      <AppenderRef ref="LIST1" level="trace"/>
+      <AppenderRef ref="LIST2" level="error"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="LIST1" level="WARN"/>
-      <appender-ref ref="LIST2" level="debug"/>
+      <AppenderRef ref="LIST1" level="WARN"/>
+      <AppenderRef ref="LIST2" level="debug"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test3" level="trace" additivity="false">
-      <appender-ref ref="LIST1" level="trace">
+      <AppenderRef ref="LIST1" level="trace">
           <MarkerFilter marker="TEST" onmatch="deny" onmismatch="accept"/>
-      </appender-ref>
+      </AppenderRef>
     </logger>>
 
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 

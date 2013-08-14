@@ -25,7 +25,7 @@
   <loggers>
     <logger name="org.foo" level="DEBUG" />
     <root level="TRACE">
-      <appender-ref ref="Console" />
+      <AppenderRef ref="Console" />
     </root>
   </loggers>
 </configuration>

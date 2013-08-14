@@ -25,6 +25,6 @@
  </appender>
 
  <root level="debug">
-   <appender-ref ref="TestLogfile" />
+   <AppenderRef ref="TestLogfile" />
  </root>
 </configuration>

@@ -16,12 +16,12 @@
  limitations under the License.
 
 -->
-<configuration xmlns:xi="http://www.w3.org/2001/XInclude"
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
   status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
   <xi:include href="target/test-classes/log4j-xinclude-appenders.xml" />
   <xi:include href="target/test-classes/log4j-xinclude-loggers.xml" />
-</configuration>
+</Configuration>

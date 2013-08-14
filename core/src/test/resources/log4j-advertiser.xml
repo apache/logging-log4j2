@@ -43,11 +43,11 @@
 
   <loggers>
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File2"/>
+      <AppenderRef ref="File2"/>
     </logger>>
 
     <root level="error">
-      <appender-ref ref="File1"/>
+      <AppenderRef ref="File1"/>
     </root>
   </loggers>
 

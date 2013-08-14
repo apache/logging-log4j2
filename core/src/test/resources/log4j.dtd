@@ -47,7 +47,7 @@ element. -->
 <!-- Appenders must have a name and a class. -->
 <!-- Appenders may contain an error handler, a layout, optional parameters -->
 <!-- and filters. They may also reference (or include) other appenders. -->
-<!ELEMENT appender (errorHandler?, param*, layout?, filter*, appender-ref*)>
+<!ELEMENT appender (errorHandler?, param*, layout?, filter*, AppenderRef*)>
 <!ATTLIST appender
   name 		ID 	#REQUIRED
   class 	CDATA	#REQUIRED
@@ -66,7 +66,7 @@ element. -->
 <!-- ErrorHandlers can be of any class. They can admit any number of -->
 <!-- parameters. -->
 
-<!ELEMENT errorHandler (param*, root-ref?, logger-ref*,  appender-ref?)> 
+<!ELEMENT errorHandler (param*, root-ref?, logger-ref*,  AppenderRef?)> 
 <!ATTLIST errorHandler
    class        CDATA   #REQUIRED 
 >
@@ -102,7 +102,7 @@ element. -->
 
 <!-- If no level element is specified, then the configurator MUST not -->
 <!-- touch the level of the named category. -->
-<!ELEMENT category (param*,(priority|level)?,appender-ref*)>
+<!ELEMENT category (param*,(priority|level)?,AppenderRef*)>
 <!ATTLIST category
   class         CDATA   #IMPLIED
   name		CDATA	#REQUIRED
@@ -111,7 +111,7 @@ element. -->
 
 <!-- If no level element is specified, then the configurator MUST not -->
 <!-- touch the level of the named logger. -->
-<!ELEMENT logger (level?,appender-ref*)>
+<!ELEMENT logger (level?,AppenderRef*)>
 <!ATTLIST logger
   name		ID	#REQUIRED
   additivity	(true|false) "true"  
@@ -122,15 +122,15 @@ element. -->
 <!ATTLIST categoryFactory 
    class        CDATA #REQUIRED>
 
-<!ELEMENT appender-ref EMPTY>
-<!ATTLIST appender-ref
+<!ELEMENT AppenderRef EMPTY>
+<!ATTLIST AppenderRef
   ref IDREF #REQUIRED
 >
 
 <!-- If no priority element is specified, then the configurator MUST not -->
 <!-- touch the priority of root. -->
 <!-- The root category always exists and cannot be subclassed. -->
-<!ELEMENT root (param*, (priority|level)?, appender-ref*)>
+<!ELEMENT root (param*, (priority|level)?, AppenderRef*)>
 
 
 <!-- ==================================================================== -->

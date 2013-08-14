@@ -59,9 +59,9 @@
               <th>Description</th>
             </tr>
             <tr>
-              <td>appender-ref</td>
+              <td>AppenderRef</td>
               <td>String</td>
-              <td>The name of the Appenders to invoke asynchronously. Multiple appender-ref
+              <td>The name of the Appenders to invoke asynchronously. Multiple AppenderRef
                 elements can be configured.</td>
             </tr>
             <tr>
@@ -122,12 +122,12 @@
       </PatternLayout>
     </File>
     <Async name="Async">
-      <appender-ref ref="MyFile"/>
+      <AppenderRef ref="MyFile"/>
     </Async>
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Async"/>
+      <AppenderRef ref="Async"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -196,7 +196,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -271,13 +271,13 @@
     </Console>
     <Failover name="Failover" primary="RollingFile">
       <Failovers>
-        <appender-ref ref="Console"/>
+        <AppenderRef ref="Console"/>
       </Failovers>
     </Failover>
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Failover"/>
+      <AppenderRef ref="Failover"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -387,7 +387,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="MyFile"/>
+      <AppenderRef ref="MyFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -588,7 +588,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingRandomAccessFile"/>
+      <AppenderRef ref="RollingRandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -613,7 +613,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingRandomAccessFile"/>
+      <AppenderRef ref="RollingRandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -647,7 +647,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingRandomAccessFile"/>
+      <AppenderRef ref="RollingRandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -749,7 +749,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="MyFile"/>
+      <AppenderRef ref="MyFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -927,7 +927,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="eventLogger"/>
+      <AppenderRef ref="eventLogger"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -948,7 +948,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="eventLogger"/>
+      <AppenderRef ref="eventLogger"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -972,10 +972,10 @@
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
-      <appender-ref ref="eventLogger"/>
+      <AppenderRef ref="eventLogger"/>
     </logger>
     <root level="warn">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1016,10 +1016,10 @@
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
-      <appender-ref ref="eventLogger"/>
+      <AppenderRef ref="eventLogger"/>
     </logger>
     <root level="warn">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1216,7 +1216,7 @@
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1235,7 +1235,7 @@
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1255,7 +1255,7 @@
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1365,7 +1365,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="jmsQueue"/>
+      <AppenderRef ref="jmsQueue"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1476,7 +1476,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="jmsQueue"/>
+      <AppenderRef ref="jmsQueue"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1552,7 +1552,7 @@
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1806,7 +1806,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1821,7 +1821,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1836,7 +1836,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="warn">
-      <appender-ref ref="databaseAppender"/>
+      <AppenderRef ref="databaseAppender"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -1919,9 +1919,9 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <th>Description</th>
             </tr>
             <tr>
-              <td>appender-ref</td>
+              <td>AppenderRef</td>
               <td>String</td>
-              <td>The name of the Appenders to call after the LogEvent has been manipulated. Multiple appender-ref
+              <td>The name of the Appenders to call after the LogEvent has been manipulated. Multiple AppenderRef
                 elements can be configured.</td>
             </tr>
             <tr>
@@ -1989,7 +1989,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <PatternLayout pattern="%m%n"/>
     </Console>
     <Rewrite name="rewrite">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
       <MapRewritePolicy mode="Add">
         <KeyValuePair key="product" value="TestProduct"/>
       </MapRewritePolicy>
@@ -1997,7 +1997,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Rewrite"/>
+      <AppenderRef ref="Rewrite"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2032,7 +2032,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <PatternLayout pattern="%m%n"/>
     </Console>
     <Rewrite name="rewrite">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
       <PropertiesRewritePolicy>
         <Property key="user">${sys:user.name}</Property>
         <Property key="env">${sys:environment}</Property>
@@ -2041,7 +2041,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Rewrite"/>
+      <AppenderRef ref="Rewrite"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2357,7 +2357,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2381,7 +2381,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2408,7 +2408,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2468,7 +2468,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               can be configured as the default.
             </p>
             <p>
-              Each Route must reference an Appender. If the Route contains an appender-ref attribute then the
+              Each Route must reference an Appender. If the Route contains an AppenderRef attribute then the
               Route will reference an Appender that was defined in the configuration. If the Route contains an
               Appender definition then an Appender will be created within the context of the RoutingAppender and
               will be reused each time a matching Appender name is referenced through a Route.
@@ -2498,13 +2498,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route appender-ref="AuditLogger" key="Audit"/>
+        <Route AppenderRef="AuditLogger" key="Audit"/>
       </Routes>
     </Routing>
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Routing"/>
+      <AppenderRef ref="Routing"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2631,7 +2631,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Mail"/>
+      <AppenderRef ref="Mail"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2722,7 +2722,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="socket"/>
+      <AppenderRef ref="socket"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -2904,10 +2904,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   </appenders>
   <loggers>
     <logger name="com.mycorp" level="error">
-      <appender-ref ref="RFC5424"/>
+      <AppenderRef ref="RFC5424"/>
     </logger>
     <root level="error">
-      <appender-ref ref="bsd"/>
+      <AppenderRef ref="bsd"/>
     </root>
   </loggers>
 </configuration>]]></pre>

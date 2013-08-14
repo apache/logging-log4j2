@@ -169,7 +169,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
      */
     @PluginFactory
     public static <S extends Serializable> AsyncAppender<S> createAppender(
-                @PluginElement("appender-ref") final AppenderRef[] appenderRefs,
+                @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
                 @PluginAttr("error-ref") final String errorRef,
                 @PluginAttr("blocking") final String blocking,
                 @PluginAttr("bufferSize") final String size,

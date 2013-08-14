@@ -432,7 +432,7 @@
         The blocking parameter did not work properly on AsynchAppender.
       </action>
       <action issue="LOG4J2-188" dev="rgoers" type="fix" due-to="Werner">
-        appender-refs on AsynchAppender didn't support the level and filter elements.
+        AppenderRefs on AsynchAppender didn't support the level and filter elements.
       </action>
       <action issue="LOG4J2-176" dev="rgoers" type="fix" due-to="Remko Popma">
         Avoid IllegalArgumentException in AsynchAppender.
@@ -797,7 +797,7 @@
     </release>
     <release version="2.0-alpha1" date="2012-07-29" description="Rewrite of Log4j">
       <action issue="LOG4J2-60" dev="rgoers" type="add" due-to="Shane Kelly">
-        Added ability to filter on the appender-ref by adding either a level or a filter.
+        Added ability to filter on the AppenderRef by adding either a level or a filter.
       </action>
       <action issue="LOG4J2-56" dev="rgoers" type="fix" due-to="John Owen Atala">
         Level.toLevel would throw an IllegalArgumentException instead of returning the default value.

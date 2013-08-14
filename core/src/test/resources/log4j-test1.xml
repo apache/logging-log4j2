@@ -16,43 +16,43 @@
  limitations under the License.
 
 -->
-<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <File name="File" fileName="${filename}" bufferedIO="false">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <List name="List">
-      <filters>
+      <Filters>
         <ThresholdFilter level="error"/>
-      </filters>
+      </Filters>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
-      <appender-ref ref="STDOUT"/>
-    </logger>>
+      <AppenderRef ref="STDOUT"/>
+    </Logger>>
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
-    </logger>>
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <AppenderRef ref="File"/>
+    </Logger>>
 
-    <root level="error">
-      <appender-ref ref="STDOUT"/>
-    </root>
-  </loggers>
+    <Root level="error">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
 
-</configuration>
+</Configuration>

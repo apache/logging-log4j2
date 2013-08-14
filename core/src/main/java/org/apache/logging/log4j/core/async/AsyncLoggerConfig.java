@@ -152,7 +152,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             @PluginAttr("level") final String levelName,
             @PluginAttr("name") final String loggerName,
             @PluginAttr("includeLocation") final String includeLocation,
-            @PluginElement("appender-ref") final AppenderRef[] refs,
+            @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
             @PluginElement("filters") final Filter filter) {
@@ -194,7 +194,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 @PluginAttr("additivity") final String additivity,
                 @PluginAttr("level") final String levelName,
                 @PluginAttr("includeLocation") final String includeLocation,
-                @PluginElement("appender-ref") final AppenderRef[] refs,
+                @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,
                 @PluginElement("filters") final Filter filter) {

@@ -15,7 +15,7 @@
   
   <loggers>
     <asyncRoot level="info" includeLocation="false">
-      <appender-ref ref="RollingRandomAccessFile"/>
+      <AppenderRef ref="RollingRandomAccessFile"/>
     </asyncRoot>
   </loggers>
 </configuration>

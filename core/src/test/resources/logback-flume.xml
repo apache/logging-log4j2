@@ -23,6 +23,6 @@
  </appender>
 
  <root level="error">
-   <appender-ref ref="Console" />
+   <AppenderRef ref="Console" />
  </root>
 </configuration>

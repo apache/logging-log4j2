@@ -12,10 +12,10 @@
     <queueSize>262144</queueSize>
     <discardingThreshold>0</discardingThreshold>
     <includeCallerData>false</includeCallerData>
-    <appender-ref ref="FILE" />
+    <AppenderRef ref="FILE" />
   </appender>
 
   <root level="debug">
-    <appender-ref ref="ASYNC" />
+    <AppenderRef ref="ASYNC" />
   </root>
 </configuration>

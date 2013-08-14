@@ -161,7 +161,7 @@ public class Bar {
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="Console"/>
+      <AppenderRef ref="Console"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -186,7 +186,7 @@ public class Bar {
             <pre class="prettyprint linenums"><![CDATA[
 <logger name="com.foo.Bar" level="TRACE"/>
 <root level="ERROR">
-  <appender-ref ref="STDOUT">
+  <AppenderRef ref="STDOUT">
 </root>]]></pre>
           <p>
             With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error events will
@@ -210,10 +210,10 @@ public class Bar {
   </appenders>
   <loggers>
     <logger name="com.foo.Bar" level="trace">
-      <appender-ref ref="Console"/>
+      <AppenderRef ref="Console"/>
     </logger>
     <root level="error">
-      <appender-ref ref="Console"/>
+      <AppenderRef ref="Console"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -242,10 +242,10 @@ public class Bar {
   </appenders>
   <loggers>
     <logger name="com.foo.Bar" level="trace" additivity="false">
-      <appender-ref ref="Console"/>
+      <AppenderRef ref="Console"/>
     </logger>
     <root level="error">
-      <appender-ref ref="Console"/>
+      <AppenderRef ref="Console"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -408,7 +408,7 @@ public class Bar {
     </logger>
     ...
     <root level="level">
-      <appender-ref ref="name"/>
+      <AppenderRef ref="name"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -443,7 +443,7 @@ public class Bar {
     </logger>
     ...
     <root level="level">
-      <appender-ref ref="name"/>
+      <AppenderRef ref="name"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -488,15 +488,15 @@ public class Bar {
       <filter type="ThreadContextMapFilter">
         <KeyValuePair key="test" value="123"/>
       </filter>
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </logger>>
 
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 
@@ -537,16 +537,16 @@ public class Bar {
                 "SizeBasedTriggeringPolicy": { "size": "500" }
               }
             },
-            { "appender-ref": "STDOUT", "key": "Audit"},
-            { "appender-ref": "List", "key": "Service"}
+            { "AppenderRef": "STDOUT", "key": "Audit"},
+            { "AppenderRef": "List", "key": "Service"}
           ]
         }
       }
     },
     "loggers": {
       "logger": { "name": "EventLogger", "level": "info", "additivity": "false",
-                  "appender-ref": { "ref": "Routing" }},
-      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+                  "AppenderRef": { "ref": "Routing" }},
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
 }</pre>
@@ -580,8 +580,8 @@ public class Bar {
                   "SizeBasedTriggeringPolicy": { "size": "500" }
                 }
               },
-              { "appender-ref": "STDOUT", "key": "Audit"},
-              { "appender-ref": "List", "key": "Service"}
+              { "AppenderRef": "STDOUT", "key": "Audit"},
+              { "AppenderRef": "List", "key": "Service"}
             ]
           }
         }
@@ -590,11 +590,11 @@ public class Bar {
     "loggers": {
       "logger": [
         { "name": "EventLogger", "level": "info", "additivity": "false",
-          "appender-ref": { "ref": "Routing" }},
+          "AppenderRef": { "ref": "Routing" }},
         { "name": "com.foo.bar", "level": "error", "additivity": "false",
-          "appender-ref": { "ref": "Console" }}
+          "AppenderRef": { "ref": "Console" }}
       ],
-      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
 }</pre>
@@ -638,7 +638,7 @@ public class Bar {
             using variables.
           </p>
           <p>
-            The LoggerConfig may also be configured with one or more appender-ref elements. Each appender
+            The LoggerConfig may also be configured with one or more AppenderRef elements. Each appender
             referenced will become associated with the specified LoggerConfig. If multiple appenders
             are configured on the LoggerConfig each of them be called when processing logging events.
           </p>
@@ -718,21 +718,21 @@ public class Bar {
       <ThreadContextMapFilter>
         <KeyValuePair key="test" value="123"/>
       </ThreadContextMapFilter>
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <property name="user">${dollar}{sys:user.name}</property>
-      <appender-ref ref="File">
+      <AppenderRef ref="File">
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
-      </appender-ref>
-      <appender-ref ref="STDOUT" level="error"/>
+      </AppenderRef>
+      <AppenderRef ref="STDOUT" level="error"/>
     </logger>>
 
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 
@@ -776,19 +776,19 @@ public class Bar {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route appender-ref="STDOUT" key="Audit"/>
-        <Route appender-ref="List" key="Service"/>
+        <Route AppenderRef="STDOUT" key="Audit"/>
+        <Route AppenderRef="List" key="Service"/>
       </Routes>
     </Routing>
   </appenders>
 
   <loggers>
     <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="Routing"/>
+      <AppenderRef ref="Routing"/>
     </logger>
 
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 
@@ -916,19 +916,19 @@ public class Bar {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route appender-ref="STDOUT" key="Audit"/>
-        <Route appender-ref="List" key="Service"/>
+        <Route AppenderRef="STDOUT" key="Audit"/>
+        <Route AppenderRef="List" key="Service"/>
       </Routes>
     </Routing>
   </appenders>
 
   <loggers>
     <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="Routing"/>
+      <AppenderRef ref="Routing"/>
     </logger>
 
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 
@@ -961,11 +961,11 @@ public class Bar {
        appender.ListAppender for element List with params(name="List", entryPerNewLine="null",
        raw="null", null, ThresholdFilter(DEBUG))
 2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
-       routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
+       routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
 2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
-       routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
+       routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
 2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.
-       routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
+       routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.
        routing.Routes for element Routes with params(pattern="${dollar}{sd:type}",
        routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'),
@@ -978,16 +978,16 @@ public class Bar {
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.
        plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
 2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
-       config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
+       config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
 2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
        LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger",
-       appender-ref={Routing}, null)
+       AppenderRef={Routing}, null)
 2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.
-       config.plugins.AppenderRefPlugin for element appender-ref with params(ref="STDOUT")</pre>
+       config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")</pre>
             <pre class="prettyprint linenums">
 2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.
        LoggerConfig$RootLogger for element root with params(additivity="null", level="error",
-       appender-ref={STDOUT}, null)
+       AppenderRef={STDOUT}, null)
 2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.
        config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
@@ -1024,16 +1024,16 @@ public class Bar {
 2011-11-23 17:08:00,804 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.ConsoleAppender for element Console with params(PatternLayout(%m%n), null, target="null", name="STDOUT", ignoreExceptions="null")
 2011-11-23 17:08:00,804 DEBUG Calling createFilter on class org.apache.logging.log4j.core.filter.ThresholdFilter for element ThresholdFilter with params(level="debug", onMatch="null", onMismatch="null")
 2011-11-23 17:08:00,806 DEBUG Calling createAppender on class org.apache.logging.log4j.test.appender.ListAppender for element List with params(name="List", entryPerNewLine="null", raw="null", null, ThresholdFilter(DEBUG))
-2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="null", key="null", Node=Route)
-2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="STDOUT", key="Audit", Node=Route)
-2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(appender-ref="List", key="Service", Node=Route)
+2011-11-23 17:08:00,813 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="null", key="null", Node=Route)
+2011-11-23 17:08:00,823 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="STDOUT", key="Audit", Node=Route)
+2011-11-23 17:08:00,824 DEBUG Calling createRoute on class org.apache.logging.log4j.core.appender.routing.Route for element Route with params(AppenderRef="List", key="Service", Node=Route)
 2011-11-23 17:08:00,825 DEBUG Calling createRoutes on class org.apache.logging.log4j.core.appender.routing.Routes for element Routes with params(pattern="${dollar}{sd:type}", routes={Route(type=dynamic default), Route(type=static Reference=STDOUT key='Audit'), Route(type=static Reference=List key='Service')})
 2011-11-23 17:08:00,827 DEBUG Calling createAppender on class org.apache.logging.log4j.core.appender.routing.RoutingAppender for element Routing with params(name="Routing", ignoreExceptions="null", Routes({Route(type=dynamic default),Route(type=static Reference=STDOUT key='Audit'),Route(type=static Reference=List key='Service')}), Configuration(RoutingTest), null, null)
 2011-11-23 17:08:00,827 DEBUG Calling createAppenders on class org.apache.logging.log4j.core.config.plugins.AppendersPlugin for element appenders with params(appenders={STDOUT, List, Routing})
-2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="Routing")
-2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", appender-ref={Routing}, null)
-2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element appender-ref with params(ref="STDOUT")
-2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", appender-ref={STDOUT}, null)
+2011-11-23 17:08:00,828 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="Routing")
+2011-11-23 17:08:00,829 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig for element logger with params(additivity="false", level="info", name="EventLogger", AppenderRef={Routing}, null)
+2011-11-23 17:08:00,830 DEBUG Calling createAppenderRef on class org.apache.logging.log4j.core.config.plugins.AppenderRefPlugin for element AppenderRef with params(ref="STDOUT")
+2011-11-23 17:08:00,831 DEBUG Calling createLogger on class org.apache.logging.log4j.core.config.LoggerConfig$RootLogger for element root with params(additivity="null", level="error", AppenderRef={STDOUT}, null)
 2011-11-23 17:08:00,833 DEBUG Calling createLoggers on class org.apache.logging.log4j.core.config.plugins.LoggersPlugin for element loggers with params(loggers={EventLogger, root})
 2011-11-23 17:08:00,834 DEBUG Reconfiguration completed
 2011-11-23 17:08:00,846 DEBUG Calling createLayout on class org.apache.logging.log4j.core.layout.PatternLayout for element PatternLayout with params(pattern="%d %p %c{1.} [%t] %m%n", Configuration(RoutingTest), null, charset="null")
@@ -1053,7 +1053,7 @@ public class Bar {
             makes troubleshooting configuration errors possible. As an example, if the configuration above is changed
             to have the status set to error and the logger declaration is:</p>
 <pre class="prettyprint linenums"><![CDATA[<logger name="EventLogger" level="info" additivity="false">
-  <appender-ref ref="Routng"/>
+  <AppenderRef ref="Routng"/>
 </logger>]]></pre>
           <p>
             the following error message will be produced.

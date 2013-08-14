@@ -24,6 +24,6 @@
  </appender>
 
  <root level="error">
-   <appender-ref ref="TestLogfile" />
+   <AppenderRef ref="TestLogfile" />
  </root>
 </configuration>

@@ -10,12 +10,12 @@
     <logger name="org.apache.logging.log4j.core" level="debug" additivity="false">
       <property name="user">$${sys:user.name}</property>
       <property name="test">${sys:test}</property>
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </logger>
     <root level="debug">
       <property name="user">${sys:user.name}</property>
       <property name="test">${sys:test}</property>
-      <appender-ref ref="List" />
+      <AppenderRef ref="List" />
     </root>
   </loggers>
 </configuration>

@@ -26,7 +26,7 @@
 
   <loggers>
     <root level="TRACE">
-      <appender-ref ref="ListAppender"/>
+      <AppenderRef ref="ListAppender"/>
     </root>
   </loggers>
 </configuration>

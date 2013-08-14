@@ -8,7 +8,7 @@
   
   <Loggers>
     <AsyncRoot level="info" includeLocation="false">
-      <appender-ref ref="XmlFile"/>
+      <AppenderRef ref="XmlFile"/>
     </AsyncRoot>
   </Loggers>
 </Configuration>

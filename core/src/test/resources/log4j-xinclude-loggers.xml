@@ -16,20 +16,20 @@
  limitations under the License.
 
 -->
-<loggers>
-  <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+<Loggers>
+  <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
     <ThreadContextMapFilter>
       <KeyValuePair key="test" value="123" />
     </ThreadContextMapFilter>
-    <appender-ref ref="STDOUT" />
-  </logger>
+    <AppenderRef ref="STDOUT" />
+  </Logger>
 
-  <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-    <appender-ref ref="File" />
-  </logger>
+  <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <AppenderRef ref="File" />
+  </Logger>
 
-  <root level="error">
-    <appender-ref ref="STDOUT" />
-  </root>
-</loggers>
+  <Root level="error">
+    <AppenderRef ref="STDOUT" />
+  </Root>
+</Loggers>
   

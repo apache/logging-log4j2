@@ -143,7 +143,7 @@ public static class RootLogger extends LoggerConfig {
     @PluginFactory
     public static LoggerConfig createLogger(@PluginAttr("additivity") String additivity,
                                             @PluginAttr("level") String loggerLevel,
-                                            @PluginElement("appender-ref") AppenderRef[] refs,
+                                            @PluginElement("AppenderRef") AppenderRef[] refs,
                                             @PluginElement("filters") Filter filter) {
         List<AppenderRef> appenderRefs = Arrays.asList(refs);
         Level level;

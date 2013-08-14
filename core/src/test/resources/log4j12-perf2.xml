@@ -26,6 +26,6 @@
  </appender>
  <root>
    <level value="error"/>
-   <appender-ref ref="TestLogfile"/>
+   <AppenderRef ref="TestLogfile"/>
  </root>
 </log4j:configuration>

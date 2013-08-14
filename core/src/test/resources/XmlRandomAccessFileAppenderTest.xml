@@ -8,7 +8,7 @@
   
   <loggers>
     <asyncRoot level="info" includeLocation="false">
-      <appender-ref ref="XmlRandomAccessFile"/>
+      <AppenderRef ref="XmlRandomAccessFile"/>
     </asyncRoot>
   </loggers>
 </configuration>

@@ -14,7 +14,7 @@
   </appenders>
   <loggers>
     <root level="info" includeLocation="false">
-      <appender-ref ref="RollingRandomAccessFile"/>
+      <AppenderRef ref="RollingRandomAccessFile"/>
     </root>
   </loggers>
 </configuration>

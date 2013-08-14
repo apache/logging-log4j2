@@ -44,8 +44,8 @@
       }
     },
     "loggers": {
-      "logger": { "name": "EventLogger", "level": "info", "additivity": "false", "appender-ref": { "ref": "Routing" }},
-      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+      "logger": { "name": "EventLogger", "level": "info", "additivity": "false", "AppenderRef": { "ref": "Routing" }},
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
 }
