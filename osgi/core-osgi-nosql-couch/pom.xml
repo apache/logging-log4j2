@@ -85,7 +85,7 @@
             <Import-Package>${osgi.import}</Import-Package>
             <DynamicImport-Package>${osgi.dynamicImport}</DynamicImport-Package>
             <Bundle-DocURL>${project.url}</Bundle-DocURL>
-            <Fragment-Host>org.apache.commons.log4j-api;bundle-version=${project.version.osgi}</Fragment-Host>
+            <Fragment-Host>org.apache.logging.log4j-api;bundle-version=${project.version.osgi}</Fragment-Host>
           </instructions>
         </configuration>
         <executions>
