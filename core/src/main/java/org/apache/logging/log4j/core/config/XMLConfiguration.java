@@ -67,6 +67,55 @@ import org.xml.sax.SAXException;
  */
 public class XMLConfiguration extends BaseConfiguration implements Reconfigurable {
 
+    private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
+
+    private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
+
+    /**
+     * Creates a new DocumentBuilder suitable for parsing a configuration file.
+     * 
+     * @return a new DocumentBuilder
+     * @throws ParserConfigurationException
+     */
+    static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        enableXInclude(factory);
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder;
+    }
+
+    /**
+     * Enables XInclude for the given DocumentBuilderFactory
+     * 
+     * @param factory
+     *            a DocumentBuilderFactory
+     * @throws ParserConfigurationException
+     */
+    private static void enableXInclude(final DocumentBuilderFactory factory) {
+        try {
+            // Alternative: We set if a system property on the command line is set, for example:
+            // -DLog4j.XInclude=true
+            factory.setXIncludeAware(true);
+        } catch (UnsupportedOperationException e) {
+            LOGGER.warn("The DocumentBuilderFactory does not support XInclude: " + factory, e);
+        }
+        try {
+            // Alternative: We could specify all features and values with system properties like:
+            // -DLog4j.DocumentBuilderFactory.Feature="http://apache.org/xml/features/xinclude/fixup-base-uris true"
+            factory.setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
+        } catch (ParserConfigurationException e) {
+            LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
+                    + XINCLUDE_FIXUP_BASE_URIS + "]", e);
+        }
+        try {
+            factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
+        } catch (ParserConfigurationException e) {
+            LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
+                    + XINCLUDE_FIXUP_LANGUAGE + "]", e);
+        }
+    }
+
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
     private static final String LOG4J_XSD = "Log4j-config.xsd";
@@ -100,15 +149,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             buffer = toByteArray(configStream);
             configStream.close();
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            try {
-                factory.setXIncludeAware(true);
-            } catch (UnsupportedOperationException e) {
-                LOGGER.warn("This DocumentBuilderFactory does not support XInclude: " + factory, e);
-            }
-            final DocumentBuilder builder = factory.newDocumentBuilder();
-            final Document document = builder.parse(source);
+            final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             Level status = getDefaultStatus();
