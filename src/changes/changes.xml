@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-351" dev="rpopma" type="fix" due-to="Roland Weiglhofer">
+        [OSGi] wrong Fragment-Host in manifest files.
+      </action>
       <action issue="LOG4J2-336" dev="rpopma" type="fix" due-to="Andre Bogus">
         AsyncLogger errors after multiple calls to LoggerContext.reconfigure().
       </action>
