@@ -151,21 +151,21 @@
 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
      to make all loggers asynchronous. -->
 
-<configuration status="WARN">
-  <appenders>
+<Configuration status="WARN">
+  <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
     <RandomAccessFile name="RandomAccessFile" fileName="async.log" immediateFlush="false" append="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="info" includeLocation="false">
+  </Appenders>
+  <Loggers>
+    <Root level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 				<p>
 					When
@@ -347,26 +347,26 @@
 <!-- No need to set system property "Log4jContextSelector" to any value 
      when using <asyncLogger> or <asyncRoot>. -->
 
-<configuration status="WARN">
-  <appenders>
+<Configuration status="WARN">
+  <Appenders>
     <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
     <RandomAccessFile name="RandomAccessFile" fileName="asyncWithLocation.log" 
               immediateFlush="false" append="false">
       <PatternLayout>
-        <pattern>%d %p %class{1.} [%t] %location %m %ex%n</pattern>
+        <Pattern>%d %p %class{1.} [%t] %location %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-  </appenders>
-  <loggers>
+  </Appenders>
+  <Loggers>
     <!-- pattern layout actually uses location, so we need to include it -->
-    <asyncLogger name="com.foo.Bar" level="trace" includeLocation="true">
+    <AsyncLogger name="com.foo.Bar" level="trace" includeLocation="true">
       <AppenderRef ref="RandomAccessFile"/>
-    </asyncLogger>
-    <root level="info" includeLocation="true">
+    </AsyncLogger>
+    <Root level="info" includeLocation="true">
       <AppenderRef ref="RandomAccessFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 				<p>
 				There are a few system properties
