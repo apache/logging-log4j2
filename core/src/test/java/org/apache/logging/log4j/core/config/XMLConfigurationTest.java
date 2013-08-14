@@ -32,8 +32,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -48,12 +49,14 @@ import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -64,17 +67,19 @@ public class XMLConfigurationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "log4j-test1.xml", "target/test.log" },
-                { "log4j-xinclude.xml", "target/test.log" } });
+        return Arrays.asList(new Object[][] { { "log4j-test1.xml", "target/test.log", false },
+                { "log4j-xinclude.xml", "target/test.log", true } });
     }
 
     private final String configFile;
     private final String logFile;
+    private final boolean xinclude;
 
-    public XMLConfigurationTest(String configFile, String logFile) {
+    public XMLConfigurationTest(String configFile, String logFile, boolean validate) {
         super();
         this.configFile = configFile;
         this.logFile = logFile;
+        this.xinclude = validate;
     }
 
     @Test
@@ -152,11 +157,14 @@ public class XMLConfigurationTest {
 
     @Test
     @Ignore
-    public void testValidation() throws SAXException, IOException {
+    public void testValidation() throws SAXException, IOException, ParserConfigurationException {
+        // For now, XInclude and validation do not work together.
+        Assume.assumeFalse(this.xinclude);
         URL schemaFile = ClassLoader.getSystemResource("Log4j-config.xsd");
         URL xmlFile = ClassLoader.getSystemResource(configFile);
         Assert.assertNotNull(schemaFile);
-        Source xmlSource = new StreamSource(xmlFile.toString());
+        Document doc = XMLConfiguration.newDocumentBuilder().parse(xmlFile.toString());
+        Source xmlSource = new DOMSource(doc);
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(schemaFile);
         Validator validator = schema.newValidator();
