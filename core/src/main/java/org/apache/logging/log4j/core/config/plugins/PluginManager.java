@@ -143,12 +143,12 @@ public class PluginManager {
         }
         final long start = System.nanoTime();
         final ResolverUtil resolver = new ResolverUtil();
-        final ClassLoader loader = Loader.getClassLoader();
-        if (loader != null) {
-            resolver.setClassLoader(loader);
+        final ClassLoader classLoader = Loader.getClassLoader();
+        if (classLoader != null) {
+            resolver.setClassLoader(classLoader);
         }
         if (preLoad) {
-            final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(loader);
+            final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(classLoader);
             if (map != null) {
                 pluginTypeMap = map;
                 plugins = map.get(type);
@@ -197,10 +197,10 @@ public class PluginManager {
     }
 
     @SuppressWarnings("unchecked")
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(final ClassLoader loader) {
+    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(final ClassLoader classLoader) {
         Enumeration<URL> resources;
         try {
-            resources = loader.getResources(PATH + FILENAME);
+            resources = classLoader.getResources(PATH + FILENAME);
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
