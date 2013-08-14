@@ -175,7 +175,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
                 @PluginAttr("bufferSize") final String size,
                 @PluginAttr("name") final String name,
                 @PluginAttr("includeLocation") final String includeLocation,
-                @PluginElement("filter") final Filter filter,
+                @PluginElement("Filter") final Filter filter,
                 @PluginConfiguration final Configuration config,
                 @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
