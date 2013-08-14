@@ -30,18 +30,18 @@ public class Log4jInitPerformance {
     @Test
     public void testInitialize() throws Exception {
         final String log4jConfigString =
-            "<configuration name=\"ConfigTest\" status=\"debug\" >" +
-                "<appenders>" +
+            "<Configuration name=\"ConfigTest\" status=\"debug\" >" +
+                "<Appenders>" +
                 " <Console name=\"STDOUT\">" +
                 "    <PatternLayout pattern=\"%m%n\"/>" +
                 " </Console>" +
-                "</appenders>" +
-                "<loggers>" +
-                "  <root level=\"error\">" +
+                "</Appenders>" +
+                "<Loggers>" +
+                "  <Root level=\"error\">" +
                 "    <AppenderRef ref=\"STDOUT\"/>" +
-                "  </root>" +
-                "</loggers>" +
-                "</configuration>";
+                "  </Root>" +
+                "</Loggers>" +
+                "</Configuration>";
         final InputStream is = new ByteArrayInputStream(log4jConfigString.getBytes());
         final ConfigurationFactory.ConfigurationSource source =
             new ConfigurationFactory.ConfigurationSource(is);
