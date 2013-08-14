@@ -99,6 +99,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         }
         if (appenders.size() > 0) {
             thread = new AsyncThread(appenders, queue);
+            thread.setName("AsyncAppender-" + getName());
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
