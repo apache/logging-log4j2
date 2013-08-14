@@ -20,21 +20,21 @@
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
-  <filter type="ThresholdFilter" level="trace"/>
+  <Filter type="ThresholdFilter" level="trace"/>
 
   <appenders>
     <appender type="Console" name="STDOUT">
       <layout type="PatternLayout" pattern="%m MDC%X%n"/>
       <filters>
-        <filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
-        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
+        <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
       </filters>
     </appender>
     <appender type="Console" name="FLOW">
       <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
       <filters>
-        <filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
-        <filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
+        <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
       </filters>
     </appender>
     <appender type="File" name="File" fileName="${filename}">
@@ -48,7 +48,7 @@
 
   <loggers>
     <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <filter type="ThreadContextMapFilter">
+      <Filter type="ThreadContextMapFilter">
         <KeyValuePair key="test" value="123"/>
       </filter>
       <AppenderRef ref="STDOUT"/>
