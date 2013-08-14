@@ -114,23 +114,23 @@
             A typical AsyncAppender configuration might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</pattern>
       </PatternLayout>
     </File>
     <Async name="Async">
       <AppenderRef ref="MyFile"/>
     </Async>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Async"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="ConsoleAppender"/>
@@ -188,18 +188,18 @@
             A typical Console configuration might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="FailoverAppender"/>
@@ -257,12 +257,12 @@
             A Failover configuration might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
                  ignoreExceptions="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
@@ -274,13 +274,13 @@
         <AppenderRef ref="Console"/>
       </Failovers>
     </Failover>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Failover"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
 			<a name="RandomAccessFileAppender" />
@@ -377,20 +377,20 @@
 					Here is a sample RandomAccessFile configuration:
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RandomAccessFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="MyFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 			</subsection>
 			<a name="RollingRandomAccessFileAppender" />
@@ -573,36 +573,36 @@
 					archive using gzip:
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
     </RollingRandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingRandomAccessFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 				<p>
 					This second example shows a rollover strategy that will keep up to
 					20 files before removing them.
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -610,13 +610,13 @@
       </Policies>
       <DefaultRolloverStrategy max="20"/>
     </RollingRandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingRandomAccessFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 				<p>
 					Below is a sample configuration that uses a RollingRandomAccessFileAppender
@@ -632,25 +632,25 @@
 					by 6:
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
     </RollingRandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingRandomAccessFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 				</p>
 			</subsection>
         <a name="FileAppender"/>
@@ -739,20 +739,20 @@
             Here is a sample File configuration:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="MyFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="FlumeAppender"/>
@@ -917,41 +917,41 @@
               compresses the body, and formats the body using the RFC5424Layout:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Flume name="eventLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
     </Flume>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="eventLogger"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
             compresses the body, formats the body using the RFC5424Layout, and persists encrypted events to disk:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
       <Property name="keyProvider">MySecretProvider</Property>
     </Flume>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="eventLogger"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent,
@@ -959,8 +959,8 @@
             Agent.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
@@ -969,24 +969,24 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info">
       <AppenderRef ref="eventLogger"/>
-    </logger>
-    <root level="warn">
+    </Logger>
+    <Root level="warn">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           <p>
             A sample FlumeAppender configuration that is configured with a primary and a secondary agent using
             Flume configuration properties, compresses the body, formats the body using RFC5424Layout and passes the
             events to an embedded Flume Agent.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error" name="MyApp" packages="">
-  <appenders>
+<Configuration status="error" name="MyApp" packages="">
+  <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Property name="channels">file</Property>
       <Property name="channels.file.type">file</Property>
@@ -1014,15 +1014,15 @@
       <PatternLayout pattern="%d [%p] %c %m%n"/>
     </Console>
   </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info">
+  <Loggers>
+    <Logger name="EventLogger" level="info">
       <AppenderRef ref="eventLogger"/>
-    </logger>
-    <root level="warn">
+    </Logger>
+    <Root level="warn">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
         <a name="JDBCAppender"/>
         <subsection name="JDBCAppender">
@@ -1203,8 +1203,8 @@
             Here are a few sample configurations for the JDBCAppender:
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <Jdbc name="databaseAppender" tableName="application_log">
       <DriverManager url="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
       <Column name="eventDate" isEventTimestamp="true" />
@@ -1213,17 +1213,17 @@
       <Column name="message" pattern="%message" />
       <Column name="exception" pattern="%ex{full}" />
     </Jdbc>
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <Jdbc name="databaseAppender" tableName="dbo.application_log">
       <DataSource jndiName="java:/comp/env/jdbc/LoggingDataSource" />
       <Column name="eventDate" isEventTimestamp="true" />
@@ -1232,17 +1232,17 @@
       <Column name="message" pattern="%message" />
       <Column name="exception" pattern="%ex{full}" />
     </Jdbc>
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <Jdbc name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
       <ConnectionFactory class="net.example.db.ConnectionFactory" method="getNewDatabaseConnection" />
       <Column name="EVENT_ID" literal="LOGGING.APPLICATION_LOG_SEQUENCE.NEXTVAL" />
@@ -1252,13 +1252,13 @@
       <Column name="MESSAGE" pattern="%message" />
       <Column name="THROWABLE" pattern="%ex{full}" />
     </Jdbc>
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="JMSQueueAppender"/>
@@ -1358,17 +1358,17 @@
             Here is a sample JMSQueueAppender configuration:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <JMSQueue name="jmsQueue" queueBindingName="MyQueue"
               factoryBindingName="MyQueueConnectionFactory"/>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="jmsQueue"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="JMSTopicAppender"/>
@@ -1469,17 +1469,17 @@
             Here is a sample JMSTopicAppender configuration:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <JMSTopic name="jmsTopic" topicBindingName="MyTopic"
               factoryBindingName="MyTopicConnectionFactory"/>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="jmsQueue"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="JPAAppender"/>
@@ -1545,17 +1545,17 @@
             all other entities.
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <Jpa name="databaseAppender" persistenceUnitName="loggingPersistenceUnit"
          entityClassName="com.example.logging.JpaLogEntity" />
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
@@ -1797,49 +1797,49 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             Here are a few sample configurations for the NoSQLAppender:
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <NoSql name="databaseAppender">
       <MongoDb databaseName="applicationDb" collectionName="applicationLog" server="mongo.example.org"
                username="loggingUser" password="abc123" />
     </NoSql>
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <NoSql name="databaseAppender">
       <MongoDb collectionName="applicationLog" factoryClassName="org.example.db.ConnectionFactory"
                factoryMethodName="getNewMongoClient" />
     </NoSql>
-  </appenders>
-  <loggers>
-    <root level="warn">
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
-  <appenders>
+<Configuration status="error">
+  <Appenders>
     <NoSql name="databaseAppender">
       <CouchDb databaseName="applicationDb" protocol="https" server="couch.example.org"
                username="loggingUser" password="abc123" />
     </NoSql>
-  </appenders>
+  </Appenders>
   <loggers>
-    <root level="warn">
+    <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
           <p>
             The following example demonstrates how log events are persisted in NoSQL databases if represented in a JSON
@@ -1983,8 +1983,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
              to the MapMessage.:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -1994,13 +1994,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <KeyValuePair key="product" value="TestProduct"/>
       </MapRewritePolicy>
     </Rewrite>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Rewrite"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
           <h5>PropertiesRewritePolicy</h5>
           <p>
@@ -2026,8 +2026,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             to the MapMessage.:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -2038,13 +2038,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <Property key="env">${sys:environment}</Property>
       </PropertiesRewritePolicy>
     </Rewrite>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Rewrite"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="RollingFileAppender"/>
@@ -2342,35 +2342,35 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             archive using gzip:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
           <p>
             This second example shows a rollover strategy that will keep up to 20 files before removing them.
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -2378,13 +2378,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       </Policies>
       <DefaultRolloverStrategy max="20"/>
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </p>
           <p>
             Below is a sample configuration that uses a RollingFileAppender with both the time and size based
@@ -2393,25 +2393,25 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             archive using gzip and will roll every 6 hours when the hour is divisible by 6:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="RoutingAppender"/>
@@ -2480,8 +2480,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             are created as needed.
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Flume name="AuditLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
       <Agent host="192.168.10.102" port="8800"/>
@@ -2501,13 +2501,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         <Route AppenderRef="AuditLogger" key="Audit"/>
       </Routes>
     </Routing>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Routing"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="SMTPAppender"/>
@@ -2623,18 +2623,18 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <caption align="top">SMTPAppender Parameters</caption>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <SMTP name="Mail" subject="Error Log" to="errors@logging.apache.org" from="test@logging.apache.org"
           smtpHost="localhost" smtpPort="25" bufferSize="50">
     </SMTP>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Mail"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
         <a name="SocketAppender"/>
         <subsection name="SocketAppender">
@@ -2714,18 +2714,18 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </table>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <SerializedLayout />
     </Socket>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="socket"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
         </subsection>
         <a name="SyslogAppender"/>
         <subsection name="SyslogAppender">
@@ -2894,23 +2894,23 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             format and one using RFC 5424.
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
-  <appenders>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
     <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
             protocol="TCP" appName="MyApp" includeMDC="true"
             facility="LOCAL0" enterpriseNumber="18060" newLine="true"
             messageId="Audit" id="App"/>
-  </appenders>
-  <loggers>
-    <logger name="com.mycorp" level="error">
+  </Appenders>
+  <Loggers>
+    <Logger name="com.mycorp" level="error">
       <AppenderRef ref="RFC5424"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="bsd"/>
-    </root>
-  </loggers>
-</configuration>]]></pre>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
           </p>
         </subsection>
       </section>
