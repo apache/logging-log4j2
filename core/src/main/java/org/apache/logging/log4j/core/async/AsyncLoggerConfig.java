@@ -121,19 +121,15 @@ public class AsyncLoggerConfig extends LoggerConfig {
     public void startFilter() {
         if (helper == null) {
             helper = new AsyncLoggerConfigHelper(this);
+        } else {
+            AsyncLoggerConfigHelper.claim(); // LOG4J2-336
         }
         super.startFilter();
     }
 
     @Override
     public void stopFilter() {
-        /* only stop disruptor if shutting down logging subsystem
-        if (LogManager.getContext() instanceof LoggerContext) {
-            if (((LoggerContext) LogManager.getContext()).getStatus() != Status.STOPPING) {
-                return;
-            }
-        } */
-        helper.shutdown();
+        AsyncLoggerConfigHelper.release();
         super.stopFilter();
     }
 

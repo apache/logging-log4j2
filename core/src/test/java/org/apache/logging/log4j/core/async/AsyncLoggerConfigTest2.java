@@ -25,26 +25,34 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class AsyncLoggerConfigTest {
+public class AsyncLoggerConfigTest2 {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigTest.xml");
     }
 
     @Test
-    public void testAdditivity() throws Exception {
-        final File f = new File("target", "AsyncLoggerConfigTest.log");
+    public void testConsecutiveReconfigure() throws Exception {
+        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+                "AsyncLoggerConfigTest2.xml");
+        final File f = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !f.exists() || f.delete());
         
         final Logger log = LogManager.getLogger("com.foo.Bar");
-        final String msg = "Additive logging: 2 for the price of 1!";
+        final String msg = "Message before reconfig";
         log.info(msg);
+
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        ctx.reconfigure();
+        ctx.reconfigure();
+        
+        final String msg2 = "Message after reconfig";
+        log.info(msg2);
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
 
         final BufferedReader reader = new BufferedReader(new FileReader(f));
@@ -54,11 +62,8 @@ public class AsyncLoggerConfigTest {
         f.delete();
         assertNotNull("line1", line1);
         assertNotNull("line2", line2);
-        assertTrue("line1 correct", line1.contains(msg));
-        assertTrue("line2 correct", line2.contains(msg));
-
-        final String location = "testAdditivity";
-        assertTrue("location",
-                line1.contains(location) || line2.contains(location));
+        assertTrue("line1 " + line1, line1.contains(msg));
+        assertTrue("line2 " + line2, line2.contains(msg2));
     }
+
 }
