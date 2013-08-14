@@ -91,8 +91,8 @@ public final class JMSQueueAppender<T extends Serializable> extends AbstractAppe
                                                 @PluginAttr("queueBindingName") final String queueBindingName,
                                                 @PluginAttr("userName") final String userName,
                                                 @PluginAttr("password") final String password,
-                                                @PluginElement("layout") Layout<S> layout,
-                                                @PluginElement("filter") final Filter filter,
+                                                @PluginElement("Layout") Layout<S> layout,
+                                                @PluginElement("Filter") final Filter filter,
                                                 @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");

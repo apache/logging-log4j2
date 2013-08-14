@@ -261,7 +261,7 @@ public final class CompositeFilter implements Iterable<Filter>, Filter, LifeCycl
      * @return The CompositeFilter.
      */
     @PluginFactory
-    public static CompositeFilter createFilters(@PluginElement("filters") final Filter[] filters) {
+    public static CompositeFilter createFilters(@PluginElement("Filters") final Filter[] filters) {
         final List<Filter> f = filters == null || filters.length == 0 ?
             new ArrayList<Filter>() : Arrays.asList(filters);
         return new CompositeFilter(f);

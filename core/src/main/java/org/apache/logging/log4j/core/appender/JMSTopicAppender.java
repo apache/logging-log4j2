@@ -91,8 +91,8 @@ public final class JMSTopicAppender<T extends Serializable> extends AbstractAppe
                                                 @PluginAttr("topicBindingName") final String topicBindingName,
                                                 @PluginAttr("userName") final String userName,
                                                 @PluginAttr("password") final String password,
-                                                @PluginElement("layout") Layout<S> layout,
-                                                @PluginElement("filters") final Filter filter,
+                                                @PluginElement("Layout") Layout<S> layout,
+                                                @PluginElement("Filters") final Filter filter,
                                                 @PluginAttr("ignoreExceptions") final String ignore) {
 
         if (name == null) {

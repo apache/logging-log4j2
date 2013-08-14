@@ -189,10 +189,10 @@ public final class FailoverAppender<T extends Serializable> extends AbstractAppe
     @PluginFactory
     public static <S extends Serializable> FailoverAppender<S> createAppender(@PluginAttr("name") final String name,
                                                   @PluginAttr("primary") final String primary,
-                                                  @PluginElement("failovers") final String[] failovers,
+                                                  @PluginElement("Failovers") final String[] failovers,
                                                   @PluginAttr("retryInterval") final String retryIntervalString,
                                                   @PluginConfiguration final Configuration config,
-                                                  @PluginElement("filters") final Filter filter,
+                                                  @PluginElement("Filters") final Filter filter,
                                                   @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");

@@ -79,7 +79,7 @@ public final class Routes {
      */
     @PluginFactory
     public static Routes createRoutes(@PluginAttr("pattern") final String pattern,
-                                      @PluginElement("routes") final Route... routes) {
+                                      @PluginElement("Routes") final Route... routes) {
         if (pattern == null) {
             LOGGER.error("A pattern is required");
             return null;

@@ -38,7 +38,7 @@ public final class AppendersPlugin {
      */
     @PluginFactory
     public static ConcurrentMap<String, Appender<? extends Serializable>> createAppenders(
-                                             @PluginElement("appenders") final Appender<?>[] appenders) {
+                                             @PluginElement("Appenders") final Appender<?>[] appenders) {
         final ConcurrentMap<String, Appender<? extends Serializable>> map =
             new ConcurrentHashMap<String, Appender<? extends Serializable>>();
 

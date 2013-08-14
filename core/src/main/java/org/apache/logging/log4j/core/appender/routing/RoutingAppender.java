@@ -184,10 +184,10 @@ public final class RoutingAppender<T extends Serializable> extends AbstractAppen
     @PluginFactory
     public static <S extends Serializable> RoutingAppender<S> createAppender(@PluginAttr("name") final String name,
                                           @PluginAttr("ignoreExceptions") final String ignore,
-                                          @PluginElement("routes") final Routes routes,
+                                          @PluginElement("Routes") final Routes routes,
                                           @PluginConfiguration final Configuration config,
-                                          @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
-                                          @PluginElement("filters") final Filter filter) {
+                                          @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
+                                          @PluginElement("Filters") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

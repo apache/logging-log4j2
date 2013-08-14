@@ -116,7 +116,7 @@ public class MapFilter extends AbstractFilter {
     }
 
     @PluginFactory
-    public static MapFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+    public static MapFilter createFilter(@PluginElement("Pairs") final KeyValuePair[] pairs,
                                          @PluginAttr("operator") final String oper,
                                          @PluginAttr("onmatch") final String match,
                                          @PluginAttr("onmismatch") final String mismatch) {

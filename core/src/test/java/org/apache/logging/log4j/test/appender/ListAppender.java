@@ -157,8 +157,8 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
     public static <S extends Serializable> ListAppender<S> createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("entryPerNewLine") final String newLine,
                                               @PluginAttr("raw") final String raw,
-                                              @PluginElement("layout") final Layout<S> layout,
-                                              @PluginElement("filters") final Filter filter) {
+                                              @PluginElement("Layout") final Layout<S> layout,
+                                              @PluginElement("Filters") final Filter filter) {
 
         if (name == null) {
             LOGGER.error("No name provided for ListAppender");

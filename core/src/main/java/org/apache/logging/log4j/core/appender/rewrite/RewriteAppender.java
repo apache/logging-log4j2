@@ -108,10 +108,10 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
     @PluginFactory
     public static <S extends Serializable> RewriteAppender<S> createAppender(@PluginAttr("name") final String name,
                                           @PluginAttr("ignoreExceptions") final String ignore,
-                                          @PluginElement("appenderRef") final AppenderRef[] appenderRefs,
+                                          @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
                                           @PluginConfiguration final Configuration config,
-                                          @PluginElement("rewritePolicy") final RewritePolicy rewritePolicy,
-                                          @PluginElement("filter") final Filter filter) {
+                                          @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
+                                          @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

@@ -101,7 +101,7 @@ public final class StructuredDataFilter extends MapFilter {
      * @return The StructuredDataFilter.
      */
     @PluginFactory
-    public static StructuredDataFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+    public static StructuredDataFilter createFilter(@PluginElement("Pairs") final KeyValuePair[] pairs,
                                                     @PluginAttr("operator") final String oper,
                                                     @PluginAttr("onmatch") final String match,
                                                     @PluginAttr("onmismatch") final String mismatch) {

@@ -126,7 +126,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
      */
     @PluginFactory
     public static DynamicThresholdFilter createFilter(@PluginAttr("key") final String key,
-                                                      @PluginElement("pairs") final KeyValuePair[] pairs,
+                                                      @PluginElement("Pairs") final KeyValuePair[] pairs,
                                                       @PluginAttr("defaultThreshold") final String levelName,
                                                       @PluginAttr("onmatch") final String match,
                                                       @PluginAttr("onmismatch") final String mismatch) {

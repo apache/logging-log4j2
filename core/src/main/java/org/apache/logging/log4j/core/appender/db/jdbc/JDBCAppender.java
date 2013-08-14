@@ -67,12 +67,12 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
     @PluginFactory
     public static JDBCAppender createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("ignoreExceptions") final String ignore,
-                                              @PluginElement("filter") final Filter filter,
-                                              @PluginElement("connectionSource") final ConnectionSource
+                                              @PluginElement("Filter") final Filter filter,
+                                              @PluginElement("ConnectionSource") final ConnectionSource
                                                       connectionSource,
                                               @PluginAttr("bufferSize") final String bufferSize,
                                               @PluginAttr("tableName") final String tableName,
-                                              @PluginElement("columnConfigs") final ColumnConfig[] columnConfigs) {
+                                              @PluginElement("ColumnConfigs") final ColumnConfig[] columnConfigs) {
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);

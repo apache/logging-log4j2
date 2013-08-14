@@ -127,8 +127,8 @@ public final class RandomAccessFileAppender<T extends Serializable> extends Abst
             @PluginAttr("name") final String name,
             @PluginAttr("immediateFlush") final String immediateFlush,
             @PluginAttr("ignoreExceptions") final String ignore,
-            @PluginElement("layout") Layout<S> layout,
-            @PluginElement("filters") final Filter filter,
+            @PluginElement("Layout") Layout<S> layout,
+            @PluginElement("Filters") final Filter filter,
             @PluginAttr("advertise") final String advertise,
             @PluginAttr("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
