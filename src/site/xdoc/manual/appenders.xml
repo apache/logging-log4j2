@@ -1653,7 +1653,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 buffer reaches this size.</td>
             </tr>
             <tr>
-              <td>noSqlProvider</td>
+              <td>NoSqlProvider</td>
               <td>NoSQLProvider&lt;C extends NoSQLConnection&lt;W, T extends NoSQLObject&lt;W&gt;&gt;&gt;</td>
               <td><em>Required.</em> The NoSQL provider that provides connections to the chosen NoSQL database.</td>
             </tr>
