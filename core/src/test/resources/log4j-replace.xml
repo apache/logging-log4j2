@@ -33,10 +33,10 @@
 
   <loggers>
     <logger level="trace" name="ReplacementTest" additivity="false">
-      <appender-ref ref="List2"/>
+      <AppenderRef ref="List2"/>
     </logger>
     <root level="trace">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 

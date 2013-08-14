@@ -28,7 +28,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="LIST"/>
+      <AppenderRef ref="LIST"/>
     </root>
   </loggers>
 </configuration>

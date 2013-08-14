@@ -40,15 +40,15 @@
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </logger>>
 
     <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </logger>>
 
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 

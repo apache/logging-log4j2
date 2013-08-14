@@ -23,22 +23,22 @@
     <List name="List" />
     <Failover name="Failover" primary="Fail" ignoreExceptions="false">
       <Failovers>
-        <appender-ref ref="List"/>
+        <AppenderRef ref="List"/>
       </Failovers>
     </Failover>
     <Failover name="FailoverOnce" primary="Once" ignoreExceptions="false" retryInterval="1">
       <Failovers>
-        <appender-ref ref="List"/>
+        <AppenderRef ref="List"/>
       </Failovers>
     </Failover>
   </Appenders>
 
   <loggers>
     <logger name="Once" level="error" additivity="false">
-      <appender-ref ref="FailoverOnce"/>
+      <AppenderRef ref="FailoverOnce"/>
     </logger>
     <root level="error">
-      <appender-ref ref="Failover"/>
+      <AppenderRef ref="Failover"/>
     </root>
   </loggers>
 

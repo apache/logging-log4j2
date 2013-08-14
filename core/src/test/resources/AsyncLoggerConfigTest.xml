@@ -14,10 +14,10 @@
   
   <loggers>
     <asyncLogger name="com.foo.Bar" level="trace" includeLocation="false">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </asyncLogger>
     <root level="info">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </root>
   </loggers>
 </configuration>

@@ -7,12 +7,12 @@
       </PatternLayout>
     </RandomAccessFile>
     <Async name="Async"  blocking="true" bufferSize="262144">
-      <appender-ref ref="RandomAccessFile"/>
+      <AppenderRef ref="RandomAccessFile"/>
     </Async>
   </appenders>  
   <loggers>
     <root level="info" includeLocation="false">
-      <appender-ref ref="Async"/>
+      <AppenderRef ref="Async"/>
     </root>
   </loggers>
 </configuration>

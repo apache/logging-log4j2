@@ -8,7 +8,7 @@
 
   <loggers>
     <root level="${sys:log.level}">
-      <appender-ref ref="Console" />
+      <AppenderRef ref="Console" />
     </root>
   </loggers>
 </configuration>

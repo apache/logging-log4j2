@@ -43,10 +43,10 @@
     },
     "loggers": {
       "logger": [
-        { "name": "EventLogger", "level": "info", "additivity": "false", "appender-ref": { "ref": "Routing" }},
-        { "name": "com.foo.bar", "level": "error", "additivity": "false", "appender-ref": { "ref": "STDOUT" }}
+        { "name": "EventLogger", "level": "info", "additivity": "false", "AppenderRef": { "ref": "Routing" }},
+        { "name": "com.foo.bar", "level": "error", "additivity": "false", "AppenderRef": { "ref": "STDOUT" }}
       ],
-      "root": { "level": "error", "appender-ref": { "ref": "STDOUT" }}
+      "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
   }
 }

@@ -32,10 +32,10 @@
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info" additivity="false">
-      <appender-ref ref="eventLogger"/>
+      <AppenderRef ref="eventLogger"/>
     </logger>
     <root level="warn">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>

@@ -33,7 +33,7 @@
 
   <loggers>
     <root level="error">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
   </loggers>
 

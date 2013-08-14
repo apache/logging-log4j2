@@ -8,7 +8,7 @@
   
   <Loggers>
     <Root level="info" includeLocation="false">
-      <appender-ref ref="XmlFile"/>
+      <AppenderRef ref="XmlFile"/>
     </Root>
   </Loggers>
 </Configuration>

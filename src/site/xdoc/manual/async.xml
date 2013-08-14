@@ -162,7 +162,7 @@
   </appenders>
   <loggers>
     <root level="info" includeLocation="false">
-      <appender-ref ref="RandomAccessFile"/>
+      <AppenderRef ref="RandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -360,10 +360,10 @@
   <loggers>
     <!-- pattern layout actually uses location, so we need to include it -->
     <asyncLogger name="com.foo.Bar" level="trace" includeLocation="true">
-      <appender-ref ref="RandomAccessFile"/>
+      <AppenderRef ref="RandomAccessFile"/>
     </asyncLogger>
     <root level="info" includeLocation="true">
-      <appender-ref ref="RandomAccessFile"/>
+      <AppenderRef ref="RandomAccessFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>

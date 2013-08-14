@@ -43,10 +43,10 @@ public final class FailoversPlugin {
      * @return The appender references.
      */
     @PluginFactory
-    public static String[] createFailovers(@PluginElement("appender-ref") final AppenderRef... refs) {
+    public static String[] createFailovers(@PluginElement("AppenderRef") final AppenderRef... refs) {
 
         if (refs == null) {
-            LOGGER.error("failovers must contain an appender-reference");
+            LOGGER.error("failovers must contain an appender reference");
             return null;
         }
         final String[] arr = new String[refs.length];

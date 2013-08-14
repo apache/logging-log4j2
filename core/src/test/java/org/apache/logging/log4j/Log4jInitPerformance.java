@@ -38,7 +38,7 @@ public class Log4jInitPerformance {
                 "</appenders>" +
                 "<loggers>" +
                 "  <root level=\"error\">" +
-                "    <appender-ref ref=\"STDOUT\"/>" +
+                "    <AppenderRef ref=\"STDOUT\"/>" +
                 "  </root>" +
                 "</loggers>" +
                 "</configuration>";

@@ -25,27 +25,27 @@
       <PropertiesRewritePolicy>
         <Property name="appender">List</Property>
       </PropertiesRewritePolicy>
-      <appender-ref ref="Log4j2Queue"/>
+      <AppenderRef ref="Log4j2Queue"/>
     </Rewrite>
     <Failover name="Failover" primary="Rewrite" ignoreExceptions="false">
       <Failovers>
-        <appender-ref ref="List"/>
+        <AppenderRef ref="List"/>
       </Failovers>
     </Failover>
   </Appenders>
 
   <loggers>
     <root level="debug">
-      <appender-ref ref="Failover">
+      <AppenderRef ref="Failover">
         <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY">
           <KeyValuePair key="appender" value="Failover"/>
         </ThreadContextMapFilter>
-      </appender-ref>
-      <appender-ref ref="List">
+      </AppenderRef>
+      <AppenderRef ref="List">
         <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY">
           <KeyValuePair key="appender" value="List"/>
         </ThreadContextMapFilter>
-      </appender-ref>
+      </AppenderRef>
     </root>
   </loggers>
 

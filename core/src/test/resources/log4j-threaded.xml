@@ -36,7 +36,7 @@
 
   <loggers>
     <root level="debug">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </root>
   </loggers>
 

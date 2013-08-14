@@ -10,6 +10,6 @@
   </appender>
 
   <root level="debug">
-    <appender-ref ref="FILE" />
+    <AppenderRef ref="FILE" />
   </root>
 </configuration>

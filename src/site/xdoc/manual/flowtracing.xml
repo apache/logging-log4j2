@@ -154,7 +154,7 @@ public class App {
   </appenders>
   <loggers>
     <root level="trace">
-      <appender-ref ref="log"/>
+      <AppenderRef ref="log"/>
     </root>
   </loggers>
 </configuration>]]></pre>

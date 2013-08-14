@@ -11,10 +11,10 @@
      </appender>
      <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
          <param name="BufferSize" value="262144"/>
-         <appender-ref ref="File"/>
+         <AppenderRef ref="File"/>
      </appender>
   <root> 
     <priority value="debug" /> 
-    <appender-ref ref="ASYNC" /> 
+    <AppenderRef ref="ASYNC" /> 
   </root>
 </log4j:configuration>

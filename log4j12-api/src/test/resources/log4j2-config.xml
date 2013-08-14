@@ -27,13 +27,13 @@
   </appenders>
   <loggers>
     <logger name="org.apache.test.logging" level="debug" additivity="false">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </logger>
     <logger name="org.apache.test" level="trace" additivity="false">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </logger>
     <root level="error">
-      <appender-ref ref="STDOUT"/>
+      <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
 </configuration>

@@ -14,7 +14,7 @@
   
   <loggers>
     <asyncRoot level="info">
-      <appender-ref ref="File"/>
+      <AppenderRef ref="File"/>
     </asyncRoot>
   </loggers>
 </configuration>

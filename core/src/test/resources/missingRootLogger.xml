@@ -11,11 +11,11 @@
   <loggers>
   <!-- 
     <root level="info" includeLocation="false">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </root>
      -->
     <logger name="sample" level="info" includeLocation="false">
-      <appender-ref ref="List"/>
+      <AppenderRef ref="List"/>
     </logger>
   </loggers>
 </configuration>

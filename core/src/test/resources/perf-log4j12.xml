@@ -11,6 +11,6 @@
      </appender>
   <root> 
     <priority value="debug" /> 
-    <appender-ref ref="File" /> 
+    <AppenderRef ref="File" /> 
   </root>
 </log4j:configuration>

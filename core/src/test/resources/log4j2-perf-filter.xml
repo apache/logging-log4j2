@@ -30,7 +30,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="TestLogfile"/>
+      <AppenderRef ref="TestLogfile"/>
     </root>
   </loggers>
 </configuration>

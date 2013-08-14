@@ -109,7 +109,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -151,10 +151,10 @@
   </appenders>
   <loggers>
     <logger name="EventLogger" level="info">
-      <appender-ref ref="Audit"/>
+      <AppenderRef ref="Audit"/>
     </logger>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -220,7 +220,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -284,7 +284,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -311,8 +311,8 @@
         <KeyValuePair key="eventId" value="Login"/>
         <KeyValuePair key="eventId" value="Logout"/>
       </MapFilter>
-      <appender-ref ref="RollingFile">
-      </appender-ref>
+      <AppenderRef ref="RollingFile">
+      </AppenderRef>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -335,12 +335,12 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile">
+      <AppenderRef ref="RollingFile">
         <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
           <KeyValuePair key="eventId" value="Login"/>
           <KeyValuePair key="eventId" value="Logout"/>
         </MapFilter>
-      </appender-ref>
+      </AppenderRef>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -396,7 +396,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -456,7 +456,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -523,7 +523,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -587,7 +587,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -608,7 +608,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
       <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
         <KeyValuePair key="foo" value="bar"/>
         <KeyValuePair key="User2" value="WARN"/>
@@ -670,7 +670,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>
@@ -740,7 +740,7 @@
   </appenders>
   <loggers>
     <root level="error">
-      <appender-ref ref="RollingFile"/>
+      <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
 </configuration>]]></pre>

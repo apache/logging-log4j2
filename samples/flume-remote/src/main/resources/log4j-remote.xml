@@ -40,10 +40,10 @@
 	</appenders>
 	<loggers>
 		<logger name="EventLogger" level="WARN" additivity="false">
-			<appender-ref ref="flume" />
+			<AppenderRef ref="flume" />
 		</logger>
 		<root level="debug">
-			<appender-ref ref="RollingFile" />
+			<AppenderRef ref="RollingFile" />
 		</root>
 	</loggers>
 </configuration>
