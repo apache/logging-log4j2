@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-347" dev="rpopma" type="fix">
+        Name the AsyncAppender thread.
+      </action>
       <action issue="LOG4J2-342" dev="rgoers" type="fix">
         Ignore xml:base attributes.
       </action>
