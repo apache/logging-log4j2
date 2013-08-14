@@ -176,9 +176,9 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
                                                    @PluginAttr("eventPrefix") final String eventPrefix,
                                                    @PluginAttr("compress") final String compressBody,
                                                    @PluginAttr("batchSize") final String batchSize,
-                                                   @PluginElement("flumeEventFactory") final FlumeEventFactory factory,
-                                                   @PluginElement("layout") Layout<S> layout,
-                                                   @PluginElement("filters") final Filter filter) {
+                                                   @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
+                                                   @PluginElement("Layout") Layout<S> layout,
+                                                   @PluginElement("Filters") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
