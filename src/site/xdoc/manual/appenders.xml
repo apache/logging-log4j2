@@ -76,7 +76,7 @@
               <td>Specifies the maximum number of events that can be queued. The default is 128.</td>
             </tr>
             <tr>
-              <td>error-ref</td>
+              <td>errorRef</td>
               <td>String</td>
               <td>The name of the Appender to invoke if none of the appenders can be called, either due to errors
                 in the appenders or because the queue is full. If not specified then errors will be ignored.</td>
