@@ -68,7 +68,7 @@ public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManag
     @PluginFactory
     public static JPAAppender createAppender(@PluginAttr("name") final String name,
                                              @PluginAttr("ignoreExceptions") final String ignore,
-                                             @PluginElement("filter") final Filter filter,
+                                             @PluginElement("Filter") final Filter filter,
                                              @PluginAttr("bufferSize") final String bufferSize,
                                              @PluginAttr("entityClassName") final String entityClassName,
                                              @PluginAttr("persistenceUnitName") final String persistenceUnitName) {

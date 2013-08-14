@@ -64,7 +64,7 @@ public final class AppenderRef {
     @PluginFactory
     public static AppenderRef createAppenderRef(@PluginAttr("ref") final String ref,
                                                 @PluginAttr("level") final String levelName,
-                                                @PluginElement("filters") final Filter filter) {
+                                                @PluginElement("Filters") final Filter filter) {
 
         if (ref == null) {
             LOGGER.error("Appender references must contain a reference");

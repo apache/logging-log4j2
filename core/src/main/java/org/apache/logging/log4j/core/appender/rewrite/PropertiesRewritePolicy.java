@@ -100,7 +100,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      */
     @PluginFactory
     public static PropertiesRewritePolicy createPolicy(@PluginConfiguration final Configuration config,
-                                                @PluginElement("properties") final Property[] props) {
+                                                @PluginElement("Properties") final Property[] props) {
         if (props == null || props.length == 0) {
             LOGGER.error("Properties must be specified for the PropertiesRewritePolicy");
             return null;

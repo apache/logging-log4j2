@@ -120,8 +120,8 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
                                               @PluginAttr("smtpPassword") final String smtpPassword,
                                               @PluginAttr("smtpDebug") final String smtpDebug,
                                               @PluginAttr("bufferSize") final String bufferSizeNum,
-                                              @PluginElement("layout") Layout<S> layout,
-                                              @PluginElement("filter") Filter filter,
+                                              @PluginElement("Layout") Layout<S> layout,
+                                              @PluginElement("Filter") Filter filter,
                                               @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for SMTPAppender");

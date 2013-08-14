@@ -104,8 +104,8 @@ public final class FileAppender<T extends Serializable> extends AbstractOutputSt
                                               @PluginAttr("immediateFlush") final String immediateFlush,
                                               @PluginAttr("ignoreExceptions") final String ignore,
                                               @PluginAttr("bufferedIO") final String bufferedIO,
-                                              @PluginElement("layout") Layout<S> layout,
-                                              @PluginElement("filters") final Filter filter,
+                                              @PluginElement("Layout") Layout<S> layout,
+                                              @PluginElement("Filters") final Filter filter,
                                               @PluginAttr("advertise") final String advertise,
                                               @PluginAttr("advertiseURI") final String advertiseURI,
                                               @PluginConfiguration final Configuration config) {

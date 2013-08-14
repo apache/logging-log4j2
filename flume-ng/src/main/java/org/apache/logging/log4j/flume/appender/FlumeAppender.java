@@ -158,8 +158,8 @@ public final class FlumeAppender<T extends Serializable> extends AbstractAppende
      * @return A Flume Avro Appender.
      */
     @PluginFactory
-    public static <S extends Serializable> FlumeAppender<S> createAppender(@PluginElement("agents") Agent[] agents,
-                                                   @PluginElement("properties") final Property[] properties,
+    public static <S extends Serializable> FlumeAppender<S> createAppender(@PluginElement("Agents") Agent[] agents,
+                                                   @PluginElement("Properties") final Property[] properties,
                                                    @PluginAttr("embedded") final String embedded,
                                                    @PluginAttr("type") final String type,
                                                    @PluginAttr("dataDir") final String dataDir,

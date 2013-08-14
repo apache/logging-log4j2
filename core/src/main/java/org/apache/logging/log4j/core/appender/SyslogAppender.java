@@ -113,7 +113,7 @@ public class SyslogAppender<T extends Serializable> extends SocketAppender<T> {
                                                 @PluginAttr("mdcIncludes") final String includes,
                                                 @PluginAttr("mdcRequired") final String required,
                                                 @PluginAttr("format") final String format,
-                                                @PluginElement("filters") final Filter filter,
+                                                @PluginElement("Filters") final Filter filter,
                                                 @PluginConfiguration final Configuration config,
                                                 @PluginAttr("charset") final String charsetName,
                                                 @PluginAttr("exceptionPattern") final String exceptionPattern,

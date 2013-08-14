@@ -67,9 +67,9 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
     @PluginFactory
     public static NoSQLAppender createAppender(@PluginAttr("name") final String name,
                                                @PluginAttr("ignoreExceptions") final String ignore,
-                                               @PluginElement("filter") final Filter filter,
+                                               @PluginElement("Filter") final Filter filter,
                                                @PluginAttr("bufferSize") final String bufferSize,
-                                               @PluginElement("noSqlProvider") final NoSQLProvider<?> provider) {
+                                               @PluginElement("NoSqlProvider") final NoSQLProvider<?> provider) {
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;

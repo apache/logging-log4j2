@@ -41,7 +41,7 @@ public final class PropertiesPlugin {
      * @return An Interpolator that includes the configuration properties.
      */
     @PluginFactory
-    public static StrLookup configureSubstitutor(@PluginElement("properties") final Property[] properties,
+    public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
                                                  @PluginConfiguration final Configuration config) {
         if (properties == null) {
             return new Interpolator(null);

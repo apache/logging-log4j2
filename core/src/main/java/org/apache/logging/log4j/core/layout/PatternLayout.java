@@ -210,7 +210,7 @@ public final class PatternLayout extends AbstractStringLayout {
     @PluginFactory
     public static PatternLayout createLayout(@PluginAttr("pattern") final String pattern,
                                              @PluginConfiguration final Configuration config,
-                                             @PluginElement("replace") final RegexReplacement replace,
+                                             @PluginElement("Replace") final RegexReplacement replace,
                                              @PluginAttr("charset") final String charsetName,
                                              @PluginAttr("alwaysWriteExceptions") final String always) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);

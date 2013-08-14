@@ -111,7 +111,7 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     @PluginFactory
-    public static ThreadContextMapFilter createFilter(@PluginElement("pairs") final KeyValuePair[] pairs,
+    public static ThreadContextMapFilter createFilter(@PluginElement("Pairs") final KeyValuePair[] pairs,
                                                       @PluginAttr("operator") final String oper,
                                                       @PluginAttr("onmatch") final String match,
                                                       @PluginAttr("onmismatch") final String mismatch) {

@@ -81,8 +81,8 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> ConsoleAppender<S> createAppender(@PluginElement("layout") Layout<S> layout,
-                                                 @PluginElement("filters") final Filter filter,
+    public static <S extends Serializable> ConsoleAppender<S> createAppender(@PluginElement("Layout") Layout<S> layout,
+                                                 @PluginElement("Filters") final Filter filter,
                                                  @PluginAttr("target") final String t,
                                                  @PluginAttr("name") final String name,
                                                  @PluginAttr("follow") final String follow,

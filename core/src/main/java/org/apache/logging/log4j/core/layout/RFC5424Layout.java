@@ -546,7 +546,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                                              @PluginAttr("mdcIncludes") String includes,
                                              @PluginAttr("mdcRequired") final String required,
                                              @PluginAttr("exceptionPattern") final String exceptionPattern,
-                                             @PluginElement("loggerFields") final LoggerFields loggerFields,
+                                             @PluginElement("LoggerFields") final LoggerFields loggerFields,
                                              @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
         if (includes != null && excludes != null) {
