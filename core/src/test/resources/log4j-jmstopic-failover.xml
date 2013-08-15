@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="error" name="FailoverTest" packages="org.apache.logging.log4j.test">
+<Configuration status="error" name="FailoverTest" packages="org.apache.logging.log4j.test">
   <Appenders>
     <List name="List"/>
     <JMSTopic name="Log4j2Topic" topicBindingName="Log4j2Topic" factoryBindingName="TopicConnectionFactory"
@@ -49,4 +49,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

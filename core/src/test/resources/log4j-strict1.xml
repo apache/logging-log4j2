@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="debug" strict="true" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" strict="true" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -50,7 +50,7 @@
     <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <Filter type="ThreadContextMapFilter">
         <KeyValuePair key="test" value="123"/>
-      </filter>
+      </Filter>
       <AppenderRef ref="STDOUT"/>
     </logger>>
 
@@ -63,4 +63,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

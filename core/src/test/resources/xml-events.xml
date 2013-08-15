@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error" name="MyApp" packages="">
+<Configuration status="error" name="MyApp" packages="">
   <appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>
@@ -16,4 +16,4 @@
       <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

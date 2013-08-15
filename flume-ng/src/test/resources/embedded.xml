@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded">
       <Property name="channels">primary</Property>
@@ -38,4 +38,4 @@
       <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

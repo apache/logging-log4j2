@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test"
+<Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test"
     monitorInterval="5">
   <appenders>
     <Console name="STDOUT">
@@ -36,4 +36,4 @@
       <AppenderRef ref="STDOUT"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

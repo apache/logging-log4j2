@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test">
+<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -79,4 +79,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

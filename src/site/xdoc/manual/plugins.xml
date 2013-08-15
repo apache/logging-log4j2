@@ -134,7 +134,7 @@
       <argument>${project.build.outputDirectory}</argument>
       <argument>org.myorg.myproject.log4j</argument>
     </arguments>
-  </configuration>
+  </Configuration>
 </plugin>]]></pre>
         </subsection>
       </section>

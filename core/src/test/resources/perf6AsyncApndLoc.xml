@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<Configuration status="OFF">
   <appenders>
     <RandomAccessFile name="RandomAccessFile" fileName="perftest.log" immediateFlush="false" append="false">
       <PatternLayout>
@@ -15,4 +15,4 @@
       <AppenderRef ref="Async"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

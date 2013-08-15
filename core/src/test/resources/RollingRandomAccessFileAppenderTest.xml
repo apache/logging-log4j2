@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<Configuration status="OFF">
   <appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderTest.log"
                  filePattern="target/afterRollover-%i.log" append="false"
@@ -18,4 +18,4 @@
       <AppenderRef ref="RollingRandomAccessFile"/>
     </asyncRoot>
   </loggers>
-</configuration>
+</Configuration>

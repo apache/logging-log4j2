@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration name="ConfigTest" status="debug" packages="org.apache.logging.log4j.test"
+<Configuration name="ConfigTest" status="debug" packages="org.apache.logging.log4j.test"
     monitorInterval="5">
   <appenders>
     <JMSQueue name="JMSQueue" factoryBindingName="TestQueueConnectionFactory" queueBindingName="TestQueue">
@@ -28,4 +28,4 @@
       <AppenderRef ref="JMSQueue"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

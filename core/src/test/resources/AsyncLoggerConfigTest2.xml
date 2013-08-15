@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="TRACE">
+<Configuration status="TRACE">
   <appenders>
     <File name="File" 
           fileName="target/AsyncLoggerConfigTest2.log" 
@@ -17,4 +17,4 @@
       <AppenderRef ref="File"/>
     </asyncRoot>
   </loggers>
-</configuration>
+</Configuration>

@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="error" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="error" name="RoutingTest" packages="org.apache.logging.log4j.test">
 
   <appenders>
     <Console name="STDOUT">
@@ -70,4 +70,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

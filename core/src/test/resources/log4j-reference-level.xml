@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
@@ -47,4 +47,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

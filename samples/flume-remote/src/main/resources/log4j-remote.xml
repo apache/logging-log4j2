@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="debug" name="Flume" verbose="false" monitorInterval="30">
+<Configuration status="debug" name="Flume" verbose="false" monitorInterval="30">
 	<MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL" />
 	<appenders>
 
@@ -46,4 +46,4 @@
 			<AppenderRef ref="RollingFile" />
 		</root>
 	</loggers>
-</configuration>
+</Configuration>

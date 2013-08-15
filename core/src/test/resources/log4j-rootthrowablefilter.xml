@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filters">org.junit,org.apache.maven,sun.reflect,java.lang.reflect</property>
   </properties>
@@ -37,4 +37,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

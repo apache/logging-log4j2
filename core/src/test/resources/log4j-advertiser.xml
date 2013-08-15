@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="debug" dest="target/status.log" name="XMLConfigTest" packages="org.apache.logging.log4j.core,org.apache.logging.log4j.test" 
+<Configuration status="debug" dest="target/status.log" name="XMLConfigTest" packages="org.apache.logging.log4j.core,org.apache.logging.log4j.test" 
                advertiser="memory">
   <ThresholdFilter level="debug"/>
 
@@ -51,4 +51,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

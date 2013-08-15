@@ -15,7 +15,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<configuration status="debug">
+<Configuration status="debug">
 
   <appenders>
     <Console name="STDOUT">
@@ -43,4 +43,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

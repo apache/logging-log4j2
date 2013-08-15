@@ -96,7 +96,7 @@
             A configuration containing the BurstFilter might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -112,7 +112,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="CompositeFilter"/>
@@ -126,7 +126,7 @@
             A configuration containing the CompositeFilter might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <filters>
     <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
@@ -157,7 +157,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="DynamicThresholdFilter"/>
@@ -203,7 +203,7 @@
             Here is a sample configuration containing the DynamicThresholdFilter:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                             onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
@@ -223,7 +223,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="MapFilter"/>
@@ -267,7 +267,7 @@
             As in this configuration, the MapFilter can be used to log particular events:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>
@@ -287,14 +287,14 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
           <p>
             This sample configuration will exhibit the same behavior as the preceding example since the only
           logger configured is the root.
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -315,14 +315,14 @@
       </AppenderRef>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
           <p>
             This third sample configuration will exhibit the same behavior as the preceding examples since the only
             logger configured is the root and the root is only configured with a single appender reference.
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -343,7 +343,7 @@
       </AppenderRef>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="MarkerFilter"/>
@@ -383,7 +383,7 @@
              A sample configuration that only allows the event to be written by the appender if the Marker matches:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -399,7 +399,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="RegexFilter"/>
@@ -443,7 +443,7 @@
              A sample configuration that only allows the event to be written by the appender if it contains the word "test":
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -459,7 +459,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="StructuredDataFilter"/>
@@ -506,7 +506,7 @@
             As in this configuration, the StructuredDataFilter can be used to log particular events:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="id" value="Login"/>
     <KeyValuePair key="id" value="Logout"/>
@@ -526,7 +526,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="ThreadContextMapFilter"/>
@@ -570,7 +570,7 @@
             A configuration containing the ThreadContextMapFilter might look like:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="User1" value="DEBUG"/>
     <KeyValuePair key="User2" value="WARN"/>
@@ -590,12 +590,12 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
           <p>
             The ThreadContextMapFilter can also be applied to a logger for filtering:
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -615,7 +615,7 @@
       </ThreadContextMapFilter>
     </root>
   </loggers>
-</configuration>
+</Configuration>
   ]]></pre>
           </p>
         </subsection>
@@ -657,7 +657,7 @@
              A sample configuration that only allows the event to be written by the appender if the level matches:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -673,7 +673,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
         <a name="TimeFilter"/>
@@ -727,7 +727,7 @@
              day using the default timezone:
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp" packages="">
   <appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -743,7 +743,7 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           </p>
         </subsection>
       </section>

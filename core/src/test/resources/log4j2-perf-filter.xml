@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration packages="" name="XMLPerfTest" status="error">
+<Configuration packages="" name="XMLPerfTest" status="error">
   <!-- <MarkerFilter marker="LOG4J" onMismatch="NEUTRAL"/> -->
   <ThreadContextMapFilter onMismatch="NEUTRAL">
       <KeyValuePair key="LOG4J" value="test"/>
@@ -33,4 +33,4 @@
       <AppenderRef ref="TestLogfile"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>
