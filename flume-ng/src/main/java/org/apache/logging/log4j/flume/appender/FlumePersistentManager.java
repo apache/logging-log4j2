@@ -271,7 +271,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
 
         @Override
-        public  Integer call() throws Exception {
+        public Integer call() throws Exception {
             final DatabaseEntry key = new DatabaseEntry(keyData);
             final DatabaseEntry data = new DatabaseEntry(eventData);
             final Transaction txn = environment.beginTransaction(null, null);
