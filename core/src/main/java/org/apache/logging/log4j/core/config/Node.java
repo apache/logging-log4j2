@@ -31,7 +31,7 @@ public class Node {
     private final Node parent;
     private final String name;
     private String value;
-    private final PluginType type;
+    private final PluginType<?> type;
     private final Map<String, String> attributes = new HashMap<String, String>();
     private final List<Node> children = new ArrayList<Node>();
     private Object object;
@@ -45,7 +45,7 @@ public class Node {
      * @param name the node's name.
      * @param type The Plugin Type associated with the node.
      */
-    public Node(final Node parent, final String name, final PluginType type) {
+    public Node(final Node parent, final String name, final PluginType<?> type) {
         this.parent = parent;
         this.name = name;
         this.type = type;
@@ -109,7 +109,7 @@ public class Node {
         return object;
     }
 
-    public PluginType getType() {
+    public PluginType<?> getType() {
         return type;
     }
 

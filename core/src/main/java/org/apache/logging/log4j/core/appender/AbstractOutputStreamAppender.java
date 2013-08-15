@@ -27,10 +27,8 @@ import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-public abstract class AbstractOutputStreamAppender<T extends Serializable> extends AbstractAppender<T> {
+public abstract class AbstractOutputStreamAppender extends AbstractAppender {
 
     /**
      * Immediate flush means that the underlying writer or output stream
@@ -57,7 +55,7 @@ public abstract class AbstractOutputStreamAppender<T extends Serializable> exten
      * @param layout The layout to format the message.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout<T> layout, final Filter filter,
+    protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                                            final boolean ignoreExceptions, final boolean immediateFlush,
                                            final OutputStreamManager manager) {
         super(name, filter, layout, ignoreExceptions);

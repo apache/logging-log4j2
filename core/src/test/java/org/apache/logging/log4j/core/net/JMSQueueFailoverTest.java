@@ -58,7 +58,7 @@ public class JMSQueueFailoverTest {
     private static final String CONFIG = "log4j-jmsqueue-failover.xml";
 
     private static Configuration config;
-    private static ListAppender<LogEvent> app;
+    private static ListAppender app;
     private static LoggerContext ctx;
 
     @BeforeClass
@@ -76,12 +76,11 @@ public class JMSQueueFailoverTest {
     }
 
     @Before
-    @SuppressWarnings("unchecked")
     public void before() {
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
-                app = (ListAppender<LogEvent>) entry.getValue();
+                app = (ListAppender) entry.getValue();
                 break;
             }
         }

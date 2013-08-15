@@ -44,8 +44,8 @@ public class PluginManager {
 
     private static final long NANOS_PER_SECOND = 1000000000L;
 
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> pluginTypeMap =
-        new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
+    private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> pluginTypeMap =
+        new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
 
     private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<String>();
     private static final String PATH = "org/apache/logging/log4j/core/config/plugins/";
@@ -56,7 +56,7 @@ public class PluginManager {
 
     private static String rootDir;
 
-    private Map<String, PluginType> plugins = new HashMap<String, PluginType>();
+    private Map<String, PluginType<?>> plugins = new HashMap<String, PluginType<?>>();
     private final String type;
     private final Class<?> clazz;
 
@@ -110,7 +110,7 @@ public class PluginManager {
      * @param name The name of the plugin.
      * @return The plugin's type.
      */
-    public PluginType getPluginType(final String name) {
+    public PluginType<?> getPluginType(final String name) {
         return plugins.get(name.toLowerCase());
     }
 
@@ -118,7 +118,7 @@ public class PluginManager {
      * Returns all the matching plugins.
      * @return A Map containing the name of the plugin and its type.
      */
-    public Map<String, PluginType> getPlugins() {
+    public Map<String, PluginType<?>> getPlugins() {
         return plugins;
     }
 
@@ -135,7 +135,7 @@ public class PluginManager {
      * @param pkgs A comma separated list of package names to scan for plugins. If
      * null the default Log4j package name will be used.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void collectPlugins(boolean preLoad, final String pkgs) {
         if (pluginTypeMap.containsKey(type)) {
             plugins = pluginTypeMap.get(type);
@@ -148,7 +148,7 @@ public class PluginManager {
             resolver.setClassLoader(classLoader);
         }
         if (preLoad) {
-            final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map = decode(classLoader);
+            final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map = decode(classLoader);
             if (map != null) {
                 pluginTypeMap = map;
                 plugins = map.get(type);
@@ -176,9 +176,9 @@ public class PluginManager {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
             final String pluginType = plugin.category();
             if (!pluginTypeMap.containsKey(pluginType)) {
-                pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType>());
+                pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType<?>>());
             }
-            final Map<String, PluginType> map = pluginTypeMap.get(pluginType);
+            final Map<String, PluginType<?>> map = pluginTypeMap.get(pluginType);
             final String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
             map.put(plugin.name().toLowerCase(), new PluginType(clazz, type, plugin.printObject(),
                 plugin.deferChildren()));
@@ -196,8 +196,8 @@ public class PluginManager {
         LOGGER.debug(sb.toString());
     }
 
-    @SuppressWarnings("unchecked")
-    private static ConcurrentMap<String, ConcurrentMap<String, PluginType>> decode(final ClassLoader classLoader) {
+    @SuppressWarnings({ "unchecked" })
+    private static ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> decode(final ClassLoader classLoader) {
         Enumeration<URL> resources;
         try {
             resources = classLoader.getResources(PATH + FILENAME);
@@ -205,8 +205,8 @@ public class PluginManager {
             LOGGER.warn("Unable to preload plugins", ioe);
             return null;
         }
-        final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map =
-            new ConcurrentHashMap<String, ConcurrentMap<String, PluginType>>();
+        final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map =
+            new ConcurrentHashMap<String, ConcurrentMap<String, PluginType<?>>>();
         while (resources.hasMoreElements()) {
             DataInputStream dis = null;
             try {
@@ -219,9 +219,9 @@ public class PluginManager {
                 for (int j = 0; j < count; ++j) {
                     final String type = dis.readUTF();
                     final int entries = dis.readInt();
-                    ConcurrentMap<String, PluginType> types = map.get(type);
+                    ConcurrentMap<String, PluginType<?>> types = map.get(type);
                     if (types == null) {
-                        types = new ConcurrentHashMap<String, PluginType>(count);
+                        types = new ConcurrentHashMap<String, PluginType<?>>(count);
                     }
                     for (int i = 0; i < entries; ++i) {
                         final String key = dis.readUTF();
@@ -248,7 +248,7 @@ public class PluginManager {
         return map.size() == 0 ? null : map;
     }
 
-    private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType>> map) {
+    private static void encode(final ConcurrentMap<String, ConcurrentMap<String, PluginType<?>>> map) {
         final String fileName = rootDir + PATH + FILENAME;
         DataOutputStream dos = null;
         try {
@@ -258,12 +258,12 @@ public class PluginManager {
             final BufferedOutputStream bos = new BufferedOutputStream(fos);
             dos = new DataOutputStream(bos);
             dos.writeInt(map.size());
-            for (final Map.Entry<String, ConcurrentMap<String, PluginType>> outer : map.entrySet()) {
+            for (final Map.Entry<String, ConcurrentMap<String, PluginType<?>>> outer : map.entrySet()) {
                 dos.writeUTF(outer.getKey());
                 dos.writeInt(outer.getValue().size());
-                for (final Map.Entry<String, PluginType> entry : outer.getValue().entrySet()) {
+                for (final Map.Entry<String, PluginType<?>> entry : outer.getValue().entrySet()) {
                     dos.writeUTF(entry.getKey());
-                    final PluginType pt = entry.getValue();
+                    final PluginType<?> pt = entry.getValue();
                     dos.writeUTF(pt.getPluginClass().getName());
                     dos.writeUTF(pt.getElementName());
                     dos.writeBoolean(pt.isObjectPrintable());

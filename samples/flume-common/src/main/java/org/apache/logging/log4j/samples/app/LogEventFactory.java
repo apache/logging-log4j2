@@ -44,9 +44,9 @@ public class LogEventFactory {
     private static class AuditProxy implements InvocationHandler {
 
         private final StructuredDataMessage msg;
-        private final Class intrface;
+        private final Class<?> intrface;
 
-        public AuditProxy(final StructuredDataMessage msg, final Class intrface) {
+        public AuditProxy(final StructuredDataMessage msg, final Class<?> intrface) {
             this.msg = msg;
             this.intrface = intrface;
         }

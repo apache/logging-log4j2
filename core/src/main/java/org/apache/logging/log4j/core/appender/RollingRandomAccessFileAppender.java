@@ -41,18 +41,16 @@ import org.apache.logging.log4j.core.net.Advertiser;
 /**
  * An appender that writes to random access files and can roll over at
  * intervals.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingRandomAccessFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingRandomAccessFileAppender(final String name, final Layout<T> layout,
+    private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final RollingFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
@@ -139,11 +137,10 @@ public final class RollingRandomAccessFileAppender<T extends Serializable> exten
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
      * @param config The Configuration.
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A RollingRandomAccessFileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> RollingRandomAccessFileAppender<S> createAppender(
+    public static RollingRandomAccessFileAppender createAppender(
             @PluginAttr("fileName") final String fileName,
             @PluginAttr("filePattern") final String filePattern,
             @PluginAttr("append") final String append,
@@ -151,7 +148,7 @@ public final class RollingRandomAccessFileAppender<T extends Serializable> exten
             @PluginAttr("immediateFlush") final String immediateFlush,
             @PluginElement("Policy") final TriggeringPolicy policy,
             @PluginElement("Strategy") RolloverStrategy strategy,
-            @PluginElement("Layout") Layout<S> layout,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
             @PluginAttr("ignoreExceptions") final String ignore,
             @PluginAttr("advertise") final String advertise,
@@ -191,10 +188,7 @@ public final class RollingRandomAccessFileAppender<T extends Serializable> exten
         }
 
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
-            layout = l;
+            layout = PatternLayout.createLayout(null, null, null, null, null);
         }
 
 
@@ -204,7 +198,7 @@ public final class RollingRandomAccessFileAppender<T extends Serializable> exten
             return null;
         }
 
-        return new RollingRandomAccessFileAppender<S>(name, layout, filter, manager,
+        return new RollingRandomAccessFileAppender(name, layout, filter, manager,
                 fileName, filePattern, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }

@@ -36,7 +36,7 @@ import java.util.List;
  * List could eventually grow to cause an OutOfMemoryError.
  */
 @Plugin(name = "List", category = "Core", elementType = "appender", printObject = true)
-public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
+public class ListAppender extends AbstractAppender {
 
     private final List<LogEvent> events = new ArrayList<LogEvent>();
 
@@ -56,7 +56,7 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout<T> layout, final boolean newline,
+    public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline,
                         final boolean raw) {
         super(name, filter, layout);
         this.newLine = newline;
@@ -71,7 +71,7 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
 
     @Override
     public synchronized void append(final LogEvent event) {
-        final Layout layout = getLayout();
+        final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
             events.add(event);
         } else if (layout instanceof SerializedLayout) {
@@ -126,7 +126,7 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
     @Override
     public void stop() {
         super.stop();
-        final Layout layout = getLayout();
+        final Layout<? extends Serializable> layout = getLayout();
         if (layout != null) {
             final byte[] bytes = layout.getFooter();
             if (bytes != null) {
@@ -154,10 +154,10 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
     }
 
     @PluginFactory
-    public static <S extends Serializable> ListAppender<S> createAppender(@PluginAttr("name") final String name,
+    public static ListAppender createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("entryPerNewLine") final String newLine,
                                               @PluginAttr("raw") final String raw,
-                                              @PluginElement("Layout") final Layout<S> layout,
+                                              @PluginElement("Layout") final Layout<? extends Serializable> layout,
                                               @PluginElement("Filters") final Filter filter) {
 
         if (name == null) {
@@ -168,6 +168,6 @@ public class ListAppender<T extends Serializable> extends AbstractAppender<T> {
         final boolean nl = Boolean.parseBoolean(newLine);
         final boolean r = Boolean.parseBoolean(raw);
 
-        return new ListAppender<S>(name, filter, layout, nl, r);
+        return new ListAppender(name, filter, layout, nl, r);
     }
 }

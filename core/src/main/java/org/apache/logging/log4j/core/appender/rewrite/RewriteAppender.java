@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
  * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
-public final class RewriteAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class RewriteAppender extends AbstractAppender {
     private final Configuration config;
     private final ConcurrentMap<String, AppenderControl> appenders = new ConcurrentHashMap<String, AppenderControl>();
     private final RewritePolicy rewritePolicy;
@@ -57,15 +57,14 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void start() {
-        final Map<String, Appender<?>> map = config.getAppenders();
+        final Map<String, Appender> map = config.getAppenders();
         for (final AppenderRef ref : appenderRefs) {
             final String name = ref.getRef();
             final Appender appender = map.get(name);
             if (appender != null) {
-                final Filter filter = appender instanceof AbstractAppender<?> ?
-                    ((AbstractAppender<?>) appender).getFilter() : null;
+                final Filter filter = appender instanceof AbstractAppender ?
+                    ((AbstractAppender) appender).getFilter() : null;
                 appenders.put(name, new AppenderControl(appender, ref.getLevel(), filter));
             } else {
                 LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
@@ -102,11 +101,10 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
      * @param config The Configuration.
      * @param rewritePolicy The policy to use to modify the event.
      * @param filter A Filter to filter events.
-     * @param <S> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
      * @return The created RewriteAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> RewriteAppender<S> createAppender(@PluginAttr("name") final String name,
+    public static RewriteAppender createAppender(@PluginAttr("name") final String name,
                                           @PluginAttr("ignoreExceptions") final String ignore,
                                           @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
                                           @PluginConfiguration final Configuration config,
@@ -122,6 +120,6 @@ public final class RewriteAppender<T extends Serializable> extends AbstractAppen
             LOGGER.error("No appender references defined for RewriteAppender");
             return null;
         }
-        return new RewriteAppender<S>(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config);
+        return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config);
     }
 }

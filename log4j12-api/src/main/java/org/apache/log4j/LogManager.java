@@ -73,7 +73,7 @@ public final class LogManager {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), name);
     }
 
-    public static Logger getLogger(final Class clazz) {
+    public static Logger getLogger(@SuppressWarnings("rawtypes") final Class clazz) {
         return (Logger) Category.getInstance((LoggerContext) PrivateManager.getContext(), clazz.getName());
     }
 
@@ -89,6 +89,7 @@ public final class LogManager {
         return Logger.getLogger(name);
     }
 
+    @SuppressWarnings("rawtypes")
     public static Enumeration getCurrentLoggers() {
         return NullEnumeration.getInstance();
     }
@@ -183,11 +184,13 @@ public final class LogManager {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public Enumeration getCurrentLoggers() {
             return NullEnumeration.getInstance();
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public Enumeration getCurrentCategories() {
             return NullEnumeration.getInstance();
         }

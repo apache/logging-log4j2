@@ -35,17 +35,15 @@ import org.apache.logging.log4j.core.net.Advertiser;
 
 /**
  * File Appender.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RandomAccessFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class RandomAccessFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RandomAccessFileAppender(final String name, final Layout<T> layout, final Filter filter,
+    private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final RandomAccessFileManager manager, final String filename, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
@@ -117,17 +115,16 @@ public final class RandomAccessFileAppender<T extends Serializable> extends Abst
      * @param advertiseURI The advertised URI which can be used to retrieve the
      *            file contents.
      * @param config The Configuration.
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The FileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> RandomAccessFileAppender<S> createAppender(
+    public static RandomAccessFileAppender createAppender(
             @PluginAttr("fileName") final String fileName,
             @PluginAttr("append") final String append,
             @PluginAttr("name") final String name,
             @PluginAttr("immediateFlush") final String immediateFlush,
             @PluginAttr("ignoreExceptions") final String ignore,
-            @PluginElement("Layout") Layout<S> layout,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filters") final Filter filter,
             @PluginAttr("advertise") final String advertise,
             @PluginAttr("advertiseURI") final String advertiseURI,
@@ -149,10 +146,7 @@ public final class RandomAccessFileAppender<T extends Serializable> extends Abst
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
-            layout = l;
+            layout = PatternLayout.createLayout(null, null, null, null, null);
         }
         final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
                 fileName, isAppend, isFlush, advertiseURI, layout
@@ -161,7 +155,7 @@ public final class RandomAccessFileAppender<T extends Serializable> extends Abst
             return null;
         }
 
-        return new RandomAccessFileAppender<S>(
+        return new RandomAccessFileAppender(
                 name, layout, filter, manager, fileName, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null
         );

@@ -31,7 +31,7 @@ public class Compare {
     static final int B2_NULL = -2;
 
     private static final InputStream open(
-        final Class testClass,
+        final Class<?> testClass,
         final String fileName) throws IOException {
         final String resourceName = fileName;
         /* if (fileName.startsWith("witness/")) {
@@ -53,7 +53,7 @@ public class Compare {
         return is;
     }
 
-    public static boolean compare(final Class testClass,
+    public static boolean compare(final Class<?> testClass,
                                   final String file1,
                                   final String file2)
         throws IOException {
@@ -69,7 +69,7 @@ public class Compare {
     }
 
     public static boolean compare(
-        final Class testClass, final String file1, final String file2, final BufferedReader in1, final BufferedReader in2) throws IOException {
+        final Class<?> testClass, final String file1, final String file2, final BufferedReader in1, final BufferedReader in2) throws IOException {
 
         String s1;
         int lineCounter = 0;
@@ -108,7 +108,7 @@ public class Compare {
     /**
      * Prints file on the console.
      */
-    private static void outputFile(final Class testClass, final String file)
+    private static void outputFile(final Class<?> testClass, final String file)
         throws IOException {
         final InputStream is = open(testClass, file);
         final BufferedReader in1 = new BufferedReader(new InputStreamReader(is));

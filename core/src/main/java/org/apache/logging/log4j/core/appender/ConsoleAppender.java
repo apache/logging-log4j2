@@ -44,11 +44,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * is handled within the Layout. Typically, a Layout will generate a String
  * and then call getBytes which may use a configured encoding or the system
  * default. OTOH, a Writer cannot print byte streams.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
-public final class ConsoleAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class ConsoleAppender extends AbstractOutputStreamAppender {
 
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
@@ -62,7 +60,7 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
         SYSTEM_ERR
     }
 
-    private ConsoleAppender(final String name, final Layout<T> layout, final Filter filter,
+    private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                             final OutputStreamManager manager,
                             final boolean ignoreExceptions) {
         super(name, layout, filter, ignoreExceptions, true, manager);
@@ -77,11 +75,10 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
      * @param name The name of the Appender (required).
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> ConsoleAppender<S> createAppender(@PluginElement("Layout") Layout<S> layout,
+    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
                                                  @PluginElement("Filters") final Filter filter,
                                                  @PluginAttr("target") final String t,
                                                  @PluginAttr("name") final String name,
@@ -92,18 +89,15 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
             return null;
         }
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
-            layout = l;
+            layout = PatternLayout.createLayout(null, null, null, null, null);
         }
         final boolean isFollow = Boolean.parseBoolean(follow);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final Target target = t == null ? Target.SYSTEM_OUT : Target.valueOf(t);
-        return new ConsoleAppender<S>(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
+        return new ConsoleAppender(name, layout, filter, getManager(isFollow, target, layout), ignoreExceptions);
     }
 
-    private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout layout) {
+    private static OutputStreamManager getManager(final boolean follow, final Target target, final Layout<? extends Serializable> layout) {
         final String type = target.name();
         final OutputStream os = getOutputStream(follow, target);
         return OutputStreamManager.getManager(target.name() + "." + follow, new FactoryData(os, type, layout), factory);
@@ -217,14 +211,14 @@ public final class ConsoleAppender<T extends Serializable> extends AbstractOutpu
     private static class FactoryData {
         private final OutputStream os;
         private final String type;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Constructor.
          * @param os The OutputStream.
          * @param type The name of the target.
          */
-        public FactoryData(final OutputStream os, final String type, final Layout layout) {
+        public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
             this.os = os;
             this.type = type;
             this.layout = layout;

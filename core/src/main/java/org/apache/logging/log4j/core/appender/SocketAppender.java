@@ -39,15 +39,13 @@ import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
-public class SocketAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public class SocketAppender extends AbstractOutputStreamAppender {
     private Object advertisement;
     private final Advertiser advertiser;
 
-    protected SocketAppender(final String name, final Layout<T> layout, final Filter filter,
+    protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                              final AbstractSocketManager manager, final boolean ignoreExceptions,
                              final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, manager);
@@ -84,11 +82,10 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
      * @param filter The Filter or null.
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param config The Configuration
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A SocketAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> SocketAppender<S> createAppender(@PluginAttr("host") final String host,
+    public static SocketAppender createAppender(@PluginAttr("host") final String host,
                                                 @PluginAttr("port") final String portNum,
                                                 @PluginAttr("protocol") final String protocol,
                                                 @PluginAttr("reconnectionDelay") final String delay,
@@ -96,7 +93,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
                                                 @PluginAttr("name") final String name,
                                                 @PluginAttr("immediateFlush") final String immediateFlush,
                                                 @PluginAttr("ignoreExceptions") final String ignore,
-                                                @PluginElement("Layout") Layout<S> layout,
+                                                @PluginElement("Layout") Layout<? extends Serializable> layout,
                                                 @PluginElement("Filters") final Filter filter,
                                                 @PluginAttr("advertise") final String advertise,
                                                 @PluginConfiguration final Configuration config) {
@@ -108,10 +105,7 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
         final int reconnectDelay = AbstractAppender.parseInt(delay, 0);
         final int port = AbstractAppender.parseInt(portNum, 0);
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) SerializedLayout.createLayout();
-            layout = l;
+            layout = SerializedLayout.createLayout();
         }
 
         if (name == null) {
@@ -129,13 +123,13 @@ public class SocketAppender<T extends Serializable> extends AbstractOutputStream
             return null;
         }
 
-        return new SocketAppender<S>(name, layout, filter, manager, ignoreExceptions, isFlush,
+        return new SocketAppender(name, layout, filter, manager, ignoreExceptions, isFlush,
                 isAdvertise ? config.getAdvertiser() : null);
     }
 
     protected static AbstractSocketManager createSocketManager(final Protocol p, final String host, final int port,
                                                                final int delay, final boolean immediateFail,
-                                                               final Layout layout) {
+                                                               final Layout<? extends Serializable> layout) {
         switch (p) {
             case TCP:
                 return TCPSocketManager.getSocketManager(host, port, delay, immediateFail, layout);

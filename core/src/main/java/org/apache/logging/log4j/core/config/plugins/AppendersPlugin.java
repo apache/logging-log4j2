@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.io.Serializable;
+import org.apache.logging.log4j.core.Appender;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import org.apache.logging.log4j.core.Appender;
 
 /**
  * An Appender container.
@@ -37,12 +36,13 @@ public final class AppendersPlugin {
      * @return The Appender Map.
      */
     @PluginFactory
-    public static ConcurrentMap<String, Appender<? extends Serializable>> createAppenders(
-                                             @PluginElement("Appenders") final Appender<?>[] appenders) {
-        final ConcurrentMap<String, Appender<? extends Serializable>> map =
-            new ConcurrentHashMap<String, Appender<? extends Serializable>>();
+    public static ConcurrentMap<String, Appender> createAppenders(
+                @PluginElement("Appenders") final Appender[] appenders) {
 
-        for (final Appender<?> appender : appenders) {
+        final ConcurrentMap<String, Appender> map =
+            new ConcurrentHashMap<String, Appender>();
+
+        for (final Appender appender : appenders) {
                 map.put(appender.getName(), appender);
         }
 

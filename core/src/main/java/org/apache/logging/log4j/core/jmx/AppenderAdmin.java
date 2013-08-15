@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.helpers.Assert;
 public class AppenderAdmin implements AppenderAdminMBean {
 
     private final String contextName;
-    private final Appender<?> appender;
+    private final Appender appender;
     private final ObjectName objectName;
 
     /**
@@ -37,7 +37,7 @@ public class AppenderAdmin implements AppenderAdminMBean {
      * @param contextName used in the {@code ObjectName} for this mbean
      * @param appender the instrumented object
      */
-    public AppenderAdmin(final String contextName, final Appender<?> appender) {
+    public AppenderAdmin(final String contextName, final Appender appender) {
         // super(executor); // no notifications for now
         this.contextName = Assert.isNotNull(contextName, "contextName");
         this.appender = Assert.isNotNull(appender, "appender");

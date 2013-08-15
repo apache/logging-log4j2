@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class FileManager extends OutputStreamManager {
     private final String advertiseURI;
 
     protected FileManager(final String fileName, final OutputStream os, final boolean append, final boolean locking,
-                          final String advertiseURI, final Layout layout) {
+                          final String advertiseURI, final Layout<? extends Serializable> layout) {
         super(os, fileName, layout);
         this.isAppend = append;
         this.isLocking = locking;
@@ -61,7 +62,7 @@ public class FileManager extends OutputStreamManager {
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
                                              final boolean bufferedIO, final String advertiseURI,
-                                             final Layout layout) {
+                                             final Layout<? extends Serializable> layout) {
 
         if (locking && bufferedIO) {
             locking = false;
@@ -142,7 +143,7 @@ public class FileManager extends OutputStreamManager {
         private final boolean locking;
         private final boolean bufferedIO;
         private final String advertiseURI;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         /**
          * Constructor.
@@ -152,7 +153,7 @@ public class FileManager extends OutputStreamManager {
          * @param advertiseURI the URI to use when advertising the file
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIO,
-                           final String advertiseURI, final Layout layout) {
+                           final String advertiseURI, final Layout<? extends Serializable> layout) {
             this.append = append;
             this.locking = locking;
             this.bufferedIO = bufferedIO;

@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import java.util.List;
  *
  */
 @Plugin(name="FailOnce", category ="Core",elementType="appender",printObject=true)
-public class FailOnceAppender<T extends Serializable> extends AbstractAppender<T> {
+public class FailOnceAppender extends AbstractAppender {
 
     boolean fail = true;
 
@@ -58,13 +57,13 @@ public class FailOnceAppender<T extends Serializable> extends AbstractAppender<T
     }
 
     @PluginFactory
-    public static <S extends Serializable> FailOnceAppender<S> createAppender(@PluginAttr("name") final String name) {
+    public static FailOnceAppender createAppender(@PluginAttr("name") final String name) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;
         }
 
-        return new FailOnceAppender<S>(name);
+        return new FailOnceAppender(name);
     }
 
 }

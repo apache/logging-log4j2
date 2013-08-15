@@ -16,20 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.Map;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
@@ -43,6 +32,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
 
+import java.io.File;
+import java.util.Map;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * RoutingAppenderWithJndiTest
  */
@@ -50,22 +49,21 @@ public class RoutingAppenderWithJndiTest {
 
     private static final String CONFIG = "log4j-routing-by-jndi.xml";
     private static Configuration config;
-    private static ListAppender<LogEvent> listAppender1;
-    private static ListAppender<LogEvent> listAppender2;
+    private static ListAppender listAppender1;
+    private static ListAppender listAppender2;
     private static LoggerContext ctx;
 
     @BeforeClass
-    @SuppressWarnings("unchecked")
     public static void setupClass() {
         System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
+        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List1")) {
-                listAppender1 = (ListAppender<LogEvent>) entry.getValue();
+                listAppender1 = (ListAppender) entry.getValue();
             }
             if (entry.getKey().equals("List2")) {
-                listAppender2 = (ListAppender<LogEvent>) entry.getValue();
+                listAppender2 = (ListAppender) entry.getValue();
             }
         }
     }

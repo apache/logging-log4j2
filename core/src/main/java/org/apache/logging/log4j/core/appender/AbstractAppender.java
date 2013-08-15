@@ -31,11 +31,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
  * will simplify their implementation.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
-public abstract class AbstractAppender<T extends Serializable> extends AbstractFilterable
-    implements Appender<T> {
+public abstract class AbstractAppender extends AbstractFilterable
+    implements Appender {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -45,7 +43,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
 
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
-    private final Layout<T> layout;
+    private final Layout<? extends Serializable> layout;
 
     private final String name;
 
@@ -69,7 +67,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
         this(name, filter, layout, true);
     }
 
@@ -81,7 +79,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be
      * logged and then passed to the application.
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<T> layout,
+    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
                                final boolean ignoreExceptions) {
         super(filter);
         this.name = name;
@@ -130,7 +128,7 @@ public abstract class AbstractAppender<T extends Serializable> extends AbstractF
      * @return The Layout used to format the event.
      */
     @Override
-    public Layout<T> getLayout() {
+    public Layout<? extends Serializable> getLayout() {
         return layout;
     }
 

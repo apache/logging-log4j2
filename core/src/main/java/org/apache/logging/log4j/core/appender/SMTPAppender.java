@@ -48,18 +48,16 @@ import org.apache.logging.log4j.core.net.SMTPManager;
  * By default, an email message will be sent when an ERROR or higher severity
  * message is appended. This can be modified by setting a filter for the
  * appender.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "SMTP", category = "Core", elementType = "appender", printObject = true)
-public final class SMTPAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class SMTPAppender extends AbstractAppender {
 
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
     /** The SMTP Manager */
     protected final SMTPManager manager;
 
-    private SMTPAppender(final String name, final Filter filter, final Layout<T> layout, final SMTPManager manager,
+    private SMTPAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final SMTPManager manager,
                          final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
@@ -102,11 +100,10 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
      *            ERROR).
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return The SMTPAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> SMTPAppender<S> createAppender(@PluginAttr("name") final String name,
+    public static SMTPAppender createAppender(@PluginAttr("name") final String name,
                                               @PluginAttr("to") final String to,
                                               @PluginAttr("cc") final String cc,
                                               @PluginAttr("bcc") final String bcc,
@@ -120,7 +117,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
                                               @PluginAttr("smtpPassword") final String smtpPassword,
                                               @PluginAttr("smtpDebug") final String smtpDebug,
                                               @PluginAttr("bufferSize") final String bufferSizeNum,
-                                              @PluginElement("Layout") Layout<S> layout,
+                                              @PluginElement("Layout") Layout<? extends Serializable> layout,
                                               @PluginElement("Filter") Filter filter,
                                               @PluginAttr("ignoreExceptions") final String ignore) {
         if (name == null) {
@@ -134,10 +131,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
         final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
 
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) HTMLLayout.createLayout(null, null, null, null, null, null);
-            layout = l;
+            layout = HTMLLayout.createLayout(null, null, null, null, null, null);
         }
         if (filter == null) {
             filter = ThresholdFilter.createFilter(null, null, null);
@@ -149,7 +143,7 @@ public final class SMTPAppender<T extends Serializable> extends AbstractAppender
             return null;
         }
 
-        return new SMTPAppender<S>(name, filter, layout, manager, ignoreExceptions);
+        return new SMTPAppender(name, filter, layout, manager, ignoreExceptions);
     }
 
     /**

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;

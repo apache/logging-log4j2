@@ -16,9 +16,16 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
+import org.apache.logging.log4j.core.helpers.Strings;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -26,12 +33,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.OutputStreamManager;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * Manager of TCP Socket connections.
@@ -72,7 +73,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      */
     public TCPSocketManager(final String name, final OutputStream os, final Socket sock, final InetAddress addr,
                             final String host, final int port, final int delay, final boolean immediateFail,
-                            final Layout layout) {
+                            final Layout<? extends Serializable> layout) {
         super(name, os, addr, host, port, layout);
         this.reconnectionDelay = delay;
         this.socket = sock;
@@ -94,7 +95,7 @@ public class TCPSocketManager extends AbstractSocketManager {
      * @return A TCPSocketManager.
      */
     public static TCPSocketManager getSocketManager(final String host, int port, int delay,
-                                                    final boolean immediateFail, final Layout layout ) {
+                                                    final boolean immediateFail, final Layout<? extends Serializable> layout ) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -228,10 +229,10 @@ public class TCPSocketManager extends AbstractSocketManager {
         private final int port;
         private final int delay;
         private final boolean immediateFail;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
         public FactoryData(final String host, final int port, final int delay, final boolean immediateFail,
-                           final Layout layout) {
+                           final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
             this.delay = delay;
