@@ -40,7 +40,6 @@ public class LogFactoryImpl extends LogFactory {
 
     @Override
     public Log getInstance(final String name) throws LogConfigurationException {
-        final LoggerContext context = PrivateManager.getContext();
         final ConcurrentMap<String, Log> loggers = getLoggersMap();
         if (loggers.containsKey(name)) {
             return loggers.get(name);
