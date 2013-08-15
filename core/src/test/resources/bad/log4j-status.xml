@@ -17,18 +17,18 @@
 
 -->
 <Configuration status="warning" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <File name="File" fileName="${filename}" bufferedIO="false">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <List name="List">
@@ -36,23 +36,23 @@
         <ThresholdFilter level="error"/>
       </filters>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
       <AppenderRef ref="STDOUT"/>
-    </logger>>
+    </Logger>>
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </logger>>
+    </Logger>>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

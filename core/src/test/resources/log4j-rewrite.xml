@@ -18,7 +18,7 @@
 -->
 <Configuration status="error" name="RoutingTest" packages="org.apache.logging.log4j.test">
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%X %m%n"/>
     </Console>
@@ -52,22 +52,22 @@
       </MapRewritePolicy>
       <AppenderRef ref="List"/>
     </Rewrite>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="trace" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="trace" additivity="false">
       <AppenderRef ref="Rewrite"/>
-    </logger>
+    </Logger>
 
-    <logger name="org.apache.logging.log4j.core.Logging" level="trace" additivity="false">
+    <Logger name="org.apache.logging.log4j.core.Logging" level="trace" additivity="false">
       <AppenderRef ref="Rewrite3"/>
-    </logger>
-    <logger name="org.apache.logging.log4j" level="trace" additivity="false">
+    </Logger>
+    <Logger name="org.apache.logging.log4j" level="trace" additivity="false">
       <AppenderRef ref="Rewrite2"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

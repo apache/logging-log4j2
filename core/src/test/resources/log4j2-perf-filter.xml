@@ -21,16 +21,16 @@
   <ThreadContextMapFilter onMismatch="NEUTRAL">
       <KeyValuePair key="LOG4J" value="test"/>
   </ThreadContextMapFilter>
-  <appenders>
+  <Appenders>
     <File name="TestLogfile" fileName="target/testlog4j2.log" immediateFlush="false">
       <PatternLayout>
-        <pattern>%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n</pattern>
+        <Pattern>%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
       </PatternLayout>
     </File>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="TestLogfile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

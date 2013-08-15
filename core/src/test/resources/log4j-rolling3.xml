@@ -17,18 +17,18 @@
 
 -->
 <Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/rolling3/rollingtest.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/rolling3/rollingtest.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling3/test/test1-%d{MM-dd-yy-HH-mm}-%i.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
@@ -38,16 +38,16 @@
     <List name="List">
       <ThresholdFilter level="error"/>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <AppenderRef ref="RollingFile"/>
-    </logger>>
+    </Logger>>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

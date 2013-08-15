@@ -20,15 +20,15 @@
                advertiser="memory">
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file:/some/path/to/target/test.log" advertise="true">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <File name="File2" fileName="target/test2.log" bufferedIO="false">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <Socket name="Socket1" host="localhost" port="5560" protocol="TCP" ignoreExceptions="false"
@@ -39,16 +39,16 @@
           reconnectionDelay="250">
       <PatternLayout pattern="%msg%n"/>
     </Socket>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File2"/>
-    </logger>>
+    </Logger>>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="File1"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

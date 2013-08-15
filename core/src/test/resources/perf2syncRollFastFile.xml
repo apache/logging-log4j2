@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="perftest.log"
                  filePattern="app-%d{MM-dd-yyyy}-%i.log.gz" append="false"
                  immediateFlush="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
       </Policies>
     </RollingRandomAccessFile>
-  </appenders>
-  <loggers>
-    <root level="info" includeLocation="false">
+  </Appenders>
+  <Loggers>
+    <Root level="info" includeLocation="false">
       <AppenderRef ref="RollingRandomAccessFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

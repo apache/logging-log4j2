@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerLocationTest.log" 
 	    		immediateFlush="false" append="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %location %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %location %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-  </appenders>
+  </Appenders>
   
-  <loggers>
-    <root level="info" includeLocation="true">
+  <Loggers>
+    <Root level="info" includeLocation="true">
       <AppenderRef ref="RandomAccessFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

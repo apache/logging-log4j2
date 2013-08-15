@@ -18,22 +18,22 @@
 -->
 <Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test"
     shutdownHook="disable">
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
     </Console>
     <List name="List">
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <AppenderRef ref="STDOUT"/>
-    </logger>>
+    </Logger>>
 
-    <root level="trace">
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

@@ -4,12 +4,12 @@
     <file>perftest.log</file>
     <append>false</append>
     <encoder>
-      <pattern>%d %p %c{1} [%t] %X{aKey} %m %ex%n</pattern>
+      <Pattern>%d %p %c{1} [%t] %X{aKey} %m %ex%n</Pattern>
       <immediateFlush>false</immediateFlush>
     </encoder>
   </appender>
 
-  <root level="debug">
+  <Root level="debug">
     <AppenderRef ref="FILE" />
-  </root>
+  </Root>
 </Configuration>

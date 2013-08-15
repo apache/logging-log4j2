@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <RandomAccessFile name="RandomAccessFile" fileName="target/RandomAccessFileAppenderTest.log" immediateFlush="false" append="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
         <!--  
-        <pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</Pattern>
         -->
       </PatternLayout>
     </RandomAccessFile>
-  </appenders>
+  </Appenders>
   
-  <loggers>
-    <asyncRoot level="info" includeLocation="false">
+  <Loggers>
+    <AsyncRoot level="info" includeLocation="false">
       <AppenderRef ref="RandomAccessFile"/>
-    </asyncRoot>
-  </loggers>
+    </AsyncRoot>
+  </Loggers>
 </Configuration>

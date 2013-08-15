@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="TRACE">
-  <appenders>
+  <Appenders>
     <File name="File" 
           fileName="target/AsyncLoggerConfigTest2.log" 
           bufferedIO="false" 
           immediateFlush="true" 
           append="true">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
       </PatternLayout>
     </File>
-  </appenders>
+  </Appenders>
   
-  <loggers>
-    <asyncRoot level="info">
+  <Loggers>
+    <AsyncRoot level="info">
       <AppenderRef ref="File"/>
-    </asyncRoot>
-  </loggers>
+    </AsyncRoot>
+  </Loggers>
 </Configuration>

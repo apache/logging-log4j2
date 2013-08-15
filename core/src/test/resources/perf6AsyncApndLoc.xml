@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <RandomAccessFile name="RandomAccessFile" fileName="perftest.log" immediateFlush="false" append="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} %C %location %line [%t] %X{aKey} %m %ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
     <Async name="Async" includeLocation="true" blocking="true" bufferSize="262144">
       <AppenderRef ref="RandomAccessFile"/>
     </Async>
-  </appenders>  
-  <loggers>
-    <root level="info" includeLocation="true">
+  </Appenders>  
+  <Loggers>
+    <Root level="info" includeLocation="true">
       <AppenderRef ref="Async"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

@@ -27,4 +27,4 @@
  <root level="debug">
    <AppenderRef ref="TestLogfile" />
  </root>
-</Configuration>
+</configuration>

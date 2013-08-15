@@ -17,16 +17,16 @@
 
 -->
 <Configuration packages="" name="XMLPerfTest" status="error">
-  <appenders>
+  <Appenders>
     <File name="TestLogfile" fileName="target/testlog4j2.log" immediateFlush="false">
       <PatternLayout>
-        <pattern>%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n</pattern>
+        <Pattern>%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n</Pattern>
       </PatternLayout>
     </File>
-  </appenders>
-  <loggers>
-    <root level="debug">
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
       <AppenderRef ref="TestLogfile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

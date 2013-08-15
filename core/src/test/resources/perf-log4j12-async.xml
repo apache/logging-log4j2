@@ -13,8 +13,8 @@
          <param name="BufferSize" value="262144"/>
          <AppenderRef ref="File"/>
      </appender>
-  <root> 
+  <Root> 
     <priority value="debug" /> 
     <AppenderRef ref="ASYNC" /> 
-  </root>
+  </Root>
 </log4j:configuration>
