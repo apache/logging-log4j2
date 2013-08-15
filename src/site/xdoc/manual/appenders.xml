@@ -1205,14 +1205,14 @@
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
-    <Jdbc name="databaseAppender" tableName="application_log">
+    <JDBC name="databaseAppender" tableName="application_log">
       <DriverManager url="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
       <Column name="message" pattern="%message" />
       <Column name="exception" pattern="%ex{full}" />
-    </Jdbc>
+    </JDBC>
   </Appenders>
   <Loggers>
     <Root level="warn">
@@ -1224,14 +1224,14 @@
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
-    <Jdbc name="databaseAppender" tableName="dbo.application_log">
+    <JDBC name="databaseAppender" tableName="dbo.application_log">
       <DataSource jndiName="java:/comp/env/jdbc/LoggingDataSource" />
       <Column name="eventDate" isEventTimestamp="true" />
       <Column name="level" pattern="%level" />
       <Column name="logger" pattern="%logger" />
       <Column name="message" pattern="%message" />
       <Column name="exception" pattern="%ex{full}" />
-    </Jdbc>
+    </JDBC>
   </Appenders>
   <Loggers>
     <Root level="warn">
@@ -1243,7 +1243,7 @@
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
-    <Jdbc name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
+    <JDBC name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
       <ConnectionFactory class="net.example.db.ConnectionFactory" method="getNewDatabaseConnection" />
       <Column name="EVENT_ID" literal="LOGGING.APPLICATION_LOG_SEQUENCE.NEXTVAL" />
       <Column name="EVENT_DATE" isEventTimestamp="true" />
@@ -1251,7 +1251,7 @@
       <Column name="LOGGER" pattern="%logger" />
       <Column name="MESSAGE" pattern="%message" />
       <Column name="THROWABLE" pattern="%ex{full}" />
-    </Jdbc>
+    </JDBC>
   </Appenders>
   <Loggers>
     <Root level="warn">
