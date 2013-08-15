@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.helpers.Strings;
  *
  * @see AbstractLogEventWrapperEntity
  */
-@Plugin(name = "Jpa", category = "Core", elementType = "appender", printObject = true)
+@Plugin(name = "JPA", category = "Core", elementType = "appender", printObject = true)
 public final class JPAAppender extends AbstractDatabaseAppender<JPADatabaseManager> {
     private final String description;
 
