@@ -140,7 +140,7 @@ public class App {
             </p>
 <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error">
+<Configuration status="error">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -157,7 +157,7 @@ public class App {
       <AppenderRef ref="log"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
             <p>
               Here is the output that results from the Java classes and configuration above.
             </p>

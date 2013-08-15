@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/routing1/routingtest-$${sd:type}.log</property>
   </properties>
@@ -56,4 +56,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

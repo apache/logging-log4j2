@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="debug" dest="target/status.log" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" dest="target/status.log" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -55,4 +55,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

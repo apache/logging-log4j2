@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test"
+<Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test"
     shutdownHook="disable">
   <appenders>
     <Console name="STDOUT">
@@ -36,4 +36,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

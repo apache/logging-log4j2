@@ -153,7 +153,7 @@ public class Bar {
             configuration equivalent to the default would look like:
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
+<Configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -164,7 +164,7 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
             Once the file above is placed into the classpath as log4j2.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
              <pre>
@@ -202,7 +202,7 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
+<Configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -216,7 +216,7 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>would result in</p>
              <pre class="prettyprint linenums">
 17:13:01.540 [main] TRACE com.foo.Bar - entry
@@ -234,7 +234,7 @@ public class Bar {
             and so it is possible to disable it by setting the additivity attribute on the logger to false:
           </p>
            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
+<Configuration status="WARN">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -248,7 +248,7 @@ public class Bar {
       <AppenderRef ref="Console"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>
             Once an event reaches a logger with its additivity set to false the event will not be passed to
             any of its parent loggers, regardless of their additivity setting.
@@ -266,9 +266,9 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration monitorInterval="30">
+<Configuration monitorInterval="30">
 ...
-</configuration>]]></pre>
+</Configuration>]]></pre>
         </subsection>
         <a name="AdvertisingAppenderConfigurations"/>
         <subsection name="Advertising Appender Configurations">
@@ -295,9 +295,9 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration advertiser="multicastdns">
+<Configuration advertiser="multicastdns">
 ...
-</configuration>
+</Configuration>
 <appenders>
   <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
   ...
@@ -411,7 +411,7 @@ public class Bar {
       <AppenderRef ref="name"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>
             See the many examples on this page for sample appender, filter and logger declarations.
           </p>
@@ -446,13 +446,13 @@ public class Bar {
       <AppenderRef ref="name"/>
     </root>
   </loggers>
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>
             Below is a sample configuration using the strict format.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" strict="true" name="XMLConfigTest"
+<Configuration status="debug" strict="true" name="XMLConfigTest"
                packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
@@ -500,7 +500,7 @@ public class Bar {
     </root>
   </loggers>
 
-</configuration>]]></pre>
+</Configuration>]]></pre>
         <a name="JSON"/>
           <h4>Configuration with JSON</h4>
           <p>
@@ -686,7 +686,7 @@ public class Bar {
             shows how multiple filters can be configured on the ConsoleAppender.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -736,7 +736,7 @@ public class Bar {
     </root>
   </loggers>
 
-</configuration>]]></pre>
+</Configuration>]]></pre>
         </subsection>
         <a name="PropertySubstitution"/>
         <subsection name="Property Substitution">
@@ -752,7 +752,7 @@ public class Bar {
             shows the filename for the rolling file appender being declared as a property.
           </p>
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
+<Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
   </properties>
@@ -792,7 +792,7 @@ public class Bar {
     </root>
   </loggers>
 
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>
             While this is useful, there are many more places properties can originate from. To accommodate this,
             Log4j also supports the syntax <code>${dollar}{prefix:name}</code> where the prefix identifies tells Log4j
@@ -860,7 +860,7 @@ public class Bar {
     <property name="type">Audit</property>
   </properties>
   ...
-</configuration>]]></pre>
+</Configuration>]]></pre>
           <p>
             <i>As a footnote, it is worth pointing out that the variables in the RollingFile appender declaration
             will also not be evaluated when the configuration is processed. This is simply because the resolution
@@ -891,7 +891,7 @@ public class Bar {
             configuration has the status attribute set to debug.
 
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
-<configuration status="debug" name="RoutingTest"
+<Configuration status="debug" name="RoutingTest"
                packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
@@ -932,7 +932,7 @@ public class Bar {
     </root>
   </loggers>
 
-</configuration>]]></pre>
+</Configuration>]]></pre>
             During startup this configuration produces:
 #if ($isPDF)
     <pre>

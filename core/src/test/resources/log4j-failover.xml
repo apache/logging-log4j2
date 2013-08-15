@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="error" name="FailoverTest" packages="org.apache.logging.log4j.test">
+<Configuration status="error" name="FailoverTest" packages="org.apache.logging.log4j.test">
   <Appenders>
     <AlwaysFail name="Fail" />
     <FailOnce name="Once"/>
@@ -42,4 +42,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

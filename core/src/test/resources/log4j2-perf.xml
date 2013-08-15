@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration packages="" name="XMLPerfTest" status="error">
+<Configuration packages="" name="XMLPerfTest" status="error">
   <appenders>
     <File name="TestLogfile" fileName="target/testlog4j2.log" immediateFlush="false">
       <PatternLayout>
@@ -29,4 +29,4 @@
       <AppenderRef ref="TestLogfile"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

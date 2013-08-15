@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test">
+<Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test">
   <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>
@@ -31,4 +31,4 @@
       <AppenderRef ref="LIST"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

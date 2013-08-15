@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<Configuration status="OFF">
   <appenders>
     <RollingFile name="RollingFile" fileName="perftest.log"
                  filePattern="app-%d{MM-dd-yyyy}-%i.log.gz" append="false"
@@ -17,4 +17,4 @@
       <AppenderRef ref="RollingFile"/>
     </root>
   </loggers>
-</configuration>
+</Configuration>

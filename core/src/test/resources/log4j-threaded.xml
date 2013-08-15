@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
 
   <appenders>
     <File name="File" fileName="target/threaded/test.log" bufferedIO="false">
@@ -40,4 +40,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

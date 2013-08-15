@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
   <properties>
     <property name="filename">target/rolling4/rollingtest.log</property>
   </properties>
@@ -55,4 +55,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

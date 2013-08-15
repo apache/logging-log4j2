@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="OFF">
+<Configuration status="OFF">
   <appenders>
     <RandomAccessFile name="XmlRandomAccessFile" fileName="target/XmlRandomAccessFileAppenderTest.log" immediateFlush="false" append="false">
       <XMLLayout complete="true"/>
@@ -11,4 +11,4 @@
       <AppenderRef ref="XmlRandomAccessFile"/>
     </asyncRoot>
   </loggers>
-</configuration>
+</Configuration>

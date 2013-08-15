@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration name="MissingRootTest" status="DEBUG">
+<Configuration name="MissingRootTest" status="DEBUG">
   <appenders>
     <List name="List">
       <PatternLayout>
@@ -18,4 +18,4 @@
       <AppenderRef ref="List"/>
     </logger>
   </loggers>
-</configuration>
+</Configuration>

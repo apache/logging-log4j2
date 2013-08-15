@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration packages="" status="error" name="Flume">
+<Configuration packages="" status="error" name="Flume">
   <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
   <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" mdcPrefix="." compress="true">
@@ -37,4 +37,4 @@
     </root>
   </loggers>
 
-</configuration>
+</Configuration>

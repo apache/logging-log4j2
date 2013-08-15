@@ -18,4 +18,4 @@
   <root level="debug">
     <AppenderRef ref="ASYNC" />
   </root>
-</configuration>
+</Configuration>

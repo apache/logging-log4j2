@@ -12,4 +12,4 @@
   <root level="debug">
     <AppenderRef ref="FILE" />
   </root>
-</configuration>
+</Configuration>

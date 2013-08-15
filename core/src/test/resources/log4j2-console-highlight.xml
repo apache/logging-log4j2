@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<configuration status="OFF">
+<Configuration status="OFF">
   <appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%highlight{%d{ISO8601} [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}" />
@@ -28,4 +28,4 @@
       <AppenderRef ref="Console" />
     </root>
   </loggers>
-</configuration>
+</Configuration>

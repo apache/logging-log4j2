@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="warn" name="MyApp" packages="org.apache.logging.log4j.test">
+<Configuration status="warn" name="MyApp" packages="org.apache.logging.log4j.test">
 	<appenders>
 		<Socket name="socket" host="localhost" port="5514" protocol="TCP" ignoreExceptions="false"
 				reconnectionDelay="100">
@@ -11,4 +11,4 @@
 			<AppenderRef ref="socket"/>
 		</root>
 	</loggers>
-</configuration>
+</Configuration>

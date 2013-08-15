@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration packages="org.apache.logging.log4j.test" status="warn" name="TaglibLoggerTest">
+<Configuration packages="org.apache.logging.log4j.test" status="warn" name="TaglibLoggerTest">
   <properties>
     <property name="filename">target/test.log</property>
   </properties>
@@ -38,4 +38,4 @@
     <logger name="IfEnabledTagTest" level="warn" />
   </loggers>
 
-</configuration>
+</Configuration>
