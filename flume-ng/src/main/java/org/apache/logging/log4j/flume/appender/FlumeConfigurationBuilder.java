@@ -260,11 +260,10 @@ public class FlumeConfigurationBuilder {
                         if (sinkUser != null) {
                             throw new ConfigurationException(String.format(
                                 "Sink %s of group %s already in use by group %s", sink, groupName, sinkUser));
-                        } else {
-                            throw new ConfigurationException(String.format(
-                                "Sink %s of group %s does not exist or is not properly configured", sink,
-                                groupName));
                         }
+						throw new ConfigurationException(String.format(
+						    "Sink %s of group %s does not exist or is not properly configured", sink,
+						    groupName));
                     }
                     groupSinks.add(s);
                     usedSinks.put(sink, groupName);
