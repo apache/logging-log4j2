@@ -1294,7 +1294,10 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. If no layout is specified SerializedLayout will be used.</td>
+              <td>
+                The Layout to use to format the LogEvent. If you do not specify a layout, 
+                this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
+              </td>
             </tr>
             <tr>
               <td>name</td>
@@ -1404,7 +1407,10 @@
             <tr>
               <td>layout</td>
               <td>Layout</td>
-              <td>The Layout to use to format the LogEvent. If no layout is specified SerializedLayout will be used.</td>
+              <td>
+                The Layout to use to format the LogEvent. If you do not specify a layout, 
+                this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
+              </td>
             </tr>
             <tr>
               <td>name</td>
