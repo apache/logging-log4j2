@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded">
       <Property name="channels">primary</Property>
       <Property name="channels.primary.type">memory</Property>
@@ -29,13 +29,13 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="eventLogger"/>
-    </logger>
-    <root level="warn">
+    </Logger>
+    <Root level="warn">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

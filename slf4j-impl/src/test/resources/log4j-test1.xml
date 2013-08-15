@@ -5,7 +5,7 @@
   </properties>
   <ThresholdFilter level="trace"/>
 
-  <appenders>
+  <Appenders>
     <List name="EventLogger">
       <PatternLayout pattern="%C{1.} %m%n"/>
     </List>
@@ -21,20 +21,20 @@
       <PatternLayout pattern="%C{1.} %m MDC%X%n%ex{0}"/>
     </List>
     <SLF4J name="SLF4J"/>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="EventLogger"/>
-    </logger>>
+    </Logger>>
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </logger>>
+    </Logger>>
 
-    <root level="trace">
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </configuration>

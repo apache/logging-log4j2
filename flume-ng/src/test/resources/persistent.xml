@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info" name="MyApp" packages="org.apache.logging.log4j.flume.test">
-  <appenders>
+  <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="persistent" dataDir="target/persistent"
         batchsize="100" maxDelay="500">
       <Agent host="localhost" port="${sys:primaryPort}"/>
@@ -12,13 +12,13 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%d %t - [%p] %c %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="eventLogger"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

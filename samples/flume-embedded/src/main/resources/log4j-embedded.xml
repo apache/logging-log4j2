@@ -18,7 +18,7 @@
 -->
 <Configuration status="debug" name="Flume" verbose="false" monitorInterval="30">
 	<MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL" />
-	<appenders>
+	<Appenders>
 
 		<Flume name="flume" ignoreExceptions="false" mdcPrefix="ReqCtx_" compress="false" embedded="true" dataDir="/tmp">
 			<Agent host="localhost" port="8800" />
@@ -37,13 +37,13 @@
 				<SizeBasedTriggeringPolicy size="250 MB" />
 			</Policies>
 		</RollingFile>
-	</appenders>
-	<loggers>
-		<logger name="EventLogger" level="WARN" additivity="false">
+	</Appenders>
+	<Loggers>
+		<Logger name="EventLogger" level="WARN" additivity="false">
 			<AppenderRef ref="flume" />
-		</logger>
-		<root level="debug">
+		</Logger>
+		<Root level="debug">
 			<AppenderRef ref="RollingFile" />
-		</root>
-	</loggers>
+		</Root>
+	</Loggers>
 </Configuration>
