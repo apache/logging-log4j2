@@ -39,11 +39,9 @@ import org.apache.logging.log4j.core.net.Advertiser;
 
 /**
  * An appender that writes to files and can roll over at intervals.
- *
- * @param <T> The {@link Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "RollingFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingFileAppender<T extends Serializable> extends AbstractOutputStreamAppender<T> {
+public final class RollingFileAppender extends AbstractOutputStreamAppender {
 
     private final String fileName;
     private final String filePattern;
@@ -51,7 +49,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
     private final Advertiser advertiser;
 
 
-    private RollingFileAppender(final String name, final Layout<T> layout, final Filter filter,
+    private RollingFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                                 final RollingFileManager manager, final String fileName,
                                 final String filePattern, final boolean ignoreExceptions, final boolean immediateFlush,
                                 final Advertiser advertiser) {
@@ -120,25 +118,24 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
      * @param advertise "true" if the appender configuration should be advertised, "false" otherwise.
      * @param advertiseURI The advertised URI which can be used to retrieve the file contents.
      * @param config The Configuration.
-     * @param <S> The {@link Layout}'s {@link Serializable} type.
      * @return A RollingFileAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> RollingFileAppender<S> createAppender(
-                                              @PluginAttr("fileName") final String fileName,
-                                              @PluginAttr("filePattern") final String filePattern,
-                                              @PluginAttr("append") final String append,
-                                              @PluginAttr("name") final String name,
-                                              @PluginAttr("bufferedIO") final String bufferedIO,
-                                              @PluginAttr("immediateFlush") final String immediateFlush,
-                                              @PluginElement("Policy") final TriggeringPolicy policy,
-                                              @PluginElement("Strategy") RolloverStrategy strategy,
-                                              @PluginElement("Layout") Layout<S> layout,
-                                              @PluginElement("Filter") final Filter filter,
-                                              @PluginAttr("ignoreExceptions") final String ignore,
-                                              @PluginAttr("advertise") final String advertise,
-                                              @PluginAttr("advertiseURI") final String advertiseURI,
-                                              @PluginConfiguration final Configuration config) {
+    public static RollingFileAppender createAppender(
+            @PluginAttr("fileName") final String fileName,
+            @PluginAttr("filePattern") final String filePattern,
+            @PluginAttr("append") final String append,
+            @PluginAttr("name") final String name,
+            @PluginAttr("bufferedIO") final String bufferedIO,
+            @PluginAttr("immediateFlush") final String immediateFlush,
+            @PluginElement("Policy") final TriggeringPolicy policy,
+            @PluginElement("Strategy") RolloverStrategy strategy,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttr("ignoreExceptions") final String ignore,
+            @PluginAttr("advertise") final String advertise,
+            @PluginAttr("advertiseURI") final String advertiseURI,
+            @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
@@ -170,10 +167,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
         }
 
         if (layout == null) {
-            @SuppressWarnings({ "unchecked", "UnnecessaryLocalVariable" })
-            final
-            Layout<S> l = (Layout<S>) PatternLayout.createLayout(null, null, null, null, null);
-            layout = l;
+            layout = PatternLayout.createLayout(null, null, null, null, null);
         }
 
         final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,
@@ -182,7 +176,7 @@ public final class RollingFileAppender<T extends Serializable> extends AbstractO
             return null;
         }
 
-        return new RollingFileAppender<S>(name, layout, filter, manager, fileName, filePattern,
+        return new RollingFileAppender(name, layout, filter, manager, fileName, filePattern,
                 ignoreExceptions, isFlush, isAdvertise ? config.getAdvertiser() : null);
     }
 }

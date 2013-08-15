@@ -114,10 +114,10 @@ public final class PatternParser {
         this.config = config;
         final PluginManager manager = new PluginManager(converterKey, expectedClass);
         manager.collectPlugins();
-        final Map<String, PluginType> plugins = manager.getPlugins();
+        final Map<String, PluginType<?>> plugins = manager.getPlugins();
         final Map<String, Class<PatternConverter>> converters = new HashMap<String, Class<PatternConverter>>();
 
-        for (final PluginType type : plugins.values()) {
+        for (final PluginType<?> type : plugins.values()) {
             try {
                 @SuppressWarnings("unchecked")
                 final Class<PatternConverter> clazz = (Class<PatternConverter>)type.getPluginClass();

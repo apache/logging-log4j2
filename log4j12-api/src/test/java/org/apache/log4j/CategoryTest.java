@@ -43,7 +43,7 @@ public class CategoryTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    private static ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List");
+    private static ListAppender appender = new ListAppender("List");
 
     @BeforeClass
     public static void setupClass() {
@@ -162,7 +162,7 @@ public class CategoryTest {
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
         final Layout<String> layout = PatternLayout.createLayout("%d %p %C{1.} [%t] %m%n", null, null, null, null);
-        final ListAppender<String> appender = new ListAppender<String>("List2", null, layout, false, false);
+        final ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
         category.getLogger().addAppender(appender);

@@ -107,9 +107,9 @@ public abstract class ConfigurationFactory {
                     }
                     final PluginManager manager = new PluginManager("ConfigurationFactory");
                     manager.collectPlugins();
-                    final Map<String, PluginType> plugins = manager.getPlugins();
+                    final Map<String, PluginType<?>> plugins = manager.getPlugins();
                     final Set<WeightedFactory> ordered = new TreeSet<WeightedFactory>();
-                    for (final PluginType type : plugins.values()) {
+                    for (final PluginType<?> type : plugins.values()) {
                         try {
                             @SuppressWarnings("unchecked")
                             final Class<ConfigurationFactory> clazz = (Class<ConfigurationFactory>)type.getPluginClass();

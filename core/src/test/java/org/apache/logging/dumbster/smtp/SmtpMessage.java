@@ -70,8 +70,8 @@ public class SmtpMessage {
      *
      * @return an Iterator over the set of header names (String)
      */
-    public Iterator getHeaderNames() {
-        final Set nameSet = headers.keySet();
+    public Iterator<String> getHeaderNames() {
+        final Set<String> nameSet = headers.keySet();
         return nameSet.iterator();
     }
 

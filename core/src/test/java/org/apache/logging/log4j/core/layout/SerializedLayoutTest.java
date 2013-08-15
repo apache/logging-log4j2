@@ -78,7 +78,7 @@ public class SerializedLayoutTest {
 
         // set up appender
         final SerializedLayout layout = SerializedLayout.createLayout();
-        final ListAppender<LogEvent> appender = new ListAppender<LogEvent>("List", null, layout, false, true);
+        final ListAppender appender = new ListAppender("List", null, layout, false, true);
         appender.start();
 
         // set appender on root and set level to debug

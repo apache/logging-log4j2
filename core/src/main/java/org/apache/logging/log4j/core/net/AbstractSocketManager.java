@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.OutputStreamManager;
+
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
 /**
  * Abstract base class for managing sockets.
@@ -51,7 +52,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * @param port The target port number.
      */
     public AbstractSocketManager(final String name, final OutputStream os, final InetAddress addr, final String host,
-                                 final int port, final Layout layout) {
+                                 final int port, final Layout<? extends Serializable> layout) {
         super(os, name, layout);
         this.address = addr;
         this.host = host;

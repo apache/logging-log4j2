@@ -38,7 +38,7 @@ public class OutputStreamAppenderTest {
     @Test
     public void testAppender() {
         final Layout<String> layout = PatternLayout.createLayout(null, null, null, null, null);
-        final InMemoryAppender<String> app = new InMemoryAppender<String>("test", layout, null, false);
+        final InMemoryAppender app = new InMemoryAppender("test", layout, null, false);
         final LogEvent event = new Log4jLogEvent("TestLogger", null, OutputStreamAppenderTest.class.getName(), Level.INFO,
             new SimpleMessage("Test"), null);
         app.start();

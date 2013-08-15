@@ -83,9 +83,9 @@ public class JMSQueueTest {
 
     @After
     public void teardown() {
-        final Map<String,Appender<?>> map = root.getAppenders();
-        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
-            final Appender<?> app = entry.getValue();
+        final Map<String,Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -100,7 +100,7 @@ public class JMSQueueTest {
                 QUEUE_NAME, null, null, null, clientFilters, "true");
         appender.start();
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
-        final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilters, null, false, false);
+        final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null);
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");

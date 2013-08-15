@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -38,7 +32,13 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -76,9 +76,9 @@ public abstract class AbstractSocketServerTest {
 
     @After
     public void tearDown() {
-        final Map<String, Appender<?>> map = root.getAppenders();
-        for (final Map.Entry<String, Appender<?>> entry : map.entrySet()) {
-            final Appender<?> app = entry.getValue();
+        final Map<String, Appender> map = root.getAppenders();
+        for (final Map.Entry<String, Appender> entry : map.entrySet()) {
+            final Appender app = entry.getValue();
             root.removeAppender(app);
             app.stop();
         }
@@ -106,13 +106,13 @@ public abstract class AbstractSocketServerTest {
     protected void testServer(final String message1, final String message2) throws Exception {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
-        final SocketAppender<Serializable> appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", null,
+        final SocketAppender appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", null,
                 "false", null, socketFilter, null, null);
         appender.start();
-        final ListAppender<LogEvent> listApp = new ListAppender<LogEvent>("Events", serverFilter, null, false, false);
+        final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         listApp.start();
         final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null);
-        final ConsoleAppender<String> console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
+        final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         final Logger serverLogger = ctx.getLogger(this.getClass().getName());
         serverLogger.addAppender(console);
         serverLogger.setAdditive(false);

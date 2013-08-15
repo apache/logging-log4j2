@@ -92,11 +92,11 @@ public class Category {
         return prev == null ? logger : prev;
     }
 
-    public static Category getInstance(final Class clazz) {
+    public static Category getInstance(@SuppressWarnings("rawtypes") final Class clazz) {
         return getInstance(clazz.getName());
     }
 
-    static Category getInstance(final LoggerContext context, final Class clazz) {
+    static Category getInstance(final LoggerContext context, @SuppressWarnings("rawtypes") final Class clazz) {
         return getInstance(context, clazz.getName());
     }
 
@@ -148,6 +148,7 @@ public class Category {
 
      @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
+    @SuppressWarnings("rawtypes")
     @Deprecated
     public static Enumeration getCurrentCategories() {
         return LogManager.getCurrentLoggers();
@@ -281,6 +282,7 @@ public class Category {
     public void callAppenders(final LoggingEvent event) {
     }
 
+    @SuppressWarnings("rawtypes")
     public Enumeration getAllAppenders() {
         return NullEnumeration.getInstance();
     }

@@ -43,11 +43,11 @@ public class Interpolator implements StrLookup {
         this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
         final PluginManager manager = new PluginManager("Lookup");
         manager.collectPlugins();
-        final Map<String, PluginType> plugins = manager.getPlugins();
+        final Map<String, PluginType<?>> plugins = manager.getPlugins();
 
-        for (final Map.Entry<String, PluginType> entry : plugins.entrySet()) {
+        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             @SuppressWarnings("unchecked")
-            final Class<StrLookup> clazz = entry.getValue().getPluginClass();
+            final Class<? extends StrLookup> clazz = (Class<? extends StrLookup>) entry.getValue().getPluginClass();
             try {
                 lookups.put(entry.getKey(), clazz.newInstance());
             } catch (final Exception ex) {

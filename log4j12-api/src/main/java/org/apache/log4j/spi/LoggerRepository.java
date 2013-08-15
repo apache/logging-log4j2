@@ -91,6 +91,7 @@ public interface LoggerRepository {
 
     void shutdown();
 
+    @SuppressWarnings("rawtypes")
     Enumeration getCurrentLoggers();
 
     /**
@@ -98,6 +99,7 @@ public interface LoggerRepository {
      *
      * @return an enumeration of loggers.
      */
+    @SuppressWarnings("rawtypes")
     Enumeration getCurrentCategories();
 
     void fireAddAppenderEvent(Category logger, Appender appender);

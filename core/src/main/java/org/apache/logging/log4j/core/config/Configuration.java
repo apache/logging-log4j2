@@ -52,11 +52,11 @@ public interface Configuration extends Filterable {
      * Returns a Map containing all the Appenders and their name.
      * @return A Map containing each Appender's name and the Appender object.
      */
-    Map<String, Appender<?>> getAppenders();
+    Map<String, Appender> getAppenders();
 
     Map<String, LoggerConfig> getLoggers();
 
-    void addLoggerAppender(Logger logger, Appender<?> appender);
+    void addLoggerAppender(Logger logger, Appender appender);
 
     void addLoggerFilter(Logger logger, Filter filter);
 

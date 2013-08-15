@@ -149,7 +149,7 @@ public class SMTPAppenderTest {
 
         server.stop();
         assertTrue(server.getReceivedEmailSize() == 1);
-        final SmtpMessage email = (SmtpMessage) server.getReceivedEmail().next();
+        final SmtpMessage email = server.getReceivedEmail().next();
 
         assertEquals("to@example.com", email.getHeaderValue("To"));
         assertEquals("cc@example.com", email.getHeaderValue("Cc"));

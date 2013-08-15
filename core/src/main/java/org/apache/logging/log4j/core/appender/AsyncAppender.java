@@ -44,11 +44,9 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
  * AsyncAppender with one or more Appenders and an Appender to append to if the
  * queue is full. The AsyncAppender does not allow a filter to be specified on
  * the Appender references.
- *
- * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Async", category = "Core", elementType = "appender", printObject = true)
-public final class AsyncAppender<T extends Serializable> extends AbstractAppender<T> {
+public final class AsyncAppender extends AbstractAppender {
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final String SHUTDOWN = "Shutdown";
@@ -59,7 +57,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
     private final AppenderRef[] appenderRefs;
     private final String errorRef;
     private final boolean includeLocation;
-    private AppenderControl<?> errorAppender;
+    private AppenderControl errorAppender;
     private AsyncThread thread;
     private static final AtomicLong threadSequence = new AtomicLong(1);
 
@@ -78,10 +76,9 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void start() {
-        final Map<String, Appender<?>> map = config.getAppenders();
-        final List<AppenderControl<?>> appenders = new ArrayList<AppenderControl<?>>();
+        final Map<String, Appender> map = config.getAppenders();
+        final List<AppenderControl> appenders = new ArrayList<AppenderControl>();
         for (final AppenderRef appenderRef : appenderRefs) {
             if (map.containsKey(appenderRef.getRef())) {
                 appenders.add(new AppenderControl(map.get(appenderRef.getRef()), appenderRef.getLevel(),
@@ -164,11 +161,10 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
      * @param config The Configuration.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
-     * @param <S> The actual type of the Serializable.
      * @return The AsyncAppender.
      */
     @PluginFactory
-    public static <S extends Serializable> AsyncAppender<S> createAppender(
+    public static AsyncAppender createAppender(
                 @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
                 @PluginAttr("errorRef") final String errorRef,
                 @PluginAttr("blocking") final String blocking,
@@ -191,7 +187,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
         final boolean isIncludeLocation = Boolean.parseBoolean(includeLocation);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        return new AsyncAppender<S>(name, filter, appenderRefs, errorRef,
+        return new AsyncAppender(name, filter, appenderRefs, errorRef,
                 queueSize, isBlocking, ignoreExceptions, config, isIncludeLocation);
     }
 
@@ -201,10 +197,10 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
     private class AsyncThread extends Thread {
 
         private volatile boolean shutdown = false;
-        private final List<AppenderControl<?>> appenders;
+        private final List<AppenderControl> appenders;
         private final BlockingQueue<Serializable> queue;
 
-        public AsyncThread(final List<AppenderControl<?>> appenders, final BlockingQueue<Serializable> queue) {
+        public AsyncThread(final List<AppenderControl> appenders, final BlockingQueue<Serializable> queue) {
             this.appenders = appenders;
             this.queue = queue;
             setDaemon(true);
@@ -228,7 +224,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
                 final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                 event.setEndOfBatch(queue.isEmpty());
                 boolean success = false;
-                for (final AppenderControl<?> control : appenders) {
+                for (final AppenderControl control : appenders) {
                     try {
                         control.callAppender(event);
                         success = true;
@@ -251,7 +247,7 @@ public final class AsyncAppender<T extends Serializable> extends AbstractAppende
                     if (s instanceof Log4jLogEvent) {
                         final Log4jLogEvent event = Log4jLogEvent.deserialize(s);
                         event.setEndOfBatch(queue.isEmpty());
-                        for (final AppenderControl<?> control : appenders) {
+                        for (final AppenderControl control : appenders) {
                             control.callAppender(event);
                         }
                     }

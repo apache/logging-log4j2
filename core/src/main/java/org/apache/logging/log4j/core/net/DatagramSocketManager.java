@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.helpers.Strings;
+
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 /**
  * Socket Manager for UDP connections.
@@ -43,7 +44,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param layout The layout
      */
     protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress address, final String host,
-                                    final int port, final Layout layout) {
+                final int port, final Layout<? extends Serializable> layout) {
         super(name, os, address, host, port, layout);
     }
 
@@ -54,7 +55,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param layout The layout.
      * @return A DatagramSocketManager.
      */
-    public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout layout) {
+    public static DatagramSocketManager getSocketManager(final String host, final int port, final Layout<? extends Serializable> layout) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -87,9 +88,9 @@ public class DatagramSocketManager extends AbstractSocketManager {
     private static class FactoryData {
         private final String host;
         private final int port;
-        private final Layout layout;
+        private final Layout<? extends Serializable> layout;
 
-        public FactoryData(final String host, final int port, final Layout layout) {
+        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout) {
             this.host = host;
             this.port = port;
             this.layout = layout;
