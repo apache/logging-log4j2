@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -54,6 +55,7 @@ public class StrictXMLConfigTest {
         for (final Map.Entry<String, Appender<?>> entry : config.getAppenders().entrySet()) {
             if (entry.getKey().equals("List")) {
                 app = (ListAppender<LogEvent>) entry.getValue();
+                assertNotNull(app);
                 break;
             }
         }
