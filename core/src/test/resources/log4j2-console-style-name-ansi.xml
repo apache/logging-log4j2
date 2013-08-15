@@ -17,15 +17,15 @@
 
 -->
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%red{%d{ISO8601}} %yellow{[%t]} %black{black} %blue{blue} %cyan{cyan} %magenta{magenta} %white{white} %green{%-5level:} %red{%msg%n%throwable}" />
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="org.foo" level="DEBUG" />
-    <root level="TRACE">
+  </Appenders>
+  <Loggers>
+    <Logger name="org.foo" level="DEBUG" />
+    <Root level="TRACE">
       <AppenderRef ref="Console" />
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

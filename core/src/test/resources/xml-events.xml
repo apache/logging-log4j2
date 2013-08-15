@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>
     </Console>
     <File name="events" fileName="target/events.xml" append="false">
       <XMLLayout properties="true" complete="true"/>
     </File>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info">
       <AppenderRef ref="events"/>
-    </logger>
-    <root level="warn">
+    </Logger>
+    <Root level="warn">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

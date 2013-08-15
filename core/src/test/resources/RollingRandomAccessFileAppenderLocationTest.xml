@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF">
-  <appenders>
+  <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderLocationTest.log"
                  filePattern="test-%d{MM-dd-yyyy}-%i.log.gz" append="false"
                  immediateFlush="false">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m %location %ex%n</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy />
       </Policies>
     </RollingRandomAccessFile>
-  </appenders>
+  </Appenders>
   
-  <loggers>
-    <asyncRoot level="info" includeLocation="true">
+  <Loggers>
+    <AsyncRoot level="info" includeLocation="true">
       <AppenderRef ref="RollingRandomAccessFile"/>
-    </asyncRoot>
-  </loggers>
+    </AsyncRoot>
+  </Loggers>
 </Configuration>

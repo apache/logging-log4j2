@@ -25,4 +25,4 @@
  <root level="debug">
    <AppenderRef ref="stdout" />
  </root>
-</Configuration>
+</configuration>

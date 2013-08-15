@@ -17,7 +17,7 @@
 -->
 <Configuration status="debug">
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
@@ -30,16 +30,16 @@
       <Column name="message" pattern="%message" isUnicode="false" />
       <Column name="exception" pattern="%ex{full}" isClob="true" />
     </Jdbc>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug" additivity="false">
       <AppenderRef ref="databaseAppender" />
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

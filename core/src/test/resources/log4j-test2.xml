@@ -17,12 +17,12 @@
 
 -->
 <Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <ThresholdFilter level="trace"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
       <filters>
@@ -39,7 +39,7 @@
     </Console>
     <File name="File" fileName="${filename}">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <List name="List">
@@ -50,33 +50,33 @@
     <List name="NoThrowable">
       <PatternLayout pattern="%d %p %C{1.} [%t] %m%n%ex{0}"/>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <ThreadContextMapFilter>
         <KeyValuePair key="test" value="123"/>
       </ThreadContextMapFilter>
       <AppenderRef ref="STDOUT"/>
-    </logger>>
+    </Logger>>
 
-    <logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.hosttest" level="debug" additivity="false">
       <AppenderRef ref="HostTest"/>
-    </logger>
+    </Logger>
 
 
-    <logger name="org.apache.logging.log4j.nothrown" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.nothrown" level="debug" additivity="false">
       <AppenderRef ref="NoThrowable"/>
-    </logger>
+    </Logger>
 
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </logger>
-    <logger name="org" level="error" additivity="true"/>
-    <root level="trace">
+    </Logger>
+    <Logger name="org" level="error" additivity="true"/>
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

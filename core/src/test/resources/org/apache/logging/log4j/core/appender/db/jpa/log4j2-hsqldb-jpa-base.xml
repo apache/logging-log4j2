@@ -17,22 +17,22 @@
 -->
 <Configuration status="debug">
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jpa name="databaseAppender" persistenceUnitName="hyperSqlJpaAppenderTestUnit"
          entityClassName="org.apache.logging.log4j.core.appender.db.jpa.TestBaseEntity" ignoreExceptions="false" />
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.db" level="debug">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.db" level="debug">
       <AppenderRef ref="databaseAppender" />
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

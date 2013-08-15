@@ -33,13 +33,13 @@
     </Failover>
   </Appenders>
 
-  <loggers>
-    <logger name="Once" level="error" additivity="false">
+  <Loggers>
+    <Logger name="Once" level="error" additivity="false">
       <AppenderRef ref="FailoverOnce"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="Failover"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

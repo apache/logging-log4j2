@@ -26,4 +26,4 @@
  <root level="error">
    <AppenderRef ref="TestLogfile" />
  </root>
-</Configuration>
+</configuration>

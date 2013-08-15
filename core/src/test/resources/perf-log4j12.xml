@@ -9,8 +9,8 @@
           <param name="ConversionPattern" value="%d %p %c{1} [%t] %X{aKey} %m %n"/>
         </layout>           
      </appender>
-  <root> 
+  <Root> 
     <priority value="debug" /> 
     <AppenderRef ref="File" /> 
-  </root>
+  </Root>
 </log4j:configuration>

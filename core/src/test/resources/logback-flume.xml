@@ -25,4 +25,4 @@
  <root level="error">
    <AppenderRef ref="Console" />
  </root>
-</Configuration>
+</configuration>

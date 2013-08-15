@@ -18,7 +18,7 @@
 -->
 <Configuration status="error" name="RoutingTest" packages="org.apache.logging.log4j.test">
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -28,12 +28,12 @@
     <Async name="Async"> <!-- includeLocation="false" the default for async -->
       <AppenderRef ref="List"/>
     </Async>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <root level="debug">
+  <Loggers>
+    <Root level="debug">
       <AppenderRef ref="Async"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

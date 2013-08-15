@@ -20,7 +20,7 @@
 
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -36,7 +36,7 @@
         <Route>
           <File name="DefaultApplicationLogFile" fileName="target/routingbyjndi/routingbyjnditest-default.log" append="false">
             <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
             </PatternLayout>
           </File>
         </Route>
@@ -44,17 +44,17 @@
         <Route ref="List2" key="Application2"/>
       </Routes>
     </Routing>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="Routing"/>
       <AppenderRef ref="STDOUT"/>
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

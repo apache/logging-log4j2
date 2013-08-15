@@ -17,20 +17,20 @@
 
 -->
 <Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/rolling2/rollingtest.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/rolling2/rollingtest.log</Property>
+  </Properties>
   <filters>
     <ThresholdFilter level="debug"/>
   </filters>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <RollingFile name="RollingFile" fileName="${filename}" filePattern="target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}.log.gz">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
       <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
     </RollingFile>
@@ -39,16 +39,16 @@
         <ThresholdFilter level="error"/>
       </filters>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
       <AppenderRef ref="RollingFile"/>
-    </logger>>
+    </Logger>>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

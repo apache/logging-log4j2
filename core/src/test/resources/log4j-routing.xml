@@ -17,12 +17,12 @@
 
 -->
 <Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/routing1/routingtest-$${sd:type}.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/routing1/routingtest-$${sd:type}.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -35,7 +35,7 @@
           <RollingFile name="Routing-${sd:type}" fileName="${filename}"
                        filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
             <PatternLayout>
-              <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
             </PatternLayout>
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
@@ -44,16 +44,16 @@
         <Route ref="List" key="Service"/>
       </Routes>
     </Routing>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="Routing"/>
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

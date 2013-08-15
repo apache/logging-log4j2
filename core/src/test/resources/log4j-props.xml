@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="${sys:log4j.level}" strict="false" name="DSI" packages="com.terradue.dsione">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="[%-5level] %msg%n" />
     </Console>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <root level="${sys:log.level}">
+  <Loggers>
+    <Root level="${sys:log.level}">
       <AppenderRef ref="Console" />
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

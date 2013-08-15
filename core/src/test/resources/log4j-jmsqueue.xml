@@ -18,14 +18,14 @@
 -->
 <Configuration name="ConfigTest" status="debug" packages="org.apache.logging.log4j.test"
     monitorInterval="5">
-  <appenders>
+  <Appenders>
     <JMSQueue name="JMSQueue" factoryBindingName="TestQueueConnectionFactory" queueBindingName="TestQueue">
       <PatternLayout pattern="%m%n"/>
     </JMSQueue>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="JMSQueue"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

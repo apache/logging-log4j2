@@ -18,10 +18,10 @@
 -->
 <Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
 
-  <appenders>
+  <Appenders>
     <File name="File" fileName="target/threaded/test.log" bufferedIO="false">
       <PatternLayout>
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
     </File>
     <Console name="STDOUT">
@@ -32,12 +32,12 @@
         <ThresholdFilter level="error"/>
       </filters>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <root level="debug">
+  <Loggers>
+    <Root level="debug">
       <AppenderRef ref="File"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

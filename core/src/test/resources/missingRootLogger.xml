@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration name="MissingRootTest" status="DEBUG">
-  <appenders>
+  <Appenders>
     <List name="List">
       <PatternLayout>
-        <pattern>%d %p %c{1.} [%t] %X{aKey} %location %m %ex%n</pattern>
+        <Pattern>%d %p %c{1.} [%t] %X{aKey} %location %m %ex%n</Pattern>
       </PatternLayout>
     </List>
-  </appenders>
+  </Appenders>
   
-  <loggers>
+  <Loggers>
   <!-- 
-    <root level="info" includeLocation="false">
+    <Root level="info" includeLocation="false">
       <AppenderRef ref="List"/>
-    </root>
+    </Root>
      -->
-    <logger name="sample" level="info" includeLocation="false">
+    <Logger name="sample" level="info" includeLocation="false">
       <AppenderRef ref="List"/>
-    </logger>
-  </loggers>
+    </Logger>
+  </Loggers>
 </Configuration>

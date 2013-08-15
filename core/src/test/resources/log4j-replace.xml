@@ -21,23 +21,23 @@
     <List name="List">
        <PatternLayout>
          <replace regex="\." replacement="/"/>
-         <pattern>%logger %msg%n</pattern>
+         <Pattern>%logger %msg%n</Pattern>
       </PatternLayout>
     </List>
     <List name="List2">
        <PatternLayout>
-         <pattern>%replace{%logger %C{1.} %msg%n}{\.}{/}</pattern>
+         <Pattern>%replace{%logger %C{1.} %msg%n}{\.}{/}</Pattern>
       </PatternLayout>
     </List>
   </Appenders>
 
-  <loggers>
-    <logger level="trace" name="ReplacementTest" additivity="false">
+  <Loggers>
+    <Logger level="trace" name="ReplacementTest" additivity="false">
       <AppenderRef ref="List2"/>
-    </logger>
-    <root level="trace">
+    </Logger>
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

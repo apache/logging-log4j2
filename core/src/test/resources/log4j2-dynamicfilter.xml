@@ -20,14 +20,14 @@
   <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
     <KeyValuePair key="User1" value="DEBUG"/>
   </DynamicThresholdFilter>
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

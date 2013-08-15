@@ -34,8 +34,8 @@
     </Failover>
   </Appenders>
 
-  <loggers>
-    <root level="debug">
+  <Loggers>
+    <Root level="debug">
       <AppenderRef ref="Failover">
         <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY">
           <KeyValuePair key="appender" value="Failover"/>
@@ -46,7 +46,7 @@
           <KeyValuePair key="appender" value="List"/>
         </ThreadContextMapFilter>
       </AppenderRef>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>

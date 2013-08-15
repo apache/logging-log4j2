@@ -17,16 +17,16 @@
 
 -->
 <Configuration status="warn" name="BurstTest" packages="org.apache.logging.log4j.test">
-  <appenders>
+  <Appenders>
     <List name="ListAppender">
       <PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %t %m%n"/>
       <BurstFilter level="INFO" rate="33" maxBurst="100"/>
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <root level="TRACE">
+  <Loggers>
+    <Root level="TRACE">
       <AppenderRef ref="ListAppender"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

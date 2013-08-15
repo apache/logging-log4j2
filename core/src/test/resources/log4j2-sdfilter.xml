@@ -21,14 +21,14 @@
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>
   </StructuredDataFilter>
-  <appenders>
+  <Appenders>
     <List name="LIST">
       <PatternLayout pattern="%m%n"/>
     </List>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="LIST"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>
