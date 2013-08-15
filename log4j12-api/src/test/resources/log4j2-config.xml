@@ -18,22 +18,22 @@
 -->
 <Configuration name="ConfigTest" status="error" packages="org.apache.logging.log4j.test"
                monitorInterval="5">
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
     <List name="List">
     </List>
-  </appenders>
-  <loggers>
-    <logger name="org.apache.test.logging" level="debug" additivity="false">
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test.logging" level="debug" additivity="false">
       <AppenderRef ref="List"/>
-    </logger>
-    <logger name="org.apache.test" level="trace" additivity="false">
+    </Logger>
+    <Logger name="org.apache.test" level="trace" additivity="false">
       <AppenderRef ref="List"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

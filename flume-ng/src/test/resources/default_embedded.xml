@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded" dataDir="InMemory">
       <Agent host="localhost" port="${sys:primaryPort}"/>
       <Agent host="localhost" port="${sys:alternatePort}"/>
@@ -9,13 +9,13 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%d %t - [%p] %c %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="eventLogger"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>

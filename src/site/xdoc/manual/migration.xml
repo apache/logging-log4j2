@@ -93,7 +93,7 @@
     </Console>
   </Appenders>
   <Loggers>
-    <logger name="org.apache.log4j.xml" level="info"/>
+    <Logger name="org.apache.log4j.xml" level="info"/>
     <Root level="debug">
       <AppenderRef ref="STDOUT"/>
     </Root>
@@ -124,7 +124,7 @@
   <root>
     <priority value ="debug" />
     <appender-ref ref="STDOUT" />
-  </root>
+  </Root>
 </log4j:configuration>]]></pre>
 
            <p>Log4j 2 XML configuration</p>
@@ -139,9 +139,9 @@
     </Console>
   </Appenders>
   <Loggers>
-    <logger name="org.apache.log4j.xml" level="debug">
+    <Logger name="org.apache.log4j.xml" level="debug">
       <AppenderRef ref="A1"/>
-    </logger>
+    </Logger>
     <Root level="debug">
       <AppenderRef ref="STDOUT"/>
     </Root>
@@ -174,7 +174,7 @@
   <root>
     <priority value="debug"/>
     <appender-ref ref="STDOUT"/>
-  </root>
+  </Root>
 </log4j:configuration>]]></pre>
 
            <p>Log4j 2 XML configuration</p>
@@ -189,9 +189,9 @@
     </Console>
   </Appenders>
   <Loggers>
-    <logger name="org.apache.log4j.xml" level="debug">
+    <Logger name="org.apache.log4j.xml" level="debug">
       <AppenderRef ref="A1"/>
-    </logger>
+    </Logger>
     <Root level="debug">
       <AppenderRef ref="STDOUT"/>
     </Root>
@@ -215,7 +215,7 @@
   <root>
     <priority value="debug"/>
     <appender-ref ref="ASYNC"/>
-  </root>
+  </Root>
 </log4j:configuration>]]></pre>
 
            <p>Log4j 2 XML configuration. </p>
@@ -260,7 +260,7 @@
   <root>
     <priority value="debug"/>
     <appender-ref ref="ASYNC"/>
-  </root>
+  </Root>
 </log4j:configuration>]]></pre>
 
             <p>Log4j 2 XML configuration. Note that the Async Appender should be configured after the appenders it
