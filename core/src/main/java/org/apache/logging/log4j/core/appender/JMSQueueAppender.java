@@ -45,7 +45,7 @@ public final class JMSQueueAppender extends AbstractAppender {
 
     /**
      * Actual writing occurs here.
-     * <p/>
+     * 
      * @param event The LogEvent.
      */
     @Override
