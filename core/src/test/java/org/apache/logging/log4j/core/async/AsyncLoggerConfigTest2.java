@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class AsyncLoggerConfigTest2 {
 
     @Test
     public void testConsecutiveReconfigure() throws Exception {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncLoggerConfigTest2.xml");
         final File f = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !f.exists() || f.delete());

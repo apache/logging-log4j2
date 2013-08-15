@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.async.AsyncLogger;
-import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.junit.Test;
 
 public class AsyncLoggerContextTest {

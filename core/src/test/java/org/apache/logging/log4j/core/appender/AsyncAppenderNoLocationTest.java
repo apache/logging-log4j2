@@ -16,24 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -46,7 +46,7 @@ public class AsyncAppenderNoLocationTest {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
@@ -59,7 +59,7 @@ public class AsyncAppenderNoLocationTest {
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }

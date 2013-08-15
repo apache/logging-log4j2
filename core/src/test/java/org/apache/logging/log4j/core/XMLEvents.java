@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Locale;
 
 /**
  *
@@ -34,7 +34,7 @@ public class XMLEvents {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
     }
 
     @Test

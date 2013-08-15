@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.LogManager;
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  *
@@ -45,7 +45,7 @@ public class ThreadedTest {
     @BeforeClass
     public static void setupClass() {
         deleteDir();
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
     }
@@ -53,7 +53,7 @@ public class ThreadedTest {
     @AfterClass
     public static void cleanupClass() {
         deleteDir();
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();

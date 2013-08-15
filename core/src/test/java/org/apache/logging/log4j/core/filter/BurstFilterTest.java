@@ -17,21 +17,21 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.BeforeClass;
+import org.junit.Test;
 /**
  * Unit test for <code>BurstFilter</code>.
  */
@@ -46,7 +46,7 @@ public class BurstFilterTest {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
         for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {

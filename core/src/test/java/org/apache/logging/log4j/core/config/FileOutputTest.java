@@ -39,7 +39,7 @@ public class FileOutputTest {
     public static void setupClass() {
         final File file = new File(STATUS_LOG);
         file.delete();
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
@@ -54,7 +54,7 @@ public class FileOutputTest {
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();

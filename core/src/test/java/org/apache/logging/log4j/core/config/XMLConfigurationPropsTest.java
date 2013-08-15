@@ -41,7 +41,7 @@ public class XMLConfigurationPropsTest {
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
@@ -50,7 +50,7 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testNoProps() {
         System.out.println("No status");
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
@@ -61,7 +61,7 @@ public class XMLConfigurationPropsTest {
     @Test
     public void testDefaultStatus() {
         System.out.println("Default status");
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
         System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "DEBUG");
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -75,7 +75,7 @@ public class XMLConfigurationPropsTest {
 
     @Test
     public void testWithConfigProp() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("log4j.level", "debug");
         try {
             final LoggerContext ctx = (LoggerContext) LogManager.getContext();
@@ -90,7 +90,7 @@ public class XMLConfigurationPropsTest {
 
     @Test
     public void testWithProps() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("log4j.level", "debug");
         System.setProperty("log.level", "debug");
         try {

@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +33,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -35,14 +44,6 @@ import org.junit.Test;
 import org.mockejb.jms.MockQueue;
 import org.mockejb.jms.QueueConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -64,13 +65,13 @@ public class JMSQueueFailoverTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         setupQueue();
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
     }
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
@@ -97,7 +98,7 @@ public class JMSQueueFailoverTest {
         context = new InitialContext();
         context.rebind(FACTORY_NAME, new QueueConnectionFactoryImpl() );
         //context.rebind(QUEUE_NAME, new MockQueue(QUEUE_NAME));
-        //System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        //System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         //receiver = new JMSQueueReceiver(FACTORY_NAME, QUEUE_NAME, null, null);
     }
 

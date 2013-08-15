@@ -106,7 +106,7 @@ public class XMLConfigurationTest {
 
     @Before
     public void setUp() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configFile);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configFile);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
@@ -121,7 +121,7 @@ public class XMLConfigurationTest {
 
     @After
     public void tearDown() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();

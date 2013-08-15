@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -38,15 +47,6 @@ import org.junit.Test;
 import org.mockejb.jms.MockTopic;
 import org.mockejb.jms.TopicConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  *

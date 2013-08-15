@@ -44,7 +44,7 @@ public class XMLLoggerPropsTest {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty("test", "test");
         ctx = (LoggerContext) LogManager.getContext(false);
         config = ctx.getConfiguration();
@@ -58,7 +58,7 @@ public class XMLLoggerPropsTest {
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
