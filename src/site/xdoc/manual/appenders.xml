@@ -1013,7 +1013,7 @@
     <Console name="STDOUT">
       <PatternLayout pattern="%d [%p] %c %m%n"/>
     </Console>
-  </appenders>
+  </Appenders>
   <Loggers>
     <Logger name="EventLogger" level="info">
       <AppenderRef ref="eventLogger"/>
@@ -1834,7 +1834,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                username="loggingUser" password="abc123" />
     </NoSql>
   </Appenders>
-  <loggers>
+  <Loggers>
     <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
     </Root>

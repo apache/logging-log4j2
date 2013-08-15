@@ -97,7 +97,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -106,12 +106,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -127,14 +127,14 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <filters>
+  <Filters>
     <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                             onMatch="ACCEPT" onMismatch="NEUTRAL">
       <KeyValuePair key="User1" value="DEBUG"/>
     </DynamicThresholdFilter>
-  </filters>
-  <appenders>
+  </Filters>
+  <Appenders>
     <File name="Audit" fileName="logs/audit.log">
       <PatternLayout>
         <pattern>%d %p %c{1.} [%t] %m%n</pattern>
@@ -148,15 +148,15 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <logger name="EventLogger" level="info">
+  </Appenders>
+  <Loggers>
+    <Logger name="EventLogger" level="info">
       <AppenderRef ref="Audit"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -204,11 +204,11 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-    <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
-                            onMatch="ACCEPT" onMismatch="NEUTRAL">
-      <KeyValuePair key="User1" value="DEBUG"/>
-    </DynamicThresholdFilter>
-  <appenders>
+  <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
+                          onMatch="ACCEPT" onMismatch="NEUTRAL">
+    <KeyValuePair key="User1" value="DEBUG"/>
+  </DynamicThresholdFilter>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -217,12 +217,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -272,7 +272,7 @@
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>
   </MapFilter>
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -281,12 +281,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
           <p>
@@ -295,7 +295,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -304,17 +304,17 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
         <KeyValuePair key="eventId" value="Login"/>
         <KeyValuePair key="eventId" value="Logout"/>
       </MapFilter>
       <AppenderRef ref="RollingFile">
       </AppenderRef>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
           <p>
@@ -323,7 +323,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -332,17 +332,17 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile">
         <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
           <KeyValuePair key="eventId" value="Login"/>
           <KeyValuePair key="eventId" value="Logout"/>
         </MapFilter>
       </AppenderRef>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -384,7 +384,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -393,12 +393,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -444,7 +444,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <RegexFilter regex=".* test .*" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -453,12 +453,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -511,7 +511,7 @@
     <KeyValuePair key="id" value="Login"/>
     <KeyValuePair key="id" value="Logout"/>
   </StructuredDataFilter>
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -520,12 +520,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -575,7 +575,7 @@
     <KeyValuePair key="User1" value="DEBUG"/>
     <KeyValuePair key="User2" value="WARN"/>
   </ThreadContextMapFilter>
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -584,19 +584,19 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
           <p>
             The ThreadContextMapFilter can also be applied to a logger for filtering:
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <BurstFilter level="INFO" rate="16" maxBurst="100"/>
@@ -605,16 +605,16 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
       <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
         <KeyValuePair key="foo" value="bar"/>
         <KeyValuePair key="User2" value="WARN"/>
       </ThreadContextMapFilter>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>
   ]]></pre>
           </p>
@@ -658,7 +658,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -667,12 +667,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>
@@ -728,7 +728,7 @@
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
-  <appenders>
+  <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
       <TimeFilter start="05:00:00" end="05:30:00" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -737,12 +737,12 @@
       </PatternLayout>
       <TimeBasedTriggeringPolicy />
     </RollingFile>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="RollingFile"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </p>
         </subsection>

@@ -154,16 +154,16 @@ public class Bar {
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <root level="error">
+  </Appenders>
+  <Loggers>
+    <Root level="error">
       <AppenderRef ref="Console"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
             Once the file above is placed into the classpath as log4j2.xml you will get results identical to
             those listed above. Changing the root level to trace will result in results similar to:
@@ -185,9 +185,9 @@ public class Bar {
           </p>
             <pre class="prettyprint linenums"><![CDATA[
 <logger name="com.foo.Bar" level="TRACE"/>
-<root level="ERROR">
+<Root level="ERROR">
   <AppenderRef ref="STDOUT">
-</root>]]></pre>
+</Root>]]></pre>
           <p>
             With this configuration all log events from <code>com.foo.Bar</code> will be recorded while only error events will
             be recorded from all other components.
@@ -203,19 +203,19 @@ public class Bar {
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="com.foo.Bar" level="trace">
+  </Appenders>
+  <Loggers>
+    <Logger name="com.foo.Bar" level="trace">
       <AppenderRef ref="Console"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="Console"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           <p>would result in</p>
              <pre class="prettyprint linenums">
@@ -235,19 +235,19 @@ public class Bar {
           </p>
            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-  </appenders>
-  <loggers>
-    <logger name="com.foo.Bar" level="trace" additivity="false">
+  </Appenders>
+  <Loggers>
+    <Logger name="com.foo.Bar" level="trace" additivity="false">
       <AppenderRef ref="Console"/>
-    </logger>
-    <root level="error">
+    </Logger>
+    <Root level="error">
       <AppenderRef ref="Console"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           <p>
             Once an event reaches a logger with its additivity set to false the event will not be passed to
@@ -298,11 +298,11 @@ public class Bar {
 <Configuration advertiser="multicastdns">
 ...
 </Configuration>
-<appenders>
+<Appenders>
   <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
   ...
   </File>
-</appenders>]]></pre>
+</Appenders>]]></pre>
 </subsection>
         <a name="ConfigurationSyntax"/>
         <subsection name="Configuration Syntax">
@@ -390,27 +390,27 @@ public class Bar {
 
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>;
-<configuration>
-  <properties>
-    <property name="name1">value</property>
-    <property name="name2" value="value2"/>
-  </properties>
+<Configuration>
+  <Properties>
+    <Property name="name1">value</property>
+    <Property name="name2" value="value2"/>
+  </Properties>
   <]]><i>filter</i>  ... <![CDATA[/>
-  <appenders>
+  <Appenders>
     <]]><i>appender</i> ... <![CDATA[>
       <]]><i>filter</i>  ... <![CDATA[/>
     </]]><i>appender</i><![CDATA[>
     ...
-  </appenders>
-  <loggers>
-    <logger name="name1">
+  </Appenders>
+  <Loggers>
+    <Logger name="name1">
       <]]><i>filter</i>  ... <![CDATA[/>
-    </logger>
+    </Logger>
     ...
-    <root level="level">
+    <Root level="level">
       <AppenderRef ref="name"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           <p>
             See the many examples on this page for sample appender, filter and logger declarations.
@@ -425,27 +425,27 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>;
-<configuration>
-  <properties>
-    <property name="name1">value</property>
-    <property name="name2" value="value2"/>
-  </properties>
+<Configuration>
+  <Properties>
+    <Property name="name1">value</property>
+    <Property name="name2" value="value2"/>
+  </Properties>
   <Filter type="type" ... />
-  <appenders>
-    <appender type="type" name="name">
+  <Appenders>
+    <Appender type="type" name="name">
       <Filter type="type" ... />
-    </appender>
+    </Appender>
     ...
-  </appenders>
-  <loggers>
-    <logger name="name1">
+  </Appenders>
+  <Loggers>
+    <Logger name="name1">
       <Filter type="type" ... />
-    </logger>
+    </Logger>
     ...
-    <root level="level">
+    <Root level="level">
       <AppenderRef ref="name"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           <p>
             Below is a sample configuration using the strict format.
@@ -454,51 +454,51 @@ public class Bar {
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" strict="true" name="XMLConfigTest"
                packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <Filter type="ThresholdFilter" level="trace"/>
 
-  <appenders>
-    <appender type="Console" name="STDOUT">
-      <layout type="PatternLayout" pattern="%m MDC%X%n"/>
-      <filters>
+  <Appenders>
+    <Appender type="Console" name="STDOUT">
+      <Layout type="PatternLayout" pattern="%m MDC%X%n"/>
+      <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
-      </filters>
-    </appender>
-    <appender type="Console" name="FLOW">
-      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class & line number -->
-      <filters>
+      </Filters>
+    </Appender>
+    <Appender type="Console" name="FLOW">
+      <Layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class & line number -->
+      <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
-      </filters>
-    </appender>
-    <appender type="File" name="File" fileName="${filename}">
-      <layout type="PatternLayout">
-        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
-      </layout>
-    </appender>
-    <appender type="List" name="List">
-    </appender>
-  </appenders>
+      </Filters>
+    </Appender>
+    <Appender type="File" name="File" fileName="${filename}">
+      <Layout type="PatternLayout">
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+      </Layout>
+    </Appender>
+    <Appender type="List" name="List">
+    </Appender>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <Filter type="ThreadContextMapFilter">
         <KeyValuePair key="test" value="123"/>
-      </filter>
+      </Filter>
       <AppenderRef ref="STDOUT"/>
-    </logger>>
+    </Logger>
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
       <AppenderRef ref="File"/>
-    </logger>>
+    </Logger>
 
-    <root level="trace">
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>]]></pre>
         <a name="JSON"/>
@@ -687,12 +687,12 @@ public class Bar {
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/test.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/test.log</Property>
+  </Properties>
   <ThresholdFilter level="trace"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
     </Console>
@@ -711,30 +711,30 @@ public class Bar {
     </File>
     <List name="List">
     </List>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
+  <Loggers>
+    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
       <ThreadContextMapFilter>
         <KeyValuePair key="test" value="123"/>
       </ThreadContextMapFilter>
       <AppenderRef ref="STDOUT"/>
-    </logger>>
+    </Logger>
 
-    <logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <property name="user">${dollar}{sys:user.name}</property>
+    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
+      <Property name="user">${dollar}{sys:user.name}</Property>
       <AppenderRef ref="File">
         <ThreadContextMapFilter>
           <KeyValuePair key="test" value="123"/>
         </ThreadContextMapFilter>
       </AppenderRef>
       <AppenderRef ref="STDOUT" level="error"/>
-    </logger>>
+    </Logger>
 
-    <root level="trace">
+    <Root level="trace">
       <AppenderRef ref="List"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>]]></pre>
         </subsection>
@@ -753,12 +753,12 @@ public class Bar {
           </p>
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="RoutingTest" packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -780,17 +780,17 @@ public class Bar {
         <Route AppenderRef="List" key="Service"/>
       </Routes>
     </Routing>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="Routing"/>
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>]]></pre>
           <p>
@@ -855,10 +855,10 @@ public class Bar {
             by doing:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <properties>
-    <property name="type">Audit</property>
-  </properties>
+<Configuration>
+  <Properties>
+    <Property name="type">Audit</property>
+  </Properties>
   ...
 </Configuration>]]></pre>
           <p>
@@ -893,12 +893,12 @@ public class Bar {
 <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>;
 <Configuration status="debug" name="RoutingTest"
                packages="org.apache.logging.log4j.test">
-  <properties>
-    <property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</property>
-  </properties>
+  <Properties>
+    <Property name="filename">target/rolling1/rollingtest-${dollar}${dollar}{sd:type}.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
-  <appenders>
+  <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
     </Console>
@@ -920,17 +920,17 @@ public class Bar {
         <Route AppenderRef="List" key="Service"/>
       </Routes>
     </Routing>
-  </appenders>
+  </Appenders>
 
-  <loggers>
-    <logger name="EventLogger" level="info" additivity="false">
+  <Loggers>
+    <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="Routing"/>
-    </logger>
+    </Logger>
 
-    <root level="error">
+    <Root level="error">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 
 </Configuration>]]></pre>
             During startup this configuration produces:
