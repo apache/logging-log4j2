@@ -43,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -96,9 +97,9 @@ public class ClientGUI extends JPanel implements NotificationListener {
         wrapLinesToggleButton = new JToggleButton(toggleWrapAction);
         wrapLinesToggleButton.setToolTipText("Toggle line wrapping");
         final JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea, //
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, //
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollStatusLog.setCorner(JScrollPane.LOWER_RIGHT_CORNER, wrapLinesToggleButton);
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, //
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollStatusLog.setCorner(ScrollPaneConstants.LOWER_RIGHT_CORNER, wrapLinesToggleButton);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("StatusLogger", scrollStatusLog);
