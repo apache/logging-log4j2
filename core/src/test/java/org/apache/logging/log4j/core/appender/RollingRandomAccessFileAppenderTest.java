@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,7 +26,7 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class RollingRandomAccessFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "RollingRandomAccessFileAppenderTest.xml");
     }
 

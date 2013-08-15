@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
-import org.apache.logging.log4j.core.util.Profiler;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -29,6 +23,12 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Profiler;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -54,14 +54,14 @@ public class DebugDisabledPerformanceComparison {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
         System.setProperty(LOG4J_CONF, LOG4J_CONFIG);
     }
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         System.clearProperty(LOGBACK_CONF);
         System.clearProperty(LOG4J_CONF);
     }

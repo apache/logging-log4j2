@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *

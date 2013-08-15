@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.servlet.jsp.tagext.Tag;
 
 import org.apache.logging.log4j.Level;
@@ -23,15 +25,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -41,14 +41,14 @@ public class IfEnabledTagTest {
 
     @BeforeClass
     public static void setUpClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         context.getConfiguration();
     }
 
     @AfterClass
     public static void cleanUpClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         context.reconfigure();
         StatusLogger.getLogger().reset();
