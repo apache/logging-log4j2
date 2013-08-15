@@ -141,7 +141,7 @@ public class App {
 <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
-  <appenders>
+  <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
       <!-- Flow tracing is most useful with a pattern that shows location.
@@ -151,12 +151,12 @@ public class App {
     <File name="log" fileName="target/test.log" append="false">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
     </File>
-  </appenders>
-  <loggers>
-    <root level="trace">
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
       <AppenderRef ref="log"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
             <p>
               Here is the output that results from the Java classes and configuration above.

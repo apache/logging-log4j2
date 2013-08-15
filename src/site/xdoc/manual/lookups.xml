@@ -160,9 +160,9 @@
             defined outside the application it would be quite common to see something like:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
-<appenders>
+<Appenders>
   <File name="ApplicationLog" fileName="${sys:logPath}/app.log"/>
-</appenders>]]></pre>
+</Appenders>]]></pre>
         </subsection>
       </section>
     </body>

@@ -79,25 +79,25 @@
   <category name="org.apache.log4j.xml">
     <priority value="info" />
   </category>
-  <root>
+  <Root>
     <priority value ="debug" />
-    <AppenderRef ref="STDOUT" />
-  </root>
+    <appender-ref ref="STDOUT" />
+  </Root>
 </log4j:configuration>]]></pre>
             <p>Log4j 2 XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <appenders>
+<Configuration>
+  <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
+  </Appenders>
+  <Loggers>
     <logger name="org.apache.log4j.xml" level="info"/>
-    <root level="debug">
+    <Root level="debug">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
 
             <h4>Sample 2 - Simple configuration using a File Appender</h4>
@@ -119,33 +119,33 @@
   </appender>
   <category name="org.apache.log4j.xml">
     <priority value="debug" />
-    <AppenderRef ref="A1" />
+    <appender-ref ref="A1" />
   </category>
   <root>
     <priority value ="debug" />
-    <AppenderRef ref="STDOUT" />
+    <appender-ref ref="STDOUT" />
   </root>
 </log4j:configuration>]]></pre>
 
            <p>Log4j 2 XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <appenders>
+<Configuration>
+  <Appenders>
     <File name="A1" fileName="A1.log" append="false">
       <PatternLayout pattern="%t %-5p %c{2} - %m%n"/>
     </File>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
+  </Appenders>
+  <Loggers>
     <logger name="org.apache.log4j.xml" level="debug">
       <AppenderRef ref="A1"/>
     </logger>
-    <root level="debug">
+    <Root level="debug">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
 
             <h4>Sample 3 - SocketAppender</h4>
@@ -169,33 +169,33 @@
   </appender>
   <category name="org.apache.log4j.xml">
     <priority value="debug"/>
-    <AppenderRef ref="A1"/>
+    <appender-ref ref="A1"/>
   </category>
   <root>
     <priority value="debug"/>
-    <AppenderRef ref="STDOUT"/>
+    <appender-ref ref="STDOUT"/>
   </root>
 </log4j:configuration>]]></pre>
 
            <p>Log4j 2 XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <appenders>
+<Configuration>
+  <Appenders>
     <Socket name="A1" host="localHost" port="5000">
       <SerializedLayout/>
     </Socket>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </Console>
-  </appenders>
-  <loggers>
+  </Appenders>
+  <Loggers>
     <logger name="org.apache.log4j.xml" level="debug">
       <AppenderRef ref="A1"/>
     </logger>
-    <root level="debug">
+    <Root level="debug">
       <AppenderRef ref="STDOUT"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
 
             <h4>Sample 4 - AsyncAppender</h4>
@@ -204,7 +204,7 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-    <AppenderRef ref="TEMP"/>
+    <appender-ref ref="TEMP"/>
   </appender>
   <appender name="TEMP" class="org.apache.log4j.FileAppender">
     <param name="File" value="temp"/>
@@ -214,7 +214,7 @@
   </appender>
   <root>
     <priority value="debug"/>
-    <AppenderRef ref="ASYNC"/>
+    <appender-ref ref="ASYNC"/>
   </root>
 </log4j:configuration>]]></pre>
 
@@ -243,8 +243,8 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" configDebug="true">
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-    <AppenderRef ref="TEMP"/>
-    <AppenderRef ref="CONSOLE"/>
+    <appender-ref ref="TEMP"/>
+    <appender-ref ref="CONSOLE"/>
   </appender>
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
@@ -259,15 +259,15 @@
   </appender>
   <root>
     <priority value="debug"/>
-    <AppenderRef ref="ASYNC"/>
+    <appender-ref ref="ASYNC"/>
   </root>
 </log4j:configuration>]]></pre>
 
             <p>Log4j 2 XML configuration. Note that the Async Appender should be configured after the appenders it
               references. This will allow it to shutdown properly.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug">
-  <appenders>
+<Configuration status="debug">
+  <Appenders>
     <Console name="CONSOLE" target="SYSTEM_OUT">
       <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
     </Console>
@@ -278,12 +278,12 @@
       <AppenderRef ref="TEMP"/>
       <AppenderRef ref="CONSOLE"/>
     </Async>
-  </appenders>
-  <loggers>
-    <root level="debug">
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
       <AppenderRef ref="ASYNC"/>
-    </root>
-  </loggers>
+    </Root>
+  </Loggers>
 </Configuration>]]></pre>
           </subsection>
         </section>
