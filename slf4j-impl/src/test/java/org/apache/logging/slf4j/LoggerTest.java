@@ -19,6 +19,7 @@ package org.apache.logging.slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -53,14 +54,14 @@ public class LoggerTest {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         ctx = (LoggerContext) LogManager.getContext(false);
         ctx.getConfiguration();
     }
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(XMLConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
     }
