@@ -16,14 +16,7 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.LineNumberReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.helpers.Throwables;
 import org.apache.logging.log4j.core.helpers.Transform;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
@@ -214,7 +208,7 @@ public class JSONLayout extends AbstractStringLayout {
             buf.append(this.eol);
             buf.append(this.indent2);
             buf.append("\"throwable\":\"");
-            final List<String> list = this.getThrowableStringList(throwable);
+            final List<String> list = Throwables.toStringList(throwable);
             for (final String str : list) {
                 buf.append(Transform.escapeJsonControlCharacters(str));
                 buf.append("\\\\n");
@@ -345,32 +339,6 @@ public class JSONLayout extends AbstractStringLayout {
      */
     public String getContentType() {
         return "application/json; charset=" + this.getCharset();
-    }
-
-    private List<String> getThrowableStringList(final Throwable throwable) {
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        try {
-            throwable.printStackTrace(pw);
-        } catch (final RuntimeException ex) {
-            // Ignore any exceptions.
-        }
-        pw.flush();
-        final LineNumberReader reader = new LineNumberReader(new StringReader(sw.toString()));
-        final ArrayList<String> lines = new ArrayList<String>();
-        try {
-            String line = reader.readLine();
-            while (line != null) {
-                lines.add(line);
-                line = reader.readLine();
-            }
-        } catch (final IOException ex) {
-            if (ex instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-            }
-            lines.add(ex.toString());
-        }
-        return lines;
     }
 
     /**
