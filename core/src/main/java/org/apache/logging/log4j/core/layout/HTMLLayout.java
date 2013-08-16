@@ -125,7 +125,7 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append(event.getMillis() - jvmStartTime);
         sbuf.append("</td>").append(Constants.LINE_SEP);
 
-        final String escapedThread = Transform.escapeTags(event.getThreadName());
+        final String escapedThread = Transform.escapeHtmlTags(event.getThreadName());
         sbuf.append("<td title=\"").append(escapedThread).append(" thread\">");
         sbuf.append(escapedThread);
         sbuf.append("</td>").append(Constants.LINE_SEP);
@@ -133,18 +133,18 @@ public final class HTMLLayout extends AbstractStringLayout {
         sbuf.append("<td title=\"Level\">");
         if (event.getLevel().equals(Level.DEBUG)) {
             sbuf.append("<font color=\"#339933\">");
-            sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
+            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
             sbuf.append("</font>");
         } else if (event.getLevel().isAtLeastAsSpecificAs(Level.WARN)) {
             sbuf.append("<font color=\"#993300\"><strong>");
-            sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
+            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
             sbuf.append("</strong></font>");
         } else {
-            sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
+            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
         }
         sbuf.append("</td>").append(Constants.LINE_SEP);
 
-        String escapedLogger = Transform.escapeTags(event.getLoggerName());
+        String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
         if (escapedLogger.isEmpty()) {
             escapedLogger = "root";
         }
@@ -155,14 +155,14 @@ public final class HTMLLayout extends AbstractStringLayout {
         if (locationInfo) {
             final StackTraceElement element = event.getSource();
             sbuf.append("<td>");
-            sbuf.append(Transform.escapeTags(element.getFileName()));
+            sbuf.append(Transform.escapeHtmlTags(element.getFileName()));
             sbuf.append(':');
             sbuf.append(element.getLineNumber());
             sbuf.append("</td>").append(Constants.LINE_SEP);
         }
 
         sbuf.append("<td title=\"Message\">");
-        sbuf.append(Transform.escapeTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
+        sbuf.append(Transform.escapeHtmlTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
         sbuf.append("</td>").append(Constants.LINE_SEP);
         sbuf.append("</tr>").append(Constants.LINE_SEP);
 
@@ -170,7 +170,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Nested Diagnostic Context\">");
-            sbuf.append("NDC: ").append(Transform.escapeTags(event.getContextStack().toString()));
+            sbuf.append("NDC: ").append(Transform.escapeHtmlTags(event.getContextStack().toString()));
             sbuf.append("</td></tr>").append(Constants.LINE_SEP);
         }
 
@@ -178,7 +178,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
             sbuf.append(";\" colspan=\"6\" ");
             sbuf.append("title=\"Mapped Diagnostic Context\">");
-            sbuf.append("MDC: ").append(Transform.escapeTags(event.getContextMap().toString()));
+            sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextMap().toString()));
             sbuf.append("</td></tr>").append(Constants.LINE_SEP);
         }
 
@@ -241,7 +241,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             } else {
                 first = false;
             }
-            sbuf.append(Transform.escapeTags(line));
+            sbuf.append(Transform.escapeHtmlTags(line));
             sbuf.append(Constants.LINE_SEP);
         }
     }

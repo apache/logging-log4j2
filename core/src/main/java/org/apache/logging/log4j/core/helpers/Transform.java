@@ -40,7 +40,7 @@ public final class Transform {
      * @param input The text to be converted.
      * @return The input string with the special characters replaced.
      */
-    public static String escapeTags(final String input) {
+    public static String escapeHtmlTags(final String input) {
         //Check if the string is null, zero length or devoid of special characters
         // if so, return what was sent in.
 
