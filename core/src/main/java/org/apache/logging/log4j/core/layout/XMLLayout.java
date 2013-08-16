@@ -140,13 +140,13 @@ public class XMLLayout extends AbstractStringLayout {
         if (name.isEmpty()) {
             name = "root";
         }
-        buf.append(Transform.escapeTags(name));
+        buf.append(Transform.escapeHtmlTags(name));
         buf.append("\" timestamp=\"");
         buf.append(event.getMillis());
         buf.append("\" level=\"");
-        buf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
+        buf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
         buf.append("\" thread=\"");
-        buf.append(Transform.escapeTags(event.getThreadName()));
+        buf.append(Transform.escapeHtmlTags(event.getThreadName()));
         buf.append("\">");
         buf.append(this.eol);
 
@@ -230,11 +230,11 @@ public class XMLLayout extends AbstractStringLayout {
                 buf.append(this.namespacePrefix);
             }
             buf.append("LocationInfo class=\"");
-            buf.append(Transform.escapeTags(element.getClassName()));
+            buf.append(Transform.escapeHtmlTags(element.getClassName()));
             buf.append("\" method=\"");
-            buf.append(Transform.escapeTags(element.getMethodName()));
+            buf.append(Transform.escapeHtmlTags(element.getMethodName()));
             buf.append("\" file=\"");
-            buf.append(Transform.escapeTags(element.getFileName()));
+            buf.append(Transform.escapeHtmlTags(element.getFileName()));
             buf.append("\" line=\"");
             buf.append(element.getLineNumber());
             buf.append("\"/>");
@@ -256,9 +256,9 @@ public class XMLLayout extends AbstractStringLayout {
                     buf.append(this.namespacePrefix);
                 }
                 buf.append("Data name=\"");
-                buf.append(Transform.escapeTags(entry.getKey()));
+                buf.append(Transform.escapeHtmlTags(entry.getKey()));
                 buf.append("\" value=\"");
-                buf.append(Transform.escapeTags(String.valueOf(entry.getValue())));
+                buf.append(Transform.escapeHtmlTags(String.valueOf(entry.getValue())));
                 buf.append("\"/>");
                 buf.append(this.eol);
             }
