@@ -22,90 +22,90 @@ import com.lmax.disruptor.collections.Histogram;
 
 public class MTPerfTest extends PerfTest {
 
-	public static void main(final String[] args) throws Exception {
-		new MTPerfTest().doMain(args);
-	}
+    public static void main(final String[] args) throws Exception {
+        new MTPerfTest().doMain(args);
+    }
 
-	@Override
-	public void runTestAndPrintResult(final IPerfTestRunner runner,
-			final String name, final int threadCount, final String resultFile)
-			throws Exception {
+    @Override
+    public void runTestAndPrintResult(final IPerfTestRunner runner,
+            final String name, final int threadCount, final String resultFile)
+            throws Exception {
 
-		// ThreadContext.put("aKey", "mdcVal");
-		PerfTest.println("Warming up the JVM...");
-		final long t1 = System.nanoTime();
+        // ThreadContext.put("aKey", "mdcVal");
+        PerfTest.println("Warming up the JVM...");
+        final long t1 = System.nanoTime();
 
-		// warmup at least 2 rounds and at most 1 minute
-		final Histogram warmupHist = PerfTest.createHistogram();
-		final long stop = System.currentTimeMillis() + (60 * 1000);
-		final Runnable run1 = new Runnable() {
-			@Override
+        // warmup at least 2 rounds and at most 1 minute
+        final Histogram warmupHist = PerfTest.createHistogram();
+        final long stop = System.currentTimeMillis() + (60 * 1000);
+        final Runnable run1 = new Runnable() {
+            @Override
             public void run() {
-				for (int i = 0; i < 10; i++) {
-					final int LINES = PerfTest.throughput ? 50000 : 200000;
-					runTest(runner, LINES, null, warmupHist, 2);
-					if (i > 0 && System.currentTimeMillis() >= stop) {
-						return;
-					}
-				}
-			}
-		};
-		final Thread thread1 = new Thread(run1);
-		final Thread thread2 = new Thread(run1);
-		thread1.start();
-		thread2.start();
-		thread1.join();
-		thread2.join();
+                for (int i = 0; i < 10; i++) {
+                    final int LINES = PerfTest.throughput ? 50000 : 200000;
+                    runTest(runner, LINES, null, warmupHist, 2);
+                    if (i > 0 && System.currentTimeMillis() >= stop) {
+                        return;
+                    }
+                }
+            }
+        };
+        final Thread thread1 = new Thread(run1);
+        final Thread thread2 = new Thread(run1);
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
 
-		PerfTest.printf("Warmup complete in %.1f seconds%n",
-				(System.nanoTime() - t1) / (1000.0 * 1000.0 * 1000.0));
-		PerfTest.println("Waiting 10 seconds for buffers to drain warmup data...");
-		Thread.sleep(10000);
-		new File("perftest.log").delete();
-		new File("perftest.log").createNewFile();
+        PerfTest.printf("Warmup complete in %.1f seconds%n",
+                (System.nanoTime() - t1) / (1000.0 * 1000.0 * 1000.0));
+        PerfTest.println("Waiting 10 seconds for buffers to drain warmup data...");
+        Thread.sleep(10000);
+        new File("perftest.log").delete();
+        new File("perftest.log").createNewFile();
 
-		PerfTest.println("Starting the main test...");
-		PerfTest.throughput = false;
-		multiThreadedTestRun(runner, name, threadCount, resultFile);
+        PerfTest.println("Starting the main test...");
+        PerfTest.throughput = false;
+        multiThreadedTestRun(runner, name, threadCount, resultFile);
 
-		Thread.sleep(1000);
-		PerfTest.throughput = true;
-		multiThreadedTestRun(runner, name, threadCount, resultFile);
-	}
+        Thread.sleep(1000);
+        PerfTest.throughput = true;
+        multiThreadedTestRun(runner, name, threadCount, resultFile);
+    }
 
-	private void multiThreadedTestRun(final IPerfTestRunner runner,
-			final String name, final int threadCount, final String resultFile)
-			throws Exception {
+    private void multiThreadedTestRun(final IPerfTestRunner runner,
+            final String name, final int threadCount, final String resultFile)
+            throws Exception {
 
-		final Histogram[] histograms = new Histogram[threadCount];
-		for (int i = 0; i < histograms.length; i++) {
-			histograms[i] = PerfTest.createHistogram();
-		}
-		final int LINES = 256 * 1024;
+        final Histogram[] histograms = new Histogram[threadCount];
+        for (int i = 0; i < histograms.length; i++) {
+            histograms[i] = PerfTest.createHistogram();
+        }
+        final int LINES = 256 * 1024;
 
-		final Thread[] threads = new Thread[threadCount];
-		for (int i = 0; i < threads.length; i++) {
-			final Histogram histogram = histograms[i];
-			threads[i] = new Thread() {
-				@Override
+        final Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threads.length; i++) {
+            final Histogram histogram = histograms[i];
+            threads[i] = new Thread() {
+                @Override
                 public void run() {
-//				    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
-				    final int latencyCount = 5000000;
-					final int count = PerfTest.throughput ? LINES / threadCount
-							: latencyCount;
-					runTest(runner, count, "end", histogram, threadCount);
-				}
-			};
-		}
-		for (final Thread thread : threads) {
-			thread.start();
-		}
-		for (final Thread thread : threads) {
-			thread.join();
-		}
+//                    int latencyCount = threadCount >= 16 ? 1000000 : 5000000;
+                    final int latencyCount = 5000000;
+                    final int count = PerfTest.throughput ? LINES / threadCount
+                            : latencyCount;
+                    runTest(runner, count, "end", histogram, threadCount);
+                }
+            };
+        }
+        for (final Thread thread : threads) {
+            thread.start();
+        }
+        for (final Thread thread : threads) {
+            thread.join();
+        }
 
-		for (final Histogram histogram : histograms) {
-			PerfTest.reportResult(resultFile, name, histogram);
-		}
-	}
+        for (final Histogram histogram : histograms) {
+            PerfTest.reportResult(resultFile, name, histogram);
+        }
+}
 }
