@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-356" dev="ggregory" type="add">
+        Create a JSON Layout.
+      </action>
       <action issue="LOG4J2-343" dev="rpopma" type="fix" due-to="Henning Schmiedehausen">
         Removed unnecessary generics from Appender interface and implementing classes.
       </action>
