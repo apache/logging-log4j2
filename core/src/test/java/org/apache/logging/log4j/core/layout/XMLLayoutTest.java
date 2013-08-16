@@ -38,8 +38,7 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public class XMLLayoutTest {
-    private static final String body =
-        "<Message><![CDATA[empty mdc]]></Message>";
+    private static final String body = "<Message><![CDATA[empty mdc]]></Message>";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @AfterClass
