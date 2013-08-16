@@ -131,9 +131,9 @@ public class FlumeEmbeddedAppenderTest {
         EventLogger.logEvent(msg);
 
         final Event event = primary.poll();
-   	    Assert.assertNotNull(event);
+        Assert.assertNotNull(event);
         final String body = getBody(event);
-  	    Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
+        Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("Test Log4j"));
     }
 

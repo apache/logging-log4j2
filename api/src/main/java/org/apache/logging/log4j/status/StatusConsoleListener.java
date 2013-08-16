@@ -79,7 +79,7 @@ public class StatusConsoleListener implements StatusListener {
      * @return the Log Level.
      */
     @Override
-	public Level getStatusLevel() {
+    public Level getStatusLevel() {
         return this.level;
     }
 

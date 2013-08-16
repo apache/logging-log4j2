@@ -95,7 +95,7 @@ public class LoggingApp {
         }
 
         @Override
-		public void run() {
+        public void run() {
             System.out.println("STARTING..................");
 
             while (!shutdown) {
