@@ -198,7 +198,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param filterClass Filter the returned plugins after calling the plugin manager.
      * @return The PatternParser.
      */
-    public static PatternParser createPatternParser(final Configuration config,
+    private static PatternParser createPatternParser(final Configuration config,
                                                     final Class<? extends PatternConverter> filterClass) {
         if (config == null) {
             return new PatternParser(config, PatternLayout.KEY, LogEventPatternConverter.class,
