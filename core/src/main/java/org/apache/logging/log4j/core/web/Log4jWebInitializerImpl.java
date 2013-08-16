@@ -181,7 +181,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
      * and add it to the {@link ServletContext}, then return that.
      *
      * @param servletContext The {@link ServletContext} for this web application
-     * @return the initializer.
+     * @return the initializer, never {@code null}.
      */
     static Log4jWebInitializer getLog4jWebInitializer(final ServletContext servletContext) {
         synchronized (MUTEX) {
