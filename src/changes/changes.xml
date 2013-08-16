@@ -33,6 +33,9 @@
       <action issue="LOG4J2-347" dev="rpopma" type="fix" due-to="David Phillips">
         Give the AsyncAppender thread a more descriptive name for easier debugging/profiling.
       </action>
+      <action issue="LOG4J2-332" dev="rgoers" type="fix" due-to="Hervé Boutemy">
+        Modified documentation to refer to SLF4J Binding instead of SLF4J Bridge.
+      </action>
       <action issue="LOG4J2-342" dev="rgoers" type="fix">
         Ignore xml:base attributes.
       </action>
