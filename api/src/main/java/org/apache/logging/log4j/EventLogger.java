@@ -27,7 +27,7 @@ public final class EventLogger {
 
     private static final String NAME = "EventLogger";
 
-	/**
+    /**
      * Define the Event Marker.
      */
     public static final Marker EVENT_MARKER = MarkerManager.getMarker("EVENT");

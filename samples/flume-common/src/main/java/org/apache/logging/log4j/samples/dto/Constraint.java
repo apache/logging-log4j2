@@ -25,13 +25,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Constraint {
 
-	boolean required() default false;
+    boolean required() default false;
 
-	String pattern() default "";
+    String pattern() default "";
 
-	int minLength() default -1;
+    int minLength() default -1;
 
-	int maxLength() default -1;
+    int maxLength() default -1;
 
-	int totalDigits() default -1;
+    int totalDigits() default -1;
 }

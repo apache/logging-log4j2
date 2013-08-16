@@ -38,40 +38,40 @@ public class PropertiesUtil {
         this.props = props;
     }
 
-	/**
-	 * Loads and closes the given property input stream.
-	 * If an error occurs, log to the status logger.
-	 * 
-	 * @param in
-	 *            a property input stream.
-	 * @param source
-	 *            a source object describing the source, like a resource string
-	 *            or a URL.
-	 * @return a new Properties object
-	 */
-	static Properties loadClose(InputStream in, Object source) {
-		Properties props = new Properties();
-		if (null != in) {
-			try {
-				props.load(in);
-			} catch (final IOException e) {
-				LOGGER.error("Unable to read " + source, e);
-			} finally {
-				try {
-					in.close();
-				} catch (final IOException e) {
-					LOGGER.error("Unable to close " + source, e);
-				}
-			}
-		}
-		return props;
-	}
+    /**
+     * Loads and closes the given property input stream.
+     * If an error occurs, log to the status logger.
+     * 
+     * @param in
+     *            a property input stream.
+     * @param source
+     *            a source object describing the source, like a resource string
+     *            or a URL.
+     * @return a new Properties object
+     */
+    static Properties loadClose(InputStream in, Object source) {
+        Properties props = new Properties();
+        if (null != in) {
+            try {
+                props.load(in);
+            } catch (final IOException e) {
+                LOGGER.error("Unable to read " + source, e);
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException e) {
+                    LOGGER.error("Unable to close " + source, e);
+                }
+            }
+        }
+        return props;
+    }
     
-	public PropertiesUtil(final String propsLocn) {
-		final ClassLoader loader = ProviderUtil.findClassLoader();
-		final InputStream in = loader.getResourceAsStream(propsLocn);
-		this.props = loadClose(in, propsLocn);
-	}
+    public PropertiesUtil(final String propsLocn) {
+        final ClassLoader loader = ProviderUtil.findClassLoader();
+        final InputStream in = loader.getResourceAsStream(propsLocn);
+        this.props = loadClose(in, propsLocn);
+    }
 
     public static PropertiesUtil getProperties() {
         return LOG4J_PROPERTIES;

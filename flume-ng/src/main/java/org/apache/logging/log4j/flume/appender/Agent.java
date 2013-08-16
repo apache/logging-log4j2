@@ -73,18 +73,18 @@ public final class Agent {
      */
     @PluginFactory
     public static Agent createAgent(@PluginAttr("host") String host,
-			@PluginAttr("port") final String port) {
-		if (host == null) {
-			host = DEFAULT_HOST;
-		}
+            @PluginAttr("port") final String port) {
+        if (host == null) {
+            host = DEFAULT_HOST;
+        }
 
-		int portNum;
-		try {
-			portNum = Integers.parseInt(port, DEFAULT_PORT);
-		} catch (final Exception ex) {
-			LOGGER.error("Error parsing port number " + port, ex);
-			return null;
-		}
-		return new Agent(host, portNum);
-	}
+        int portNum;
+        try {
+            portNum = Integers.parseInt(port, DEFAULT_PORT);
+        } catch (final Exception ex) {
+            LOGGER.error("Error parsing port number " + port, ex);
+            return null;
+        }
+        return new Agent(host, portNum);
+    }
 }

@@ -24,7 +24,7 @@ import java.util.Properties;
  */
 public class Provider {
     private static final Integer DEFAULT_PRIORITY = Integer.valueOf(-1);
-	private static final String FACTORY_PRIORITY = "FactoryPriority";
+    private static final String FACTORY_PRIORITY = "FactoryPriority";
     private static final String THREAD_CONTEXT_MAP = "ThreadContextMap";
     private static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
 

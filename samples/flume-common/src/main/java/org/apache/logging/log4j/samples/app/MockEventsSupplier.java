@@ -29,70 +29,70 @@ import java.util.Random;
 
 public class MockEventsSupplier {
 
-	/* This provides random generation */
-	static Random ran = new Random();
+    /* This provides random generation */
+    static Random ran = new Random();
 
-	public static List<AuditEvent> getAllEvents(final String member) {
+    public static List<AuditEvent> getAllEvents(final String member) {
 
-		final List<AuditEvent> events = new ArrayList<AuditEvent>();
+        final List<AuditEvent> events = new ArrayList<AuditEvent>();
 
 
-		final Login login = LogEventFactory.getEvent(Login.class);
-		login.setStartPageOption("account summary");
-		login.setSource("online");
-		login.setMember(member);
-		events.add(login);
+        final Login login = LogEventFactory.getEvent(Login.class);
+        login.setStartPageOption("account summary");
+        login.setSource("online");
+        login.setMember(member);
+        events.add(login);
 
-		final ChangePassword changePassword = LogEventFactory.getEvent(ChangePassword.class);
-		changePassword.setMember(member);
-		events.add(changePassword);
+        final ChangePassword changePassword = LogEventFactory.getEvent(ChangePassword.class);
+        changePassword.setMember(member);
+        events.add(changePassword);
 
-		final Transfer transfer = LogEventFactory.getEvent(Transfer.class);
+        final Transfer transfer = LogEventFactory.getEvent(Transfer.class);
 
-		transfer.setAmount("4251");
-		transfer.setFromAccount("REPLACE"); // getAccount(mbr, accounts));
-		transfer.setToAccount("31142553");
-		transfer.setReference("DI-2415220110804");
-		transfer.setComment("My Transfer");
-		transfer.setMemo("For dinner");
-		transfer.setPayment("Use Checking");
-		transfer.setTransactionType("1");
-		transfer.setSource("IB Transfer page");
-		transfer.setCompletionStatus("complete");
-		transfer.setMember(member);
-		events.add(transfer);
+        transfer.setAmount("4251");
+        transfer.setFromAccount("REPLACE"); // getAccount(mbr, accounts));
+        transfer.setToAccount("31142553");
+        transfer.setReference("DI-2415220110804");
+        transfer.setComment("My Transfer");
+        transfer.setMemo("For dinner");
+        transfer.setPayment("Use Checking");
+        transfer.setTransactionType("1");
+        transfer.setSource("IB Transfer page");
+        transfer.setCompletionStatus("complete");
+        transfer.setMember(member);
+        events.add(transfer);
 
-		final Alert alert = LogEventFactory.getEvent(Alert.class);
+        final Alert alert = LogEventFactory.getEvent(Alert.class);
 
-		alert.setAction("add");
-		alert.setType("balance alert");
-		alert.setAccountNumber("REPLACE"); // , getAccount(mbr, accounts));
-		alert.setTrigger("GT");
-		alert.setThreshold("1000");
-		alert.setMember(member);
-		events.add(alert);
+        alert.setAction("add");
+        alert.setType("balance alert");
+        alert.setAccountNumber("REPLACE"); // , getAccount(mbr, accounts));
+        alert.setTrigger("GT");
+        alert.setThreshold("1000");
+        alert.setMember(member);
+        events.add(alert);
 
-		final ScheduledTransaction scheduledTransaction = LogEventFactory
-				.getEvent(ScheduledTransaction.class);
+        final ScheduledTransaction scheduledTransaction = LogEventFactory
+                .getEvent(ScheduledTransaction.class);
 
-		scheduledTransaction.setAction("add");
-		scheduledTransaction.setFromAccount("REPLACE"); // getAccount(mbr,
-																										// accounts));
-		scheduledTransaction.setToAccount("REPLACE"); // "9200000214");
-		scheduledTransaction.setAmount("2541");
-		scheduledTransaction.setStartDate("20110105");
-		scheduledTransaction.setMember("256");
-		scheduledTransaction.setFrequency("4");
-		scheduledTransaction.setMemo("Scheduled Transfer");
-		scheduledTransaction.setPayment("3456");
-		scheduledTransaction.setCompletionNotification("Was completed");
-		scheduledTransaction.setEndDate("2020-05-30");
-		scheduledTransaction.setSrtId("Calabasas2341");
-		scheduledTransaction.setSource("Home Page");
-		scheduledTransaction.setCompletionStatus("success");
-		scheduledTransaction.setMember(member);
-		events.add(scheduledTransaction);
+        scheduledTransaction.setAction("add");
+        scheduledTransaction.setFromAccount("REPLACE"); // getAccount(mbr,
+                                                        // accounts));
+        scheduledTransaction.setToAccount("REPLACE"); // "9200000214");
+        scheduledTransaction.setAmount("2541");
+        scheduledTransaction.setStartDate("20110105");
+        scheduledTransaction.setMember("256");
+        scheduledTransaction.setFrequency("4");
+        scheduledTransaction.setMemo("Scheduled Transfer");
+        scheduledTransaction.setPayment("3456");
+        scheduledTransaction.setCompletionNotification("Was completed");
+        scheduledTransaction.setEndDate("2020-05-30");
+        scheduledTransaction.setSrtId("Calabasas2341");
+        scheduledTransaction.setSource("Home Page");
+        scheduledTransaction.setCompletionStatus("success");
+        scheduledTransaction.setMember(member);
+        events.add(scheduledTransaction);
 
-		return events;
-	}
+        return events;
+    }
 }
