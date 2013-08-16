@@ -203,7 +203,7 @@ public class XMLLayout extends AbstractStringLayout {
 
         final Throwable throwable = event.getThrown();
         if (throwable != null) {
-            final List<String> s = getThrowableString(throwable);
+            final List<String> s = getThrowableStringList(throwable);
             buf.append(this.indent2);
             buf.append('<');
             if (!complete) {
@@ -346,7 +346,7 @@ public class XMLLayout extends AbstractStringLayout {
         return "text/xml; charset=" + this.getCharset();
     }
 
-    List<String> getThrowableString(final Throwable throwable) {
+    private List<String> getThrowableStringList(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         try {
