@@ -328,7 +328,7 @@ public class LoggerConfig extends AbstractFilterable {
      *
      * @return an unmodifiable map with the configuration properties, or
      *         {@code null}
-     * @see Configuration#getSubst()
+     * @see Configuration#getStrSubstitutor()
      * @see StrSubstitutor
      */
     // LOG4J2-157
@@ -357,7 +357,7 @@ public class LoggerConfig extends AbstractFilterable {
             for (final Map.Entry<Property, Boolean> entry : properties
                     .entrySet()) {
                 final Property prop = entry.getKey();
-                final String value = entry.getValue() ? config.getSubst()
+                final String value = entry.getValue() ? config.getStrSubstitutor()
                         .replace(prop.getValue()) : prop.getValue();
                 props.add(Property.createProperty(prop.getName(), value));
             }

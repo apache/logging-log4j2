@@ -236,7 +236,7 @@ public class AsyncLogger extends Logger {
     public void actualAsyncLog(final RingBufferLogEvent event) {
         final Map<Property, Boolean> properties = config.loggerConfig.getProperties();
         event.mergePropertiesIntoContextMap(properties,
-                config.config.getSubst());
+                config.config.getStrSubstitutor());
         config.logEvent(event);
     }
 
