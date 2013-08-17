@@ -72,7 +72,7 @@ public interface Configuration extends Filterable {
 
     void removeListener(ConfigurationListener listener);
 
-    StrSubstitutor getSubst();
+    StrSubstitutor getStrSubstitutor();
 
     void createConfiguration(Node node, LogEvent event);
 

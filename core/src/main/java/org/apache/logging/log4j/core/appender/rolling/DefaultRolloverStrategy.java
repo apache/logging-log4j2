@@ -386,7 +386,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         } else {
             maxIndex = DEFAULT_WINDOW_SIZE;
         }
-        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, config.getSubst());
+        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, config.getStrSubstitutor());
     }
 
 }

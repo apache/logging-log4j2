@@ -336,7 +336,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     @Override
-    public StrSubstitutor getSubst() {
+    public StrSubstitutor getStrSubstitutor() {
         return subst;
     }
 

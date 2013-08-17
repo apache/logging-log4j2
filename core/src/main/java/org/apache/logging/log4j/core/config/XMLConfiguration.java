@@ -158,14 +158,14 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 if ("status".equalsIgnoreCase(entry.getKey())) {
-                    final Level stat = Level.toLevel(getSubst().replace(entry.getValue()), null);
+                    final Level stat = Level.toLevel(getStrSubstitutor().replace(entry.getValue()), null);
                     if (stat != null) {
                         status = stat;
                     } else {
                         messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to " + status);
                     }
                 } else if ("dest".equalsIgnoreCase(entry.getKey())) {
-                    final String dest = getSubst().replace(entry.getValue());
+                    final String dest = getStrSubstitutor().replace(entry.getValue());
                     if (dest != null) {
                         if (dest.equalsIgnoreCase("err")) {
                             stream = System.err;
@@ -180,28 +180,28 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                         }
                     }
                 } else if ("shutdownHook".equalsIgnoreCase(entry.getKey())) {
-                    String hook = getSubst().replace(entry.getValue());
+                    String hook = getStrSubstitutor().replace(entry.getValue());
                     isShutdownHookEnabled = !hook.equalsIgnoreCase("disable");
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    verbose = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
-                } else if ("packages".equalsIgnoreCase(getSubst().replace(entry.getKey()))) {
+                    verbose = Boolean.parseBoolean(getStrSubstitutor().replace(entry.getValue()));
+                } else if ("packages".equalsIgnoreCase(getStrSubstitutor().replace(entry.getKey()))) {
                     final String[] packages = entry.getValue().split(",");
                     for (final String p : packages) {
                         PluginManager.addPackage(p);
                     }
                 } else if ("name".equalsIgnoreCase(entry.getKey())) {
-                    setName(getSubst().replace(entry.getValue()));
+                    setName(getStrSubstitutor().replace(entry.getValue()));
                 } else if ("strict".equalsIgnoreCase(entry.getKey())) {
-                    strict = Boolean.parseBoolean(getSubst().replace(entry.getValue()));
+                    strict = Boolean.parseBoolean(getStrSubstitutor().replace(entry.getValue()));
                 } else if ("schema".equalsIgnoreCase(entry.getKey())) {
-                    schema = getSubst().replace(entry.getValue());
+                    schema = getStrSubstitutor().replace(entry.getValue());
                 } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
-                    final int interval = Integer.parseInt(getSubst().replace(entry.getValue()));
+                    final int interval = Integer.parseInt(getStrSubstitutor().replace(entry.getValue()));
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
-                    final String advertiserString = getSubst().replace(entry.getValue());
+                    final String advertiserString = getStrSubstitutor().replace(entry.getValue());
                     if (advertiserString != null)
                     {
                         @SuppressWarnings("unchecked")

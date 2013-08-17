@@ -108,7 +108,7 @@ public final class RoutingAppender extends AbstractAppender {
         if (rewritePolicy != null) {
             event = rewritePolicy.rewrite(event);
         }
-        final String key = config.getSubst().replace(event, routes.getPattern());
+        final String key = config.getStrSubstitutor().replace(event, routes.getPattern());
         final AppenderControl control = getControl(key, event);
         if (control != null) {
             control.callAppender(event);
