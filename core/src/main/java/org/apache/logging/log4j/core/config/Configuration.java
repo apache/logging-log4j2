@@ -76,7 +76,7 @@ public interface Configuration extends Filterable {
 
     void createConfiguration(Node node, LogEvent event);
 
-    Object getComponent(String name);
+    <T> T getComponent(String name);
 
     void addComponent(String name, Object object);
 
