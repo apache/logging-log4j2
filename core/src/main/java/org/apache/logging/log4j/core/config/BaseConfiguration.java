@@ -192,7 +192,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             if (child.getObject() == null) {
                 continue;
             }
-            if (child.getName().equalsIgnoreCase("properties")) {
+            if (child.getName().equalsIgnoreCase("Properties")) {
                 if (tempLookup == subst.getVariableResolver()) {
                     subst.setVariableResolver((StrLookup) child.getObject());
                 } else {
@@ -204,11 +204,11 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 final StrLookup lookup = map == null ? null : new MapLookup(map);
                 subst.setVariableResolver(new Interpolator(lookup));
             }
-            if (child.getName().equalsIgnoreCase("appenders")) {
+            if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
             } else if (child.getObject() instanceof Filter) {
                 addFilter((Filter) child.getObject());
-            } else if (child.getName().equalsIgnoreCase("loggers")) {
+            } else if (child.getName().equalsIgnoreCase("Loggers")) {
                 final Loggers l = (Loggers) child.getObject();
                 loggers = l.getMap();
                 setLoggers = true;
