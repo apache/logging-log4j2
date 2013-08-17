@@ -46,16 +46,12 @@ public interface Layout<T extends Serializable> {
     /**
      * Returns the format for the layout format.
      * @return The footer.
-     * @doubt the concept of header and footer is not universal, should not be on the base interface.
-     * (RG) I agree with this.
      */
     byte[] getFooter();
 
     /**
      * Returns the header for the layout format.
      * @return The header.
-     * @doubt the concept of header and footer is not universal, should not be on the base interface.
-     * (RG) I agree with this.
      */
     byte[] getHeader();
 
