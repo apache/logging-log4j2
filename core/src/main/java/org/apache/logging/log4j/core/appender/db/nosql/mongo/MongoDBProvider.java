@@ -180,6 +180,7 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
             if (username != null && username.length() > 0 && password != null && password.length() > 0) {
                 description += ", username=" + username + ", passwordHash="
                         + NameUtil.md5(password + MongoDBProvider.class.getName());
+                MongoDBConnection.authenticate(database, username, password);
             } else {
                 LOGGER.error("The database is not already authenticated so you must supply a username and password "
                         + "for the MongoDB provider.");
