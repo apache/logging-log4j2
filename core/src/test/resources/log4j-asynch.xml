@@ -25,7 +25,7 @@
     <List name="List">
       <PatternLayout pattern="%C %M %m"/>
     </List>
-    <Async name="Async" includeLocation="true">
+    <Async name="Async" includeLocation="true" error-ref="STDOUT">
       <AppenderRef ref="List"/>
     </Async>
   </Appenders>

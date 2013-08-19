@@ -174,14 +174,22 @@ public class PluginManager {
         }
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String pluginType = plugin.category();
-            if (!pluginTypeMap.containsKey(pluginType)) {
-                pluginTypeMap.putIfAbsent(pluginType, new ConcurrentHashMap<String, PluginType<?>>());
+            final String pluginCategory = plugin.category();
+            if (!pluginTypeMap.containsKey(pluginCategory)) {
+                pluginTypeMap.putIfAbsent(pluginCategory, new ConcurrentHashMap<String, PluginType<?>>());
             }
-            final Map<String, PluginType<?>> map = pluginTypeMap.get(pluginType);
-            final String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            map.put(plugin.name().toLowerCase(), new PluginType(clazz, type, plugin.printObject(),
-                plugin.deferChildren()));
+            final Map<String, PluginType<?>> map = pluginTypeMap.get(pluginCategory);
+            String type = plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
+            PluginType pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
+            map.put(plugin.name().toLowerCase(), pluginType);
+            final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
+            if (pluginAliases != null) {
+                for (String alias : pluginAliases.value()) {
+                    type =  plugin.elementType().equals(Plugin.EMPTY) ? alias : plugin.elementType();
+                    pluginType = new PluginType(clazz, type, plugin.printObject(), plugin.deferChildren());
+                    map.put(alias.trim().toLowerCase(), pluginType);
+                }
+            }
         }
         long elapsed = System.nanoTime() - start;
         plugins = pluginTypeMap.get(type);

@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -635,7 +636,16 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
          *   If not an array, store the object in the child node into the parameter array.
          */
         for (final Annotation[] parmTypes : parmArray) {
+            String[] aliases = null;
+            for (final Annotation a: parmTypes) {
+                if (a instanceof PluginAliases) {
+                    aliases = ((PluginAliases) a).value();
+                }
+            }
             for (final Annotation a : parmTypes) {
+                if (a instanceof PluginAliases) {
+                    continue;
+                }
                 if (sb.length() == 0) {
                     sb.append(" with params(");
                 } else {
@@ -655,14 +665,15 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     final String name = ((PluginValue) a).value();
                     String v = node.getValue();
                     if (v == null) {
-                        v = getAttrValue("value", attrs);
+                        v = getAttrValue("value", null, attrs);
                     }
                     final String value = subst.replace(event, v);
                     sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginAttr) {
-                    final String name = ((PluginAttr) a).value();
-                    final String value = subst.replace(event, getAttrValue(name, attrs));
+                    PluginAttr attr = (PluginAttr) a;
+                    final String name = attr.value();
+                    final String value = subst.replace(event, getAttrValue(name, aliases, attrs));
                     sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
@@ -804,12 +815,21 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
     }
 
-    private String getAttrValue(final String name, final Map<String, String> attrs) {
+    private String getAttrValue(final String name, final String[] aliases, final Map<String, String> attrs) {
         for (final String key : attrs.keySet()) {
             if (key.equalsIgnoreCase(name)) {
                 final String attr = attrs.get(key);
                 attrs.remove(key);
                 return attr;
+            }
+            if (aliases != null) {
+                for (String alias : aliases) {
+                    if (key.equalsIgnoreCase(alias)) {
+                        final String attr = attrs.get(key);
+                        attrs.remove(key);
+                        return attr;
+                    }
+                }
             }
         }
         return null;
