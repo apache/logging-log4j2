@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -166,7 +167,7 @@ public final class AsyncAppender extends AbstractAppender {
     @PluginFactory
     public static AsyncAppender createAppender(
                 @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
-                @PluginAttr("errorRef") final String errorRef,
+                @PluginAttr("errorRef") @PluginAliases("error-ref") final String errorRef,
                 @PluginAttr("blocking") final String blocking,
                 @PluginAttr("bufferSize") final String size,
                 @PluginAttr("name") final String name,

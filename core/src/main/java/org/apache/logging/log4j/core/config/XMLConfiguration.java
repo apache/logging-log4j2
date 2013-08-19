@@ -73,7 +73,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
-     * 
+     *
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException
      */
@@ -87,7 +87,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     /**
      * Enables XInclude for the given DocumentBuilderFactory
-     * 
+     *
      * @param factory
      *            a DocumentBuilderFactory
      * @throws ParserConfigurationException
@@ -345,7 +345,8 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
                 final String name = getType(child);
-                final PluginType<?> type = getPluginManager().getPluginType(name);
+                PluginManager mgr = getPluginManager();
+                final PluginType<?> type = mgr.getPluginType(name);
                 final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {

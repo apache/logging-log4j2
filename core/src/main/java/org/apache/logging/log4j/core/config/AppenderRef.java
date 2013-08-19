@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttr;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * An Appender reference.
  */
 @Plugin(name = "AppenderRef", category = "Core", printObject = true)
+@PluginAliases("appender-ref")
 public final class AppenderRef {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -52,6 +54,11 @@ public final class AppenderRef {
 
     public Filter getFilter() {
         return filter;
+    }
+
+    @Override
+    public String toString() {
+        return ref;
     }
 
     /**

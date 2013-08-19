@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-360" dev="rgoers" type="update">
+        Allow Plugins to have aliases.
+      </action>
       <action issue="LOG4J2-358" dev="nickwilliams" type="fix">
         NoSQLAppender using MongoDB provider ignores username and password attributes
       </action>
