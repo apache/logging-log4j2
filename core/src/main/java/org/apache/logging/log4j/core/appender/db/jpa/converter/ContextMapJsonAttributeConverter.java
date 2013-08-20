@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Data
  * Processor.
  */
+@Converter(autoApply = false)
 public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<String, String>, String> {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

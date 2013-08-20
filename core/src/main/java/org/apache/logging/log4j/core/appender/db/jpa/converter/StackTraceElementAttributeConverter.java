@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import org.apache.logging.log4j.core.helpers.Strings;
 
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.core.helpers.Strings;
  * A JPA 2.1 attribute converter for {@link StackTraceElement}s in {@link org.apache.logging.log4j.core.LogEvent}s. This
  * converter is capable of converting both to and from {@link String}s.
  */
+@Converter(autoApply = false)
 public class StackTraceElementAttributeConverter implements AttributeConverter<StackTraceElement, String> {
     private static final int UNKNOWN_SOURCE = -1;
 
