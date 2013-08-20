@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -78,12 +78,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static ConsoleAppender createAppender(@PluginElement("Layout") Layout<? extends Serializable> layout,
-                                                 @PluginElement("Filters") final Filter filter,
-                                                 @PluginAttr("target") final String t,
-                                                 @PluginAttr("name") final String name,
-                                                 @PluginAttr("follow") final String follow,
-                                                 @PluginAttr("ignoreExceptions") final String ignore) {
+    public static ConsoleAppender createAppender(
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filters") final Filter filter,
+            @PluginAttribute("target") final String t,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("follow") final String follow,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for ConsoleAppender");
             return null;

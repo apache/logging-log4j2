@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -98,13 +98,14 @@ public final class ColumnConfig {
      * @return the created column config.
      */
     @PluginFactory
-    public static ColumnConfig createColumnConfig(@PluginConfiguration final Configuration config,
-                                                  @PluginAttr("name") final String name,
-                                                  @PluginAttr("pattern") final String pattern,
-                                                  @PluginAttr("literal") final String literalValue,
-                                                  @PluginAttr("isEventTimestamp") final String eventTimestamp,
-                                                  @PluginAttr("isUnicode") final String unicode,
-                                                  @PluginAttr("isClob") final String clob) {
+    public static ColumnConfig createColumnConfig(
+            @PluginConfiguration final Configuration config,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("pattern") final String pattern,
+            @PluginAttribute("literal") final String literalValue,
+            @PluginAttribute("isEventTimestamp") final String eventTimestamp,
+            @PluginAttribute("isUnicode") final String unicode,
+            @PluginAttribute("isClob") final String clob) {
         if (Strings.isEmpty(name)) {
             LOGGER.error("The column config is not valid because it does not contain a column name.");
             return null;

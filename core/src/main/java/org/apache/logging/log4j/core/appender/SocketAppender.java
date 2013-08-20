@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -85,18 +85,19 @@ public class SocketAppender extends AbstractOutputStreamAppender {
      * @return A SocketAppender.
      */
     @PluginFactory
-    public static SocketAppender createAppender(@PluginAttr("host") final String host,
-                                                @PluginAttr("port") final String portNum,
-                                                @PluginAttr("protocol") final String protocol,
-                                                @PluginAttr("reconnectionDelay") final String delay,
-                                                @PluginAttr("immediateFail") final String immediateFail,
-                                                @PluginAttr("name") final String name,
-                                                @PluginAttr("immediateFlush") final String immediateFlush,
-                                                @PluginAttr("ignoreExceptions") final String ignore,
-                                                @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                                @PluginElement("Filters") final Filter filter,
-                                                @PluginAttr("advertise") final String advertise,
-                                                @PluginConfiguration final Configuration config) {
+    public static SocketAppender createAppender(
+            @PluginAttribute("host") final String host,
+            @PluginAttribute("port") final String portNum,
+            @PluginAttribute("protocol") final String protocol,
+            @PluginAttribute("reconnectionDelay") final String delay,
+            @PluginAttribute("immediateFail") final String immediateFail,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("immediateFlush") final String immediateFlush,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filters") final Filter filter,
+            @PluginAttribute("advertise") final String advertise,
+            @PluginConfiguration final Configuration config) {
 
         boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean isAdvertise = Boolean.parseBoolean(advertise);

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -165,16 +165,15 @@ public final class AsyncAppender extends AbstractAppender {
      * @return The AsyncAppender.
      */
     @PluginFactory
-    public static AsyncAppender createAppender(
-                @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
-                @PluginAttr("errorRef") @PluginAliases("error-ref") final String errorRef,
-                @PluginAttr("blocking") final String blocking,
-                @PluginAttr("bufferSize") final String size,
-                @PluginAttr("name") final String name,
-                @PluginAttr("includeLocation") final String includeLocation,
-                @PluginElement("Filter") final Filter filter,
-                @PluginConfiguration final Configuration config,
-                @PluginAttr("ignoreExceptions") final String ignore) {
+    public static AsyncAppender createAppender(@PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
+            @PluginAttribute("errorRef") @PluginAliases("error-ref") final String errorRef,
+            @PluginAttribute("blocking") final String blocking, 
+            @PluginAttribute("bufferSize") final String size,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("includeLocation") final String includeLocation,
+            @PluginElement("Filter") final Filter filter, 
+            @PluginConfiguration final Configuration config,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for AsyncAppender");
             return null;

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
@@ -154,11 +154,12 @@ public class ListAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static ListAppender createAppender(@PluginAttr("name") final String name,
-                                              @PluginAttr("entryPerNewLine") final String newLine,
-                                              @PluginAttr("raw") final String raw,
-                                              @PluginElement("Layout") final Layout<? extends Serializable> layout,
-                                              @PluginElement("Filters") final Filter filter) {
+    public static ListAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("entryPerNewLine") final String newLine,
+            @PluginAttribute("raw") final String raw,
+            @PluginElement("Layout") final Layout<? extends Serializable> layout,
+            @PluginElement("Filters") final Filter filter) {
 
         if (name == null) {
             LOGGER.error("No name provided for ListAppender");

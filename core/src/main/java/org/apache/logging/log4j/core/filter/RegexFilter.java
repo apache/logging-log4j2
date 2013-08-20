@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -104,10 +104,11 @@ public final class RegexFilter extends AbstractFilter {
      * @return The RegexFilter.
      */
     @PluginFactory
-    public static RegexFilter createFilter(@PluginAttr("regex") final String regex,
-                                           @PluginAttr("useRawMsg") final String useRawMsg,
-                                            @PluginAttr("onMatch") final String match,
-                                            @PluginAttr("onMismatch") final String mismatch) {
+    public static RegexFilter createFilter(
+            @PluginAttribute("regex") final String regex,
+            @PluginAttribute("useRawMsg") final String useRawMsg,
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
 
         if (regex == null) {
             LOGGER.error("A regular expression must be provided for RegexFilter");

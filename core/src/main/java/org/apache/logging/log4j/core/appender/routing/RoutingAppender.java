@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -177,12 +177,13 @@ public final class RoutingAppender extends AbstractAppender {
      * @return The RoutingAppender
      */
     @PluginFactory
-    public static RoutingAppender createAppender(@PluginAttr("name") final String name,
-                                          @PluginAttr("ignoreExceptions") final String ignore,
-                                          @PluginElement("Routes") final Routes routes,
-                                          @PluginConfiguration final Configuration config,
-                                          @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
-                                          @PluginElement("Filters") final Filter filter) {
+    public static RoutingAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("Routes") final Routes routes,
+            @PluginConfiguration final Configuration config,
+            @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
+            @PluginElement("Filters") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

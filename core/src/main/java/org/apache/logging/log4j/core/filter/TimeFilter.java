@@ -23,7 +23,7 @@ import java.util.TimeZone;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
@@ -102,11 +102,12 @@ public final class TimeFilter extends AbstractFilter {
      * @return A TimeFilter.
      */
     @PluginFactory
-    public static TimeFilter createFilter(@PluginAttr("start") final String start,
-                                          @PluginAttr("end") final String end,
-                                          @PluginAttr("timezone") final String tz,
-                                          @PluginAttr("onMatch") final String match,
-                                          @PluginAttr("onMismatch") final String mismatch) {
+    public static TimeFilter createFilter(
+            @PluginAttribute("start") final String start,
+            @PluginAttribute("end") final String end,
+            @PluginAttribute("timezone") final String tz,
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
         final SimpleDateFormat stf = new SimpleDateFormat("HH:mm:ss");
         long s = 0;
         if (start != null) {

@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -68,8 +68,9 @@ public final class RegexReplacement {
      * @return A RegexReplacement.
      */
     @PluginFactory
-    public static RegexReplacement createRegexReplacement(@PluginAttr("regex") final String regex,
-                                                          @PluginAttr("replacement") final String replacement) {
+    public static RegexReplacement createRegexReplacement(
+            @PluginAttribute("regex") final String regex,
+            @PluginAttribute("replacement") final String replacement) {
         if (regex == null) {
             LOGGER.error("A regular expression is required for replacement");
             return null;

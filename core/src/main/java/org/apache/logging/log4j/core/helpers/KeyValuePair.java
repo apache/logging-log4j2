@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.helpers;
 
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
@@ -67,8 +67,9 @@ public class KeyValuePair {
      * @return A KeyValuePair.
      */
     @PluginFactory
-    public static KeyValuePair createPair(@PluginAttr("key") final String key,
-                                          @PluginAttr("value") final  String value) {
+    public static KeyValuePair createPair(
+            @PluginAttribute("key") final String key,
+            @PluginAttribute("value") final  String value) {
 
         return new KeyValuePair(key, value);
     }

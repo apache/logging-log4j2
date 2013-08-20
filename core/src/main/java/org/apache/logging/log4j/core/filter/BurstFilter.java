@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -224,11 +224,12 @@ public final class BurstFilter extends AbstractFilter {
      * @return A BurstFilter.
      */
     @PluginFactory
-    public static BurstFilter createFilter(@PluginAttr("level") final String levelName,
-                                           @PluginAttr("rate") final String rate,
-                                           @PluginAttr("maxBurst") final String maxBurst,
-                                           @PluginAttr("onmatch") final String match,
-                                           @PluginAttr("onmismatch") final String mismatch) {
+    public static BurstFilter createFilter(
+            @PluginAttribute("level") final String levelName,
+            @PluginAttribute("rate") final String rate,
+            @PluginAttribute("maxBurst") final String maxBurst,
+            @PluginAttribute("onmatch") final String match,
+            @PluginAttribute("onmismatch") final String mismatch) {
         final Result onMatch = Result.toResult(match, Result.NEUTRAL);
         final Result onMismatch = Result.toResult(mismatch, Result.DENY);
         final Level level = Level.toLevel(levelName, Level.WARN);

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -353,12 +353,12 @@ public class XMLLayout extends AbstractStringLayout {
      */
     @PluginFactory
     public static XMLLayout createLayout(
-                                         @PluginAttr("locationInfo") final String locationInfo,
-                                         @PluginAttr("properties") final String properties,
-                                         @PluginAttr("complete") final String completeStr,
-                                         @PluginAttr("compact") final String compactStr,
-                                         @PluginAttr("namespacePrefix") final String namespacePrefix,
-                                         @PluginAttr("charset") final String charsetName) {
+            @PluginAttribute("locationInfo") final String locationInfo,
+            @PluginAttribute("properties") final String properties,
+            @PluginAttribute("complete") final String completeStr,
+            @PluginAttribute("compact") final String compactStr,
+            @PluginAttribute("namespacePrefix") final String namespacePrefix,
+            @PluginAttribute("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         final boolean info = Boolean.parseBoolean(locationInfo);
         final boolean props = Boolean.parseBoolean(properties);

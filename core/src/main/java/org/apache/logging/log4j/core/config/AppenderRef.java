@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -69,9 +69,10 @@ public final class AppenderRef {
      * @return The name of the Appender.
      */
     @PluginFactory
-    public static AppenderRef createAppenderRef(@PluginAttr("ref") final String ref,
-                                                @PluginAttr("level") final String levelName,
-                                                @PluginElement("Filters") final Filter filter) {
+    public static AppenderRef createAppenderRef(
+            @PluginAttribute("ref") final String ref,
+            @PluginAttribute("level") final String levelName,
+            @PluginElement("Filters") final Filter filter) {
 
         if (ref == null) {
             LOGGER.error("Appender references must contain a reference");

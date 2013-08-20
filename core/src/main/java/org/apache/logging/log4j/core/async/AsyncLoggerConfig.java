@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -148,10 +148,10 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @PluginFactory
     public static LoggerConfig createLogger(
-            @PluginAttr("additivity") final String additivity,
-            @PluginAttr("level") final String levelName,
-            @PluginAttr("name") final String loggerName,
-            @PluginAttr("includeLocation") final String includeLocation,
+            @PluginAttribute("additivity") final String additivity,
+            @PluginAttribute("level") final String levelName,
+            @PluginAttribute("name") final String loggerName,
+            @PluginAttribute("includeLocation") final String includeLocation,
             @PluginElement("AppenderRef") final AppenderRef[] refs,
             @PluginElement("Properties") final Property[] properties,
             @PluginConfiguration final Configuration config,
@@ -191,9 +191,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
         @PluginFactory
         public static LoggerConfig createLogger(
-                @PluginAttr("additivity") final String additivity,
-                @PluginAttr("level") final String levelName,
-                @PluginAttr("includeLocation") final String includeLocation,
+                @PluginAttribute("additivity") final String additivity,
+                @PluginAttribute("level") final String levelName,
+                @PluginAttribute("includeLocation") final String includeLocation,
                 @PluginElement("AppenderRef") final AppenderRef[] refs,
                 @PluginElement("Properties") final Property[] properties,
                 @PluginConfiguration final Configuration config,

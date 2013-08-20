@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -183,13 +183,14 @@ public final class FailoverAppender extends AbstractAppender {
      * @return The FailoverAppender that was created.
      */
     @PluginFactory
-    public static FailoverAppender createAppender(@PluginAttr("name") final String name,
-                                                  @PluginAttr("primary") final String primary,
-                                                  @PluginElement("Failovers") final String[] failovers,
-                                                  @PluginAttr("retryInterval") final String retryIntervalString,
-                                                  @PluginConfiguration final Configuration config,
-                                                  @PluginElement("Filters") final Filter filter,
-                                                  @PluginAttr("ignoreExceptions") final String ignore) {
+    public static FailoverAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("primary") final String primary,
+            @PluginElement("Failovers") final String[] failovers,
+            @PluginAttribute("retryInterval") final String retryIntervalString,
+            @PluginConfiguration final Configuration config,
+            @PluginElement("Filters") final Filter filter,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Integers;
 
@@ -79,8 +79,9 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
      * @return a TimeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static TimeBasedTriggeringPolicy createPolicy(@PluginAttr("interval") final String interval,
-                                                         @PluginAttr("modulate") final String modulate) {
+    public static TimeBasedTriggeringPolicy createPolicy(
+            @PluginAttribute("interval") final String interval,
+            @PluginAttribute("modulate") final String modulate) {
         final int increment = Integers.parseInt(interval, 1);
         final boolean mod = Boolean.parseBoolean(modulate);
         return new TimeBasedTriggeringPolicy(increment, mod);

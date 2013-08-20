@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
@@ -103,23 +103,24 @@ public final class SMTPAppender extends AbstractAppender {
      * @return The SMTPAppender.
      */
     @PluginFactory
-    public static SMTPAppender createAppender(@PluginAttr("name") final String name,
-                                              @PluginAttr("to") final String to,
-                                              @PluginAttr("cc") final String cc,
-                                              @PluginAttr("bcc") final String bcc,
-                                              @PluginAttr("from") final String from,
-                                              @PluginAttr("replyTo") final String replyTo,
-                                              @PluginAttr("subject") final String subject,
-                                              @PluginAttr("smtpProtocol") final String smtpProtocol,
-                                              @PluginAttr("smtpHost") final String smtpHost,
-                                              @PluginAttr("smtpPort") final String smtpPortNum,
-                                              @PluginAttr("smtpUsername") final String smtpUsername,
-                                              @PluginAttr("smtpPassword") final String smtpPassword,
-                                              @PluginAttr("smtpDebug") final String smtpDebug,
-                                              @PluginAttr("bufferSize") final String bufferSizeNum,
-                                              @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                              @PluginElement("Filter") Filter filter,
-                                              @PluginAttr("ignoreExceptions") final String ignore) {
+    public static SMTPAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("to") final String to,
+            @PluginAttribute("cc") final String cc,
+            @PluginAttribute("bcc") final String bcc,
+            @PluginAttribute("from") final String from,
+            @PluginAttribute("replyTo") final String replyTo,
+            @PluginAttribute("subject") final String subject,
+            @PluginAttribute("smtpProtocol") final String smtpProtocol,
+            @PluginAttribute("smtpHost") final String smtpHost,
+            @PluginAttribute("smtpPort") final String smtpPortNum,
+            @PluginAttribute("smtpUsername") final String smtpUsername,
+            @PluginAttribute("smtpPassword") final String smtpPassword,
+            @PluginAttribute("smtpDebug") final String smtpDebug,
+            @PluginAttribute("bufferSize") final String bufferSizeNum,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") Filter filter,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for SMTPAppender");
             return null;

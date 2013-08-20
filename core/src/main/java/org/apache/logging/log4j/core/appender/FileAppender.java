@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -94,18 +94,19 @@ public final class FileAppender extends AbstractOutputStreamAppender {
      * @return The FileAppender.
      */
     @PluginFactory
-    public static FileAppender createAppender(@PluginAttr("fileName") final String fileName,
-                                              @PluginAttr("append") final String append,
-                                              @PluginAttr("locking") final String locking,
-                                              @PluginAttr("name") final String name,
-                                              @PluginAttr("immediateFlush") final String immediateFlush,
-                                              @PluginAttr("ignoreExceptions") final String ignore,
-                                              @PluginAttr("bufferedIO") final String bufferedIO,
-                                              @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                              @PluginElement("Filters") final Filter filter,
-                                              @PluginAttr("advertise") final String advertise,
-                                              @PluginAttr("advertiseURI") final String advertiseURI,
-                                              @PluginConfiguration final Configuration config) {
+    public static FileAppender createAppender(
+            @PluginAttribute("fileName") final String fileName,
+            @PluginAttribute("append") final String append,
+            @PluginAttribute("locking") final String locking,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("immediateFlush") final String immediateFlush,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginAttribute("bufferedIO") final String bufferedIO,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filters") final Filter filter,
+            @PluginAttribute("advertise") final String advertise,
+            @PluginAttribute("advertiseURI") final String advertiseURI,
+            @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);
         final boolean isLocking = Boolean.parseBoolean(locking);

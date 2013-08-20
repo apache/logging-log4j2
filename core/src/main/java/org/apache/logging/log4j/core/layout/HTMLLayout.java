@@ -31,7 +31,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Constants;
@@ -312,12 +312,13 @@ public final class HTMLLayout extends AbstractStringLayout {
      * @return An HTML Layout.
      */
     @PluginFactory
-    public static HTMLLayout createLayout(@PluginAttr("locationInfo") final String locationInfo,
-                                          @PluginAttr("title") String title,
-                                          @PluginAttr("contentType") String contentType,
-                                          @PluginAttr("charset") final String charsetName,
-                                          @PluginAttr("fontSize") String fontSize,
-                                          @PluginAttr("fontName") String font) {
+    public static HTMLLayout createLayout(
+            @PluginAttribute("locationInfo") final String locationInfo,
+            @PluginAttribute("title") String title,
+            @PluginAttribute("contentType") String contentType,
+            @PluginAttribute("charset") final String charsetName,
+            @PluginAttribute("fontSize") String fontSize,
+            @PluginAttribute("fontName") String font) {
         final Charset charset = Charsets.getSupportedCharset(charsetName, Charsets.UTF_8);
         if (font == null) {
             font = "arial,sans-serif";

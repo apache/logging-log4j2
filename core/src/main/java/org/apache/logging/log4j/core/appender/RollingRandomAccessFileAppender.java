@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -141,18 +141,18 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
      */
     @PluginFactory
     public static RollingRandomAccessFileAppender createAppender(
-            @PluginAttr("fileName") final String fileName,
-            @PluginAttr("filePattern") final String filePattern,
-            @PluginAttr("append") final String append,
-            @PluginAttr("name") final String name,
-            @PluginAttr("immediateFlush") final String immediateFlush,
+            @PluginAttribute("fileName") final String fileName,
+            @PluginAttribute("filePattern") final String filePattern,
+            @PluginAttribute("append") final String append,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("immediateFlush") final String immediateFlush,
             @PluginElement("Policy") final TriggeringPolicy policy,
             @PluginElement("Strategy") RolloverStrategy strategy,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
-            @PluginAttr("ignoreExceptions") final String ignore,
-            @PluginAttr("advertise") final String advertise,
-            @PluginAttr("advertiseURI") final String advertiseURI,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginAttribute("advertise") final String advertise,
+            @PluginAttribute("advertiseURI") final String advertiseURI,
             @PluginConfiguration final Configuration config) {
 
         final boolean isAppend = Booleans.parseBoolean(append, true);

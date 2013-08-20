@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -88,18 +88,17 @@ public final class MongoDBProvider implements NoSQLProvider<MongoDBConnection> {
      * @return a new MongoDB provider.
      */
     @PluginFactory
-    public static MongoDBProvider createNoSQLProvider(@PluginAttr("collectionName") final String collectionName,
-                                                      @PluginAttr("writeConcernConstant") final String
-                                                              writeConcernConstant,
-                                                      @PluginAttr("writeConcernConstantClass") final String
-                                                              writeConcernConstantClassName,
-                                                      @PluginAttr("databaseName") final String databaseName,
-                                                      @PluginAttr("server") final String server,
-                                                      @PluginAttr("port") final String port,
-                                                      @PluginAttr("username") final String username,
-                                                      @PluginAttr("password") final String password,
-                                                      @PluginAttr("factoryClassName") final String factoryClassName,
-                                                      @PluginAttr("factoryMethodName") final String factoryMethodName) {
+    public static MongoDBProvider createNoSQLProvider(
+            @PluginAttribute("collectionName") final String collectionName,
+            @PluginAttribute("writeConcernConstant") final String writeConcernConstant,
+            @PluginAttribute("writeConcernConstantClass") final String writeConcernConstantClassName,
+            @PluginAttribute("databaseName") final String databaseName,
+            @PluginAttribute("server") final String server,
+            @PluginAttribute("port") final String port,
+            @PluginAttribute("username") final String username,
+            @PluginAttribute("password") final String password,
+            @PluginAttribute("factoryClassName") final String factoryClassName,
+            @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         DB database;
         String description;
         if (factoryClassName != null && factoryClassName.length() > 0 &&

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
@@ -101,10 +101,11 @@ public final class StructuredDataFilter extends MapFilter {
      * @return The StructuredDataFilter.
      */
     @PluginFactory
-    public static StructuredDataFilter createFilter(@PluginElement("Pairs") final KeyValuePair[] pairs,
-                                                    @PluginAttr("operator") final String oper,
-                                                    @PluginAttr("onmatch") final String match,
-                                                    @PluginAttr("onmismatch") final String mismatch) {
+    public static StructuredDataFilter createFilter(
+            @PluginElement("Pairs") final KeyValuePair[] pairs,
+            @PluginAttribute("operator") final String oper,
+            @PluginAttribute("onmatch") final String match,
+            @PluginAttribute("onmismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the StructuredDataFilter");
             return null;
