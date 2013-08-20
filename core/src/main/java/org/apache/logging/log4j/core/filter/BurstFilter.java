@@ -228,8 +228,8 @@ public final class BurstFilter extends AbstractFilter {
             @PluginAttribute("level") final String levelName,
             @PluginAttribute("rate") final String rate,
             @PluginAttribute("maxBurst") final String maxBurst,
-            @PluginAttribute("onmatch") final String match,
-            @PluginAttribute("onmismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
         final Result onMatch = Result.toResult(match, Result.NEUTRAL);
         final Result onMismatch = Result.toResult(mismatch, Result.DENY);
         final Level level = Level.toLevel(levelName, Level.WARN);

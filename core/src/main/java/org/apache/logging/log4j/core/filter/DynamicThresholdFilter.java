@@ -130,7 +130,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("defaultThreshold") final String levelName,
             @PluginAttribute("onMatch") final String match,
-            @PluginAttribute("onmismatch") final String mismatch) {
+            @PluginAttribute("onMismatch") final String mismatch) {
         final Result onMatch = Result.toResult(match);
         final Result onMismatch = Result.toResult(mismatch);
         final Map<String, Level> map = new HashMap<String, Level>();
