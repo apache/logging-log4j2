@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Data
  * Processor.
  */
+@Converter(autoApply = false)
 public class ContextStackJsonAttributeConverter implements AttributeConverter<ThreadContext.ContextStack, String> {
     @Override
     public String convertToDatabaseColumn(final ThreadContext.ContextStack contextStack) {
