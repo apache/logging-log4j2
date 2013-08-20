@@ -129,7 +129,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             @PluginAttribute("key") final String key,
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("defaultThreshold") final String levelName,
-            @PluginAttribute("onatch") final String match,
+            @PluginAttribute("onMatch") final String match,
             @PluginAttribute("onmismatch") final String mismatch) {
         final Result onMatch = Result.toResult(match);
         final Result onMismatch = Result.toResult(mismatch);
