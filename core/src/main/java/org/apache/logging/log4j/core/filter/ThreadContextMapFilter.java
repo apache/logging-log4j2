@@ -114,8 +114,8 @@ public class ThreadContextMapFilter extends MapFilter {
     public static ThreadContextMapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onmatch") final String match,
-            @PluginAttribute("onmismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
             return null;

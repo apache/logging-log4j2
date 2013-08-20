@@ -119,8 +119,8 @@ public class MapFilter extends AbstractFilter {
     public static MapFilter createFilter(
             @PluginElement("Pairs") final KeyValuePair[] pairs,
             @PluginAttribute("operator") final String oper,
-            @PluginAttribute("onmatch") final String match,
-            @PluginAttribute("onmismatch") final String mismatch) {
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapFilter");
             return null;
