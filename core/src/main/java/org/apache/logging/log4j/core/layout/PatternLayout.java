@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -208,11 +208,12 @@ public final class PatternLayout extends AbstractStringLayout {
      * @return The PatternLayout.
      */
     @PluginFactory
-    public static PatternLayout createLayout(@PluginAttr("pattern") final String pattern,
-                                             @PluginConfiguration final Configuration config,
-                                             @PluginElement("Replace") final RegexReplacement replace,
-                                             @PluginAttr("charset") final String charsetName,
-                                             @PluginAttr("alwaysWriteExceptions") final String always) {
+    public static PatternLayout createLayout(
+            @PluginAttribute("pattern") final String pattern,
+            @PluginConfiguration final Configuration config,
+            @PluginElement("Replace") final RegexReplacement replace,
+            @PluginAttribute("charset") final String charsetName,
+            @PluginAttribute("alwaysWriteExceptions") final String always) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean alwaysWriteExceptions = Booleans.parseBoolean(always, true);
         return new PatternLayout(

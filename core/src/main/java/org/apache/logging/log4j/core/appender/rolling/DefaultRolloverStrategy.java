@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.appender.rolling.helper.GZCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.helper.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -361,10 +361,11 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @return A DefaultRolloverStrategy.
      */
     @PluginFactory
-    public static DefaultRolloverStrategy createStrategy(@PluginAttr("max") final String max,
-                                                         @PluginAttr("min") final String min,
-                                                         @PluginAttr("fileIndex") final String fileIndex,
-                                                         @PluginConfiguration final Configuration config) {
+    public static DefaultRolloverStrategy createStrategy(
+            @PluginAttribute("max") final String max,
+            @PluginAttribute("min") final String min,
+            @PluginAttribute("fileIndex") final String fileIndex,
+            @PluginConfiguration final Configuration config) {
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
         int minIndex;
         if (min != null) {

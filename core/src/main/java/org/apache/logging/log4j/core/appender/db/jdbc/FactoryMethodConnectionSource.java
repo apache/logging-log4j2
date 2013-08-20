@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -68,8 +68,9 @@ public final class FactoryMethodConnectionSource implements ConnectionSource {
      * @return the created connection source.
      */
     @PluginFactory
-    public static FactoryMethodConnectionSource createConnectionSource(@PluginAttr("class") final String className,
-                                                                       @PluginAttr("method") final String methodName) {
+    public static FactoryMethodConnectionSource createConnectionSource(
+            @PluginAttribute("class") final String className,
+            @PluginAttribute("method") final String methodName) {
         if (Strings.isEmpty(className) || Strings.isEmpty(methodName)) {
             LOGGER.error("No class name or method name specified for the connection factory method.");
             return null;

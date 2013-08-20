@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
@@ -128,8 +128,9 @@ public final class MapRewritePolicy implements RewritePolicy {
      * @return The MapRewritePolicy.
      */
     @PluginFactory
-    public static MapRewritePolicy createPolicy(@PluginAttr("mode") final String mode,
-                                                @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
+    public static MapRewritePolicy createPolicy(
+            @PluginAttribute("mode") final String mode,
+            @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
         Mode op;
         if (mode == null) {
             op = Mode.Add;

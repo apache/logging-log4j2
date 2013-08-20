@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -83,9 +83,10 @@ public final class ThresholdFilter extends AbstractFilter {
      * @return The created ThresholdFilter.
      */
     @PluginFactory
-    public static ThresholdFilter createFilter(@PluginAttr("level") final String levelName,
-                                               @PluginAttr("onMatch") final String match,
-                                               @PluginAttr("onMismatch") final String mismatch) {
+    public static ThresholdFilter createFilter(
+            @PluginAttribute("level") final String levelName,
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
         final Level level = Level.toLevel(levelName, Level.ERROR);
         final Result onMatch = Result.toResult(match, Result.NEUTRAL);
         final Result onMismatch = Result.toResult(mismatch, Result.DENY);

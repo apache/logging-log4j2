@@ -18,7 +18,7 @@ package org.apache.logging.log4j.flume.appender;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -72,8 +72,8 @@ public final class Agent {
      * @return The Agent.
      */
     @PluginFactory
-    public static Agent createAgent(@PluginAttr("host") String host,
-            @PluginAttr("port") final String port) {
+    public static Agent createAgent(@PluginAttribute("host") String host,
+            @PluginAttribute("port") final String port) {
         if (host == null) {
             host = DEFAULT_HOST;
         }

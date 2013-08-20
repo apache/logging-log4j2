@@ -23,7 +23,7 @@ import java.sql.SQLException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -74,9 +74,10 @@ public final class DriverManagerConnectionSource implements ConnectionSource {
      * @return the created connection source.
      */
     @PluginFactory
-    public static DriverManagerConnectionSource createConnectionSource(@PluginAttr("url") final String url,
-                                                                       @PluginAttr("username") String username,
-                                                                       @PluginAttr("password") String password) {
+    public static DriverManagerConnectionSource createConnectionSource(
+            @PluginAttribute("url") final String url,
+            @PluginAttribute("username") String username,
+            @PluginAttribute("password") String password) {
         if (Strings.isEmpty(url)) {
             LOGGER.error("No JDBC URL specified for the database.");
             return null;

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -65,11 +65,12 @@ public final class NoSQLAppender extends AbstractDatabaseAppender<NoSQLDatabaseM
      * @return a new NoSQL appender.
      */
     @PluginFactory
-    public static NoSQLAppender createAppender(@PluginAttr("name") final String name,
-                                               @PluginAttr("ignoreExceptions") final String ignore,
-                                               @PluginElement("Filter") final Filter filter,
-                                               @PluginAttr("bufferSize") final String bufferSize,
-                                               @PluginElement("NoSqlProvider") final NoSQLProvider<?> provider) {
+    public static NoSQLAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute("bufferSize") final String bufferSize,
+            @PluginElement("NoSqlProvider") final NoSQLProvider<?> provider) {
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;

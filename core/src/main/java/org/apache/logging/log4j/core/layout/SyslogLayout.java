@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.net.Facility;
@@ -152,10 +152,11 @@ public class SyslogLayout extends AbstractStringLayout {
      * @return A SyslogLayout.
      */
     @PluginFactory
-    public static SyslogLayout createLayout(@PluginAttr("facility") final String facility,
-                                            @PluginAttr("newLine") final String includeNL,
-                                            @PluginAttr("newLineEscape") final String escapeNL,
-                                            @PluginAttr("charset") final String charsetName) {
+    public static SyslogLayout createLayout(
+            @PluginAttribute("facility") final String facility,
+            @PluginAttribute("newLine") final String includeNL,
+            @PluginAttribute("newLineEscape") final String escapeNL,
+            @PluginAttribute("charset") final String charsetName) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean includeNewLine = Boolean.parseBoolean(includeNL);
         final Facility f = Facility.toFacility(facility, Facility.LOCAL0);

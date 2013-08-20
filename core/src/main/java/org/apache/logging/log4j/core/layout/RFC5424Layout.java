@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -532,23 +532,24 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @return An RFC5424Layout.
      */
     @PluginFactory
-    public static RFC5424Layout createLayout(@PluginAttr("facility") final String facility,
-                                             @PluginAttr("id") final String id,
-                                             @PluginAttr("enterpriseNumber") final String ein,
-                                             @PluginAttr("includeMDC") final String includeMDC,
-                                             @PluginAttr("mdcId") String mdcId,
-                                             @PluginAttr("mdcPrefix") final String mdcPrefix,
-                                             @PluginAttr("eventPrefix") final String eventPrefix,
-                                             @PluginAttr("newLine") final String includeNL,
-                                             @PluginAttr("newLineEscape") final String escapeNL,
-                                             @PluginAttr("appName") final String appName,
-                                             @PluginAttr("messageId") final String msgId,
-                                             @PluginAttr("mdcExcludes") final String excludes,
-                                             @PluginAttr("mdcIncludes") String includes,
-                                             @PluginAttr("mdcRequired") final String required,
-                                             @PluginAttr("exceptionPattern") final String exceptionPattern,
-                                             @PluginElement("LoggerFields") final LoggerFields loggerFields,
-                                             @PluginConfiguration final Configuration config) {
+    public static RFC5424Layout createLayout(
+            @PluginAttribute("facility") final String facility,
+            @PluginAttribute("id") final String id,
+            @PluginAttribute("enterpriseNumber") final String ein,
+            @PluginAttribute("includeMDC") final String includeMDC,
+            @PluginAttribute("mdcId") String mdcId,
+            @PluginAttribute("mdcPrefix") final String mdcPrefix,
+            @PluginAttribute("eventPrefix") final String eventPrefix,
+            @PluginAttribute("newLine") final String includeNL,
+            @PluginAttribute("newLineEscape") final String escapeNL,
+            @PluginAttribute("appName") final String appName,
+            @PluginAttribute("messageId") final String msgId,
+            @PluginAttribute("mdcExcludes") final String excludes,
+            @PluginAttribute("mdcIncludes") String includes,
+            @PluginAttribute("mdcRequired") final String required,
+            @PluginAttribute("exceptionPattern") final String exceptionPattern,
+            @PluginElement("LoggerFields") final LoggerFields loggerFields,
+            @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");

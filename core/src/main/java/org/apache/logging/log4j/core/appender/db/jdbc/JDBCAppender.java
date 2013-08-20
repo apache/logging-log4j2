@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -65,14 +65,14 @@ public final class JDBCAppender extends AbstractDatabaseAppender<JDBCDatabaseMan
      * @return a new JDBC appender.
      */
     @PluginFactory
-    public static JDBCAppender createAppender(@PluginAttr("name") final String name,
-                                              @PluginAttr("ignoreExceptions") final String ignore,
-                                              @PluginElement("Filter") final Filter filter,
-                                              @PluginElement("ConnectionSource") final ConnectionSource
-                                                      connectionSource,
-                                              @PluginAttr("bufferSize") final String bufferSize,
-                                              @PluginAttr("tableName") final String tableName,
-                                              @PluginElement("ColumnConfigs") final ColumnConfig[] columnConfigs) {
+    public static JDBCAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("Filter") final Filter filter,
+            @PluginElement("ConnectionSource") final ConnectionSource connectionSource,
+            @PluginAttribute("bufferSize") final String bufferSize,
+            @PluginAttribute("tableName") final String tableName,
+            @PluginElement("ColumnConfigs") final ColumnConfig[] columnConfigs) {
 
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);

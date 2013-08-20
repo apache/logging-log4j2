@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -78,19 +78,19 @@ public final class JMSTopicAppender extends AbstractAppender {
      */
     @PluginFactory
     public static JMSTopicAppender createAppender(
-                                                @PluginAttr("name") final String name,
-                                                @PluginAttr("factoryName") final String factoryName,
-                                                @PluginAttr("providerURL") final String providerURL,
-                                                @PluginAttr("urlPkgPrefixes") final String urlPkgPrefixes,
-                                                @PluginAttr("securityPrincipalName") final String securityPrincipalName,
-                                                @PluginAttr("securityCredentials") final String securityCredentials,
-                                                @PluginAttr("factoryBindingName") final String factoryBindingName,
-                                                @PluginAttr("topicBindingName") final String topicBindingName,
-                                                @PluginAttr("userName") final String userName,
-                                                @PluginAttr("password") final String password,
-                                                @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                                @PluginElement("Filters") final Filter filter,
-                                                @PluginAttr("ignoreExceptions") final String ignore) {
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("factoryName") final String factoryName,
+            @PluginAttribute("providerURL") final String providerURL,
+            @PluginAttribute("urlPkgPrefixes") final String urlPkgPrefixes,
+            @PluginAttribute("securityPrincipalName") final String securityPrincipalName,
+            @PluginAttribute("securityCredentials") final String securityCredentials,
+            @PluginAttribute("factoryBindingName") final String factoryBindingName,
+            @PluginAttribute("topicBindingName") final String topicBindingName,
+            @PluginAttribute("userName") final String userName,
+            @PluginAttribute("password") final String password,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filters") final Filter filter,
+            @PluginAttribute("ignoreExceptions") final String ignore) {
 
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");

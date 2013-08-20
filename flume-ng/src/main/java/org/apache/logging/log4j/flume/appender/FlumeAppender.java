@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
@@ -158,22 +158,22 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     @PluginFactory
     public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
                                                    @PluginElement("Properties") final Property[] properties,
-                                                   @PluginAttr("embedded") final String embedded,
-                                                   @PluginAttr("type") final String type,
-                                                   @PluginAttr("dataDir") final String dataDir,
-                                                   @PluginAttr("connectTimeout") final String connectionTimeout,
-                                                   @PluginAttr("requestTimeout") final String requestTimeout,
-                                                   @PluginAttr("agentRetries") final String agentRetries,
-                                                   @PluginAttr("maxDelay") final String maxDelay,
-                                                   @PluginAttr("name") final String name,
-                                                   @PluginAttr("ignoreExceptions") final String ignore,
-                                                   @PluginAttr("mdcExcludes") final String excludes,
-                                                   @PluginAttr("mdcIncludes") final String includes,
-                                                   @PluginAttr("mdcRequired") final String required,
-                                                   @PluginAttr("mdcPrefix") final String mdcPrefix,
-                                                   @PluginAttr("eventPrefix") final String eventPrefix,
-                                                   @PluginAttr("compress") final String compressBody,
-                                                   @PluginAttr("batchSize") final String batchSize,
+                                                   @PluginAttribute("embedded") final String embedded,
+                                                   @PluginAttribute("type") final String type,
+                                                   @PluginAttribute("dataDir") final String dataDir,
+                                                   @PluginAttribute("connectTimeout") final String connectionTimeout,
+                                                   @PluginAttribute("requestTimeout") final String requestTimeout,
+                                                   @PluginAttribute("agentRetries") final String agentRetries,
+                                                   @PluginAttribute("maxDelay") final String maxDelay,
+                                                   @PluginAttribute("name") final String name,
+                                                   @PluginAttribute("ignoreExceptions") final String ignore,
+                                                   @PluginAttribute("mdcExcludes") final String excludes,
+                                                   @PluginAttribute("mdcIncludes") final String includes,
+                                                   @PluginAttribute("mdcRequired") final String required,
+                                                   @PluginAttribute("mdcPrefix") final String mdcPrefix,
+                                                   @PluginAttribute("eventPrefix") final String eventPrefix,
+                                                   @PluginAttribute("compress") final String compressBody,
+                                                   @PluginAttribute("batchSize") final String batchSize,
                                                    @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
                                                    @PluginElement("Layout") Layout<? extends Serializable> layout,
                                                    @PluginElement("Filters") final Filter filter) {

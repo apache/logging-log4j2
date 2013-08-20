@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -78,8 +78,9 @@ public final class Routes {
      * @return The Routes container.
      */
     @PluginFactory
-    public static Routes createRoutes(@PluginAttr("pattern") final String pattern,
-                                      @PluginElement("Routes") final Route... routes) {
+    public static Routes createRoutes(
+            @PluginAttribute("pattern") final String pattern,
+            @PluginElement("Routes") final Route... routes) {
         if (pattern == null) {
             LOGGER.error("A pattern is required");
             return null;

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
@@ -39,7 +39,7 @@ public class AlwaysFailAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static AlwaysFailAppender createAppender(@PluginAttr("name") final String name) {
+    public static AlwaysFailAppender createAppender(@PluginAttribute("name") final String name) {
         if (name == null) {
             LOGGER.error("A name for the Appender must be specified");
             return null;

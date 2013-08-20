@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -557,7 +557,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     * Retrieve a static public 'method to create the desired object. Every parameter
     * will be annotated to identify the appropriate attribute or element to use to
     * set the value of the parameter.
-    * Parameters annotated with PluginAttr will always be set as Strings.
+    * Parameters annotated with PluginAttribute will always be set as Strings.
     * Parameters annotated with PluginElement may be Objects or arrays. Collections
     * and Maps are currently not supported, although the factory method that is called
     * can create these from an array.
@@ -670,8 +670,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     final String value = subst.replace(event, v);
                     sb.append(name).append("=\"").append(value).append("\"");
                     parms[index] = value;
-                } else if (a instanceof PluginAttr) {
-                    PluginAttr attr = (PluginAttr) a;
+                } else if (a instanceof PluginAttribute) {
+                    PluginAttribute attr = (PluginAttribute) a;
                     final String name = attr.value();
                     final String value = subst.replace(event, getAttrValue(name, aliases, attrs));
                     sb.append(name).append("=\"").append(value).append("\"");

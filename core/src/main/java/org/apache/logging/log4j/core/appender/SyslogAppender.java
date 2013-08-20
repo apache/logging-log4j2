@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -87,35 +87,36 @@ public class SyslogAppender extends SocketAppender {
      * @return A SyslogAppender.
      */
     @PluginFactory
-    public static SyslogAppender createAppender(@PluginAttr("host") final String host,
-                                                @PluginAttr("port") final String portNum,
-                                                @PluginAttr("protocol") final String protocol,
-                                                @PluginAttr("reconnectionDelay") final String delay,
-                                                @PluginAttr("immediateFail") final String immediateFail,
-                                                @PluginAttr("name") final String name,
-                                                @PluginAttr("immediateFlush") final String immediateFlush,
-                                                @PluginAttr("ignoreExceptions") final String ignore,
-                                                @PluginAttr("facility") final String facility,
-                                                @PluginAttr("id") final String id,
-                                                @PluginAttr("enterpriseNumber") final String ein,
-                                                @PluginAttr("includeMDC") final String includeMDC,
-                                                @PluginAttr("mdcId") final String mdcId,
-                                                @PluginAttr("mdcPrefix") final String mdcPrefix,
-                                                @PluginAttr("eventPrefix") final String eventPrefix,
-                                                @PluginAttr("newLine") final String includeNL,
-                                                @PluginAttr("newLineEscape") final String escapeNL,
-                                                @PluginAttr("appName") final String appName,
-                                                @PluginAttr("messageId") final String msgId,
-                                                @PluginAttr("mdcExcludes") final String excludes,
-                                                @PluginAttr("mdcIncludes") final String includes,
-                                                @PluginAttr("mdcRequired") final String required,
-                                                @PluginAttr("format") final String format,
-                                                @PluginElement("Filters") final Filter filter,
-                                                @PluginConfiguration final Configuration config,
-                                                @PluginAttr("charset") final String charsetName,
-                                                @PluginAttr("exceptionPattern") final String exceptionPattern,
-                                                @PluginElement("LoggerFields") final LoggerFields loggerFields,
-                                                @PluginAttr("advertise") final String advertise) {
+    public static SyslogAppender createAppender(
+            @PluginAttribute("host") final String host,
+            @PluginAttribute("port") final String portNum,
+            @PluginAttribute("protocol") final String protocol,
+            @PluginAttribute("reconnectionDelay") final String delay,
+            @PluginAttribute("immediateFail") final String immediateFail,
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("immediateFlush") final String immediateFlush,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginAttribute("facility") final String facility,
+            @PluginAttribute("id") final String id,
+            @PluginAttribute("enterpriseNumber") final String ein,
+            @PluginAttribute("includeMDC") final String includeMDC,
+            @PluginAttribute("mdcId") final String mdcId,
+            @PluginAttribute("mdcPrefix") final String mdcPrefix,
+            @PluginAttribute("eventPrefix") final String eventPrefix,
+            @PluginAttribute("newLine") final String includeNL,
+            @PluginAttribute("newLineEscape") final String escapeNL,
+            @PluginAttribute("appName") final String appName,
+            @PluginAttribute("messageId") final String msgId,
+            @PluginAttribute("mdcExcludes") final String excludes,
+            @PluginAttribute("mdcIncludes") final String includes,
+            @PluginAttribute("mdcRequired") final String required,
+            @PluginAttribute("format") final String format,
+            @PluginElement("Filters") final Filter filter,
+            @PluginConfiguration final Configuration config,
+            @PluginAttribute("charset") final String charsetName,
+            @PluginAttribute("exceptionPattern") final String exceptionPattern,
+            @PluginElement("LoggerFields") final LoggerFields loggerFields,
+            @PluginAttribute("advertise") final String advertise) {
 
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);

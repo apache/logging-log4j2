@@ -25,7 +25,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.KeyValuePair;
@@ -125,11 +125,12 @@ public final class DynamicThresholdFilter extends AbstractFilter {
      * @return The DynamicThresholdFilter.
      */
     @PluginFactory
-    public static DynamicThresholdFilter createFilter(@PluginAttr("key") final String key,
-                                                      @PluginElement("Pairs") final KeyValuePair[] pairs,
-                                                      @PluginAttr("defaultThreshold") final String levelName,
-                                                      @PluginAttr("onmatch") final String match,
-                                                      @PluginAttr("onmismatch") final String mismatch) {
+    public static DynamicThresholdFilter createFilter(
+            @PluginAttribute("key") final String key,
+            @PluginElement("Pairs") final KeyValuePair[] pairs,
+            @PluginAttribute("defaultThreshold") final String levelName,
+            @PluginAttribute("onatch") final String match,
+            @PluginAttribute("onmismatch") final String mismatch) {
         final Result onMatch = Result.toResult(match);
         final Result onMismatch = Result.toResult(mismatch);
         final Map<String, Level> map = new HashMap<String, Level>();

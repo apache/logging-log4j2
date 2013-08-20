@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -104,12 +104,13 @@ public final class RewriteAppender extends AbstractAppender {
      * @return The created RewriteAppender.
      */
     @PluginFactory
-    public static RewriteAppender createAppender(@PluginAttr("name") final String name,
-                                          @PluginAttr("ignoreExceptions") final String ignore,
-                                          @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
-                                          @PluginConfiguration final Configuration config,
-                                          @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
-                                          @PluginElement("Filter") final Filter filter) {
+    public static RewriteAppender createAppender(
+            @PluginAttribute("name") final String name,
+            @PluginAttribute("ignoreExceptions") final String ignore,
+            @PluginElement("AppenderRef") final AppenderRef[] appenderRefs,
+            @PluginConfiguration final Configuration config,
+            @PluginElement("RewritePolicy") final RewritePolicy rewritePolicy,
+            @PluginElement("Filter") final Filter filter) {
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         if (name == null) {

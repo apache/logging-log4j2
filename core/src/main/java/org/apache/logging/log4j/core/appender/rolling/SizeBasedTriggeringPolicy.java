@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -106,7 +106,7 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
      * @return A SizeBasedTriggeringPolicy.
      */
     @PluginFactory
-    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttr("size") final String size) {
+    public static SizeBasedTriggeringPolicy createPolicy(@PluginAttribute("size") final String size) {
 
         final long maxSize = size == null ? MAX_FILE_SIZE : valueOf(size);
         return new SizeBasedTriggeringPolicy(maxSize);

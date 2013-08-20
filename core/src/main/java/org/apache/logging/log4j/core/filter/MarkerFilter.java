@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 
@@ -80,9 +80,10 @@ public final class MarkerFilter extends AbstractFilter {
      * @return A MarkerFilter.
      */
     @PluginFactory
-    public static MarkerFilter createFilter(@PluginAttr("marker") final String marker,
-                                            @PluginAttr("onMatch") final String match,
-                                            @PluginAttr("onMismatch") final String mismatch) {
+    public static MarkerFilter createFilter(
+            @PluginAttribute("marker") final String marker,
+            @PluginAttribute("onMatch") final String match,
+            @PluginAttribute("onMismatch") final String mismatch) {
 
         if (marker == null) {
             LOGGER.error("A marker must be provided for MarkerFilter");

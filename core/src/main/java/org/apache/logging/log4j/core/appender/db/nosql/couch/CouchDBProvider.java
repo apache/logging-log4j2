@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.core.helpers.Strings;
@@ -79,14 +79,15 @@ public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
      * @return a new Apache CouchDB provider.
      */
     @PluginFactory
-    public static CouchDBProvider createNoSQLProvider(@PluginAttr("databaseName") final String databaseName,
-                                                      @PluginAttr("protocol") String protocol,
-                                                      @PluginAttr("server") String server,
-                                                      @PluginAttr("port") final String port,
-                                                      @PluginAttr("username") final String username,
-                                                      @PluginAttr("password") final String password,
-                                                      @PluginAttr("factoryClassName") final String factoryClassName,
-                                                      @PluginAttr("factoryMethodName") final String factoryMethodName) {
+    public static CouchDBProvider createNoSQLProvider(
+            @PluginAttribute("databaseName") final String databaseName,
+            @PluginAttribute("protocol") String protocol,
+            @PluginAttribute("server") String server,
+            @PluginAttribute("port") final String port,
+            @PluginAttribute("username") final String username,
+            @PluginAttribute("password") final String password,
+            @PluginAttribute("factoryClassName") final String factoryClassName,
+            @PluginAttribute("factoryMethodName") final String factoryMethodName) {
         CouchDbClient client;
         String description;
         if (factoryClassName != null && factoryClassName.length() > 0 &&

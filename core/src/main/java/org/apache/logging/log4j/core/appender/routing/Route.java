@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.routing;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttr;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -93,9 +93,10 @@ public final class Route {
      * @return A Route.
      */
     @PluginFactory
-    public static Route createRoute(@PluginAttr("ref") final String appenderRef,
-                                    @PluginAttr("key") final String key,
-                                    @PluginNode final Node node) {
+    public static Route createRoute(
+            @PluginAttribute("ref") final String appenderRef,
+            @PluginAttribute("key") final String key,
+            @PluginNode final Node node) {
         if (node != null && node.hasChildren()) {
             for (final Node child : node.getChildren()) {
 
