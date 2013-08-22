@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
@@ -164,28 +164,22 @@ public final class Server {
     }
 
     private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
-            throws MalformedObjectNameException,
-            InstanceAlreadyExistsException, MBeanRegistrationException,
-            NotCompliantMBeanException {
+            throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 
         final StatusLoggerAdmin mbean = new StatusLoggerAdmin(executor);
         mbs.registerMBean(mbean, mbean.getObjectName());
     }
 
-    private static void registerContextSelector(final ContextSelector selector,
-            final MBeanServer mbs, final Executor executor)
-            throws MalformedObjectNameException,
-            InstanceAlreadyExistsException, MBeanRegistrationException,
+    private static void registerContextSelector(final ContextSelector selector, final MBeanServer mbs,
+            final Executor executor) throws InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
         final ContextSelectorAdmin mbean = new ContextSelectorAdmin(selector);
         mbs.registerMBean(mbean, mbean.getObjectName());
     }
 
-    private static void registerContexts(final List<LoggerContext> contexts,
-            final MBeanServer mbs, final Executor executor)
-            throws MalformedObjectNameException,
-            InstanceAlreadyExistsException, MBeanRegistrationException,
+    private static void registerContexts(final List<LoggerContext> contexts, final MBeanServer mbs,
+            final Executor executor) throws InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
         for (final LoggerContext ctx : contexts) {
@@ -221,11 +215,8 @@ public final class Server {
         }
     }
 
-    private static void registerLoggerConfigs(final LoggerContext ctx,
-            final MBeanServer mbs, final Executor executor)
-            throws MalformedObjectNameException,
-            InstanceAlreadyExistsException, MBeanRegistrationException,
-            NotCompliantMBeanException {
+    private static void registerLoggerConfigs(final LoggerContext ctx, final MBeanServer mbs, final Executor executor)
+            throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 
         final Map<String, LoggerConfig> map = ctx.getConfiguration().getLoggers();
         for (final String name : map.keySet()) {
@@ -235,10 +226,8 @@ public final class Server {
         }
     }
 
-    private static void registerAppenders(final LoggerContext ctx, final MBeanServer mbs,
-            final Executor executor) throws MalformedObjectNameException,
-            InstanceAlreadyExistsException, MBeanRegistrationException,
-            NotCompliantMBeanException {
+    private static void registerAppenders(final LoggerContext ctx, final MBeanServer mbs, final Executor executor)
+            throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 
         final Map<String, Appender> map = ctx.getConfiguration().getAppenders();
         for (final String name : map.keySet()) {
