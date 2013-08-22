@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.helpers;
 
 import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.apache.logging.log4j.Logger;
@@ -97,14 +95,6 @@ public final class Loader {
                     return url;
                 }
             }
-        } catch (final IllegalAccessException t) {
-            LOGGER.warn(TSTR, t);
-        } catch (final InvocationTargetException t) {
-            if (t.getTargetException() instanceof InterruptedException
-                || t.getTargetException() instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-            }
-            LOGGER.warn(TSTR, t);
         } catch (final Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
@@ -174,14 +164,6 @@ public final class Loader {
                     return is;
                 }
             }
-        } catch (final IllegalAccessException t) {
-            LOGGER.warn(TSTR, t);
-        } catch (final InvocationTargetException t) {
-            if (t.getTargetException() instanceof InterruptedException
-                || t.getTargetException() instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-            }
-            LOGGER.warn(TSTR, t);
         } catch (final Throwable t) {
             //
             //  can't be InterruptedException or InterruptedIOException
@@ -254,7 +236,7 @@ public final class Loader {
         return getClassLoader(Loader.class, null);
     }
 
-    private static ClassLoader getTCL() throws IllegalAccessException, InvocationTargetException {
+    private static ClassLoader getTCL() {
         ClassLoader cl;
         if (System.getSecurityManager() == null) {
             cl = Thread.currentThread().getContextClassLoader();
