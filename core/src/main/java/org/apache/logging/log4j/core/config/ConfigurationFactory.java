@@ -115,7 +115,7 @@ public abstract class ConfigurationFactory {
                             final Class<ConfigurationFactory> clazz = (Class<ConfigurationFactory>)type.getPluginClass();
                             final Order order = clazz.getAnnotation(Order.class);
                             if (order != null) {
-                                final Integer weight = order.value();
+                                final int weight = order.value();
                                 ordered.add(new WeightedFactory(weight, clazz));
                             }
                         } catch (final Exception ex) {
