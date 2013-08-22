@@ -68,7 +68,7 @@ import org.osgi.framework.wiring.BundleWiring;
  *Collection&lt;ActionBean&gt; beans = resolver.getClasses();
  *</pre>
  *
- * <p>This class was copied from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
+ * <p>This class was copied and modified from Stripes - http://stripes.mc4j.org/confluence/display/stripes/Home
  * </p>
  */
 public class ResolverUtil {
@@ -255,8 +255,13 @@ public class ResolverUtil {
                 if (VFSZIP.equals(url.getProtocol())) {
                     final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
                     final URL newURL = new URL(url.getProtocol(), url.getHost(), path);
+                    @SuppressWarnings("resource")
                     final JarInputStream stream = new JarInputStream(newURL.openStream());
-                    loadImplementationsInJar(test, packageName, path, stream);
+                    try {
+                        loadImplementationsInJar(test, packageName, path, stream);
+                    } finally {
+                        close(stream, newURL);
+                    }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
                     loadImplementationsInBundle(test, packageName);
                 } else {
@@ -328,19 +333,36 @@ public class ResolverUtil {
      *
      * @param test a Test used to filter the classes that are discovered
      * @param parent the parent package under which classes must be in order to be considered
-     * @param jarfile the jar file to be examined for classes
+     * @param jarFile the jar file to be examined for classes
      */
-    private void loadImplementationsInJar(final Test test, final String parent, final File jarfile) {
-        JarInputStream jarStream;
+    private void loadImplementationsInJar(final Test test, final String parent, final File jarFile) {
+        @SuppressWarnings("resource")
+        JarInputStream jarStream = null;
         try {
-            jarStream = new JarInputStream(new FileInputStream(jarfile));
-            loadImplementationsInJar(test, parent, jarfile.getPath(), jarStream);
+            jarStream = new JarInputStream(new FileInputStream(jarFile));
+            loadImplementationsInJar(test, parent, jarFile.getPath(), jarStream);
         } catch (final FileNotFoundException ex) {
-            LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
-                test + " file not found");
+            LOG.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
+                    + " file not found");
         } catch (final IOException ioe) {
-            LOG.error("Could not search jar file '" + jarfile + "' for classes matching criteria: " +
-                test + " due to an IOException", ioe);
+            LOG.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
+                    + " due to an IOException", ioe);
+        } finally {
+            close(jarStream, jarFile);
+        }
+    }
+
+    /**
+     * @param jarStream
+     * @param source
+     */
+    private void close(JarInputStream jarStream, final Object source) {
+        if (jarStream != null) {
+            try {
+                jarStream.close();
+            } catch (IOException e) {
+                LOG.error("Error closing JAR file stream for {}", source, e);
+            }
         }
     }
 
