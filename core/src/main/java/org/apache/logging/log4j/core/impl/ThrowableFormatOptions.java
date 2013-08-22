@@ -172,56 +172,55 @@ public final class ThrowableFormatOptions {
     public static ThrowableFormatOptions newInstance(String[] options) {
         if (options == null || options.length == 0) {
             return DEFAULT;
-        } else {
-            // NOTE: The following code is present for backward compatibility
-            // and was copied from Extended/RootThrowablePatternConverter.
-            // This supports a single option with the format:
-            //     %xEx{["none"|"short"|"full"|depth],[filters(packages)}
-            // However, the convention for multiple options should be:
-            //     %xEx{["none"|"short"|"full"|depth]}[{filters(packages)}]
-            if (options.length == 1 && options[0] != null && options[0].length() > 0) {
-                final String[] opts = options[0].split(",", 2);
-                final String first = opts[0].trim();
-                final Scanner scanner = new Scanner(first);
-                if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
-                    options = new String[]{first, opts[1].trim()};
-                }
+        }
+        // NOTE: The following code is present for backward compatibility
+        // and was copied from Extended/RootThrowablePatternConverter.
+        // This supports a single option with the format:
+        //     %xEx{["none"|"short"|"full"|depth],[filters(packages)}
+        // However, the convention for multiple options should be:
+        //     %xEx{["none"|"short"|"full"|depth]}[{filters(packages)}]
+        if (options.length == 1 && options[0] != null && options[0].length() > 0) {
+            final String[] opts = options[0].split(",", 2);
+            final String first = opts[0].trim();
+            final Scanner scanner = new Scanner(first);
+            if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
+                options = new String[]{first, opts[1].trim()};
             }
+        }
 
-            int lines = DEFAULT.lines;
-            String separator = DEFAULT.separator;
-            List<String> packages = DEFAULT.packages;
-            for (String rawOption : options) {
-                if (rawOption != null) {
-                    final String option = rawOption.trim();
-                    if (option.isEmpty()) {
-                        // continue;
-                    } else if (option.startsWith("separator(") && option.endsWith(")")) {
-                        separator = option.substring("separator(".length(), option.length() - 1);
-                    } else if (option.startsWith("filters(") && option.endsWith(")")) {
-                        final String filterStr = option.substring("filters(".length(), option.length() - 1);
-                        if (filterStr.length() > 0) {
-                            final String[] array = filterStr.split(",");
-                            if (array.length > 0) {
-                                packages = new ArrayList<String>(array.length);
-                                for (String token : array) {
-                                    token = token.trim();
-                                    if (token.length() > 0) {
-                                        packages.add(token);
-                                    }
+        int lines = DEFAULT.lines;
+        String separator = DEFAULT.separator;
+        List<String> packages = DEFAULT.packages;
+        for (String rawOption : options) {
+            if (rawOption != null) {
+                final String option = rawOption.trim();
+                if (option.isEmpty()) {
+                    // continue;
+                } else if (option.startsWith("separator(") && option.endsWith(")")) {
+                    separator = option.substring("separator(".length(), option.length() - 1);
+                } else if (option.startsWith("filters(") && option.endsWith(")")) {
+                    final String filterStr = option.substring("filters(".length(), option.length() - 1);
+                    if (filterStr.length() > 0) {
+                        final String[] array = filterStr.split(",");
+                        if (array.length > 0) {
+                            packages = new ArrayList<String>(array.length);
+                            for (String token : array) {
+                                token = token.trim();
+                                if (token.length() > 0) {
+                                    packages.add(token);
                                 }
                             }
                         }
-                    } else if (option.equalsIgnoreCase(NONE)) {
-                        lines = 0;
-                    } else if (option.equalsIgnoreCase(SHORT)) {
-                        lines = 2;
-                    } else if (!option.equalsIgnoreCase(FULL)) {
-                        lines = Integer.parseInt(option);
                     }
+                } else if (option.equalsIgnoreCase(NONE)) {
+                    lines = 0;
+                } else if (option.equalsIgnoreCase(SHORT)) {
+                    lines = 2;
+                } else if (!option.equalsIgnoreCase(FULL)) {
+                    lines = Integer.parseInt(option);
                 }
             }
-            return new ThrowableFormatOptions(lines, separator, packages);
         }
+        return new ThrowableFormatOptions(lines, separator, packages);
     }
 }
