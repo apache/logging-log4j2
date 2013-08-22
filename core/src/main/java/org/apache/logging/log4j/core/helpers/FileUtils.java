@@ -53,24 +53,23 @@ public final class FileUtils {
         if (uri == null || (uri.getScheme() != null &&
             (!PROTOCOL_FILE.equals(uri.getScheme()) && !JBOSS_FILE.equals(uri.getScheme())))) {
             return null;
-        } else {
-            if (uri.getScheme() == null) {
-                try {
-                    uri = new File(uri.getPath()).toURI();
-                } catch (final Exception ex) {
-                    LOGGER.warn("Invalid URI " + uri);
-                    return null;
-                }
-            }
-            try {
-                return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
-            } catch (final MalformedURLException ex) {
-                LOGGER.warn("Invalid URL " + uri, ex);
-            } catch (final UnsupportedEncodingException uee) {
-                LOGGER.warn("Invalid encoding: UTF8", uee);
-            }
-            return null;
         }
+        if (uri.getScheme() == null) {
+            try {
+                uri = new File(uri.getPath()).toURI();
+            } catch (final Exception ex) {
+                LOGGER.warn("Invalid URI " + uri);
+                return null;
+            }
+        }
+        try {
+            return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
+        } catch (final MalformedURLException ex) {
+            LOGGER.warn("Invalid URL " + uri, ex);
+        } catch (final UnsupportedEncodingException uee) {
+            LOGGER.warn("Invalid encoding: UTF8", uee);
+        }
+        return null;
     }
 
     public static boolean isFile(final URL url) {
