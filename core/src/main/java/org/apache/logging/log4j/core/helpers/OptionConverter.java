@@ -154,25 +154,25 @@ public final class OptionConverter {
             return defaultValue;
         }
 
-        String s = value.trim().toUpperCase(Locale.ENGLISH);
+        String str = value.trim().toUpperCase(Locale.ENGLISH);
         long multiplier = 1;
         int index;
 
-        if ((index = s.indexOf("KB")) != -1) {
+        if ((index = str.indexOf("KB")) != -1) {
             multiplier = ONE_K;
-            s = s.substring(0, index);
-        } else if ((index = s.indexOf("MB")) != -1) {
+            str = str.substring(0, index);
+        } else if ((index = str.indexOf("MB")) != -1) {
             multiplier = ONE_K * ONE_K;
-            s = s.substring(0, index);
-        } else if ((index = s.indexOf("GB")) != -1) {
+            str = str.substring(0, index);
+        } else if ((index = str.indexOf("GB")) != -1) {
             multiplier = ONE_K * ONE_K * ONE_K;
-            s = s.substring(0, index);
+            str = str.substring(0, index);
         }
-        if (s != null) {
+        if (str != null) {
             try {
-                return Long.valueOf(s) * multiplier;
+                return Long.valueOf(str) * multiplier;
             } catch (final NumberFormatException e) {
-                LOGGER.error("[" + s + "] is not in proper int form.");
+                LOGGER.error("[" + str + "] is not in proper int form.");
                 LOGGER.error("[" + value + "] not in expected format.", e);
             }
         }
