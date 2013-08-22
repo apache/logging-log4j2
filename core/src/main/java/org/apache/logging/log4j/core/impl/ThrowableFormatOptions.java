@@ -27,6 +27,8 @@ import org.apache.logging.log4j.core.helpers.Constants;
  */
 public final class ThrowableFormatOptions {
 
+    private static final int DEFAULT_LINES = Integer.MAX_VALUE;
+
     /**
      * Default instance of {@code ThrowableFormatOptions}.
      */
@@ -68,8 +70,8 @@ public final class ThrowableFormatOptions {
      * @param separator The stack trace separator.
      * @param packages The packages to filter.
      */
-    protected ThrowableFormatOptions(final Integer lines, final String separator, final List<String> packages) {
-        this.lines = lines == null ? Integer.MAX_VALUE : lines;
+    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> packages) {
+        this.lines = lines;
         this.separator = separator == null ? Constants.LINE_SEP : separator;
         this.packages = packages;
     }
@@ -79,14 +81,14 @@ public final class ThrowableFormatOptions {
      * @param packages The packages to filter.
      */
     protected ThrowableFormatOptions(final List<String> packages) {
-        this(null, null, packages);
+        this(DEFAULT_LINES, null, packages);
     }
 
     /**
      * Construct the options for printing stack trace.
      */
     protected ThrowableFormatOptions() {
-        this(null, null, null);
+        this(DEFAULT_LINES, null, null);
     }
 
     /**
@@ -118,7 +120,7 @@ public final class ThrowableFormatOptions {
      * @return true for all lines, false otherwise.
      */
     public boolean allLines() {
-        return this.lines == Integer.MAX_VALUE;
+        return this.lines == DEFAULT_LINES;
     }
 
     /**
