@@ -23,7 +23,7 @@ import java.util.Scanner;
 import org.apache.logging.log4j.core.helpers.Constants;
 
 /**
- * Contains options which control how a {@code throwable} pattern is formatted.
+ * Contains options which control how a {@link Throwable} pattern is formatted.
  */
 public final class ThrowableFormatOptions {
 
