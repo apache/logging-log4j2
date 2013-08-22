@@ -28,11 +28,11 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class Loader {
 
-    private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
-
     private static boolean ignoreTCL = false;
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
     static {
         final String ignoreTCLProp = PropertiesUtil.getProperties().getStringProperty("log4j.ignoreTCL", null);
@@ -41,7 +41,30 @@ public final class Loader {
         }
     }
 
-    private Loader() {
+    /**
+     * Returns the ClassLoader to use.
+     * @return the ClassLoader.
+     */
+    public static ClassLoader getClassLoader() {
+
+        return getClassLoader(Loader.class, null);
+    }
+
+    public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
+
+        ClassLoader loader1 = null;
+        try {
+            loader1 = getTCL();
+        } catch (final Exception ex) {
+            LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
+        }
+        final ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
+        final ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
+
+        if (isChild(loader1, loader2)) {
+            return isChild(loader1, loader3) ? loader1 : loader3;
+        }
+        return isChild(loader2, loader3) ? loader2 : loader3;
     }
 
     /**
@@ -179,6 +202,35 @@ public final class Loader {
         return ClassLoader.getSystemResourceAsStream(resource);
     }
 
+    private static ClassLoader getTCL() {
+        ClassLoader cl;
+        if (System.getSecurityManager() == null) {
+            cl = Thread.currentThread().getContextClassLoader();
+        } else {
+            cl = java.security.AccessController.doPrivileged(
+                new java.security.PrivilegedAction<ClassLoader>() {
+                    @Override
+                    public ClassLoader run() {
+                        return Thread.currentThread().getContextClassLoader();
+                    }
+                }
+            );
+        }
+
+        return cl;
+    }
+
+    private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
+        if (loader1 != null && loader2 != null) {
+            ClassLoader parent = loader1.getParent();
+            while (parent != null && parent != loader2) {
+                parent = parent.getParent();
+            }
+            return parent != null;
+        }
+        return loader1 != null;
+    }
+
     /**
      * Load a Class by name.
      * @param className The class name.
@@ -197,58 +249,6 @@ public final class Loader {
         }
     }
 
-    public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
-
-        ClassLoader loader1 = null;
-        try {
-            loader1 = getTCL();
-        } catch (final Exception ex) {
-            LOGGER.warn("Caught exception locating thread ClassLoader {}", ex.getMessage());
-        }
-        final ClassLoader loader2 = class1 == null ? null : class1.getClassLoader();
-        final ClassLoader loader3 = class2 == null ? null : class2.getClass().getClassLoader();
-
-        if (isChild(loader1, loader2)) {
-            return isChild(loader1, loader3) ? loader1 : loader3;
-        }
-        return isChild(loader2, loader3) ? loader2 : loader3;
-    }
-
-    private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
-        if (loader1 != null && loader2 != null) {
-            ClassLoader parent = loader1.getParent();
-            while (parent != null && parent != loader2) {
-                parent = parent.getParent();
-            }
-            return parent != null;
-        }
-        return loader1 != null;
-    }
-
-    /**
-     * Returns the ClassLoader to use.
-     * @return the ClassLoader.
-     */
-    public static ClassLoader getClassLoader() {
-
-        return getClassLoader(Loader.class, null);
-    }
-
-    private static ClassLoader getTCL() {
-        ClassLoader cl;
-        if (System.getSecurityManager() == null) {
-            cl = Thread.currentThread().getContextClassLoader();
-        } else {
-            cl = java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction<ClassLoader>() {
-                    @Override
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                }
-            );
-        }
-
-        return cl;
+    private Loader() {
     }
 }
