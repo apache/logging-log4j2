@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
