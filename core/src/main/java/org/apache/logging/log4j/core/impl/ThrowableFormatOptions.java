@@ -186,6 +186,7 @@ public final class ThrowableFormatOptions {
             if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
                 options = new String[]{first, opts[1].trim()};
             }
+            scanner.close();
         }
 
         int lines = DEFAULT.lines;
