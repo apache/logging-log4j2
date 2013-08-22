@@ -462,7 +462,7 @@ public abstract class ConfigurationFactory {
 
         public ConfigurationSource(final InputStream stream) {
             this.stream = stream;
-            this .file = null;
+            this.file = null;
             this.location = null;
         }
 
