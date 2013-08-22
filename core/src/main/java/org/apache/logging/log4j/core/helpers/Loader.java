@@ -189,12 +189,11 @@ public final class Loader {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
             return Class.forName(className);
-        } else {
-            try {
-                return getTCL().loadClass(className);
-            } catch (final Throwable e) {
-                return Class.forName(className);
-            }
+        }
+        try {
+            return getTCL().loadClass(className);
+        } catch (final Throwable e) {
+            return Class.forName(className);
         }
     }
 
@@ -211,9 +210,8 @@ public final class Loader {
 
         if (isChild(loader1, loader2)) {
             return isChild(loader1, loader3) ? loader1 : loader3;
-        } else {
-            return isChild(loader2, loader3) ? loader2 : loader3;
         }
+        return isChild(loader2, loader3) ? loader2 : loader3;
     }
 
     private static boolean isChild(final ClassLoader loader1, final ClassLoader loader2) {
