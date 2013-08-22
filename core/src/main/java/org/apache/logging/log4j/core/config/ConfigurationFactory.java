@@ -432,10 +432,9 @@ public abstract class ConfigurationFactory {
                                 final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
                                     return c;
-                                } else {
-                                    LOGGER.error("Cannot determine the ConfigurationFactory to use for {}", config);
-                                    return null;
                                 }
+                                LOGGER.error("Cannot determine the ConfigurationFactory to use for {}", config);
+                                return null;
                             }
                         }
                     }
