@@ -49,9 +49,9 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
     private PropertiesRewritePolicy(final Configuration config, final List<Property> props) {
         this.config = config;
         this.properties = new HashMap<Property, Boolean>(props.size());
-        for (final Property prop : props) {
-            final boolean interpolate = prop.getValue().contains("${");
-            properties.put(prop, interpolate);
+        for (final Property property : props) {
+            final Boolean interpolate = Boolean.valueOf(property.getValue().contains("${"));
+            properties.put(property, interpolate);
         }
     }
 
@@ -66,7 +66,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
         final Map<String, String> props = new HashMap<String, String>(source.getContextMap());
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();
-            props.put(prop.getName(), entry.getValue() ?
+            props.put(prop.getName(), entry.getValue().booleanValue() ?
                 config.getStrSubstitutor().replace(prop.getValue()) : prop.getValue());
         }
 
