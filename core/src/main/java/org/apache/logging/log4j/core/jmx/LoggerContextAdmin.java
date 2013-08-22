@@ -32,6 +32,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
+
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
@@ -186,11 +187,22 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         }
     }
 
+    /**
+     * 
+     * @param uri
+     * @param charset MUST not be null
+     * @return
+     * @throws IOException
+     */
     private String readContents(final URI uri, final Charset charset) throws IOException {
-        InputStream in = null;
+        if (charset == null) {
+            throw new IllegalArgumentException("charset must not be null");
+        }
+        Reader reader = null;
         try {
-            in = uri.toURL().openStream();
-            final Reader reader = new InputStreamReader(in, charset);
+            InputStream in = uri.toURL().openStream();
+            // The stream is open and charset is not null, we can create the reader safely without a possible NPE.
+            reader = new InputStreamReader(in, charset);
             final StringBuilder result = new StringBuilder(TEXT_BUFFER);
             final char[] buff = new char[PAGE];
             int count = -1;
@@ -200,7 +212,9 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
             return result.toString();
         } finally {
             try {
-                in.close();
+                if (reader != null) {
+                    reader.close();
+                }
             } catch (final Exception ignored) {
                 // ignored
             }
