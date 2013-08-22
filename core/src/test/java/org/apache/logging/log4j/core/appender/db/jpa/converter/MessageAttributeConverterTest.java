@@ -25,7 +25,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MessageAttributeConverterTest {
-    private static final StatusLogger log = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private MessageAttributeConverter converter;
 
@@ -41,7 +41,7 @@ public class MessageAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        final Message message = log.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
+        final Message message = LOGGER.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
 
         final String converted = this.converter.convertToDatabaseColumn(message);
 
