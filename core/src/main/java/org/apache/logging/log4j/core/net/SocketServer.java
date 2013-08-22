@@ -131,7 +131,7 @@ public class SocketServer extends AbstractServer implements Runnable {
                 // socket has been accepted.
 
                 final SocketHandler handler = new SocketHandler(clientSocket);
-                handlers.put(handler.getId(), handler);
+                handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
             } catch (final IOException ioe) {
                 System.out.println("Exception encountered on accept. Ignoring. Stack Trace :");
@@ -195,7 +195,7 @@ public class SocketServer extends AbstractServer implements Runnable {
                     }
                 }
             } finally {
-                handlers.remove(getId());
+                handlers.remove(Long.valueOf(getId()));
             }
         }
     }
