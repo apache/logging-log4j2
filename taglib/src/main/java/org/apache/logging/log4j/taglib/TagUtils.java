@@ -35,7 +35,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.0
  */
 final class TagUtils {
-    private static final StatusLogger log = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private static final Set<Object> WARNED_FOR = new HashSet<Object>();
 
@@ -75,8 +75,8 @@ final class TagUtils {
                 return (Log4jTaglibLogger) logger;
             }
             if (logger instanceof AbstractLogger) {
-                if (log.isInfoEnabled() && !WARNED_FOR.contains(logger)) {
-                    log.info("Constructing new Log4jTaglibLogger from AbstractLogger {} name and message factory.",
+                if (LOGGER.isInfoEnabled() && !WARNED_FOR.contains(logger)) {
+                    LOGGER.info("Constructing new Log4jTaglibLogger from AbstractLogger {} name and message factory.",
                             logger.getClass().getName());
                     WARNED_FOR.add(logger);
                 }
