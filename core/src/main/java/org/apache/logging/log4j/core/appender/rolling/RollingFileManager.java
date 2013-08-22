@@ -41,7 +41,7 @@ public class RollingFileManager extends FileManager {
 
     private long size;
     private long initialTime;
-    private final PatternProcessor processor;
+    private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
     private final TriggeringPolicy policy;
     private final RolloverStrategy strategy;
@@ -54,7 +54,7 @@ public class RollingFileManager extends FileManager {
         this.initialTime = time;
         this.policy = policy;
         this.strategy = strategy;
-        processor = new PatternProcessor(pattern);
+        patternProcessor = new PatternProcessor(pattern);
         policy.initialize(this);
     }
 
@@ -126,8 +126,8 @@ public class RollingFileManager extends FileManager {
      * Returns the pattern processor.
      * @return The PatternProcessor.
      */
-    public PatternProcessor getProcessor() {
-        return processor;
+    public PatternProcessor getPatternProcessor() {
+        return patternProcessor;
     }
 
     private boolean rollover(final RolloverStrategy strategy) {
