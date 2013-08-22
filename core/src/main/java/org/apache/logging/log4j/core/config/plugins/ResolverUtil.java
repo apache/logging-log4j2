@@ -73,7 +73,7 @@ import org.osgi.framework.wiring.BundleWiring;
  */
 public class ResolverUtil {
     /** An instance of Log to use for logging in this class. */
-    private static final Logger LOG = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String VFSZIP = "vfszip";
 
@@ -230,7 +230,7 @@ public class ResolverUtil {
         try {
             urls = loader.getResources(packageName);
         } catch (final IOException ioe) {
-            LOG.warn("Could not read package: " + packageName, ioe);
+            LOGGER.warn("Could not read package: " + packageName, ioe);
             return;
         }
 
@@ -250,7 +250,7 @@ public class ResolverUtil {
                     urlPath = urlPath.substring(0, urlPath.indexOf('!'));
                 }
 
-                LOG.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
+                LOGGER.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
                 // Check for a jar in a war in JBoss
                 if (VFSZIP.equals(url.getProtocol())) {
                     final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
@@ -273,7 +273,7 @@ public class ResolverUtil {
                     }
                 }
             } catch (final IOException ioe) {
-                LOG.warn("could not read entries", ioe);
+                LOGGER.warn("could not read entries", ioe);
             }
         }
     }
@@ -342,10 +342,10 @@ public class ResolverUtil {
             jarStream = new JarInputStream(new FileInputStream(jarFile));
             loadImplementationsInJar(test, parent, jarFile.getPath(), jarStream);
         } catch (final FileNotFoundException ex) {
-            LOG.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
+            LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
                     + " file not found");
         } catch (final IOException ioe) {
-            LOG.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
+            LOGGER.error("Could not search jar file '" + jarFile + "' for classes matching criteria: " + test
                     + " due to an IOException", ioe);
         } finally {
             close(jarStream, jarFile);
@@ -361,7 +361,7 @@ public class ResolverUtil {
             try {
                 jarStream.close();
             } catch (IOException e) {
-                LOG.error("Error closing JAR file stream for {}", source, e);
+                LOGGER.error("Error closing JAR file stream for {}", source, e);
             }
         }
     }
@@ -388,7 +388,7 @@ public class ResolverUtil {
                 }
             }
         } catch (final IOException ioe) {
-            LOG.error("Could not search jar file '" + path + "' for classes matching criteria: " +
+            LOGGER.error("Could not search jar file '" + path + "' for classes matching criteria: " +
                 test + " due to an IOException", ioe);
         }
     }
@@ -405,8 +405,8 @@ public class ResolverUtil {
             final ClassLoader loader = getClassLoader();
             if (test.doesMatchClass()) {
                 final String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
                 }
 
                 final Class<?> type = loader.loadClass(externalName);
@@ -424,7 +424,7 @@ public class ResolverUtil {
                 }
             }
         } catch (final Throwable t) {
-            LOG.warn("Could not examine class '" + fqn + "' due to a " +
+            LOGGER.warn("Could not examine class '" + fqn + "' due to a " +
                 t.getClass().getName() + " with message: " + t.getMessage());
         }
     }
