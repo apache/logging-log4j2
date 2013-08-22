@@ -148,18 +148,28 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final long size = data.append ? file.length() : 0;
             final long time = file.exists() ? file.lastModified() : System.currentTimeMillis();
 
-            RandomAccessFile raf;
+            RandomAccessFile raf = null;
             try {
                 raf = new RandomAccessFile(name, "rw");
                 if (data.append) {
-                    raf.seek(raf.length());
+                    final long length = raf.length();
+                    LOGGER.trace("RandomAccessFile {} seek to {}", name, length);
+                    raf.seek(length);
                 } else {
+                    LOGGER.trace("RandomAccessFile {} set length to 0", name);
                     raf.setLength(0);
                 }
                 return new RollingRandomAccessFileManager(raf, name, data.pattern, new DummyOutputStream(), data.append,
                         data.immediateFlush, size, time, data.policy, data.strategy, data.advertiseURI, data.layout);
             } catch (final IOException ex) {
-                LOGGER.error("RollingRandomAccessFileManager (" + name + ") " + ex);
+                LOGGER.error("Cannot access RandomAccessFile {}) " + ex);
+                if (raf != null) {
+                    try {
+                        raf.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Cannot close RandomAccessFile {}", name, e);
+                    }
+                }
             }
             return null;
         }
