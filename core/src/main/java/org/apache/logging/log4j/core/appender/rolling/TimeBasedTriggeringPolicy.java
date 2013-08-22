@@ -46,7 +46,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         this.manager = manager;
-        nextRollover = manager.getProcessor().getNextTime(manager.getFileTime(), interval, modulate);
+        nextRollover = manager.getPatternProcessor().getNextTime(manager.getFileTime(), interval, modulate);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class TimeBasedTriggeringPolicy implements TriggeringPolicy {
         }
         final long now = System.currentTimeMillis();
         if (now > nextRollover) {
-            nextRollover = manager.getProcessor().getNextTime(now, interval, modulate);
+            nextRollover = manager.getPatternProcessor().getNextTime(now, interval, modulate);
             return true;
         }
         return false;
