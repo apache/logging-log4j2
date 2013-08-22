@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Converter(autoApply = false)
 public class MessageAttributeConverter implements AttributeConverter<Message, String> {
-    private static final StatusLogger log = StatusLogger.getLogger();
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     @Override
     public String convertToDatabaseColumn(final Message message) {
@@ -46,6 +46,6 @@ public class MessageAttributeConverter implements AttributeConverter<Message, St
             return null;
         }
 
-        return log.getMessageFactory().newMessage(s);
+        return LOGGER.getMessageFactory().newMessage(s);
     }
 }
