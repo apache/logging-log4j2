@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-366" dev="ggregory" type="update">
+        Update commons-logging to 1.1.3 from 1.1.1.
+      </action>
       <action issue="LOG4J2-360" dev="rgoers" type="update">
         Allow Plugins to have aliases.
       </action>
