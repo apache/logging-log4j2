@@ -195,13 +195,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
      * @throws IOException
      */
     private String readContents(final URI uri, final Charset charset) throws IOException {
-        if (charset == null) {
-            throw new IllegalArgumentException("charset must not be null");
-        }
+        InputStream in = null;
         Reader reader = null;
         try {
-            InputStream in = uri.toURL().openStream();
-            // The stream is open and charset is not null, we can create the reader safely without a possible NPE.
+            in = uri.toURL().openStream();
             reader = new InputStreamReader(in, charset);
             final StringBuilder result = new StringBuilder(TEXT_BUFFER);
             final char[] buff = new char[PAGE];
@@ -211,6 +208,13 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
             }
             return result.toString();
         } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (final Exception ignored) {
+                // ignored
+            }
             try {
                 if (reader != null) {
                     reader.close();
