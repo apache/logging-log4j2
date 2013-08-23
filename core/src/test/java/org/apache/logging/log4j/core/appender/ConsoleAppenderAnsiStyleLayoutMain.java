@@ -24,16 +24,24 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /**
- * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest of the log entry
- * (time stamp for example) is in the default color for that console.
+ * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
+ * of the log entry (time stamp for example) is in the default color for that console.
+ * <p>
+ * Running from a Windows command line from the root of the project:
+ * </p>
+ * 
+ * <pre>
+ * java -classpath core\target\test-classes;core\target\classes;api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiStyleLayoutMain core/target/test-classes/log4j2-console-style-ansi.xml
+ * </pre>
  */
 public class ConsoleAppenderAnsiStyleLayoutMain {
 
     private static final Logger LOG = LogManager.getLogger(ConsoleAppenderAnsiStyleLayoutMain.class);
 
     public static void main(final String[] args) {
-        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(),
-                "target/test-classes/log4j2-console-style-ansi.xml");
+        // System.out.println(System.getProperty("java.class.path"));
+        String config = args.length == 0 ? "target/test-classes/log4j2-console-style-ansi.xml" : args[0];
+        final LoggerContext ctx = Configurator.initialize(ConsoleAppenderAnsiMessagesMain.class.getName(), config);
         try {
             LOG.fatal("Fatal message.");
             LOG.error("Error message.");

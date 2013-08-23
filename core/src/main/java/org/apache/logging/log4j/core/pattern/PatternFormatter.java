@@ -46,6 +46,19 @@ public class PatternFormatter {
     }
     
     /**
+     * Normally pattern formatters are not meant to handle Exceptions although
+     * few pattern formatters might.
+     * <p/>
+     * By examining the return values for this method, the containing layout will
+     * determine whether it handles throwables or not.
+     *
+     * @return true if this PatternConverter handles throwables
+     */
+    public boolean handlesThrowable() {
+        return converter.handlesThrowable();
+    }
+
+    /**
      * Returns a String suitable for debugging.
      * 
      * @return a String suitable for debugging.

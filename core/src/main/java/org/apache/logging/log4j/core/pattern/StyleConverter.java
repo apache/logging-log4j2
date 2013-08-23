@@ -89,6 +89,16 @@ public final class StyleConverter extends LogEventPatternConverter {
         }
     }
     
+    @Override
+    public boolean handlesThrowable() {
+        for (final PatternFormatter formatter : patternFormatters) {
+            if (formatter .handlesThrowable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns a String suitable for debugging.
      * 
