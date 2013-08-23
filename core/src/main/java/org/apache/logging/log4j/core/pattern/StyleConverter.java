@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
