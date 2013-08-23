@@ -27,7 +27,7 @@
       <action issue="LOG4J2-366" dev="ggregory" type="update">
         Update commons-logging to 1.1.3 from 1.1.1.
       </action>
-      <action issue="LOG4J2-360" dev="rgoers" type="update">
+      <action issue="LOG4J2-360" dev="rgoers" type="add">
         Allow Plugins to have aliases.
       </action>
       <action issue="LOG4J2-358" dev="nickwilliams" type="fix">
