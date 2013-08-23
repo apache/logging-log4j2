@@ -17,23 +17,19 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-
 /**
- * Modifies the output of a pattern converter for a specified minimum
- * and maximum width and alignment.
+ * Modifies the output of a pattern converter for a specified minimum and maximum width and alignment.
  */
 public final class FormattingInfo {
     /**
      * Array of spaces.
      */
-    private static final char[] SPACES =
-        new char[]{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+    private static final char[] SPACES = new char[] { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
 
     /**
      * Default instance.
      */
-    private static final FormattingInfo DEFAULT =
-        new FormattingInfo(false, 0, Integer.MAX_VALUE);
+    private static final FormattingInfo DEFAULT = new FormattingInfo(false, 0, Integer.MAX_VALUE);
 
     /**
      * Minimum length.
@@ -52,10 +48,13 @@ public final class FormattingInfo {
 
     /**
      * Creates new instance.
-     *
-     * @param leftAlign left align if true.
-     * @param minLength minimum length.
-     * @param maxLength maximum length.
+     * 
+     * @param leftAlign
+     *            left align if true.
+     * @param minLength
+     *            minimum length.
+     * @param maxLength
+     *            maximum length.
      */
     public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength) {
         this.leftAlign = leftAlign;
@@ -65,7 +64,7 @@ public final class FormattingInfo {
 
     /**
      * Gets default instance.
-     *
+     * 
      * @return default instance.
      */
     public static FormattingInfo getDefault() {
@@ -74,7 +73,7 @@ public final class FormattingInfo {
 
     /**
      * Determine if left aligned.
-     *
+     * 
      * @return true if left aligned.
      */
     public boolean isLeftAligned() {
@@ -83,7 +82,7 @@ public final class FormattingInfo {
 
     /**
      * Get minimum length.
-     *
+     * 
      * @return minimum length.
      */
     public int getMinLength() {
@@ -92,7 +91,7 @@ public final class FormattingInfo {
 
     /**
      * Get maximum length.
-     *
+     * 
      * @return maximum length.
      */
     public int getMaxLength() {
@@ -101,9 +100,11 @@ public final class FormattingInfo {
 
     /**
      * Adjust the content of the buffer based on the specified lengths and alignment.
-     *
-     * @param fieldStart start of field in buffer.
-     * @param buffer     buffer to be modified.
+     * 
+     * @param fieldStart
+     *            start of field in buffer.
+     * @param buffer
+     *            buffer to be modified.
      */
     public void format(final int fieldStart, final StringBuilder buffer) {
         final int rawLength = buffer.length() - fieldStart;
@@ -129,7 +130,7 @@ public final class FormattingInfo {
             }
         }
     }
-    
+
     /**
      * Returns a String suitable for debugging.
      * 
