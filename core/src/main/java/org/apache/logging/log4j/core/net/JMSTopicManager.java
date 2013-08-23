@@ -104,7 +104,6 @@ public class JMSTopicManager extends AbstractJMSManager {
         if (info == null) {
             info = connect(context, factoryBindingName, topicBindingName, userName, password, false);
         }
-        super.send(object, info.session, info.publisher);
         try {
             super.send(object, info.session, info.publisher);
         } catch (final Exception ex) {

@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-367" dev="ggregory" type="fix" due-to="David Parry">
+        JMS appenders send two messages for one append.
+      </action>
       <action issue="LOG4J2-319" dev="ggregory" type="fix">
         Double stack trace logging when using %throwable in a %style.
       </action>
