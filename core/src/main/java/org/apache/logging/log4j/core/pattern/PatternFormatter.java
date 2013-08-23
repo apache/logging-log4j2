@@ -44,4 +44,21 @@ public class PatternFormatter {
     public FormattingInfo getFormattingInfo() {
         return field;
     }
+    
+    /**
+     * Returns a String suitable for debugging.
+     * 
+     * @return a String suitable for debugging.
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append("[converter=");
+        sb.append(converter);
+        sb.append(", field=");
+        sb.append(field);
+        sb.append("]");
+        return sb.toString();
+    }
 }
