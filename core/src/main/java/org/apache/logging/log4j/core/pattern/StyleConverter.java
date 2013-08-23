@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -88,4 +89,22 @@ public final class StyleConverter extends LogEventPatternConverter {
             toAppendTo.append(style).append(buf.toString()).append(AnsiEscape.getDefaultStyle());
         }
     }
+    
+    /**
+     * Returns a String suitable for debugging.
+     * 
+     * @return a String suitable for debugging.
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append("[style=");
+        sb.append(style);
+        sb.append(", patternFormatters=");
+        sb.append(patternFormatters);
+        sb.append("]");
+        return sb.toString();
+    }
+
 }
