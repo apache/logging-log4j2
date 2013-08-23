@@ -149,13 +149,13 @@ public final class PatternParser {
         parse(pattern, converters, fields);
 
         final Iterator<FormattingInfo> fieldIter = fields.iterator();
-        boolean handlesExceptions = false;
+        boolean handlesThrowable = false;
 
         for (final PatternConverter converter : converters) {
             LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
                 pc = (LogEventPatternConverter) converter;
-                handlesExceptions |= pc.handlesThrowable();
+                handlesThrowable |= pc.handlesThrowable();
             } else {
                 pc = new LiteralPatternConverter(config, "");
             }
@@ -168,7 +168,7 @@ public final class PatternParser {
             }
             list.add(new PatternFormatter(pc, field));
         }
-        if (alwaysWriteExceptions && !handlesExceptions) {
+        if (alwaysWriteExceptions && !handlesThrowable) {
             final LogEventPatternConverter pc = ExtendedThrowablePatternConverter.newInstance(null);
             list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
         }
