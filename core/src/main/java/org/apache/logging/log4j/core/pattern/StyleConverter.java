@@ -30,19 +30,19 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({"style" })
 public final class StyleConverter extends LogEventPatternConverter {
 
-    private final List<PatternFormatter> formatters;
+    private final List<PatternFormatter> patternFormatters;
 
     private final String style;
 
     /**
      * Constructs the converter.
-     * @param formatters The PatternFormatters to generate the text to manipulate.
-     * @param styling The styling that should encapsulate the pattern.
+     * @param patternFormatters The PatternFormatters to generate the text to manipulate.
+     * @param style The style that should encapsulate the pattern.
      */
-    private StyleConverter(final List<PatternFormatter> formatters, final String styling) {
+    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style) {
         super("style", "style");
-        this.formatters = formatters;
-        this.style = styling;
+        this.patternFormatters = patternFormatters;
+        this.style = style;
     }
 
     /**
@@ -80,7 +80,7 @@ public final class StyleConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
+        for (final PatternFormatter formatter : patternFormatters) {
             formatter.format(event, buf);
         }
 
