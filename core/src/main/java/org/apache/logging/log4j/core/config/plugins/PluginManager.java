@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -246,11 +247,7 @@ public class PluginManager {
                 LOGGER.warn("Unable to preload plugins", ex);
                 return null;
             } finally {
-                try {
-                    dis.close();
-                } catch (final Exception ignored) {
-                    // nothing we can do here...
-                }
+                Closer.closeSilent(dis);
             }
         }
         return map.size() == 0 ? null : map;
@@ -281,11 +278,7 @@ public class PluginManager {
         } catch (final Exception ex) {
             ex.printStackTrace();
         } finally {
-            try {
-                dos.close();
-            } catch (final Exception ignored) {
-                // nothing we can do here...
-            }
+            Closer.closeSilent(dos);
         }
     }
 
