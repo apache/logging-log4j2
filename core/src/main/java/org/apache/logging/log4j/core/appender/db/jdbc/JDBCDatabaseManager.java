@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
@@ -60,13 +61,9 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     @Override
     protected void disconnectInternal() throws SQLException {
         try {
-            if (this.statement != null && !this.statement.isClosed()) {
-                this.statement.close();
-            }
+            Closer.close(this.statement);
         } finally {
-            if (this.connection != null && !this.connection.isClosed()) {
-                this.connection.close();
-            }
+            Closer.close(this.connection);
         }
     }
 
@@ -109,9 +106,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
                     e.getMessage(), e);
         } finally {
-            if (reader != null) {
-                reader.close();
-            }
+            Closer.closeSilent(reader);
         }
     }
 

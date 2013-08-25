@@ -44,6 +44,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationFactory.ConfigurationSource;
 import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -208,20 +209,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
             }
             return result.toString();
         } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (final Exception ignored) {
-                // ignored
-            }
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (final Exception ignored) {
-                // ignored
-            }
+            Closer.closeSilent(in);
+            Closer.closeSilent(reader);
         }
     }
 
