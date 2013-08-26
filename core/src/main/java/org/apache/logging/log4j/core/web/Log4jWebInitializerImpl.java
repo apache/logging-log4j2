@@ -104,7 +104,12 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.selector = (NamedContextSelector) selector;
-                loggerContext = this.selector.locateContext(this.name, configLocation);
+                loggerContext = this.selector.locateContext(this.name, this.servletContext, configLocation);
+                ContextAnchor.THREAD_CONTEXT.set(loggerContext);
+                if (loggerContext.getStatus() == LoggerContext.Status.INITIALIZED) {
+                    loggerContext.start();
+                }
+                ContextAnchor.THREAD_CONTEXT.remove();
             } else {
                 this.servletContext.log("Potential problem: Selector is not an instance of NamedContextSelector.");
                 return;
@@ -128,7 +133,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             return;
         }
 
-        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), location);
+        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), location, this.servletContext);
     }
 
     @Override
@@ -147,6 +152,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
                     this.selector.removeContext(this.name);
                 }
                 this.loggerContext.stop();
+                this.loggerContext.setExternalContext(null);
                 this.loggerContext = null;
             }
         }

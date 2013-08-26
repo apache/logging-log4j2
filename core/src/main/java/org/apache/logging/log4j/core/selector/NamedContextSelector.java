@@ -28,10 +28,11 @@ public interface NamedContextSelector extends ContextSelector {
     /**
      * Locate the LoggerContext with the specified name.
      * @param name The LoggerContext name.
+     * @param externalContext The external context to associate with the LoggerContext.
      * @param configLocation The location of the configuration.
      * @return A LoggerContext.
      */
-    LoggerContext locateContext(String name, URI configLocation);
+    LoggerContext locateContext(String name, Object externalContext, URI configLocation);
 
     /**
      * Locate the LoggerContext with the specified name using the default configuration.

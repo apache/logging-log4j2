@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -33,6 +34,7 @@ public final class Configurator {
     private Configurator() {
     }
 
+
     /**
      * Initializes the Logging Context.
      * @param name The Context name.
@@ -41,10 +43,24 @@ public final class Configurator {
      * @return The LoggerContext.
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation) {
+        return initialize(name, loader, configLocation, null);
+
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param name The Context name.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param configLocation The configuration for the logging context.
+     * @param externalContext The external context to be attached to the LoggerContext
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
+                                           final Object externalContext) {
 
         try {
             final URI uri = configLocation == null ? null : new URI(configLocation);
-            return initialize(name, loader, uri);
+            return initialize(name, loader, uri, externalContext);
         } catch (final URISyntaxException ex) {
             ex.printStackTrace();
         }
@@ -69,13 +85,31 @@ public final class Configurator {
      * @return The LoggerContext.
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation) {
+        return initialize(name, loader, configLocation, null);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param name The Context name.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param configLocation The configuration for the logging context.
+     * @param externalContext The external context to be attached to the LoggerContext
+     * @return The LoggerContext.
+     */
+    public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation,
+                                           final Object externalContext) {
 
         try {
             final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                if (externalContext != null) {
+                    ctx.setExternalContext(externalContext);
+                }
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
                 ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
                 return ctx;
             } else {
                 LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
@@ -106,8 +140,10 @@ public final class Configurator {
             final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
                 ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
                 return ctx;
             } else {
                 LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",

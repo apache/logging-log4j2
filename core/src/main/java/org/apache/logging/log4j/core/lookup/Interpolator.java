@@ -64,6 +64,7 @@ public class Interpolator implements StrLookup {
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("jndi", new JndiLookup());
+        lookups.put("web", new WebLookup());
     }
 
      /**

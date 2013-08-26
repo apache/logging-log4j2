@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-364" dev="rgoers" type="add" due-to="David Nault">
+        Add WebLookup to retrieve information from the ServletContext.
+      </action>
       <action issue="LOG4J2-367" dev="ggregory" type="fix" due-to="David Parry">
         JMS appenders send two messages for one append.
       </action>
