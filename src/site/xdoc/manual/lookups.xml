@@ -164,6 +164,76 @@
   <File name="ApplicationLog" fileName="${sys:logPath}/app.log"/>
 </Appenders>]]></pre>
         </subsection>
+        <a name="WebLookup"/>
+        <subsection name="WebLookup">
+          <p>
+            The WebLookup allows applications to retrieve variables that are associated with the ServletContext.
+            In addition to being able to retrieve various fields in the ServletContext, WebLookup supports looking
+            up values stored as attributes or configured as initialization parameters. The following table lists
+            various keys that can be retrieved:
+          </p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>attr.<i>name</i></td>
+              <td>Returns the ServletContext attribute with the specified name</td>
+            </tr>
+            <tr>
+              <td>contextPath</td>
+              <td>The context path of the web application</td>
+            </tr>
+            <tr>
+              <td>effectiveMajorVersion</td>
+              <td>Gets the major version of the Servlet specification that the application represented by this
+                ServletContext is based on.</td>
+            </tr>
+            <tr>
+              <td>effectiveMinorVersion</td>
+              <td>Gets the minor version of the Servlet specification that the application represented by this
+                ServletContext is based on.</td>
+            </tr>
+            <tr>
+              <td>initParam.<i>name</i></td>
+              <td>Returns the ServletContext initialization parameter with the specified name</td>
+            </tr>
+            <tr>
+              <td>majorVersion</td>
+              <td>Returns the major version of the Servlet API that this servlet container supports.</td>
+            </tr>
+            <tr>
+              <td>minorVersion</td>
+              <td>Returns the minor version of the Servlet API that this servlet container supports.</td>
+            </tr>
+            <tr>
+              <td>rootDir</td>
+              <td>Returns the result of calling getRealPath with a value of "/".</td>
+            </tr>
+            <tr>
+              <td>serverInfo</td>
+              <td>Returns the name and version of the servlet container on which the servlet is running.</td>
+            </tr>
+            <tr>
+              <td>servletContextName</td>
+              <td>Returns the name of the web application as defined in the display-name element of the
+                deployment descriptor</td>
+            </tr>
+            <tr>
+
+            </tr>
+
+          </table>
+          <p>Any other key names specified will first be checked to see if a ServletContext attribute exists with
+            that name and then will be checked to see if an initialization parameter of that name exists. If the
+            key is located then the corresponding value will be returned.</p>
+          <pre class="prettyprint linenums"><![CDATA[
+<Appenders>
+  <File name="ApplicationLog" fileName="${web:rootDir}/app.log"/>
+</Appenders>]]></pre>
+        </subsection>
+
       </section>
     </body>
 </document>
