@@ -16,24 +16,28 @@
  */
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.junit.Test;
+
+import java.io.StringWriter;
 
 /**
  *
  */
-public class PatternLayout extends Layout {
+public class VelocityTest {
 
-    public PatternLayout(String pattern) {
+    @Test
+    public void testVelocity() {
+        Velocity.init();
+        VelocityContext context = new VelocityContext();
+        context.put( "name", new String("Velocity") );
 
-    }
+        Template template = Velocity.getTemplate("target/test-classes/hello.vm");
 
-    @Override
-    public String format(final LoggingEvent event) {
-        return "";
-    }
+        StringWriter sw = new StringWriter();
 
-    @Override
-    public boolean ignoresThrowable() {
-        return true;
+        template.merge(context, sw);
     }
 }
