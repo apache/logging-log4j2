@@ -261,8 +261,9 @@ public final class StatusLogger extends AbstractLogger {
                 return logger.isWarnEnabled(marker);
             case ERROR:
                 return logger.isErrorEnabled(marker);
+            default:
+                return false;
         }
-        return false;
     }
 
     /**
