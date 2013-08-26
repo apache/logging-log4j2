@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-368" dev="rgoers" type="fix">
+        Add PatternLayout constructor to Log4j 1.2 bridge for Velocity.
+      </action>
       <action issue="LOG4J2-333" dev="ggregory" type="fix" due-to="Hervé Boutemy">
         Match artifact ids with Maven module names.
       </action>
