@@ -220,10 +220,6 @@
               <td>Returns the name of the web application as defined in the display-name element of the
                 deployment descriptor</td>
             </tr>
-            <tr>
-
-            </tr>
-
           </table>
           <p>Any other key names specified will first be checked to see if a ServletContext attribute exists with
             that name and then will be checked to see if an initialization parameter of that name exists. If the
