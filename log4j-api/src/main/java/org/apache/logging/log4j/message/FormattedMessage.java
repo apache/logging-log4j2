@@ -24,23 +24,15 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
  * Handles messages that contain a format String. Dynamically determines if the format conforms to
  * MessageFormat or String.format and if not then uses ParameterizedMessage to format.
  */
 public class FormattedMessage implements Message {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final long serialVersionUID = -665975803997290697L;
-
     private static final int HASHVAL = 31;
-
     private static final String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
-
     private static final Pattern MSG_PATTERN = Pattern.compile(FORMAT_SPECIFIER);
 
     private String messagePattern;
@@ -48,7 +40,6 @@ public class FormattedMessage implements Message {
     private String[] stringArgs;
     private transient String formattedMessage;
     private final Throwable throwable;
-
     private Message message;
 
     public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
