@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-310" dev="rpopma" type="fix" due-to="Olivier Lemasle">
+        Fixed issue where SMTPAppender did not send mails with error or fatal level without prior info event.
+      </action>
       <action issue="LOG4J2-368" dev="rgoers" type="fix">
         Add PatternLayout constructor to Log4j 1.2 bridge for Velocity.
       </action>

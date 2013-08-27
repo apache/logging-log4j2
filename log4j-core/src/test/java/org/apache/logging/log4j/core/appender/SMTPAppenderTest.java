@@ -16,11 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.*;
+
+import java.util.Iterator;
+
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
+import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -28,15 +34,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.CyclicBuffer;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.junit.Test;
-
-import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
-import org.apache.logging.dumbster.smtp.SmtpMessage;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertArrayEquals;
 
 public class SMTPAppenderTest {
 
@@ -55,12 +52,13 @@ public class SMTPAppenderTest {
         Address[] array = null;
         final Address addr = InternetAddress.getLocalAddress(null);
         if (addr != null) {
-            array = new Address[] {addr};
+            array = new Address[] { addr };
         }
         assertArrayEquals(array, builder.getMimeMessage().getFrom());
 
         builder.setFrom(address);
-        assertArrayEquals(new Address[] { new InternetAddress(address) }, builder.getMimeMessage().getFrom());
+        assertArrayEquals(new Address[] { new InternetAddress(address) },
+                builder.getMimeMessage().getFrom());
     }
 
     @Test
@@ -74,7 +72,8 @@ public class SMTPAppenderTest {
         assertNull(builder.getMimeMessage().getReplyTo());
 
         builder.setReplyTo(addresses);
-        assertArrayEquals(InternetAddress.parse(addresses), builder.getMimeMessage().getReplyTo());
+        assertArrayEquals(InternetAddress.parse(addresses), builder
+                .getMimeMessage().getReplyTo());
     }
 
     @Test
@@ -82,13 +81,16 @@ public class SMTPAppenderTest {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
-        assertNull(builder.getMimeMessage().getRecipients(Message.RecipientType.TO));
+        assertNull(builder.getMimeMessage().getRecipients(
+                Message.RecipientType.TO));
 
         builder.setRecipients(Message.RecipientType.TO, null);
-        assertNull(builder.getMimeMessage().getRecipients(Message.RecipientType.TO));
+        assertNull(builder.getMimeMessage().getRecipients(
+                Message.RecipientType.TO));
 
         builder.setRecipients(Message.RecipientType.TO, addresses);
-        assertArrayEquals(InternetAddress.parse(addresses), builder.getMimeMessage().getRecipients(Message.RecipientType.TO));
+        assertArrayEquals(InternetAddress.parse(addresses), builder
+                .getMimeMessage().getRecipients(Message.RecipientType.TO));
     }
 
     @Test
@@ -107,7 +109,8 @@ public class SMTPAppenderTest {
 
     @Test
     public void testCyclicBuffer() {
-        final CyclicBuffer<Integer> buffer = new CyclicBuffer<Integer>(Integer.class, 3);
+        final CyclicBuffer<Integer> buffer = new CyclicBuffer<Integer>(
+                Integer.class, 3);
 
         assertTrue(buffer.isEmpty());
         buffer.add(1);
@@ -125,12 +128,12 @@ public class SMTPAppenderTest {
         assertTrue(buffer.isEmpty());
     }
 
-
     @Test
     public void testDelivery() {
-        final SMTPAppender appender = SMTPAppender.createAppender("Test", "to@example.com", "cc@example.com", "bcc@example.com", "from@example.com",
-            "replyTo@example.com", "Subject", null, HOST, PORT, null, null, "false", "3", null, null,
-            "true");
+        final SMTPAppender appender = SMTPAppender.createAppender("Test",
+                "to@example.com", "cc@example.com", "bcc@example.com",
+                "from@example.com", "replyTo@example.com", "Subject", null,
+                HOST, PORT, null, null, "false", "3", null, null, "true");
         appender.start();
 
         final LoggerContext context = (LoggerContext) LogManager.getContext();
@@ -145,11 +148,14 @@ public class SMTPAppenderTest {
         root.debug("Debug message #2");
         root.debug("Debug message #3");
         root.debug("Debug message #4");
-        root.error("Error with exception", new RuntimeException("Exception message"));
+        root.error("Error with exception", new RuntimeException(
+                "Exception message"));
+        root.error("Error message #2");
 
         server.stop();
-        assertTrue(server.getReceivedEmailSize() == 1);
-        final SmtpMessage email = server.getReceivedEmail().next();
+        assertTrue(server.getReceivedEmailSize() == 2);
+        final Iterator<SmtpMessage> messages = server.getReceivedEmail();
+        final SmtpMessage email = messages.next();
 
         assertEquals("to@example.com", email.getHeaderValue("To"));
         assertEquals("cc@example.com", email.getHeaderValue("Cc"));
@@ -167,6 +173,12 @@ public class SMTPAppenderTest {
         assertTrue(body.contains("Error with exception"));
         assertTrue(body.contains("RuntimeException"));
         assertTrue(body.contains("Exception message"));
+        assertFalse(body.contains("Error message #2"));
+
+        final SmtpMessage email2 = (SmtpMessage) messages.next();
+        final String body2 = email2.getBody();
+        assertFalse(body2.contains("Debug message #4"));
+        assertFalse(body2.contains("Error with exception"));
+        assertTrue(body2.contains("Error message #2"));
     }
 }
-
