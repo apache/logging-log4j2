@@ -318,7 +318,7 @@
       <action issue="LOG4J2-245" dev="rgoers" type="fix">
         Avoid EmptyStack exception if getCallerClass and SecurityManager are not available.
       </action>
-      <action issue="LOG4J2-229" dev="ggregory" type="add" due-to="beamerblvd">
+      <action issue="LOG4J2-229" dev="ggregory" type="add" due-to="Nick Williams">
         New JDBC, JPA, and NoSQL database Appenders.
       </action>
       <action issue="LOG4J2-247" dev="ggregory" type="fix">
