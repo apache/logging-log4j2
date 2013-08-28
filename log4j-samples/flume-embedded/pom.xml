@@ -88,10 +88,10 @@
   <build>
     <resources>
       <resource>
-        <directory>${basedir}/src/main/resources</directory>
+        <directory>../../src/main/resources</directory>
       </resource>
       <resource>
-        <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+        <directory>../../src/main/webapp/WEB-INF</directory>
         <includes>
           <include>web.xml</include>
         </includes>
