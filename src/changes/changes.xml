@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-359" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
+        Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
+        ensures behavioral consistency across containers.
+      </action>
       <action dev="nickwilliams" type="update">
         Cleaned up tests and cleared up documentation for the JPA appender following the resolution of EclipseLink
         issue #412454.
