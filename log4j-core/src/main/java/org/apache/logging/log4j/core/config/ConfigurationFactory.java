@@ -88,6 +88,18 @@ public abstract class ConfigurationFactory {
      */
     protected static final String DEFAULT_PREFIX = "log4j2";
 
+    /**
+     * The name of the classloader URI scheme.
+     */
+    private static final String CLASS_LOADER_SCHEME = "classloader";
+    private static final int CLASS_LOADER_SCHEME_LENGTH = CLASS_LOADER_SCHEME.length() + 1;
+
+    /**
+     * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
+     */
+    private static final String CLASS_PATH_SCHEME = "classpath";
+    private static final int CLASS_PATH_SCHEME_LENGTH = CLASS_PATH_SCHEME.length() + 1;
+
     private static volatile List<ConfigurationFactory> factories = null;
 
     private static ConfigurationFactory configFactory = new Factory();
@@ -221,9 +233,19 @@ public abstract class ConfigurationFactory {
             }
         }
         final String scheme = configLocation.getScheme();
-        if (scheme == null || scheme.equals("classloader")) {
+        final boolean isClassLoaderScheme = scheme != null && scheme.equals(CLASS_LOADER_SCHEME);
+        final boolean isClassPathScheme = scheme != null && !isClassLoaderScheme && scheme.equals(CLASS_PATH_SCHEME);
+        if (scheme == null || isClassLoaderScheme || isClassPathScheme) {
             final ClassLoader loader = this.getClass().getClassLoader();
-            final ConfigurationSource source = getInputFromResource(configLocation.getPath(), loader);
+            String path;
+            if (isClassLoaderScheme) {
+                path = configLocation.toString().substring(CLASS_LOADER_SCHEME_LENGTH);
+            } else if (isClassPathScheme) {
+                path = configLocation.toString().substring(CLASS_PATH_SCHEME_LENGTH);
+            } else {
+                path = configLocation.getPath();
+            }
+            final ConfigurationSource source = getInputFromResource(path, loader);
             if (source != null) {
                 return source;
             }
@@ -365,7 +387,7 @@ public abstract class ConfigurationFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || configLocation.getPath().endsWith(type)) {
+                            if (type.equals("*") || configLocation.toString().endsWith(type)) {
                                 final Configuration config = factory.getConfiguration(name, configLocation);
                                 if (config != null) {
                                     return config;

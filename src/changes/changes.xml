@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-293" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
+        Changed the ConfigurationFactory to recognize and properly use the classpath: URI scheme in addition to the
+        classloader: URI scheme.
+      </action>
       <action issue="LOG4J2-359" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
         Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
         ensures behavioral consistency across containers.

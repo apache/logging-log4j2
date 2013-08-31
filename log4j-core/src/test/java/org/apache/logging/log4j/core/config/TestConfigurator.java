@@ -132,6 +132,38 @@ public class TestConfigurator {
     }
 
     @Test
+    public void testFromClassPathWithClassPathPrefix() throws Exception {
+        final LoggerContext ctx = Configurator.initialize("Test1", "classpath:log4j2-config.xml");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        final Map<String, Appender> map = config.getAppenders();
+        assertNotNull("Appenders map should not be null.", map);
+        assertTrue("Appenders map should not be empty.", map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
+    }
+
+    @Test
+    public void testFromClassPathWithClassLoaderPrefix() throws Exception {
+        final LoggerContext ctx = Configurator.initialize("Test1", "classloader:log4j2-config.xml");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        final Map<String, Appender> map = config.getAppenders();
+        assertNotNull("Appenders map should not be null.", map);
+        assertTrue("Appenders map should not be empty.", map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
+    }
+
+    @Test
     public void testByName() throws Exception {
         final LoggerContext ctx = Configurator.initialize("-config", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
