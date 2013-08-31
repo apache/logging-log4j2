@@ -1027,7 +1027,8 @@
         <a name="JDBCAppender"/>
         <subsection name="JDBCAppender">
           <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
-          to obtain JDBC connections using the DriverManager, a JNDI DataSource or a custom factory method.</p>
+            to obtain JDBC connections using the <code>DriverManager</code>, a JNDI <code>DataSource</code> or a custom
+            factory method.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -1493,10 +1494,11 @@
           <p>The JPAAppender writes log events to a relational database table using the Java Persistence API 2.1.
             It requires the API and a provider implementation be on the classpath. It also requires a decorated entity
             configured to persist to the table desired. The entity should either extend
-            org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity (if you mostly want to use the default
-            mappings) or org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity (if you want to
-            significantly customize the mappings). See the Javadoc for these two classes for more information. You can
-            also consult the source code of these two classes as an example of how to implement the entity.</p>
+            <code>org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity</code> (if you mostly want to
+            use the default mappings) and provide at least an <code>@Id</code> property, or
+            <code>org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity</code> (if you want
+            to significantly customize the mappings). See the Javadoc for these two classes for more information. You
+            can also consult the source code of these two classes as an example of how to implement the entity.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -1544,11 +1546,13 @@
           </table>
           <p>
             Here is a sample configuration for the JPAAppender. The first XML sample is the Log4j configuration file,
-            the second is the persistence.xml file. EclipseLink is assumed here, but any JPA provider will do. You
-            should <em>always</em> create a <em>separate</em> persistence unit for logging, for two reasons. First,
-            &lt;shared-cache-mode&gt; <em>must</em> be set to "NONE," which is usually not desired in normal JPA usage.
-            Also, for performance reasons the logging entity should be isolated in its own persistence unit away from
-            all other entities.
+            the second is the <code>persistence.xml</code> file. EclipseLink is assumed here, but any JPA 2.1 or higher
+            provider will do. You should <em>always</em> create a <em>separate</em> persistence unit for logging, for
+            two reasons. First, <code>&lt;shared-cache-mode&gt;</code> <em>must</em> be set to "NONE," which is usually
+            not desired in normal JPA usage. Also, for performance reasons the logging entity should be isolated in its
+            own persistence unit away from all other entities and you should use a non-JTA data source. Note that your
+            persistence unit <em>must</em> also contain <code>&lt;class&gt;</code> elements for all of the
+            <code>org.apache.logging.log4j.core.appender.db.jpa.converter</code> converter classes.
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
@@ -1570,10 +1574,18 @@
                                  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-  <persistence-unit name="loggingPersistenceUnit">
+  <persistence-unit name="loggingPersistenceUnit" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <non-jta-data-source>jdbc/LoggingDataSource</non-jta-data-source>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackJsonAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter</class>
     <class>com.example.logging.JpaLogEntity</class>
+    <non-jta-data-source>jdbc/LoggingDataSource</non-jta-data-source>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
 
@@ -1583,7 +1595,7 @@
 ...
 @Entity
 @Table(name="application_log", schema="dbo")
-public class JpaLogEntity extends AbstractLogEventWrapperEntity {
+public class JpaLogEntity extends BasicLogEventEntity {
     private static final long serialVersionUID = 1L;
     private long id = 0L;
 
@@ -1605,18 +1617,54 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         this.id = id;
     }
 
+    // If you want to override the mapping of any properties mapped in BasicLogEventEntity,
+    // just override the getters and re-specify the annotations.
+}]]></pre>
+
+            <pre class="prettyprint linenums lang-java"><![CDATA[package com.example.logging;
+...
+@Entity
+@Table(name="application_log", schema="dbo")
+public class JpaLogEntity extends AbstractLogEventWrapperEntity {
+    private static final long serialVersionUID = 1L;
+    private long id = 0L;
+
+    public TestEntity() {
+        super(null);
+    }
+    public TestEntity(LogEvent wrappedEvent) {
+        super(wrappedEvent);
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "logEventId")
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     @Enumerated(EnumType.STRING)
     @Column(name = "level")
     public Level getLevel() {
-        return getWrappedEvent().getLevel();
+        return this.getWrappedEvent().getLevel();
     }
 
     @Override
-    @Basic
     @Column(name = "logger")
     public String getLoggerName() {
-        return getWrappedEvent().getLoggerName();
+        return this.getWrappedEvent().getLoggerName();
+    }
+
+    @Override
+    @Column(name = "message")
+    @Convert(converter = MyMessageConverter.class)
+    public Message getMessage() {
+        return this.getWrappedEvent().getMessage();
     }
     ...
 }]]></pre>
