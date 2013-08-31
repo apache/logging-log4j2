@@ -41,6 +41,14 @@
          The Log4j Tag Library requires at least Java 6, at least Servlet 2.5 (or Java EE 5), and at least
          JSP 2.1 (or Java EE 5).
        </p>
+       <p>
+         <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs known not to
+         contain TLDs and do not scan them for TLD files. Importantly, Tomcat 7 &lt;7.0.43 ignores all JAR files named
+         log4j*.jar, which prevents the JSP tag library from being automatically discovered. This does not affect
+         Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
+         will need to change <code>catalina.properties</code> and remove "log4j*.jar" from the <code>jarsToSkip</code>
+         property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
+       </p>
      </section>
 
      <section name="Usage">
