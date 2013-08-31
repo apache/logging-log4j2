@@ -30,8 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class Log4jServletContainerInitializerTest {
     private ServletContext servletContext;
@@ -53,12 +52,22 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartup() throws Exception {
+    public void testOnStartupWithServletVersion2_x() throws Exception {
+        expect(this.servletContext.getMajorVersion()).andReturn(2);
+
+        replay(this.servletContext, this.initializer);
+
+        this.containerInitializer.onStartup(null, this.servletContext);
+    }
+
+    @Test
+    public void testOnStartupWithServletVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
         final Capture<EventListener> listenerCapture = new Capture<EventListener>();
         final Capture<Filter> filterCapture = new Capture<Filter>();
 
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
@@ -80,9 +89,40 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupFailed() throws Exception {
+    public void testOnStartupFailedDueToPreExistingFilter() throws Exception {
+        final Capture<EventListener> listenerCapture = new Capture<EventListener>();
+        final Capture<Filter> filterCapture = new Capture<Filter>();
+
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
+        this.servletContext.log(anyObject(String.class));
+        expectLastCall();
+        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        this.initializer.initialize();
+        expectLastCall();
+        this.initializer.setLoggerContext();
+        expectLastCall();
+        this.servletContext.addListener(capture(listenerCapture));
+        expectLastCall();
+        expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(null);
+
+        replay(this.servletContext, this.initializer);
+
+        try {
+            this.containerInitializer.onStartup(null, this.servletContext);
+            fail("Expected an UnavailableException, got no exception.");
+        } catch (final UnavailableException e) {
+            assertEquals("The exception is not correct.",
+                    "In a Servlet 3.0+ application, you must not define a log4jServletFilter in web.xml. Log4j 2 " +
+                            "defines this for you automatically.",
+                    e.getMessage());
+        }
+    }
+
+    @Test
+    public void testOnStartupFailedDueToInitializerFailure() throws Exception {
         final UnavailableException exception = new UnavailableException("");
 
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
@@ -93,7 +133,7 @@ public class Log4jServletContainerInitializerTest {
 
         try {
             this.containerInitializer.onStartup(null, this.servletContext);
-            fail("");
+            fail("Expected the exception thrown by the initializer; got no exception.");
         } catch (final UnavailableException e) {
             assertSame("The exception is not correct.", exception, e);
         }
