@@ -47,11 +47,12 @@
           the application deploys and shutting down when the application undeploys.
         </p>
         <p>
-          <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs and do not scan
-          them for web-fragments and <code>ServletContainerInitializer</code>s. For example, Tomcat 7 &lt;7.0.42 ignores
-          all JAR files named log4j*.jar, which prevents this feature from working. This has been fixed in
-          Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.42 you will need to change catalina.properties and
-          remove "log4j*.jar" from the jarsToSkip property.
+          <b><em>Important Note!</em></b> For performance reasons, containers often ignore certain JARs known not to
+          contain TLDs or <code>ServletContainerInitializer</code>s and do not scan them for web-fragments and
+          initializers. Importantly, Tomcat 7 &lt;7.0.43 ignores all JAR files named log4j*.jar, which prevents this
+          feature from working. This has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
+          will need to change <code>catalina.properties</code> and remove "log4j*.jar" from the <code>jarsToSkip</code>
+          property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
         </p>
         <p>
           <b>The Long Story</b><br />
@@ -68,17 +69,20 @@
         <p>
           You can customize the behavior of the listener and filter using the <code>log4jContextName</code>,
           <code>log4jConfiguration</code>, and/or <code>isLog4jContextSelectorNamed</code> context parameters. Read more
-          about this in the <a href="#ContextParams">Context Parameters</a> section below.
+          about this in the <a href="#ContextParams">Context Parameters</a> section below. You <em>must not</em>
+          manually configure the <code>Log4jServletContextListener</code> or <code>Log4jServletFilter</code> in your
+          deployment descriptor (<code>web.xml</code>) or in another initializer or listener in a Servlet 3.0 or newer
+          application. Doing so will result in startup errors and unspecified erroneous behavior.
         </p>
       </subsection>
       <a name="Servlet-2.5" />
       <subsection name="Servlet 2.5 Web Applications">
         <p>
           A Servlet 2.5 web application is any <code>&lt;web-app&gt;</code> whose <code>version</code> attribute has a
-          value of "2.5." Note that Log4j 2 does not support Servlet 2.4 and older web applications. The
-          <code>version</code> attribute is the only thing that matters; even if the web application is running in a
-          Servlet 3.0 or newer container, it is a Servlet 2.5 web application if the <code>version</code> attribute
-          is "2.5."
+          value of "2.5." The <code>version</code> attribute is the only thing that matters; even if the web application
+          is running in a Servlet 3.0 or newer container, it is a Servlet 2.5 web application if the
+          <code>version</code> attribute is "2.5." Note that Log4j 2 does not support Servlet 2.4 and older web
+          applications.
         </p>
         <p>
           If you are using Log4j in a Servlet 2.5 web application, you <em>must</em> configure the
@@ -126,13 +130,14 @@
         <p>
           If <code>isLog4jContextSelectorNamed</code> is <code>true</code>, <code>log4jContextName</code> must be
           specified; otherwise, the application will fail to start with an exception. <code>log4jConfiguration</code>
-          <em>should</em> also be specified in this case, and must be a valid URI for the configuration; however, this
-          parameter is not required.
+          <em>should</em> also be specified in this case, and must be a valid URI for the configuration file; however,
+          this parameter is not required.
         </p>
         <p>
-          If <code>isLog4jContextSelectorNamed</code> is not <code>true</code>, <code>log4jConfiguration</code> may be a
-          valid URI or a path to a file, or it may start with "classpath:" to denote a file that can be found on the
-          classpath.
+          If <code>isLog4jContextSelectorNamed</code> is not <code>true</code>, <code>log4jConfiguration</code> may
+          optionally be specified and must be a valid URI or path to a configuration file or start with "classpath:" to
+          denote a configuration file that can be found on the classpath. Without this parameter, Log4j will use the
+          standard mechanisms for locating the configuration file.
         </p>
         <p>
           When specifying these context parameters, you must specify them in the deployment descriptor
@@ -170,6 +175,29 @@
     </context-param>]]></pre>
           Note that in this case you must also set the "Log4jContextSelector" system property to
           "org.apache.logging.log4j.core.selector.JNDIContextSelector."
+        </p>
+      </subsection>
+      <a name="JspLogging" />
+      <subsection name="JavaServer Pages Logging">
+        <p>
+          You may use Log4j 2 within JSPs just as you would within any other Java code. Simple obtain a
+          <code>Logger</code> and call its methods to log events. However, this requires you to use Java code within
+          your JSPs, and some development teams rightly are not comfortable with doing this. If you have a dedicated
+          user interface development team that is not familiar with using Java, you may even have Java code disabled in
+          your JSPs.
+        </p>
+        <p>
+          For this reason, Log4j 2 provides a JSP Tag Library that enables you to log events without using any Java
+          code. To read more about using this tag library, <a href="../log4j-taglib/index.html">read the Log4j Tag
+          Library documentation.</a>
+        </p>
+        <p>
+          <b><em>Important Note!</em></b> As noted above, containers often ignore certain JARs known not to
+          contain TLDs and do not scan them for TLD files. Importantly, Tomcat 7 &lt;7.0.43 ignores all JAR files named
+          log4j*.jar, which prevents the JSP tag library from being automatically discovered. This does not affect
+          Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
+          will need to change <code>catalina.properties</code> and remove "log4j*.jar" from the <code>jarsToSkip</code>
+          property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
         </p>
       </subsection>
     </section>
