@@ -26,6 +26,13 @@
 		<section name="Building and Installing Log4j">
 
       <p>
+        <i>The information below is for developers who want to modify Log4j or
+        contribute to Log4j. If your goal is to add logging to your application
+        you don't need to build from the source code,
+        you can <a href="download.html">download</a> the pre-built binaries instead.
+        </i>
+      </p>
+      <p>
         Log4j 2.x is hosted in the Apache Software Foundation's subversion repository. Details on obtaining the
         most current source code can be found at
         <a href="./source-repository.html">Log4j Source Repository</a>. The source from the latest release may be
