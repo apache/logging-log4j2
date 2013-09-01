@@ -36,6 +36,6 @@ public class ThrowableProxyTest {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final StackTracePackageElement[] callerPackageData = proxy.resolvePackageData(stack, map, null,
             throwable.getStackTrace());
-        Assert.assertNotNull("No package data returned", callerPackageData);;
+        Assert.assertNotNull("No package data returned", callerPackageData);
     }
 }

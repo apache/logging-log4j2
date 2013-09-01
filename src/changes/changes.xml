@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-322" dev="nickwilliams" type="fix">
+        Centralized reflective use of Reflection#getCallerClass and properly handled its instability in various versions
+        of Java.
+      </action>
       <action issue="LOG4J2-293" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
         Changed the ConfigurationFactory to recognize and properly use the classpath: URI scheme in addition to the
         classloader: URI scheme.

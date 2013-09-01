@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -37,17 +35,15 @@ public class ThrowableProxy implements Serializable {
 
     private static final long serialVersionUID = -2752771578252251910L;
 
-    private static Method getCallerClass;
-
-    private static PrivateSecurityManager securityManager;
-
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static Method getSuppressed;
-    private static Method addSuppressed;
+    private static final PrivateSecurityManager SECURITY_MANAGER;
+
+    private static final Method GET_SUPPRESSED;
+
+    private static final Method ADD_SUPPRESSED;
 
     private final ThrowableProxy proxyCause;
-    private int commonElementCount;
 
     private final Throwable throwable;
 
@@ -55,10 +51,38 @@ public class ThrowableProxy implements Serializable {
 
     private final StackTracePackageElement[] callerPackageData;
 
+    private int commonElementCount;
 
     static {
-        setupCallerCheck();
-        versionCheck();
+        if (ReflectiveCallerClassUtility.isSupported()) {
+            SECURITY_MANAGER = null;
+        } else {
+            PrivateSecurityManager securityManager;
+            try {
+                securityManager = new PrivateSecurityManager();
+                if (securityManager.getClasses() == null) {
+                    // This shouldn't happen.
+                    securityManager = null;
+                    LOGGER.error("Unable to obtain call stack from security manager.");
+                }
+            } catch (final Exception e) {
+                securityManager = null;
+                LOGGER.debug("Unable to install security manager.", e);
+            }
+            SECURITY_MANAGER = securityManager;
+        }
+
+        Method getSuppressed = null, addSuppressed = null;
+        final Method[] methods = Throwable.class.getMethods();
+        for (final Method method : methods) {
+            if (method.getName().equals("getSuppressed")) {
+                getSuppressed = method;
+            } else if (method.getName().equals("addSuppressed")) {
+                addSuppressed = method;
+            }
+        }
+        GET_SUPPRESSED = getSuppressed;
+        ADD_SUPPRESSED = addSuppressed;
     }
 
     /**
@@ -173,6 +197,7 @@ public class ThrowableProxy implements Serializable {
      * @param cause The Throwable to format.
      * @param packages The List of packages to be suppressed from the trace.
      */
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         final Throwable caused = cause.getCause() != null ? cause.getCause().getThrowable() : null;
         if (caused != null) {
@@ -227,6 +252,7 @@ public class ThrowableProxy implements Serializable {
         return sb.toString();
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     private void formatCause(final StringBuilder sb, final ThrowableProxy cause, final List<String> packages) {
         sb.append("Caused by: ").append(cause).append("\n");
         formatElements(sb, cause.commonElementCount, cause.getThrowable().getStackTrace(), cause.callerPackageData,
@@ -298,17 +324,17 @@ public class ThrowableProxy implements Serializable {
      * @return A Deque containing the current stack of Class objects.
      */
     private Stack<Class<?>> getCurrentStack() {
-        if (getCallerClass != null) {
+        if (ReflectiveCallerClassUtility.isSupported()) {
             final Stack<Class<?>> classes = new Stack<Class<?>>();
-            int index = 2;
-            Class<?> clazz = getCallerClass(index);
+            int index = 1;
+            Class<?> clazz = ReflectiveCallerClassUtility.getCaller(index);
             while (clazz != null) {
                 classes.push(clazz);
-                clazz = getCallerClass(++index);
+                clazz = ReflectiveCallerClassUtility.getCaller(++index);
             }
             return classes;
-        } else if (securityManager != null) {
-            final Class<?>[] array = securityManager.getClasses();
+        } else if (SECURITY_MANAGER != null) {
+            final Class<?>[] array = SECURITY_MANAGER.getClasses();
             final Stack<Class<?>> classes = new Stack<Class<?>>();
             for (final Class<?> clazz : array) {
                 classes.push(clazz);
@@ -421,25 +447,6 @@ public class ThrowableProxy implements Serializable {
     }
 
     /**
-     * Invoke Reflection.getCallerClass via reflection. This is slightly slower than calling the method
-     * directly but removes any dependency on Sun's JDK being present at compile time. The difference
-     * can be measured by running the ReflectionComparison test.
-     * @param index The index into the stack trace.
-     * @return The Class at the specified stack entry.
-     */
-    private Class<?> getCallerClass(final int index) {
-        if (getCallerClass != null) {
-            try {
-                final Object[] params = new Object[]{index};
-                return (Class<?>) getCallerClass.invoke(null, params);
-            } catch (final Exception ex) {
-                // logger.debug("Unable to determine caller class via Sun Reflection", ex);
-            }
-        }
-        return null;
-    }
-
-    /**
      * Loads classes not located via Reflection.getCallerClass.
      * @param lastLoader The ClassLoader that loaded the Class that called this Class.
      * @param className The name of the Class.
@@ -473,55 +480,10 @@ public class ThrowableProxy implements Serializable {
         return clazz;
     }
 
-    private static void versionCheck() {
-        final Method[] methods = Throwable.class.getMethods();
-        for (final Method method : methods) {
-            if (method.getName().equals("getSuppressed")) {
-                getSuppressed = method;
-            } else if (method.getName().equals("addSuppressed")) {
-                addSuppressed = method;
-            }
-        }
-    }
-
-    /**
-     * Determine if Reflection.getCallerClass is available.
-     */
-    private static void setupCallerCheck() {
-        try {
-            final ClassLoader loader = Loader.getClassLoader();
-            // Use wildcard to avoid compile-time reference.
-            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
-            final Method[] methods = clazz.getMethods();
-            for (final Method method : methods) {
-                final int modifier = method.getModifiers();
-                if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier) &&
-                    method.getParameterTypes().length == 1) {
-                    getCallerClass = method;
-                    return;
-                }
-            }
-        } catch (final ClassNotFoundException cnfe) {
-            LOGGER.debug("sun.reflect.Reflection is not installed");
-        }
-
-        try {
-            final PrivateSecurityManager mgr = new PrivateSecurityManager();
-            if (mgr.getClasses() != null) {
-                securityManager = mgr;
-            } else {
-                // This shouldn't happen.
-                LOGGER.error("Unable to obtain call stack from security manager");
-            }
-        } catch (final Exception ex) {
-            LOGGER.debug("Unable to install security manager", ex);
-        }
-    }
-
     public ThrowableProxy[] getSuppressed() {
-        if (getSuppressed != null) {
+        if (GET_SUPPRESSED != null) {
             try {
-                return (ThrowableProxy[]) getSuppressed.invoke(throwable);
+                return (ThrowableProxy[]) GET_SUPPRESSED.invoke(throwable);
             } catch (final Exception ignore) {
                 return null;
             }
@@ -530,11 +492,11 @@ public class ThrowableProxy implements Serializable {
     }
 
     private void setSuppressed(final Throwable throwable) {
-        if (getSuppressed != null && addSuppressed != null) {
+        if (GET_SUPPRESSED != null && ADD_SUPPRESSED != null) {
             try {
-                final Throwable[] array = (Throwable[]) getSuppressed.invoke(throwable);
+                final Throwable[] array = (Throwable[]) GET_SUPPRESSED.invoke(throwable);
                 for (final Throwable t : array) {
-                    addSuppressed.invoke(this, new ThrowableProxy(t));
+                    ADD_SUPPRESSED.invoke(this, new ThrowableProxy(t));
                 }
             } catch (final Exception ignore) {
                 //
