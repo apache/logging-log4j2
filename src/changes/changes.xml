@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-253" dev="rpopma" type="add">
+        Added FAQ page to the site.
+      </action>
+      <action issue="LOG4J2-362" dev="rpopma" type="add">
+        Add a diagram to the site (FAQ page) that explains when to use which jar.
+      </action>
       <action issue="LOG4J2-322" dev="nickwilliams" type="fix">
         Centralized reflective use of Reflection#getCallerClass and properly handled its instability in various versions
         of Java.
