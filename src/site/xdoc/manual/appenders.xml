@@ -284,7 +284,10 @@
           </p>
         </subsection>
 			<a name="RandomAccessFileAppender" />
-			<subsection name="RandomAccessFileAppender">
+			<subsection name="RandomAccessFileAppender (was FastFileAppender)">
+			<p><i>As of beta-9, the name of this appender has been changed from FastFile to 
+			  RandomAccessFile. <b>Configurations using the <code>FastFile</code> element
+			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</b></i></p>
 			<p><i>Experimental, may replace FileAppender in a future release.</i></p>
 				<p>
 					The RandomAccessFileAppender is similar to the standard
@@ -394,7 +397,10 @@
 				</p>
 			</subsection>
 			<a name="RollingRandomAccessFileAppender" />
-			<subsection name="RollingRandomAccessFileAppender">
+			<subsection name="RollingRandomAccessFileAppender (was FastRollingFileAppender)">
+			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to 
+			  RollingRandomAccessFile. <b>Configurations using the <code>FastRollingFile</code> element
+			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</b></i></p>
 			<p><i>Experimental, may replace RollingFileAppender in a future release.</i></p>
 				<p>
 					The RollingRandomAccessFileAppender is similar to the standard
