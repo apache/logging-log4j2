@@ -21,6 +21,25 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-317" dev="ggregory" type="update">
+        Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender 
+        and RollingRandomAccessFileAppender. Configurations using the Fast(Rolling)File element
+        no longer work and should be modified to use the (Rolling)RandomAccessFile element.
+      </action>
+      <action dev="nickwilliams" type="update">
+        Changed the "suppressExceptions" configuration attribute for all Appenders to "ignoreExceptions" to avoid
+        confusion with Java 7 suppressed exceptions. Also renamed the Appender#isExceptionSuppressed() method to
+        Appender#ignoreExceptions() to avoid the same confusion. All Appenders by default internally log and then ignore
+        exceptions encountered while logging. Setting "ignoreExceptions" to "false" on an Appender causes it to allow
+        exceptions to propagate to the caller. You must set "ignoreExceptions" to "false" for Appenders you are wrapping
+        in the Failover Appender.
+      </action>
+      <action dev="nickwilliams" type="update">
+        Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to
+        "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
+        reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
+        until now, it's unlikely this change will affect any users.
+      </action>
       <action issue="LOG4J2-253" dev="rpopma" type="add">
         Added FAQ page to the site.
       </action>
@@ -118,9 +137,6 @@
       <action issue="LOG4J2-325" dev="ggregory" type="update">
         Update JDBC tests to use H2 database 1.3.173 from 1.3.172.
       </action>
-      <action issue="LOG4J2-317" dev="ggregory" type="update">
-        Rename FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender and RollingRandomAccessFileAppender.
-      </action>
       <action issue="LOG4J2-280" dev="rpopma" type="fix">
         Additional fix to make AsyncAppender threads daemon threads and improve their thread name.
       </action>
@@ -168,20 +184,6 @@
       </action>
       <action dev="nickwilliams" type="update">
         Improved site by adding quick jump-off page and menu for Javadoc links for all components.
-      </action>
-      <action dev="nickwilliams" type="update">
-        Changed the "suppressExceptions" configuration attribute for all Appenders to "ignoreExceptions" to avoid
-        confusion with Java 7 suppressed exceptions. Also renamed the Appender#isExceptionSuppressed() method to
-        Appender#ignoreExceptions() to avoid the same confusion. All Appenders by default internally log and then ignore
-        exceptions encountered while logging. Setting "ignoreExceptions" to "false" on an Appender causes it to allow
-        exceptions to propagate to the caller. You must set "ignoreExceptions" to "false" for Appenders you are wrapping
-        in the Failover Appender.
-      </action>
-      <action dev="nickwilliams" type="update">
-        Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to
-        "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
-        reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
-        until now, it's unlikely this change will affect any users.
       </action>
     </release>
     <release version="2.0-beta8" date="2013-07-10" description="Bug fixes and enhancements">
