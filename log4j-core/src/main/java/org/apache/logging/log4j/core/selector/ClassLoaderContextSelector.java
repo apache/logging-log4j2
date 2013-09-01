@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.selector;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -49,9 +48,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
 
     private static final AtomicReference<LoggerContext> CONTEXT = new AtomicReference<LoggerContext>();
 
-    private static PrivateSecurityManager securityManager;
-
-    private static Method getCallerClass;
+    private static final PrivateSecurityManager SECURITY_MANAGER;
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
@@ -59,7 +56,23 @@ public class ClassLoaderContextSelector implements ContextSelector {
         new ConcurrentHashMap<String, AtomicReference<WeakReference<LoggerContext>>>();
 
     static {
-        setupCallerCheck();
+        if (ReflectiveCallerClassUtility.isSupported()) {
+            SECURITY_MANAGER = null;
+        } else {
+            PrivateSecurityManager securityManager;
+            try {
+                securityManager = new PrivateSecurityManager();
+                if (securityManager.getCaller(ClassLoaderContextSelector.class.getName()) == null) {
+                    // This shouldn't happen.
+                    securityManager = null;
+                    LOGGER.error("Unable to obtain call stack from security manager.");
+                }
+            } catch (final Exception e) {
+                securityManager = null;
+                LOGGER.debug("Unable to install security manager", e);
+            }
+            SECURITY_MANAGER = securityManager;
+        }
     }
 
     @Override
@@ -79,13 +92,12 @@ public class ClassLoaderContextSelector implements ContextSelector {
         } else if (loader != null) {
             return locateContext(loader, configLocation);
         } else {
-            if (getCallerClass != null) {
+            if (ReflectiveCallerClassUtility.isSupported()) {
                 try {
                     Class<?> clazz = Class.class;
                     boolean next = false;
                     for (int index = 2; clazz != null; ++index) {
-                        final Object[] params = new Object[] {index};
-                        clazz = (Class<?>) getCallerClass.invoke(null, params);
+                        clazz = ReflectiveCallerClassUtility.getCaller(index);
                         if (clazz == null) {
                             break;
                         }
@@ -105,8 +117,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
                 }
             }
 
-            if (securityManager != null) {
-                final Class<?> clazz = securityManager.getCaller(fqcn);
+            if (SECURITY_MANAGER != null) {
+                final Class<?> clazz = SECURITY_MANAGER.getCaller(fqcn);
                 if (clazz != null) {
                     final ClassLoader ldr = clazz.getClassLoader() != null ? clazz.getClassLoader() :
                         ClassLoader.getSystemClassLoader();
@@ -130,8 +142,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
             if (name != null) {
                 try {
                     return locateContext(Loader.loadClass(name).getClassLoader(), configLocation);
-                } catch (final ClassNotFoundException ex) {
-                    //System.out.println("Could not load class " + name);
+                } catch (final ClassNotFoundException ignore) {
+                    //this is ok
                 }
             }
             final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
@@ -217,29 +229,6 @@ public class ClassLoaderContextSelector implements ContextSelector {
         ctx = new LoggerContext(name, null, configLocation);
         ref.compareAndSet(r, new WeakReference<LoggerContext>(ctx));
         return ctx;
-    }
-
-    private static void setupCallerCheck() {
-        try {
-            final ClassLoader loader = Loader.getClassLoader();
-            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
-            final Method[] methods = clazz.getMethods();
-            for (final Method method : methods) {
-                final int modifier = method.getModifiers();
-                if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
-                    getCallerClass = method;
-                    break;
-                }
-            }
-        } catch (final ClassNotFoundException cnfe) {
-            LOGGER.debug("sun.reflect.Reflection is not installed");
-        }
-        try {
-            securityManager = new PrivateSecurityManager();
-        } catch (final Exception ex) {
-            ex.printStackTrace();
-            LOGGER.debug("Unable to install security manager", ex);
-        }
     }
 
     private LoggerContext getDefault() {

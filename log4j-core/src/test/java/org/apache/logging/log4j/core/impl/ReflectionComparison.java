@@ -14,70 +14,40 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.core.Timer;
-import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sun.reflect.Reflection;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the cost of invoking Reflection.getCallerClass via reflection vs calling it directly.
  */
 public class ReflectionComparison {
 
-    private static Method getCallerClass;
-
     private static final int COUNT = 1000000;
 
-    private static Class<?>[] paramTypes = new Class<?>[] {String.class, Object[].class};
-
-    @BeforeClass
-    public static void setupCallerCheck() {
-        try {
-            final ClassLoader loader = Loader.getClassLoader();
-            final Class<?> clazz = loader.loadClass("sun.reflect.Reflection");
-            final Method[] methods = clazz.getMethods();
-            for (final Method method : methods) {
-                final int modifier = method.getModifiers();
-                if (method.getName().equals("getCallerClass") && Modifier.isStatic(modifier)) {
-                    getCallerClass = method;
-                    break;
-                }
-            }
-        } catch (final ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-            throw new RuntimeException(cnfe);
-        }
-    }
-
     @Test
-    public void test1() {
+    public void testReflection() {
         final Timer timer = new Timer("Reflection", COUNT);
         timer.start();
-        final Object[] arr = new Object[1];
-        arr[0] = 3;
         for (int i= 0; i < COUNT; ++i) {
-            getCallerClass(arr);
+            ReflectiveCallerClassUtility.getCaller(3);
         }
         timer.stop();
         System.out.println(timer.toString());
     }
 
-
     @Test
-    public void test2() {
-        final Timer timer = new Timer("Reflection", COUNT);
+    public void testDirectly() {
+        final Timer timer = new Timer("Directly", COUNT);
         timer.start();
         for (int i= 0; i < COUNT; ++i) {
 
@@ -87,14 +57,34 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
+    @Test
+    public void testBothMethodsReturnTheSame() {
+        assertEquals("1 is not the same.",
+                Reflection.getCallerClass(1 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(1));
+        assertEquals("2 is not the same.",
+                Reflection.getCallerClass(2 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(2));
+        assertEquals("3 is not the same.",
+                Reflection.getCallerClass(3 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(3));
+        assertEquals("4 is not the same.",
+                Reflection.getCallerClass(4 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(4));
+        assertEquals("5 is not the same.",
+                Reflection.getCallerClass(5 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(5));
+        assertEquals("6 is not the same.",
+                Reflection.getCallerClass(6 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
+                ReflectiveCallerClassUtility.getCaller(6));
+    }
 
     @Test
-    public void createObjects() throws Exception {
-        Timer timer = new Timer("NewObject", COUNT);
+    public void testCreateObjects() throws Exception {
+        Timer timer = new Timer("CreatObjects", COUNT);
         timer.start();
-        Message msg;
         for (int i = 0; i < COUNT; ++i) {
-            msg = new StringFormattedMessage("Hello %1", i);
+            new StringFormattedMessage("Hello %1", i);
         }
         timer.stop();
         System.out.println(timer.toString());
@@ -110,21 +100,8 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
-    private Class<?> getCallerClass(final Object[] array) {
-        if (getCallerClass != null) {
-            try {
-                /*Object[] params = new Object[]{index}; */
-                return (Class<?>) getCallerClass.invoke(null, array);
-            } catch (final Exception ex) {
-                fail(ex.getMessage());
-                // logger.debug("Unable to determine caller class via Sun Reflection", ex);
-            }
-        }
-        return null;
-    }
-
     private Message createMessage(final Class<? extends Message> clazz, final String msg, final Object... params) throws Exception {
-        final Constructor<? extends Message> constructor = clazz.getConstructor(paramTypes);
+        final Constructor<? extends Message> constructor = clazz.getConstructor(String.class, Object[].class);
         return constructor.newInstance(msg, params);
     }
 
