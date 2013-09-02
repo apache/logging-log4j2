@@ -50,6 +50,10 @@
         Centralized reflective use of Reflection#getCallerClass and properly handled its instability in various versions
         of Java.
       </action>
+      <action issue="LOG4J2-293" dev="rgoers" type="fix">
+        Reset the Configuration if the ClassLoaderContextSelector creates a LoggerContext without a configuration
+        location and then is later provided one.
+      </action>
       <action issue="LOG4J2-293" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
         Changed the ConfigurationFactory to recognize and properly use the classpath: URI scheme in addition to the
         classloader: URI scheme.

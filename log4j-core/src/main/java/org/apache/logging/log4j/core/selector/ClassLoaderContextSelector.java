@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
@@ -224,6 +225,13 @@ public class ClassLoaderContextSelector implements ContextSelector {
         final WeakReference<LoggerContext> r = ref.get();
         LoggerContext ctx = r.get();
         if (ctx != null) {
+            if (ctx.getConfigLocation() == null && configLocation != null) {
+                LOGGER.debug("Setting configuration to {}", configLocation);
+                ctx.setConfigLocation(configLocation);
+            } else if (ctx.getConfigLocation() != null && !ctx.getConfigLocation().equals(configLocation)) {
+                LOGGER.warn("locateContext called with URI {}. Existing LoggerContext has URI {}", configLocation,
+                    ctx.getConfigLocation());
+            }
             return ctx;
         }
         ctx = new LoggerContext(name, null, configLocation);
