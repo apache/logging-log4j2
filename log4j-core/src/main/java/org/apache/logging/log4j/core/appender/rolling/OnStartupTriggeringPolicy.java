@@ -18,9 +18,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.lang.management.ManagementFactory;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Trigger a rollover on every restart. The target file's timestamp is compared with the JVM start time
@@ -30,11 +32,21 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 @Plugin(name = "OnStartupTriggeringPolicy", category = "Core", printObject = true)
 public class OnStartupTriggeringPolicy implements TriggeringPolicy {
-    private static final long JVM_START_TIME = ManagementFactory.getRuntimeMXBean().getStartTime();
+    private static long JVM_START_TIME = ManagementFactory.getRuntimeMXBean().getStartTime();
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private boolean evaluated = false;
 
     private RollingFileManager manager;
+
+    /* static {
+        try {
+            JVM_START_TIME = ManagementFactory.getRuntimeMXBean().getStartTime();
+        } catch (Exception ex) {
+            LOGGER.error("Unable to calculate JVM start time - {}", ex.getMessage());
+        }
+    } */
 
     /**
      * Provide the RollingFileManager to the policy.
@@ -43,6 +55,9 @@ public class OnStartupTriggeringPolicy implements TriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         this.manager = manager;
+        if (JVM_START_TIME == 0) {
+            evaluated = true;
+        }
     }
 
     /**
