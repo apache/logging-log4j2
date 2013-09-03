@@ -22,7 +22,8 @@ import javax.persistence.Converter;
 import org.apache.logging.log4j.ThreadContext;
 
 /**
- * A JPA 2.1 attribute converter for {@link ThreadContext.ContextStack}s in
+ * A JPA 2.1 attribute converter for 
+ * {@link org.apache.logging.log4j.ThreadContext.ContextStack ThreadContext.ContextStack}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is only capable of converting to {@link String}s. The
  * {@link #convertToEntityAttribute(String)} method throws an {@link UnsupportedOperationException}. If you need to
  * support converting to an entity attribute, you should use the {@link ContextStackJsonAttributeConverter} for
