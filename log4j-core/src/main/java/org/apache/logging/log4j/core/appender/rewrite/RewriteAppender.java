@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -37,8 +36,6 @@ import org.apache.logging.log4j.core.helpers.Booleans;
 
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
- *
- * @param <T> The {@link org.apache.logging.log4j.core.Layout}'s {@link Serializable} type.
  */
 @Plugin(name = "Rewrite", category = "Core", elementType = "appender", printObject = true)
 public final class RewriteAppender extends AbstractAppender {
