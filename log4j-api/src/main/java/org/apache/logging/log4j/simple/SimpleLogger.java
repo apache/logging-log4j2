@@ -44,7 +44,7 @@ public class SimpleLogger extends AbstractLogger {
      * Note that DateFormat is not Thread-safe.
      * </p>
      */
-    private DateFormat dateFormatter = null;
+    private DateFormat dateFormatter;
 
     private Level level;
 
