@@ -64,6 +64,13 @@ public final class ThrowableFormatOptions {
      */
     private final List<String> packages;
 
+    public static final String CLASS_NAME = "short.className";
+    public static final String METHOD_NAME = "short.methodName";
+    public static final String LINE_NUMBER = "short.lineNumber";
+    public static final String FILE_NAME = "short.fileName";
+    public static final String MESSAGE = "short.message";
+    public static final String LOCALIZED_MESSAGE = "short.localizedMessage";
+
     /**
      * Construct the options for printing stack trace.
      * @param lines The number of lines.
@@ -217,7 +224,10 @@ public final class ThrowableFormatOptions {
                     }
                 } else if (option.equalsIgnoreCase(NONE)) {
                     lines = 0;
-                } else if (option.equalsIgnoreCase(SHORT)) {
+                } else if (option.equalsIgnoreCase(SHORT) || option.equalsIgnoreCase(CLASS_NAME) ||
+                        option.equalsIgnoreCase(METHOD_NAME) || option.equalsIgnoreCase(LINE_NUMBER) ||
+                        option.equalsIgnoreCase(FILE_NAME) || option.equalsIgnoreCase(MESSAGE) || 
+                        option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
                 } else if (!option.equalsIgnoreCase(FULL)) {
                     lines = Integer.parseInt(option);

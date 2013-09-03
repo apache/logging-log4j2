@@ -62,6 +62,9 @@
         Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
         ensures behavioral consistency across containers.
       </action>
+      <action issue="LOG4J2-374" dev="ggregory" type="add" due-to="Tibor Benke">
+        Add more options to PatternLayout to display more detailed information about a Throwable.
+      </action>
       <action dev="nickwilliams" type="update">
         Cleaned up tests and cleared up documentation for the JPA appender following the resolution of EclipseLink
         issue #412454.
