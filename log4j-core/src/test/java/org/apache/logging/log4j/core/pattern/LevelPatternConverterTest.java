@@ -69,6 +69,25 @@ public class LevelPatternConverterTest {
     }
 
     @Test
+    public void testLevelLowerCase() {
+        final Message msg = new SimpleMessage("Hello");
+        LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final StringBuilder sb = new StringBuilder();
+        LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
+        converter.format(event, sb);
+        assertEquals(Level.DEBUG.toString(), sb.toString());
+        final String[] opts = new String[] { "lowerCase=true" };
+        converter = LevelPatternConverter.newInstance(opts);
+        sb.setLength(0);
+        converter.format(event, sb);
+        assertEquals("debug", sb.toString());
+        event = new Log4jLogEvent("MyLogger", null, null, Level.WARN, msg, null);
+        sb.setLength(0);
+        converter.format(event, sb);
+        assertEquals("warn", sb.toString());
+    }
+
+    @Test
     public void testLevelMap() {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
@@ -100,6 +119,25 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("DE", sb.toString());
+        event = new Log4jLogEvent("MyLogger", null, null, Level.WARN, msg, null);
+        sb.setLength(0);
+        converter.format(event, sb);
+        assertEquals("Warning", sb.toString());
+    }
+
+    @Test
+    public void testLevelMapWithLengthAndLowerCase() {
+        final Message msg = new SimpleMessage("Hello");
+        LogEvent event = new Log4jLogEvent("MyLogger", null, null, Level.DEBUG, msg, null);
+        final StringBuilder sb = new StringBuilder();
+        LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
+        converter.format(event, sb);
+        assertEquals(Level.DEBUG.toString(), sb.toString());
+        final String[] opts = new String[] { "WARN=Warning, length=2, lowerCase=true" };
+        converter = LevelPatternConverter.newInstance(opts);
+        sb.setLength(0);
+        converter.format(event, sb);
+        assertEquals("de", sb.toString());
         event = new Log4jLogEvent("MyLogger", null, null, Level.WARN, msg, null);
         sb.setLength(0);
         converter.format(event, sb);

@@ -678,8 +678,9 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>p</b>|<b>level</b>{level=label, level=label, ...}
+                <b>p</b>|<b>level</b>{<em>level</em>=<em>label</em>, <em>level</em>=<em>label</em>, ...}
                 <b>p</b>|<b>level</b>{length=<em>n</em>}
+                <b>p</b>|<b>level</b>{lowerCase=<em>true</em>|<em>false</em>}
               </td>
               <td>
                 <p>
@@ -704,6 +705,10 @@ WARN  [main]: Message 2</pre>
                   You can combine the two kinds of options:
                   <pre>%level{ERROR=Error, length=2}</pre>
                   This give you the <code>Error</code> level name and all other level names of length 2.
+                </p>
+                <p>
+                  Finally, you can output lower-case level names (the default is upper-case):
+                  <pre>%level{lowerCase=true}</pre>
                 </p>
               </td>
             </tr>

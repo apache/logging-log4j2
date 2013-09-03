@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.EnumMap;
+import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @ConverterKeys({ "p", "level" })
 public final class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";
+    private static final String OPTION_LOWER = "lowerCase";
 
     /**
      * Singleton.
@@ -59,6 +61,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         }
         final EnumMap<Level, String> levelMap = new EnumMap<Level, String>(Level.class);
         int length = Integer.MAX_VALUE; // More than the longest level name.
+        boolean lowerCase = false;
         final String[] definitions = options[0].split(",");
         for (final String def : definitions) {
             final String[] pair = def.split("=");
@@ -70,6 +73,8 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
             final String value = pair[1].trim();
             if (OPTION_LENGTH.equalsIgnoreCase(key)) {
                 length = Integer.parseInt(value);
+            } else if (OPTION_LOWER.equalsIgnoreCase(key)) {
+                lowerCase = Boolean.parseBoolean(value);
             } else {
                 final Level level = Level.toLevel(key, null);
                 if (level == null) {
@@ -79,12 +84,13 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
                 }
             }
         }
-        if (levelMap.size() == 0 && length == Integer.MAX_VALUE) {
+        if (levelMap.size() == 0 && length == Integer.MAX_VALUE && !lowerCase) {
             return INSTANCE;
         }
         for (final Level level : Level.values()) {
             if (!levelMap.containsKey(level)) {
-                levelMap.put(level, left(level, length));
+                final String left = left(level, length);
+                levelMap.put(level, lowerCase ? left.toLowerCase(Locale.US) : left);
             }
         }
         return new LevelPatternConverter(levelMap);
