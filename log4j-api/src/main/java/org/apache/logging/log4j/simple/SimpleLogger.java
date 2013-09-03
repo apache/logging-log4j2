@@ -33,7 +33,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  *  This is the default logger that is used when no suitable logging implementation is available.
- *
  */
 public class SimpleLogger extends AbstractLogger {
 
@@ -43,6 +42,7 @@ public class SimpleLogger extends AbstractLogger {
      * Used to format times.
      * <p>
      * Note that DateFormat is not Thread-safe.
+     * </p>
      */
     private DateFormat dateFormatter = null;
 
