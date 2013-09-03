@@ -41,8 +41,6 @@ public class Integers {
      *
      * @param s
      *            a {@code String} containing the {@code int} representation to parse, may be {@code null} or {@code ""}
-     * @param defaultValue
-     *            the return value, use {@code 0} if {@code s} is {@code null} or {@code ""}
      * @return the integer value represented by the argument in decimal.
      * @throws NumberFormatException
      *             if the string does not contain a parsable integer.
