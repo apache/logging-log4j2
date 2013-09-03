@@ -54,7 +54,7 @@ public class SimpleLogger extends AbstractLogger {
 
     private PrintStream stream;
 
-    private String logName;
+    private final String logName;
 
 
     public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName,
@@ -73,6 +73,8 @@ public class SimpleLogger extends AbstractLogger {
             }
         } else if (showLogName) {
             this.logName = name;
+        } else {
+        	this.logName = null;
         }
         this.showDateTime = showDateTime;
         this.showContextMap = showContextMap;
