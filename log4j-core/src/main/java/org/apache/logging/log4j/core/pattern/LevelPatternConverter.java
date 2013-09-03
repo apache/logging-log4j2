@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name = "LevelPatternConverter", category = "Converter")
 @ConverterKeys({ "p", "level" })
 public final class LevelPatternConverter extends LogEventPatternConverter {
+    private static final String OPTION_LENGTH = "length";
+
     /**
      * Singleton.
      */
@@ -66,7 +68,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
             }
             final String key = pair[0].trim();
             final String value = pair[1].trim();
-            if ("length".equalsIgnoreCase(key)) {
+            if (OPTION_LENGTH.equalsIgnoreCase(key)) {
                 length = Integer.parseInt(value);
             } else {
                 final Level level = Level.toLevel(key, null);
