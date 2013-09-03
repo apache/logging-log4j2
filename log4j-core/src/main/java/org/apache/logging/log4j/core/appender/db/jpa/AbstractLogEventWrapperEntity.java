@@ -30,20 +30,23 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 
 /**
+ * <p>
  * Users of the JPA appender MUST extend this class, using JPA annotations on the concrete class and all of its
  * accessor methods (as needed) to map them to the proper table and columns. Accessors you do not want persisted should
  * be annotated with {@link Transient @Transient}. All accessors should call {@link #getWrappedEvent()} and delegate the
  * call to the underlying event. Users may want to instead extend {@link BasicLogEventEntity}, which takes care of all
- * of this for you.<br>
- * <br>
+ * of this for you.
+ * </p>
+ * <p>
  * The concrete class must have two constructors: a public no-arg constructor to convince the JPA provider that it's a
  * valid entity, and a public constructor that takes a single {@link LogEvent event} and passes it to the parent class
  * with {@link #AbstractLogEventWrapperEntity(LogEvent) super(event)}. Furthermore, the concrete class must be annotated
  * {@link javax.persistence.Entity @Entity} and {@link javax.persistence.Table @Table} and must implement a fully
  * mutable ID property annotated with {@link javax.persistence.Id @Id} and
  * {@link javax.persistence.GeneratedValue @GeneratedValue} to tell the JPA provider how to calculate an ID for new
- * events.<br>
- * <br>
+ * events.
+ * </p>
+ * <p>
  * Many of the return types of {@link LogEvent} methods (e.g., {@link StackTraceElement}, {@link Message},
  * {@link Marker}, {@link Throwable}, {@link org.apache.logging.log4j.ThreadContext.ContextStack}, and 
  * {@link Map Map&lt;String, String&gt}) will not be recognized by the JPA provider. In conjunction with 
@@ -51,10 +54,12 @@ import org.apache.logging.log4j.message.Message;
  * {@link org.apache.logging.log4j.core.appender.db.jpa.converter} package to convert these types to database columns.
  * If you want to retrieve log events from the database, you can create a true POJO entity and also use these 
  * converters for extracting persisted values.<br>
- * <br>
+ * </p>
+ * <p>
  * The mutator methods in this class not specified in {@link LogEvent} are no-op methods, implemented to satisfy the JPA
  * requirement that accessor methods have matching mutator methods. If you create additional accessor methods, you must
  * likewise create matching no-op mutator methods.
+ * </p>
  *
  * @see BasicLogEventEntity
  */
