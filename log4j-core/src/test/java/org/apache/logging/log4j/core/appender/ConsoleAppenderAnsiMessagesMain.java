@@ -26,6 +26,12 @@ import org.apache.logging.log4j.core.config.Configurator;
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest of the log entry
  * (time stamp for example) is in the default color for that console.
+ * <p>
+ * Running from a Windows command line from the root of the project:
+ * </p>
+ * <pre>
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.11\jansi-1.11.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderAnsiMessagesMain log4j-core/target/test-classes/log4j2-console.xml
+ * </pre>
  */
 public class ConsoleAppenderAnsiMessagesMain {
 
