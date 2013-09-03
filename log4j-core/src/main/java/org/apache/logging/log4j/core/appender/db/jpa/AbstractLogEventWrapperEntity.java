@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Map;
+
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
@@ -44,11 +45,12 @@ import org.apache.logging.log4j.message.Message;
  * events.<br>
  * <br>
  * Many of the return types of {@link LogEvent} methods (e.g., {@link StackTraceElement}, {@link Message},
- * {@link Marker}, {@link Throwable}, {@link ThreadContext.ContextStack}, and {@link Map Map&lt;String, String&gt}) will
- * not be recognized by the JPA provider. In conjunction with {@link javax.persistence.Convert @Convert}, you can use
- * the converters in the {@link org.apache.logging.log4j.core.appender.db.jpa.converter} package to convert these
- * types to database columns. If you want to retrieve log events from the database, you can create a true POJO entity
- * and also use these converters for extracting persisted values.<br>
+ * {@link Marker}, {@link Throwable}, {@link org.apache.logging.log4j.ThreadContext.ContextStack}, and 
+ * {@link Map Map&lt;String, String&gt}) will not be recognized by the JPA provider. In conjunction with 
+ * {@link javax.persistence.Convert @Convert}, you can use the converters in the 
+ * {@link org.apache.logging.log4j.core.appender.db.jpa.converter} package to convert these types to database columns.
+ * If you want to retrieve log events from the database, you can create a true POJO entity and also use these 
+ * converters for extracting persisted values.<br>
  * <br>
  * The mutator methods in this class not specified in {@link LogEvent} are no-op methods, implemented to satisfy the JPA
  * requirement that accessor methods have matching mutator methods. If you create additional accessor methods, you must
