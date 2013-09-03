@@ -21,9 +21,6 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-380" dev="rgoers" type="fix">
-        Use rollover date when substituting ${date} in the filePattern.
-      </action>
       <action issue="LOG4J2-317" dev="ggregory" type="update">
         Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender
         and RollingRandomAccessFileAppender. Configurations using the Fast(Rolling)File element
@@ -42,6 +39,9 @@
         "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
         reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
         until now, it's unlikely this change will affect any users.
+      </action>
+      <action issue="LOG4J2-380" dev="rgoers" type="fix">
+        Use rollover date when substituting ${date} in the filePattern.
       </action>
       <action issue="LOG4J2-253" dev="rpopma" type="add">
         Added FAQ page to the site.
