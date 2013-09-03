@@ -69,7 +69,10 @@
         Add more options to PatternLayout to display more detailed information about a Throwable.
       </action>
       <action issue="LOG4J2-383" dev="ggregory" type="add">
-        [Pattern Layout] Customize level name by length.
+        [Pattern Layout] Customize level names by length.
+      </action>
+      <action issue="LOG4J2-384" dev="ggregory" type="add">
+        [Pattern Layout] Customize level names to lower-case.
       </action>
       <action dev="nickwilliams" type="update">
         Cleaned up tests and cleared up documentation for the JPA appender following the resolution of EclipseLink
