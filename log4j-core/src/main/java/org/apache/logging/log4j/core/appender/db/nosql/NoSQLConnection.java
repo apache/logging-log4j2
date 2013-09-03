@@ -65,7 +65,7 @@ public interface NoSQLConnection<W, T extends NoSQLObject<W>> extends Closeable 
      * HTTP web service), this method would likely always return true. Essentially, this method should only return
      * {@code true} if a call to {@link #insertObject(NoSQLObject)} <b>will</b> fail due to the state of this object.
      *
-     * @return {@link true} if this object is considered closed.
+     * @return {@code true} if this object is considered closed.
      */
     boolean isClosed();
 }
