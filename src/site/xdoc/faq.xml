@@ -39,11 +39,11 @@
 		<a name="which_jars" />
         <h4>Which JAR files do I need?</h4>
         <p>You need at least the log4j-api-2.0 and the log4j-core-2.0 jar files.</p>
-        <p>The other jars are necessary if your application is coded to the API
+        <p>The other jars are necessary if your application calls the API
         of another logging framework and you want to route logging calls to the Log4j 2.0 implementation.</p>
         <p><img src="images/whichjar.png" /></p>
-        <p>The log4j-to-slf4j-bridge jar can be used when your application
-        is coded to the Log4j 2.0 API and you want to route logging calls to a SLF4J implementation.</p>
+        <p>You can use the log4j-to-slf4j-bridge jar when your application calls the Log4j 2.0 API and you 
+        want to route logging calls to a SLF4J implementation.</p>
         <p><img src="images/whichjar-slf4j.png" /></p>
         
 		<a name="config_location" />
@@ -98,14 +98,13 @@
 		<a name="separate_log_files" />
         <h4>How do I dynamically write to separate log files?</h4>
 		<p>
-		Take a look at the 
+		Look at the 
 		<a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender">RoutingAppender</a>.
 		You can define multiple routes in the configuration,
 		and put values in the <code>ThreadContext</code> map that determine
 		which log file subsequent events in this thread get logged to.</p>
 		<p>
-		The <code>ThreadContext</code> map value can be used to determine the
-		log file name.
+		You can use the <code>ThreadContext</code> map value to determine the log file name.
 		</p>
         <pre class="prettyprint linenums"><![CDATA[<Routing name="Routing">
   <Routes pattern="$${ctx:ROUTINGKEY}">
