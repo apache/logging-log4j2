@@ -678,12 +678,12 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>p{level name mapping}</b><br />
-                <b>level{level name mapping}</b>
+                <b>p</b>|<b>level</b>{level=label, level=label, ...}
+                <b>p</b>|<b>level</b>{length=<em>n</em>}
               </td>
               <td>
                 <p>
-                  Outputs the level of the logging event. A level name mapping map be provided in the form
+                  Outputs the level of the logging event. You provide a level name map in the form
                   "level=value, level=value" where level is the name of the Level and value is the value that
                   should be displayed instead of the name of the Level.
                 </p>
@@ -694,6 +694,16 @@ WARN  [main]: Message 2</pre>
                 <p>
                   Alternatively, for the compact-minded:
                   <pre>%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I}</pre>
+                </p>
+                <p>
+                  More succinctly, for the same result as above, you can define the length of the level label:
+                  <pre>%level{length=1}</pre>
+                  If the length is greater than a level name length, the layout uses the normal level name.
+                </p>
+                <p>
+                  You can combine the two kinds of options:
+                  <pre>%level{ERROR=Error, length=2}</pre>
+                  This give you the <code>Error</code> level name and all other level names of length 2.
                 </p>
               </td>
             </tr>
