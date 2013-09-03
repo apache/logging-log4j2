@@ -681,9 +681,21 @@ WARN  [main]: Message 2</pre>
                 <b>p{level name mapping}</b><br />
                 <b>level{level name mapping}</b>
               </td>
-              <td>Outputs the level of the logging event. A level name mapping map be provided in the form
-                "level=value, level=value" where level is the name of the Level and value is the value that
-                should be displayed instead of the name of the Level.</td>
+              <td>
+                <p>
+                  Outputs the level of the logging event. A level name mapping map be provided in the form
+                  "level=value, level=value" where level is the name of the Level and value is the value that
+                  should be displayed instead of the name of the Level.
+                </p>
+                <p>
+                  For example:
+                  <pre>level{WARN=Warning, DEBUG=Debug, ERROR=Error, TRACE=Trace, INFO=Info}</pre>
+                </p>
+                <p>
+                  Alternatively, for the compact-minded:
+                  <pre>level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I}</pre>
+                </p>
+              </td>
             </tr>
             <tr>
               <td align="center">
