@@ -55,6 +55,13 @@ public class Log4jLogEvent implements LogEvent {
     private boolean endOfBatch = false;
 
     /**
+     *
+     */
+    public Log4jLogEvent(final long timestamp) {
+        this("", null, "", null, null, (ThrowableProxy) null, null, null, null, null, timestamp);
+    }
+
+    /**
      * Constructor.
      * @param loggerName The name of the Logger.
      * @param marker The Marker or null.

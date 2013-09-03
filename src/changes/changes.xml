@@ -21,8 +21,11 @@
   </properties>
   <body>
     <release version="2.0-beta9" date="soon, very soon" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-380" dev="rgoers" type="fix">
+        Use rollover date when substituting ${date} in the filePattern.
+      </action>
       <action issue="LOG4J2-317" dev="ggregory" type="update">
-        Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender 
+        Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender
         and RollingRandomAccessFileAppender. Configurations using the Fast(Rolling)File element
         no longer work and should be modified to use the (Rolling)RandomAccessFile element.
       </action>

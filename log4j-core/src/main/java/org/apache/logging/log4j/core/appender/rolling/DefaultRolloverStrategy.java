@@ -115,10 +115,10 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             }
 
             final StringBuilder buf = new StringBuilder();
-            manager.getPatternProcessor().formatFileName(buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
             final String currentFileName = manager.getFileName();
 
-            String renameTo = subst.replace(buf);
+            String renameTo = buf.toString();
             final String compressedName = renameTo;
             Action compressAction = null;
 
