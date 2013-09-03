@@ -30,7 +30,8 @@ import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
- * A JPA 2.1 attribute converter for {@link ThreadContext.ContextStack}s in
+ * A JPA 2.1 attribute converter for 
+ * {@link org.apache.logging.log4j.ThreadContext.ContextStack ThreadContext.ContextStack}s in
  * {@link org.apache.logging.log4j.core.LogEvent}s. This converter is capable of converting both to and from
  * {@link String}s.
  *

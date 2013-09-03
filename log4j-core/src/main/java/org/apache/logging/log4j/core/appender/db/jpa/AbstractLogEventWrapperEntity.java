@@ -48,7 +48,8 @@ import org.apache.logging.log4j.message.Message;
  * </p>
  * <p>
  * Many of the return types of {@link LogEvent} methods (e.g., {@link StackTraceElement}, {@link Message},
- * {@link Marker}, {@link Throwable}, {@link org.apache.logging.log4j.ThreadContext.ContextStack}, and 
+ * {@link Marker}, {@link Throwable}, 
+ * {@link org.apache.logging.log4j.ThreadContext.ContextStack ThreadContext.ContextStack}, and 
  * {@link Map Map&lt;String, String&gt}) will not be recognized by the JPA provider. In conjunction with 
  * {@link javax.persistence.Convert @Convert}, you can use the converters in the 
  * {@link org.apache.logging.log4j.core.appender.db.jpa.converter} package to convert these types to database columns.
