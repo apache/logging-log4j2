@@ -1,0 +1,119 @@
+package org.apache.logging.log4j.core.pattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.Test;
+
+public class ThrowablePatternConverterTest {
+
+    private final static class LocalizedException extends Exception {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public String getLocalizedMessage() {
+            return "I am localized.";
+        }
+    }
+
+    /**
+     * TODO: Needs better a better exception? NumberFormatException is NOT helpful.
+     */
+    @Test(expected=Exception.class)
+    public void testBadShortOption() {
+        final String[] options = { "short.UNKNOWN" };
+        ThrowablePatternConverter.newInstance(options);
+    }
+
+    @Test
+    public void testClassName() {
+        final String packageName = "org.apache.logging.log4j.core.pattern.";
+        final String[] options = { "short.className" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertEquals("The class names should be same", packageName + "ThrowablePatternConverterTest", result);
+    }
+
+    @Test
+    public void testFileName() {
+        final String[] options = { "short.fileName" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertEquals("The file names should be same", "ThrowablePatternConverterTest.java", result);
+    }
+
+    @Test
+    public void testLineNumber() {
+        final String[] options = { "short.lineNumber" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final StackTraceElement top = parent.getStackTrace()[0];
+        final int expectedLineNumber = top.getLineNumber();
+
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertTrue("The line numbers should be same", expectedLineNumber == Integer.parseInt(result));
+    }
+    
+    @Test
+    public void testLocalizedMessage() {
+        final String[] options = { "short.localizedMessage" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable parent = new LocalizedException();
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertEquals("The messages should be same", "I am localized.", result);
+    }
+
+    @Test
+    public void testMessage() {
+        final String[] options = { "short.message" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertEquals("The messages should be same", "IllegalArgument", result);
+    }
+
+    @Test
+    public void testMethodName() {
+        final String[] options = { "short.methodName" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        final Throwable cause = new NullPointerException("null pointer");
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertEquals("The method names should be same", "testMethodName", result);
+    }
+}

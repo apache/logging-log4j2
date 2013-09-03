@@ -365,19 +365,52 @@ WARN  [main]: Message 2</pre>
             </tr>
             <tr>
               <td align="center">
-                <b>ex</b>{["none"|"short"|"full"|depth]}<br />
-                <b>exception</b>{["none"|"short"|"full"|depth]}<br />
-                <b>throwable</b>{["none"|"short"|"full"|depth]}
+                <b>ex</b>|<b>exception</b>|<b>throwable</b><br />
+                &nbsp;&nbsp;{["none"<br />
+                &nbsp;&nbsp;|"full"<br />
+                &nbsp;&nbsp;|depth<br />
+                &nbsp;&nbsp;|"short"<br />
+                &nbsp;&nbsp;|"short.className"<br />
+                &nbsp;&nbsp;|"short.fileName"<br />
+                &nbsp;&nbsp;|"short.lineNumber"<br />
+                &nbsp;&nbsp;|"short.methodName"<br />
+                &nbsp;&nbsp;|"short.message"<br />
+                &nbsp;&nbsp;|"short.localizedMessage"]}
               </td>
               <td>
-                <p>Outputs the Throwable trace that has been bound to the LoggingEvent, by
-                  default this will output the full trace as one would normally find by a call to
-                  Throwable.printStackTrace().
-                  The throwable conversion word can be followed by an option in the form
-                  <b>%throwable{short}</b>
-                  which will only output the first line of the Throwable or <b>%throwable{n}</b> where
-                  the first n lines of the stacktrace will be printed. Specifying <b>%throwable{none}</b>
-                  or <b>%throwable{0}</b> will suppress printing of the exception.
+                <p>
+                  Outputs the Throwable trace bound to the LoggingEvent, by default this will output the full trace 
+                  as one would normally find with a call to Throwable.printStackTrace().
+                </p>
+                <p>
+                  You can follow the throwable conversion word with an option in the form <b>%throwable{option}</b>.
+                </p>
+                <p> 
+                  <b>%throwable{short}</b> outputs the first line of the Throwable.
+                </p>
+                <p> 
+                  <b>%throwable{short.className}</b> outputs the name of the class where the exception occurred.
+                </p>
+                <p> 
+                  <b>%throwable{short.methodName}</b> outputs the method name where the exception occurred.
+                </p>
+                <p> 
+                  <b>%throwable{short.fileName}</b> outputs the name of the class where the exception occurred.
+                </p>
+                <p> 
+                  <b>%throwable{short.lineNumber}</b> outputs the line number where the exception occurred.
+                </p>
+                <p> 
+                  <b>%throwable{short.message}</b> outputs the message.
+                </p>
+                <p> 
+                  <b>%throwable{short.localizedMessage}</b> outputs the localized message.
+                </p>
+                <p> 
+                  <b>%throwable{n}</b> outputs the first n lines of the stack trace. 
+                </p> 
+                <p> 
+                  Specifying <b>%throwable{none}</b> or <b>%throwable{0}</b> suppresses output of the exception.
                 </p>
               </td>
             </tr>
