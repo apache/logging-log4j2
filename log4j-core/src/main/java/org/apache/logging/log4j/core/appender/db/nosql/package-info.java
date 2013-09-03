@@ -17,7 +17,9 @@
 /**
  * The NoSQL Appender supports writing log events to NoSQL databases. The following NoSQL databases are currently
  * supported. You can also easily extend this to support other NoSQL databases by implementing just three interfaces:
- * {@link NoSQLObject}, {@link NoSQLConnection}, and {@link NoSQLProvider}. You will need the client library for your
+ * {@link org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject}, 
+ * {@link org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection}, and 
+ * {@link org.apache.logging.log4j.core.appender.db.nosql.NoSQLProvider}. You will need the client library for your
  * NoSQL database of choice on the classpath to use this appender; these Maven dependencies are optional and will not
  * automatically be added to your classpath.<br>
  * <br>
@@ -29,3 +31,4 @@
  * </ul>
  */
 package org.apache.logging.log4j.core.appender.db.nosql;
+
