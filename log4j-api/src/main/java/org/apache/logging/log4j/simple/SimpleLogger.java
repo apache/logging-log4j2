@@ -37,7 +37,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class SimpleLogger extends AbstractLogger {
 
-    /**
+    private static final char SPACE = ' ';
+
+	/**
      * Used to format times.
      * <p>
      * Note that DateFormat is not Thread-safe.
@@ -112,22 +114,22 @@ public class SimpleLogger extends AbstractLogger {
                 dateText = dateFormatter.format(now);
             }
             sb.append(dateText);
-            sb.append(" ");
+            sb.append(SPACE);
         }
 
         sb.append(level.toString());
-        sb.append(" ");
+        sb.append(SPACE);
         if (logName != null && logName.length() > 0) {
             sb.append(logName);
-            sb.append(" ");
+            sb.append(SPACE);
         }
         sb.append(msg.getFormattedMessage());
         if (showContextMap) {
             final Map<String, String> mdc = ThreadContext.getContext();
             if (mdc.size() > 0) {
-                sb.append(" ");
+                sb.append(SPACE);
                 sb.append(mdc.toString());
-                sb.append(" ");
+                sb.append(SPACE);
             }
         }
         final Object[] params = msg.getParameters();
@@ -138,7 +140,7 @@ public class SimpleLogger extends AbstractLogger {
             t = throwable;
         }
         if (t != null) {
-            sb.append(" ");
+            sb.append(SPACE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
             sb.append(baos.toString());
