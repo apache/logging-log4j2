@@ -21,6 +21,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
@@ -165,6 +168,21 @@ public class PatternProcessor {
     public final void formatFileName(final StringBuilder buf, final Object obj) {
         final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
         formatFileName(buf, new Date(time), obj);
+    }
+
+    /**
+     * Format file name.
+     * @param subst The StrSubstitutor.
+     * @param buf string buffer to which formatted file name is appended, may not be null.
+     * @param obj object to be evaluated in formatting, may not be null.
+     */
+    public final void formatFileName(final StrSubstitutor subst, final StringBuilder buf, final Object obj) {
+        final long time = prevFileTime == 0 ? System.currentTimeMillis() : prevFileTime;
+        formatFileName(buf, new Date(time), obj);
+        LogEvent event = new Log4jLogEvent(time);
+        String fileName = subst.replace(event, buf);
+        buf.setLength(0);
+        buf.append(fileName);
     }
 
     /**
