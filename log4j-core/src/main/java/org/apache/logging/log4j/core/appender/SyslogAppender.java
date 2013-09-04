@@ -115,7 +115,7 @@ public class SyslogAppender extends SocketAppender {
             @PluginConfiguration final Configuration config,
             @PluginAttribute("charset") final String charsetName,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
-            @PluginElement("LoggerFields") final LoggerFields loggerFields,
+            @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginAttribute("advertise") final String advertise) {
 
         final boolean isFlush = Booleans.parseBoolean(immediateFlush, true);

@@ -32,15 +32,15 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- */
 public class RFC5424LayoutTest {
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
     Logger root = ctx.getLogger("");
@@ -51,11 +51,11 @@ public class RFC5424LayoutTest {
     private static final String line3 = "ATM - - [RequestContext@3692 loginId=\"JohnDoe\"] filled mdc";
     private static final String line4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-        "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+        "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     private static final String lineEscaped3 = "ATM - - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc";
     private static final String lineEscaped4 =
         "ATM - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-        "[RequestContext@18060 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+        "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -247,9 +247,10 @@ public class RFC5424LayoutTest {
             root.removeAppender(appender);
         }
 
-        final LoggerFields loggerFields = LoggerFields.createLoggerFields(new KeyValuePair[] {
-        		new KeyValuePair("source", "%C.%M")
-        });
+        final LoggerFields[] loggerFields = new LoggerFields[] {
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, null, null, null),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source2", "%C.%M")}, null, null, null)
+        };
 
         // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
@@ -270,6 +271,136 @@ public class RFC5424LayoutTest {
             assertTrue("Not enough list entries", list.size() > 0);
             assertTrue("No class/method", list.get(0).contains("RFC5424LayoutTest.testMDCLoggerFields"));
 
+            appender.clear();
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+    }
+
+    @Test
+    public void testLoggerFields() {
+        List<String> expectedToContain = Arrays.asList(
+                "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"  +
+                "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]" +
+                "[SD-ID@32473 source=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"
+        );
+
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+
+        final LoggerFields[] loggerFields = new LoggerFields[] {
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, "SD-ID",
+                        "32473", null),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
+                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", null),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, null)
+        };
+
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
+                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        root.info("starting logger fields test");
+
+        try {
+
+            final List<String> list = appender.getMessages();
+            assertTrue("Not enough list entries", list.size() > 0);
+            String message =  list.get(0);
+            assertTrue("No class/method", message.contains("RFC5424LayoutTest.testLoggerFields"));
+            for (String value : expectedToContain) {
+                Assert.assertTrue("Not expected message received", message.contains(value));
+            }
+            appender.clear();
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+    }
+
+    @Test
+    public void testDiscardEmptyLoggerFields() {
+        String mdcId = "RequestContext";
+
+        List<String> expectedToContain = Arrays.asList(
+                "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"  +
+                        "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"
+        );
+
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+
+        final LoggerFields[] loggerFields = new LoggerFields[] {
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("dummy", ""),
+                        new KeyValuePair("empty", "")}, "SD-ID", "32473", "true"),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("baz", "%C.%M"),
+                        new KeyValuePair("baz", "%C.%M") }, "BAZ", "32473", "false"),
+                LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, "false")
+        };
+
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", mdcId,
+                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        root.info("starting logger fields test");
+
+        try {
+
+            final List<String> list = appender.getMessages();
+            assertTrue("Not enough list entries", list.size() > 0);
+            String message =  list.get(0);
+            Assert.assertTrue("SD-ID should have been discarded", !message.contains("SD-ID"));
+            Assert.assertTrue("BAZ should have been included", message.contains("BAZ"));
+            Assert.assertTrue(mdcId + "should have been included", message.contains(mdcId));
+            appender.clear();
+        } finally {
+            root.removeAppender(appender);
+            ThreadContext.clear();
+
+            appender.stop();
+        }
+    }
+
+    @Test
+    public void testSubstituteStructuredData() {
+        String mdcId = "RequestContext";
+
+        String expectedToContain = "ATM - MSG-ID - Message";
+
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+
+        final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "false", mdcId,
+                null, null, "true", null, "ATM", "MSG-ID", "key1, key2, locale", null, null, null, null, null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+
+        root.info("Message");
+
+        try {
+            final List<String> list = appender.getMessages();
+            assertTrue("Not enough list entries", list.size() > 0);
+            String message =  list.get(0);
+            Assert.assertTrue("Not the expected message received", message.contains(expectedToContain));
             appender.clear();
         } finally {
             root.removeAppender(appender);
