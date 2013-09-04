@@ -186,6 +186,9 @@
       <action issue="LOG4J2-366" dev="ggregory" type="update">
         Update commons-logging to 1.1.3 from 1.1.1.
       </action>
+      <action issue="LOG4J2-390" dev="ggregory" type="update">
+        Update HSQLDB dependency to 2.3.0 from 2.2.9.
+      </action>
       <action issue="LOG4J2-308" dev="rpopma" type="update">
         Clarified which library versions were used in Async Loggers performance test.
       </action>
