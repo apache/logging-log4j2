@@ -99,9 +99,6 @@
       <action issue="LOG4J2-319" dev="ggregory" type="fix">
         Double stack trace logging when using %throwable in a %style.
       </action>
-      <action issue="LOG4J2-366" dev="ggregory" type="update">
-        Update commons-logging to 1.1.3 from 1.1.1.
-      </action>
       <action issue="LOG4J2-360" dev="rgoers" type="add">
         Allow Plugins to have aliases.
       </action>
@@ -153,9 +150,6 @@
       <action issue="LOG4J2-328" dev="rgoers" type="fix">
         FlumePersistentManager was calling Berkeley DB's count method too frequently.
       </action>
-      <action issue="LOG4J2-325" dev="ggregory" type="update">
-        Update JDBC tests to use H2 database 1.3.173 from 1.3.172.
-      </action>
       <action issue="LOG4J2-280" dev="rpopma" type="fix">
         Additional fix to make AsyncAppender threads daemon threads and improve their thread name.
       </action>
@@ -183,6 +177,12 @@
       <action issue="LOG4J2-312" dev="ggregory" type="update">
         XML layout improvements (compact vs. pretty, namespace, namespace prefix, root element).
       </action>
+      <action issue="LOG4J2-325" dev="ggregory" type="update">
+        Update JDBC tests to use H2 database 1.3.173 from 1.3.172.
+      </action>
+      <action issue="LOG4J2-366" dev="ggregory" type="update">
+        Update commons-logging to 1.1.3 from 1.1.1.
+      </action>
       <action issue="LOG4J2-308" dev="rpopma" type="update">
         Clarified which library versions were used in Async Loggers performance test.
       </action>
@@ -191,6 +191,9 @@
       </action>
       <action issue="LOG4J2-306" dev="ggregory" type="update">
         Update JSON Jackson library to 2.2.2 from 2.2.1.
+      </action>
+      <action issue="LOG4J2-387" dev="ggregory" type="update">
+        Update Jackson dependency to 1.9.13 from 1.9.11.
       </action>
       <action issue="LOG4J2-305" dev="ggregory" type="add">
         Ease porting from 1.x Logger.getRootLogger(): add LogManager.getRootLogger().
