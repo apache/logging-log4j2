@@ -227,7 +227,8 @@ public class RFC5424LayoutTest {
             final List<String> list = appender.getMessages();
 
             assertTrue("Not enough list entries", list.size() > 1);
-            assertTrue("No Exception", list.get(1).contains("IllegalArgumentException"));
+            final String string = list.get(1);
+			assertTrue("No Exception in " + string, string.contains("IllegalArgumentException"));
 
             appender.clear();
         } finally {
