@@ -91,7 +91,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
-    private final Integer enterpriseNumber;
+    private final int enterpriseNumber;
     private final boolean includeMDC;
     private final String mdcId;
     private final StructuredDataId mdcSDID;
