@@ -44,7 +44,7 @@ public class MimeMessageBuilder {
             try {
                 message.setFrom();
             } catch (final Exception ex) {
-                message.setFrom(null);
+                message.setFrom((InternetAddress) null);
             }
         }
         return this;
