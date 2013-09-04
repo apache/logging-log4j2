@@ -42,7 +42,7 @@
         <p>The other jars are necessary if your application calls the API
         of another logging framework and you want to route logging calls to the Log4j 2.0 implementation.</p>
         <p><img src="images/whichjar.png" /></p>
-        <p>You can use the log4j-to-slf4j-bridge jar when your application calls the Log4j 2.0 API and you 
+        <p>You can use the log4j-to-slf4j adapter jar when your application calls the Log4j 2.0 API and you 
         want to route logging calls to a SLF4J implementation.</p>
         <p><img src="images/whichjar-slf4j.png" /></p>
         
