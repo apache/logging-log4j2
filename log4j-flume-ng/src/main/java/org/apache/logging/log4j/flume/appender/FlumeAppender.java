@@ -215,7 +215,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
 
         if (layout == null) {
             layout = RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,
-                    null, null, null, excludes, includes, required, null, null, null, null);
+                    null, null, null, null, excludes, includes, required, null, null, null, null);
         }
 
         if (name == null) {

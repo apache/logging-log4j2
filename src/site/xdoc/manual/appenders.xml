@@ -285,7 +285,7 @@
         </subsection>
 			<a name="RandomAccessFileAppender" />
 			<subsection name="RandomAccessFileAppender (was FastFileAppender)">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to 
+			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
 			  RandomAccessFile. <b>Configurations using the <code>FastFile</code> element
 			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</b></i></p>
 			<p><i>Experimental, may replace FileAppender in a future release.</i></p>
@@ -398,7 +398,7 @@
 			</subsection>
 			<a name="RollingRandomAccessFileAppender" />
 			<subsection name="RollingRandomAccessFileAppender (was FastRollingFileAppender)">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to 
+			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
 			  RollingRandomAccessFile. <b>Configurations using the <code>FastRollingFile</code> element
 			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</b></i></p>
 			<p><i>Experimental, may replace RollingFileAppender in a future release.</i></p>
@@ -1302,7 +1302,7 @@
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout, 
+                The Layout to use to format the LogEvent. If you do not specify a layout,
                 this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
               </td>
             </tr>
@@ -1415,7 +1415,7 @@
               <td>layout</td>
               <td>Layout</td>
               <td>
-                The Layout to use to format the LogEvent. If you do not specify a layout, 
+                The Layout to use to format the LogEvent. If you do not specify a layout,
                 this appender will use a <a href="layouts.html#SerializedLayout">SerializedLayout</a>.
               </td>
             </tr>
@@ -2801,6 +2801,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <th>Description</th>
             </tr>
             <tr>
+              <td>advertise</td>
+              <td>boolean</td>
+              <td>Indicates whether the appender should be advertised.</td>
+            </tr>
+            <tr>
               <td>appName</td>
               <td>String</td>
               <td>The value to use as the APP-NAME in the RFC 5424 syslog record.</td>
@@ -2853,6 +2858,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 a StructuredDataMessage the id from the Message will be used instead of this value.</td>
             </tr>
             <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
               <td>immediateFail</td>
               <td>boolean</td>
               <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
@@ -2870,6 +2883,15 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>boolean</td>
               <td>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
                 Defaults to true.</td>
+            </tr>
+            <tr>
+              <td>loggerFields</td>
+              <td>List of KeyValuePairs</td>
+              <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
+                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
+                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
+                specifies the key name which will be used to identify the field within the MDC Structured Data element,
+                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
             </tr>
             <tr>
               <td>mdcExcludes</td>
@@ -2930,23 +2952,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
                 set to <code>false</code>).</td>
             </tr>
-            <tr>
-              <td>ignoreExceptions</td>
-              <td>boolean</td>
-              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-                <a href="#FailoverAppender">FailoverAppender</a>.</td>
-            </tr>
-            <tr>
-              <td>loggerFields</td>
-              <td>List of KeyValuePairs</td>
-              <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
-                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
-                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
-                specifies the key name which will be used to identify the field within the MDC Structured Data element,
-                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
-            </tr>
             <caption align="top">SyslogAppender Parameters</caption>
           </table>
           <p>
@@ -2966,6 +2971,193 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
     <Logger name="com.mycorp" level="error">
       <AppenderRef ref="RFC5424"/>
     </Logger>
+    <Root level="error">
+      <AppenderRef ref="bsd"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          </p>
+        </subsection>
+        <a name="TLSSyslogAppender"/>
+        <subsection name="TLSSyslogAppender">
+          <p>
+            The TLSSyslogAppender is a SocketAppender that writes its output to a remote destination
+            specified by a host and port over SSL in a format that conforms with either the BSD Syslog format or the
+            RFC 5424 format. The data can be sent over either TCP or UDP.
+          </p>
+          <table>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>advertise</td>
+              <td>boolean</td>
+              <td>Indicates whether the appender should be advertised.</td>
+            </tr>
+            <tr>
+              <td>appName</td>
+              <td>String</td>
+              <td>The value to use as the APP-NAME in the RFC 5424 syslog record.</td>
+            </tr>
+            <tr>
+              <td>charset</td>
+              <td>String</td>
+              <td>The character set to use when converting the syslog String to a byte array. The String must be
+                a valid <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Charset</a>.
+                If not specified, the default system Charset will be used.</td>
+            </tr>
+            <tr>
+              <td>enterpriseNumber</td>
+              <td>integer</td>
+              <td>The IANA enterprise number as described in
+                <a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
+            </tr>
+            <tr>
+              <td>filter</td>
+              <td>Filter</td>
+              <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
+                may be used by using a CompositeFilter.</td>
+            </tr>
+            <tr>
+              <td>facility</td>
+              <td>String</td>
+              <td>The facility is used to try to classify the message. The facility option must be set to one of
+                "KERN", "USER", "MAIL", "DAEMON", "AUTH", "SYSLOG", "LPR", "NEWS", "UUCP", "CRON", "AUTHPRIV",
+                "FTP", "NTP", "AUDIT", "ALERT", "CLOCK", "LOCAL0", "LOCAL1", "LOCAL2", "LOCAL3", "LOCAL4", "LOCAL5",
+                "LOCAL6", or "LOCAL7". These values may be specified as upper or lower case characters.</td>
+            </tr>
+            <tr>
+              <td>format</td>
+              <td>String</td>
+              <td>If set to "RFC5424" the data will be formatted in accordance with RFC 5424. Otherwise, it will
+                be formatted as a BSD Syslog record. Note that although BSD Syslog records are required to be
+                1024 bytes or shorter the SyslogLayout does not truncate them. The RFC5424Layout also does not
+                truncate records since the receiver must accept records of up to 2048 bytes and may accept records
+                that are longer.</td>
+            </tr>
+            <tr>
+              <td>host</td>
+              <td>String</td>
+              <td>The name or address of the system that is listening for log events. This parameter is required.</td>
+            </tr>
+            <tr>
+              <td>id</td>
+              <td>String</td>
+              <td>The default structured data id to use when formatting according to RFC 5424. If the LogEvent contains
+                a StructuredDataMessage the id from the Message will be used instead of this value.</td>
+            </tr>
+            <tr>
+              <td>ignoreExceptions</td>
+              <td>boolean</td>
+              <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                <a href="#FailoverAppender">FailoverAppender</a>.</td>
+            </tr>
+            <tr>
+              <td>immediateFail</td>
+              <td>boolean</td>
+              <td>When set to true, log events will not wait to try to reconnect and will fail immediately if the
+                socket is not available.</td>
+            </tr>
+            <tr>
+              <td>immediateFlush</td>
+              <td>boolean</td>
+              <td>When set to true - the default, each write will be followed by a flush.
+                This will guarantee the data is written
+                to disk but could impact performance.</td>
+            </tr>
+            <tr>
+              <td>includeMDC</td>
+              <td>boolean</td>
+              <td>Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog record.
+                Defaults to true.</td>
+            </tr>
+            <tr>
+              <td>loggerFields</td>
+              <td>List of KeyValuePairs</td>
+              <td>Allows arbitrary PatternLayout patterns to be included as specified ThreadContext fields; no default
+                specified. To use, include a &gt;LoggerFields&lt; nested element, containing one or more
+                &gt;KeyValuePair&lt; elements. Each &gt;KeyValuePair&lt; must have a key attribute, which
+                specifies the key name which will be used to identify the field within the MDC Structured Data element,
+                and a value attribute, whcih specifies the PatternLayout pattern to use as the value.</td>
+            </tr>
+            <tr>
+              <td>mdcExcludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be excluded from the LogEvent. This is mutually
+                exclusive with the mdcIncludes attribute. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcIncludes</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that should be included in the FlumeEvent. Any keys in the MDC
+                not found in the list will be excluded. This option is mutually exclusive with the mdcExcludes
+                attribute. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcRequired</td>
+              <td>String</td>
+              <td>A comma separated list of mdc keys that must be present in the MDC. If a key is not present a
+                LoggingException will be thrown. This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>mdcPrefix</td>
+              <td>String</td>
+              <td>A string that should be prepended to each MDC key in order to distinguish it from event attributes.
+                The default string is "mdc:". This attribute only applies to RFC 5424 syslog records.</td>
+            </tr>
+            <tr>
+              <td>messageId</td>
+              <td>String</td>
+              <td>The default value to be used in the MSGID field of RFC 5424 syslog records. </td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>String</td>
+              <td>The name of the Appender.</td>
+            </tr>
+            <tr>
+              <td>newLine</td>
+              <td>boolean</td>
+              <td>If true, a newline will be appended to the end of the syslog record. The default is false.</td>
+            </tr>
+            <tr>
+              <td>port</td>
+              <td>integer</td>
+              <td>The port on the host that is listening for log events. This parameter must be specified.</td>
+            </tr>
+            <tr>
+              <td>reconnectionDelay</td>
+              <td>integer</td>
+              <td>If set to a value greater than 0, after an error the SocketManager will attempt to reconnect to
+                the server after waiting the specified number of milliseconds. If the reconnect fails then
+                an exception will be thrown (which can be caught by the application if <code>ignoreExceptions</code> is
+                set to <code>false</code>).</td>
+            </tr>
+            <tr>
+              <td>ssl</td>
+              <td>SSLConfiguration</td>
+              <td>Contains the configuration for the KeyStore and TrustStore.</td>
+            </tr>
+            <caption align="top">SyslogAppender Parameters</caption>
+          </table>
+          <p>
+            A sample TLS Syslog Appender configuration that is configured to send a BSD-style syslog message.
+
+            <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <TLSSyslog name="bsd" host="localhost" port="6514">
+      <SSL>
+        <KeyStore location="log4j2-keystore.jks" password="changeme"/>
+        <TrustStore location="truststore.jks" password="changeme"/>
+      </SSL>
+    </TLSSyslog>
+  </Appenders>
+  <Loggers>
     <Root level="error">
       <AppenderRef ref="bsd"/>
     </Root>

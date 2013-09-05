@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.TLSSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -60,10 +61,10 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
 @Plugin(name = "RFC5424Layout", category = "Core", elementType = "layout", printObject = true)
-public final class RFC5424Layout extends AbstractStringLayout {
+public class RFC5424Layout extends AbstractStringLayout {
 
     private static final String LF = "\n";
-    
+
     /**
      * Not a very good default - it is the Apache Software Foundation's enterprise number.
      */
@@ -81,7 +82,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      */
     public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
 
-    private static final String DEFAULT_MDCID = "mdc";
+    protected static final String DEFAULT_MDCID = "mdc";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
     private static final int MILLIS_PER_MINUTE = 60000;
@@ -108,6 +109,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
     private final ListChecker noopChecker = new NoopChecker();
     private final boolean includeNewLine;
     private final String escapeNewLine;
+    private final boolean useTLSMessageFormat;
 
     private long lastTimestamp = -1;
     private String timestamppStr;
@@ -120,7 +122,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
                           final String mdcPrefix, final String eventPrefix,
                           final String appName, final String messageId, final String excludes, final String includes,
                           final String required, final Charset charset, final String exceptionPattern,
-                          final LoggerFields[] loggerFields) {
+                          final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern, false);
@@ -136,6 +138,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
         this.eventPrefix = eventPrefix;
         this.appName = appName;
         this.messageId = messageId;
+        this.useTLSMessageFormat = useTLSMessageFormat;
         this.localHostName = NetUtils.getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
@@ -269,6 +272,9 @@ public final class RFC5424Layout extends AbstractStringLayout {
         appendSpace(buf);
         appendStructuredElements(buf, event);
         appendMessage(buf, event);
+        if (useTLSMessageFormat) {
+            return new TLSSyslogFrame(buf.toString()).toString();
+        }
         return buf.toString();
     }
 
@@ -610,6 +616,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
      * @param includes         A comma separated list of MDC keys that should be included in the FlumeEvent.
      * @param required         A comma separated list of MDC keys that must be present in the MDC.
      * @param exceptionPattern The pattern for formatting exceptions.
+     * @param useTLSMessageFormat If true the message will be formatted according to RFC 5425.
      * @param loggerFields     Container for the KeyValuePairs containing the patterns
      * @param config           The Configuration. Some Converters require access to the Interpolator.
      * @return An RFC5424Layout.
@@ -631,6 +638,7 @@ public final class RFC5424Layout extends AbstractStringLayout {
             @PluginAttribute("mdcIncludes") String includes,
             @PluginAttribute("mdcRequired") final String required,
             @PluginAttribute("exceptionPattern") final String exceptionPattern,
+            @PluginAttribute("useTLSMessageFormat") final String useTLSMessageFormat, // RFC 5425
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config) {
         final Charset charset = Charsets.UTF_8;
@@ -642,12 +650,14 @@ public final class RFC5424Layout extends AbstractStringLayout {
         final int enterpriseNumber = Integers.parseInt(ein, DEFAULT_ENTERPRISE_NUMBER);
         final boolean isMdc = Booleans.parseBoolean(includeMDC, true);
         final boolean includeNewLine = Boolean.parseBoolean(includeNL);
+        final boolean useTlsMessageFormat = Booleans.parseBoolean(useTLSMessageFormat, false);
         if (mdcId == null) {
             mdcId = DEFAULT_MDCID;
         }
 
         return new RFC5424Layout(config, f, id, enterpriseNumber, isMdc, includeNewLine, escapeNL, mdcId, mdcPrefix,
-                eventPrefix, appName, msgId, excludes, includes, required, charset, exceptionPattern, loggerFields);
+                eventPrefix, appName, msgId, excludes, includes, required, charset, exceptionPattern,
+                useTlsMessageFormat, loggerFields);
     }
 
     private class FieldFormatter {
