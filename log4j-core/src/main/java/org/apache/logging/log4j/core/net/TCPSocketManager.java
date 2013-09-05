@@ -193,7 +193,7 @@ public class TCPSocketManager extends AbstractSocketManager {
             while (!shutdown) {
                 try {
                     sleep(reconnectionDelay);
-                    final Socket sock = new Socket(address, port);
+                    final Socket sock = createSocket(address, port);
                     final OutputStream newOS = sock.getOutputStream();
                     synchronized (owner) {
                         try {
@@ -221,6 +221,14 @@ public class TCPSocketManager extends AbstractSocketManager {
         }
     }
 
+    protected Socket createSocket(InetAddress host, int port) throws IOException {
+        return createSocket(host.getHostName(), port);
+    }
+
+    protected Socket createSocket(String host, int port) throws IOException {
+        return new Socket(host, port);
+    }
+
     /**
      * Data for the factory.
      */
@@ -244,8 +252,7 @@ public class TCPSocketManager extends AbstractSocketManager {
     /**
      * Factory to create a TCPSocketManager.
      */
-    private static class TCPSocketManagerFactory implements ManagerFactory<TCPSocketManager, FactoryData> {
-
+    protected static class TCPSocketManagerFactory implements ManagerFactory<TCPSocketManager, FactoryData> {
         @Override
         public TCPSocketManager createManager(final String name, final FactoryData data) {
 

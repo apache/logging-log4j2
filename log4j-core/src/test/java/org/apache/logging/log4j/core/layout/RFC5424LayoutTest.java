@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RFC5424LayoutTest {
@@ -82,7 +83,7 @@ public class RFC5424LayoutTest {
         }
         // set up appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", null, "true", null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -119,6 +120,21 @@ public class RFC5424LayoutTest {
             assertTrue("Expected line 3 to end with: " + line3 + " Actual " + list.get(2), list.get(2).endsWith(line3));
             assertTrue("Expected line 4 to end with: " + line4 + " Actual " + list.get(3), list.get(3).endsWith(line4));
 
+            for (String frame : list) {
+                int length = -1;
+                int frameLength = frame.length();
+                int firstSpacePosition = frame.indexOf(' ');
+                String messageLength = frame.substring(0, firstSpacePosition);
+                try {
+                    length = Integer.parseInt(messageLength);
+                    // the ListAppender removes the ending newline, so we expect one less size
+                    assertEquals(frameLength, messageLength.length() + length);
+                }
+                catch (NumberFormatException e) {
+                    assertTrue("Not a valid RFC 5425 frame", false);
+                }
+            }
+
             appender.clear();
 
             ThreadContext.remove("loginId");
@@ -133,7 +149,6 @@ public class RFC5424LayoutTest {
 
             appender.stop();
         }
-
     }
 
     /**
@@ -146,7 +161,7 @@ public class RFC5424LayoutTest {
         }
         // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, null, null);
+            null, null, "true", "#012", "ATM", null, "key1, key2, locale", null, "loginId", null, "true", null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
         appender.start();
@@ -196,7 +211,6 @@ public class RFC5424LayoutTest {
 
             appender.stop();
         }
-
     }
 
     /**
@@ -209,7 +223,7 @@ public class RFC5424LayoutTest {
         }
         // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", "%xEx", null, null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, "loginId", "%xEx", "true", null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -255,7 +269,7 @@ public class RFC5424LayoutTest {
 
         // set up layout/appender
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-            null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+            null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, "true", loggerFields, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -302,7 +316,7 @@ public class RFC5424LayoutTest {
         };
 
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", "RequestContext",
-                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, null, loggerFields, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -351,7 +365,7 @@ public class RFC5424LayoutTest {
         };
 
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "true", mdcId,
-                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, loggerFields, null);
+                null, null, "true", null, "ATM", null, "key1, key2, locale", null, null, null, null, loggerFields, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -388,7 +402,7 @@ public class RFC5424LayoutTest {
         }
 
         final AbstractStringLayout layout = RFC5424Layout.createLayout("Local0", "Event", "3692", "false", mdcId,
-                null, null, "true", null, "ATM", "MSG-ID", "key1, key2, locale", null, null, null, null, null);
+                null, null, "true", null, "ATM", "MSG-ID", "key1, key2, locale", null, null, null, null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 

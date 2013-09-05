@@ -32,6 +32,7 @@
     <item name="Log4j 1.x Migration" ref="manual/migration.html"/>
     <item name="API" ref="/manual/api.html"/>
     <item name="Configuration" ref="/manual/configuration.html"/>
+    <item name="Web Applications &amp; JSPs" ref="/manual/webapp.html"/>
     <item name="Plugins" ref="/manual/plugins.html"/>
     <item name="Lookups" ref="/manual/lookups.html"/>
     <item name="Appenders" ref="/manual/appenders.html"/>

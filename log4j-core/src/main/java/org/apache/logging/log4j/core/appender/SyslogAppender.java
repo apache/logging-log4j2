@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
 @Plugin(name = "Syslog", category = "Core", elementType = "appender", printObject = true)
 public class SyslogAppender extends SocketAppender {
 
-    private static final String RFC5424 = "RFC5424";
+    protected static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                              final boolean ignoreExceptions, final boolean immediateFlush,
@@ -126,7 +126,8 @@ public class SyslogAppender extends SocketAppender {
         final boolean isAdvertise = Boolean.parseBoolean(advertise);
         final Layout<? extends Serializable> layout = (RFC5424.equalsIgnoreCase(format) ?
             RFC5424Layout.createLayout(facility, id, ein, includeMDC, mdcId, mdcPrefix, eventPrefix, includeNL,
-                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, loggerFields, config) :
+                escapeNL, appName, msgId, excludes, includes, required, exceptionPattern, "false", loggerFields,
+                config) :
             SyslogLayout.createLayout(facility, includeNL, escapeNL, charsetName));
 
         if (name == null) {
