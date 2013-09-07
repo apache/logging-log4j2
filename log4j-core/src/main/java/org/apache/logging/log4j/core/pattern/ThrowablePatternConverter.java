@@ -132,10 +132,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private void formatOption(final Throwable t, final StringBuilder buffer) {
+    private void formatOption(final Throwable throwable, final StringBuilder buffer) {
         final StringWriter w = new StringWriter();
 
-        t.printStackTrace(new PrintWriter(w));
+        throwable.printStackTrace(new PrintWriter(w));
         final int len = buffer.length();
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {
             buffer.append(' ');
