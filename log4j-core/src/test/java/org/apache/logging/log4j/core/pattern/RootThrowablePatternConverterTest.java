@@ -16,26 +16,18 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *
  */
 public class RootThrowablePatternConverterTest {
-
-
-
-    @Before
-    public void setup() {
-
-    }
 
     @Test
     public void testFull() {
