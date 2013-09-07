@@ -30,18 +30,46 @@ import org.junit.Test;
 public class RootThrowablePatternConverterTest {
 
     @Test
-    public void testFull() {
+    public void testFull1() {
         final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
-            new SimpleMessage("test exception"), parent);
+                new SimpleMessage("test exception"), parent);
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        //System.out.print(result);
+        // System.out.print(result);
         assertTrue("Missing Exception",
-            result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));
+                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));
+        assertTrue("Incorrect start of msg", result.startsWith("java.lang.NullPointerException: null pointer"));
+    }
+
+    /**
+     * Sanity check for testFull1() above, makes sure that the way testFull1 is written matches actually throwing
+     * exceptions.
+     */
+    @Test
+    public void testFull2() {
+        final RootThrowablePatternConverter converter = RootThrowablePatternConverter.newInstance(null);
+        Throwable parent;
+        try {
+            try {
+                throw new NullPointerException("null pointer");
+            } catch (NullPointerException e) {
+                throw new IllegalArgumentException("IllegalArgument", e);
+            }
+        } catch (IllegalArgumentException e) {
+            parent = e;
+        }
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        // System.out.print(result);
+        assertTrue("Missing Exception",
+                result.contains("Wrapped by: java.lang.IllegalArgumentException: IllegalArgument"));
         assertTrue("Incorrect start of msg", result.startsWith("java.lang.NullPointerException: null pointer"));
     }
 }
