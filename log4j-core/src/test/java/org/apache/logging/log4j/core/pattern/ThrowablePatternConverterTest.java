@@ -40,10 +40,34 @@ public class ThrowablePatternConverterTest {
     /**
      * TODO: Needs better a better exception? NumberFormatException is NOT helpful.
      */
-    @Test(expected=Exception.class)
+    @Test(expected = Exception.class)
     public void testBadShortOption() {
         final String[] options = { "short.UNKNOWN" };
         ThrowablePatternConverter.newInstance(options);
+    }
+
+    @Test
+    public void testFull() {
+        final String[] options = { "full" };
+        final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
+        Throwable parent;
+        try {
+            try {
+                throw new NullPointerException("null pointer");
+            } catch (NullPointerException e) {
+                throw new IllegalArgumentException("IllegalArgument", e);
+            }
+        } catch (IllegalArgumentException e) {
+            parent = e;
+        }
+        final LogEvent event = new Log4jLogEvent("testLogger", null, this.getClass().getName(), Level.DEBUG,
+                new SimpleMessage("test exception"), parent);
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        // System.out.print(result);
+        assertTrue("Incorrect start of msg", result.startsWith("java.lang.IllegalArgumentException: IllegalArgument"));
+        assertTrue("Missing nested exception", result.contains("java.lang.NullPointerException: null pointer"));
     }
 
     @Test
@@ -132,5 +156,5 @@ public class ThrowablePatternConverterTest {
         final String result = sb.toString();
         assertEquals("The method names should be same", "testShortMethodName", result);
     }
-    
+
 }
