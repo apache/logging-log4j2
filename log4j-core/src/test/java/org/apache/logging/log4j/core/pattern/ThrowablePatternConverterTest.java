@@ -130,6 +130,7 @@ public class ThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertEquals("The method names should be same", "testMethodName", result);
+        assertEquals("The method names should be same", "testShortMethodName", result);
     }
+    
 }
