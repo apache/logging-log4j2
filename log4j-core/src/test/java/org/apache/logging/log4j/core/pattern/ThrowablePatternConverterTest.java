@@ -47,7 +47,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testClassName() {
+    public void testShortClassName() {
         final String packageName = "org.apache.logging.log4j.core.pattern.";
         final String[] options = { "short.className" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
@@ -62,7 +62,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testFileName() {
+    public void testShortFileName() {
         final String[] options = { "short.fileName" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
         final Throwable cause = new NullPointerException("null pointer");
@@ -76,7 +76,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testLineNumber() {
+    public void testShortLineNumber() {
         final String[] options = { "short.lineNumber" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
         final Throwable cause = new NullPointerException("null pointer");
@@ -93,7 +93,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testLocalizedMessage() {
+    public void testShortLocalizedMessage() {
         final String[] options = { "short.localizedMessage" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
         final Throwable parent = new LocalizedException();
@@ -106,7 +106,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testMessage() {
+    public void testShortMessage() {
         final String[] options = { "short.message" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
         final Throwable cause = new NullPointerException("null pointer");
@@ -120,7 +120,7 @@ public class ThrowablePatternConverterTest {
     }
 
     @Test
-    public void testMethodName() {
+    public void testShortMethodName() {
         final String[] options = { "short.methodName" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(options);
         final Throwable cause = new NullPointerException("null pointer");
