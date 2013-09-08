@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <Root level="debug">
-    <AppenderRef ref="FILE" />
-  </Root>
-</Configuration>
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

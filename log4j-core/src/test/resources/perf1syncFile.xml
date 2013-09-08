@@ -9,7 +9,7 @@
   </Appenders>
   <Loggers>
     <Root level="info" includeLocation="false">
-      <AppenderRef ref="File"/>
+      <appender-ref ref="File"/>
     </Root>
   </Loggers>
 </Configuration>

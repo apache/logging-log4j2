@@ -14,7 +14,7 @@
   </Appenders>
   <Loggers>
     <Root level="info" includeLocation="false">
-      <AppenderRef ref="RollingFile"/>
+      <appender-ref ref="RollingFile"/>
     </Root>
   </Loggers>
 </Configuration>
