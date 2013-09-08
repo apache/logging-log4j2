@@ -9,7 +9,7 @@
   </Appenders>
   <Loggers>
     <AsyncRoot level="info" includeLocation="true">
-      <AppenderRef ref="RandomAccessFile"/>
+      <appender-ref ref="RandomAccessFile"/>
     </AsyncRoot>
   </Loggers>
 </Configuration>

@@ -23,6 +23,6 @@
  </appender>
 
  <root level="debug">
-   <AppenderRef ref="stdout" />
+   <appender-ref ref="stdout" />
  </root>
 </configuration>

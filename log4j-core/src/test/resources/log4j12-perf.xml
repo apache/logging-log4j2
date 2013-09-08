@@ -24,8 +24,8 @@
      <param name="ConversionPattern" value="%d{ISO8601} %5p [%t] %c{1} %X{transactionId} - %m%n"/>
    </layout>
  </appender>
- <Root>
+ <root>
    <level value="debug"/>
-   <AppenderRef ref="TestLogfile"/>
- </Root>
+   <appender-ref ref="TestLogfile"/>
+ </root>
 </log4j:configuration>
