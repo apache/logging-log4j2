@@ -72,21 +72,17 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({ "highlight" })
 public final class HighlightConverter extends LogEventPatternConverter {
 
-    private static final String STYLE_KEY_DEFAULT = "DEFAULT";
-
-    private static final String STYLE_KEY_LOGBACK = "LOGBACK";
-
-    private static final String STYLE_KEY = "STYLE";
-
     private static final EnumMap<Level, String> DEFAULT_STYLES = new EnumMap<Level, String>(Level.class);
 
     private static final EnumMap<Level, String> LOGBACK_STYLES = new EnumMap<Level, String>(Level.class);
 
+    private static final String STYLE_KEY = "STYLE";
+
+    private static final String STYLE_KEY_DEFAULT = "DEFAULT";
+
+    private static final String STYLE_KEY_LOGBACK = "LOGBACK";
+
     private static final Map<String, EnumMap<Level, String>> STYLES = new HashMap<String, EnumMap<Level, String>>();
-
-    private final List<PatternFormatter> formatters;
-
-    private final EnumMap<Level, String> levelStyles;
 
     static {
         // Default styles:
@@ -106,18 +102,6 @@ public final class HighlightConverter extends LogEventPatternConverter {
         // Style map:
         STYLES.put(STYLE_KEY_DEFAULT, DEFAULT_STYLES);
         STYLES.put(STYLE_KEY_LOGBACK, LOGBACK_STYLES);
-    }
-
-    /**
-     * Construct the converter.
-     *
-     * @param formatters
-     *            The PatternFormatters to generate the text to manipulate.
-     */
-    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
-        super("style", "style");
-        this.formatters = formatters;
-        this.levelStyles = levelStyles;
     }
 
     /**
@@ -194,6 +178,22 @@ public final class HighlightConverter extends LogEventPatternConverter {
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         return new HighlightConverter(formatters, createLevelStyleMap(options));
+    }
+
+    private final List<PatternFormatter> formatters;
+
+    private final EnumMap<Level, String> levelStyles;
+
+    /**
+     * Construct the converter.
+     *
+     * @param formatters
+     *            The PatternFormatters to generate the text to manipulate.
+     */
+    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
+        super("style", "style");
+        this.formatters = formatters;
+        this.levelStyles = levelStyles;
     }
 
     /**
