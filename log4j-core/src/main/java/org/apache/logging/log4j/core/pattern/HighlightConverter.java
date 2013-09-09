@@ -180,19 +180,19 @@ public final class HighlightConverter extends LogEventPatternConverter {
         return new HighlightConverter(formatters, createLevelStyleMap(options));
     }
 
-    private final List<PatternFormatter> formatters;
+    private final List<PatternFormatter> patternFormatters;
 
     private final EnumMap<Level, String> levelStyles;
 
     /**
      * Construct the converter.
      *
-     * @param formatters
+     * @param patternFormatters
      *            The PatternFormatters to generate the text to manipulate.
      */
-    private HighlightConverter(final List<PatternFormatter> formatters, final EnumMap<Level, String> levelStyles) {
+    private HighlightConverter(final List<PatternFormatter> patternFormatters, final EnumMap<Level, String> levelStyles) {
         super("style", "style");
-        this.formatters = formatters;
+        this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
     }
 
@@ -202,7 +202,7 @@ public final class HighlightConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final StringBuilder buf = new StringBuilder();
-        for (final PatternFormatter formatter : formatters) {
+        for (final PatternFormatter formatter : patternFormatters) {
             formatter.format(event, buf);
         }
 
