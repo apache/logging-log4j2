@@ -100,7 +100,7 @@
         JMS appenders send two messages for one append.
       </action>
       <action issue="LOG4J2-319" dev="ggregory" type="fix">
-        Double stack trace logging when using %throwable in a %style.
+        Double stack trace logging when using %throwable in %style and %highlight.
       </action>
       <action issue="LOG4J2-360" dev="rgoers" type="add">
         Allow Plugins to have aliases.
