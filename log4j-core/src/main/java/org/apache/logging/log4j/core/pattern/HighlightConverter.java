@@ -180,9 +180,9 @@ public final class HighlightConverter extends LogEventPatternConverter {
         return new HighlightConverter(formatters, createLevelStyleMap(options));
     }
 
-    private final List<PatternFormatter> patternFormatters;
-
     private final EnumMap<Level, String> levelStyles;
+
+    private final List<PatternFormatter> patternFormatters;
 
     /**
      * Construct the converter.
@@ -210,5 +210,15 @@ public final class HighlightConverter extends LogEventPatternConverter {
             toAppendTo.append(levelStyles.get(event.getLevel())).append(buf.toString()).
                 append(AnsiEscape.getDefaultStyle());
         }
+    }
+
+    @Override
+    public boolean handlesThrowable() {
+        for (final PatternFormatter formatter : patternFormatters) {
+            if (formatter .handlesThrowable()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
