@@ -137,9 +137,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
     }
 
     /**
-     * An implementation of OutputStream that redirects to the
-     * current System.err.
-     *
+     * An implementation of OutputStream that redirects to the current System.err.
      */
     private static class SystemErrStream extends OutputStream {
         public SystemErrStream() {
@@ -172,9 +170,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
     }
 
     /**
-     * An implementation of OutputStream that redirects to the
-     * current System.out.
-     *
+     * An implementation of OutputStream that redirects to the current System.out.
      */
     private static class SystemOutStream extends OutputStream {
         public SystemOutStream() {
