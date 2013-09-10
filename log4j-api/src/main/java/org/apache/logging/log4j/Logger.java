@@ -614,6 +614,15 @@ public interface Logger {
   boolean isEnabled(Level level);
 
   /**
+ * Checks whether this logger is enabled at the specified level and an optional Marker.
+ * @param level The Level to check.
+ * @param marker The marker data specific to this log statement.
+ * @return boolean - {@code true} if this Logger is enabled for level
+ *         {@link Level#WARN WARN}, {@code false} otherwise.
+ */
+  boolean isEnabled(Level level, Marker marker);
+
+  /**
    * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
    *
    * @return boolean - {@code true} if this Logger is enabled for level
@@ -672,7 +681,7 @@ public interface Logger {
    */
   boolean isTraceEnabled();
 
-  /**
+ /**
    * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
    *
    * @param marker The marker data specific to this log statement.
@@ -681,7 +690,7 @@ public interface Logger {
    */
   boolean isTraceEnabled(Marker marker);
 
- /**
+  /**
    * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
    *
    * @return boolean - {@code true} if this Logger is enabled for level
@@ -689,23 +698,14 @@ public interface Logger {
    */
   boolean isWarnEnabled();
 
-  /**
-   * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
-   *
-   * @param marker The marker data specific to this log statement.
-   * @return boolean - {@code true} if this Logger is enabled for level
-   *         {@link Level#WARN WARN}, {@code false} otherwise.
-   */
-  boolean isWarnEnabled(Marker marker);
-
     /**
-     * Checks whether this logger is enabled at the specified level and an optional Marker.
-     * @param level The Level to check.
-     * @param marker The marker data specific to this log statement.
-     * @return boolean - {@code true} if this Logger is enabled for level
-     *         {@link Level#WARN WARN}, {@code false} otherwise.
-     */
-  boolean isEnabled(Level level, Marker marker);
+	   * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
+	   *
+	   * @param marker The marker data specific to this log statement.
+	   * @return boolean - {@code true} if this Logger is enabled for level
+	   *         {@link Level#WARN WARN}, {@code false} otherwise.
+	   */
+	  boolean isWarnEnabled(Marker marker);
 
   /**
    * Logs a message with the specific Marker at the given level.
@@ -843,19 +843,19 @@ public interface Logger {
   /**
    * Logs a formatted message using the specified format string and arguments.
    * @param level The logging Level.
-   * @param format The format String.
-   * @param params Arguments specified by the format.
-   */
-  void printf(Level level, String format, Object... params);
-
-  /**
-   * Logs a formatted message using the specified format string and arguments.
-   * @param level The logging Level.
    * @param marker the marker data specific to this log statement.
    * @param format The format String.
    * @param params Arguments specified by the format.
    */
   void printf(Level level, Marker marker, String format, Object... params);
+
+  /**
+   * Logs a formatted message using the specified format string and arguments.
+   * @param level The logging Level.
+   * @param format The format String.
+   * @param params Arguments specified by the format.
+   */
+  void printf(Level level, String format, Object... params);
 
   /**
    * Logs an exception or error to be thrown. This may be coded as <br />
