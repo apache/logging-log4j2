@@ -54,7 +54,7 @@ public class RollingFileManager extends FileManager {
         this.initialTime = time;
         this.policy = policy;
         this.strategy = strategy;
-        patternProcessor = new PatternProcessor(pattern);
+        this.patternProcessor = new PatternProcessor(pattern);
         policy.initialize(this);
     }
 
