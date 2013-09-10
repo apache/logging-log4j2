@@ -216,6 +216,9 @@
       <action dev="nickwilliams" type="update">
         Improved site by adding quick jump-off page and menu for Javadoc links for all components.
       </action>
+      <action issue="LOG4J2-397" dev="ggregory" type="fix" due-to="Yonatan Graber">
+        Logger.info(Message) Javadoc is incorrect.
+      </action>
     </release>
     <release version="2.0-beta8" date="2013-07-10" description="Bug fixes and enhancements">
       <action issue="LOG4J2-270" dev="nickwilliams" type="update">
