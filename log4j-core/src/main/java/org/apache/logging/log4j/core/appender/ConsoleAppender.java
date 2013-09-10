@@ -145,6 +145,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
 
         @Override
         public void close() {
+            // do not close sys err!
         }
 
         @Override
@@ -178,6 +179,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
 
         @Override
         public void close() {
+            // do not close sys out!
         }
 
         @Override
