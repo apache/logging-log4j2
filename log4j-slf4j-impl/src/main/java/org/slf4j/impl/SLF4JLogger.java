@@ -41,7 +41,7 @@ public class SLF4JLogger implements LocationAwareLogger {
 
     public SLF4JLogger(final AbstractLogger logger, final String name) {
         this.logger = new AbstractLoggerWrapper(logger, name, null);
-        eventLogger = "EventLogger".equals(name);
+        this.eventLogger = "EventLogger".equals(name);
         this.name = name;
         this.converter = createConverter();
     }
