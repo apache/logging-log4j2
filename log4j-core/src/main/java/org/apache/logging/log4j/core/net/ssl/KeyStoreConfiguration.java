@@ -99,8 +99,9 @@ public class KeyStoreConfiguration extends StoreConfiguration {
      * @return
      */
     @PluginFactory
-    public static KeyStoreConfiguration createKeyStoreConfiguration(@PluginAttribute("location") String location,
-                                                                    @PluginAttribute("password") String password) {
+    public static KeyStoreConfiguration createKeyStoreConfiguration(
+            @PluginAttribute("location") String location,
+            @PluginAttribute("password") String password) {
         return new KeyStoreConfiguration(location, password);
     }
 }
