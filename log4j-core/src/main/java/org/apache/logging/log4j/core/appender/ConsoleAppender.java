@@ -48,6 +48,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "Console", category = "Core", elementType = "appender", printObject = true)
 public final class ConsoleAppender extends AbstractOutputStreamAppender {
 
+    private static final String JANSI_CLASS = "org.fusesource.jansi.WindowsAnsiOutputStream";
     private static ConsoleManagerFactory factory = new ConsoleManagerFactory();
 
     /**
@@ -122,15 +123,15 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         try {
             final ClassLoader loader = Loader.getClassLoader();
             // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-            final Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
+            final Class<?> clazz = loader.loadClass(JANSI_CLASS);
             final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
             return (OutputStream) constructor.newInstance(printStream);
         } catch (final ClassNotFoundException cnfe) {
-            LOGGER.debug("Jansi is not installed");
+            LOGGER.debug("Jansi is not installed, cannot find {}", JANSI_CLASS);
         } catch (final NoSuchMethodException nsme) {
-            LOGGER.warn("WindowsAnsiOutputStream is missing the proper constructor");
+            LOGGER.warn("{} is missing the proper constructor", JANSI_CLASS);
         } catch (final Exception ex) {
-            LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
+            LOGGER.warn("Unable to instantiate {}", JANSI_CLASS);
         }
         return printStream;
     }
