@@ -527,7 +527,7 @@ public interface Logger {
   void info(Marker marker, String message, Throwable t);
 
   /**
-   * Logs a message with the specific Marker at the TRACE level.
+   * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
    *
    * @param msg the message string to be logged
    */
