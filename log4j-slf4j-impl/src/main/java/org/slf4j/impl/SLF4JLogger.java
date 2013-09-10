@@ -504,7 +504,7 @@ public class SLF4JLogger implements LocationAwareLogger {
 
     private EventDataConverter createConverter() {
         try {
-            Class<?> clazz = Class.forName("org.slf4j.ext.EventData");
+            Class.forName("org.slf4j.ext.EventData");
             return new EventDataConverter();
         } catch (ClassNotFoundException cnfe) {
             return null;
