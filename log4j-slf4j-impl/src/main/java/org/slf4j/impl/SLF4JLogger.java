@@ -512,7 +512,6 @@ public class SLF4JLogger implements LocationAwareLogger {
     }
 
     private Level getLevel(final int i) {
-
         switch (i) {
             case TRACE_INT :
                 return Level.TRACE;
