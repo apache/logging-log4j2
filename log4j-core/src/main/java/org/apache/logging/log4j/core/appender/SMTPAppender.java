@@ -82,7 +82,7 @@ public final class SMTPAppender extends AbstractAppender {
      * @param smtpProtocol The SMTP transport protocol (such as "smtps", defaults to "smtp").
      * @param smtpHost
      *            The SMTP hostname to send to.
-     * @param smtpPortNum
+     * @param smtpPortStr
      *            The SMTP port to send to.
      * @param smtpUsername
      *            The username required to authenticate against the SMTP server.
@@ -90,7 +90,7 @@ public final class SMTPAppender extends AbstractAppender {
      *            The password required to authenticate against the SMTP server.
      * @param smtpDebug
      *            Enable mail session debuging on STDOUT.
-     * @param bufferSizeNum
+     * @param bufferSizeStr
      *            How many log events should be buffered for inclusion in the
      *            message?
      * @param layout
@@ -113,11 +113,11 @@ public final class SMTPAppender extends AbstractAppender {
             @PluginAttribute("subject") final String subject,
             @PluginAttribute("smtpProtocol") final String smtpProtocol,
             @PluginAttribute("smtpHost") final String smtpHost,
-            @PluginAttribute("smtpPort") final String smtpPortNum,
+            @PluginAttribute("smtpPort") final String smtpPortStr,
             @PluginAttribute("smtpUsername") final String smtpUsername,
             @PluginAttribute("smtpPassword") final String smtpPassword,
             @PluginAttribute("smtpDebug") final String smtpDebug,
-            @PluginAttribute("bufferSize") final String bufferSizeNum,
+            @PluginAttribute("bufferSize") final String bufferSizeStr,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
@@ -127,9 +127,9 @@ public final class SMTPAppender extends AbstractAppender {
         }
 
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final int smtpPort = AbstractAppender.parseInt(smtpPortNum, 0);
+        final int smtpPort = AbstractAppender.parseInt(smtpPortStr, 0);
         final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
-        final int bufferSize = bufferSizeNum == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeNum);
+        final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integer.valueOf(bufferSizeStr);
 
         if (layout == null) {
             layout = HTMLLayout.createLayout(null, null, null, null, null, null);
