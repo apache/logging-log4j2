@@ -149,9 +149,8 @@ public class SizeBasedTriggeringPolicy implements TriggeringPolicy {
                 LOGGER.error("Unable to parse numeric part: " + string, e);
                 return MAX_FILE_SIZE;
             }
-        } else {
-            LOGGER.error("Unable to parse bytes: " + string);
-            return MAX_FILE_SIZE;
         }
+        LOGGER.error("Unable to parse bytes: " + string);
+        return MAX_FILE_SIZE;
     }
 }
