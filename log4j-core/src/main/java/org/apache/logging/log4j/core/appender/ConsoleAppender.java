@@ -216,6 +216,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
          * Constructor.
          * @param os The OutputStream.
          * @param type The name of the target.
+         * @param layout A Serializable layout
          */
         public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
             this.os = os;
