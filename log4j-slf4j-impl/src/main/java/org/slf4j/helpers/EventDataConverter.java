@@ -28,11 +28,11 @@ import java.util.Map;
  */
 public class EventDataConverter {
 
-    public Message convertEvent(final String s1, final Object[] objects, final Throwable throwable) {
+    public Message convertEvent(final String message, final Object[] objects, final Throwable throwable) {
         Message msg;
         try {
             final EventData data = (objects != null && objects[0] instanceof EventData) ? (EventData) objects[0] :
-                new EventData(s1);
+                new EventData(message);
             msg = new StructuredDataMessage(data.getEventId(), data.getMessage(), data.getEventType());
             for (final Map.Entry<String, Object> entry : data.getEventMap().entrySet()) {
                 final String key = entry.getKey();
@@ -43,7 +43,7 @@ public class EventDataConverter {
                 ((StructuredDataMessage) msg).put(entry.getKey(), String.valueOf(entry.getValue()));
             }
         } catch (final Exception ex) {
-            msg = new ParameterizedMessage(s1, objects, throwable);
+            msg = new ParameterizedMessage(message, objects, throwable);
         }
         return msg;
     }
