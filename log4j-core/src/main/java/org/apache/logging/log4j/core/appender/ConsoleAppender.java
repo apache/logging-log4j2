@@ -118,22 +118,21 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender {
         if (!propsUtil.getStringProperty("os.name").startsWith("Windows") ||
             propsUtil.getBooleanProperty("log4j.skipJansi")) {
             return printStream;
-        } else {
-            try {
-                final ClassLoader loader = Loader.getClassLoader();
-                // We type the parameter as a wildcard to avoid a hard reference to Jansi.
-                final Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
-                final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
-                return (OutputStream) constructor.newInstance(printStream);
-            } catch (final ClassNotFoundException cnfe) {
-                LOGGER.debug("Jansi is not installed");
-            } catch (final NoSuchMethodException nsme) {
-                LOGGER.warn("WindowsAnsiOutputStream is missing the proper constructor");
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
-            }
-            return printStream;
         }
+        try {
+            final ClassLoader loader = Loader.getClassLoader();
+            // We type the parameter as a wildcard to avoid a hard reference to Jansi.
+            final Class<?> clazz = loader.loadClass("org.fusesource.jansi.WindowsAnsiOutputStream");
+            final Constructor<?> constructor = clazz.getConstructor(OutputStream.class);
+            return (OutputStream) constructor.newInstance(printStream);
+        } catch (final ClassNotFoundException cnfe) {
+            LOGGER.debug("Jansi is not installed");
+        } catch (final NoSuchMethodException nsme) {
+            LOGGER.warn("WindowsAnsiOutputStream is missing the proper constructor");
+        } catch (final Exception ex) {
+            LOGGER.warn("Unable to instantiate WindowsAnsiOutputStream");
+        }
+        return printStream;
     }
 
     /**
