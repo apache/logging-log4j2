@@ -41,6 +41,8 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};
     private static final int DEFAULT_MAX_DELAY = 60000;
 
+    private static final int DEFAULT_LOCK_TIMEOUT_RETRY_COUNT = 5;
+
     private final AbstractFlumeManager manager;
 
     private final String mdcIncludes;
@@ -149,6 +151,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      * @param eventPrefix The prefix to add to event key names.
      * @param compressBody If true the event body will be compressed.
      * @param batchSize Number of events to include in a batch. Defaults to 1.
+     * @param lockTimeoutRetries Times to retry a lock timeout when writing to Berkeley DB.
      * @param factory The factory to use to create Flume events.
      * @param layout The layout to format the event.
      * @param filter A Filter to filter events.
@@ -157,26 +160,27 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
      */
     @PluginFactory
     public static FlumeAppender createAppender(@PluginElement("Agents") Agent[] agents,
-                                                   @PluginElement("Properties") final Property[] properties,
-                                                   @PluginAttribute("embedded") final String embedded,
-                                                   @PluginAttribute("type") final String type,
-                                                   @PluginAttribute("dataDir") final String dataDir,
-                                                   @PluginAttribute("connectTimeout") final String connectionTimeout,
-                                                   @PluginAttribute("requestTimeout") final String requestTimeout,
-                                                   @PluginAttribute("agentRetries") final String agentRetries,
-                                                   @PluginAttribute("maxDelay") final String maxDelay,
-                                                   @PluginAttribute("name") final String name,
-                                                   @PluginAttribute("ignoreExceptions") final String ignore,
-                                                   @PluginAttribute("mdcExcludes") final String excludes,
-                                                   @PluginAttribute("mdcIncludes") final String includes,
-                                                   @PluginAttribute("mdcRequired") final String required,
-                                                   @PluginAttribute("mdcPrefix") final String mdcPrefix,
-                                                   @PluginAttribute("eventPrefix") final String eventPrefix,
-                                                   @PluginAttribute("compress") final String compressBody,
-                                                   @PluginAttribute("batchSize") final String batchSize,
-                                                   @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
-                                                   @PluginElement("Layout") Layout<? extends Serializable> layout,
-                                                   @PluginElement("Filters") final Filter filter) {
+                                               @PluginElement("Properties") final Property[] properties,
+                                               @PluginAttribute("embedded") final String embedded,
+                                               @PluginAttribute("type") final String type,
+                                               @PluginAttribute("dataDir") final String dataDir,
+                                               @PluginAttribute("connectTimeout") final String connectionTimeout,
+                                               @PluginAttribute("requestTimeout") final String requestTimeout,
+                                               @PluginAttribute("agentRetries") final String agentRetries,
+                                               @PluginAttribute("maxDelay") final String maxDelay,
+                                               @PluginAttribute("name") final String name,
+                                               @PluginAttribute("ignoreExceptions") final String ignore,
+                                               @PluginAttribute("mdcExcludes") final String excludes,
+                                               @PluginAttribute("mdcIncludes") final String includes,
+                                               @PluginAttribute("mdcRequired") final String required,
+                                               @PluginAttribute("mdcPrefix") final String mdcPrefix,
+                                               @PluginAttribute("eventPrefix") final String eventPrefix,
+                                               @PluginAttribute("compress") final String compressBody,
+                                               @PluginAttribute("batchSize") final String batchSize,
+                                               @PluginAttribute("lockTimeoutRetries") final String lockTimeoutRetries,
+                                               @PluginElement("FlumeEventFactory") final FlumeEventFactory factory,
+                                               @PluginElement("Layout") Layout<? extends Serializable> layout,
+                                               @PluginElement("Filters") final Filter filter) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0) && properties != null && properties.length > 0;
@@ -211,6 +215,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int connectTimeout = Integers.parseInt(connectionTimeout, 0);
         final int reqTimeout = Integers.parseInt(requestTimeout, 0);
         final int retries = Integers.parseInt(agentRetries, 0);
+        final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
         final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY );
 
         if (layout == null) {
@@ -242,7 +247,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                     agents = new Agent[] {Agent.createAgent(null, null)};
                 }
                 manager = FlumePersistentManager.getManager(name, agents, properties, batchCount, retries,
-                    connectTimeout, reqTimeout, delay, dataDir);
+                    connectTimeout, reqTimeout, delay, lockTimeoutRetryCount, dataDir);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");

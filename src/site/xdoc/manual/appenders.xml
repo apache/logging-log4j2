@@ -850,6 +850,12 @@
               <td>The Layout to use to format the LogEvent. If no layout is specified RFC5424Layout will be used.</td>
             </tr>
             <tr>
+              <td>lockTimeoutRetries</td>
+              <td>integer</td>
+              <td>The number of times to retry if a LockConflictException occurs while writing to Berkeley DB. The
+                default is 5.</td>
+            </tr>
+            <tr>
               <td>maxDelay</td>
               <td>integer</td>
               <td>The maximum number of seconds to wait for batchSize events before publishing the batch.</td>

@@ -233,6 +233,102 @@ public class FlumePersistentAppenderTest {
         Assert.assertTrue("Channel contained event, but not expected message. Received: " + body,
             body.endsWith("This is a test message"));
     }
+
+    @Test
+    public void testMultipleConcurrent() throws InterruptedException, IOException {
+
+        final int eventsCount = 10000;
+
+        Thread writer1 = new WriterThread(0, eventsCount / 4);
+        Thread writer2 = new WriterThread(eventsCount / 4, eventsCount / 2);
+        Thread writer3 = new WriterThread(eventsCount / 2, (3 * eventsCount) / 4);
+        Thread writer4 = new WriterThread((3 * eventsCount) / 4, eventsCount);
+        writer1.start();
+        writer2.start();
+        writer3.start();
+        writer4.start();
+
+
+        final boolean[] fields = new boolean[eventsCount];
+        Thread reader1 = new ReaderThread(0, eventsCount / 4, fields);
+        Thread reader2 = new ReaderThread(eventsCount / 4, eventsCount / 2, fields);
+        Thread reader3 = new ReaderThread(eventsCount / 2, (eventsCount * 3) / 4, fields);
+        Thread reader4 = new ReaderThread((eventsCount * 3) / 4, eventsCount, fields);
+
+        reader1.start();
+        reader2.start();
+        reader3.start();
+        reader4.start();
+
+        writer1.join();
+        writer2.join();
+        writer3.join();
+        writer4.join();
+        reader1.join();
+        reader2.join();
+        reader3.join();
+        reader4.join();
+
+        for (int i = 0; i < eventsCount; ++i) {
+            Assert.assertTrue(
+                "Channel contained event, but not expected message " + i,
+                fields[i]);
+        }
+    }
+
+    private class WriterThread extends Thread {
+
+        private final int start;
+        private final int stop;
+
+        public WriterThread(int start, int stop) {
+            this.start = start;
+            this.stop = stop;
+        }
+
+        public void run() {
+            for (int i = start; i < stop; ++i) {
+                final StructuredDataMessage msg = new StructuredDataMessage(
+                    "Test", "Test Multiple " + i, "Test");
+                msg.put("counter", Integer.toString(i));
+                EventLogger.logEvent(msg);
+            }
+        }
+    }
+
+    private class ReaderThread extends Thread {
+        private final int start;
+        private final int stop;
+        private final boolean[] fields;
+
+        private ReaderThread(int start, int stop, boolean[] fields) {
+            this.start = start;
+            this.stop = stop;
+            this.fields = fields;
+        }
+        public void run() {
+
+            for (int i = start; i < stop; ++i) {
+                Event event = primary.poll();
+                while (event == null) {
+                    event = primary.poll();
+                }
+
+                Assert.assertNotNull("Received " + i + " events. Event "
+                    + (i + 1) + " is null", event);
+                final String value = event.getHeaders().get("counter");
+                Assert.assertNotNull("Missing counter", value);
+                final int counter = Integer.parseInt(value);
+                if (fields[counter]) {
+                    Assert.fail("Duplicate event");
+                } else {
+                    fields[counter] = true;
+                }
+
+            }
+        }
+    }
+
     /*
     @Test
     public void testPerformance() throws Exception {
@@ -319,7 +415,7 @@ public class FlumePersistentAppenderTest {
         public Status appendBatch(final List<AvroFlumeEvent> events) throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));
             for (final AvroFlumeEvent event : events) {
-               // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
+                // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             }
             return Status.OK;
         }

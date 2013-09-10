@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import com.sleepycat.je.LockConflictException;
 import org.apache.flume.Event;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
@@ -76,6 +77,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final int MILLIS_PER_SECOND = 1000;
 
+    private static final int LOCK_TIMEOUT_SLEEP_MILLIS = 500;
+
     private static BDBManagerFactory factory = new BDBManagerFactory();
 
     private final Database database;
@@ -89,6 +92,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
     private final SecretKey secretKey;
 
     private final int delay;
+
+    private final int lockTimeoutRetryCount;
 
     private final ExecutorService threadPool;
 
@@ -107,20 +112,24 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param database The database to write to.
      * @param environment The database environment.
      * @param secretKey The SecretKey to use for encryption.
+     * @param lockTimeoutRetryCount The number of times to retry a lock timeout.
      */
     protected FlumePersistentManager(final String name, final String shortName, final Agent[] agents,
                                      final int batchSize, final int retries, final int connectionTimeout,
                                      final int requestTimeout, final int delay, final Database database,
-                                     final Environment environment, final SecretKey secretKey) {
+                                     final Environment environment, final SecretKey secretKey,
+                                     final int lockTimeoutRetryCount) {
         super(name, shortName, agents, batchSize, retries, connectionTimeout, requestTimeout);
         this.delay = delay;
         this.database = database;
         this.environment = environment;
         dbCount.set(database.count());
-        this.worker = new WriterThread(database, environment, this, gate, batchSize, secretKey, dbCount);
+        this.worker = new WriterThread(database, environment, this, gate, batchSize, secretKey, dbCount,
+            lockTimeoutRetryCount);
         this.worker.start();
         this.secretKey = secretKey;
         this.threadPool = Executors.newCachedThreadPool(new DaemonThreadFactory());
+        this.lockTimeoutRetryCount = lockTimeoutRetryCount;
     }
 
 
@@ -140,7 +149,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
     public static FlumePersistentManager getManager(final String name, final Agent[] agents,
                                                     final Property[] properties, int batchSize, final int retries,
                                                     final int connectionTimeout, final int requestTimeout,
-                                                    final int delay, final String dataDir) {
+                                                    final int delay, final int lockTimeoutRetryCount,
+                                                    final String dataDir) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -162,7 +172,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         sb.append("]");
         sb.append(" ").append(dataDirectory);
         return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
-            connectionTimeout, requestTimeout, delay, dataDir, properties));
+            connectionTimeout, requestTimeout, delay, lockTimeoutRetryCount, dataDir, properties));
     }
 
     @Override
@@ -190,7 +200,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 eventData = cipher.doFinal(eventData);
             }
             final Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database,
-                gate, dbCount, getBatchSize()));
+                gate, dbCount, getBatchSize(), lockTimeoutRetryCount));
             boolean interrupted = false;
             int count = 0;
             do {
@@ -258,9 +268,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final Gate gate;
         private final AtomicLong dbCount;
         private final long batchSize;
+        private final int lockTimeoutRetryCount;
 
         public BDBWriter(final byte[] keyData, final byte[] eventData, final Environment environment,
-                         final Database database, final Gate gate, final AtomicLong dbCount, final long batchSize) {
+                         final Database database, final Gate gate, final AtomicLong dbCount, final long batchSize,
+                         final int lockTimeoutRetryCount) {
             this.keyData = keyData;
             this.eventData = eventData;
             this.environment = environment;
@@ -268,24 +280,61 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.gate = gate;
             this.dbCount = dbCount;
             this.batchSize = batchSize;
+            this.lockTimeoutRetryCount = lockTimeoutRetryCount;
         }
 
         @Override
         public Integer call() throws Exception {
             final DatabaseEntry key = new DatabaseEntry(keyData);
             final DatabaseEntry data = new DatabaseEntry(eventData);
-            final Transaction txn = environment.beginTransaction(null, null);
-            try {
-                database.put(txn, key, data);
-                txn.commit();
-                if (dbCount.incrementAndGet() >= batchSize) {
-                    gate.open();
+            Exception exception = null;
+            for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
+                Transaction txn = null;
+                try {
+                    txn = environment.beginTransaction(null, null);
+                    try {
+                        database.put(txn, key, data);
+                        txn.commit();
+                        txn = null;
+                        if (dbCount.incrementAndGet() >= batchSize) {
+                            gate.open();
+                        }
+                        exception = null;
+                        break;
+                    } catch (final LockConflictException lce) {
+                        exception = lce;
+                        // Fall through and retry.
+                    } catch (final Exception ex) {
+                        if (txn != null) {
+                            txn.abort();
+                        }
+                        throw ex;
+                    } finally {
+                        if (txn != null) {
+                            txn.abort();
+                            txn = null;
+                        }
+                    }
+                } catch (LockConflictException lce) {
+                    exception = lce;
+                    if (txn != null) {
+                        try {
+                            txn.abort();
+                            txn = null;
+                        } catch (Exception ex) {
+                            // Ignore exception
+                        }
+                    }
+
                 }
-            } catch (final Exception ex) {
-                if (txn != null) {
-                    txn.abort();
+                try {
+                    Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
+                } catch (InterruptedException ie) {
+                    // Ignore the error
                 }
-                throw ex;
+            }
+            if (exception != null) {
+                throw exception;
             }
             return eventData.length;
         }
@@ -303,6 +352,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final int connectionTimeout;
         private final int requestTimeout;
         private final int delay;
+        private final int lockTimeoutRetryCount;
         private final Property[] properties;
 
         /**
@@ -314,7 +364,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
          */
         public FactoryData(final String name, final Agent[] agents, final int batchSize, final int retries,
                            final int connectionTimeout, final int requestTimeout, final int delay,
-                           final String dataDir, final Property[] properties) {
+                           final int lockTimeoutRetryCount, final String dataDir, final Property[] properties) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -323,6 +373,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.connectionTimeout = connectionTimeout;
             this.requestTimeout = requestTimeout;
             this.delay = delay;
+            this.lockTimeoutRetryCount = lockTimeoutRetryCount;
             this.properties = properties;
         }
     }
@@ -410,7 +461,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 LOGGER.warn("Error setting up encryption - encryption will be disabled", ex);
             }
             return new FlumePersistentManager(name, data.name, data.agents, data.batchSize, data.retries,
-                data.connectionTimeout, data.requestTimeout, data.delay, database, environment, secretKey);
+                data.connectionTimeout, data.requestTimeout, data.delay, database, environment, secretKey,
+                data.lockTimeoutRetryCount);
         }
     }
 
@@ -426,10 +478,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final SecretKey secretKey;
         private final int batchSize;
         private final AtomicLong dbCounter;
+        private final int lockTimeoutRetryCount;
 
         public WriterThread(final Database database, final Environment environment,
                             final FlumePersistentManager manager, final Gate gate, final int batchsize,
-                            final SecretKey secretKey, final AtomicLong dbCount) {
+                            final SecretKey secretKey, final AtomicLong dbCount, final int lockTimeoutRetryCount) {
             this.database = database;
             this.environment = environment;
             this.manager = manager;
@@ -438,6 +491,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.secretKey = secretKey;
             this.setDaemon(true);
             this.dbCounter = dbCount;
+            this.lockTimeoutRetryCount = lockTimeoutRetryCount;
         }
 
         public void shutdown() {
@@ -474,46 +528,87 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 break;
                             }
                         } else {
-                            Transaction txn = environment.beginTransaction(null, null);
-                            Cursor cursor = database.openCursor(txn, null);
-                            try {
-                                status = cursor.getFirst(key, data, LockMode.RMW);
-                                while (status == OperationStatus.SUCCESS) {
-                                    final SimpleEvent event = createEvent(data);
-                                    if (event != null) {
-                                        try {
-                                            manager.doSend(event);
-                                        } catch (final Exception ioe) {
-                                            errors = true;
-                                            LOGGER.error("Error sending event", ioe);
-                                            break;
+                            Exception exception = null;
+                            for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
+                                exception = null;
+                                Transaction txn = null;
+                                Cursor cursor = null;
+                                try {
+                                    txn = environment.beginTransaction(null, null);
+                                    cursor = database.openCursor(txn, null);
+                                    try {
+                                        status = cursor.getFirst(key, data, LockMode.RMW);
+                                        while (status == OperationStatus.SUCCESS) {
+                                            final SimpleEvent event = createEvent(data);
+                                            if (event != null) {
+                                                try {
+                                                    manager.doSend(event);
+                                                } catch (final Exception ioe) {
+                                                    errors = true;
+                                                    LOGGER.error("Error sending event", ioe);
+                                                    break;
+                                                }
+                                                try {
+                                                    cursor.delete();
+                                                } catch (final Exception ex) {
+                                                    LOGGER.error("Unable to delete event", ex);
+                                                }
+                                            }
+                                            status = cursor.getNext(key, data, LockMode.RMW);
                                         }
-                                        try {
-                                            cursor.delete();
-                                        } catch (final Exception ex) {
-                                            LOGGER.error("Unable to delete event", ex);
+                                        if (cursor != null) {
+                                            cursor.close();
+                                            cursor = null;
+                                        }
+                                        txn.commit();
+                                        txn = null;
+                                        dbCounter.decrementAndGet();
+                                        exception = null;
+                                        break;
+                                    } catch (final LockConflictException lce) {
+                                        exception = lce;
+                                        // Fall through and retry.
+                                    } catch (final Exception ex) {
+                                        LOGGER.error("Error reading or writing to database", ex);
+                                        shutdown = true;
+                                        break;
+                                    } finally {
+                                        if (cursor != null) {
+                                            cursor.close();
+                                            cursor = null;
+                                        }
+                                        if (txn != null) {
+                                            txn.abort();
+                                            txn = null;
                                         }
                                     }
-                                    status = cursor.getNext(key, data, LockMode.RMW);
+                                } catch (LockConflictException lce) {
+                                    exception = lce;
+                                    if (cursor != null) {
+                                        try {
+                                            cursor.close();
+                                            cursor = null;
+                                        } catch (Exception ex) {
+                                            // Ignore exception
+                                        }
+                                    }
+                                    if (txn != null) {
+                                        try {
+                                            txn.abort();
+                                            txn = null;
+                                        } catch (Exception ex) {
+                                            // Ignore exception
+                                        }
+                                    }
                                 }
-                                if (cursor != null) {
-                                    cursor.close();
-                                    cursor = null;
+                                try {
+                                    Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
+                                } catch (InterruptedException ie) {
+                                    // Ignore the error
                                 }
-                                txn.commit();
-                                txn = null;
-                                dbCounter.decrementAndGet();
-                            } catch (final Exception ex) {
-                                LOGGER.error("Error reading or writing to database", ex);
-                                shutdown = true;
-                                break;
-                            } finally {
-                                if (cursor != null) {
-                                    cursor.close();
-                                }
-                                if (txn != null) {
-                                    txn.abort();
-                                }
+                            }
+                            if (exception != null) {
+                                LOGGER.error("Unable to read or update data base", exception);
                             }
                         }
                         if (errors) {
@@ -575,27 +670,88 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 if (!errors) {
                     cursor.close();
                     cursor = null;
-                    final Transaction txn = environment.beginTransaction(null, null);
-                    try {
-                        for (final Event event : batch.getEvents()) {
+                    Transaction txn = null;
+                    Exception exception = null;
+                    for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
+                        try {
+                            txn = environment.beginTransaction(null, null);
                             try {
-                                final Map<String, String> headers = event.getHeaders();
-                                key = new DatabaseEntry(headers.get(FlumeEvent.GUID).getBytes(UTF8));
-                                database.delete(txn, key);
+                                for (final Event event : batch.getEvents()) {
+                                    try {
+                                        final Map<String, String> headers = event.getHeaders();
+                                        key = new DatabaseEntry(headers.get(FlumeEvent.GUID).getBytes(UTF8));
+                                        database.delete(txn, key);
+                                    } catch (final Exception ex) {
+                                        LOGGER.error("Error deleting key from database", ex);
+                                    }
+                                }
+                                txn.commit();
+                                long count = dbCounter.get();
+                                while (!dbCounter.compareAndSet(count, count - batch.getEvents().size())) {
+                                    count = dbCounter.get();
+                                }
+                                exception = null;
+                                break;
+                            } catch (final LockConflictException lce) {
+                                exception = lce;
+                                if (cursor != null) {
+                                    try {
+                                        cursor.close();
+                                        cursor = null;
+                                    } catch (Exception ex) {
+                                        // Ignore exception
+                                    }
+                                }
+                                if (txn != null) {
+                                    try {
+                                        txn.abort();
+                                        txn = null;
+                                    } catch (Exception ex) {
+                                        // Ignore exception
+                                    }
+                                }
                             } catch (final Exception ex) {
-                                LOGGER.error("Error deleting key from database", ex);
+                                LOGGER.error("Unable to commit transaction", ex);
+                                if (txn != null) {
+                                    txn.abort();
+                                }
+                            }
+                        } catch (LockConflictException lce) {
+                            exception = lce;
+                            if (cursor != null) {
+                                try {
+                                    cursor.close();
+                                    cursor = null;
+                                } catch (Exception ex) {
+                                    // Ignore exception
+                                }
+                            }
+                            if (txn != null) {
+                                try {
+                                    txn.abort();
+                                    txn = null;
+                                } catch (Exception ex) {
+                                    // Ignore exception
+                                }
+                            }
+                        } finally {
+                            if (cursor != null) {
+                                cursor.close();
+                                cursor = null;
+                            }
+                            if (txn != null) {
+                                txn.abort();
+                                txn = null;
                             }
                         }
-                        txn.commit();
-                        long count = dbCounter.get();
-                        while (!dbCounter.compareAndSet(count, count - batch.getEvents().size())) {
-                            count = dbCounter.get();
+                        try {
+                            Thread.sleep(LOCK_TIMEOUT_SLEEP_MILLIS);
+                        } catch (InterruptedException ie) {
+                            // Ignore the error
                         }
-                    } catch (final Exception ex) {
-                        LOGGER.error("Unable to commit transaction", ex);
-                        if (txn != null) {
-                            txn.abort();
-                        }
+                    }
+                    if (exception != null) {
+                        LOGGER.error("Unable to delete events from data base", exception);
                     }
                 }
             } catch (final Exception ex) {
@@ -607,6 +763,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     cursor.close();
                 }
             }
+
             return errors;
         }
 
