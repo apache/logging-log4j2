@@ -468,7 +468,7 @@ public class Bar {
       </Filters>
     </Appender>
     <Appender type="Console" name="FLOW">
-      <Layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class & line number -->
+      <Layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/><!-- class and line number -->
       <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
