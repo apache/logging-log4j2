@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,7 +86,13 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     /**
      * The Advertiser which exposes appender configurations to external systems.
      */
-    protected Advertiser advertiser = new DefaultAdvertiser();
+    private Advertiser advertiser = new DefaultAdvertiser();
+
+    protected Map<String, String> advertisedConfiguration;
+
+    private Node advertiserNode = null;
+
+    private Object advertisement;
 
     /**
      *
@@ -108,10 +115,13 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<String, Object>();
 
+    protected PluginManager pluginManager;
+
     /**
      * Constructor.
      */
     protected BaseConfiguration() {
+        pluginManager = new PluginManager("Core");
         rootNode = new Node();
     }
 
@@ -126,7 +136,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      */
     @Override
     public void start() {
+        pluginManager.collectPlugins();
         setup();
+        setupAdvertisement();
         doConfigure();
         for (final LoggerConfig logger : loggers.values()) {
             logger.startFilter();
@@ -154,6 +166,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
         root.stopFilter();
         stopFilter();
+        if (advertiser != null && advertisement != null)
+        {
+            advertiser.unadvertise(advertisement);
+        }
     }
 
     @Override
@@ -171,6 +187,42 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             return Level.toLevel(statusLevel);
         } catch (final Exception ex) {
             return Level.ERROR;
+        }
+    }
+
+    protected void createAdvertiser(String advertiserString, ConfigurationFactory.ConfigurationSource configSource,
+                                    byte[] buffer, String contentType) {
+        if (advertiserString != null) {
+            Node node = new Node(null, advertiserString, null);
+            Map<String, String> attributes = node.getAttributes();
+            attributes.put("content", new String(buffer));
+            attributes.put("contentType", contentType);
+            attributes.put("name", "configuration");
+            if (configSource.getLocation() != null) {
+                attributes.put("location", configSource.getLocation());
+            }
+            advertiserNode = node;
+        }
+    }
+
+    private void setupAdvertisement() {
+        if (advertiserNode != null)
+        {
+            String name = advertiserNode.getName();
+            @SuppressWarnings("unchecked")
+            final PluginType<Advertiser> type = (PluginType<Advertiser>) pluginManager.getPluginType(name);
+            if (type != null)
+            {
+                final Class<Advertiser> clazz = type.getPluginClass();
+                try {
+                    advertiser = clazz.newInstance();
+                    advertisement = advertiser.advertise(advertiserNode.getAttributes());
+                } catch (final InstantiationException e) {
+                    System.err.println("InstantiationException attempting to instantiate advertiser: " + name);
+                } catch (final IllegalAccessException e) {
+                    System.err.println("IllegalAccessException attempting to instantiate advertiser: " + name);
+                }
+            }
         }
     }
 
@@ -265,14 +317,6 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         final Level level = levelName != null && Level.valueOf(levelName) != null ?
             Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
-    }
-
-    protected PluginManager getPluginManager() {
-        //don't cache a pluginmanager instance - packages may be updated, requiring
-        // re-discovery of plugins
-        final PluginManager mgr = new PluginManager("Core");
-        mgr.collectPlugins();
-        return mgr;
     }
 
     /**

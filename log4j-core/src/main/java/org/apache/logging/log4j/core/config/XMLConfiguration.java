@@ -29,7 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
 import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -71,6 +69,22 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
 
     private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
 
+    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
+
+    private static final String LOG4J_XSD = "Log4j-config.xsd";
+
+    private static final int BUF_SIZE = 16384;
+
+    private final List<Status> status = new ArrayList<Status>();
+
+    private Element rootElement;
+
+    private boolean strict;
+
+    private String schema;
+
+    private final File configFile;
+
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
      *
@@ -81,15 +95,13 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         enableXInclude(factory);
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder;
+        return factory.newDocumentBuilder();
     }
 
     /**
      * Enables XInclude for the given DocumentBuilderFactory
      *
-     * @param factory
-     *            a DocumentBuilderFactory
+     * @param factory a DocumentBuilderFactory
      * @throws ParserConfigurationException
      */
     private static void enableXInclude(final DocumentBuilderFactory factory) {
@@ -116,35 +128,12 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         }
     }
 
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
-
-    private static final String LOG4J_XSD = "Log4j-config.xsd";
-
-    private static final int BUF_SIZE = 16384;
-
-    private final List<Status> status = new ArrayList<Status>();
-
-    private Map<String, String> advertisedConfiguration;
-
-    private Object advertisement;
-
-    private Element rootElement;
-
-    private boolean strict;
-
-    private String schema;
-
-    private Validator validator;
-
-    private final List<String> messages = new ArrayList<String>();
-
-    private final File configFile;
-
     public XMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
         this.configFile = configSource.getFile();
         byte[] buffer = null;
 
         try {
+            final List<String> messages = new ArrayList<String>();
             final InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
@@ -201,31 +190,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
-                    final String advertiserString = getStrSubstitutor().replace(entry.getValue());
-                    if (advertiserString != null)
-                    {
-                        @SuppressWarnings("unchecked")
-                        final PluginType<Advertiser> type = (PluginType<Advertiser>) getPluginManager().getPluginType(advertiserString);
-                        if (type != null)
-                        {
-                            final Class<Advertiser> clazz = type.getPluginClass();
-                            try {
-                                advertiser = clazz.newInstance();
-                                advertisedConfiguration = new HashMap<String, String>();
-                                advertisedConfiguration.put("content", new String(buffer));
-                                advertisedConfiguration.put("contentType", "text/xml");
-                                advertisedConfiguration.put("name", "configuration");
-                                if (configSource.getLocation() != null)
-                                {
-                                    advertisedConfiguration.put("location", configSource.getLocation());
-                                }
-                            } catch (final InstantiationException e) {
-                                System.err.println("InstantiationException attempting to instantiate advertiser: " + advertiserString);
-                            } catch (final IllegalAccessException e) {
-                                System.err.println("IllegalAccessException attempting to instantiate advertiser: " + advertiserString);
-                            }
-                        }
-                    }
+                    createAdvertiser(getStrSubstitutor().replace(entry.getValue()), configSource, buffer, "text/xml");
                 }
             }
             final Iterator<StatusListener> iter = ((StatusLogger) LOGGER).getListeners();
@@ -275,7 +240,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                     LOGGER.error("Error parsing Log4j schema", ex);
                 }
                 if (schema != null) {
-                    validator = schema.newValidator();
+                    Validator validator = schema.newValidator();
                     try {
                         validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
                     } catch (final IOException ioe) {
@@ -293,15 +258,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        if (advertiser != null && advertisement != null)
-        {
-            advertiser.unadvertise(advertisement);
-        }
-    }
-
-    @Override
     public void setup() {
         if (rootElement == null) {
             LOGGER.error("No logging configuration");
@@ -315,10 +271,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             return;
         }
         rootElement = null;
-        if (advertiser != null && advertisedConfiguration != null)
-        {
-            advertisement = advertiser.advertise(advertisedConfiguration);
-        }
     }
 
     @Override
@@ -345,8 +297,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
                 final String name = getType(child);
-                PluginManager mgr = getPluginManager();
-                final PluginType<?> type = mgr.getPluginType(name);
+                final PluginType<?> type = pluginManager.getPluginType(name);
                 final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {

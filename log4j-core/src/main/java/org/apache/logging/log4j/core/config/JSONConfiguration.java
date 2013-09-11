@@ -29,7 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
 import org.apache.logging.log4j.core.helpers.FileUtils;
-import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -58,10 +56,6 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     private static final int BUF_SIZE = 16384;
 
     private final List<Status> status = new ArrayList<Status>();
-
-    private Map<String, String> advertisedConfiguration;
-
-    private Object advertisement;
 
     private JsonNode root;
 
@@ -128,25 +122,8 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
                 } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
-                    final String advertiserString = getStrSubstitutor().replace(entry.getValue());
-                    if (advertiserString != null)
-                    {
-                        @SuppressWarnings("unchecked")
-                        final PluginType<Advertiser> type = (PluginType<Advertiser>) getPluginManager().getPluginType(advertiserString);
-                        if (type != null)
-                        {
-                            final Class<Advertiser> clazz = type.getPluginClass();
-                            advertiser = clazz.newInstance();
-                            advertisedConfiguration = new HashMap<String, String>();
-                            advertisedConfiguration.put("content", new String(buffer));
-                            advertisedConfiguration.put("contentType", "application/json");
-                            advertisedConfiguration.put("name", "configuration");
-                            if (configSource.getLocation() != null)
-                            {
-                                advertisedConfiguration.put("location", configSource.getLocation());
-                            }
-                        }
-                    }
+                    createAdvertiser(getStrSubstitutor().replace(entry.getValue()), configSource, buffer,
+                        "application/json");
                 }
             }
 
@@ -184,10 +161,6 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     @Override
     public void stop() {
         super.stop();
-        if (advertiser != null && advertisement != null)
-        {
-            advertiser.unadvertise(advertisement);
-        }
     }
 
     @Override
@@ -211,10 +184,6 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             }
             return;
         }
-        if (advertiser != null && advertisedConfiguration != null)
-        {
-            advertisement = advertiser.advertise(advertisedConfiguration);
-        }
     }
 
     @Override
@@ -232,7 +201,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
     }
 
     private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType<?> type = getPluginManager().getPluginType(name);
+        final PluginType<?> type = pluginManager.getPluginType(name);
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
         final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
@@ -248,7 +217,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                     LOGGER.debug("Processing node for array " + entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
                         final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType<?> entryType = getPluginManager().getPluginType(pluginType);
+                        final PluginType<?> entryType = pluginManager.getPluginType(pluginType);
                         final Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {
