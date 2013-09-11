@@ -61,7 +61,7 @@
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
       </item>
 
-      <item name="Web Applications &amp; JSPs" href="/manual/webapp.html" collapse="true">
+      <item name="Web Applications and JSPs" href="/manual/webapp.html" collapse="true">
         <item name="Servlet 3.0 and Newer" href="/manual/webapp.html#Servlet-3.0" />
         <item name="Servlet 2.5" href="/manual/webapp.html#Servlet-2.5" />
         <item name="Context Parameters" href="/manual/webapp.html#ContextParams" />
