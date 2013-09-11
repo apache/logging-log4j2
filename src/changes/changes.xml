@@ -40,6 +40,9 @@
         reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
         until now, it's unlikely this change will affect any users.
       </action>
+      <action issue="LOG4J2-395" dev="rgoers" type="fix" due-to="Abhinav Shah">
+        Allow classpath scheme when specifying configuration file location as a system property.
+      </action>
       <action issue="LOG4J2-393" dev="rgoers" type="fix">
         Initialize PluginManager once during configuration. Move advertisement setup into BaseConfiguration.
       </action>
