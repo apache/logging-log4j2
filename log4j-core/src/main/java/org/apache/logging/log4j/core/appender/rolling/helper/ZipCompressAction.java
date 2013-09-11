@@ -45,6 +45,11 @@ public final class ZipCompressAction extends AbstractAction {
      * If true, attempt to delete file on completion.
      */
     private final boolean deleteSource;
+    
+    /**
+     * Compression level.
+     */
+    private final int level;
 
     /**
      * Create new instance of GZCompressAction.
@@ -53,8 +58,9 @@ public final class ZipCompressAction extends AbstractAction {
      * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
      *                     does not cause an exception to be thrown or affect return value.
+     * @param level TODO
      */
-    public ZipCompressAction(final File source, final File destination, final boolean deleteSource) {
+    public ZipCompressAction(final File source, final File destination, final boolean deleteSource, int level) {
         if (source == null) {
             throw new NullPointerException("source");
         }
@@ -66,6 +72,7 @@ public final class ZipCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
+        this.level = level;
     }
 
     /**
@@ -76,7 +83,7 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource);
+        return execute(source, destination, deleteSource, level);
     }
 
     /**
@@ -86,15 +93,17 @@ public final class ZipCompressAction extends AbstractAction {
      * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
      *                     does not cause an exception to be thrown or affect return value.
+     * @param level the compression level
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final File source, final File destination, final boolean deleteSource)
+    public static boolean execute(final File source, final File destination, final boolean deleteSource, int level)
         throws IOException {
         if (source.exists()) {
             final FileInputStream fis = new FileInputStream(source);
             final FileOutputStream fos = new FileOutputStream(destination);
             final ZipOutputStream zos = new ZipOutputStream(fos);
+            zos.setLevel(level);
 
             final ZipEntry zipEntry = new ZipEntry(source.getName());
             zos.putNextEntry(zipEntry);

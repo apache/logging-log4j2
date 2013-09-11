@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -183,8 +184,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
         if (strategy == null) {
-            strategy = DefaultRolloverStrategy.createStrategy(null, null,
-                    "true", config);
+            strategy = DefaultRolloverStrategy.createStrategy(null, null, null,
+                    String.valueOf(Deflater.DEFAULT_COMPRESSION), config);
         }
 
         if (layout == null) {

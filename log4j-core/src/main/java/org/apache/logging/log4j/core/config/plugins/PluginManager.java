@@ -154,7 +154,7 @@ public class PluginManager {
                 pluginTypeMap = map;
                 plugins = map.get(type);
             } else {
-                LOGGER.warn("Plugin preloads not available");
+                LOGGER.warn("Plugin preloads not available from class loader {}", classLoader);
             }
         }
         if (plugins == null || plugins.size() == 0) {
