@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -59,6 +60,11 @@ public class TestConfigurator {
         "llllllllll",
         "mmmmmmmmmm",
     };
+
+    @After
+    public void cleanup() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+    }
 
 
     @Test
@@ -118,6 +124,23 @@ public class TestConfigurator {
     @Test
     public void testFromClassPath() throws Exception {
         final LoggerContext ctx = Configurator.initialize("Test1", "log4j2-config.xml");
+        LogManager.getLogger("org.apache.test.TestConfigurator");
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No configuration", config);
+        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        final Map<String, Appender> map = config.getAppenders();
+        assertNotNull("Appenders map should not be null.", map);
+        assertTrue("Appenders map should not be empty.", map.size() > 0);
+        assertTrue("Wrong configuration", map.containsKey("List"));
+        Configurator.shutdown(ctx);
+        config = ctx.getConfiguration();
+        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+    }
+
+    @Test
+    public void testFromClassPathProperty() throws Exception {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-config.xml");
+        final LoggerContext ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull("No configuration", config);
