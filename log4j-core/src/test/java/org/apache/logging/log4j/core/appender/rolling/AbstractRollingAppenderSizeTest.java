@@ -26,23 +26,27 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
  */
-public class RollingAppenderSizeTest {
+public abstract class AbstractRollingAppenderSizeTest {
 
-    private static final String CONFIG = "log4j-rolling1.xml";
+    protected AbstractRollingAppenderSizeTest(String fileExtension) {
+        super();
+        this.fileExtension = fileExtension;
+    }
+
     private static final String DIR = "target/rolling1";
+    
+    private final String fileExtension;
 
-    org.apache.logging.log4j.Logger logger = LogManager.getLogger(RollingAppenderSizeTest.class.getName());
+    org.apache.logging.log4j.Logger logger = LogManager.getLogger(AbstractRollingAppenderSizeTest.class.getName());
 
-    @BeforeClass
-    public static void setupClass() {
+    protected static void setupClass(String configPath) {
         deleteDir();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, configPath);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
     }
@@ -67,7 +71,7 @@ public class RollingAppenderSizeTest {
         assertTrue("No files created", files.length > 0);
         boolean found = false;
         for (final File file : files) {
-            if (file.getName().endsWith(".gz")) {
+            if (file.getName().endsWith(fileExtension)) {
                 found = true;
                 break;
             }

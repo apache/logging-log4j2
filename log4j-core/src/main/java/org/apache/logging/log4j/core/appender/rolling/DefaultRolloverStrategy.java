@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.helper.Action;
@@ -30,23 +31,31 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files
  * according to an algorithm as described below.
- * <p/>
- * <p>The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When
+ * 
+ * <p>
+ * The DefaultRolloverStrategy is a combination of a time-based policy and a fixed-window policy. When
  * the file name pattern contains a date format then the rollover time interval will be used to calculate the
  * time to use in the file pattern. When the file pattern contains an integer replacement token one of the
- * counting techniques will be used.</p>
- * <p>When the ascending attribute is set to true (the default) then the counter will be incremented and the
+ * counting techniques will be used.
+ * </p>
+ * <p>
+ * When the ascending attribute is set to true (the default) then the counter will be incremented and the
  * current log file will be renamed to include the counter value. If the counter hits the maximum value then
  * the oldest file, which will have the smallest counter, will be deleted, all other files will be renamed to
  * have their counter decremented and then the current file will be renamed to have the maximum counter value.
- * Note that with this counting strategy specifying a large maximum value may entirely avoid renaming files.</p>
- * <p>When the ascending attribute is false, then the "normal" fixed-window strategy will be used.</p>
+ * Note that with this counting strategy specifying a large maximum value may entirely avoid renaming files.
+ * </p>
+ * <p>
+ * When the ascending attribute is false, then the "normal" fixed-window strategy will be used.
+ * </p>
+ * <p>
  * Let <em>max</em> and <em>min</em> represent the values of respectively
  * the <b>MaxIndex</b> and <b>MinIndex</b> options. Let "foo.log" be the value
  * of the <b>ActiveFile</b> option and "foo.%i.log" the value of
@@ -59,9 +68,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  * <code>foo.<em>min+2</em>.log</code>. Lastly, the active file <code>foo.log</code>
  * will be renamed as <code>foo.<em>min</em>.log</code> and a new active file name
  * <code>foo.log</code> will be created.
- * <p/>
- * <p>Given that this rollover algorithm requires as many file renaming
+ * </p>
+ * <p>
+ * Given that this rollover algorithm requires as many file renaming
  * operations as the window size, large window sizes are discouraged.
+ * </p>
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
@@ -86,17 +97,20 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
     private final boolean useMax;
 
     private final StrSubstitutor subst;
+    
+    private final int compressionLevel;
 
     /**
      * Constructs a new instance.
-     * @param min The minimum index.
-     * @param max The maximum index.
+     * @param minIndex The minimum index.
+     * @param maxIndex The maximum index.
      */
-    protected DefaultRolloverStrategy(final int min, final int max, final boolean useMax, final StrSubstitutor subst) {
-        minIndex = min;
-        maxIndex = max;
-        this.subst = subst;
+    protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax, final int compressionLevel, final StrSubstitutor subst) {
+        this.minIndex = minIndex;
+        this.maxIndex = maxIndex;
         this.useMax = useMax;
+        this.compressionLevel = compressionLevel;
+        this.subst = subst;
     }
 
     /**
@@ -127,7 +141,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
             } else if (renameTo.endsWith(".zip")) {
                 renameTo = renameTo.substring(0, renameTo.length() - 4);
-                compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true);
+                compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
+                        compressionLevel);
             }
 
             final FileRenameAction renameAction =
@@ -357,6 +372,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * @param min The minimum number of files to keep.
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a
      * smaller index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
+     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
      * @param config The Configuration.
      * @return A DefaultRolloverStrategy.
      */
@@ -365,6 +381,7 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             @PluginAttribute("max") final String max,
             @PluginAttribute("min") final String min,
             @PluginAttribute("fileIndex") final String fileIndex,
+            @PluginAttribute("compressionLevel") final String compressionLevelStr,
             @PluginConfiguration final Configuration config) {
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
         int minIndex;
@@ -387,7 +404,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         } else {
             maxIndex = DEFAULT_WINDOW_SIZE;
         }
-        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, config.getStrSubstitutor());
+        final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
+        return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor());
     }
 
 }

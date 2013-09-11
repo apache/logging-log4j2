@@ -2398,6 +2398,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <td>The maximum value of the counter. Once this values is reached older archives will be
                     deleted on subsequent rollovers.</td>
                 </tr>
+                <tr>
+                  <td>compressionLevel</td>
+                  <td>integer</td>
+                  <td>
+                    Sets the compression level, 0-9, where 0 = none, 1 = best speed, through 9 = best compression.
+                    Only implemented for ZIP files.
+                  </td>
+                </tr>
                 <caption align="top">DefaultRolloverStrategy Parameters</caption>
               </table>
 
