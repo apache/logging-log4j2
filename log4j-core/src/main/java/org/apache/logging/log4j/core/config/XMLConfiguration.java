@@ -102,7 +102,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
      * Enables XInclude for the given DocumentBuilderFactory
      *
      * @param factory a DocumentBuilderFactory
-     * @throws ParserConfigurationException
      */
     private static void enableXInclude(final DocumentBuilderFactory factory) {
         try {
@@ -111,6 +110,8 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             factory.setXIncludeAware(true);
         } catch (UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory does not support XInclude: " + factory, e);
+        } catch (AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support XInclude: " + factory);
         }
         try {
             // Alternative: We could specify all features and values with system properties like:
@@ -119,12 +120,16 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         } catch (ParserConfigurationException e) {
             LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
                     + XINCLUDE_FIXUP_BASE_URIS + "]", e);
+        } catch (AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: " + factory);
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
         } catch (ParserConfigurationException e) {
             LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
                     + XINCLUDE_FIXUP_LANGUAGE + "]", e);
+        } catch (AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: " + factory);
         }
     }
 
