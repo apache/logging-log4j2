@@ -67,7 +67,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "asyncLogger", category = "Core", printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private AsyncLoggerConfigHelper helper;
 
     /**

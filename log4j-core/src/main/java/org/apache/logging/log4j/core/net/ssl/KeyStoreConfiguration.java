@@ -34,7 +34,6 @@ import java.security.cert.CertificateException;
  */
 @Plugin(name = "keyStore", category = "Core", printObject = true)
 public class KeyStoreConfiguration extends StoreConfiguration {
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private KeyStore keyStore;
     private String keyStoreType;
 

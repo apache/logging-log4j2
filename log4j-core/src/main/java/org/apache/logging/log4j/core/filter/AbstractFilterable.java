@@ -18,14 +18,18 @@ package org.apache.logging.log4j.core.filter;
 
 import java.util.Iterator;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Enhances a Class by allowing it to contain Filters.
  */
 public abstract class AbstractFilterable implements Filterable {
+
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private volatile Filter filter;
 

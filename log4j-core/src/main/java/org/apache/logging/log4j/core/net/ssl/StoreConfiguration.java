@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  *
  */
 public class StoreConfiguration {
+    protected static final StatusLogger LOGGER = StatusLogger.getLogger();
+
     private String location;
     private String password;
 
