@@ -18,10 +18,18 @@ package org.apache.logging.log4j.core;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Appends log events.
  */
 public interface Appender extends LifeCycle {
+
+    /**
+     * Allow subclasses access to the status logger without creating another instance.
+     */
+    public static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Log in <code>Appender</code> specific way. When appropriate,

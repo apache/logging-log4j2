@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
@@ -26,7 +25,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Integers;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so
@@ -34,11 +32,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public abstract class AbstractAppender extends AbstractFilterable
     implements Appender {
-    /**
-     * Allow subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
-
     private final boolean ignoreExceptions;
 
     private ErrorHandler handler = new DefaultErrorHandler(this);
