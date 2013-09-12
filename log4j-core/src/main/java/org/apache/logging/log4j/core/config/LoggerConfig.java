@@ -59,7 +59,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Plugin(name = "logger", category = "Core", printObject = true)
 public class LoggerConfig extends AbstractFilterable {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
     private static final int MAX_RETRIES = 3;
     private static final long WAIT_TIME = 1000;
     private static LogEventFactory LOG_EVENT_FACTORY = null;

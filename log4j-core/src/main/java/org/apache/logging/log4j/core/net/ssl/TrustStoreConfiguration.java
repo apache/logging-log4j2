@@ -32,7 +32,6 @@ import java.security.cert.CertificateException;
  */
 @Plugin(name = "trustStore", category = "Core", printObject = true)
 public class TrustStoreConfiguration extends StoreConfiguration {
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private KeyStore trustStore;
     private String trustStoreType;
 

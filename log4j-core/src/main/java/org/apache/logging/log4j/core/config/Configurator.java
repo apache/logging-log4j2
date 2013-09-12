@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class Configurator {
 
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private Configurator() {
     }
