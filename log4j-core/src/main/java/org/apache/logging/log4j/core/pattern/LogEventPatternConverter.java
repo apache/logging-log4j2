@@ -16,20 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * LoggingEventPatternConverter is a base class for pattern converters
  * that can format information from instances of LoggingEvent.
  */
 public abstract class LogEventPatternConverter extends AbstractPatternConverter {
-
-    /**
-     * Allow subclasses access to the status logger.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * Constructs an instance of LoggingEventPatternConverter.

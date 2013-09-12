@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 
 /**
  * <p>AbstractPatternConverter is an abstract class that provides the
@@ -26,6 +29,11 @@ package org.apache.logging.log4j.core.pattern;
  * converting an object in a converter specific manner.
  */
 public abstract class AbstractPatternConverter implements PatternConverter {
+    /**
+     * Allow subclasses access to the status logger.
+     */
+    protected static final Logger LOGGER = StatusLogger.getLogger();
+
     /**
      * Converter name.
      */
