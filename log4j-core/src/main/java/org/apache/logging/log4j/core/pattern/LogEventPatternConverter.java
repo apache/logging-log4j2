@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 public abstract class LogEventPatternConverter extends AbstractPatternConverter {
 
     /**
-     * Allow subclasses access to the status logger without creating another instance.
+     * Allow subclasses access to the status logger.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
