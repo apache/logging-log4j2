@@ -27,21 +27,21 @@
   </meta>
 
   <toc name="Table of Contents">
-    <item name="Introduction" ref="/manual/index.html"/>
-    <item name="Architecture" ref="/manual/architecture.html"/>
-    <item name="Log4j 1.x Migration" ref="manual/migration.html"/>
-    <item name="API" ref="/manual/api.html"/>
-    <item name="Configuration" ref="/manual/configuration.html"/>
-    <item name="Web Applications and JSPs" ref="/manual/webapp.html"/>
-    <item name="Plugins" ref="/manual/plugins.html"/>
-    <item name="Lookups" ref="/manual/lookups.html"/>
-    <item name="Appenders" ref="/manual/appenders.html"/>
-    <item name="Layouts" ref="/manual/layouts.html"/>
-    <item name="Filters" ref="/manual/filters.html"/>
-    <item name="Async Loggers" ref="/manual/async.html" />
-    <item name="JMX" ref="/manual/jmx.html"/>
-    <item name="Logging Separation" ref="/manual/logsep.html"/>
-    <item name="Extending Log4j" ref="/manual/extending.html"/>
+    <item name="Introduction" ref="/manual/index.xml"/>
+    <item name="Architecture" ref="/manual/architecture.xml"/>
+    <item name="Log4j 1.x Migration" ref="manual/migration.xml"/>
+    <item name="API" ref="/manual/api.xml"/>
+    <item name="Configuration" ref="/manual/configuration.xml.vm"/>
+    <item name="Web Applications and JSPs" ref="/manual/webapp.xml"/>
+    <item name="Plugins" ref="/manual/plugins.xml"/>
+    <item name="Lookups" ref="/manual/lookups.xml"/>
+    <item name="Appenders" ref="/manual/appenders.xml"/>
+    <item name="Layouts" ref="/manual/layouts.xml.vm"/>
+    <item name="Filters" ref="/manual/filters.xml"/>
+    <item name="Async Loggers" ref="/manual/async.xml" />
+    <item name="JMX" ref="/manual/jmx.xml"/>
+    <item name="Logging Separation" ref="/manual/logsep.xml"/>
+    <item name="Extending Log4j" ref="/manual/extending.xml"/>
   </toc>
 
   <cover>
