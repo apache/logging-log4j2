@@ -38,9 +38,26 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Place Felix before Equinox because Felix is signed. -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <scope>test</scope>
+    </dependency>    
+    <dependency>
+      <groupId>org.eclipse.osgi</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
