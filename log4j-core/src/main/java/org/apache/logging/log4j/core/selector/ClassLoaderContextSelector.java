@@ -228,7 +228,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
             if (ctx.getConfigLocation() == null && configLocation != null) {
                 LOGGER.debug("Setting configuration to {}", configLocation);
                 ctx.setConfigLocation(configLocation);
-            } else if (ctx.getConfigLocation() != null && !ctx.getConfigLocation().equals(configLocation)) {
+            } else if (ctx.getConfigLocation() != null && configLocation != null &&
+                !ctx.getConfigLocation().equals(configLocation)) {
                 LOGGER.warn("locateContext called with URI {}. Existing LoggerContext has URI {}", configLocation,
                     ctx.getConfigLocation());
             }
