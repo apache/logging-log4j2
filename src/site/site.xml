@@ -82,6 +82,7 @@
         <item name="Map" href="/manual/lookups.html#MapLookup"/>
         <item name="StructuredData" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="SystemProperties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+        <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>
 
       <item name="Appenders" href="/manual/appenders.html" collapse="true">
