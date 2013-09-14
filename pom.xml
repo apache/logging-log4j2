@@ -902,7 +902,7 @@
         </plugins>
       </build>
       <modules>
-        <module>dist</module>
+        <module>log4j-distribution</module>
       </modules>
     </profile>
     <profile>
