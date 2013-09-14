@@ -1,55 +1,108 @@
 
-              Apache Log4j 2.0-beta8 RELEASE NOTES
+              Apache Log4j 2.0-beta9 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta8 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.0-beta9 release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
 many of the improvements available in Logback while fixing some inherent problems in Logback's
 architecture.
 
-This is the tenth release of Log4j 2 and is being made available to encourage use and feedback from the community.
+This is the eleventh release of Log4j 2 and is being made available to encourage use and feedback from the community.
 
 Bug fixes and enhancements
 
 Changes in this version include:
 
+New features:
+o LOG4J2-399:  Allow the default file rollover strategy to define the compression level. 
+o LOG4J2-338:  Add TLSAppender. Also added missing license headers to several files. Thanks to Tibor Benke. 
+o LOG4J2-253:  Added FAQ page to the site. 
+o LOG4J2-362:  Add a diagram to the site (FAQ page) that explains when to use which jar. 
+o LOG4J2-374:  Add more options to PatternLayout to display more detailed information about a Throwable. Thanks to Tibor Benke. 
+o LOG4J2-383:  [Pattern Layout] Customize level names by length. 
+o LOG4J2-384:  [Pattern Layout] Customize level names to lower-case. 
+o LOG4J2-364:  Add WebLookup to retrieve information from the ServletContext. Thanks to David Nault. 
+o LOG4J2-360:  Allow Plugins to have aliases. 
+o LOG4J2-356:  Create a JSON Layout. 
+o LOG4J2-341:  Enable XInclude for XML configurations. 
+o LOG4J2-313:  Add JNDILookup plugin. Thanks to Woonsan Ko. 
+o LOG4J2-305:  Ease porting from 1.x Logger.getRootLogger(): add LogManager.getRootLogger(). 
 
 Fixed Bugs:
-o LOG4J2-302:  Added toString methods to ThreadContextStack/Map implementation classes. 
-o LOG4J2-300:  WriterThread was ending when no agents are available which caused an OutOfMemoryError. 
-o LOG4J2-278:  Filter calls from Avro or Flume to be ignored by the FlumeAppender. 
-o LOG4J2-279:  FlumePersistentManager now calls Berkeley DB from threads to avoid encountering interrupts in the application. 
-o LOG4J2-296:  Wasted work in FlumePersistentManager.createManager. 
-o LOG4J2-297:  Wasted work in TestConfigurator.testEnvironment. 
-o LOG4J2-298:  Wasted work in StyleConverterTest.setupClass. 
-o LOG4J2-280:  AsyncLogger threads are now daemon threads and won't prevent the JVM from shutting down anymore. 
-o LOG4J2-295:  Fast(Rolling)FileAppender now correctly handles messages exceeding the buffer size. 
-o LOG4J2-271:  FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false. 
-o LOG4J2-267:  FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false. 
-o LOG4J2-292:  Fast(Rolling)FileAppender now correctly appends to (does not overwrite) existing file. 
-o LOG4J2-289:  Upgrade javadoc plugin to 2.9.1 to fix javadoc security issue. 
-o LOG4J2-139:  Fix NullPointerException (regression due to fix for LOG4J2-228) 
-o LOG4J2-275:  FlumeAvroManager fails to notify client of failing event if Flume RPCClient cannot be created. 
+o LOG4J2-226:  Fix table of contents generation in pdf. 
+o LOG4J2-395:  Allow classpath scheme when specifying configuration file location as a system property. Thanks to Abhinav Shah. 
+o LOG4J2-393:  Initialize PluginManager once during configuration. Move advertisement setup into BaseConfiguration. 
+o LOG4J2-391:  FlumePersistentManager now handles LockConflictExceptions in Berkeley Db. Thanks to Kamal Bahadur. 
+o LOG4J2-380:  Use rollover date when substituting ${date} in the filePattern. 
+o LOG4J2-322:  Centralized reflective use of Reflection#getCallerClass and properly handled its instability in various versions
+        of Java. 
+o LOG4J2-293:  Reset the Configuration if the ClassLoaderContextSelector creates a LoggerContext without a configuration
+        location and then is later provided one. 
+o LOG4J2-293:  Changed the ConfigurationFactory to recognize and properly use the classpath: URI scheme in addition to the
+        classloader: URI scheme. Thanks to Abhinav Shah. 
+o LOG4J2-359:  Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
+        ensures behavioral consistency across containers. Thanks to Abhinav Shah. 
+o LOG4J2-310:  Fixed issue where SMTPAppender did not send mails with error or fatal level without prior info event. Thanks to Olivier Lemasle. 
+o LOG4J2-368:  Add PatternLayout constructor to Log4j 1.2 bridge for Velocity. 
+o LOG4J2-333:  Match artifact ids with Maven module names. Thanks to Hervé Boutemy. 
+o LOG4J2-367:  JMS appenders send two messages for one append. Thanks to David Parry. 
+o LOG4J2-319:  Double stack trace logging when using %throwable in %style and %highlight. 
+o LOG4J2-358:  NoSQLAppender using MongoDB provider ignores username and password attributes 
+o LOG4J2-343:  Removed unnecessary generics from Appender interface and implementing classes. Thanks to Henning Schmiedehausen. 
+o LOG4J2-351:  [OSGi] wrong Fragment-Host in manifest files. Thanks to Roland Weiglhofer. 
+o LOG4J2-336:  AsyncLogger errors after multiple calls to LoggerContext.reconfigure(). Thanks to Andre Bogus. 
+o LOG4J2-347:  Give the AsyncAppender thread a more descriptive name for easier debugging/profiling. Thanks to David Phillips. 
+o LOG4J2-332:  Modified documentation to refer to SLF4J Binding instead of SLF4J Bridge. Thanks to Hervé Boutemy. 
+o LOG4J2-342:  Ignore xml:base attributes. 
+o LOG4J2-309:  Insure jars and distributions only have a single License and Notice file. 
+o LOG4J2-320:  JPAAppender stops logging because META-INF/log4j-provider.properties is left open. 
+o LOG4J2-335:  FlumePersistentManager's writer thread had high CPU usage. 
+o LOG4J2-331:  Removed erroneous check for affected MongoDB records, which always returns zero on inserts. 
+o LOG4J2-330:  Added a BSON Transformer so that MongoDB can persist Log4j events. 
+o LOG4J2-329:  StatusLogger now only creates StatusData objects if they are the appropriate logging level. 
+o LOG4J2-328:  FlumePersistentManager was calling Berkeley DB's count method too frequently. 
+o LOG4J2-280:  Additional fix to make AsyncAppender threads daemon threads and improve their thread name. 
+o LOG4J2-165:  The slf4j-ext jar is now an optional dependency of the SLF4J bridge. 
+o LOG4J2-166:  RoutingAppender's default Route can now be an appender reference. 
+o LOG4J2-299:  Add getThrowable method to ThrowableProxy. 
+o LOG4J2-216:  ThrowableProxy no longer extends Throwable. 
+o LOG4J2-311:  Synchronized flush() and close() methods in the XxxFileManager and OutputStreamManager classes. 
+o LOG4J2-304:  Fixed Async Loggers memory leak. 
+o LOG4J2-291:  Fixed JDBC, JPA, and NoSQL appenders so that the failover appender properly fails over on error. 
+o LOG4J2-397:  Logger.info(Message) Javadoc is incorrect. Thanks to Yonatan Graber. 
 
 Changes:
-o LOG4J2-270:  Improved logging initialization in Servlet containers, especially Servlet 3.0 and newer where Log4j now
-        initializes and deinitializes automatically with no deployment descriptor configuration. 
-o LOG4J2-301:  Add printf methods to Logger API. 
-o LOG4J2-282:  Allow the default status level to be specified as a system property. 
-o LOG4J2-294:  LogManager.getLogger can now be called without a logger name or with a null logger name. 
-o LOG4J2-288:  Update JUnit to 4.11 from 4.7. 
-o LOG4J2-286:  Update test H2 JDBC driver to 1.172 from 1.171. 
-o LOG4J2-285:  Update Jansi jar to 1.11 from 1.9. 
-o LOG4J2-284:  Update Log4j 1 dependency to 1.2.17 from 1.2.16. 
-o LOG4J2-283:  Remove dependency on Apache ORO jar. 
-o LOG4J2-277:  Wasted work in RollingAppenderSizeTest.testAppender() and others. 
-o LOG4J2-168:  Include arbitrary message fields in RFC-5424 structured data. Thanks to Scott Severtson. 
-o LOG4J2-274:  Wasted work in UUIDUtil initialization. 
-o LOG4J2-273:  Wasted work in XMLLayout.toSerializable(). 
+o LOG4J2-317:  Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender
+        and RollingRandomAccessFileAppender. Configurations using the Fast(Rolling)File element
+        no longer work and should be modified to use the (Rolling)RandomAccessFile element. 
+o Changed the "suppressExceptions" configuration attribute for all Appenders to "ignoreExceptions" to avoid
+        confusion with Java 7 suppressed exceptions. Also renamed the Appender#isExceptionSuppressed() method to
+        Appender#ignoreExceptions() to avoid the same confusion. All Appenders by default internally log and then ignore
+        exceptions encountered while logging. Setting "ignoreExceptions" to "false" on an Appender causes it to allow
+        exceptions to propagate to the caller. You must set "ignoreExceptions" to "false" for Appenders you are wrapping
+        in the Failover Appender. 
+o Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to
+        "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
+        reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up
+        until now, it's unlikely this change will affect any users. 
+o LOG4J2-355:  Add support for multiple SD-ELEMENTs in a RFC 5424 syslog message. Thanks to Tibor Benke. 
+o Cleaned up tests and cleared up documentation for the JPA appender following the resolution of EclipseLink
+        issue #412454. 
+o LOG4J2-318:  Allow shutdown hook to be disabled in the configuration. 
+o LOG4J2-312:  XML layout improvements (compact vs. pretty, namespace, namespace prefix, root element). 
+o LOG4J2-388:  Update Java Mail dependency to 1.5.0 from 1.4.7. 
+o LOG4J2-325:  Update JDBC tests to use H2 database 1.3.173 from 1.3.172. 
+o LOG4J2-366:  Update commons-logging to 1.1.3 from 1.1.1. 
+o LOG4J2-390:  Update HSQLDB dependency to 2.3.0 from 2.2.9. 
+o LOG4J2-308:  Clarified which library versions were used in Async Loggers performance test. 
+o LOG4J2-307:  Updated Async Loggers' LMAX Disruptor library from 3.0.1 to 3.2.0. 
+o LOG4J2-306:  Update JSON Jackson library to 2.2.2 from 2.2.1. 
+o LOG4J2-387:  Update Jackson dependency to 1.9.13 from 1.9.11. 
+o Improved site by adding quick jump-off page and menu for Javadoc links for all components. 
 
 
-Apache Log4j 2.0-beta8 requires a minimum of Java 6 to build and run. Basic compatibility with
+Apache Log4j 2.0-beta9 requires a minimum of Java 6 to build and run. Basic compatibility with
 Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
 org.apache.logging.log4j to avoid any conflicts with log4j 1.x.
