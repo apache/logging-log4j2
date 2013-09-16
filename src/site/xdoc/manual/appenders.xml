@@ -366,14 +366,14 @@
 						<td>String</td>
 						<td>The name of the Appender.</td>
 					</tr>
-          <tr>
-            <td>ignoreExceptions</td>
-            <td>boolean</td>
-            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-              <a href="#FailoverAppender">FailoverAppender</a>.</td>
-          </tr>
+                    <tr>
+                      <td>ignoreExceptions</td>
+                      <td>boolean</td>
+                      <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                        internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                        caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                        <a href="#FailoverAppender">FailoverAppender</a>.</td>
+                    </tr>
 					<caption align="top">RandomAccessFileAppender Parameters</caption>
 				</table>
 				<p>
