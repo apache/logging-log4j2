@@ -77,7 +77,7 @@ public class PatternLayoutTest {
         final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null);
         //FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File", "false",
-            "true", "false", layout, null, "false", null, null);
+            "true", "false", null, layout, null, "false", null, null);
         appender.start();
 
         // set appender on root and set level to debug

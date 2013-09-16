@@ -687,6 +687,11 @@
                 significantly improves performance, even if immediateFlush is enabled.</td>
             </tr>
             <tr>
+              <td>bufferSize</td>
+              <td>int</td>
+              <td>When bufferedIO is true, this is the buffer size, the default is 8192.</td>
+            </tr>
+            <tr>
               <td>filter</td>
               <td>Filter</td>
               <td>A Filter to determine if the event should be handled by this Appender. More than one Filter
