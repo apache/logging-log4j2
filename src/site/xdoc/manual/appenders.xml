@@ -361,6 +361,11 @@
                           </p>
 		                </td>
 					</tr>
+                    <tr>
+                      <td>bufferSize</td>
+                      <td>int</td>
+                      <td>The buffer size, defaults to 262,144 bytes (256 * 1024).</td>
+                    </tr>
 					<tr>
 						<td>layout</td>
 						<td>Layout</td>
@@ -694,7 +699,7 @@
             <tr>
               <td>bufferSize</td>
               <td>int</td>
-              <td>When bufferedIO is true, this is the buffer size, the default is 8192.</td>
+              <td>When bufferedIO is true, this is the buffer size, the default is 8192 bytes.</td>
             </tr>
             <tr>
               <td>filter</td>
