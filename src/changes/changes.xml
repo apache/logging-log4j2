@@ -20,6 +20,11 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-401" dev="ggregory" type="add">
+        Configure FileAppender buffer size.
+      </action>
+    </release>
     <release version="2.0-beta9" date="2013-09-14" description="Bug fixes and enhancements">
       <action issue="LOG4J2-317" dev="ggregory" type="update">
         Renamed FastFileAppender and FastRollingFileAppender to RandomAccessFileAppender
