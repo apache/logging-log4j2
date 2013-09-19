@@ -146,8 +146,8 @@ public final class Server {
                     }
                     // first unregister the MBeans that instrument the
                     // previous instrumented LoggerConfigs and Appenders
-                    unregisterLoggerConfigs(context, mbs);
-                    unregisterAppenders(context, mbs);
+                    unregisterLoggerConfigs(context.getName(), mbs);
+                    unregisterAppenders(context.getName(), mbs);
 
                     // now provide instrumentation for the newly configured
                     // LoggerConfigs and Appenders
@@ -161,6 +161,39 @@ public final class Server {
                 }
             });
         }
+    }
+
+    /**
+     * Unregisters all MBeans associated with the specified logger context
+     * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
+     * the platform MBean server.
+     *
+     * @param loggerContextName
+     *            name of the logger context to unregister
+     * @throws JMException
+     *             if a problem occurs during de-registration
+     */
+    public static void unregisterContext(String loggerContextName) {
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        unregisterContext(loggerContextName, mbs);
+    }
+
+    /**
+     * Unregisters all MBeans associated with the specified logger context
+     * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
+     * the platform MBean server.
+     *
+     * @param loggerContextName
+     *            name of the logger context to unregister
+     * @param mbs
+     *            the MBean Server to unregister the instrumented objects from
+     * @throws JMException
+     *             if a problem occurs during de-registration
+     */
+    public static void unregisterContext(String contextName, MBeanServer mbs) {
+        final String pattern = LoggerContextAdminMBean.PATTERN;
+        final String search = String.format(pattern, contextName, "*");
+        unregisterAllMatching(search, mbs);
     }
 
     private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
@@ -188,17 +221,17 @@ public final class Server {
         }
     }
 
-    private static void unregisterLoggerConfigs(final LoggerContext context,
+    private static void unregisterLoggerConfigs(final String contextName,
             final MBeanServer mbs) {
         final String pattern = LoggerConfigAdminMBean.PATTERN;
-        final String search = String.format(pattern, context.getName(), "*");
+        final String search = String.format(pattern, contextName, "*");
         unregisterAllMatching(search, mbs);
     }
 
-    private static void unregisterAppenders(final LoggerContext context,
+    private static void unregisterAppenders(final String contextName,
             final MBeanServer mbs) {
         final String pattern = AppenderAdminMBean.PATTERN;
-        final String search = String.format(pattern, context.getName(), "*");
+        final String search = String.format(pattern, contextName, "*");
         unregisterAllMatching(search, mbs);
     }
 
