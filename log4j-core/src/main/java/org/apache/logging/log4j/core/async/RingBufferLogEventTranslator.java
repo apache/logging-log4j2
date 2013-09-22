@@ -53,6 +53,27 @@ public class RingBufferLogEventTranslator implements
         event.setValues(asyncLogger, loggerName, marker, fqcn, level, message,
                 thrown, contextMap, contextStack, threadName, location,
                 currentTimeMillis);
+        clear();
+    }
+
+    /**
+     * Release references held by this object to allow objects to be
+     * garbage-collected.
+     */
+    private void clear() {
+        setValues(null, // asyncLogger
+                null, // loggerName
+                null, // marker
+                null, // fqcn
+                null, // level
+                null, // data
+                null, // t
+                null, // map
+                null, // contextStack
+                null, // threadName
+                null, // location
+                0 // currentTimeMillis
+        );
     }
 
     public void setValues(final AsyncLogger asyncLogger, final String loggerName,

@@ -281,6 +281,7 @@ class AsyncLoggerConfigHelper {
     public void callAppendersFromAnotherThread(final LogEvent event) {
         currentLogEvent.set(event);
         disruptor.publishEvent(translator);
+        currentLogEvent.set(null); // clear reference to allow GC
     }
 
 }
