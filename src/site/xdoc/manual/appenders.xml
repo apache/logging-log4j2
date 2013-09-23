@@ -2246,6 +2246,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 The OnStartup policy takes no parameters and causes a rollover if the log file is older than the
                 current JVM's start time.
               </p>
+              <p>
+                <em>Google App Engine note:</em><br />
+                When running in Google App Engine, the OnStartup policy causes a rollover if the log file is older
+                than <em>the time when Log4J initialized</em>.
+                (Google App Engine restricts access to certain classes so Log4J cannot determine JVM start time with 
+                <code>java.lang.management.ManagementFactory.getRuntimeMXBean().getStartTime()</code>
+                and falls back to Log4J initialization time instead.)
+              </p>
             <h5>SizeBased Triggering Policy</h5>
               <p>
                 Causes a rollover once the file has reached the specified size. The size can be specified in bytes,
