@@ -170,8 +170,6 @@ public final class Server {
      *
      * @param loggerContextName
      *            name of the logger context to unregister
-     * @throws JMException
-     *             if a problem occurs during de-registration
      */
     public static void unregisterContext(String loggerContextName) {
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -187,13 +185,13 @@ public final class Server {
      *            name of the logger context to unregister
      * @param mbs
      *            the MBean Server to unregister the instrumented objects from
-     * @throws JMException
-     *             if a problem occurs during de-registration
      */
     public static void unregisterContext(String contextName, MBeanServer mbs) {
         final String pattern = LoggerContextAdminMBean.PATTERN;
         final String search = String.format(pattern, contextName, "*");
         unregisterAllMatching(search, mbs);
+        unregisterLoggerConfigs(contextName, mbs);
+        unregisterAppenders(contextName, mbs);
     }
 
     private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
