@@ -381,14 +381,15 @@ public class RFC5424Layout extends AbstractStringLayout {
             final StructuredDataMessage data = (StructuredDataMessage) message;
             final Map<String, String> map = data.getData();
             final StructuredDataId id = data.getId();
+            final String sdId = getId(id);
 
-            if (sdElements.containsKey(id.toString())) {
+            if (sdElements.containsKey(sdId)) {
                 final StructuredDataElement union = sdElements.get(id.toString());
                 union.union(map);
-                sdElements.put(id.toString(), union);
+                sdElements.put(sdId, union);
             } else {
                 final StructuredDataElement formattedData = new StructuredDataElement(map, false);
-                sdElements.put(id.toString(), formattedData);
+                sdElements.put(sdId, formattedData);
             }
         }
 
