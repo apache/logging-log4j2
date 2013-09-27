@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-404" dev="rgoers" type="fix" due-to="Kamal Bahadur">
+        @EnterpriseNumber" was missing in the ID of structured data when RFC5424Layout is used
+      </action>
       <action issue="LOG4J2-379" dev="rpopma" type="fix">
         Fixed issue that prevented Log4J from working in Google App Engine.
       </action>
