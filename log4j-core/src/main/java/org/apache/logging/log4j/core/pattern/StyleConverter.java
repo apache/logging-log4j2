@@ -30,21 +30,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({"style" })
 public final class StyleConverter extends LogEventPatternConverter {
 
-    private final List<PatternFormatter> patternFormatters;
-
-    private final String style;
-
-    /**
-     * Constructs the converter.
-     * @param patternFormatters The PatternFormatters to generate the text to manipulate.
-     * @param style The style that should encapsulate the pattern.
-     */
-    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style) {
-        super("style", "style");
-        this.patternFormatters = patternFormatters;
-        this.style = style;
-    }
-
     /**
      * Gets an instance of the class.
      *
@@ -71,6 +56,21 @@ public final class StyleConverter extends LogEventPatternConverter {
         final List<PatternFormatter> formatters = parser.parse(options[0]);
         final String style = AnsiEscape.createSequence(options[1].split("\\s*,\\s*"));
         return new StyleConverter(formatters, style);
+    }
+
+    private final List<PatternFormatter> patternFormatters;
+
+    private final String style;
+
+    /**
+     * Constructs the converter.
+     * @param patternFormatters The PatternFormatters to generate the text to manipulate.
+     * @param style The style that should encapsulate the pattern.
+     */
+    private StyleConverter(final List<PatternFormatter> patternFormatters, final String style) {
+        super("style", "style");
+        this.patternFormatters = patternFormatters;
+        this.style = style;
     }
 
 
