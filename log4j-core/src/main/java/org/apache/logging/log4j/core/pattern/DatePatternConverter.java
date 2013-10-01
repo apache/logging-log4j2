@@ -187,7 +187,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         if (obj instanceof Date) {
             format((Date) obj, output);
         }
-
         super.format(obj, output);
     }
 
