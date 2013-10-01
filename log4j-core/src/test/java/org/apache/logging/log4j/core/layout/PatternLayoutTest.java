@@ -39,15 +39,16 @@ import static org.junit.Assert.assertEquals;
  *
  */
 public class PatternLayoutTest {
-    static String OUTPUT_FILE   = "target/output/PatternParser";
-    static String WITNESS_FILE  = "witness/PatternParser";
-    LoggerContext ctx = (LoggerContext) LogManager.getContext();
-    Logger root = ctx.getLogger("");
-
-    static String msgPattern = "%m%n";
-    static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
+    static String msgPattern = "%m%n";
+    static String OUTPUT_FILE   = "target/output/PatternParser";
+    static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
 
+    static String WITNESS_FILE  = "witness/PatternParser";
+    @AfterClass
+    public static void cleanupClass() {
+        ConfigurationFactory.removeConfigurationFactory(cf);
+    }
     @BeforeClass
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
@@ -55,10 +56,9 @@ public class PatternLayoutTest {
         ctx.reconfigure();
     }
 
-    @AfterClass
-    public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
-    }
+    LoggerContext ctx = (LoggerContext) LogManager.getContext();
+
+    Logger root = ctx.getLogger("");
 
 
     /**
@@ -133,14 +133,4 @@ public class PatternLayoutTest {
         appender.stop();
     }
 
-    @Test
-    public void testRegex() throws Exception {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(),
-            null, null, null);
-        final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null, "org.apache.logging.log4j.core.Logger",
-            Level.INFO, new SimpleMessage("Hello, world!"), null);
-        final byte[] result = layout.toByteArray(event);
-        assertEquals("org/apache/logging/log4j/core/layout/PatternLayoutTest Hello, world!", new String(result));
-    }
 }
