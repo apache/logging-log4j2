@@ -68,9 +68,7 @@ public final class IntegerPatternConverter extends AbstractPatternConverter impl
     public void format(final Object obj, final StringBuilder toAppendTo) {
         if (obj instanceof Integer) {
             toAppendTo.append(obj.toString());
-        }
-
-        if (obj instanceof Date) {
+        } else if (obj instanceof Date) {
             toAppendTo.append(Long.toString(((Date) obj).getTime()));
         }
     }
