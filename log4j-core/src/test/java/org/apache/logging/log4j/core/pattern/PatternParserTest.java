@@ -122,7 +122,7 @@ public class PatternParserTest {
         }
         final String str = buf.toString();
         final String expected = String.format("] INFO : Hello, world%s\u001B[m", Constants.LINE_SEP);
-        assertTrue(" Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
     }
 
 }
