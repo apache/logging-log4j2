@@ -71,8 +71,10 @@ public interface LogEvent extends Serializable {
 
 
     /**
-     * Get event time in milliseconds since 1970.
-     * @return milliseconds since 1970.
+     * Gets event time in milliseconds since midnight, January 1, 1970 UTC.
+     * 
+     * @return milliseconds since midnight, January 1, 1970 UTC.
+     * @see java.lang.System#currentTimeMillis()
      */
     long getMillis();
 
