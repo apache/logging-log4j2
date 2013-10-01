@@ -37,14 +37,19 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String ABSOLUTE_FORMAT = "ABSOLUTE";
 
     /**
+     * SimpleTimePattern for ABSOLUTE.
+     */
+    private static final String ABSOLUTE_TIME_PATTERN = "HH:mm:ss,SSS";
+
+    /**
      * COMPACT string literal.
      */
     private static final String COMPACT_FORMAT = "COMPACT";
 
     /**
-     * SimpleTimePattern for ABSOLUTE.
+     * SimpleTimePattern for COMPACT.
      */
-    private static final String ABSOLUTE_TIME_PATTERN = "HH:mm:ss,SSS";
+    private static final String COMPACT_PATTERN = "yyyyMMddHHmmssSSS";
 
     /**
      * DATE string literal.
@@ -57,19 +62,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String DATE_AND_TIME_PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
 
     /**
-     * ISO8601 string literal.
-     */
-    private static final String ISO8601_FORMAT = "ISO8601";
-
-    /**
      * ISO8601_BASIC string literal.
      */
     private static final String ISO8601_BASIC_FORMAT = "ISO8601_BASIC";
-
-    /**
-     * SimpleTimePattern for ISO8601.
-     */
-    private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
     /**
      * SimpleTimePattern for ISO8601_BASIC.
@@ -77,9 +72,24 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String ISO8601_BASIC_PATTERN = "yyyyMMdd HHmmss,SSS";
 
     /**
-     * SimpleTimePattern for COMPACT.
+     * ISO8601 string literal.
      */
-    private static final String COMPACT_PATTERN = "yyyyMMddHHmmssSSS";
+    private static final String ISO8601_FORMAT = "ISO8601";
+
+    /**
+     * SimpleTimePattern for ISO8601.
+     */
+    private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+
+    /**
+     * Obtains an instance of pattern converter.
+     *
+     * @param options options, may be null.
+     * @return instance of pattern converter.
+     */
+    public static DatePatternConverter newInstance(final String[] options) {
+        return new DatePatternConverter(options);
+    }
 
     /**
      * Date format.
@@ -144,13 +154,15 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     /**
-     * Obtains an instance of pattern converter.
+     * Append formatted date to string buffer.
      *
-     * @param options options, may be null.
-     * @return instance of pattern converter.
+     * @param date       date
+     * @param toAppendTo buffer to which formatted date is appended.
      */
-    public static DatePatternConverter newInstance(final String[] options) {
-        return new DatePatternConverter(options);
+    public void format(final Date date, final StringBuilder toAppendTo) {
+        synchronized (this) {
+            toAppendTo.append(simpleFormat.format(date.getTime()));
+        }
     }
 
     /**
@@ -169,16 +181,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         output.append(cachedDate);
     }
 
-    @Override
-    public void format(final StringBuilder toAppendTo, final Object... objects) {
-        for (final Object obj : objects) {
-            if (obj instanceof Date) {
-                format(obj, toAppendTo);
-                break;
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -190,15 +192,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         super.format(obj, output);
     }
 
-    /**
-     * Append formatted date to string buffer.
-     *
-     * @param date       date
-     * @param toAppendTo buffer to which formatted date is appended.
-     */
-    public void format(final Date date, final StringBuilder toAppendTo) {
-        synchronized (this) {
-            toAppendTo.append(simpleFormat.format(date.getTime()));
+    @Override
+    public void format(final StringBuilder toAppendTo, final Object... objects) {
+        for (final Object obj : objects) {
+            if (obj instanceof Date) {
+                format(obj, toAppendTo);
+                break;
+            }
         }
     }
 
