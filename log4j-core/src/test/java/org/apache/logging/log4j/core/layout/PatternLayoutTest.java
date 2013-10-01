@@ -39,9 +39,8 @@ public class PatternLayoutTest {
     static String msgPattern = "%m%n";
     static String OUTPUT_FILE   = "target/output/PatternParser";
     static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
-
     static String WITNESS_FILE  = "witness/PatternParser";
-    @AfterClass
+
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
@@ -55,8 +54,6 @@ public class PatternLayoutTest {
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
 
     Logger root = ctx.getLogger("");
-
-
     /**
      * Test case for MDC conversion pattern.
      */
