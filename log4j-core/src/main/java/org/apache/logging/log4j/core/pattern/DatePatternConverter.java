@@ -23,7 +23,6 @@ import java.util.TimeZone;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-
 /**
  * Convert and format the event's date in a StringBuilder.
  */
