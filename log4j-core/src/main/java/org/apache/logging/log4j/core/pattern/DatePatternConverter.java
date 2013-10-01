@@ -93,7 +93,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     /**
      * Date format.
      */
-    private String cachedDate;
+    private String cachedDateString;
 
     private long lastTimestamp;
 
@@ -174,10 +174,10 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         synchronized (this) {
             if (timestamp != lastTimestamp) {
                 lastTimestamp = timestamp;
-                cachedDate = simpleFormat.format(timestamp);
+                cachedDateString = simpleFormat.format(timestamp);
             }
         }
-        output.append(cachedDate);
+        output.append(cachedDateString);
     }
 
     /**
