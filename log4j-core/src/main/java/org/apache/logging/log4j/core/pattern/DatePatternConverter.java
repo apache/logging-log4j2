@@ -27,8 +27,52 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
  * Convert and format the event's date in a StringBuilder.
  */
 @Plugin(name = "DatePatternConverter", category = "Converter")
-@ConverterKeys({"d", "date" })
+@ConverterKeys({ "d", "date" })
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
+
+    private abstract static class Formatter {
+        abstract String format(long time);
+
+        public String toPattern() {
+            return null;
+        }
+    }
+
+    private static class PatternFormatter extends Formatter {
+        private final SimpleDateFormat simpleDateFormat;
+
+        PatternFormatter(SimpleDateFormat simpleDateFormat) {
+            this.simpleDateFormat = simpleDateFormat;
+        }
+
+        @Override
+        String format(long time) {
+            return simpleDateFormat.format(Long.valueOf(time));
+        }
+
+        @Override
+        public String toPattern() {
+            return simpleDateFormat.toPattern();
+        }
+    }
+
+    private static class UnixFormatter extends Formatter {
+
+        @Override
+        String format(long time) {
+            return Long.toString(time / 1000);
+        }
+
+    }
+
+    private static class UnixMillisFormatter extends Formatter {
+
+        @Override
+        String format(long time) {
+            return Long.toString(time);
+        }
+
+    }
 
     /**
      * ABSOLUTE string literal.
@@ -81,9 +125,20 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
     /**
+     * UNIX formatter in seconds (standard).
+     */
+    private static final String UNIX_FORMAT = "UNIX";
+
+    /**
+     * UNIX formatter in milliseconds
+     */
+    private static final String UNIX_MILLIS_FORMAT = "UNIX_MILLIS";
+
+    /**
      * Obtains an instance of pattern converter.
-     *
-     * @param options options, may be null.
+     * 
+     * @param options
+     *            options, may be null.
      * @return instance of pattern converter.
      */
     public static DatePatternConverter newInstance(final String[] options) {
@@ -95,29 +150,24 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     private String cachedDateString;
 
-    private long lastTimestamp;
+    private final Formatter formatter;
 
-    private final SimpleDateFormat simpleFormat;
+    private long lastTimestamp;
 
     /**
      * Private constructor.
-     *
-     * @param options options, may be null.
+     * 
+     * @param options
+     *            options, may be null.
      */
     private DatePatternConverter(final String[] options) {
         super("Date", "date");
 
-        String patternOption;
+        // null patternOption is OK.
+        final String patternOption = options != null && options.length > 0 ? options[0] : null;
 
-        if (options == null || options.length == 0) {
-            // the branch could be optimized, but here we are making explicit
-            // that null values for patternOption are allowed.
-            patternOption = null;
-        } else {
-            patternOption = options[0];
-        }
-
-        String pattern;
+        String pattern = null;
+        Formatter tempFormatter = null;
 
         if (patternOption == null || patternOption.equalsIgnoreCase(ISO8601_FORMAT)) {
             pattern = ISO8601_PATTERN;
@@ -129,38 +179,47 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             pattern = DATE_AND_TIME_PATTERN;
         } else if (patternOption.equalsIgnoreCase(COMPACT_FORMAT)) {
             pattern = COMPACT_PATTERN;
+        } else if (patternOption.equalsIgnoreCase(UNIX_FORMAT)) {
+            tempFormatter = new UnixFormatter();
+        } else if (patternOption.equalsIgnoreCase(UNIX_MILLIS_FORMAT)) {
+            tempFormatter = new UnixMillisFormatter();
         } else {
             pattern = patternOption;
         }
 
-        SimpleDateFormat tempFormat;
+        if (pattern != null) {
+            SimpleDateFormat tempFormat;
 
-        try {
-            tempFormat = new SimpleDateFormat(pattern);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
+            try {
+                tempFormat = new SimpleDateFormat(pattern);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.warn("Could not instantiate SimpleDateFormat with pattern " + patternOption, e);
 
-            // default to the ISO8601 format
-            tempFormat = new SimpleDateFormat(ISO8601_PATTERN);
+                // default to the ISO8601 format
+                tempFormat = new SimpleDateFormat(ISO8601_PATTERN);
+            }
+
+            // if the option list contains a TZ option, then set it.
+            if (options != null && options.length > 1) {
+                final TimeZone tz = TimeZone.getTimeZone(options[1]);
+                tempFormat.setTimeZone(tz);
+            }
+            tempFormatter = new PatternFormatter(tempFormat);
         }
-
-        // if the option list contains a TZ option, then set it.
-        if (options != null && options.length > 1) {
-            final TimeZone tz = TimeZone.getTimeZone(options[1]);
-            tempFormat.setTimeZone(tz);
-        }
-        simpleFormat = tempFormat;
+        formatter = tempFormatter;
     }
 
     /**
      * Append formatted date to string buffer.
-     *
-     * @param date       date
-     * @param toAppendTo buffer to which formatted date is appended.
+     * 
+     * @param date
+     *            date
+     * @param toAppendTo
+     *            buffer to which formatted date is appended.
      */
     public void format(final Date date, final StringBuilder toAppendTo) {
         synchronized (this) {
-            toAppendTo.append(simpleFormat.format(date.getTime()));
+            toAppendTo.append(formatter.format(date.getTime()));
         }
     }
 
@@ -174,7 +233,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         synchronized (this) {
             if (timestamp != lastTimestamp) {
                 lastTimestamp = timestamp;
-                cachedDateString = simpleFormat.format(timestamp);
+                cachedDateString = formatter.format(timestamp);
             }
         }
         output.append(cachedDateString);
@@ -201,8 +260,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
+    /**
+     * Gets the pattern string describing this date format.
+     * 
+     * @return the pattern string describing this date format.
+     */
     public String getPattern() {
-        return simpleFormat.toPattern();
+        return formatter.toPattern();
     }
 
 }
