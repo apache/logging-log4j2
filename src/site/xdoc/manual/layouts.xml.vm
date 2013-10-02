@@ -359,7 +359,24 @@ WARN  [main]: Message 2</pre>
                       <td>%d{HH:mm:ss}{GMT+0}</td>
                       <td>18:34:02,781</td>
                     </tr>
+                    <tr>
+                      <td>%d{UNIX}</td>
+                      <td>1351866842</td>
+                    </tr>
+                    <tr>
+                      <td>%d{UNIX_MILLIS}</td>
+                      <td>1351866842781</td>
+                    </tr>
                   </table>
+                </p>
+                <p>
+                  %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the UNIX time in milliseconds. 
+                  The UNIX time is the difference, in seconds for UNIX and in milliseconds for UNIX_MILLIS, between
+                  the current time and midnight, January 1, 1970 UTC. While the time unit is milliseconds, the 
+                  granularity depends on the operating system 
+                  (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>). 
+                  This is an efficient way to output the event time because only a conversion from long to String 
+                  takes place, there is no Date formatting involved.
                 </p>
               </td>
             </tr>
