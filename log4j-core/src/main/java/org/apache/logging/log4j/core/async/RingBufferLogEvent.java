@@ -41,7 +41,7 @@ public class RingBufferLogEvent implements LogEvent {
      * Creates the events that will be put in the RingBuffer.
      */
     private static class Factory implements EventFactory<RingBufferLogEvent> {
-        // @Override
+    
         @Override
         public RingBufferLogEvent newInstance() {
             return new RingBufferLogEvent();
