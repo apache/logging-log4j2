@@ -80,6 +80,8 @@
           is exceptional in that it always exists and it is part of every hierarchy. A Logger
           that is directly linked to the root LoggerConfig can be obtained as follows:
           <pre class="prettyprint">Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);</pre>
+          Alternatively, and more simply: 
+          <pre class="prettyprint">Logger logger = LogManager.getRootLogger();</pre>
           All other Loggers can be retrieved using the
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
