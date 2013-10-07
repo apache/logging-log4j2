@@ -86,7 +86,7 @@
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)">
             LogManager.getLogger
           </a>
-          static method and passing the name of the desired Logger. Further information on the Logging
+          static method by passing the name of the desired Logger. Further information on the Logging
           API can be found at<a href="../log4j-api/api.html">Log4j 2 API</a>.
         </p>
         <h4>LoggerContext</h4>
