@@ -161,7 +161,7 @@ Logger y = Logger.getLogger("wombat");
         <h5>Log Levels</h5>
         <p>LoggerConfigs will be assigned a Log
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of possible
-          levels includes (TRACE, DEBUG, INFO, WARN, ERROR and FATAL). Note that in Log4j 2, the Level is
+          levels includes TRACE, DEBUG, INFO, WARN, ERROR, and FATAL. Note that in Log4j 2, the Level is
           an Enum and cannot be sub-classed. Users who desire more granularity are encouraged to use
           <a href="../log4j-api/api.html#Markers">Markers</a>
           instead.
