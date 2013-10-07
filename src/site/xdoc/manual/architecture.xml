@@ -388,19 +388,22 @@ Logger y = Logger.getLogger("wombat");
             <th>WARN</th>
             <th>ERROR</th>
             <th>FATAL</th>
+            <th>OFF</th>
           </tr>
           <tr>
             <th>ALL</th>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
             <td class="big-red">NO</td>
           </tr>
           <tr>
             <th>TRACE</th>
             <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
@@ -415,12 +418,14 @@ Logger y = Logger.getLogger("wombat");
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
           <tr>
             <th>INFO</th>
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
@@ -433,6 +438,7 @@ Logger y = Logger.getLogger("wombat");
             <td class="big-green">YES</td>
             <td class="big-red">NO</td>
             <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
           <tr>
             <th>ERROR</th>
@@ -441,6 +447,7 @@ Logger y = Logger.getLogger("wombat");
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
             <td class="big-red">NO</td>
           </tr>
           <tr>
@@ -451,15 +458,17 @@ Logger y = Logger.getLogger("wombat");
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
             <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
           </tr>
           <tr>
             <th>OFF</th>
-            <td class="big-green">YES</td>
-            <td class="big-green">YES</td>
-            <td class="big-green">YES</td>
-            <td class="big-green">YES</td>
-            <td class="big-green">YES</td>
-            <td class="big-green">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
           </tr>
         </table>
 
@@ -623,8 +632,9 @@ Logger y = Logger.getLogger("wombat");
           </a>
           class and
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/StrLookup.html">StrLookup</a>
-          interface were borrowed from Apache Commons Lang and then modified to support evaluating LogEvents. In
-          addition the
+          interface were borrowed from 
+          <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> and then modified 
+          to support evaluating LogEvents. In addition the
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/Interpolator.html">Interpolator</a>
           class was borrowed from Apache Commons Configuration to allow the StrSubstitutor to evaluate variables
           that from multiple StrLookups. It too was modified to support evaluating LogEvents. Together these
