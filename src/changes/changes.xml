@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-417" dev="ggregory" type="fix">
+        Fix Event Level / LoggerConfig Level table at the architecture documentation page.
+      </action>
       <action issue="LOG4J2-415" dev="ggregory" type="add">
         Format log event time as UNIX time (seconds or milliseconds).
       </action>
