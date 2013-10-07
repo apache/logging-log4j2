@@ -370,7 +370,7 @@ Logger y = Logger.getLogger("wombat");
           <code>X.Y</code>
           since tokens after periods must match exactly.
         </p>
-        <p>The table below provides illustrates how Level filtering works. In the table, the vertical
+        <p>The table below illustrates how Level filtering works. In the table, the vertical
           header shows the Level of the LogEvent, while the horizontal header shows the Level associated
           with the appropriate LoggerConfig. The intersection identifies whether the LogEvent would
           be allowed to pass for further processing (Yes) or discarded (No).
