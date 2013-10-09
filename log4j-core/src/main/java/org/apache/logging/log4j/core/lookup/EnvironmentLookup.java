@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public class EnvironmentLookup implements StrLookup {
 
     /**
-     * Get the value of the environment variable.
+     * Looks up the value of the environment variable.
      * @param key  the key to be looked up, may be null
      * @return The value of the environment variable.
      */
@@ -36,7 +36,7 @@ public class EnvironmentLookup implements StrLookup {
     }
 
     /**
-     * Get the value of the environment variable.
+     * Looks up the value of the environment variable.
      * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key  the key to be looked up, may be null
      * @return The value of the environment variable.

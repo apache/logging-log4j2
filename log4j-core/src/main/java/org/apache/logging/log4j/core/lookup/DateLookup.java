@@ -33,7 +33,7 @@ public class DateLookup implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     /**
-     * Get the value of the environment variable.
+     * Looks up the value of the environment variable.
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The value of the environment variable.
      */
@@ -43,7 +43,7 @@ public class DateLookup implements StrLookup {
     }
 
     /**
-     * Get the value of the environment variable.
+     * Looks up the value of the environment variable.
      * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The value of the environment variable.

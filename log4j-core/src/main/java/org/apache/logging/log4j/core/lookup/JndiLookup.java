@@ -32,7 +32,7 @@ public class JndiLookup implements StrLookup {
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
 
     /**
-     * Get the value of the JNDI resource.
+     * Looks up the value of the JNDI resource.
      * @param key  the JNDI resource name to be looked up, may be null
      * @return The value of the JNDI resource.
      */
@@ -42,7 +42,7 @@ public class JndiLookup implements StrLookup {
     }
 
     /**
-     * Get the value of the JNDI resource.
+     * Looks up the value of the JNDI resource.
      * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key  the JNDI resource name to be looked up, may be null
      * @return The value of the JNDI resource.
