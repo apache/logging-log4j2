@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 public class SystemPropertiesLookup implements StrLookup {
 
     /**
-     * Lookup the value for the key.
+     * Looks up the value for the key.
      * @param key  the key to be looked up, may be null
      * @return The value for the key.
      */
@@ -40,7 +40,7 @@ public class SystemPropertiesLookup implements StrLookup {
     }
 
     /**
-     * Lookup the value for the key using the data in the LogEvent.
+     * Looks up the value for the key using the data in the LogEvent.
      * @param event The current LogEvent.
      * @param key  the key to be looked up, may be null
      * @return The value associated with the key.
