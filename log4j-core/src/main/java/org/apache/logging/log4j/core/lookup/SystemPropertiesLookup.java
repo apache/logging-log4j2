@@ -35,6 +35,7 @@ public class SystemPropertiesLookup implements StrLookup {
         try {
             return System.getProperty(key);
         } catch (final Exception ex) {
+            // Should this be logged?
             return null;
         }
     }
@@ -50,6 +51,7 @@ public class SystemPropertiesLookup implements StrLookup {
         try {
             return System.getProperty(key);
         } catch (final Exception ex) {
+            // Should this be logged?
             return null;
         }
     }
