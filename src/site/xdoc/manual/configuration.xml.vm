@@ -804,6 +804,14 @@ public class Bar {
                 <th>Context</th>
               </tr>
               <tr>
+                <td>bundle</td>
+                <td>
+                  Resource bundle. The format is <code>${dollar}{bundle:BundleName:BundleKey}</code>.
+                  The bundle name follows package naming conventions, for example: 
+                  <code>${dollar}{bundle:com.domain.Messages:MyKey}</code>.
+                </td>
+              </tr>
+              <tr>
                 <td>ctx</td>
                 <td>Thread Context Map (MDC)</td>
               </tr>
