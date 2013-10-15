@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-323" dev="rpopma" type="fix">
+        Resolved memory leak by releasing reference to ThreadLocal when 
+        AsyncLogger is stopped.
+      </action>
       <action issue="LOG4J2-425" dev="rpopma" type="fix">
         Resolved memory leak by populating AsyncLoggerConfigHelper ring buffer 
         via EventTranslatorTwoArg, eliminating the need for a ThreadLocal.

@@ -83,7 +83,7 @@ public class AsyncLogger extends Logger {
 
     private static ExecutorService executor = Executors
             .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
-    private final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
+    private static ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
         final int ringBufferSize = calculateRingBufferSize();
@@ -262,5 +262,6 @@ public class AsyncLogger extends Logger {
             }
         }
         executor.shutdown(); // finally, kill the processor thread
+        threadlocalInfo = new ThreadLocal<Info>(); // LOG4J2-323
     }
 }
