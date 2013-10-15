@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.EventTranslator;
+import com.lmax.disruptor.EventTranslatorTwoArg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.Sequence;
@@ -84,16 +84,17 @@ class AsyncLoggerConfigHelper {
     /**
      * Object responsible for passing on data to a specific RingBuffer event.
      */
-    private final EventTranslator<Log4jEventWrapper> translator = new EventTranslator<Log4jEventWrapper>() {
+    private final EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator 
+            = new EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig>() {
+
         @Override
-        public void translateTo(final Log4jEventWrapper event,
-                final long sequence) {
-            event.event = currentLogEvent.get();
-            event.loggerConfig = asyncLoggerConfig;
+        public void translateTo(Log4jEventWrapper ringBufferElement, long sequence, 
+                LogEvent logEvent, AsyncLoggerConfig loggerConfig) {
+            ringBufferElement.event = logEvent;
+            ringBufferElement.loggerConfig = loggerConfig;
         }
     };
 
-    private final ThreadLocal<LogEvent> currentLogEvent = new ThreadLocal<LogEvent>();
     private final AsyncLoggerConfig asyncLoggerConfig;
 
     public AsyncLoggerConfigHelper(final AsyncLoggerConfig asyncLoggerConfig) {
@@ -277,11 +278,9 @@ class AsyncLoggerConfigHelper {
         executor.shutdown(); // finally, kill the processor thread
         executor = null; // release reference to allow GC
     }
-
+    
     public void callAppendersFromAnotherThread(final LogEvent event) {
-        currentLogEvent.set(event);
-        disruptor.publishEvent(translator);
-        currentLogEvent.set(null); // clear reference to allow GC
+        disruptor.getRingBuffer().publishEvent(translator, event, asyncLoggerConfig);
     }
 
 }
