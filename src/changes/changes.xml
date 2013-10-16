@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-423" dev="rpopma" type="add">
+        Added MBeans for instrumenting AsyncAppenders and AsyncLogger RingBuffers,
+        exposing queue size, remaining capacity and other attributes.
+      </action>
       <action issue="LOG4J2-323" dev="rpopma" type="fix">
         Resolved memory leak by releasing reference to ThreadLocal when 
         AsyncLogger is stopped.

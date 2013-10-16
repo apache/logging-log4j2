@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.jmx;
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.helpers.Assert;
 
 /**
@@ -72,12 +73,20 @@ public class AppenderAdmin implements AppenderAdminMBean {
     }
 
     @Override
-    public boolean isExceptionSuppressed() {
+    public boolean isIgnoreExceptions() {
         return appender.ignoreExceptions();
     }
 
     @Override
     public String getErrorHandler() {
         return String.valueOf(appender.getHandler());
+    }
+
+    @Override
+    public String getFilter() {
+        if (appender instanceof AbstractFilterable) {
+            return String.valueOf(((AbstractFilterable) appender).getFilter());
+        }
+        return null;
     }
 }

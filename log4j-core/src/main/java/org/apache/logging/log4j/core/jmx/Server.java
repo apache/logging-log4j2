@@ -34,6 +34,10 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.async.AsyncLogger;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
+import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -147,7 +151,9 @@ public final class Server {
                     // first unregister the MBeans that instrument the
                     // previous instrumented LoggerConfigs and Appenders
                     unregisterLoggerConfigs(context.getName(), mbs);
+                    unregisterAsyncLoggerConfigRingBufferAdmins(context.getName(), mbs);
                     unregisterAppenders(context.getName(), mbs);
+                    unregisterAsyncAppenders(context.getName(), mbs);
 
                     // now provide instrumentation for the newly configured
                     // LoggerConfigs and Appenders
@@ -189,9 +195,12 @@ public final class Server {
     public static void unregisterContext(String contextName, MBeanServer mbs) {
         final String pattern = LoggerContextAdminMBean.PATTERN;
         final String search = String.format(pattern, contextName, "*");
-        unregisterAllMatching(search, mbs);
+        unregisterAllMatching(search, mbs); // unregister context mbean
         unregisterLoggerConfigs(contextName, mbs);
         unregisterAppenders(contextName, mbs);
+        unregisterAsyncAppenders(contextName, mbs);
+        unregisterAsyncLoggerRingBufferAdmins(contextName, mbs);
+        unregisterAsyncLoggerConfigRingBufferAdmins(contextName, mbs);
     }
 
     private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
@@ -209,13 +218,26 @@ public final class Server {
         mbs.registerMBean(mbean, mbean.getObjectName());
     }
 
+    /**
+     * Registers MBeans for all contexts in the list.
+     * First unregisters each context (and nested loggers, appender etc)
+     * to prevent InstanceAlreadyExistsExceptions.
+     */
     private static void registerContexts(final List<LoggerContext> contexts, final MBeanServer mbs,
             final Executor executor) throws InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
         for (final LoggerContext ctx : contexts) {
+            // first unregister the context and all nested loggers & appenders
+            unregisterContext(ctx.getName());
+            
             final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
             mbs.registerMBean(mbean, mbean.getObjectName());
+            
+            if (ctx instanceof AsyncLoggerContext) {
+                RingBufferAdmin rbmbean = AsyncLogger.createRingBufferAdmin(ctx.getName());
+                mbs.registerMBean(rbmbean, rbmbean.getObjectName());
+            }
         }
     }
 
@@ -231,6 +253,27 @@ public final class Server {
         final String pattern = AppenderAdminMBean.PATTERN;
         final String search = String.format(pattern, contextName, "*");
         unregisterAllMatching(search, mbs);
+    }
+
+    private static void unregisterAsyncAppenders(final String contextName,
+            final MBeanServer mbs) {
+        final String pattern = AsyncAppenderAdminMBean.PATTERN;
+        final String search = String.format(pattern, contextName, "*");
+        unregisterAllMatching(search, mbs);
+    }
+
+    private static void unregisterAsyncLoggerRingBufferAdmins(final String contextName,
+            final MBeanServer mbs) {
+        final String pattern1 = RingBufferAdminMBean.PATTERN_ASYNC_LOGGER;
+        final String search1 = String.format(pattern1, contextName);
+        unregisterAllMatching(search1, mbs);
+    }
+
+    private static void unregisterAsyncLoggerConfigRingBufferAdmins(final String contextName,
+            final MBeanServer mbs) {
+        final String pattern2 = RingBufferAdminMBean.PATTERN_ASYNC_LOGGER_CONFIG;
+        final String search2 = String.format(pattern2, contextName, "*");
+        unregisterAllMatching(search2, mbs);
     }
 
     private static void unregisterAllMatching(final String search, final MBeanServer mbs) {
@@ -254,6 +297,12 @@ public final class Server {
             final LoggerConfig cfg = map.get(name);
             final LoggerConfigAdmin mbean = new LoggerConfigAdmin(ctx.getName(), cfg);
             mbs.registerMBean(mbean, mbean.getObjectName());
+            
+            if (cfg instanceof AsyncLoggerConfig) {
+                AsyncLoggerConfig async = (AsyncLoggerConfig) cfg;
+                RingBufferAdmin rbmbean = async.createRingBufferAdmin(ctx.getName());
+                mbs.registerMBean(rbmbean, rbmbean.getObjectName());
+            }
         }
     }
 
@@ -263,8 +312,15 @@ public final class Server {
         final Map<String, Appender> map = ctx.getConfiguration().getAppenders();
         for (final String name : map.keySet()) {
             final Appender appender = map.get(name);
-            final AppenderAdmin mbean = new AppenderAdmin(ctx.getName(), appender);
-            mbs.registerMBean(mbean, mbean.getObjectName());
+            
+            if (appender instanceof AsyncAppender) {
+                AsyncAppender async = ((AsyncAppender) appender);
+                final AsyncAppenderAdmin mbean = new AsyncAppenderAdmin(ctx.getName(), async);
+                mbs.registerMBean(mbean, mbean.getObjectName());
+            } else {
+                final AppenderAdmin mbean = new AppenderAdmin(ctx.getName(), appender);
+                mbs.registerMBean(mbean, mbean.getObjectName());
+            }
         }
     }
 }

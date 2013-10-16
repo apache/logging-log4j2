@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.helpers.Clock;
 import org.apache.logging.log4j.core.helpers.ClockFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -65,11 +66,12 @@ import com.lmax.disruptor.util.Util;
  * at all.
  * <p>
  * For best performance, use AsyncLogger with the RandomAccessFileAppender or
- * RollingRandomAccessFileAppender, with immediateFlush=false. These appenders have
- * built-in support for the batching mechanism used by the Disruptor library,
- * and they will flush to disk at the end of each batch. This means that even
- * with immediateFlush=false, there will never be any items left in the buffer;
- * all log events will all be written to disk in a very efficient manner.
+ * RollingRandomAccessFileAppender, with immediateFlush=false. These appenders
+ * have built-in support for the batching mechanism used by the Disruptor
+ * library, and they will flush to disk at the end of each batch. This means
+ * that even with immediateFlush=false, there will never be any items left in
+ * the buffer; all log events will all be written to disk in a very efficient
+ * manner.
  */
 public class AsyncLogger extends Logger {
     private static final int HALF_A_SECOND = 500;
@@ -89,36 +91,32 @@ public class AsyncLogger extends Logger {
         final int ringBufferSize = calculateRingBufferSize();
 
         final WaitStrategy waitStrategy = createWaitStrategy();
-        disruptor = new Disruptor<RingBufferLogEvent>(
-                RingBufferLogEvent.FACTORY, ringBufferSize, executor,
+        disruptor = new Disruptor<RingBufferLogEvent>(RingBufferLogEvent.FACTORY, ringBufferSize, executor,
                 ProducerType.MULTI, waitStrategy);
         final EventHandler<RingBufferLogEvent>[] handlers = new RingBufferLogEventHandler[] {//
         new RingBufferLogEventHandler() };
         disruptor.handleExceptionsWith(getExceptionHandler());
         disruptor.handleEventsWith(handlers);
 
-        LOGGER.debug(
-                "Starting AsyncLogger disruptor with ringbuffer size {}...",
-                disruptor.getRingBuffer().getBufferSize());
+        LOGGER.debug("Starting AsyncLogger disruptor with ringbuffer size {}...", disruptor.getRingBuffer()
+                .getBufferSize());
         disruptor.start();
     }
 
     private static int calculateRingBufferSize() {
         int ringBufferSize = RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = System.getProperty(
-                "AsyncLogger.RingBufferSize", String.valueOf(ringBufferSize));
+        final String userPreferredRBSize = System.getProperty("AsyncLogger.RingBufferSize",
+                String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn(
-                        "Invalid RingBufferSize {}, using minimum size {}.",
-                        userPreferredRBSize, RINGBUFFER_MIN_SIZE);
+                LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,
+                        RINGBUFFER_MIN_SIZE);
             }
             ringBufferSize = size;
         } catch (final Exception ex) {
-            LOGGER.warn("Invalid RingBufferSize {}, using default size {}.",
-                    userPreferredRBSize, ringBufferSize);
+            LOGGER.warn("Invalid RingBufferSize {}, using default size {}.", userPreferredRBSize, ringBufferSize);
         }
         return Util.ceilingNextPowerOfTwo(ringBufferSize);
     }
@@ -148,16 +146,12 @@ public class AsyncLogger extends Logger {
         }
         try {
             @SuppressWarnings("unchecked")
-            final
-            Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class
-                    .forName(cls);
+            final Class<? extends ExceptionHandler> klass = (Class<? extends ExceptionHandler>) Class.forName(cls);
             final ExceptionHandler result = klass.newInstance();
             LOGGER.debug("AsyncLogger.ExceptionHandler=" + result);
             return result;
         } catch (final Exception ignored) {
-            LOGGER.debug(
-                    "AsyncLogger.ExceptionHandler not set: error creating "
-                            + cls + ": ", ignored);
+            LOGGER.debug("AsyncLogger.ExceptionHandler not set: error creating " + cls + ": ", ignored);
             return null;
         }
     }
@@ -165,13 +159,12 @@ public class AsyncLogger extends Logger {
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and
      * message factory.
-     *
+     * 
      * @param context context of this logger
      * @param name name of this logger
      * @param messageFactory message factory of this logger
      */
-    public AsyncLogger(final LoggerContext context, final String name,
-            final MessageFactory messageFactory) {
+    public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
         super(context, name, messageFactory);
     }
 
@@ -184,8 +177,7 @@ public class AsyncLogger extends Logger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data,
-            final Throwable t) {
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info();
@@ -195,8 +187,7 @@ public class AsyncLogger extends Logger {
         }
 
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
-        info.translator.setValues(this, getName(), marker, fqcn, level, data,
-                t, //
+        info.translator.setValues(this, getName(), marker, fqcn, level, data, t, //
 
                 // config properties are taken care of in the EventHandler
                 // thread in the #actualAsyncLog method
@@ -230,13 +221,12 @@ public class AsyncLogger extends Logger {
     /**
      * This method is called by the EventHandler that processes the
      * RingBufferLogEvent in a separate thread.
-     *
+     * 
      * @param event the event to log
      */
     public void actualAsyncLog(final RingBufferLogEvent event) {
         final Map<Property, Boolean> properties = config.loggerConfig.getProperties();
-        event.mergePropertiesIntoContextMap(properties,
-                config.config.getStrSubstitutor());
+        event.mergePropertiesIntoContextMap(properties, config.config.getStrSubstitutor());
         config.logEvent(event);
     }
 
@@ -263,5 +253,15 @@ public class AsyncLogger extends Logger {
         }
         executor.shutdown(); // finally, kill the processor thread
         threadlocalInfo = new ThreadLocal<Info>(); // LOG4J2-323
+    }
+
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the
+     * ringbuffer of the {@code AsyncLogger}.
+     * 
+     * @param contextName name of the global {@code AsyncLoggerContext}
+     */
+    public static RingBufferAdmin createRingBufferAdmin(String contextName) {
+        return RingBufferAdmin.forAsyncLogger(disruptor.getRingBuffer(), contextName);
     }
 }

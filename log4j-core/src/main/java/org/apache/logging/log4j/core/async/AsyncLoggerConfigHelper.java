@@ -22,6 +22,7 @@ import java.util.concurrent.ThreadFactory;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
@@ -281,6 +282,17 @@ class AsyncLoggerConfigHelper {
     
     public void callAppendersFromAnotherThread(final LogEvent event) {
         disruptor.getRingBuffer().publishEvent(translator, event, asyncLoggerConfig);
+    }
+
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the
+     * ringbuffer of this {@code AsyncLoggerConfig}.
+     * 
+     * @param contextName name of the {@code LoggerContext}
+     * @param loggerConfigName name of the logger config
+     */
+    public RingBufferAdmin createRingBufferAdmin(String contextName, String loggerConfigName) {
+        return RingBufferAdmin.forAsyncLoggerConfig(disruptor.getRingBuffer(), contextName, loggerConfigName);
     }
 
 }
