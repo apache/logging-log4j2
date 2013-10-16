@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 
 /**
  * Asynchronous Logger object that is created via configuration and can be
@@ -128,6 +129,16 @@ public class AsyncLoggerConfig extends LoggerConfig {
     public void stopFilter() {
         AsyncLoggerConfigHelper.release();
         super.stopFilter();
+    }
+
+    /**
+     * Creates and returns a new {@code RingBufferAdmin} that instruments the
+     * ringbuffer of this {@code AsyncLoggerConfig}.
+     * 
+     * @param contextName name of the {@code LoggerContext}
+     */
+    public RingBufferAdmin createRingBufferAdmin(String contextName) {
+        return helper.createRingBufferAdmin(contextName, getName());
     }
 
     /**

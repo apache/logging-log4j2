@@ -53,6 +53,7 @@ public final class AsyncAppender extends AbstractAppender {
     private static final String SHUTDOWN = "Shutdown";
 
     private final BlockingQueue<Serializable> queue;
+    private final int queueSize;
     private final boolean blocking;
     private final Configuration config;
     private final AppenderRef[] appenderRefs;
@@ -69,6 +70,7 @@ public final class AsyncAppender extends AbstractAppender {
                            final boolean includeLocation) {
         super(name, filter, null, ignoreExceptions);
         this.queue = new ArrayBlockingQueue<Serializable>(queueSize);
+        this.queueSize = queueSize;
         this.blocking = blocking;
         this.config = config;
         this.appenderRefs = appenderRefs;
@@ -263,5 +265,53 @@ public final class AsyncAppender extends AbstractAppender {
                 queue.offer(SHUTDOWN);
             }
         }
+    }
+
+    /**
+     * Returns the names of the appenders that this asyncAppender delegates to
+     * as an array of Strings.
+     * @return the names of the sink appenders
+     */
+    public String[] getAppenderRefStrings() {
+        final String[] result = new String[appenderRefs.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = appenderRefs[i].getRef();
+        }
+        return result;
+    }
+    
+    /**
+     * Returns {@code true} if this AsyncAppender will take a snapshot of the stack with
+     * every log event to determine the class and method where the logging call
+     * was made.
+     * @return {@code true} if location is included with every event, {@code false} otherwise
+     */
+    public boolean isIncludeLocation() {
+        return includeLocation;
+    }
+    
+    /**
+     * Returns {@code true} if this AsyncAppender will block when the queue is full,
+     * or {@code false} if events are dropped when the queue is full.
+     * @return whether this AsyncAppender will block or drop events when the queue is full.
+     */
+    public boolean isBlocking() {
+        return blocking;
+    }
+    
+    /**
+     * Returns the name of the appender that any errors are logged to or {@code null}.
+     * @return the name of the appender that any errors are logged to or {@code null}
+     */
+    public String getErrorRef() {
+        return errorRef;
+    }
+    
+    public int getQueueCapacity() {
+        return queueSize;
+    }
+    
+    public int getQueueRemainingCapacity() {
+        return queue.remainingCapacity();
     }
 }
