@@ -279,7 +279,7 @@ public class Bar {
             with no user configuration of Chainsaw required.
            </p>
            <p>
-            Log4j provides one Advertiser implementation, which can expose FileAppender and SocketAppender 
+            Log4j provides one Advertiser implementation: 'multicastdns', which can expose FileAppender and SocketAppender 
             configurations via Multicast DNS using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
            </p>
            <p>
@@ -337,6 +337,11 @@ public class Bar {
               <tr>
                 <th>Attribute Name</th>
                 <th>Description</th>
+              </tr>
+              <tr>
+                <td>advertiser</td>
+                <td>(Optional) The Advertiser plugin name which will be used to advertise individual 
+                FileAppender or SocketAppender configurations.  The only Advertiser plugin provided is 'multicastdns".</td>
               </tr>
               <tr>
                 <td>dest</td>
