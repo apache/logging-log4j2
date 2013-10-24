@@ -49,7 +49,7 @@
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
         <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>
-        <item name="Advertising Appender Config" href="/manual/configuration.html#AdvertisingAppenderConfigurations"/>
+        <item name="Chainsaw Support" href="/manual/configuration.html#ChainsawSupport"/>
         <item name="Configuration Syntax" href="/manual/configuration.html#ConfigurationSyntax" />
         <item name="XML Syntax" href="/manual/configuration.html#XML"/>
         <item name="JSON Syntax" href="/manual/configuration.html#JSON"/>

@@ -270,27 +270,30 @@ public class Bar {
 ...
 </Configuration>]]></pre>
         </subsection>
-        <a name="AdvertisingAppenderConfigurations"/>
-        <subsection name="Advertising Appender Configurations">
+        <a name="ChainsawSupport"/>
+        <subsection name="Chainsaw can automatically process your log files (Advertising appender configurations)">
           <p>
-            Log4j supports advertisement of individual appender configurations.  External systems can examine these advertised 
-            appender configurations and use that information to automate processing.  For example, applications can advertise a FileAppender
-            configuration and Chainsaw can discover that configuration, allowing Chainsaw users to begin processing the log file
-            with no user configuration of Chainsaw required.
-           </p>
-           <p>
-            Log4j provides one Advertiser implementation: 'multicastdns', which can expose FileAppender and SocketAppender 
-            configurations via Multicast DNS using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
-           </p>
-           <p>
-            Chainsaw supports discovery of Multicast DNS-published advertisements and will display the discovered
-            appender configuration as an entry in Chainsaw's Zeroconf tab.  Since all necessary appender configuration details are 
-            broadcast in the advertisement, Chainsaw has all of the information it needs to parse and tail the log file -  
-            no Chainsaw configuration required - just double-click on the appender configuration entry in the 
-            Zeroconf tab of Chainsaw to begin processing the log file.
+            Log4j provides the ability to 'advertise' appender configuration details for all file-based appenders as well
+            as socket-based appenders.  For example, for file-based appenders, the file location and the pattern layout in the file
+            are included in the advertisement.  Chainsaw and other external systems can discover these advertisements and 
+            use that information to intelligently process the log file.  
           </p>
           <p>
-            Note: Chainsaw can currently only process advertised FileAppender configurations from Log4j2.
+            The mechanism by which an advertisement is exposed, as well as the advertisement format, is specific to each 
+            Advertiser implementation.  An external system which would like to work with a specific Advertiser implementation
+            must understand how to locate the advertised configuration as well as the format of the advertisement.  For example, 
+            a 'database' Advertiser may store configuration details in a database table.  An external system can read 
+            that database table in order to discover the file location and the file format.
+          </p>
+          <p>
+            Log4j provides one Advertiser implementation, a 'multicastdns' Advertiser, which advertises appender configuration 
+            details via IP multicast using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
+          </p>
+          <p>
+            Chainsaw automatically discovers log4j's multicastdns-generated advertisements and displays those discovered
+            advertisements in Chainsaw's Zeroconf tab (if the jmdns library is in Chainsaw's classpath).  To begin parsing and tailing
+            a log file provided in an advertisement, just double-click the advertisement entry in Chainsaw's the Zeroconf tab.  
+            Currently, Chainsaw only supports FileAppender advertisements.
           </p>
           <p>
             To advertise an appender configuration:
@@ -309,13 +312,21 @@ public class Bar {
             an http:// URI may be used if the file is accessible through a web server, or a file:// URI can be specified 
             if accessing the file from a locally-running instance of Chainsaw.
           </p>
+          <p>
+            Here is an example advertisement-enabled appender configuration which can be used by a locally-running Chainsaw to 
+            automatically tail the log file (notice the file:// advertiseURI):
+          </p>
+          <p>
+            <b>Please note, you must add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> 
+            to your application classpath in order to advertise with the 'multicastdns' advertiser.</b>
+          </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration advertiser="multicastdns">
 ...
 </Configuration>
 <Appenders>
-  <File name="File1" fileName="target/test.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
+  <File name="File1" fileName="output.log" bufferedIO="false" advertiseURI="file://path/to/output.log" advertise="true">
   ...
   </File>
 </Appenders>]]></pre>
