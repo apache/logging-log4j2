@@ -20,6 +20,7 @@
     <properties>
         <title>Log4j 2 Appenders</title>
         <author email="rgoers@apache.org">Ralph Goers</author>
+        <author email="ggrgeory@apache.org">Gary Gregory</author>
         <author email="nickwilliams@apache.org">Nick Williams</author>
     </properties>
 
@@ -2237,14 +2238,14 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <h4>Triggering Policies</h4>
             <h5>Composite Triggering Policy</h5>
               <p>
-                The CompositeTriggeringPolicy combines multiple triggering policies and returns true if any
-                of the configured policies return true. The CompositeTriggeringPolicy is configured simply
-                by wrapping other policies in a "Policies" element.
+                The <code>CompositeTriggeringPolicy</code> combines multiple triggering policies and returns true if 
+                any of the configured policies return true. The <code>CompositeTriggeringPolicy</code> is configured 
+                simply by wrapping other policies in a <code>Policies</code> element.
               </p>
             <h5>OnStartup Triggering Policy</h5>
               <p>
-                The OnStartup policy takes no parameters and causes a rollover if the log file is older than the
-                current JVM's start time.
+                The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
+                file is older than the current JVM's start time.
               </p>
               <p>
                 <em>Google App Engine note:</em><br />
@@ -2256,14 +2257,15 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               </p>
             <h5>SizeBased Triggering Policy</h5>
               <p>
-                Causes a rollover once the file has reached the specified size. The size can be specified in bytes,
-                KB, MB or GB.
+                The <code>SizeBasedTriggeringPolicy</code> causes a rollover once the file has reached the specified 
+                size. The size can be specified in bytes, with the suffix KB, MB or GB, for example <code>20MB</code>.
               </p>
             <h5>TimeBased Triggering Policy</h5>
               <p>
-                Causes a rollover once the date/time pattern no longer applies to the active file. This policy
-                accepts an "increment" attribute which indicates how frequently the rollover should occur based on the
-                time pattern and a "modulate" boolean attribute.
+                The <code>TimeBasedTriggeringPolicy</code> causes a rollover once the date/time pattern no longer 
+                applies to the active file. This policy accepts an <code>increment</code> attribute which indicates how 
+                frequently the rollover should occur based on the time pattern and a <code>modulate</code> boolean 
+                attribute.
               </p>
                 <table>
                   <tr>
