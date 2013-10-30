@@ -2242,6 +2242,16 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 any of the configured policies return true. The <code>CompositeTriggeringPolicy</code> is configured 
                 simply by wrapping other policies in a <code>Policies</code> element.
               </p>
+              <p>
+                For example, the following XML fragment defines policies that rollover the log when the JVM starts, 
+                when the log size reaches twenty megabytes, and when the current date no longer matches the log’s 
+                start date.
+              </p>
+            <pre class="prettyprint linenums"><![CDATA[<Policies>
+  <OnStartupTriggeringPolicy />
+  <SizeBasedTriggeringPolicy size="20 MB" />
+  <TimeBasedTriggeringPolicy />
+</Policies>]]></pre>              
             <h5>OnStartup Triggering Policy</h5>
               <p>
                 The <code>OnStartupTriggeringPolicy</code> policy takes no parameters and causes a rollover if the log
