@@ -177,6 +177,14 @@
           "org.apache.logging.log4j.core.selector.JNDIContextSelector."
         </p>
       </subsection>
+      <a name="WebLookup" />
+      <subsection name="Using Web Application information during the configuration">
+        <p>
+            You may want to use information about the web application during configuration.  For example, you could
+            embed context path of the web application in the name of a Rolling File Appender.  
+            See WebLookup in <a href="./lookups.html#WebLookup">Lookups</a> for more information.
+        </p>
+      </subsection>        
       <a name="JspLogging" />
       <subsection name="JavaServer Pages Logging">
         <p>
