@@ -181,7 +181,7 @@
       <subsection name="Using Web Application information during the configuration">
         <p>
             You may want to use information about the web application during configuration.  For example, you could
-            embed context path of the web application in the name of a Rolling File Appender.  
+            embed the web application's context path in the name of a Rolling File Appender.  
             See WebLookup in <a href="./lookups.html#WebLookup">Lookups</a> for more information.
         </p>
       </subsection>        
