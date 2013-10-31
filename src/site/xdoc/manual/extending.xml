@@ -177,6 +177,7 @@ public static class RootLogger extends LoggerConfig {
               use a PluginFactory. Instead, they are required to provide a constructor that accepts no arguments.
               The example below shows a Lookup that will return the value of a System Property.
             </p>
+            <p>The provided Lookups are documented here: <a href="./lookups.html">Lookups</a></p>
             <pre class="prettyprint linenums">
 @Plugin(name = "sys", category = "Lookup")
 public class SystemPropertiesLookup implements StrLookup {
