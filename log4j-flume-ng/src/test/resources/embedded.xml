@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="debug" name="MyApp" packages="">
   <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" compress="true" type="embedded">
-      <Property name="channels">primary</Property>
-      <Property name="channels.primary.type">memory</Property>
+      <Property name="channel.type">memory</Property>
+      <!-- Flume 1.4.0 does not support interceptors on the embedded agent
       <Property name="sources.log4j-source.interceptors">environment_interceptor</Property>
       <Property name="sources.log4j-source.interceptors.environment_interceptor.type">static</Property>
       <Property name="sources.log4j-source.interceptors.environment_interceptor.key">environment</Property>
-      <Property name="sources.log4j-source.interceptors.environment_interceptor.value">local</Property>
+      <Property name="sources.log4j-source.interceptors.environment_interceptor.value">local</Property>   -->
       <Property name="sinks">agent1 agent2</Property>
-      <Property name="sinks.agent1.channel">primary</Property>
-      <Property name="sinks.agent1.type">avro</Property>
-      <Property name="sinks.agent1.hostname">localhost</Property>
-      <Property name="sinks.agent1.port">${sys:primaryPort}</Property>
-      <Property name="sinks.agent1.batch-size">1</Property>
-      <Property name="sinks.agent2.channel">primary</Property>
-      <Property name="sinks.agent2.type">avro</Property>
-      <Property name="sinks.agent2.hostname">localhost</Property>
-      <Property name="sinks.agent2.port">${sys:alternatePort}</Property>
-      <Property name="sinks.agent2.batch-size">1</Property>
-      <Property name="sinkgroups">group1</Property>
-      <Property name="sinkgroups.group1.sinks">agent1 agent2</Property>
-      <Property name="sinkgroups.group1.processor.type">failover</Property>
-      <Property name="sinkgroups.group1.processor.priority.agent1">10</Property>
-      <Property name="sinkgroups.group1.processor.priority.agent2">5</Property>
+      <Property name="agent1.type">avro</Property>
+      <Property name="agent1.hostname">localhost</Property>
+      <Property name="agent1.port">${sys:primaryPort}</Property>
+      <Property name="agent1.batch-size">1</Property>
+      <Property name="agent2.type">avro</Property>
+      <Property name="agent2.hostname">localhost</Property>
+      <Property name="agent2.port">${sys:alternatePort}</Property>
+      <Property name="agent2.batch-size">1</Property>
+      <Property name="processor.type">failover</Property>
+      <Property name="processor.priority.agent1">10</Property>
+      <Property name="processor.priority.agent2">5</Property>
       <RFC5424Layout enterpriseNumber="18060" includeMDC="true" appName="MyApp"/>
     </Flume>
     <Console name="STDOUT">
@@ -34,7 +30,7 @@
     <Logger name="EventLogger" level="info" additivity="false">
       <AppenderRef ref="eventLogger"/>
     </Logger>
-    <Root level="warn">
+    <Root level="debug">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-{ "configuration": { "status": "error", "name": "RoutingTest", "packages": "org.apache.logging.log4j.test",
+{ "configuration": { "status": "debug", "name": "RoutingTest", "packages": "org.apache.logging.log4j.test",
       "properties": {
         "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
       },
@@ -44,7 +44,8 @@
     "loggers": {
       "logger": [
         { "name": "EventLogger", "level": "info", "additivity": "false", "AppenderRef": { "ref": "Routing" }},
-        { "name": "com.foo.bar", "level": "error", "additivity": "false", "AppenderRef": { "ref": "STDOUT" }}
+        { "name": "com.foo.bar", "level": "error", "additivity": "false", "AppenderRef": { "ref": "STDOUT" }},
+        { "name": "org.apache.logging", "level": "error", "additivity": "false", "AppenderRef": [{"ref": "List"}, {"ref": "STDOUT"}]}
       ],
       "root": { "level": "error", "AppenderRef": { "ref": "STDOUT" }}
     }
