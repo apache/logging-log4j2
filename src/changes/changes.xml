@@ -21,16 +21,19 @@
   </properties>
   <body>
     <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-453" dev="rgoers" type="update">
+        Update Flume Appender to use Flume 1.4.0.
+      </action>
       <action issue="LOG4J2-423" dev="rpopma" type="add">
         Added MBeans for instrumenting AsyncAppenders and AsyncLogger RingBuffers,
         exposing queue size, remaining capacity and other attributes.
       </action>
       <action issue="LOG4J2-323" dev="rpopma" type="fix">
-        Resolved memory leak by releasing reference to ThreadLocal when 
+        Resolved memory leak by releasing reference to ThreadLocal when
         AsyncLogger is stopped.
       </action>
       <action issue="LOG4J2-425" dev="rpopma" type="fix">
-        Resolved memory leak by populating AsyncLoggerConfigHelper ring buffer 
+        Resolved memory leak by populating AsyncLoggerConfigHelper ring buffer
         via EventTranslatorTwoArg, eliminating the need for a ThreadLocal.
       </action>
       <action issue="LOG4J2-420" dev="ggregory" type="add">

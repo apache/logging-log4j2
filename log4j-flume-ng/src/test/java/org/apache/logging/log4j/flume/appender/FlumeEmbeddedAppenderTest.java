@@ -193,8 +193,8 @@ public class FlumeEmbeddedAppenderTest {
                 " Received: " + body, body.endsWith(expected));
         }
     }
-
-    @Test
+    /* Flume 1.4.0 does not support interceptors on the embedded agent
+    @Test      */
     public void testHeaderAddedByInterceptor() throws InterruptedException, IOException {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
@@ -206,7 +206,7 @@ public class FlumeEmbeddedAppenderTest {
         Assert.assertEquals("local", environmentHeader);
     }
 
-    @Test
+    /* @Test */
     public void testPerformance() throws Exception {
         final long start = System.currentTimeMillis();
         final int count = 10000;
@@ -255,6 +255,7 @@ public class FlumeEmbeddedAppenderTest {
 
         public EventCollector(final int port) {
             final Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
+            System.out.println("Collector listening on port " + port);
             nettyServer = new NettyServer(responder, new InetSocketAddress(HOSTNAME, port));
             nettyServer.start();
         }
