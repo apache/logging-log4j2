@@ -28,6 +28,10 @@
 <!ENTITY % log4j..Events "%log4j_prefix..;Events">
 <!ENTITY % log4j..Event "%log4j_prefix..;Event">
 <!ENTITY % log4j..Message "%log4j_prefix..;Message">
+<!ENTITY % log4j..Marker "%log4j_prefix..;Marker">
+<!ATTLIST %log4j..Marker;
+    parent CDATA #IMPLIED
+>
 <!ENTITY % log4j..NDC "%log4j_prefix..;NDC">
 <!ENTITY % log4j..Throwable "%log4j_prefix..;Throwable">
 <!ENTITY % log4j..LocationInfo "%log4j_prefix..;LocationInfo">
@@ -39,7 +43,7 @@
 <!ATTLIST %log4j..Events;
 	%documentElementAttributes;
 >
-<!ELEMENT %log4j..Event; (%log4j..Message;, (%log4j..NDC;)?, (%log4j..Throwable;)?, (%log4j..LocationInfo;)?, (%log4j..Properties;)?)>
+<!ELEMENT %log4j..Event; (%log4j..Message;, (%log4j..NDC;)?, (%log4j..Marker;)?, (%log4j..Throwable;)?, (%log4j..LocationInfo;)?, (%log4j..Properties;)?)>
 <!ATTLIST %log4j..Event;
 	logger CDATA #REQUIRED
 	timestamp NMTOKEN #REQUIRED

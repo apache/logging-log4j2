@@ -28,6 +28,11 @@
                         <xs:sequence>
                             <xs:element name="Message"/>
                             <xs:element name="NDC" minOccurs="0"/>
+                            <xs:element name="Marker" minOccurs="0">
+                               <xs:complexType mixed="true">
+                                   <xs:attribute name="parent" type="xs:string" use="optional"/>
+                               </xs:complexType>
+                           </xs:element>
                             <xs:element name="Throwable" minOccurs="0"/>
                             <xs:element name="LocationInfo" minOccurs="0">
                                 <xs:complexType>

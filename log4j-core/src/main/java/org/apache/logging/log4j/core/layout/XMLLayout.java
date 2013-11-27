@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -192,6 +193,28 @@ public class XMLLayout extends AbstractStringLayout {
                 buf.append(this.namespacePrefix);
             }
             buf.append("NDC>");
+            buf.append(this.eol);
+        }
+
+        if (event.getMarker() != null) {
+            final Marker marker = event.getMarker();
+            buf.append(this.indent2);
+            buf.append('<');
+            if (!complete) {
+                buf.append(this.namespacePrefix);
+            }
+            buf.append("Marker");
+            final Marker parent = marker.getParent();
+            if (parent != null) {
+                buf.append(" parent=\"").append(Transform.escapeHtmlTags(parent.getName())).append("\"");
+            }
+            buf.append('>');
+            buf.append(Transform.escapeHtmlTags(marker.getName()));
+            buf.append("</");
+            if (!complete) {
+                buf.append(this.namespacePrefix);
+            }
+            buf.append("Marker>");
             buf.append(this.eol);
         }
 

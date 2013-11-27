@@ -16,29 +16,32 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Charsets;
+import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
  */
 public class XMLLayoutTest {
     private static final String body = "<Message><![CDATA[empty mdc]]></Message>";
+    private static final String markerTag = "<Marker>EVENT</Marker>";
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @AfterClass
@@ -99,6 +102,9 @@ public class XMLLayoutTest {
 
         root.error("finished mdc pattern test", new NullPointerException("test"));
 
+        final Marker marker = MarkerManager.getMarker("EVENT");
+        root.error(marker, "marker test");
+
         appender.stop();
 
         final List<String> list = appender.getMessages();
@@ -108,5 +114,8 @@ public class XMLLayoutTest {
         assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
         assertTrue("Incorrect body. Expected " + body + " Actual: " + list.get(7), list.get(7).trim().equals(body));
+
+        assertTrue("Missing Marker-Tag, Expected "+markerTag+", Actual"+list.get(list.size() - 4),
+                   list.get(list.size() - 4).contains(markerTag));
     }
 }
