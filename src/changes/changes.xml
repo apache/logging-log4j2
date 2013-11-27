@@ -20,7 +20,10 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+    <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-447" dev="ggregory" type="fix" due-to="Jeff Hudren, Mark Paluch, Scott Deboy">
+        XMLLayout does not include marker name.
+      </action>
       <action issue="LOG4J2-453" dev="rgoers" type="update">
         Update Flume Appender to use Flume 1.4.0.
       </action>
