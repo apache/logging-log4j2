@@ -25,7 +25,9 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
  */
 public class Log4jLog extends AbstractLoggerWrapper implements Log {
 
-    public Log4jLog(final AbstractLogger logger, final String name) {
+    private static final long serialVersionUID = 1L;
+
+	public Log4jLog(final AbstractLogger logger, final String name) {
         super(logger, name, null);
     }
 }

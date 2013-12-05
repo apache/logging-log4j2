@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -28,9 +30,10 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
- *
  */
-public abstract class AbstractLogger implements Logger {
+public abstract class AbstractLogger implements Logger, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Marker for flow tracing.

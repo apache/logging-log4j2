@@ -74,6 +74,7 @@ import com.lmax.disruptor.util.Util;
  * manner.
  */
 public class AsyncLogger extends Logger {
+    private static final long serialVersionUID = 1L;
     private static final int HALF_A_SECOND = 500;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 20;
     private static final int RINGBUFFER_MIN_SIZE = 128;

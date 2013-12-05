@@ -30,6 +30,8 @@ import static org.junit.Assert.*;
  */
 public class AbstractLoggerTest extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
+
     private static class LogEvent {
 
         String markerName;

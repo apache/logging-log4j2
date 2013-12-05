@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public class TestLogger extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
+
     public TestLogger() {
         super();
     }
