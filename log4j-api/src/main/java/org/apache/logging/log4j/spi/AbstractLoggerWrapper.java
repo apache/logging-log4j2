@@ -26,6 +26,7 @@ import org.apache.logging.log4j.message.MessageFactory;
  */
 public class AbstractLoggerWrapper extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
     /**
      * The wrapped Logger.
      */

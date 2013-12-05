@@ -24,6 +24,8 @@ package org.apache.logging.log4j.message;
  */
 public class FormattedMessageFactory extends AbstractMessageFactory {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates {@link StringFormattedMessage} instances.
      *

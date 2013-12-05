@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
  */
 public class LocalizedMessageFactory extends AbstractMessageFactory {
 
+    private static final long serialVersionUID = 1L;
+    
     private final ResourceBundle bundle;
     private final String bundleId;
 

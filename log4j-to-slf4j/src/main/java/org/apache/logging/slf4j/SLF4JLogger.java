@@ -30,7 +30,8 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public class SLF4JLogger extends AbstractLogger {
 
-    private final org.slf4j.Logger logger;
+    private static final long serialVersionUID = 1L;
+	private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
 
     public SLF4JLogger(final String name, final org.slf4j.Logger logger) {

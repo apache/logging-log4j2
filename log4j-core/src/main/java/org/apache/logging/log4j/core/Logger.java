@@ -39,6 +39,8 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  */
 public class Logger extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * config should be consistent across threads.
      */

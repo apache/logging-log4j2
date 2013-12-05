@@ -24,6 +24,8 @@ package org.apache.logging.log4j.message;
  */
 public class MessageFormatMessageFactory extends AbstractMessageFactory {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
      * @param message The message pattern.

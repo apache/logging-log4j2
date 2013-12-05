@@ -37,6 +37,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class StatusLogger extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * System property that can be configured with the number of entries in the queue. Once the limit
      * is reached older entries will be removed as new entries are added.

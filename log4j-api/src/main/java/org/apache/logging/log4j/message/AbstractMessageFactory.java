@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
+
 /**
  * Provides an abstract superclass for MessageFactory implementations with default implementations.
  * <p>
@@ -24,7 +26,9 @@ package org.apache.logging.log4j.message;
  *
  * @version $Id$
  */
-public abstract class AbstractMessageFactory implements MessageFactory {
+public abstract class AbstractMessageFactory implements MessageFactory, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /*
      * (non-Javadoc)

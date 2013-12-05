@@ -28,7 +28,9 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
  * @since 2.0
  */
 class Log4jTaglibLogger extends AbstractLoggerWrapper {
-    public Log4jTaglibLogger(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
+    private static final long serialVersionUID = 1L;
+
+	public Log4jTaglibLogger(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
         super(logger, name, messageFactory);
     }
 

@@ -36,6 +36,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class SimpleLogger extends AbstractLogger {
 
+    private static final long serialVersionUID = 1L;
+
     private static final char SPACE = ' ';
 
 	/**
