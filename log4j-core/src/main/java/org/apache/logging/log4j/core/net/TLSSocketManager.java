@@ -112,6 +112,8 @@ public class TLSSocketManager extends TCPSocketManager {
     private static class TLSSocketManagerFactory implements ManagerFactory<TLSSocketManager, TLSFactoryData> {
 
         private class TLSSocketManagerFactoryException extends Exception {
+
+            private static final long serialVersionUID = 1L;
         }
 
         @Override
