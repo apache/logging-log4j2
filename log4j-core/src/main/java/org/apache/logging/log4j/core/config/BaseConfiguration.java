@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -226,9 +225,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Object getComponent(final String name) {
-        return componentMap.get(name);
+    public <T> T getComponent(final String name) {
+        return (T) componentMap.get(name);
     }
 
     @Override
