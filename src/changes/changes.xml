@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-477" dev="rpopma" type="fix" due-to="Tal Liron">
+        NPE in ClassLoaderContextSelector.
+      </action>
       <action issue="LOG4J2-454" dev="rpopma" type="fix" due-to="Robin Zhang Tao">
         TimeBasedTriggeringPolicy should use event time millis.
       </action>
