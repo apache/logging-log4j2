@@ -179,7 +179,8 @@ public class ClassLoaderContextSelector implements ContextSelector {
     }
 
     private LoggerContext locateContext(final ClassLoader loader, final URI configLocation) {
-        final String name = loader.toString();
+        // LOG4J2-477: class loader may be null
+        final String name = loader != null ? loader.toString() : ClassLoader.getSystemClassLoader().toString();
         AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             if (configLocation == null) {
