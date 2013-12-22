@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-472" dev="rpopma" type="fix" due-to="Tal Liron">
+        BaseConfiguration class does not properly implement Configuration interface.
+      </action>
       <action issue="LOG4J2-447" dev="ggregory" type="fix" due-to="Jeff Hudren, Mark Paluch, Scott Deboy">
         XMLLayout does not include marker name.
       </action>
