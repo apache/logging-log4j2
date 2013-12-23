@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.TimestampMessage;
 
 import com.lmax.disruptor.EventFactory;
 
@@ -180,6 +181,10 @@ public class RingBufferLogEvent implements LogEvent {
 
     @Override
     public long getMillis() {
+        Message msg = getMessage();
+        if (msg instanceof TimestampMessage) { // LOG4J2-455
+            return ((TimestampMessage) msg).getTimestamp();
+        }
         return currentTimeMillis;
     }
 
