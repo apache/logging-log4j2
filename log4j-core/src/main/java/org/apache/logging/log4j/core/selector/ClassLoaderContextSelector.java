@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.ReflectiveCallerClassUtility;
@@ -178,9 +177,10 @@ public class ClassLoaderContextSelector implements ContextSelector {
         return Collections.unmodifiableList(list);
     }
 
-    private LoggerContext locateContext(final ClassLoader loader, final URI configLocation) {
+    private LoggerContext locateContext(final ClassLoader loaderOrNull, final URI configLocation) {
         // LOG4J2-477: class loader may be null
-        final String name = loader != null ? loader.toString() : ClassLoader.getSystemClassLoader().toString();
+        final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
+        final String name = loader.toString();
         AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref == null) {
             if (configLocation == null) {
@@ -219,7 +219,7 @@ public class ClassLoaderContextSelector implements ContextSelector {
             final AtomicReference<WeakReference<LoggerContext>> r =
                 new AtomicReference<WeakReference<LoggerContext>>();
             r.set(new WeakReference<LoggerContext>(ctx));
-            CONTEXT_MAP.putIfAbsent(loader.toString(), r);
+            CONTEXT_MAP.putIfAbsent(name, r);
             ctx = CONTEXT_MAP.get(name).get().get();
             return ctx;
         }
