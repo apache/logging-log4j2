@@ -139,7 +139,7 @@ public final class Transform {
         final int len = input.length();
         for (int i = 0; i < len; i++) {
             final char ch = input.charAt(i);
-            final String escBs = "\\\\";
+            final String escBs = "\\";
             switch (ch) {
             case '"':
                 buf.append(escBs);
