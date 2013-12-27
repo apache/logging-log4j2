@@ -126,6 +126,32 @@ public class JSONLayoutTest {
         this.checkAt("\"message\":\"starting mdc pattern test\",", 6, list);
     }
 
+    @Test
+    public void testEscapeLayout() throws Exception {
+
+        // set up appender
+        final JSONLayout layout = JSONLayout.createLayout("true", "true", "true", "false", null);
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        // set appender on root and set level to debug
+        this.root.addAppender(appender);
+        this.root.setLevel(Level.DEBUG);
+
+        // output starting message
+        this.root.debug("Here is a quote ' and then a double quote \"");
+
+        appender.stop();
+
+        final List<String> list = appender.getMessages();
+
+        this.checkAt("[", 0, list);
+        this.checkAt("{", 1, list);
+        this.checkAt("\"logger\":\"root\",", 2, list);
+        this.checkAt("\"level\":\"DEBUG\",", 4, list);
+        this.checkAt("\"message\":\"Here is a quote ' and then a double quote \\\"\",", 6, list);
+    }
+
     private void checkAt(String expected, int lineIndex, List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
         assertTrue("Incorrect line index " + lineIndex + ": \"" + trimedLine + "\"", trimedLine.equals(expected));
