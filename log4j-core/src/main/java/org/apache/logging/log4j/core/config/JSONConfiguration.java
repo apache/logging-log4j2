@@ -232,7 +232,16 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                             if (itemEntry.getValue().isObject()) {
                                 LOGGER.debug("Processing node for object " + itemEntry.getKey());
                                 itemChildren.add(constructNode(itemEntry.getKey(), item, itemEntry.getValue()));
+                            } else if (itemEntry.getValue().isArray()) {
+                                JsonNode array = itemEntry.getValue();
+                                String entryName = itemEntry.getKey();
+                                LOGGER.debug("Processing array for object " + entryName);
+                                final PluginType<?> itemEntryType = pluginManager.getPluginType(entryName);
+                                for (int j = 0; j < array.size(); ++j) {
+                                    itemChildren.add(constructNode(entryName, item, array.get(j)));
+                                }
                             }
+
                         }
                         children.add(item);
                     }
@@ -240,6 +249,8 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                     LOGGER.debug("Processing node for object " + entry.getKey());
                     children.add(constructNode(entry.getKey(), node, n));
                 }
+            } else {
+                LOGGER.debug("Node {} is of type {}", entry.getKey(), n.getNodeType());
             }
         }
 
