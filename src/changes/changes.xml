@@ -21,7 +21,7 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
-      <action issue="LOG4J2-467" dev="rpopma" type="fix" due-to="Anthony Baldocchi">
+      <action issue="LOG4J2-467" dev="rpopma" type="add" due-to="Anthony Baldocchi">
         Added option to toggle Thread name caching in AsyncLogger.
       </action>
       <action issue="LOG4J2-478" dev="ggregory" type="fix" due-to="Michael Friedmann.">
