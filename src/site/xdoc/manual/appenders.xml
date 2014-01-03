@@ -2607,7 +2607,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <SizeBasedTriggeringPolicy size="500" />
           </RollingFile>
         </Route>
-        <Route AppenderRef="AuditLogger" key="Audit"/>
+        <Route ref="AuditLogger" key="Audit"/>
       </Routes>
     </Routing>
   </Appenders>

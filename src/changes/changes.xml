@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-482" dev="rpopma" type="add" due-to="Hongdi Ren">
+        Documentation fix: The attribute of Route to refer to an appender is "ref" not "AppenderRef".
+      </action>
       <action issue="LOG4J2-467" dev="rpopma" type="add" due-to="Anthony Baldocchi">
         Added option to toggle Thread name caching in AsyncLogger.
       </action>
