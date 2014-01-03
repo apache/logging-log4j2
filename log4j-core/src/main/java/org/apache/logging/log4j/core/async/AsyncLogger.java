@@ -80,7 +80,30 @@ public class AsyncLogger extends Logger {
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final ThreadNameStrategy THREAD_NAME_STRATEGY = ThreadNameStrategy.create();
 
+    static enum ThreadNameStrategy { // LOG4J2-467
+        CACHED {
+            public String getThreadName(Info info) {
+                return info.cachedThreadName;
+            }
+        },
+        UNCACHED {
+            public String getThreadName(Info info) {
+                return Thread.currentThread().getName();
+            }
+        };
+        abstract String getThreadName(Info info);
+
+        static ThreadNameStrategy create() {
+            String name = System.getProperty("AsyncLogger.ThreadNameStrategy", CACHED.name());
+            try {
+                return ThreadNameStrategy.valueOf(name);
+            } catch (Exception ex) {
+                return CACHED;
+            }
+        }
+    }
     private static volatile Disruptor<RingBufferLogEvent> disruptor;
     private static Clock clock = ClockFactory.getClock();
 
@@ -89,6 +112,7 @@ public class AsyncLogger extends Logger {
     private static ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
+        LOGGER.debug("AsyncLogger.ThreadNameStrategy={}", THREAD_NAME_STRATEGY);
         final int ringBufferSize = calculateRingBufferSize();
 
         final WaitStrategy waitStrategy = createWaitStrategy();
@@ -172,18 +196,20 @@ public class AsyncLogger extends Logger {
     /**
      * Tuple with the event translator and thread name for a thread.
      */
-    private static class Info {
-        private RingBufferLogEventTranslator translator;
-        private String cachedThreadName;
+    static class Info {
+        private final RingBufferLogEventTranslator translator;
+        private final String cachedThreadName;
+        public Info(RingBufferLogEventTranslator translator, String threadName) {
+            this.translator = translator;
+            this.cachedThreadName = threadName;
+        }
     }
 
     @Override
     public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         Info info = threadlocalInfo.get();
         if (info == null) {
-            info = new Info();
-            info.translator = new RingBufferLogEventTranslator();
-            info.cachedThreadName = Thread.currentThread().getName();
+            info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName());
             threadlocalInfo.set(info);
         }
 
@@ -200,7 +226,8 @@ public class AsyncLogger extends Logger {
                 ThreadContext.getImmutableStack(), //
 
                 // Thread.currentThread().getName(), //
-                info.cachedThreadName, //
+                // info.cachedThreadName, //
+                THREAD_NAME_STRATEGY.getThreadName(info), // LOG4J2-467
 
                 // location: very expensive operation. LOG4J2-153:
                 // Only include if "includeLocation=true" is specified,

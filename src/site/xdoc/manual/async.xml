@@ -274,6 +274,21 @@
 						</td>
 					</tr>
 					<tr>
+						<td>AsyncLogger.ThreadNameStrategy</td>
+						<td>
+							<tt>CACHED</tt>
+						</td>
+						<td>
+							Valid values: CACHED, UNCACHED.
+							<br />
+							By default, AsyncLogger caches the thread name
+							in a threadlocal variable to improve performance.
+							Specify the <tt>UNCACHED</tt> option if your application
+							modifies the thread name at runtime (with <tt>Thread.currentThread().setName()</tt>)
+							and you want to see the new thread name reflected in the log.
+						</td>
+					</tr>
+					<tr>
 						<td>log4j.Clock</td>
 						<td>
 							<tt>SystemClock</tt>
