@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.web;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -29,12 +31,15 @@ import javax.servlet.UnavailableException;
 
 import org.springframework.mock.web.MockServletContext;
 
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public class WebLookupTest {
 
     @Test
     public void testLookup() throws Exception {
+        ContextAnchor.THREAD_CONTEXT.remove();
         ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("TestAttr", "AttrValue");
         servletContext.setInitParameter("TestParam", "ParamValue");
@@ -46,6 +51,7 @@ public class WebLookupTest {
             initializer.setLoggerContext();
             LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             assertNotNull("No LoggerContext", ctx);
+            assertNotNull("No ServletContext", ctx.getExternalContext());
             Configuration config = ctx.getConfiguration();
             assertNotNull("No Configuration", config);
             StrSubstitutor substitutor = config.getStrSubstitutor();
@@ -65,6 +71,36 @@ public class WebLookupTest {
         } catch (final UnavailableException e) {
             fail("Failed to initialize Log4j properly." + e.getMessage());
         }
+        initializer.deinitialize();
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    public void testLookup2() throws Exception {
+        ContextAnchor.THREAD_CONTEXT.remove();
+        ServletContext servletContext = new MockServletContext();
+        servletContext.setAttribute("TestAttr", "AttrValue");
+        servletContext.setInitParameter("myapp.logdir", "target");
+        servletContext.setAttribute("Name1", "Ben");
+        servletContext.setInitParameter("Name2", "Jerry");
+        servletContext.setInitParameter("log4jConfiguration", "log4j-webvar.xml");
+        Log4jWebInitializer initializer = Log4jWebInitializerImpl.getLog4jWebInitializer(servletContext);
+        initializer.initialize();
+        initializer.setLoggerContext();
+        LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+        assertNotNull("No LoggerContext", ctx);
+        assertNotNull("No ServletContext", ctx.getExternalContext());
+        Configuration config = ctx.getConfiguration();
+        assertNotNull("No Configuration", config);
+        Map<String, Appender> appenders = config.getAppenders();
+        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
+            if (entry.getKey().equals("file")) {
+                FileAppender fa = (FileAppender) entry.getValue();
+                assertTrue("target/myapp.log".equals(fa.getFileName()));
+            }
+        }
+        initializer.deinitialize();
+        ContextAnchor.THREAD_CONTEXT.remove();
     }
 
 }

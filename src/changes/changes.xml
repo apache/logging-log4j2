@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-459" dev="rgoers" type="fix">
+        Set external context when constructing the LoggerContext.
+      </action>
       <action issue="LOG4J2-466" dev="rpopma" type="fix" due-to="Jan Tepke">
         Cannot load log4j2 config file if path contains plus '+' characters.
       </action>
