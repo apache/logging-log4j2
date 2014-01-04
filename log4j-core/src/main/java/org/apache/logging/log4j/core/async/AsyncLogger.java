@@ -112,6 +112,7 @@ public class AsyncLogger extends Logger {
     private static ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
+        initInfoForExecutorThread();
         LOGGER.debug("AsyncLogger.ThreadNameStrategy={}", THREAD_NAME_STRATEGY);
         final int ringBufferSize = calculateRingBufferSize();
 
@@ -144,6 +145,24 @@ public class AsyncLogger extends Logger {
             LOGGER.warn("Invalid RingBufferSize {}, using default size {}.", userPreferredRBSize, ringBufferSize);
         }
         return Util.ceilingNextPowerOfTwo(ringBufferSize);
+    }
+
+    /**
+     * Initialize an {@code Info} object that is threadlocal to the consumer/appender thread.
+     * This Info object uniquely has attribute {@code isAppenderThread} set to {@code true}.
+     * All other Info objects will have this attribute set to {@code false}.
+     * This allows us to detect Logger.log() calls initiated from the appender thread,
+     * which may cause deadlock when the RingBuffer is full. (LOG4J2-471)
+     */
+    private static void initInfoForExecutorThread() {
+        executor.submit(new Runnable(){
+            public void run() {
+                final boolean isAppenderThread = true;
+                final Info info = new Info(new RingBufferLogEventTranslator(), //
+                        Thread.currentThread().getName(), isAppenderThread);
+                threadlocalInfo.set(info);
+            }
+        });
     }
 
     private static WaitStrategy createWaitStrategy() {
@@ -199,9 +218,11 @@ public class AsyncLogger extends Logger {
     static class Info {
         private final RingBufferLogEventTranslator translator;
         private final String cachedThreadName;
-        public Info(RingBufferLogEventTranslator translator, String threadName) {
+        private final boolean isAppenderThread;
+        public Info(RingBufferLogEventTranslator translator, String threadName, boolean appenderThread) {
             this.translator = translator;
             this.cachedThreadName = threadName;
+            this.isAppenderThread = appenderThread;
         }
     }
 
@@ -209,10 +230,17 @@ public class AsyncLogger extends Logger {
     public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
         Info info = threadlocalInfo.get();
         if (info == null) {
-            info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName());
+            info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
             threadlocalInfo.set(info);
         }
-
+        
+        // LOG4J2-471: prevent deadlock when RingBuffer is full and object
+        // being logged calls Logger.log() from its toString() method
+        if (info.isAppenderThread && disruptor.getRingBuffer().remainingCapacity() == 0) {
+            // bypass RingBuffer and invoke Appender directly
+            config.loggerConfig.log(getName(), marker, fqcn, level, data, t);
+            return;
+        }
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
         info.translator.setValues(this, getName(), marker, fqcn, level, data, t, //
 

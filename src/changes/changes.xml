@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-471" dev="rpopma" type="fix" due-to="Anthony Baldocchi">
+        Fixed issue where toString methods that perform logging could deadlock AsyncLogger.
+      </action>
       <action issue="LOG4J2-482" dev="rpopma" type="add" due-to="Hongdi Ren">
         Documentation fix: The attribute of Route to refer to an appender is "ref" not "AppenderRef".
       </action>

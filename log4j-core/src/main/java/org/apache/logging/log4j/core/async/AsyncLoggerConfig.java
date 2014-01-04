@@ -107,7 +107,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
         event.getThreadName();
 
         // pass on the event to a separate thread
-        helper.callAppendersFromAnotherThread(event);
+        if (!helper.callAppendersFromAnotherThread(event)) {
+            super.callAppenders(event);
+        }
     }
 
     /** Called by AsyncLoggerConfigHelper.RingBufferLog4jEventHandler. */
