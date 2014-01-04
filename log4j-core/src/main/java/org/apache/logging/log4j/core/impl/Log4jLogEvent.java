@@ -158,7 +158,7 @@ public class Log4jLogEvent implements LogEvent {
         name = loggerName;
         this.marker = marker;
         this.fqcnOfLogger = fqcn;
-        this.level = level;
+        this.level = (level == null) ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.throwable = t;
         this.mdc = mdc;

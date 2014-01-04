@@ -24,10 +24,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Test;
 
 public class Log4jLogEventTest {
+    
+    @Test
+    public void testNullLevelReplacedWithOFF() throws Exception {
+        final Marker marker = null;
+        final Throwable t = null;
+        final Level NULL_LEVEL = null;
+        final Log4jLogEvent evt = new Log4jLogEvent("some.test", marker, "",
+                NULL_LEVEL, new SimpleMessage("abc"), t);
+        assertEquals(Level.OFF, evt.getLevel());
+    }
 
     @Test
     public void testJavaIoSerializable() throws Exception {

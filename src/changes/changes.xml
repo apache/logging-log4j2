@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-462" dev="rpopma" type="fix" due-to="Daisuke Baba">
+        Fix LogEvent to never return null Level, fixes LevelPatternConverter.format may throw NPE.
+      </action>
+      <action issue="LOG4J2-465" dev="rpopma" type="fix" due-to="Daisuke Baba">
+        Fix LogEvent to never return null Level, fixes ThresholdFilter throws NPE.
+      </action>
       <action issue="LOG4J2-471" dev="rpopma" type="fix" due-to="Anthony Baldocchi">
         Fixed issue where toString methods that perform logging could deadlock AsyncLogger.
       </action>

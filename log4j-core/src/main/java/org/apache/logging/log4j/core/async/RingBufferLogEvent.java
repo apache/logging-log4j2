@@ -143,6 +143,9 @@ public class RingBufferLogEvent implements LogEvent {
 
     @Override
     public Level getLevel() {
+        if (level == null) {
+            level = Level.OFF; // LOG4J2-462, LOG4J2-465
+        }
         return level;
     }
 
