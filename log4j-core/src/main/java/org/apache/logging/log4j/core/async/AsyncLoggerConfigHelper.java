@@ -70,6 +70,7 @@ class AsyncLoggerConfigHelper {
     private static ExecutorService executor;
 
     private static volatile int count = 0;
+    private static ThreadLocal<Boolean> isAppenderThread = new ThreadLocal<Boolean>();
 
     /**
      * Factory used to populate the RingBuffer with events. These event objects
@@ -112,6 +113,7 @@ class AsyncLoggerConfigHelper {
         final int ringBufferSize = calculateRingBufferSize();
         final WaitStrategy waitStrategy = createWaitStrategy();
         executor = Executors.newSingleThreadExecutor(threadFactory);
+        initThreadLocalForExecutorThread();
         disruptor = new Disruptor<Log4jEventWrapper>(FACTORY, ringBufferSize,
                 executor, ProducerType.MULTI, waitStrategy);
         final EventHandler<Log4jEventWrapper>[] handlers = new Log4jEventWrapperHandler[] {//
@@ -279,9 +281,45 @@ class AsyncLoggerConfigHelper {
         executor.shutdown(); // finally, kill the processor thread
         executor = null; // release reference to allow GC
     }
-    
-    public void callAppendersFromAnotherThread(final LogEvent event) {
+
+    /**
+     * Initialize the threadlocal that allows us to detect Logger.log() calls 
+     * initiated from the appender thread, which may cause deadlock when the 
+     * RingBuffer is full. (LOG4J2-471)
+     */
+    private static void initThreadLocalForExecutorThread() {
+        executor.submit(new Runnable(){
+            public void run() {
+                isAppenderThread.set(Boolean.TRUE);
+            }
+        });
+    }
+
+    /**
+     * If possible, delegates the invocation to {@code callAppenders} to another
+     * thread and returns {@code true}. If this is not possible (if it detects
+     * that delegating to another thread would cause deadlock because the
+     * current call to Logger.log() originated from the appender thread and the
+     * ringbuffer is full) then this method does nothing and returns {@code false}.
+     * It is the responsibility of the caller to process the event when this
+     * method returns {@code false}.
+     * 
+     * @param event the event to delegate to another thread
+     * @return {@code true} if delegation was successful, {@code false} if the
+     *          calling thread needs to process the event itself
+     */
+    public boolean callAppendersFromAnotherThread(final LogEvent event) {
+        
+        // LOG4J2-471: prevent deadlock when RingBuffer is full and object
+        // being logged calls Logger.log() from its toString() method
+        if (isAppenderThread.get() == Boolean.TRUE //
+                && disruptor.getRingBuffer().remainingCapacity() == 0) {
+            
+            // bypass RingBuffer and invoke Appender directly
+            return false;
+        }
         disruptor.getRingBuffer().publishEvent(translator, event, asyncLoggerConfig);
+        return true;
     }
 
     /**
