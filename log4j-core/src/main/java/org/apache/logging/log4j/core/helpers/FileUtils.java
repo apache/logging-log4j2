@@ -64,8 +64,8 @@ public final class FileUtils {
         }
         try {
             String fileName = uri.toURL().getFile();
-            if (new File(fileName).exists()) {
-                return new File(fileName);
+            if (new File(fileName).exists()) { // LOG4J2-466
+                return new File(fileName); // allow files with '+' char in name
             }
             return new File(URLDecoder.decode(fileName, "UTF8"));
         } catch (final MalformedURLException ex) {
