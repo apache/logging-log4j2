@@ -63,7 +63,11 @@ public final class FileUtils {
             }
         }
         try {
-            return new File(URLDecoder.decode(uri.toURL().getFile(), "UTF8"));
+            String fileName = uri.toURL().getFile();
+            if (new File(fileName).exists()) {
+                return new File(fileName);
+            }
+            return new File(URLDecoder.decode(fileName, "UTF8"));
         } catch (final MalformedURLException ex) {
             LOGGER.warn("Invalid URL " + uri, ex);
         } catch (final UnsupportedEncodingException uee) {
