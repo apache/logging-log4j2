@@ -30,9 +30,10 @@ public interface LoggerContextFactory {
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
      */
-    LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext);
+    LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext);
 
     /**
      * Creates a {@link LoggerContext}.
@@ -42,9 +43,11 @@ public interface LoggerContextFactory {
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @param configLocation The location of the configuration for the LoggerContext.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
      */
-    LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation);
+    LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext,
+                             URI configLocation);
 
     /**
      * Removes knowledge of a LoggerContext.

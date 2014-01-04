@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <File name="file" fileName="${web:initParam.myapp.logdir}/myapp.log" append="true">
+      <PatternLayout pattern="%d [%t] %-5p %c - %m%n"/>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="file"/>
+    </Root>
+  </Loggers>
+</Configuration>

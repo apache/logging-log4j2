@@ -100,13 +100,11 @@ public final class Configurator {
                                            final Object externalContext) {
 
         try {
-            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false,
+                externalContext, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                if (externalContext != null) {
-                    ctx.setExternalContext(externalContext);
-                }
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -129,6 +127,21 @@ public final class Configurator {
      */
     public static LoggerContext initialize(final ClassLoader loader,
                                            final ConfigurationFactory.ConfigurationSource source) {
+        return initialize(loader, source, null);
+    }
+
+    /**
+     * Initializes the Logging Context.
+     * @param loader The ClassLoader for the Context (or null).
+     * @param source The InputSource for the configuration.
+     * @param externalContext The external context to be attached to the LoggerContext.
+     * @return The LoggerContext.
+     */
+
+    public static LoggerContext initialize(final ClassLoader loader,
+                                           final ConfigurationFactory.ConfigurationSource source,
+                                           final Object externalContext)
+    {
 
         try {
             URI configLocation = null;
@@ -137,7 +150,8 @@ public final class Configurator {
             } catch (final Exception ex) {
                 // Invalid source location.
             }
-            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false, configLocation);
+            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false,
+                externalContext, configLocation);
             if (context instanceof LoggerContext) {
                 final LoggerContext ctx = (LoggerContext) context;
                 ContextAnchor.THREAD_CONTEXT.set(ctx);

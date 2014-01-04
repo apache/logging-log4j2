@@ -76,11 +76,14 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
      */
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                    final boolean currentContext) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
+        ctx.setExternalContext(externalContext);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
         }
@@ -91,15 +94,19 @@ public class Log4jContextFactory implements LoggerContextFactory {
      * Load the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
      * for the caller if a more appropriate Context can be determined.
      * @param configLocation The location of the configuration for the LoggerContext.
      * @return The LoggerContext.
      */
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-            final URI configLocation) {
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                    final boolean currentContext, final URI configLocation) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
+        }
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
         }
