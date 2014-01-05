@@ -53,6 +53,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     public static final String PROPERTY_CONFIG = "config";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
@@ -208,7 +209,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                 shutdownThread = null;
             }
             final Configuration prev = config;
-            config = new NullConfiguration();
+            config = NULL_CONFIGURATION;
             updateLoggers();
             prev.stop();
             externalContext = null;
