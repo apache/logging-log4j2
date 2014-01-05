@@ -324,7 +324,8 @@ public class RFC5424Layout extends AbstractStringLayout {
 
     private void appendMessage(final StringBuilder buffer, final LogEvent event) {
         final Message message = event.getMessage();
-        final String text = message.getFormat();
+        // This layout formats StructuredDataMessages instead of delegating to the Message itself.
+        final String text = (message instanceof StructuredDataMessage) ? message.getFormat() : message.getFormattedMessage();
 
         if (text != null && text.length() > 0) {
             buffer.append(" ").append(escapeNewlines(text, escapeNewLine));
