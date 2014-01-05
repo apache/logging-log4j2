@@ -21,7 +21,6 @@ import java.net.URI;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
@@ -54,11 +53,6 @@ public class Log4jContextFactory implements LoggerContextFactory {
         }
         if (selector == null) {
             selector = new ClassLoaderContextSelector();
-        }
-        try {
-            Server.registerMBeans(selector);
-        } catch (final Exception ex) {
-            LOGGER.error("Could not start JMX", ex);
         }
     }
 
