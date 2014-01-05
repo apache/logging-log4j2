@@ -88,12 +88,13 @@ import com.foo.Bar;
 
 // Import log4j classes.
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class MyApp {
 
 // Define a static logger variable so that it references the
 // Logger instance named "MyApp".
-Logger logger = LogManager.getLogger(MyApp.class.getName());
+static final Logger logger = LogManager.getLogger(MyApp.class.getName());
 
 public static void main(String[] args) {
 
@@ -101,7 +102,7 @@ public static void main(String[] args) {
 
 logger.trace("Entering application.");
 Bar bar = new Bar();
-if (!bar.doIt() {
+if (!bar.doIt()) {
   logger.error("Didn't do it.");
 }
 logger.trace("Exiting application.");                 }
@@ -119,9 +120,10 @@ logger.trace("Exiting application.");                 }
 <pre class="prettyprint linenums">
 package com.foo;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class Bar {
-  static Logger logger = LogManager.getLogger(Bar.class.getName());
+  static final Logger logger = LogManager.getLogger(Bar.class.getName());
 
   public boolean doIt() {
     logger.entry();
@@ -275,24 +277,24 @@ public class Bar {
           <p>
             Log4j provides the ability to 'advertise' appender configuration details for all file-based appenders as well
             as socket-based appenders.  For example, for file-based appenders, the file location and the pattern layout in the file
-            are included in the advertisement.  Chainsaw and other external systems can discover these advertisements and 
-            use that information to intelligently process the log file.  
+            are included in the advertisement.  Chainsaw and other external systems can discover these advertisements and
+            use that information to intelligently process the log file.
           </p>
           <p>
-            The mechanism by which an advertisement is exposed, as well as the advertisement format, is specific to each 
+            The mechanism by which an advertisement is exposed, as well as the advertisement format, is specific to each
             Advertiser implementation.  An external system which would like to work with a specific Advertiser implementation
-            must understand how to locate the advertised configuration as well as the format of the advertisement.  For example, 
-            a 'database' Advertiser may store configuration details in a database table.  An external system can read 
+            must understand how to locate the advertised configuration as well as the format of the advertisement.  For example,
+            a 'database' Advertiser may store configuration details in a database table.  An external system can read
             that database table in order to discover the file location and the file format.
           </p>
           <p>
-            Log4j provides one Advertiser implementation, a 'multicastdns' Advertiser, which advertises appender configuration 
+            Log4j provides one Advertiser implementation, a 'multicastdns' Advertiser, which advertises appender configuration
             details via IP multicast using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
           </p>
           <p>
             Chainsaw automatically discovers log4j's multicastdns-generated advertisements and displays those discovered
             advertisements in Chainsaw's Zeroconf tab (if the jmdns library is in Chainsaw's classpath).  To begin parsing and tailing
-            a log file provided in an advertisement, just double-click the advertisement entry in Chainsaw's the Zeroconf tab.  
+            a log file provided in an advertisement, just double-click the advertisement entry in Chainsaw's the Zeroconf tab.
             Currently, Chainsaw only supports FileAppender advertisements.
           </p>
           <p>
@@ -305,19 +307,19 @@ public class Bar {
             </ul>
           </p>
           <p>
-            FileAppender-based configurations require an additional 'advertiseURI' attribute to be specified on the appender.  
+            FileAppender-based configurations require an additional 'advertiseURI' attribute to be specified on the appender.
             The 'advertiseURI' attribute provides Chainsaw with information on how the file can be accessed.
-            For example, the file may be remotely accessible to Chainsaw via ssh/sftp by specifying a Commons VFS 
-            (<a href="http://commons.apache.org/proper/commons-vfs/">http://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI, 
-            an http:// URI may be used if the file is accessible through a web server, or a file:// URI can be specified 
+            For example, the file may be remotely accessible to Chainsaw via ssh/sftp by specifying a Commons VFS
+            (<a href="http://commons.apache.org/proper/commons-vfs/">http://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI,
+            an http:// URI may be used if the file is accessible through a web server, or a file:// URI can be specified
             if accessing the file from a locally-running instance of Chainsaw.
           </p>
           <p>
-            Here is an example advertisement-enabled appender configuration which can be used by a locally-running Chainsaw to 
+            Here is an example advertisement-enabled appender configuration which can be used by a locally-running Chainsaw to
             automatically tail the log file (notice the file:// advertiseURI):
           </p>
           <p>
-            <b>Please note, you must add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> 
+            <b>Please note, you must add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a>
             to your application classpath in order to advertise with the 'multicastdns' advertiser.</b>
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -351,7 +353,7 @@ public class Bar {
               </tr>
               <tr>
                 <td>advertiser</td>
-                <td>(Optional) The Advertiser plugin name which will be used to advertise individual 
+                <td>(Optional) The Advertiser plugin name which will be used to advertise individual
                 FileAppender or SocketAppender configurations.  The only Advertiser plugin provided is 'multicastdns".</td>
               </tr>
               <tr>
@@ -839,7 +841,7 @@ public class Bar {
                 <td>bundle</td>
                 <td>
                   Resource bundle. The format is <code>${dollar}{bundle:BundleName:BundleKey}</code>.
-                  The bundle name follows package naming conventions, for example: 
+                  The bundle name follows package naming conventions, for example:
                   <code>${dollar}{bundle:com.domain.Messages:MyKey}</code>.
                 </td>
               </tr>
