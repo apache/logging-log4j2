@@ -46,9 +46,9 @@
                   sure that it has the highest priority.</li>
                 <li>Create a new log4j-provider.xml and configure it with the desired LoggerContextFactory making
                   sure that it has the highest priority.</li>
-                <li>Setting the system property "log4j2.LoggerContextFactory" to the name of the LoggerContextFactory
+                <li>Setting the system property "log4j2.loggerContextFactory" to the name of the LoggerContextFactory
                   class to use.</li>
-                <li>Setting the property "log4j2.LoggerContextFactory" in a properties file named
+                <li>Setting the property "log4j2.loggerContextFactory" in a properties file named
                   "log4j2.LogManager.properties" to the name of the LoggerContextFactory class to use. The properties
                   file must be on the classpath.</li>
               </ol>
