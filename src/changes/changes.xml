@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-463" dev="rpopma" type="fix" due-to="Michael Diamond, Matt Sicker">
+        Fixed documentation for MyApp example application in the Automatic Configuration section
+      </action>
       <action issue="LOG4J2-408" dev="rpopma" type="fix" due-to="Dongqing Hu, Matt Sicker">
         Fixed error in documentation code example in manual/eventlogging.html
       </action>
