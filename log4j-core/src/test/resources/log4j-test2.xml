@@ -23,6 +23,11 @@
   <ThresholdFilter level="trace"/>
 
   <Appenders>
+    <File name="HostFile" fileName="target/${hostName}.log">
+      <PatternLayout>
+        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+    </File>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
       <filters>
