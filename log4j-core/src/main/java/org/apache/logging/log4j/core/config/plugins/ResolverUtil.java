@@ -20,13 +20,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -237,18 +240,7 @@ public class ResolverUtil {
         while (urls.hasMoreElements()) {
             try {
                 final URL url = urls.nextElement();
-                String urlPath = url.getFile();
-                urlPath = URLDecoder.decode(urlPath, Charsets.UTF_8.name());
-
-                // If it's a file in a directory, trim the stupid file: spec
-                if (urlPath.startsWith("file:")) {
-                    urlPath = urlPath.substring(5);
-                }
-
-                // Else it's in a JAR, grab the path to the jar
-                if (urlPath.indexOf('!') > 0) {
-                    urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-                }
+                String urlPath = extractPath(url);
 
                 LOGGER.info("Scanning for classes in [" + urlPath + "] matching criteria: " + test);
                 // Check for a jar in a war in JBoss
@@ -276,6 +268,38 @@ public class ResolverUtil {
                 LOGGER.warn("could not read entries", ioe);
             }
         }
+    }
+
+    String extractPath(final URL url) throws UnsupportedEncodingException {
+        String urlPath = url.getPath(); // same as getFile but without the Query portion
+        //System.out.println(url.getProtocol() + "->" + urlPath);
+        
+        // I would be surprised if URL.getPath() ever starts with "jar:" but no harm in checking
+        if (urlPath.startsWith("jar:")) {
+            urlPath = urlPath.substring(4);
+        }
+        // For jar: URLs, the path part starts with "file:"
+        if (urlPath.startsWith("file:")) {
+            urlPath = urlPath.substring(5);
+        }
+        // If it was in a JAR, grab the path to the jar
+        if (urlPath.indexOf('!') > 0) {
+            urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+        }
+        
+        // LOG4J2-445
+        // Finally, decide whether to URL-decode the file name or not...
+        final String protocol = url.getProtocol();
+        final List<String> neverDecode = Arrays.asList(VFSZIP, BUNDLE_RESOURCE);
+        if (neverDecode.contains(protocol)) {
+            return urlPath;
+        }
+        if (new File(urlPath).exists()) {
+            // if URL-encoded file exists, don't decode it
+            return urlPath;
+        }
+        urlPath = URLDecoder.decode(urlPath, Charsets.UTF_8.name());
+        return urlPath;
     }
 
     private void loadImplementationsInBundle(final Test test, final String packageName) {
