@@ -29,7 +29,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
@@ -54,7 +54,7 @@ public class LoggerTest {
     private static Configuration config;
     private static ListAppender app;
     private static ListAppender host;
-    private static FileAppender hostFile;
+    private static RollingFileAppender hostFile;
     private static ListAppender noThrown;
     private static LoggerContext ctx;
 
@@ -82,7 +82,7 @@ public class LoggerTest {
             } else if (entry.getKey().equals("NoThrowable")) {
                 noThrown = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("HostFile")) {
-                hostFile = (FileAppender) entry.getValue();
+                hostFile = (RollingFileAppender) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
@@ -198,6 +198,11 @@ public class LoggerTest {
         expected = "target/" + NetUtils.getLocalHostname() + ".log";
         String name = hostFile.getFileName();
         assertTrue("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name,
+            name.equals(expected));
+        name = hostFile.getFilePattern();
+        assertNotNull("No file pattern", name);
+        expected = "target/" + NetUtils.getLocalHostname() + "-%d{MM-dd-yyyy}-%i.log";
+        assertTrue("Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name,
             name.equals(expected));
 
     }
