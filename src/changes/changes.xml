@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-445" dev="rpopma" type="fix" due-to="Anthony Baldocchi">
+        ResolverUtil cannot find packages in file URLs which include the '+' character.
+      </action>
       <action issue="LOG4J2-430" dev="rgoers" type="fix" due-to="David Gstir">
         Use the formatted Message in RFC5424Layout for non-StructuredDataMessages.
       </action>
