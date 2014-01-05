@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.helpers.NetUtils;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -380,6 +381,13 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
          * instance.start(); Configuration old = setConfiguration(instance);
          * updateLoggers(); if (old != null) { old.stop(); }
          */
+
+        try {
+            Server.reregisterMBeansAfterReconfigure();
+        } catch (final Exception ex) {
+            LOGGER.error("Could not reconfigure JMX", ex);
+        }
+
         LOGGER.debug("Reconfiguration completed");
     }
 

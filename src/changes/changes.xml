@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-443" dev="rpopma" type="fix">
+        Fixed issue where log4j2 LoggerContext did not show up in JMX GUI or JConsole.
+      </action>
       <action issue="LOG4J2-485" dev="rpopma" type="fix">
         Fixed issue where toString methods that perform logging could deadlock AsyncAppender.
       </action>
