@@ -128,7 +128,7 @@ public class MyApp {
         msg.put("toAccount", toAccount);
         msg.put("fromAccount", fromAccount);
         msg.put("amount", amount);
-        EventLogger.logEvent(data);
+        EventLogger.logEvent(msg);
         return confirm;
     }
 }</pre>
