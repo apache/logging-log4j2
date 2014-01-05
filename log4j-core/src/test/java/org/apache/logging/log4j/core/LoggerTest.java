@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
@@ -53,6 +54,7 @@ public class LoggerTest {
     private static Configuration config;
     private static ListAppender app;
     private static ListAppender host;
+    private static FileAppender hostFile;
     private static ListAppender noThrown;
     private static LoggerContext ctx;
 
@@ -79,10 +81,13 @@ public class LoggerTest {
                 host = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("NoThrowable")) {
                 noThrown = (ListAppender) entry.getValue();
+            } else if (entry.getKey().equals("HostFile")) {
+                hostFile = (FileAppender) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
         assertNotNull("No Host Appender", host);
+        assertNotNull("No Host FileAppender", hostFile);
         app.clear();
         host.clear();
     }
@@ -186,9 +191,14 @@ public class LoggerTest {
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();
         assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        final String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
+        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
         assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
             msgs.get(0).endsWith(expected));
+        assertNotNull("No Host FileAppender file name", hostFile.getFileName());
+        expected = "target/" + NetUtils.getLocalHostname() + ".log";
+        String name = hostFile.getFileName();
+        assertTrue("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name,
+            name.equals(expected));
 
     }
 
