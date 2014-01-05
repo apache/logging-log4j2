@@ -23,11 +23,15 @@
   <ThresholdFilter level="trace"/>
 
   <Appenders>
-    <File name="HostFile" fileName="target/${hostName}.log">
+    <RollingFile name="HostFile" fileName="target/${hostName}.log" filePattern="target/${hostName}-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>
-    </File>
+      <Policies>
+        <OnStartupTriggeringPolicy />
+        <TimeBasedTriggeringPolicy interval="24" modulate="true" />
+      </Policies>
+    </RollingFile>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
       <filters>
