@@ -74,14 +74,18 @@ public final class Server {
         for (int i = 0; i < name.length(); i++) {
             final char c = name.charAt(i);
             switch (c) {
-            case ',':
-            case '=':
-            case ':':
             case '\\':
             case '*':
             case '?':
-                sb.append('\\');
-                needsQuotes = true;
+            case '\"':
+                sb.append('\\'); // quote, star, question & backslash must be escaped
+                needsQuotes = true; // ... and can only appear in quoted value
+                break;
+            case ',':
+            case '=':
+            case ':':
+                needsQuotes = true; // no need to escape these, but value must be quoted
+                break;
             }
             sb.append(c);
         }

@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-492" dev="rpopma" type="fix" due-to="Shaddy Baddah">
+        (JMX) Fixed MalformedObjectNameException if context name contains '=' character.
+      </action>
       <action issue="LOG4J2-377" dev="rpopma" type="fix" due-to="Roland Weiglhofer, Matt Sicker">
         (OSGi) Fix NPE during shutdown.
       </action>
