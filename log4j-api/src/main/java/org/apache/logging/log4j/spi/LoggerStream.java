@@ -280,6 +280,9 @@ public class LoggerStream extends PrintStream {
 
         @Override
         public synchronized void write(int b) {
+            if (b == '\r') {
+                return;
+            }
             super.write(b);
             if (b == '\n') {
                 log(count - 1);
@@ -288,10 +291,8 @@ public class LoggerStream extends PrintStream {
 
         @Override
         public synchronized void write(byte[] b, int off, int len) {
-            super.write(b, off, len);
-            int newLine = lastIndexOf('\n');
-            if (newLine != -1) {
-                log(newLine);
+            for (int i = 0; i < len; ++i) {
+                write(b[off + i]);
             }
         }
     }
