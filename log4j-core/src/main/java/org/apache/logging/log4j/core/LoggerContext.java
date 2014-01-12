@@ -334,10 +334,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         }
         final Configuration prev = this.config;
         config.addListener(this);
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put("hostName", NetUtils.getLocalHostname());
-        map.put("contextName", name);
-        config.addComponent(Configuration.CONTEXT_PROPERTIES, map);
+        final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
+        map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+        map.putIfAbsent("contextName", name);
         config.start();
         this.config = config;
         updateLoggers();
