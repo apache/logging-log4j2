@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -28,12 +26,14 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.Serializable;
+
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
 public abstract class AbstractLogger implements Logger, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     /**
      * Marker for flow tracing.
@@ -851,6 +851,29 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * Gets a print stream that logs lines to this logger.
+     *
+     * @param level the logging level
+     * @return print stream that logs printed lines to this logger.
+     */
+    @Override
+    public LoggerStream getStream(final Level level) {
+        return new LoggerStream(this, level);
+    }
+
+    /**
+     * Gets a marked print stream that logs lines to this logger.
+     *
+     * @param marker the marker data specific to this log statement
+     * @param level  the logging level
+     * @return print stream that logs printed lines to this logger.
+     */
+    @Override
+    public LoggerStream getStream(Marker marker, Level level) {
+        return new LoggerStream(this, marker, level);
     }
 
     /**
