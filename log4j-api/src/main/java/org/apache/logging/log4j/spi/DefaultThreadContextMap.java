@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored
  * is always immutable. This means the Map can be passed to other threads without concern that it will be updated.
@@ -27,20 +29,37 @@ import java.util.Map;
  * the performance should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap {
+    /** 
+     * Property name ({@value}) for selecting {@code InheritableThreadLocal} (value "true")
+     * or plain {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
 
     private final boolean useMap;
-
-    private final ThreadLocal<Map<String, String>> localMap =
-        new InheritableThreadLocal<Map<String, String>>() {
-            @Override
-            protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                return parentValue == null || !useMap ? null :
-                    Collections.unmodifiableMap(new HashMap<String, String>(parentValue));
-            }
-        };
+    private final ThreadLocal<Map<String, String>> localMap;
 
     public DefaultThreadContextMap(final boolean useMap) {
         this.useMap = useMap;
+        this.localMap = createThreadLocalMap(useMap);
+    }
+    
+    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
+    // (This method is package protected for JUnit tests.)
+    static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
+        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        final boolean inheritable = managerProps.getBooleanProperty(INHERITABLE_MAP);
+        if (inheritable) {
+            return new InheritableThreadLocal<Map<String, String>>() {
+                @Override
+                protected Map<String, String> childValue(final Map<String, String> parentValue) {
+                    return (parentValue != null && isMapEnabled) //
+                            ? Collections.unmodifiableMap(new HashMap<String, String>(parentValue)) //
+                            : null;
+                }
+            };
+        }
+        // if not inheritable, return plain ThreadLocal with null as initial value
+        return new ThreadLocal<Map<String, String>>();
     }
 
     /**

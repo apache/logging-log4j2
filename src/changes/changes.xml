@@ -21,10 +21,14 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-479" dev="rpopma" type="add" due-to="MK">
+        ThreadContext now uses plain ThreadLocal by default, unless system property
+        <tt>isThreadContextMapInheritable</tt> has value <tt>"true"</tt>.
+      </action>
       <action issue="LOG4J2-398" dev="rgoers" type="fix">
         Configure properties and setup Interpolator before processing rest of configuration.
       </action>
-      <action issue="LOG4J2-481" dev="rgoers" type="update" due-to="Matt Sicker">
+      <action issue="LOG4J2-481" dev="rgoers" type="add" due-to="Matt Sicker">
         Add Stream interface to Loggers.
       </action>
       <action issue="LOG4J2-490" dev="rgoers" type="update" due-to="Matt Sicker">

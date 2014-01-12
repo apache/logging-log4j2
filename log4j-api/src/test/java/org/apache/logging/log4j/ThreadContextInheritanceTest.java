@@ -16,46 +16,63 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.Map;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  */
-public class ThreadContextTest {
+public class ThreadContextInheritanceTest {
+    @BeforeClass
+    public static void setupClass() {
+        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+        System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+    }
 
     @Test
     public void testPush() {
         ThreadContext.push("Hello");
-        ThreadContext.push("{} is {}", ThreadContextTest.class.getSimpleName(),
+        ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(),
                 "running");
         assertEquals("Incorrect parameterized stack value",
-                ThreadContext.pop(), "ThreadContextTest is running");
+                ThreadContext.pop(), "ThreadContextInheritanceTest is running");
         assertEquals("Incorrect simple stack value", ThreadContext.pop(),
                 "Hello");
     }
 
     @Test
-    public void testInheritanceSwitchedOffByDefault() throws Exception {
-        ThreadContext.clear();
-        ThreadContext.put("Greeting", "Hello");
-        StringBuilder sb = new StringBuilder();
-        TestThread thread = new TestThread(sb);
-        thread.start();
-        thread.join();
-        String str = sb.toString();
-        assertTrue("Unexpected ThreadContext value. Expected null. Actual "
-                + str, "null".equals(str));
-        sb = new StringBuilder();
-        thread = new TestThread(sb);
-        thread.start();
-        thread.join();
-        str = sb.toString();
-        assertTrue("Unexpected ThreadContext value. Expected null. Actual "
-                + str, "null".equals(str));
+    public void testInheritanceSwitchedOn() throws Exception {
+        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
+        try {
+            ThreadContext.clear();
+            ThreadContext.put("Greeting", "Hello");
+            StringBuilder sb = new StringBuilder();
+            TestThread thread = new TestThread(sb);
+            thread.start();
+            thread.join();
+            String str = sb.toString();
+            assertTrue("Unexpected ThreadContext value. Expected Hello. Actual "
+                    + str, "Hello".equals(str));
+            sb = new StringBuilder();
+            thread = new TestThread(sb);
+            thread.start();
+            thread.join();
+            str = sb.toString();
+            assertTrue("Unexpected ThreadContext value. Expected Hello. Actual "
+                    + str, "Hello".equals(str));
+        } finally {
+            System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+        }
     }
 
     @Test
