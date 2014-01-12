@@ -44,7 +44,7 @@ public final class PropertiesPlugin {
     public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
                                                  @PluginConfiguration final Configuration config) {
         if (properties == null) {
-            return new Interpolator(null);
+            return new Interpolator(config.getProperties());
         }
         final Map<String, String> map = new HashMap<String, String>(config.getProperties());
 

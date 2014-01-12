@@ -17,11 +17,6 @@
 
 -->
 <Configuration status="ERROR" name="XMLConfigTest" monitorInterval="5" packages="org.apache.logging.log4j.test">
-  <Properties>
-    <Property name="filename">target/test.log</Property>
-  </Properties>
-  <ThresholdFilter level="trace"/>
-
   <Appenders>
     <RollingFile name="HostFile" fileName="target/${hostName}.log" filePattern="target/${hostName}-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>
@@ -46,7 +41,7 @@
         <MarkerFilter marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
       </filters>
     </Console>
-    <File name="File" fileName="${filename}">
+    <File name="File" fileName="target/test.log">
       <PatternLayout>
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
       </PatternLayout>

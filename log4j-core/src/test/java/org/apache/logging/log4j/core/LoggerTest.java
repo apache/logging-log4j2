@@ -54,7 +54,6 @@ public class LoggerTest {
     private static Configuration config;
     private static ListAppender app;
     private static ListAppender host;
-    private static RollingFileAppender hostFile;
     private static ListAppender noThrown;
     private static LoggerContext ctx;
 
@@ -81,13 +80,10 @@ public class LoggerTest {
                 host = (ListAppender) entry.getValue();
             } else if (entry.getKey().equals("NoThrowable")) {
                 noThrown = (ListAppender) entry.getValue();
-            } else if (entry.getKey().equals("HostFile")) {
-                hostFile = (RollingFileAppender) entry.getValue();
             }
         }
         assertNotNull("No Appender", app);
         assertNotNull("No Host Appender", host);
-        assertNotNull("No Host FileAppender", hostFile);
         app.clear();
         host.clear();
     }
@@ -183,28 +179,6 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertTrue("Incorrect number of events. Expected 1, actual " + events.size(), events.size() == 1);
         app.clear();
-    }
-
-    @Test
-    public void testHostname() {
-        final org.apache.logging.log4j.Logger testLogger = LogManager.getLogger("org.apache.logging.log4j.hosttest");
-        testLogger.debug("Hello, {}", "World");
-        final List<String> msgs = host.getMessages();
-        assertTrue("Incorrect number of events. Expected 1, actual " + msgs.size(), msgs.size() == 1);
-        String expected = NetUtils.getLocalHostname() + Constants.LINE_SEP;
-        assertTrue("Incorrect hostname - expected " + expected + " actual - " + msgs.get(0),
-            msgs.get(0).endsWith(expected));
-        assertNotNull("No Host FileAppender file name", hostFile.getFileName());
-        expected = "target/" + NetUtils.getLocalHostname() + ".log";
-        String name = hostFile.getFileName();
-        assertTrue("Incorrect HostFile FileAppender file name - expected " + expected + " actual - " + name,
-            name.equals(expected));
-        name = hostFile.getFilePattern();
-        assertNotNull("No file pattern", name);
-        expected = "target/" + NetUtils.getLocalHostname() + "-%d{MM-dd-yyyy}-%i.log";
-        assertTrue("Incorrect HostFile FileAppender file pattern - expected " + expected + " actual - " + name,
-            name.equals(expected));
-
     }
 
     @Test
