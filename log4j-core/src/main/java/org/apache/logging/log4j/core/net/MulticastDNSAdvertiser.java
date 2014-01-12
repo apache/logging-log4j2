@@ -154,11 +154,11 @@ public class MulticastDNSAdvertiser implements Advertiser {
             final Method jmDNSCreateMethod = jmDNSClass.getMethod("create", (Class[])null);
             return jmDNSCreateMethod.invoke(null, (Object[])null);
         } catch (final IllegalAccessException e) {
-            LOGGER.warn("Unable to instantiate jmdns class", e);
+            LOGGER.warn("Unable to invoke create method", e);
         } catch (final NoSuchMethodException e) {
-            LOGGER.warn("Unable to access constructor", e);
+            LOGGER.warn("Unable to get create method", e);
         } catch (final InvocationTargetException e) {
-            LOGGER.warn("Unable to call constructor", e);
+            LOGGER.warn("Unable to invoke create method", e);
         }
         return null;
     }
