@@ -152,7 +152,7 @@ public class LogManager {
      * @return a LoggerContext.
      */
     public static LoggerContext getContext(final boolean currentContext) {
-        return factory.getContext(LogManager.class.getName(), null, null, currentContext, null);
+        return factory.getContext(LogManager.class.getName(), null, null, currentContext, null, null);
     }
 
     /**
@@ -201,7 +201,7 @@ public class LogManager {
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
                                            final URI configLocation) {
-        return factory.getContext(LogManager.class.getName(), loader, null, currentContext, configLocation);
+        return factory.getContext(LogManager.class.getName(), loader, null, currentContext, configLocation, null);
     }
 
 
@@ -219,7 +219,29 @@ public class LogManager {
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
                                            final Object externalContext, final URI configLocation) {
-        return factory.getContext(LogManager.class.getName(), loader, externalContext, currentContext, configLocation);
+        return factory.getContext(LogManager.class.getName(), loader, externalContext, currentContext, configLocation,
+            null);
+    }
+
+
+    /**
+     * Returns a LoggerContext.
+     *
+     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * ClassLoader.
+     * @param currentContext if false the LoggerContext appropriate for the caller of this method is returned. For
+     * example, in a web application if the caller is a class in WEB-INF/lib then one LoggerContext may be
+     * returned and if the caller is a class in the container's classpath then a different LoggerContext may be
+     * returned. If true then only a single LoggerContext will be returned.
+     * @param configLocation The URI for the configuration to use.
+     * @param name The LoggerContext name.
+     * @return a LoggerContext.
+     */
+    public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
+                                           final Object externalContext, final URI configLocation,
+                                           final String name) {
+        return factory.getContext(LogManager.class.getName(), loader, externalContext, currentContext, configLocation,
+            name);
     }
 
     /**

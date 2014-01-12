@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.impl;
 import java.net.URI;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.helpers.Constants;
 import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
@@ -96,16 +98,53 @@ public class Log4jContextFactory implements LoggerContextFactory {
      */
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext, final URI configLocation) {
+                                    final boolean currentContext, final URI configLocation, final String name) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
-            ctx.start();
+            if (configLocation != null || name != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
+                ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
         }
         return ctx;
     }
+
+    /**
+     * Load the LoggerContext using the ContextSelector.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param source The configuration source.
+     * @return The LoggerContext.
+     */
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                    final boolean currentContext, final ConfigurationFactory.ConfigurationSource source) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
+        }
+        if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
+            if (source != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+                ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
+        }
+        return ctx;
+    }
+
 
 
     /**
