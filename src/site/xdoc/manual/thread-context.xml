@@ -95,9 +95,12 @@ logger.debug("Message 2");
 .
 .
 ThreadContext.clear();</pre>
-          <p>The Stack and the Map are managed per thread and is based on
-            <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>.
-            Thus, in many cases the contents of the Stack and Map will be passed to child threads. However, as
+          <p>The Stack and the Map are managed per thread and are based on
+            <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
+            by default. The Map can be configured to use an
+            <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>
+            by setting system property <tt>isThreadContextMapInheritable</tt> to <tt>"true"</tt>.
+            When configured this way, the contents of the Map will be passed to child threads. However, as
             discussed in the
             <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Executors</a>
             class and in other cases where thread pooling is utilized, the ThreadContext may not always be
