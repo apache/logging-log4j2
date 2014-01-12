@@ -243,22 +243,28 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     protected void doConfigure() {
         boolean setRoot = false;
         boolean setLoggers = false;
-        for (final Node child : rootNode.getChildren()) {
-            createConfiguration(child, null);
-            if (child.getObject() == null) {
-                continue;
+        if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
+            Node first = rootNode.getChildren().get(0);
+            createConfiguration(first, null);
+            if (first.getObject() != null) {
+                subst.setVariableResolver((StrLookup) first.getObject());
             }
+        } else {
+            final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
+            final StrLookup lookup = map == null ? null : new MapLookup(map);
+            subst.setVariableResolver(new Interpolator(lookup));
+        }
+
+        for (final Node child : rootNode.getChildren()) {
             if (child.getName().equalsIgnoreCase("Properties")) {
                 if (tempLookup == subst.getVariableResolver()) {
-                    subst.setVariableResolver((StrLookup) child.getObject());
-                } else {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
-            } else if (tempLookup == subst.getVariableResolver()) {
-                final Map<String, String> map = (Map<String, String>) componentMap.get(CONTEXT_PROPERTIES);
-                final StrLookup lookup = map == null ? null : new MapLookup(map);
-                subst.setVariableResolver(new Interpolator(lookup));
+            }
+            createConfiguration(child, null);
+            if (child.getObject() == null) {
+                continue;
             }
             if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = (ConcurrentMap<String, Appender>) child.getObject();
