@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.spi.LoggerStream;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.StringFormatterMessageFactory;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -52,8 +51,8 @@ public class LoggerTest {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertTrue("Incorrect Entry", results.get(0).startsWith(" TRACE entry"));
-        assertTrue("incorrect Exit", results.get(1).startsWith(" TRACE exit"));
+        assertThat("Incorrect Entry", results.get(0), startsWith("ENTRY[ FLOW ] TRACE entry"));
+        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE exit"));
 
     }
 
@@ -64,8 +63,8 @@ public class LoggerTest {
         } catch (final Exception e) {
             logger.catching(e);
             assertEquals(1, results.size());
-            assertTrue("Incorrect Catching",
-                results.get(0).startsWith(" ERROR catching java.lang.NullPointerException"));
+            assertThat("Incorrect Catching",
+                    results.get(0), startsWith("CATCHING[ EXCEPTION ] ERROR catching java.lang.NullPointerException"));
         }
     }
 
@@ -239,28 +238,57 @@ public class LoggerTest {
     }
 
     @Test
+    public void getStream() {
+        final LoggerStream stream = logger.getStream(Level.DEBUG);
+        stream.println("Debug message 1");
+        stream.print("Debug message 2");
+        stream.println();
+        stream.println();
+        stream.print("Debug message 3\n");
+        assertEquals(4, results.size());
+        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
+        assertThat("Incorrect message", results.get(1), startsWith(" DEBUG Debug message 2"));
+        assertEquals("Message should be blank-ish", results.get(2), " DEBUG ");
+        assertThat("Incorrect message", results.get(3), startsWith(" DEBUG Debug message 3"));
+    }
+
+    @Test
+    public void getStream_Marker() {
+        final LoggerStream stream = logger.getStream(MarkerManager.getMarker("HI"), Level.INFO);
+        stream.println("Hello, world!");
+        stream.print("How about this?\n");
+        stream.println("Is this thing on?");
+        assertEquals(3, results.size());
+        assertThat("Incorrect message.", results.get(0), startsWith("HI INFO Hello"));
+        assertThat("Incorrect message.", results.get(1), startsWith("HI INFO How about"));
+        assertThat("Incorrect message.", results.get(2), startsWith("HI INFO Is this"));
+    }
+
+    @Test
     public void printf() {
         logger.printf(Level.DEBUG, "Debug message %d", 1);
         logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
         assertEquals(2, results.size());
-        assertTrue("Incorrect message", results.get(0).startsWith(" DEBUG Debug message 1"));
-        assertTrue("Incorrect message", results.get(1).startsWith(" DEBUG Debug message 2"));
+        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
+        assertThat("Incorrect message", results.get(1), startsWith("Test DEBUG Debug message 2"));
     }
 
+    @Test
     public void getLoggerByNullClass() {
         // Returns a SimpleLogger
-        Assert.assertNotNull(LogManager.getLogger((Class<?>) null));
+        assertNotNull(LogManager.getLogger((Class<?>) null));
     }
 
+    @Test
     public void getLoggerByNullObject() {
         // Returns a SimpleLogger
-        Assert.assertNotNull(LogManager.getLogger((Object) null));
+        assertNotNull(LogManager.getLogger((Object) null));
     }
 
     @Test
     public void getLoggerByNullString() {
         // Returns a SimpleLogger
-        Assert.assertNotNull(LogManager.getLogger((String) null));
+        assertNotNull(LogManager.getLogger((String) null));
     }
 
     @Test
@@ -356,15 +384,15 @@ public class LoggerTest {
         logger.info(MarkerManager.getMarker("EVENT"), msg);
         ThreadContext.clear();
         assertEquals(1, results.size());
-        assertTrue("Incorrect structured data: " + results.get(0),results.get(0).startsWith(
-            " INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));
+        assertThat("Incorrect structured data: ", results.get(0), startsWith(
+                "EVENT INFO Transfer [Audit@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete"));
     }
 
     @Test
     public void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertEquals(1, results.size());
-        assertTrue("Incorrect Throwing",
-            results.get(0).startsWith(" ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
+        assertThat("Incorrect Throwing",
+                results.get(0), startsWith("THROWING[ EXCEPTION ] ERROR throwing java.lang.IllegalArgumentException: Test Exception"));
     }
 }

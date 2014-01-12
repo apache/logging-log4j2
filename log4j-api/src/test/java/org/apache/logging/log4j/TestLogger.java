@@ -54,6 +54,9 @@ public class TestLogger extends AbstractLogger {
     @Override
     public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
+        if (marker != null) {
+            sb.append(marker);
+        }
         sb.append(" ");
         sb.append(level.toString());
         sb.append(" ");

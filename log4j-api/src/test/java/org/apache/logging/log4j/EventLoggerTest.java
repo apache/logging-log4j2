@@ -23,8 +23,8 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -51,8 +51,8 @@ public class EventLoggerTest {
         EventLogger.logEvent(msg);
         ThreadContext.clear();
         assertEquals(1, results.size());
-        final String expected = " OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
-        assertTrue("Incorrect structured data: " + results.get(0) + ", expected: " ,results.get(0).startsWith(expected));
+        final String expected = "EVENT OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
+        assertThat("Incorrect structured data", results.get(0), startsWith(expected));
     }
 
 }
