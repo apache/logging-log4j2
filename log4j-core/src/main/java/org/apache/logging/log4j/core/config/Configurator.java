@@ -22,6 +22,8 @@ import java.net.URISyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -101,14 +103,9 @@ public final class Configurator {
 
         try {
             final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false,
-                externalContext, configLocation);
+                externalContext, configLocation, name);
             if (context instanceof LoggerContext) {
-                final LoggerContext ctx = (LoggerContext) context;
-                ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
-                return ctx;
+                return (LoggerContext) context;
             } else {
                 LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
                     context.getClass().getName(), LoggerContext.class.getName());
@@ -150,18 +147,20 @@ public final class Configurator {
             } catch (final Exception ex) {
                 // Invalid source location.
             }
-            final org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(loader, false,
-                externalContext, configLocation);
-            if (context instanceof LoggerContext) {
-                final LoggerContext ctx = (LoggerContext) context;
-                ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
-                return ctx;
+            final LoggerContextFactory f = LogManager.getFactory();
+            if (f instanceof Log4jContextFactory) {
+                Log4jContextFactory factory = (Log4jContextFactory) f;
+                final org.apache.logging.log4j.spi.LoggerContext context = factory.getContext(Configurator.class.getName(),
+                    loader, externalContext, false, source);
+                if (context instanceof LoggerContext) {
+                    return (LoggerContext) context;
+                } else {
+                    LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
+                        context.getClass().getName(), LoggerContext.class.getName());
+                }
             } else {
-                LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j",
-                    context.getClass().getName(), LoggerContext.class.getName());
+                LOGGER.error("LogManager is not using a Log4j Context Factory. Unable to initialize Log4j");
+                return null;
             }
         } catch (final Exception ex) {
             ex.printStackTrace();

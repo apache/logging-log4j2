@@ -36,7 +36,7 @@ public class TestLoggerContextFactory implements LoggerContextFactory {
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext, final URI configLocation) {
+                                    final boolean currentContext, final URI configLocation, final String name) {
         return context;
     }
 

@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-405" dev="rgoers" type="fix">
+        Configuration was being processed twice at startup.
+      </action>
       <action issue="LOG4J2-479" dev="rpopma" type="add" due-to="MK">
         ThreadContext now uses plain ThreadLocal by default, unless system property
         <tt>isThreadContextMapInheritable</tt> has value <tt>"true"</tt>.

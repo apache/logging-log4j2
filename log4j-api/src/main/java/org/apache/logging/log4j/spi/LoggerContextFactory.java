@@ -44,10 +44,11 @@ public interface LoggerContextFactory {
      * for the caller if a more appropriate Context can be determined.
      * @param configLocation The location of the configuration for the LoggerContext.
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
+     * @param name The name of the context or null.
      * @return The LoggerContext.
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext,
-                             URI configLocation);
+                             URI configLocation, String name);
 
     /**
      * Removes knowledge of a LoggerContext.
