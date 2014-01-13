@@ -55,8 +55,8 @@ public class PatternParserTest {
     private final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
     private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
-    private static String nestedPattern =
-        "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
+    private static String nestedPatternHighlight =
+            "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
 
     private static final String KEY = "Converter";
     private PatternParser parser;
@@ -108,21 +108,32 @@ public class PatternParserTest {
     }
 
     @Test
-    public void testNestedPattern() {
-        final List<PatternFormatter> formatters = parser.parse(nestedPattern);
+    public void testNestedPatternHighlight() {       
+        testNestedPatternHighlight(Level.TRACE, "\u001B[30m13");
+        testNestedPatternHighlight(Level.DEBUG, "\u001B[36m13");
+        testNestedPatternHighlight(Level.INFO, "\u001B[32m13");
+        testNestedPatternHighlight(Level.WARN, "\u001B[33m13");
+        testNestedPatternHighlight(Level.ERROR, "\u001B[1;31m13");
+        testNestedPatternHighlight(Level.FATAL, "\u001B[1;31m13");
+    }
+
+    private void testNestedPatternHighlight(Level level, String startLine) {
+        final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
         assertNotNull(formatters);
         final Throwable t = new Throwable();
-        final StackTraceElement[] elements = t.getStackTrace();
-        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest", MarkerManager.getMarker("TEST"),
-                Logger.class.getName(), Level.INFO, new SimpleMessage("Hello, world"), null, null, null, "Thread1", elements[0],
-                System.currentTimeMillis());
+        final StackTraceElement[] stackTraceElement = t.getStackTrace();
+        final LogEvent event = new Log4jLogEvent("org.apache.logging.log4j.PatternParserTest",
+                MarkerManager.getMarker("TEST"), Logger.class.getName(), level, new SimpleMessage("Hello, world"),
+                null, null, null, "Thread1", /*stackTraceElement[0]*/null, System.currentTimeMillis());
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = String.format("] INFO : Hello, world%s\u001B[m", Constants.LINE_SEP);
-        assertTrue("Expected to end with: " + expected + ". Actual: " + str, str.endsWith(expected));
+        final String expectedStart = startLine + " ";
+        final String expectedEnd = String.format("] %-5s: Hello, world%s\u001B[m", level, Constants.LINE_SEP);
+        assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
+        assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
     }
 
 }

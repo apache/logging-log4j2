@@ -95,6 +95,8 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private final boolean alwaysWriteExceptions;
 
+    private final boolean noConsoleNoAnsi;
+
     /**
      * Constructs a EnhancedPatternLayout using the supplied conversion pattern.
      *
@@ -104,16 +106,19 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
+     * @param noConsoleNoAnsiStr
+     *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final Charset charset, final boolean alwaysWriteExceptions) {
+                          final Charset charset, final boolean alwaysWriteExceptions, boolean noConsoleNoAnsi) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;
         this.config = config;
         this.alwaysWriteExceptions = alwaysWriteExceptions;
+        this.noConsoleNoAnsi = noConsoleNoAnsi;
         final PatternParser parser = createPatternParser(config);
-        formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions);
+        this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
     /**
@@ -129,7 +134,7 @@ public final class PatternLayout extends AbstractStringLayout {
             return;
         }
         final PatternParser parser = createPatternParser(this.config);
-        formatters = parser.parse(pattern, this.alwaysWriteExceptions);
+        formatters = parser.parse(pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
     }
 
     public String getConversionPattern() {
@@ -198,13 +203,20 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Create a pattern layout.
-     *
-     * @param pattern The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
-     * @param config The Configuration. Some Converters require access to the Interpolator.
-     * @param replace A Regex replacement String.
-     * @param charsetName The character set.
-     * @param always If {@code "true"} (default) exceptions are always written even if the pattern contains no exception
-     *               tokens.
+     * 
+     * @param pattern
+     *            The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+     * @param config
+     *            The Configuration. Some Converters require access to the Interpolator.
+     * @param replace
+     *            A Regex replacement String.
+     * @param charsetName
+     *            The character set.
+     * @param always
+     *            If {@code "true"} (default) exceptions are always written even if the pattern contains no exception
+     *            tokens.
+     * @param noConsoleNoAnsiStr
+     *            If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
      * @return The PatternLayout.
      */
     @PluginFactory
@@ -213,11 +225,12 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
             @PluginAttribute("charset") final String charsetName,
-            @PluginAttribute("alwaysWriteExceptions") final String always) {
+            @PluginAttribute("alwaysWriteExceptions") final String always, 
+            @PluginAttribute("noConsoleNoAnsi") final String noConsoleNoAnsiStr) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean alwaysWriteExceptions = Booleans.parseBoolean(always, true);
-        return new PatternLayout(
-                config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset, alwaysWriteExceptions
-        );
+        final boolean noConsoleNoAnsi = Booleans.parseBoolean(noConsoleNoAnsiStr, false);
+        return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
+                alwaysWriteExceptions, noConsoleNoAnsi);
     }
 }

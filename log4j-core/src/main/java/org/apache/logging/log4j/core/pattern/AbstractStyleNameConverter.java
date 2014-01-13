@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
  */
-public abstract class AbstractStyleNameConverter extends LogEventPatternConverter {
+public abstract class AbstractStyleNameConverter extends LogEventPatternConverter /*TODO: implements AnsiConverter*/ {
 
     private final List<PatternFormatter> formatters;
 

@@ -72,7 +72,7 @@ public class PatternLayoutTest {
         final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null, null);
         // FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File",
                 "false", "true", "false", null, layout, null, "false", null, null);
@@ -134,7 +134,7 @@ public class PatternLayoutTest {
     @Test
     public void testRegex() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(), null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(), null, null, null, null);
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);
@@ -144,7 +144,7 @@ public class PatternLayoutTest {
     private void testUnixTime(String pattern) throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.createLayout(pattern + " %m", ctx.getConfiguration(), null, null,
-                null);
+                null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -161,7 +161,7 @@ public class PatternLayoutTest {
     public void testUnixTime() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout
-                .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, null);
+                .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -178,7 +178,7 @@ public class PatternLayoutTest {
     public void testUnixTimeMillis() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.createLayout("%d{UNIX_MILLIS} %m", ctx.getConfiguration(), null,
-                null, null);
+                null, null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);

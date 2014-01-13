@@ -125,7 +125,7 @@ public class RFC5424Layout extends AbstractStringLayout {
                           final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
-        exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern, false);
+        exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern, false, false);
         this.facility = facility;
         this.defaultId = id == null ? DEFAULT_ID : id;
         this.enterpriseNumber = ein;
@@ -202,7 +202,7 @@ public class RFC5424Layout extends AbstractStringLayout {
                     final PatternParser fieldParser = createPatternParser(config, null);
 
                     for (final Map.Entry<String, String> entry : fields.entrySet()) {
-                        final List<PatternFormatter> formatters = fieldParser.parse(entry.getValue(), false);
+                        final List<PatternFormatter> formatters = fieldParser.parse(entry.getValue(), false, false);
                         sdParams.put(entry.getKey(), formatters);
                     }
                     final FieldFormatter fieldFormatter = new FieldFormatter(sdParams,
