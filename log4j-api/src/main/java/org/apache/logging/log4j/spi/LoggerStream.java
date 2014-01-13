@@ -269,15 +269,6 @@ public class LoggerStream extends PrintStream {
             }
         }
 
-        private int lastIndexOf(int b) {
-            for (int i = count - 1; i >= 0; --i) {
-                if (buf[i] == b) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         @Override
         public synchronized void write(int b) {
             if (b == '\r') {

@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.LoggerStream;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -243,13 +243,15 @@ public class LoggerTest {
         stream.println("Debug message 1");
         stream.print("Debug message 2");
         stream.println();
-        stream.println();
+        stream.println(); // verify blank log message
         stream.print("Debug message 3\n");
-        assertEquals(4, results.size());
+        stream.print("\r\n"); // verify windows EOL works
+        assertEquals(5, results.size());
         assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
         assertThat("Incorrect message", results.get(1), startsWith(" DEBUG Debug message 2"));
-        assertEquals("Message should be blank-ish", results.get(2), " DEBUG ");
+        assertEquals("Message should be blank-ish", " DEBUG ", results.get(2));
         assertThat("Incorrect message", results.get(3), startsWith(" DEBUG Debug message 3"));
+        assertEquals("Message should be blank-ish", " DEBUG ", results.get(4));
     }
 
     @Test
