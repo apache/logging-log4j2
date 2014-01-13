@@ -32,10 +32,6 @@ import java.util.List;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.*;
 
-/**
- * @author msicker
- * @version 1.0.0
- */
 @RunWith(Parameterized.class)
 public class LoggerStreamTest {
     private List<String> results;
