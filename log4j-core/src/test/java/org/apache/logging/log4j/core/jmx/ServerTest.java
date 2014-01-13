@@ -90,4 +90,31 @@ public class ServerTest {
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
+
+    @Test
+    public void testEscapeIgnoresSpaces() throws Exception {
+        final String ctx = "a c";
+        final String ctxName = Server.escape(ctx);
+        assertEquals("a c", ctxName);
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        // no MalformedObjectNameException = success
+    }
+
+    @Test
+    public void testEscapeEscapesLineFeed() throws Exception {
+        final String ctx = "a\rc";
+        final String ctxName = Server.escape(ctx);
+//        assertEquals("a\\rc", ctxName);
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        // no MalformedObjectNameException = success
+    }
+
+    @Test
+    public void testEscapeEscapesCarriageReturn() throws Exception {
+        final String ctx = "a\nc";
+        final String ctxName = Server.escape(ctx);
+//        assertEquals("a\\nc", ctxName);
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        // no MalformedObjectNameException = success
+    }
 }
