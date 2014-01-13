@@ -62,7 +62,7 @@ public class PatternProcessor {
         final PatternParser parser = createPatternParser();
         final List<PatternConverter> converters = new ArrayList<PatternConverter>();
         final List<FormattingInfo> fields = new ArrayList<FormattingInfo>();
-        parser.parse(pattern, converters, fields);
+        parser.parse(pattern, converters, fields, false);
         final FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
         patternFields = fields.toArray(infoArray);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];

@@ -70,7 +70,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  */
 @Plugin(name = "highlight", category = "Converter")
 @ConverterKeys({ "highlight" })
-public final class HighlightConverter extends LogEventPatternConverter {
+public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
     private static final EnumMap<Level, String> DEFAULT_STYLES = new EnumMap<Level, String>(Level.class);
 
@@ -132,7 +132,10 @@ public final class HighlightConverter extends LogEventPatternConverter {
         if (options.length < 2) {
             return DEFAULT_STYLES;
         }
-        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[] {STYLE_KEY});
+        // Feels like a hack. Should String[] options change to a Map<String,String>?
+        String string = options[1].replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", "");
+        //
+        final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
         final EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
