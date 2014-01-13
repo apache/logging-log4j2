@@ -44,8 +44,8 @@
       <action issue="LOG4J2-470" dev="rgoers" type="fix">
         hostName property was not being set until after the first configuration element.
       </action>
-      <action issue="LOG4J2-492" dev="rpopma" type="fix" due-to="Shaddy Baddah">
-        (JMX) Fixed MalformedObjectNameException if context name contains '=' character.
+      <action issue="LOG4J2-492" dev="rpopma" type="fix" due-to="Shaddy Baddah, Herlani Junior">
+        (JMX) Fixed MalformedObjectNameException if context name contains '=' or newline characters.
       </action>
       <action issue="LOG4J2-377" dev="rpopma" type="fix" due-to="Roland Weiglhofer, Matt Sicker">
         (OSGi) Fix NPE during shutdown.
