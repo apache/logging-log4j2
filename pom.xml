@@ -150,7 +150,7 @@
     <changes.plugin.version>2.9</changes.plugin.version>
     <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
     <surefire.plugin.version>2.16</surefire.plugin.version>
-    <rat.plugin.version>0.8</rat.plugin.version>
+    <rat.plugin.version>0.10</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.5.2</cobertura.plugin.version>
     <manifestfile>target/osgi/MANIFEST.MF</manifestfile>
