@@ -71,6 +71,12 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         log.warn(trigger);
 
         ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        
+        final int MAX_ATTEMPTS = 50;
+        int count = 0;
+        while (!after1.exists() && count++ < MAX_ATTEMPTS) {
+            Thread.sleep(50);
+        }
 
         assertTrue("afterRollover-1.log created", after1.exists());
 
