@@ -20,8 +20,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -217,6 +215,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             status = Status.STOPPED;
         } finally {
             configLock.unlock();
+            
+            // in finally: unregister MBeans even if an exception occurred while stopping 
+            Server.unregisterMBeans(); // LOG4J2-406
         }
     }
 
@@ -350,6 +351,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         for (final PropertyChangeListener listener : propertyChangeListeners) {
             listener.propertyChange(evt);
         }
+
+        try {
+            Server.reregisterMBeansAfterReconfigure();
+        } catch (final Exception ex) {
+            LOGGER.error("Could not reconfigure JMX", ex);
+        }
         return prev;
     }
 
@@ -381,12 +388,6 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
          * instance.start(); Configuration old = setConfiguration(instance);
          * updateLoggers(); if (old != null) { old.stop(); }
          */
-
-        try {
-            Server.reregisterMBeansAfterReconfigure();
-        } catch (final Exception ex) {
-            LOGGER.error("Could not reconfigure JMX", ex);
-        }
 
         LOGGER.debug("Reconfiguration completed");
     }

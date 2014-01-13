@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2013-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-406" dev="rpopma" type="fix" due-to="Kerrigan Joseph">
+        Unregister all log4j JMX MBeans when the LoggerContext is stopped
+        to allow web application classes to be GC-ed on undeploy.
+      </action>
       <action issue="LOG4J2-405" dev="rgoers" type="fix">
         Configuration was being processed twice at startup.
       </action>
