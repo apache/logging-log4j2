@@ -104,7 +104,7 @@ public class ServerTest {
     public void testEscapeEscapesLineFeed() throws Exception {
         final String ctx = "a\rc";
         final String ctxName = Server.escape(ctx);
-//        assertEquals("a\\rc", ctxName);
+        assertEquals("a\\rc", ctxName);
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
@@ -113,7 +113,7 @@ public class ServerTest {
     public void testEscapeEscapesCarriageReturn() throws Exception {
         final String ctx = "a\nc";
         final String ctxName = Server.escape(ctx);
-//        assertEquals("a\\nc", ctxName);
+        assertEquals("a\\nc", ctxName);
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
         // no MalformedObjectNameException = success
     }
