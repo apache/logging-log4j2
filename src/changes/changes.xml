@@ -44,6 +44,9 @@
       <action issue="LOG4J2-470" dev="rgoers" type="fix">
         hostName property was not being set until after the first configuration element.
       </action>
+      <action issue="LOG4J2-464" dev="rgoers" type="fix">
+          Support arrays as sub-elements of a JSON configuration.
+      </action>
       <action issue="LOG4J2-492" dev="rpopma" type="fix" due-to="Shaddy Baddah, Herlani Junior">
         (JMX) Fixed MalformedObjectNameException if context name contains '=' or newline characters.
       </action>
