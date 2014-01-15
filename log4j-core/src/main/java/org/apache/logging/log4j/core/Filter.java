@@ -35,7 +35,7 @@ public interface Filter {
     /**
      * The result that can returned from a filter method call.
      */
-    public enum Result {
+     enum Result {
         /**
          * The event will be processed without further filtering based on the log Level.
          */
