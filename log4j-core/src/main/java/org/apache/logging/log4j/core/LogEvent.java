@@ -31,62 +31,6 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
      /**
-     * Gets the level.
-     * @return level.
-     */
-    Level getLevel();
-
-    /**
-     * Gets the logger name.
-     * @return logger name, may be null.
-     */
-    String getLoggerName();
-
-    /**
-     * Gets the source of logging request.
-     * @return source of logging request, may be null.
-     */
-    StackTraceElement getSource();
-
-    /**
-     * Gets the message associated with the event.
-     *
-     * @return message.
-     */
-    Message getMessage();
-
-    /**
-     * Gets the Marker associated with the event.
-     * @return Marker
-     */
-    Marker getMarker();
-
-    /**
-     * Gets thread name.
-     * @return thread name, may be null.
-     * @doubt guess this could go into a thread context object too.
-     * (RG) Why?
-     */
-    String getThreadName();
-
-
-    /**
-     * Gets event time in milliseconds since midnight, January 1, 1970 UTC.
-     * 
-     * @return milliseconds since midnight, January 1, 1970 UTC.
-     * @see java.lang.System#currentTimeMillis()
-     */
-    long getMillis();
-
-
-    /**
-     * Gets throwable associated with logging request.
-     * @return throwable, may be null.
-     */
-    Throwable getThrown();
-
-
-    /**
      * Gets the MDC data.
      *
      * @return A copy of the Mapped Diagnostic Context or null.
@@ -107,27 +51,60 @@ public interface LogEvent extends Serializable {
     String getFQCN();
 
     /**
-     * Returns whether the source of the logging request is required downstream.
-     * Asynchronous Loggers and Appenders use this flag to determine whether
-     * to take a {@code StackTrace} snapshot or not before handing off this
-     * event to another thread.
-     * @return {@code true} if the source of the logging request is required
-     *          downstream, {@code false} otherwise.
-     * @see #getSource()
+     * Gets the level.
+     * @return level.
      */
-    // see also LOG4J2-153
-    boolean isIncludeLocation();
+    Level getLevel();
 
     /**
-     * Sets whether the source of the logging request is required downstream.
-     * Asynchronous Loggers and Appenders use this flag to determine whether
-     * to take a {@code StackTrace} snapshot or not before handing off this
-     * event to another thread.
-     * @param locationRequired {@code true} if the source of the logging request
-     *           is required downstream, {@code false} otherwise.
-     * @see #getSource()
+     * Gets the logger name.
+     * @return logger name, may be null.
      */
-    void setIncludeLocation(boolean locationRequired);
+    String getLoggerName();
+
+    /**
+     * Gets the Marker associated with the event.
+     * @return Marker
+     */
+    Marker getMarker();
+
+
+    /**
+     * Gets the message associated with the event.
+     *
+     * @return message.
+     */
+    Message getMessage();
+
+
+    /**
+     * Gets event time in milliseconds since midnight, January 1, 1970 UTC.
+     * 
+     * @return milliseconds since midnight, January 1, 1970 UTC.
+     * @see java.lang.System#currentTimeMillis()
+     */
+    long getMillis();
+
+
+    /**
+     * Gets the source of logging request.
+     * @return source of logging request, may be null.
+     */
+    StackTraceElement getSource();
+
+    /**
+     * Gets thread name.
+     * @return thread name, may be null.
+     * @doubt guess this could go into a thread context object too.
+     * (RG) Why?
+     */
+    String getThreadName();
+
+    /**
+     * Gets throwable associated with logging request.
+     * @return throwable, may be null.
+     */
+    Throwable getThrown();
 
     /**
      * Returns {@code true} if this event is the last one in a batch,
@@ -141,6 +118,18 @@ public interface LogEvent extends Serializable {
     boolean isEndOfBatch();
 
     /**
+     * Returns whether the source of the logging request is required downstream.
+     * Asynchronous Loggers and Appenders use this flag to determine whether
+     * to take a {@code StackTrace} snapshot or not before handing off this
+     * event to another thread.
+     * @return {@code true} if the source of the logging request is required
+     *          downstream, {@code false} otherwise.
+     * @see #getSource()
+     */
+    // see also LOG4J2-153
+    boolean isIncludeLocation();
+
+    /**
      * Sets whether this event is the last one in a batch.
      * Used by asynchronous Loggers and Appenders to signal to buffered
      * downstream components when to flush to disk, as a more efficient
@@ -149,4 +138,15 @@ public interface LogEvent extends Serializable {
      * {@code false} otherwise.
      */
     void setEndOfBatch(boolean endOfBatch);
+
+    /**
+     * Sets whether the source of the logging request is required downstream.
+     * Asynchronous Loggers and Appenders use this flag to determine whether
+     * to take a {@code StackTrace} snapshot or not before handing off this
+     * event to another thread.
+     * @param locationRequired {@code true} if the source of the logging request
+     *           is required downstream, {@code false} otherwise.
+     * @see #getSource()
+     */
+    void setIncludeLocation(boolean locationRequired);
 }
