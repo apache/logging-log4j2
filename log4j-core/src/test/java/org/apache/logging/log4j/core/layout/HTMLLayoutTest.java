@@ -54,12 +54,9 @@ public class HTMLLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-    private static final String body =
-        "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
+    private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
-    private static final String multiLine =
-        "<td title=\"Message\">First line<br />Second line</td>";
-
+    private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
 
     @Test
     public void testDefaultContentType() {
@@ -69,7 +66,8 @@ public class HTMLLayoutTest {
 
     @Test
     public void testContentType() {
-        final HTMLLayout layout = HTMLLayout.createLayout("true", null, "text/html; charset=UTF-16", null, "small", null);
+        final HTMLLayout layout = HTMLLayout.createLayout("true", null, "text/html; charset=UTF-16", null, "small",
+                null);
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
     }
 
@@ -83,10 +81,19 @@ public class HTMLLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() {
+    public void testLayoutIncludeLocationNo() {
+        testLayout(false);
+    }
+
+    @Test
+    public void testLayoutIncludeLocationYes() {
+        testLayout(true);
+    }
+
+    private void testLayout(boolean includeLocation) {
 
         // set up appender
-        final HTMLLayout layout = HTMLLayout.createLayout("true", null, null, null, "small", null);
+        final HTMLLayout layout = HTMLLayout.createLayout("" + includeLocation, null, null, null, "small", null);
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -119,8 +126,14 @@ public class HTMLLayoutTest {
         assertTrue("Incorrect header: " + string, string.equals("<meta charset=\"UTF-8\"/>"));
         assertTrue("Incorrect title", list.get(4).equals("<title>Log4j Log Messages</title>"));
         assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</body></html>"));
-        assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
-        assertTrue("Incorrect body", list.get(71).equals(body));
+        String html = list.toString();
+        if (includeLocation) {
+            assertTrue("Incorrect multiline", list.get(50).equals(multiLine));
+            assertTrue("Missing location", html.contains("HTMLLayoutTest.java:"));
+            assertTrue("Incorrect body", list.get(71).equals(body));
+        } else {
+            assertFalse("Location should not be in the output table", html.contains("<td>HTMLLayoutTest.java:"));
+        }
 
     }
 }
