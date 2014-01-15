@@ -31,38 +31,38 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
      /**
-     * Get level.
+     * Gets the level.
      * @return level.
      */
     Level getLevel();
 
     /**
-     * Get logger name.
+     * Gets the logger name.
      * @return logger name, may be null.
      */
     String getLoggerName();
 
     /**
-     * Get source of logging request.
+     * Gets the source of logging request.
      * @return source of logging request, may be null.
      */
     StackTraceElement getSource();
 
     /**
-     * Get the message associated with the event.
+     * Gets the message associated with the event.
      *
      * @return message.
      */
     Message getMessage();
 
     /**
-     * Get the Marker associated with the event.
+     * Gets the Marker associated with the event.
      * @return Marker
      */
     Marker getMarker();
 
     /**
-     * Get thread name.
+     * Gets thread name.
      * @return thread name, may be null.
      * @doubt guess this could go into a thread context object too.
      * (RG) Why?
@@ -80,21 +80,21 @@ public interface LogEvent extends Serializable {
 
 
     /**
-     * Get throwable associated with logging request.
+     * Gets throwable associated with logging request.
      * @return throwable, may be null.
      */
     Throwable getThrown();
 
 
     /**
-     * Get the MDC data.
+     * Gets the MDC data.
      *
      * @return A copy of the Mapped Diagnostic Context or null.
      */
     Map<String, String> getContextMap();
 
     /**
-     * Get the NDC data.
+     * Gets the NDC data.
      *
      * @return A copy of the Nested Diagnostic Context or null;
      */
