@@ -78,6 +78,35 @@ public abstract class AbstractLogger implements Logger, Serializable {
 
     private static final String CATCHING = "catching";
 
+    /**
+     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
+     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
+     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
+     *
+     * @param logger
+     *            The logger to check
+     * @param messageFactory
+     *            The message factory to check.
+     */
+    public static void checkMessageFactory(final Logger logger, final MessageFactory messageFactory) {
+        final String name = logger.getName();
+        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
+            StatusLogger
+                .getLogger()
+                .warn("The Logger {} was created with the message factory {} and is now requested with the " +
+                    "message factory {}, which may create log events with unexpected formatting.",
+                    name, loggerMessageFactory, messageFactory);
+        } else if (messageFactory == null
+            && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
+            StatusLogger
+                .getLogger()
+                .warn("The Logger {} was created with the message factory {} and is now requested with a null " +
+                    "message factory (defaults to {}), which may create log events with unexpected formatting.",
+                    name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
+        }
+    }
+
     private final String name;
 
     private final MessageFactory messageFactory;
@@ -112,35 +141,6 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
-     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
-     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
-     *
-     * @param logger
-     *            The logger to check
-     * @param messageFactory
-     *            The message factory to check.
-     */
-    public static void checkMessageFactory(final Logger logger, final MessageFactory messageFactory) {
-        final String name = logger.getName();
-        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
-            StatusLogger
-                .getLogger()
-                .warn("The Logger {} was created with the message factory {} and is now requested with the " +
-                    "message factory {}, which may create log events with unexpected formatting.",
-                    name, loggerMessageFactory, messageFactory);
-        } else if (messageFactory == null
-            && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
-            StatusLogger
-                .getLogger()
-                .warn("The Logger {} was created with the message factory {} and is now requested with a null " +
-                    "message factory (defaults to {}), which may create log events with unexpected formatting.",
-                    name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
-        }
-    }
-
-    /**
      * Logs a Throwable that has been caught.
      *
      * @param level The logging Level.
@@ -149,16 +149,6 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public void catching(final Level level, final Throwable t) {
         catching(FQCN, level, t);
-    }
-
-    /**
-     * Logs a Throwable at the {@link Level#ERROR ERROR} level..
-     *
-     * @param t The Throwable.
-     */
-    @Override
-    public void catching(final Throwable t) {
-        catching(FQCN, Level.ERROR, t);
     }
 
     /**
@@ -172,6 +162,16 @@ public abstract class AbstractLogger implements Logger, Serializable {
         if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
             log(CATCHING_MARKER, fqcn, level, messageFactory.newMessage(CATCHING), t);
         }
+    }
+
+    /**
+     * Logs a Throwable at the {@link Level#ERROR ERROR} level..
+     *
+     * @param t The Throwable.
+     */
+    @Override
+    public void catching(final Throwable t) {
+        catching(FQCN, Level.ERROR, t);
     }
 
     private MessageFactory createDefaultMessageFactory() {
@@ -1102,6 +1102,11 @@ public abstract class AbstractLogger implements Logger, Serializable {
         return isEnabled(level, null, (Object) null, null);
     }
 
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker) {
+        return isEnabled(level, marker, (Object) null, null);
+    }
+
     /**
      * Determine if logging is enabled.
      * @param level The logging Level to check.
@@ -1230,6 +1235,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
         return isEnabled(Level.TRACE, null, (Object) null, null);
     }
 
+
     /**
      * Checks whether this Logger is enabled for the TRACE  Level.
      *
@@ -1241,7 +1247,6 @@ public abstract class AbstractLogger implements Logger, Serializable {
     public boolean isTraceEnabled(final Marker marker) {
         return isEnabled(Level.TRACE, marker, (Object) null, null);
     }
-
 
     /**
      * Checks whether this Logger is enabled for the WARN Level.
@@ -1264,11 +1269,6 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public boolean isWarnEnabled(final Marker marker) {
         return isEnabled(Level.WARN, marker, (Object) null, null);
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker) {
-        return isEnabled(level, marker, (Object) null, null);
     }
 
     /**
@@ -1476,18 +1476,15 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a formatted message using the specified format string and arguments.
-     * @param level The logging Level.
-     * @param format The format String.
-     * @param params Arguments specified by the format.
+     * Logs a message with location information.
+     *
+     * @param marker The Marker
+     * @param fqcn   The fully qualified class name of the <b>caller</b>
+     * @param level  The logging level
+     * @param data   The Message.
+     * @param t      A Throwable or null.
      */
-    @Override
-    public void printf(Level level, String format, Object... params) {
-        if (isEnabled(level, null, format, params)) {
-            Message msg = new StringFormattedMessage(format, params);
-            log(null, FQCN, level, msg, msg.getThrowable());
-        }
-    }
+    public abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
 
     /**
      * Logs a formatted message using the specified format string and arguments.
@@ -1505,15 +1502,18 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with location information.
-     *
-     * @param marker The Marker
-     * @param fqcn   The fully qualified class name of the <b>caller</b>
-     * @param level  The logging level
-     * @param data   The Message.
-     * @param t      A Throwable or null.
+     * Logs a formatted message using the specified format string and arguments.
+     * @param level The logging Level.
+     * @param format The format String.
+     * @param params Arguments specified by the format.
      */
-    public abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
+    @Override
+    public void printf(Level level, String format, Object... params) {
+        if (isEnabled(level, null, format, params)) {
+            Message msg = new StringFormattedMessage(format, params);
+            log(null, FQCN, level, msg, msg.getThrowable());
+        }
+    }
 
     /**
      * Logs a Throwable to be thrown.
@@ -1526,18 +1526,6 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public <T extends Throwable> T throwing(final Level level, final T t) {
         return throwing(FQCN, level, t);
-    }
-
-    /**
-     * Logs a Throwable to be thrown.
-     *
-     * @param <T> the type of the Throwable.
-     * @param t The Throwable.
-     * @return the Throwable.
-     */
-    @Override
-    public <T extends Throwable> T throwing(final T t) {
-        return throwing(FQCN, Level.ERROR, t);
     }
 
     /**
@@ -1554,6 +1542,18 @@ public abstract class AbstractLogger implements Logger, Serializable {
             log(THROWING_MARKER, fqcn, level, messageFactory.newMessage(THROWING), t);
         }
         return t;
+    }
+
+    /**
+     * Logs a Throwable to be thrown.
+     *
+     * @param <T> the type of the Throwable.
+     * @param t The Throwable.
+     * @return the Throwable.
+     */
+    @Override
+    public <T extends Throwable> T throwing(final T t) {
+        return throwing(FQCN, Level.ERROR, t);
     }
 
     private Message toExitMsg(final Object result) {
