@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 public class AbstractLoggerWrapper extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
+    
     /**
      * The wrapped Logger.
      */
@@ -44,16 +45,29 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     }
 
     /**
-     * Log an event.
-     * @param marker The Marker
-     * @param fqcn   The fully qualified class name of the <b>caller</b>
-     * @param level  The logging level
-     * @param data   The Message.
-     * @param t      A Throwable or null.
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The Message.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, Message and Throwable, false otherwise.
      */
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
-        logger.log(marker, fqcn, level, data, t);
+    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+        return logger.isEnabled(level, marker, data, t);
+    }
+
+    /**
+     * Detect if the event would be logged.
+     * @param level The logging Level to check.
+     * @param marker A Marker or null.
+     * @param data The message.
+     * @param t A Throwable.
+     * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
+     */
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+        return logger.isEnabled(level, marker, data, t);
     }
 
     /**
@@ -66,19 +80,6 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String data) {
         return logger.isEnabled(level, marker, data);
-    }
-
-    /**
-     * Detect if the event would be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param t A Throwable.
-     * @return true if the event would be logged for the Level, Marker, data and Throwable, false otherwise.
-     */
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
-        return logger.isEnabled(level, marker, data, t);
     }
 
     /**
@@ -100,23 +101,23 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param marker A Marker or null.
      * @param data The message.
      * @param t A Throwable.
-     * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
+     * @return true if the event would be logged for the Level, Marker, data and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return logger.isEnabled(level, marker, data, t);
     }
 
     /**
-     * Detect if the event would be logged.
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The Message.
-     * @param t A Throwable.
-     * @return true if the event would be logged for the Level, Marker, Message and Throwable, false otherwise.
+     * Log an event.
+     * @param marker The Marker
+     * @param fqcn   The fully qualified class name of the <b>caller</b>
+     * @param level  The logging level
+     * @param data   The Message.
+     * @param t      A Throwable or null.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
-        return logger.isEnabled(level, marker, data, t);
+    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+        logger.log(marker, fqcn, level, data, t);
     }
 }
