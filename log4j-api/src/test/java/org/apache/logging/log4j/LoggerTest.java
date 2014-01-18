@@ -98,9 +98,41 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLoggerByClass() {
-        final Logger classLogger = LogManager.getLogger(LoggerTest.class);
-        assertNotNull(classLogger);
+    public void getFormatterLogger_Class() {
+        // The TestLogger logger was already created in an instance variable for this class.
+        // The message factory is only used when the logger is created.
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(TestStringFormatterMessageFactory.class);
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getFormatterLogger_Object() {
+        // The TestLogger logger was already created in an instance variable for this class.
+        // The message factory is only used when the logger is created.
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(new TestStringFormatterMessageFactory());
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+    }
+
+    @Test
+    public void getFormatterLogger_String() {
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
+        assertNotNull(testLogger);
+        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
+        assertEquals(messageFactory, testLogger.getMessageFactory());
+        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(1, testLogger.getEntries().size());
+        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
     @Test
@@ -109,20 +141,6 @@ public class LoggerTest {
         // The message factory is only used when the logger is created.
         final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getLogger(TestParameterizedMessageFactory.class,
-                messageFactory);
-        assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
-        testLogger.debug("{}", Integer.MAX_VALUE);
-        assertEquals(1, testLogger.getEntries().size());
-        assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
-    }
-
-    @Test
-    public void getLogger_Object_ParameterizedMessageFactory() {
-        // The TestLogger logger was already created in an instance variable for this class.
-        // The message factory is only used when the logger is created.
-        final ParameterizedMessageFactory messageFactory =  ParameterizedMessageFactory.INSTANCE;
-        final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
                 messageFactory);
         assertNotNull(testLogger);
         assertEquals(messageFactory, testLogger.getMessageFactory());
@@ -145,16 +163,17 @@ public class LoggerTest {
     }
 
     @Test
-    public void getFormatterLogger_Class() {
+    public void getLogger_Object_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
-        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(TestStringFormatterMessageFactory.class);
+        final ParameterizedMessageFactory messageFactory =  ParameterizedMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger(new TestParameterizedMessageFactory(),
+                messageFactory);
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
-        testLogger.debug("%,d", Integer.MAX_VALUE);
+        assertEquals(messageFactory, testLogger.getMessageFactory());
+        testLogger.debug("{}", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
-        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
+        assertEquals(" DEBUG " + Integer.MAX_VALUE, testLogger.getEntries().get(0));
     }
 
     @Test
@@ -172,13 +191,17 @@ public class LoggerTest {
     }
 
     @Test
-    public void getFormatterLogger_Object() {
-        // The TestLogger logger was already created in an instance variable for this class.
-        // The message factory is only used when the logger is created.
-        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger(new TestStringFormatterMessageFactory());
+    public void getLogger_String_MessageFactoryMismatch() {
+        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
+        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
+                messageFactory);
         assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(StringFormatterMessageFactory.INSTANCE, testLogger.getMessageFactory());
+        assertEquals(messageFactory, testLogger.getMessageFactory());
+        final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
+                ParameterizedMessageFactory.INSTANCE);
+        //TODO: How to test?
+        //This test context always creates new loggers, other test context impls I tried fail other tests.
+        //assertEquals(messageFactory, testLogger2.getMessageFactory());
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertEquals(1, testLogger.getEntries().size());
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
@@ -209,70 +232,9 @@ public class LoggerTest {
     }
 
     @Test
-    public void getFormatterLogger_String() {
-        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
-        final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
-        assertNotNull(testLogger);
-        assertTrue(testLogger.getMessageFactory() instanceof StringFormatterMessageFactory);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
-        testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertEquals(1, testLogger.getEntries().size());
-        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
-    }
-
-    @Test
-    public void getLogger_String_MessageFactoryMismatch() {
-        final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
-        final TestLogger testLogger = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
-                messageFactory);
-        assertNotNull(testLogger);
-        assertEquals(messageFactory, testLogger.getMessageFactory());
-        final TestLogger testLogger2 = (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch",
-                ParameterizedMessageFactory.INSTANCE);
-        //TODO: How to test?
-        //This test context always creates new loggers, other test context impls I tried fail other tests.
-        //assertEquals(messageFactory, testLogger2.getMessageFactory());
-        testLogger.debug("%,d", Integer.MAX_VALUE);
-        assertEquals(1, testLogger.getEntries().size());
-        assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
-    }
-
-    @Test
-    public void getStream() {
-        final LoggerStream stream = logger.getStream(Level.DEBUG);
-        stream.println("Debug message 1");
-        stream.print("Debug message 2");
-        stream.println();
-        stream.println(); // verify blank log message
-        stream.print("Debug message 3\n");
-        stream.print("\r\n"); // verify windows EOL works
-        assertEquals(5, results.size());
-        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
-        assertThat("Incorrect message", results.get(1), startsWith(" DEBUG Debug message 2"));
-        assertEquals("Message should be blank-ish", " DEBUG ", results.get(2));
-        assertThat("Incorrect message", results.get(3), startsWith(" DEBUG Debug message 3"));
-        assertEquals("Message should be blank-ish", " DEBUG ", results.get(4));
-    }
-
-    @Test
-    public void getStream_Marker() {
-        final LoggerStream stream = logger.getStream(MarkerManager.getMarker("HI"), Level.INFO);
-        stream.println("Hello, world!");
-        stream.print("How about this?\n");
-        stream.println("Is this thing on?");
-        assertEquals(3, results.size());
-        assertThat("Incorrect message.", results.get(0), startsWith("HI INFO Hello"));
-        assertThat("Incorrect message.", results.get(1), startsWith("HI INFO How about"));
-        assertThat("Incorrect message.", results.get(2), startsWith("HI INFO Is this"));
-    }
-
-    @Test
-    public void printf() {
-        logger.printf(Level.DEBUG, "Debug message %d", 1);
-        logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
-        assertEquals(2, results.size());
-        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
-        assertThat("Incorrect message", results.get(1), startsWith("Test DEBUG Debug message 2"));
+    public void getLoggerByClass() {
+        final Logger classLogger = LogManager.getLogger(LoggerTest.class);
+        assertNotNull(classLogger);
     }
 
     @Test
@@ -307,6 +269,35 @@ public class LoggerTest {
         assertNotNull(LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
         assertEquals(LogManager.getRootLogger(), LogManager.getLogger(""));
         assertEquals(LogManager.getRootLogger(), LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
+    }
+
+    @Test
+    public void getStream() {
+        final LoggerStream stream = logger.getStream(Level.DEBUG);
+        stream.println("Debug message 1");
+        stream.print("Debug message 2");
+        stream.println();
+        stream.println(); // verify blank log message
+        stream.print("Debug message 3\n");
+        stream.print("\r\n"); // verify windows EOL works
+        assertEquals(5, results.size());
+        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
+        assertThat("Incorrect message", results.get(1), startsWith(" DEBUG Debug message 2"));
+        assertEquals("Message should be blank-ish", " DEBUG ", results.get(2));
+        assertThat("Incorrect message", results.get(3), startsWith(" DEBUG Debug message 3"));
+        assertEquals("Message should be blank-ish", " DEBUG ", results.get(4));
+    }
+
+    @Test
+    public void getStream_Marker() {
+        final LoggerStream stream = logger.getStream(MarkerManager.getMarker("HI"), Level.INFO);
+        stream.println("Hello, world!");
+        stream.print("How about this?\n");
+        stream.println("Is this thing on?");
+        assertEquals(3, results.size());
+        assertThat("Incorrect message.", results.get(0), startsWith("HI INFO Hello"));
+        assertThat("Incorrect message.", results.get(1), startsWith("HI INFO How about"));
+        assertThat("Incorrect message.", results.get(2), startsWith("HI INFO Is this"));
     }
 
     @Test
@@ -367,6 +358,15 @@ public class LoggerTest {
             results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"));
         assertTrue("MDC not cleared?: " + results.get(1),
             results.get(1).startsWith(" DEBUG Debug message"));
+    }
+
+    @Test
+    public void printf() {
+        logger.printf(Level.DEBUG, "Debug message %d", 1);
+        logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
+        assertEquals(2, results.size());
+        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
+        assertThat("Incorrect message", results.get(1), startsWith("Test DEBUG Debug message 2"));
     }
 
     @Before
