@@ -138,7 +138,7 @@ public class RollingRandomAccessFileManagerTest {
         // append is false deletes the file if it exists
         final boolean isAppend = false;
         final long expectedMin = System.currentTimeMillis();
-        final long expectedMax = expectedMin + 50;
+        final long expectedMax = expectedMin + 500;
         assertTrue(file.lastModified() < expectedMin);
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
