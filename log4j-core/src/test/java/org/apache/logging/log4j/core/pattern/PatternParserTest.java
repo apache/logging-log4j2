@@ -108,16 +108,16 @@ public class PatternParserTest {
     }
 
     @Test
-    public void testNestedPatternHighlight() {       
-        testNestedPatternHighlight(Level.TRACE, "\u001B[30m13");
-        testNestedPatternHighlight(Level.DEBUG, "\u001B[36m13");
-        testNestedPatternHighlight(Level.INFO, "\u001B[32m13");
-        testNestedPatternHighlight(Level.WARN, "\u001B[33m13");
-        testNestedPatternHighlight(Level.ERROR, "\u001B[1;31m13");
-        testNestedPatternHighlight(Level.FATAL, "\u001B[1;31m13");
+    public void testNestedPatternHighlight() {
+        testNestedPatternHighlight(Level.TRACE, "\u001B[30m");
+        testNestedPatternHighlight(Level.DEBUG, "\u001B[36m");
+        testNestedPatternHighlight(Level.INFO, "\u001B[32m");
+        testNestedPatternHighlight(Level.WARN, "\u001B[33m");
+        testNestedPatternHighlight(Level.ERROR, "\u001B[1;31m");
+        testNestedPatternHighlight(Level.FATAL, "\u001B[1;31m");
     }
 
-    private void testNestedPatternHighlight(Level level, String startLine) {
+    private void testNestedPatternHighlight(Level level, String expectedStart) {
         final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
         assertNotNull(formatters);
         final Throwable t = new Throwable();
@@ -130,7 +130,6 @@ public class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expectedStart = startLine + " ";
         final String expectedEnd = String.format("] %-5s: Hello, world%s\u001B[m", level, Constants.LINE_SEP);
         assertTrue("Expected to start with: " + expectedStart + ". Actual: " + str, str.startsWith(expectedStart));
         assertTrue("Expected to end with: \"" + expectedEnd + "\". Actual: \"" + str, str.endsWith(expectedEnd));
