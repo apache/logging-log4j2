@@ -45,32 +45,32 @@ public enum Level {
     /**
      * A severe error that will prevent the application from continuing.
      */
-    FATAL(1),
+    FATAL(100),
 
     /**
      * An error in the application, possibly recoverable.
      */
-    ERROR(2),
+    ERROR(200),
 
     /**
      * An event that might possible lead to an error.
      */
-    WARN(3),
+    WARN(300),
 
     /**
      * An event for informational purposes.
      */
-    INFO(4),
+    INFO(400),
 
     /**
      * A general debugging event.
      */
-    DEBUG(5),
+    DEBUG(500),
 
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    TRACE(6),
+    TRACE(600),
 
     /**
      * All events should be logged.
