@@ -52,13 +52,13 @@ public class AbstractLoggerTest extends AbstractLogger {
     private static Throwable t = new UnsupportedOperationException("Test");
 
     private static Class<AbstractLogger> obj = AbstractLogger.class;
+
     private static String pattern = "{}, {}";
     private static String p1 = "Long Beach";
-
     private static String p2 = "California";
+
     private static Message simple = new SimpleMessage("Hello");
     private static Message object = new ObjectMessage(obj);
-
     private static Message param = new ParameterizedMessage(pattern, p1, p2);
 
     private static String marker = "TEST";
@@ -192,6 +192,48 @@ public class AbstractLoggerTest extends AbstractLogger {
                     currentEvent.t.equals(t));
             }
         }
+    }
+
+    @Test
+    public void testDiag() {
+        currentLevel = Level.DIAG;
+
+        currentEvent = events[0];
+        diag("Hello");
+        diag(null, "Hello");
+        currentEvent = events[1];
+        diag(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        diag("Hello", t);
+        diag(null, "Hello", t);
+        currentEvent = events[3];
+        diag(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        diag(obj);
+        currentEvent = events[5];
+        diag(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        diag(obj, t);
+        diag(null, obj, t);
+        currentEvent = events[7];
+        diag(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        diag(pattern, p1, p2);
+        currentEvent = events[9];
+        diag(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        diag(simple);
+        diag(null, simple);
+        diag(null, simple, null);
+        currentEvent = events[11];
+        diag(simple, t);
+        diag(null, simple, t);
+        currentEvent = events[12];
+        diag(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        diag(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        diag(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -363,6 +405,48 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Test
+    public void testLogDiag() {
+        currentLevel = Level.DIAG;
+
+        currentEvent = events[0];
+        log(Level.DIAG, "Hello");
+        log(Level.DIAG, null, "Hello");
+        currentEvent = events[1];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        log(Level.DIAG, "Hello", t);
+        log(Level.DIAG, null, "Hello", t);
+        currentEvent = events[3];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        log(Level.DIAG, obj);
+        currentEvent = events[5];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        log(Level.DIAG, obj, t);
+        log(Level.DIAG, null, obj, t);
+        currentEvent = events[7];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        log(Level.DIAG, pattern, p1, p2);
+        currentEvent = events[9];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        log(Level.DIAG, simple);
+        log(Level.DIAG, null, simple);
+        log(Level.DIAG, null, simple, null);
+        currentEvent = events[11];
+        log(Level.DIAG, simple, t);
+        log(Level.DIAG, null, simple, t);
+        currentEvent = events[12];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        log(Level.DIAG, MarkerManager.getMarker("TEST"), simple);
+    }
+
+    @Test
     public void testLogDebug() {
         currentLevel = Level.DEBUG;
 
@@ -531,6 +615,48 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Test
+    public void testLogNotice() {
+        currentLevel = Level.NOTICE;
+
+        currentEvent = events[0];
+        log(Level.NOTICE, "Hello");
+        log(Level.NOTICE, null, "Hello");
+        currentEvent = events[1];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        log(Level.NOTICE, "Hello", t);
+        log(Level.NOTICE, null, "Hello", t);
+        currentEvent = events[3];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        log(Level.NOTICE, obj);
+        currentEvent = events[5];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        log(Level.NOTICE, obj, t);
+        log(Level.NOTICE, null, obj, t);
+        currentEvent = events[7];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        log(Level.NOTICE, pattern, p1, p2);
+        currentEvent = events[9];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        log(Level.NOTICE, simple);
+        log(Level.NOTICE, null, simple);
+        log(Level.NOTICE, null, simple, null);
+        currentEvent = events[11];
+        log(Level.NOTICE, simple, t);
+        log(Level.NOTICE, null, simple, t);
+        currentEvent = events[12];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        log(Level.NOTICE, MarkerManager.getMarker("TEST"), simple);
+    }
+
+    @Test
     public void testLogTrace() {
         currentLevel = Level.TRACE;
 
@@ -570,6 +696,48 @@ public class AbstractLoggerTest extends AbstractLogger {
         log(Level.TRACE, MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         log(Level.TRACE, MarkerManager.getMarker("TEST"), simple);
+    }
+
+    @Test
+    public void testLogVerbose() {
+        currentLevel = Level.VERBOSE;
+
+        currentEvent = events[0];
+        log(Level.VERBOSE, "Hello");
+        log(Level.VERBOSE, null, "Hello");
+        currentEvent = events[1];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        log(Level.VERBOSE, "Hello", t);
+        log(Level.VERBOSE, null, "Hello", t);
+        currentEvent = events[3];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        log(Level.VERBOSE, obj);
+        currentEvent = events[5];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        log(Level.VERBOSE, obj, t);
+        log(Level.VERBOSE, null, obj, t);
+        currentEvent = events[7];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        log(Level.VERBOSE, pattern, p1, p2);
+        currentEvent = events[9];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        log(Level.VERBOSE, simple);
+        log(Level.VERBOSE, null, simple);
+        log(Level.VERBOSE, null, simple, null);
+        currentEvent = events[11];
+        log(Level.VERBOSE, simple, t);
+        log(Level.VERBOSE, null, simple, t);
+        currentEvent = events[12];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        log(Level.VERBOSE, MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
@@ -615,6 +783,48 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Test
+    public void testNotice() {
+        currentLevel = Level.NOTICE;
+
+        currentEvent = events[0];
+        notice("Hello");
+        notice(null, "Hello");
+        currentEvent = events[1];
+        notice(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        notice("Hello", t);
+        notice(null, "Hello", t);
+        currentEvent = events[3];
+        notice(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        notice(obj);
+        currentEvent = events[5];
+        notice(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        notice(obj, t);
+        notice(null, obj, t);
+        currentEvent = events[7];
+        notice(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        notice(pattern, p1, p2);
+        currentEvent = events[9];
+        notice(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        notice(simple);
+        notice(null, simple);
+        notice(null, simple, null);
+        currentEvent = events[11];
+        notice(simple, t);
+        notice(null, simple, t);
+        currentEvent = events[12];
+        notice(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        notice(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        notice(MarkerManager.getMarker("TEST"), simple);
+    }
+
+    @Test
     public void testTrace() {
         currentLevel = Level.TRACE;
 
@@ -654,6 +864,48 @@ public class AbstractLoggerTest extends AbstractLogger {
         trace(MarkerManager.getMarker("TEST"), simple, t);
         currentEvent = events[14];
         trace(MarkerManager.getMarker("TEST"), simple);
+    }
+
+    @Test
+    public void testVerbose() {
+        currentLevel = Level.VERBOSE;
+
+        currentEvent = events[0];
+        verbose("Hello");
+        verbose(null, "Hello");
+        currentEvent = events[1];
+        verbose(MarkerManager.getMarker("TEST"), "Hello");
+        currentEvent = events[2];
+        verbose("Hello", t);
+        verbose(null, "Hello", t);
+        currentEvent = events[3];
+        verbose(MarkerManager.getMarker("TEST"), "Hello", t);
+        currentEvent = events[4];
+        verbose(obj);
+        currentEvent = events[5];
+        verbose(MarkerManager.getMarker("TEST"), obj);
+        currentEvent = events[6];
+        verbose(obj, t);
+        verbose(null, obj, t);
+        currentEvent = events[7];
+        verbose(MarkerManager.getMarker("TEST"), obj, t);
+        currentEvent = events[8];
+        verbose(pattern, p1, p2);
+        currentEvent = events[9];
+        verbose(MarkerManager.getMarker("TEST"), pattern, p1, p2);
+        currentEvent = events[10];
+        verbose(simple);
+        verbose(null, simple);
+        verbose(null, simple, null);
+        currentEvent = events[11];
+        verbose(simple, t);
+        verbose(null, simple, t);
+        currentEvent = events[12];
+        verbose(MarkerManager.getMarker("TEST"), simple, null);
+        currentEvent = events[13];
+        verbose(MarkerManager.getMarker("TEST"), simple, t);
+        currentEvent = events[14];
+        verbose(MarkerManager.getMarker("TEST"), simple);
     }
 
     @Test
