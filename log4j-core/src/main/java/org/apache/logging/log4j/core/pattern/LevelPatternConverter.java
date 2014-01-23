@@ -134,11 +134,20 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
             case TRACE:
                 return "level trace";
 
+            case VERBOSE:
+                return "level verbose";
+
             case DEBUG:
+                return "level debug";
+
+            case DIAG:
                 return "level debug";
 
             case INFO:
                 return "level info";
+
+            case NOTICE:
+                return "level notice";
 
             case WARN:
                 return "level warn";

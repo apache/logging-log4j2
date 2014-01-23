@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.junit.Test;
@@ -27,8 +27,57 @@ import org.junit.Test;
 public class PriorityTest {
 
     @Test
-    public void testP1() {
-        final int p = Priority.getPriority(Facility.AUTH, Level.INFO);
-        assertTrue("Expected priority value is 38, got "+ p, p == 38);
+    public void testAuthDebug() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.DEBUG);
+        assertEquals(39, p);
     }
+
+    @Test
+    public void testAuthDiag() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.DIAG);
+        assertEquals(39, p);
+    }
+
+    @Test
+    public void testAuthError() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.ERROR);
+        assertEquals(35, p);
+    }
+
+    @Test
+    public void testAuthFatal() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.FATAL);
+        assertEquals(33, p);
+    }
+
+    @Test
+    public void testAuthInfo() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.INFO);
+        assertEquals(38, p);
+    }
+
+    @Test
+    public void testAuthNotice() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.NOTICE);
+        assertEquals(37, p);
+    }
+
+    @Test
+    public void testAuthTrace() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.TRACE);
+        assertEquals(39, p);
+    }
+    
+    @Test
+    public void testAuthVerbose() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.VERBOSE);
+        assertEquals(39, p);
+    }
+
+    @Test
+    public void testAuthWarn() {
+        final int p = Priority.getPriority(Facility.AUTH, Level.WARN);
+        assertEquals(36, p);
+    }
+
 }

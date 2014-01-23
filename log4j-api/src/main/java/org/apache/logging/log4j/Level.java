@@ -46,7 +46,7 @@ public enum Level {
     OFF(0),
 
     /**
-     * A severe error that will prevent the application from continuing.
+     * A severe error will prevent the application from continuing.
      */
     FATAL(100),
 
@@ -71,12 +71,12 @@ public enum Level {
     INFO(500),
 
     /**
-     * An event used by operations or users to diagnose problems in the system.
+     * A user or operator debugging event, used to diagnose problems in the system.
      */
     DIAG(600),
 
     /**
-     * A general debugging event, used by developers for internal debugging.
+     * A developer debugging event, used for internal debugging.
      */
     DEBUG(700),
 

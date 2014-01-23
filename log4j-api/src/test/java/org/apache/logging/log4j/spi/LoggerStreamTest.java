@@ -43,8 +43,13 @@ public class LoggerStreamTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][]{
+                        { Level.ALL, "all log string test" },
+                        { Level.TRACE, "trace log string test" },
+                        { Level.VERBOSE, "verbose log string test" },
                         { Level.DEBUG, "debug log string test" },
+                        { Level.DIAG, "diag log string test" },
                         { Level.INFO, "info log string test" },
+                        { Level.NOTICE, "notice log string test" },
                         { Level.WARN, "DANGER ZONE" },
                         { Level.ERROR, "MAYDAY! MAYDAY!" },
                         { Level.FATAL, "ABANDON SHIP!" }

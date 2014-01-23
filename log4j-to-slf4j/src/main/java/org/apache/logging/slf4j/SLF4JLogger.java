@@ -57,24 +57,27 @@ public class SLF4JLogger extends AbstractLogger {
                 data.getParameters(), t);
         } else {
             switch (level) {
-                case DEBUG :
-                    logger.debug(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
-                case TRACE :
-                    logger.trace(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
-                case INFO :
-                    logger.info(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
-                case WARN :
-                    logger.warn(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
-                case ERROR :
-                    logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
-                default :
-                    logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
-                    break;
+            case TRACE:
+                logger.trace(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
+            case VERBOSE:
+            case DEBUG:
+            case DIAG:
+                logger.debug(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
+            case INFO:
+            case NOTICE:
+                logger.info(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
+            case WARN:
+                logger.warn(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
+            case ERROR:
+                logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
+            default:
+                logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                break;
             }
         }
     }
@@ -94,18 +97,21 @@ public class SLF4JLogger extends AbstractLogger {
 
     private int convertLevel(final Level level) {
         switch (level) {
-            case DEBUG :
-                return LocationAwareLogger.DEBUG_INT;
-            case TRACE :
-                return LocationAwareLogger.TRACE_INT;
-            case INFO :
-                return LocationAwareLogger.INFO_INT;
-            case WARN :
-                return LocationAwareLogger.WARN_INT;
-            case ERROR :
-                return LocationAwareLogger.ERROR_INT;
-            default :
-                return LocationAwareLogger.ERROR_INT;
+        case TRACE:
+            return LocationAwareLogger.TRACE_INT;
+        case VERBOSE:
+        case DEBUG:
+        case DIAG:
+            return LocationAwareLogger.DEBUG_INT;
+        case INFO:
+        case NOTICE:
+            return LocationAwareLogger.INFO_INT;
+        case WARN:
+            return LocationAwareLogger.WARN_INT;
+        case ERROR:
+            return LocationAwareLogger.ERROR_INT;
+        default:
+            return LocationAwareLogger.ERROR_INT;
         }
     }
 
@@ -137,19 +143,21 @@ public class SLF4JLogger extends AbstractLogger {
     private boolean isEnabledFor(final Level level, final Marker marker) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
         switch (level) {
-            case DEBUG :
-                return logger.isDebugEnabled(slf4jMarker);
-            case TRACE :
-                return logger.isTraceEnabled(slf4jMarker);
-            case INFO :
-                return logger.isInfoEnabled(slf4jMarker);
-            case WARN :
-                return logger.isWarnEnabled(slf4jMarker);
-            case ERROR :
-                return logger.isErrorEnabled(slf4jMarker);
-            default :
-                return logger.isErrorEnabled(slf4jMarker);
-
+        case TRACE:
+            return logger.isTraceEnabled(slf4jMarker);
+        case VERBOSE:
+        case DEBUG:
+        case DIAG:
+            return logger.isDebugEnabled(slf4jMarker);
+        case INFO:
+        case NOTICE:
+            return logger.isInfoEnabled(slf4jMarker);
+        case WARN:
+            return logger.isWarnEnabled(slf4jMarker);
+        case ERROR:
+            return logger.isErrorEnabled(slf4jMarker);
+        default:
+            return logger.isErrorEnabled(slf4jMarker);
         }
     }
 

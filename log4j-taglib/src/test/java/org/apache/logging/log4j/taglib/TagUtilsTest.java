@@ -63,6 +63,16 @@ public class TagUtilsTest {
     }
 
     @Test
+    public void testResolveLevelDiag01() {
+        assertEquals("The value is not correct.", Level.DIAG, TagUtils.resolveLevel("diag"));
+    }
+
+    @Test
+    public void testResolveLevelDiag02() {
+        assertEquals("The value is not correct.", Level.DIAG, TagUtils.resolveLevel(Level.DIAG));
+    }
+
+    @Test
     public void testResolveLevelError01() {
         assertEquals("The value is not correct.", Level.ERROR, TagUtils.resolveLevel("error"));
     }
@@ -93,6 +103,16 @@ public class TagUtilsTest {
     }
 
     @Test
+    public void testResolveLevelNotice01() {
+        assertEquals("The value is not correct.", Level.NOTICE, TagUtils.resolveLevel("notice"));
+    }
+
+    @Test
+    public void testResolveLevelNotice02() {
+        assertEquals("The value is not correct.", Level.NOTICE, TagUtils.resolveLevel(Level.NOTICE));
+    }
+
+    @Test
     public void testResolveLevelTrace01() {
         assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel("trace"));
     }
@@ -100,6 +120,16 @@ public class TagUtilsTest {
     @Test
     public void testResolveLevelTrace02() {
         assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel(Level.TRACE));
+    }
+
+    @Test
+    public void testResolveLevelVerbose01() {
+        assertEquals("The value is not correct.", Level.VERBOSE, TagUtils.resolveLevel("verbose"));
+    }
+
+    @Test
+    public void testResolveLevelVerbose02() {
+        assertEquals("The value is not correct.", Level.VERBOSE, TagUtils.resolveLevel(Level.VERBOSE));
     }
 
     @Test

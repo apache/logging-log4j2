@@ -29,9 +29,10 @@ import org.apache.logging.log4j.status.StatusLogger;
 import java.io.Serializable;
 
 /**
- * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
+ * Abstract implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
 public abstract class AbstractLogger implements Logger, Serializable {
+
 
     private static final long serialVersionUID = 2L;
 
@@ -364,6 +365,195 @@ public abstract class AbstractLogger implements Logger, Serializable {
     public void debug(final String message, final Throwable t) {
         if (isEnabled(Level.DEBUG, null, message, t)) {
             log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the DIAG level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void diag(final Marker marker, final Message msg) {
+        if (isEnabled(Level.DIAG, marker, msg, null)) {
+            log(marker, FQCN, Level.DIAG, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the DIAG level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void diag(final Marker marker, final Message msg, final Throwable t) {
+        if (isEnabled(Level.DIAG, marker, msg, t)) {
+            log(marker, FQCN, Level.DIAG, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void diag(final Marker marker, final Object message) {
+        if (isEnabled(Level.DIAG, marker, message, null)) {
+            log(marker, FQCN, Level.DIAG, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void diag(final Marker marker, final Object message, final Throwable t) {
+        if (isEnabled(Level.DIAG, marker, message, t)) {
+            log(marker, FQCN, Level.DIAG, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void diag(final Marker marker, final String message) {
+        if (isEnabled(Level.DIAG, marker, message)) {
+            log(marker, FQCN, Level.DIAG, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void diag(final Marker marker, final String message, final Object... params) {
+        if (isEnabled(Level.DIAG, marker, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(marker, FQCN, Level.DIAG, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void diag(final Marker marker, final String message, final Throwable t) {
+        if (isEnabled(Level.DIAG, marker, message, t)) {
+            log(marker, FQCN, Level.DIAG, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the DIAG level.
+     * 
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void diag(final Message msg) {
+        if (isEnabled(Level.DIAG, null, msg, null)) {
+            log(null, FQCN, Level.DIAG, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the DIAG level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void diag(final Message msg, final Throwable t) {
+        if (isEnabled(Level.DIAG, null, msg, t)) {
+            log(null, FQCN, Level.DIAG, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void diag(final Object message) {
+        if (isEnabled(Level.DIAG, null, message, null)) {
+            log(null, FQCN, Level.DIAG, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void diag(final Object message, final Throwable t) {
+        if (isEnabled(Level.DIAG, null, message, t)) {
+            log(null, FQCN, Level.DIAG, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void diag(final String message) {
+        if (isEnabled(Level.DIAG, null, message)) {
+            log(null, FQCN, Level.DIAG, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void diag(final String message, final Object... params) {
+        if (isEnabled(Level.DIAG, null, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(null, FQCN, Level.DIAG, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void diag(final String message, final Throwable t) {
+        if (isEnabled(Level.DIAG, null, message, t)) {
+            log(null, FQCN, Level.DIAG, messageFactory.newMessage(message), t);
         }
     }
 
@@ -1061,6 +1251,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
         }
     }
 
+
     /**
      * Checks whether this Logger is enabled for the DEBUG Level.
      * 
@@ -1080,6 +1271,27 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public boolean isDebugEnabled(final Marker marker) {
         return isEnabled(Level.DEBUG, marker, (Object) null, null);
+    }
+
+    /**
+     * Checks whether this Logger is enabled for the DIAG Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level DIAG, {@code false} otherwise.
+     */
+    @Override
+    public boolean isDiagEnabled() {
+        return isEnabled(Level.DIAG, null, null);
+    }
+
+    /**
+     * Checks whether this Logger is enabled for the DIAG Level.
+     * 
+     * @param marker The marker data.
+     * @return boolean - {@code true} if this Logger is enabled for level DIAG, {@code false} otherwise.
+     */
+    @Override
+    public boolean isDiagEnabled(final Marker marker) {
+        return isEnabled(Level.DIAG, marker, (Object) null, null);
     }
 
     /**
@@ -1221,6 +1433,27 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
+     * Checks whether this Logger is enabled for the NOTICE Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level NOTICE, {@code false} otherwise.
+     */
+    @Override
+    public boolean isNoticeEnabled() {
+        return isEnabled(Level.NOTICE, null, null);
+    }
+
+    /**
+     * Checks whether this Logger is enabled for the NOTICE Level.
+     * 
+     * @param marker The marker data.
+     * @return boolean - {@code true} if this Logger is enabled for level NOTICE, {@code false} otherwise.
+     */
+    @Override
+    public boolean isNoticeEnabled(final Marker marker) {
+        return isEnabled(Level.NOTICE, marker, (Object) null, null);
+    }
+
+    /**
      * Checks whether this Logger is enabled for the TRACE Level.
      * 
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
@@ -1239,6 +1472,27 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public boolean isTraceEnabled(final Marker marker) {
         return isEnabled(Level.TRACE, marker, (Object) null, null);
+    }
+
+    /**
+     * Checks whether this Logger is enabled for the VERBOSE Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level VERBOSE, {@code false} otherwise.
+     */
+    @Override
+    public boolean isVerboseEnabled() {
+        return isEnabled(Level.VERBOSE, null, null);
+    }
+
+    /**
+     * Checks whether this Logger is enabled for the VERBOSE Level.
+     * 
+     * @param marker The marker data.
+     * @return boolean - {@code true} if this Logger is enabled for level VERBOSE, {@code false} otherwise.
+     */
+    @Override
+    public boolean isVerboseEnabled(final Marker marker) {
+        return isEnabled(Level.VERBOSE, marker, (Object) null, null);
     }
 
     /**
@@ -1475,6 +1729,195 @@ public abstract class AbstractLogger implements Logger, Serializable {
      * @param t A Throwable or null.
      */
     public abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the NOTICE level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void notice(final Marker marker, final Message msg) {
+        if (isEnabled(Level.NOTICE, marker, msg, null)) {
+            log(marker, FQCN, Level.NOTICE, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the NOTICE level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void notice(final Marker marker, final Message msg, final Throwable t) {
+        if (isEnabled(Level.NOTICE, marker, msg, t)) {
+            log(marker, FQCN, Level.NOTICE, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void notice(final Marker marker, final Object message) {
+        if (isEnabled(Level.NOTICE, marker, message, null)) {
+            log(marker, FQCN, Level.NOTICE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void notice(final Marker marker, final Object message, final Throwable t) {
+        if (isEnabled(Level.NOTICE, marker, message, t)) {
+            log(marker, FQCN, Level.NOTICE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void notice(final Marker marker, final String message) {
+        if (isEnabled(Level.NOTICE, marker, message)) {
+            log(marker, FQCN, Level.NOTICE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void notice(final Marker marker, final String message, final Object... params) {
+        if (isEnabled(Level.NOTICE, marker, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(marker, FQCN, Level.NOTICE, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void notice(final Marker marker, final String message, final Throwable t) {
+        if (isEnabled(Level.NOTICE, marker, message, t)) {
+            log(marker, FQCN, Level.NOTICE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the TRACE level.
+     * 
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void notice(final Message msg) {
+        if (isEnabled(Level.NOTICE, null, msg, null)) {
+            log(null, FQCN, Level.NOTICE, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the NOTICE level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void notice(final Message msg, final Throwable t) {
+        if (isEnabled(Level.NOTICE, null, msg, t)) {
+            log(null, FQCN, Level.NOTICE, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void notice(final Object message) {
+        if (isEnabled(Level.NOTICE, null, message, null)) {
+            log(null, FQCN, Level.NOTICE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void notice(final Object message, final Throwable t) {
+        if (isEnabled(Level.NOTICE, null, message, t)) {
+            log(null, FQCN, Level.NOTICE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void notice(final String message) {
+        if (isEnabled(Level.NOTICE, null, message)) {
+            log(null, FQCN, Level.NOTICE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void notice(final String message, final Object... params) {
+        if (isEnabled(Level.NOTICE, null, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(null, FQCN, Level.NOTICE, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void notice(final String message, final Throwable t) {
+        if (isEnabled(Level.NOTICE, null, message, t)) {
+            log(null, FQCN, Level.NOTICE, messageFactory.newMessage(message), t);
+        }
+    }
 
     /**
      * Logs a formatted message using the specified format string and arguments.
@@ -1767,6 +2210,195 @@ public abstract class AbstractLogger implements Logger, Serializable {
     public void trace(final String message, final Throwable t) {
         if (isEnabled(Level.TRACE, null, message, t)) {
             log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the VERBOSE level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void verbose(final Marker marker, final Message msg) {
+        if (isEnabled(Level.VERBOSE, marker, msg, null)) {
+            log(marker, FQCN, Level.VERBOSE, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the VERBOSE level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void verbose(final Marker marker, final Message msg, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, marker, msg, t)) {
+            log(marker, FQCN, Level.VERBOSE, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void verbose(final Marker marker, final Object message) {
+        if (isEnabled(Level.VERBOSE, marker, message, null)) {
+            log(marker, FQCN, Level.VERBOSE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void verbose(final Marker marker, final Object message, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, marker, message, t)) {
+            log(marker, FQCN, Level.VERBOSE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     */
+    @Override
+    public void verbose(final Marker marker, final String message) {
+        if (isEnabled(Level.VERBOSE, marker, message)) {
+            log(marker, FQCN, Level.VERBOSE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void verbose(final Marker marker, final String message, final Object... params) {
+        if (isEnabled(Level.VERBOSE, marker, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(marker, FQCN, Level.VERBOSE, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement.
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void verbose(final Marker marker, final String message, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, marker, message, t)) {
+            log(marker, FQCN, Level.VERBOSE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the TRACE level.
+     * 
+     * @param msg the message string to be logged
+     */
+    @Override
+    public void verbose(final Message msg) {
+        if (isEnabled(Level.VERBOSE, null, msg, null)) {
+            log(null, FQCN, Level.VERBOSE, msg, null);
+        }
+    }
+
+    /**
+     * Logs a message with the specific Marker at the VERBOSE level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    @Override
+    public void verbose(final Message msg, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, null, msg, t)) {
+            log(null, FQCN, Level.VERBOSE, msg, t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void verbose(final Object message) {
+        if (isEnabled(Level.VERBOSE, null, message, null)) {
+            log(null, FQCN, Level.VERBOSE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void verbose(final Object message, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, null, message, t)) {
+            log(null, FQCN, Level.VERBOSE, messageFactory.newMessage(message), t);
+        }
+    }
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message object to log.
+     */
+    @Override
+    public void verbose(final String message) {
+        if (isEnabled(Level.VERBOSE, null, message)) {
+            log(null, FQCN, Level.VERBOSE, messageFactory.newMessage(message), null);
+        }
+    }
+
+    /**
+     * Logs a message with parameters at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message to log.
+     * @param params parameters to the message.
+     */
+    @Override
+    public void verbose(final String message, final Object... params) {
+        if (isEnabled(Level.VERBOSE, null, message, params)) {
+            final Message msg = messageFactory.newMessage(message, params);
+            log(null, FQCN, Level.VERBOSE, msg, msg.getThrowable());
+        }
+    }
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    @Override
+    public void verbose(final String message, final Throwable t) {
+        if (isEnabled(Level.VERBOSE, null, message, t)) {
+            log(null, FQCN, Level.VERBOSE, messageFactory.newMessage(message), t);
         }
     }
 

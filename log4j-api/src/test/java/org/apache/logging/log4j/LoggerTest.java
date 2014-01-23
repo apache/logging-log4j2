@@ -306,6 +306,12 @@ public class LoggerTest {
     }
 
     @Test
+    public void isDiagEnabled() {
+        assertTrue("Incorrect level", logger.isDiagEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.DIAG));
+    }
+
+    @Test
     public void isDebugEnabled() {
         assertTrue("Incorrect level", logger.isDebugEnabled());
         assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG));
@@ -330,6 +336,12 @@ public class LoggerTest {
     }
 
     @Test
+    public void isNoticeEnabled() {
+        assertTrue("Incorrect level", logger.isNoticeEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.NOTICE));
+    }
+
+    @Test
     public void isOffEnabled() {
         assertTrue("Incorrect level", logger.isEnabled(Level.OFF));
     }
@@ -338,6 +350,12 @@ public class LoggerTest {
     public void isTraceEnabled() {
         assertTrue("Incorrect level", logger.isTraceEnabled());
         assertTrue("Incorrect level", logger.isEnabled(Level.TRACE));
+    }
+
+    @Test
+    public void isVerboseEnabled() {
+        assertTrue("Incorrect level", logger.isVerboseEnabled());
+        assertTrue("Incorrect level", logger.isEnabled(Level.VERBOSE));
     }
 
     @Test

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.spi.LoggerStream;
  */
 public interface Logger {
 
+
     /**
      * Logs an exception or error that has been caught.
      * 
@@ -42,6 +43,7 @@ public interface Logger {
      * @param t The Throwable.
      */
     void catching(Throwable t);
+
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
@@ -143,7 +145,7 @@ public interface Logger {
      * @param message the message object to log.
      */
     void debug(String message);
-
+    
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      * 
@@ -161,6 +163,125 @@ public interface Logger {
      * @param t the exception to log, including its stack trace.
      */
     void debug(String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    void diag(Marker marker, Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void diag(Marker marker, Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void diag(Marker marker, Object message);
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void diag(Marker marker, Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void diag(Marker marker, String message);
+
+    /**
+     * Logs a message with parameters at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     */
+    void diag(Marker marker, String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void diag(Marker marker, String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param msg the message string to be logged
+     */
+    void diag(Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void diag(Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message object to log.
+     */
+    void diag(Object message);
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void diag(Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message object to log.
+     */
+    void diag(String message);
+    
+    /**
+     * Logs a message with parameters at the {@link Level#DIAG DIAG} level.
+     * 
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     */
+    void diag(String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#DIAG DIAG} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void diag(String message, Throwable t);
 
     /**
      * Logs entry to a method.
@@ -625,6 +746,21 @@ public interface Logger {
     boolean isDebugEnabled(Marker marker);
 
     /**
+     * Checks whether this Logger is enabled for the {@link Level#DIAG DIAG} Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level DIAG, {@code false} otherwise.
+     */
+    boolean isDiagEnabled();
+
+    /**
+     * Checks whether this Logger is enabled for the {@link Level#DIAG DIAG} Level.
+     * 
+     * @param marker The marker data specific to this log statement.
+     * @return boolean - {@code true} if this Logger is enabled for level DIAG, {@code false} otherwise.
+     */
+    boolean isDiagEnabled(Marker marker);
+
+    /**
      * Checks whether this Logger is enabled for the the given Level.
      * <p>
      * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
@@ -695,6 +831,21 @@ public interface Logger {
     boolean isInfoEnabled(Marker marker);
 
     /**
+     * Checks whether this Logger is enabled for the {@link Level#NOTICE NOTICE} Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level NOTICE, {@code false} otherwise.
+     */
+    boolean isNoticeEnabled();
+
+    /**
+     * Checks whether this Logger is enabled for the {@link Level#NOTICE NOTICE} Level.
+     * 
+     * @param marker The marker data specific to this log statement.
+     * @return boolean - {@code true} if this Logger is enabled for level NOTICE, {@code false} otherwise.
+     */
+    boolean isNoticeEnabled(Marker marker);
+
+    /**
      * Checks whether this Logger is enabled for the {@link Level#TRACE TRACE} level.
      * 
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
@@ -708,6 +859,22 @@ public interface Logger {
      * @return boolean - {@code true} if this Logger is enabled for level TRACE, {@code false} otherwise.
      */
     boolean isTraceEnabled(Marker marker);
+
+
+    /**
+     * Checks whether this Logger is enabled for the {@link Level#VERBOSE VERBOSE} Level.
+     * 
+     * @return boolean - {@code true} if this Logger is enabled for level VERBOSE, {@code false} otherwise.
+     */
+    boolean isVerboseEnabled();
+
+    /**
+     * Checks whether this Logger is enabled for the {@link Level#VERBOSE VERBOSE} Level.
+     * 
+     * @param marker The marker data specific to this log statement.
+     * @return boolean - {@code true} if this Logger is enabled for level VERBOSE, {@code false} otherwise.
+     */
+    boolean isVerboseEnabled(Marker marker);
 
     /**
      * Checks whether this Logger is enabled for the {@link Level#WARN WARN} Level.
@@ -820,7 +987,7 @@ public interface Logger {
      * @param message the message object to log.
      */
     void log(Level level, Object message);
-
+    
     /**
      * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
      * parameter.
@@ -858,6 +1025,133 @@ public interface Logger {
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    void notice(Marker marker, Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void notice(Marker marker, Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void notice(Marker marker, Object message);
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void notice(Marker marker, Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void notice(Marker marker, String message);
+
+    /**
+     * Logs a message with parameters at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     * 
+     * @doubt Likely to misinterpret existing log4j client code that intended to call notice(Object,Throwable). Incurs
+     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
+     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     */
+    void notice(Marker marker, String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void notice(Marker marker, String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param msg the message string to be logged
+     */
+    void notice(Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void notice(Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message object to log.
+     */
+    void notice(Object message);
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void notice(Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message object to log.
+     */
+    void notice(String message);
+
+    /**
+     * Logs a message with parameters at the {@link Level#NOTICE NOTICE} level.
+     * 
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     * 
+     * @doubt Likely to misinterpret existing log4j client code that intended to call notice(Object,Throwable). Incurs
+     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
+     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     */
+    void notice(String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#NOTICE NOTICE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void notice(String message, Throwable t);
 
     /**
      * Logs a formatted message using the specified format string and arguments.
@@ -1033,6 +1327,133 @@ public interface Logger {
      * @param t the exception to log, including its stack trace.
      */
     void trace(String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     */
+    void verbose(Marker marker, Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void verbose(Marker marker, Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void verbose(Marker marker, Object message);
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void verbose(Marker marker, Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     */
+    void verbose(Marker marker, String message);
+
+    /**
+     * Logs a message with parameters at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     * 
+     * @doubt Likely to misinterpret existing log4j client code that intended to call verbose(Object,Throwable). Incurs
+     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
+     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     */
+    void verbose(Marker marker, String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param marker the marker data specific to this log statement
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void verbose(Marker marker, String message, Throwable t);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param msg the message string to be logged
+     */
+    void verbose(Message msg);
+
+    /**
+     * Logs a message with the specific Marker at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param msg the message string to be logged
+     * @param t A Throwable or null.
+     */
+    void verbose(Message msg, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message object to log.
+     */
+    void verbose(Object message);
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void verbose(Object message, Throwable t);
+
+    /**
+     * Logs a message object with the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message object to log.
+     */
+    void verbose(String message);
+
+    /**
+     * Logs a message with parameters at the {@link Level#VERBOSE VERBOSE} level.
+     * 
+     * @param message the message to log; the format depends on the message factory.
+     * @param params parameters to the message.
+     * @see #getMessageFactory()
+     * 
+     * @doubt Likely to misinterpret existing log4j client code that intended to call verbose(Object,Throwable). Incurs
+     *        array creation expense on every call. (RG) It isn't possible to be misinterpreted as the previous method
+     *        is for that signature. Methods should be added to avoid varargs for 1, 2 or 3 parameters.
+     */
+    void verbose(String message, Object... params);
+
+    /**
+     * Logs a message at the {@link Level#VERBOSE VERBOSE} level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
+     * 
+     * @param message the message object to log.
+     * @param t the exception to log, including its stack trace.
+     */
+    void verbose(String message, Throwable t);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#WARN WARN} level.

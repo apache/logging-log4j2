@@ -89,15 +89,21 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         DEFAULT_STYLES.put(Level.FATAL, AnsiEscape.createSequence("BRIGHT", "RED"));
         DEFAULT_STYLES.put(Level.ERROR, AnsiEscape.createSequence("BRIGHT", "RED"));
         DEFAULT_STYLES.put(Level.WARN, AnsiEscape.createSequence("YELLOW"));
+        DEFAULT_STYLES.put(Level.NOTICE, AnsiEscape.createSequence("YELLOW"));
         DEFAULT_STYLES.put(Level.INFO, AnsiEscape.createSequence("GREEN"));
+        DEFAULT_STYLES.put(Level.DIAG, AnsiEscape.createSequence("CYAN"));
         DEFAULT_STYLES.put(Level.DEBUG, AnsiEscape.createSequence("CYAN"));
+        DEFAULT_STYLES.put(Level.VERBOSE, AnsiEscape.createSequence("CYAN"));
         DEFAULT_STYLES.put(Level.TRACE, AnsiEscape.createSequence("BLACK"));
         // Logback styles:
         LOGBACK_STYLES.put(Level.FATAL, AnsiEscape.createSequence("BLINK", "BRIGHT", "RED"));
         LOGBACK_STYLES.put(Level.ERROR, AnsiEscape.createSequence("BRIGHT", "RED"));
         LOGBACK_STYLES.put(Level.WARN, AnsiEscape.createSequence("RED"));
+        LOGBACK_STYLES.put(Level.NOTICE, AnsiEscape.createSequence("RED"));
         LOGBACK_STYLES.put(Level.INFO, AnsiEscape.createSequence("BLUE"));
+        LOGBACK_STYLES.put(Level.DIAG, AnsiEscape.createSequence((String[]) null));
         LOGBACK_STYLES.put(Level.DEBUG, AnsiEscape.createSequence((String[]) null));
+        LOGBACK_STYLES.put(Level.VERBOSE, AnsiEscape.createSequence((String[]) null));
         LOGBACK_STYLES.put(Level.TRACE, AnsiEscape.createSequence((String[]) null));
         // Style map:
         STYLES.put(STYLE_KEY_DEFAULT, DEFAULT_STYLES);
