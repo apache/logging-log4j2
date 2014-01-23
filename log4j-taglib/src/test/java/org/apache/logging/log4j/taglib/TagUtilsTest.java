@@ -28,16 +28,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class TagUtilsTest {
     @Test
-    public void testGetScopeSession() {
-        assertEquals("The scope is not correct.", PageContext.SESSION_SCOPE, TagUtils.getScope("session"));
-    }
-
-    @Test
-    public void testGetScopeRequest() {
-        assertEquals("The scope is not correct.", PageContext.REQUEST_SCOPE, TagUtils.getScope("request"));
-    }
-
-    @Test
     public void testGetScopeApplication() {
         assertEquals("The scope is not correct.", PageContext.APPLICATION_SCOPE, TagUtils.getScope("application"));
     }
@@ -48,18 +38,18 @@ public class TagUtilsTest {
     }
 
     @Test
+    public void testGetScopeRequest() {
+        assertEquals("The scope is not correct.", PageContext.REQUEST_SCOPE, TagUtils.getScope("request"));
+    }
+
+    @Test
+    public void testGetScopeSession() {
+        assertEquals("The scope is not correct.", PageContext.SESSION_SCOPE, TagUtils.getScope("session"));
+    }
+
+    @Test
     public void testGetScopeUnknown() {
         assertEquals("The scope is not correct.", PageContext.PAGE_SCOPE, TagUtils.getScope("oeu1209"));
-    }
-
-    @Test
-    public void testResolveLevelTrace01() {
-        assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel("trace"));
-    }
-
-    @Test
-    public void testResolveLevelTrace02() {
-        assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel(Level.TRACE));
     }
 
     @Test
@@ -70,26 +60,6 @@ public class TagUtilsTest {
     @Test
     public void testResolveLevelDebug02() {
         assertEquals("The value is not correct.", Level.DEBUG, TagUtils.resolveLevel(Level.DEBUG));
-    }
-
-    @Test
-    public void testResolveLevelInfo01() {
-        assertEquals("The value is not correct.", Level.INFO, TagUtils.resolveLevel("info"));
-    }
-
-    @Test
-    public void testResolveLevelInfo02() {
-        assertEquals("The value is not correct.", Level.INFO, TagUtils.resolveLevel(Level.INFO));
-    }
-
-    @Test
-    public void testResolveLevelWarn01() {
-        assertEquals("The value is not correct.", Level.WARN, TagUtils.resolveLevel("warn"));
-    }
-
-    @Test
-    public void testResolveLevelWarn02() {
-        assertEquals("The value is not correct.", Level.WARN, TagUtils.resolveLevel(Level.WARN));
     }
 
     @Test
@@ -110,5 +80,35 @@ public class TagUtilsTest {
     @Test
     public void testResolveLevelFatal02() {
         assertEquals("The value is not correct.", Level.FATAL, TagUtils.resolveLevel(Level.FATAL));
+    }
+
+    @Test
+    public void testResolveLevelInfo01() {
+        assertEquals("The value is not correct.", Level.INFO, TagUtils.resolveLevel("info"));
+    }
+
+    @Test
+    public void testResolveLevelInfo02() {
+        assertEquals("The value is not correct.", Level.INFO, TagUtils.resolveLevel(Level.INFO));
+    }
+
+    @Test
+    public void testResolveLevelTrace01() {
+        assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel("trace"));
+    }
+
+    @Test
+    public void testResolveLevelTrace02() {
+        assertEquals("The value is not correct.", Level.TRACE, TagUtils.resolveLevel(Level.TRACE));
+    }
+
+    @Test
+    public void testResolveLevelWarn01() {
+        assertEquals("The value is not correct.", Level.WARN, TagUtils.resolveLevel("warn"));
+    }
+
+    @Test
+    public void testResolveLevelWarn02() {
+        assertEquals("The value is not correct.", Level.WARN, TagUtils.resolveLevel(Level.WARN));
     }
 }
