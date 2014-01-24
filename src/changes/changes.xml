@@ -20,10 +20,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">  
-      <action issue="LOG4J2-508" dev="ggregory" type="add">
-        Add new Levels: NOTICE, DIAG, VERBOSE.
-      </action>
+    <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">   
       <action issue="LOG4J2-507" dev="ggregory" type="update">
         Space Level numbers by 100 instead of 1.
       </action>
