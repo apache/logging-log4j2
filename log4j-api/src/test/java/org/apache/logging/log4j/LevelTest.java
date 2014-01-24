@@ -27,80 +27,16 @@ import static org.junit.Assert.assertNotNull;
 public class LevelTest {
 
     @Test
-    public void testDefault() {
-        final Level level = Level.toLevel("Information", Level.ERROR);
-        assertNotNull(level);
-        assertEquals(Level.ERROR, level);
-    }
-
-    @Test
-    public void testGoodDebugLevel() {
-        final Level level = Level.toLevel("DEBUG");
-        assertNotNull(level);
-        assertEquals(Level.DEBUG, level);
-    }
-
-    @Test
-    public void testGoodDiagLevel() {
-        final Level level = Level.toLevel("DIAG");
-        assertNotNull(level);
-        assertEquals(Level.DIAG, level);
-    }
-
-    @Test
-    public void testGoodErrorLevel() {
-        final Level level = Level.toLevel("ERROR");
-        assertNotNull(level);
-        assertEquals(Level.ERROR, level);
-    }
-
-    @Test
-    public void testGoodFatalLevel() {
-        final Level level = Level.toLevel("FATAL");
-        assertNotNull(level);
-        assertEquals(Level.FATAL, level);
-    }
-
-    @Test
-    public void testGoodInfoLevel() {
+    public void testGoodLevels() {
         final Level level = Level.toLevel("INFO");
         assertNotNull(level);
         assertEquals(Level.INFO, level);
     }
 
     @Test
-    public void testGoodNoticeLevel() {
-        final Level level = Level.toLevel("NOTICE");
+    public void testDefault() {
+        final Level level = Level.toLevel("Information", Level.ERROR);
         assertNotNull(level);
-        assertEquals(Level.NOTICE, level);
-    }
-
-    @Test
-    public void testGoodOffLevel() {
-        final Level level = Level.toLevel("OFF");
-        assertNotNull(level);
-        assertEquals(Level.OFF, level);
-    }
-
-    @Test
-    public void testGoodTraceLevel() {
-        final Level level = Level.toLevel("TRACE");
-        assertNotNull(level);
-        assertEquals(Level.TRACE, level);
-    }
-
-
-    @Test
-    public void testGoodVerboseLevel() {
-        final Level level = Level.toLevel("VERBOSE");
-        assertNotNull(level);
-        assertEquals(Level.VERBOSE, level);
-    }
-
-    @Test
-    public void testGoodWarnLevel() {
-        final Level level = Level.toLevel("WARN");
-        assertNotNull(level);
-        assertEquals(Level.WARN, level);
+        assertEquals(Level.ERROR, level);
     }
 }

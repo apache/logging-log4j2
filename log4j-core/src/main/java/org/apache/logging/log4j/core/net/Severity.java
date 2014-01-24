@@ -82,15 +82,13 @@ public enum Severity {
     public static Severity getSeverity(final Level level) {
         switch (level) {
             case ALL:
+                return DEBUG;
             case TRACE:
-            case VERBOSE:
+                return DEBUG;
             case DEBUG:
-            case DIAG:
                 return DEBUG;
             case INFO:
                 return INFO;
-            case NOTICE:
-                return NOTICE;
             case WARN:
                 return WARNING;
             case ERROR:

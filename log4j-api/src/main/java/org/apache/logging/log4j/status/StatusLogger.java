@@ -253,18 +253,12 @@ public final class StatusLogger extends AbstractLogger {
         switch (level) {
             case FATAL:
                 return logger.isFatalEnabled(marker);
-            case VERBOSE:
-                return logger.isVerboseEnabled(marker);
             case TRACE:
                 return logger.isTraceEnabled(marker);
             case DEBUG:
                 return logger.isDebugEnabled(marker);
-            case DIAG:
-                return logger.isDiagEnabled(marker);
             case INFO:
                 return logger.isInfoEnabled(marker);
-            case NOTICE:
-                return logger.isNoticeEnabled(marker);
             case WARN:
                 return logger.isWarnEnabled(marker);
             case ERROR:
