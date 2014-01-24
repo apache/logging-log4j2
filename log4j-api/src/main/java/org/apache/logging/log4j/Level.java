@@ -25,11 +25,8 @@ import java.util.Locale;
  * <li>{@link #FATAL}</li>
  * <li>{@link #ERROR}</li>
  * <li>{@link #WARN}</li>
- * <li>{@link #NOTICE}</li>
  * <li>{@link #INFO}</li>
- * <li>{@link #DIAG}</li>
  * <li>{@link #DEBUG}</li>
- * <li>{@link #VERBOSE}</li>
  * <li>{@link #TRACE}</li>
  * <li>{@link #ALL} (least specific)</li>
  * </ul>
@@ -61,34 +58,19 @@ public enum Level {
     WARN(300),
 
     /**
-     * An event for normal, but significant, conditions.
+     * An event for informational purposes.
      */
-    NOTICE(400),
+    INFO(400),
 
     /**
-     * An event for informational purposes, but not necessarily significant.
+     * A general debugging event.
      */
-    INFO(500),
-
-    /**
-     * An event used by operations or users to diagnose problems in the system.
-     */
-    DIAG(600),
-
-    /**
-     * A general debugging event, used by developers for internal debugging.
-     */
-    DEBUG(700),
-
-    /**
-     * Used to log minute details of the system.  As its dictionary definition implies this is extremely chatty.
-     */
-    VERBOSE(800),
+    DEBUG(500),
 
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    TRACE(900),
+    TRACE(600),
 
     /**
      * All events should be logged.
