@@ -28,6 +28,7 @@
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackJsonAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter</class>
@@ -51,6 +52,7 @@
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackJsonAttributeConverter</class>
+    <class>org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter</class>
     <class>org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter</class>

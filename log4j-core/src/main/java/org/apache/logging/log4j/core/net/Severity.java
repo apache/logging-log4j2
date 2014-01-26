@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.Level;
 
+import java.util.EnumSet;
+
 /**
  *  Severity values used by the Syslog system.
  *
@@ -80,6 +82,10 @@ public enum Severity {
      * @return The matching Severity, or DEBUG if there is no match.
      */
     public static Severity getSeverity(final Level level) {
+        return getSeverity(Level.StdLevel.getStdLevel(level));
+    }
+
+    private static Severity getSeverity(final Level.StdLevel level) {
         switch (level) {
             case ALL:
                 return DEBUG;

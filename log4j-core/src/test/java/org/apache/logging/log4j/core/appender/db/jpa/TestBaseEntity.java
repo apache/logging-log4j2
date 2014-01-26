@@ -36,6 +36,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
 import org.apache.logging.log4j.message.Message;
@@ -78,7 +79,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     }
 
     @Override
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = LevelAttributeConverter.class)
     @Column(name = "level")
     public Level getLevel() {
         return this.getWrappedEvent().getLevel();

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.BaseConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+
 import java.net.URI;
 
 /**
@@ -51,7 +52,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
             final LoggerConfig root = getRootLogger();
             final String l = System.getProperty(DEFAULT_LEVEL);
-            final Level level = (l != null && Level.valueOf(l) != null) ? Level.valueOf(l) : Level.ERROR;
+            final Level level = (l != null && Level.getLevel(l) != null) ? Level.getLevel(l) : Level.ERROR;
             root.setLevel(level);
         }
     }

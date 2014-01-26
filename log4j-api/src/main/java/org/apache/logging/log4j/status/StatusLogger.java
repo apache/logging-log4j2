@@ -250,7 +250,8 @@ public final class StatusLogger extends AbstractLogger {
         if (listeners.size() > 0) {
             return listenersLevel >= level.intLevel();
         }
-        switch (level) {
+
+        switch (Level.StdLevel.getStdLevel(level)) {
             case FATAL:
                 return logger.isFatalEnabled(marker);
             case TRACE:
