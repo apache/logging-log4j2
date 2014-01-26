@@ -76,7 +76,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
 
     @Override
     public void setLevel(final String level) {
-        loggerConfig.setLevel(Level.valueOf(level));
+        loggerConfig.setLevel(Level.getLevel(level));
     }
 
     @Override

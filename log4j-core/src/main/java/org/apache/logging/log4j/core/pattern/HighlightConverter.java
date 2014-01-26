@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -72,9 +71,9 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @ConverterKeys({ "highlight" })
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
-    private static final EnumMap<Level, String> DEFAULT_STYLES = new EnumMap<Level, String>(Level.class);
+    private static final Map<Level, String> DEFAULT_STYLES = new HashMap<Level, String>();
 
-    private static final EnumMap<Level, String> LOGBACK_STYLES = new EnumMap<Level, String>(Level.class);
+    private static final Map<Level, String> LOGBACK_STYLES = new HashMap<Level, String>();
 
     private static final String STYLE_KEY = "STYLE";
 
@@ -82,7 +81,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private static final String STYLE_KEY_LOGBACK = "LOGBACK";
 
-    private static final Map<String, EnumMap<Level, String>> STYLES = new HashMap<String, EnumMap<Level, String>>();
+    private static final Map<String, Map<Level, String>> STYLES = new HashMap<String, Map<Level, String>>();
 
     static {
         // Default styles:
@@ -128,7 +127,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      *            The second slot can optionally contain the style map.
      * @return a new map
      */
-    private static EnumMap<Level, String> createLevelStyleMap(final String[] options) {
+    private static Map<Level, String> createLevelStyleMap(final String[] options) {
         if (options.length < 2) {
             return DEFAULT_STYLES;
         }
@@ -136,12 +135,12 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         String string = options[1].replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", "");
         //
         final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
-        final EnumMap<Level, String> levelStyles = new EnumMap<Level, String>(DEFAULT_STYLES);
+        final Map<Level, String> levelStyles = new HashMap<Level, String>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
             final String value = entry.getValue();
             if (STYLE_KEY.equalsIgnoreCase(key)) {
-                final EnumMap<Level, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
+                final Map<Level, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
                     LOGGER.error("Unknown level style: " + value + ". Use one of " +
                         Arrays.toString(STYLES.keySet().toArray()));
@@ -149,7 +148,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
                     levelStyles.putAll(enumMap);
                 }
             } else {
-                final Level level = Level.valueOf(key);
+                final Level level = Level.toLevel(key);
                 if (level == null) {
                     LOGGER.error("Unknown level name: " + key + ". Use one of " +
                         Arrays.toString(DEFAULT_STYLES.keySet().toArray()));
@@ -183,7 +182,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         return new HighlightConverter(formatters, createLevelStyleMap(options));
     }
 
-    private final EnumMap<Level, String> levelStyles;
+    private final Map<Level, String> levelStyles;
 
     private final List<PatternFormatter> patternFormatters;
 
@@ -193,7 +192,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      * @param patternFormatters
      *            The PatternFormatters to generate the text to manipulate.
      */
-    private HighlightConverter(final List<PatternFormatter> patternFormatters, final EnumMap<Level, String> levelStyles) {
+    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<Level, String> levelStyles) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;

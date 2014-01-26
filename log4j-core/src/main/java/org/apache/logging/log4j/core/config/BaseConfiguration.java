@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -139,6 +140,19 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     @Override
     public void start() {
         pluginManager.collectPlugins();
+        PluginManager levelPlugins = new PluginManager("Level");
+        levelPlugins.collectPlugins();
+        Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
+        if (plugins != null) {
+            for (PluginType<?> type : plugins.values()) {
+                try {
+                    // Cause the class to be initialized if it isn't already.
+                    Class.forName(type.getPluginClass().getName(), true, type.getPluginClass().getClassLoader());
+                } catch (Exception ex) {
+                    LOGGER.error("Unable to initialize " + type.getPluginClass().getName() + " due to " +                        ex.getClass().getSimpleName() + ":" + ex.getMessage());
+                }
+            }
+        }
         setup();
         setupAdvertisement();
         doConfigure();
@@ -323,8 +337,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         root.addAppender(appender, null, null);
 
         final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL);
-        final Level level = levelName != null && Level.valueOf(levelName) != null ?
-            Level.valueOf(levelName) : Level.ERROR;
+        final Level level = levelName != null && Level.getLevel(levelName) != null ?
+            Level.getLevel(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 

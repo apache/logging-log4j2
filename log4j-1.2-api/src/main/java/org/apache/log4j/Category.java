@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.helpers.NameUtil;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.Level.StdLevel;
 
 
 /**
@@ -156,7 +157,10 @@ public class Category {
 
     public final Level getEffectiveLevel() {
         final org.apache.logging.log4j.Level level = logger.getLevel();
+        return getEffectiveLevel(StdLevel.getStdLevel(level));
+    }
 
+    private Level getEffectiveLevel(StdLevel level) {
         switch (level) {
             case TRACE:
                 return Level.TRACE;

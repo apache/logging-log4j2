@@ -18,6 +18,7 @@ package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.Level.StdLevel;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -56,7 +57,7 @@ public class SLF4JLogger extends AbstractLogger {
             locationAwareLogger.log(getMarker(marker), fqcn, convertLevel(level), data.getFormattedMessage(),
                 data.getParameters(), t);
         } else {
-            switch (level) {
+            switch (StdLevel.getStdLevel(level)) {
                 case DEBUG :
                     logger.debug(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
                     break;
@@ -93,7 +94,7 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     private int convertLevel(final Level level) {
-        switch (level) {
+        switch (StdLevel.getStdLevel(level)) {
             case DEBUG :
                 return LocationAwareLogger.DEBUG_INT;
             case TRACE :
@@ -136,7 +137,7 @@ public class SLF4JLogger extends AbstractLogger {
 
     private boolean isEnabledFor(final Level level, final Marker marker) {
         final org.slf4j.Marker slf4jMarker = getMarker(marker);
-        switch (level) {
+        switch (StdLevel.getStdLevel(level)) {
             case DEBUG :
                 return logger.isDebugEnabled(slf4jMarker);
             case TRACE :

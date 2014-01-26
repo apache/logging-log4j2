@@ -29,6 +29,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextStackAttributeConverter;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MarkerAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.StackTraceElementAttributeConverter;
@@ -92,8 +93,7 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * @return the level.
      */
     @Override
-    @Basic
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = LevelAttributeConverter.class)
     public Level getLevel() {
         return this.getWrappedEvent().getLevel();
     }
