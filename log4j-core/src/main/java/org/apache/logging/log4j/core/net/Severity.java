@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.spi.StandardLevel;
 
 import java.util.EnumSet;
 
@@ -82,11 +83,7 @@ public enum Severity {
      * @return The matching Severity, or DEBUG if there is no match.
      */
     public static Severity getSeverity(final Level level) {
-        return getSeverity(Level.StdLevel.getStdLevel(level));
-    }
-
-    private static Severity getSeverity(final Level.StdLevel level) {
-        switch (level) {
+        switch (level.getStandardLevel()) {
             case ALL:
                 return DEBUG;
             case TRACE:
