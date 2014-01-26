@@ -16,108 +16,86 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.spi.StandardLevel;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.EnumSet;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Level implements Comparable<Level>, Serializable {
+/**
+ * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
+ * <ul>
+ * <li>{@link #OFF} (most specific)</li>
+ * <li>{@link #FATAL}</li>
+ * <li>{@link #ERROR}</li>
+ * <li>{@link #WARN}</li>
+ * <li>{@link #INFO}</li>
+ * <li>{@link #DEBUG}</li>
+ * <li>{@link #TRACE}</li>
+ * <li>{@link #ALL} (least specific)</li>
+ * </ul>
+ *
+ * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
+ * that are more specific to pass through the filter.
+ * A special level, {@link #ALL}, is guaranteed to capture all levels when used in logging configurations.
+ */
+public abstract class Level implements Comparable<Level>, Serializable {
 
     private static final long serialVersionUID = 3077535362528045615L;
-    private static ConcurrentMap<String, Level> levels = new ConcurrentHashMap<String, Level>();
-    private static Object constructorLock = new Object();
+    private static final ConcurrentMap<String, Level> levels = new ConcurrentHashMap<String, Level>();
+    private static final Object constructorLock = new Object();
     private static int ordinalCount = 0;
 
-    public static Level OFF = new Level("OFF", 0){};
-    public static Level FATAL = new Level("FATAL", 100);
-    public static Level ERROR = new Level("ERROR", 200);
-    public static Level WARN = new Level("WARN", 300);
-    public static Level INFO = new Level("INFO", 400);
-    public static Level DEBUG = new Level("DEBUG", 500);
-    public static Level TRACE = new Level("TRACE", 600);
-    public static Level ALL = new Level("ALL", Integer.MAX_VALUE);
+    /**
+     * No events will be logged.
+     */
+    public static Level OFF;
+    /**
+     * A severe error that will prevent the application from continuing.
+     */
+    public static Level FATAL;
+    /**
+     * An error in the application, possibly recoverable.
+     */
+    public static Level ERROR;
+    /**
+     * An event that might possible lead to an error.
+     */
+    public static Level WARN;
+    /**
+     * An event for informational purposes.
+     */
+    public static Level INFO;
+    /**
+     * A general debugging event.
+     */
+    public static Level DEBUG;
+    /**
+     * A fine-grained debug message, typically capturing the flow through the application.
+     */
+    public static Level TRACE;
+    /**
+     * All events should be logged.
+     */
+    public static Level ALL;
 
-    public enum StdLevel {
-
-        /**
-         * No events will be logged.
-         */
-        OFF(Level.OFF.intLevel()),
-
-        /**
-         * A severe error that will prevent the application from continuing.
-         */
-        FATAL(Level.FATAL.intLevel()),
-
-        /**
-         * An error in the application, possibly recoverable.
-         */
-        ERROR(Level.ERROR.intLevel()),
-
-        /**
-         * An event that might possible lead to an error.
-         */
-        WARN(Level.WARN.intLevel()),
-
-        /**
-         * An event for informational purposes.
-         */
-        INFO(Level.INFO.intLevel()),
-
-        /**
-         * A general debugging event.
-         */
-        DEBUG(Level.DEBUG.intLevel()),
-
-        /**
-         * A fine-grained debug message, typically capturing the flow through the application.
-         */
-        TRACE(Level.TRACE.intLevel()),
-
-        /**
-         * All events should be logged.
-         */
-        ALL(Level.ALL.intLevel());
-
-
-        private final int intLevel;
-
-        private static final EnumSet<StdLevel> levelSet = EnumSet.allOf(StdLevel.class);
-
-        private StdLevel(final int val) {
-            intLevel = val;
-        }
-
-        /**
-         * Returns the integer value of the Level.
-         * @return the integer value of the Level.
-         */
-        public int intLevel() {
-            return intLevel;
-        }
-
-        /**
-         * Method to convert custom Levels into a StdLevel for conversion to other systems.
-         * @param level The Level.
-         * @return The StdLevel.
-         */
-        public static StdLevel getStdLevel(Level level) {
-            StdLevel severityLevel = StdLevel.OFF;
-            for (StdLevel lvl : levelSet) {
-                if (lvl.intLevel() > level.intLevel()) {
-                    break;
-                }
-                severityLevel = lvl;
-            }
-            return severityLevel;
-        }
+    static {
+        OFF = new Level("OFF", StandardLevel.OFF.intLevel()){};
+        FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel()){};
+        ERROR = new Level("ERROR", StandardLevel.ERROR.intLevel()){};
+        WARN = new Level("WARN", StandardLevel.WARN.intLevel()){};
+        INFO = new Level("INFO", StandardLevel.INFO.intLevel()){};
+        DEBUG = new Level("DEBUG", StandardLevel.DEBUG.intLevel()){};
+        TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel()){};
+        ALL = new Level("ALL", StandardLevel.ALL.intLevel()){};
     }
 
     private final String name;
     private final int intLevel;
     private final int ordinal;
+    private final StandardLevel standardLevel;
 
     protected Level(String name, int intLevel) {
         if (name == null || name.length() == 0) {
@@ -128,13 +106,10 @@ public class Level implements Comparable<Level>, Serializable {
         }
         this.name = name;
         this.intLevel = intLevel;
+        this.standardLevel = StandardLevel.getStandardLevel(intLevel);
         synchronized(constructorLock) {
             if (levels.containsKey(name)) {
-                Level level = levels.get(name);
-                if (level.intLevel() != intLevel) {
-                    throw new IllegalArgumentException("Level " + name + " has already been defined.");
-                }
-                ordinal = level.ordinal;
+                throw new IllegalArgumentException("Level " + name + " has already been defined.");
             } else {
                 ordinal = ordinalCount++;
                 levels.put(name, this);
@@ -142,12 +117,16 @@ public class Level implements Comparable<Level>, Serializable {
         }
     }
 
-    public int intLevel() {
+    public final int intLevel() {
         return this.intLevel;
     }
 
-    public int ordinal() {
+    public final int ordinal() {
         return this.ordinal;
+    }
+
+    public final StandardLevel getStandardLevel() {
+        return standardLevel;
     }
 
     /**
@@ -157,7 +136,7 @@ public class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean isAtLeastAsSpecificAs(final Level level) {
+    public final boolean isAtLeastAsSpecificAs(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -168,7 +147,7 @@ public class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean isAtLeastAsSpecificAs(final int level) {
+    public final boolean isAtLeastAsSpecificAs(final int level) {
         return this.intLevel <= level;
     }
 
@@ -177,7 +156,7 @@ public class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean lessOrEqual(final Level level) {
+    public final boolean lessOrEqual(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -186,42 +165,42 @@ public class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public boolean lessOrEqual(final int level) {
+    public final boolean lessOrEqual(final int level) {
         return this.intLevel <= level;
     }
 
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public Level clone() throws CloneNotSupportedException {
+    public final Level clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
 
     @Override
-    public int compareTo(Level other) {
+    public final int compareTo(Level other) {
         return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
     }
 
     @Override
-    public boolean equals(Object other) {
+    public final boolean equals(Object other) {
         return other instanceof Level && other == this;
     }
 
-    public Class<Level> getDeclaringClass() {
+    public final Class<Level> getDeclaringClass() {
         return Level.class;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return this.name.hashCode();
     }
 
 
-    public String name() {
+    public final String name() {
         return this.name;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return this.name;
     }
 
