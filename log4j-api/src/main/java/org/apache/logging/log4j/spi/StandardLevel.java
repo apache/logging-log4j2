@@ -82,9 +82,9 @@ public enum StandardLevel {
     }
 
     /**
-     * Method to convert custom Levels into a StdLevel for conversion to other systems.
+     * Method to convert custom Levels into a StandardLevel for conversion to other systems.
      * @param intLevel The integer value of the Level.
-     * @return The StdLevel.
+     * @return The StandardLevel.
      */
     public static StandardLevel getStandardLevel(int intLevel) {
         StandardLevel level = StandardLevel.OFF;
