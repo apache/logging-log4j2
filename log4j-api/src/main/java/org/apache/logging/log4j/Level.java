@@ -198,6 +198,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param name The name of the level.
      * @param intValue The integer value for the Level. If the level was previously created this value is ignored.
      * @return The Level.
+     * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
     public static Level getOrCreateLevel(String name, int intValue) {
         Level level = levels.get(name);
