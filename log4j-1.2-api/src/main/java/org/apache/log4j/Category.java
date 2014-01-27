@@ -164,8 +164,12 @@ public class Category {
                 return Level.INFO;
             case WARN:
                 return Level.WARN;
-            default:
+            case ERROR:
                 return Level.ERROR;
+            case FATAL:
+                return Level.FATAL;
+            default:
+                return Level.OFF;
         }
     }
 
