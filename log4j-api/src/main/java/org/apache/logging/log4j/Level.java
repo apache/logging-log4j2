@@ -20,6 +20,7 @@ import org.apache.logging.log4j.spi.StandardLevel;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -41,12 +42,10 @@ import java.util.concurrent.ConcurrentMap;
  * that are more specific to pass through the filter.
  * A special level, {@link #ALL}, is guaranteed to capture all levels when used in logging configurations.
  */
-public abstract class Level implements Comparable<Level>, Serializable {
+public final class Level implements Comparable<Level>, Serializable {
 
     private static final long serialVersionUID = 3077535362528045615L;
     private static final ConcurrentMap<String, Level> levels = new ConcurrentHashMap<String, Level>();
-    private static final Object constructorLock = new Object();
-    private static int ordinalCount = 0;
 
     /**
      * No events will be logged.
@@ -82,22 +81,21 @@ public abstract class Level implements Comparable<Level>, Serializable {
     public static Level ALL;
 
     static {
-        OFF = new Level("OFF", StandardLevel.OFF.intLevel()){};
-        FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel()){};
-        ERROR = new Level("ERROR", StandardLevel.ERROR.intLevel()){};
-        WARN = new Level("WARN", StandardLevel.WARN.intLevel()){};
-        INFO = new Level("INFO", StandardLevel.INFO.intLevel()){};
-        DEBUG = new Level("DEBUG", StandardLevel.DEBUG.intLevel()){};
-        TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel()){};
-        ALL = new Level("ALL", StandardLevel.ALL.intLevel()){};
+        OFF = new Level("OFF", StandardLevel.OFF.intLevel());
+        FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
+        ERROR = new Level("ERROR", StandardLevel.ERROR.intLevel());
+        WARN = new Level("WARN", StandardLevel.WARN.intLevel());
+        INFO = new Level("INFO", StandardLevel.INFO.intLevel());
+        DEBUG = new Level("DEBUG", StandardLevel.DEBUG.intLevel());
+        TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel());
+        ALL = new Level("ALL", StandardLevel.ALL.intLevel());
     }
 
     private final String name;
     private final int intLevel;
-    private final int ordinal;
     private final StandardLevel standardLevel;
 
-    protected Level(String name, int intLevel) {
+    private Level(String name, int intLevel) {
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("Illegal null Level constant");
         }
@@ -107,22 +105,13 @@ public abstract class Level implements Comparable<Level>, Serializable {
         this.name = name;
         this.intLevel = intLevel;
         this.standardLevel = StandardLevel.getStandardLevel(intLevel);
-        synchronized(constructorLock) {
-            if (levels.containsKey(name)) {
-                throw new IllegalArgumentException("Level " + name + " has already been defined.");
-            } else {
-                ordinal = ordinalCount++;
-                levels.put(name, this);
-            }
+        if (levels.putIfAbsent(name, this) != null) {
+            throw new IllegalStateException("Level " + name + " has already been defined.");
         }
     }
 
     public final int intLevel() {
         return this.intLevel;
-    }
-
-    public final int ordinal() {
-        return this.ordinal;
     }
 
     public final StandardLevel getStandardLevel() {
@@ -205,6 +194,25 @@ public abstract class Level implements Comparable<Level>, Serializable {
     }
 
     /**
+     * Retrieves an existing Level or creates on if it didn't previously exist.
+     * @param name The name of the level.
+     * @param intValue The integer value for the Level. If the level was previously created this value is ignored.
+     * @return The Level.
+     */
+    public static Level getOrCreateLevel(String name, int intValue) {
+        Level level = levels.get(name);
+        if (level != null) {
+            return level;
+        }
+        try {
+            return new Level(name, intValue);
+        } catch (IllegalStateException ex) {
+            // The level was added by something else so just return that one.
+            return levels.get(name);
+        }
+    }
+
+    /**
      * Return the Level assoicated with the name or null if the Level cannot be found.
      * @param name The name of the Level.
      * @return The Level or null.
@@ -241,11 +249,21 @@ public abstract class Level implements Comparable<Level>, Serializable {
         return level == null ? defaultLevel : level;
     }
 
+    /**
+     * Return an array of all the Levels that have been registered.
+     * @return An array of Levels.
+     */
     public static Level[] values() {
-        return Level.levels.values().toArray(new Level[Level.levels.size()]);
+        Collection<Level> values = Level.levels.values();
+        return values.toArray(new Level[values.size()]);
     }
 
-
+    /**
+     * Return the Level associated with the name.
+     * @param name The name of the Level to return.
+     * @return The Level.
+     * @throws java.lang.IllegalArgumentException if the Level name is not registered.
+     */
     public static Level valueOf(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Unknown level constant [" + name + "].");
