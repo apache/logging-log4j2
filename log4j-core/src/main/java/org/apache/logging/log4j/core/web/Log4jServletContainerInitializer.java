@@ -41,7 +41,7 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
             servletContext.log("Log4jServletContainerInitializer starting up Log4j in Servlet 3.0+ environment.");
 
             final FilterRegistration.Dynamic filter =
-                    servletContext.addFilter("log4jServletFilter", new Log4jServletFilter());
+                    servletContext.addFilter("log4jServletFilter", Log4jServletFilter.class);
             if (filter == null) {
                 servletContext.log("WARNING: In a Servlet 3.0+ application, you should not define a " +
                         "log4jServletFilter in web.xml. Log4j 2 normally does this for you automatically. Log4j 2 " +
