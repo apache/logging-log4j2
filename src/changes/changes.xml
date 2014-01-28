@@ -158,6 +158,11 @@
       <action issue="LOG4J2-402" dev="ggregory" type="add">
         Configure RandomAccessFileAppender buffer size.
       </action>
+      <action issue="LOG4J2-359" dev="nickwilliams" type="fix" due-to="Abhinav Shah">
+        Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
+        ensures behavioral consistency across containers. This includes additional fixes to abort initialization if a
+        duplicate filter already exists and to check the actual Servlet EFFECTIVE version.
+      </action>
     </release>
     <release version="2.0-beta9" date="2013-09-14" description="Bug fixes and enhancements">
       <action issue="LOG4J2-317" dev="ggregory" type="update">
