@@ -21,6 +21,10 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-452" dev="nickwilliams" type="fix" due-to="">
+        Added a ServletContext attribute that, when set to "true", disables Log4j's auto-initialization in
+        Servlet 3.0+ web applications.
+      </action>
       <action issue="LOG4J2-512" dev="nickwilliams" type="fix" due-to="Chandra Sekhar Kakarla, Matt Sicker">
         Exposed Log4j web support interface and methods and the LoggerContext through ServletContext attributes
         so that threads not affected by filters (such as asynchronous threads) can utilize the LoggerContext. Also
