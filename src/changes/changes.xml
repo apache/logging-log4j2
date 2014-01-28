@@ -166,6 +166,10 @@
       <action issue="LOG4J2-344" dev="nickwilliams" type="fix" due-to="Keir Lawson, Tomasz Wladzinski">
         Changed the Servlet 3.0 auto-initializer to add the filter by class to get around a WebLogic bug.
       </action>
+      <action issue="LOG4J2-409" dev="nickwilliams" type="fix" due-to="Frank Steinmann, Thomas Neidhart">
+        Created a utility to properly escape backslashes before creating URIs, and changed URI creation to use the
+        utility instead of instantiating URI directly.
+      </action>
     </release>
     <release version="2.0-beta9" date="2013-09-14" description="Bug fixes and enhancements">
       <action issue="LOG4J2-317" dev="ggregory" type="update">

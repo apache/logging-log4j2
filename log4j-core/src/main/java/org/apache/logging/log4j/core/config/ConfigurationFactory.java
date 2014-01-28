@@ -371,7 +371,7 @@ public abstract class ConfigurationFactory {
                 if (config != null) {
                     ConfigurationSource source = null;
                     try {
-                        source = getInputFromURI(new URI(config));
+                        source = getInputFromURI(FileUtils.getCorrectedFilePathUri(config));
                     } catch (Exception ex) {
                         // Ignore the error and try as a String.
                     }

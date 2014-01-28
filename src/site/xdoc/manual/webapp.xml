@@ -171,7 +171,7 @@
     </context-param>
     <context-param>
         <param-name>log4jConfiguration</param-name>
-        <param-value>file://D:\conf\myLogging.xml</param-value>
+        <param-value>file:///D:/conf/myLogging.xml</param-value>
     </context-param>]]></pre>
           Note that in this case you must also set the "Log4jContextSelector" system property to
           "org.apache.logging.log4j.core.selector.JNDIContextSelector."
