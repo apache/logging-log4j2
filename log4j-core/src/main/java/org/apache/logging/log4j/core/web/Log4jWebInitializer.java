@@ -21,30 +21,10 @@ import javax.servlet.UnavailableException;
 /**
  * Specifies an interface for initializing and deinitializing Log4j in a Java EE web application. The default and only
  * implementation is {@link Log4jWebInitializerImpl}. The initializer is based on an interface to improve testability.
+ * The methods here are contained in a package-private sub-interface because general application code should not have
+ * access to them.
  */
-interface Log4jWebInitializer {
-    /**
-     * The {@link javax.servlet.ServletContext} context-param name for the name of the
-     * {@link org.apache.logging.log4j.core.LoggerContext}.
-     */
-    String LOG4J_CONTEXT_NAME = "log4jContextName";
-
-    /**
-     * The {@link javax.servlet.ServletContext} context-param name for the location of the configuration.
-     */
-    String LOG4J_CONFIG_LOCATION = "log4jConfiguration";
-
-    /**
-     * The {@link javax.servlet.ServletContext} context-param name for the JNDI flag.
-     */
-    String IS_LOG4J_CONTEXT_SELECTOR_NAMED = "isLog4jContextSelectorNamed";
-
-    /**
-     * The attribute key for the {@link javax.servlet.ServletContext} attribute that the singleton initializer instance
-     * is stored in.
-     */
-    String INITIALIZER_ATTRIBUTE = Log4jWebInitializer.class.getName() + ".INSTANCE";
-
+interface Log4jWebInitializer extends Log4jWebSupport {
     /**
      * Starts up Log4j in the web application. Calls {@link #setLoggerContext()} after initialization is complete.
      *
@@ -57,15 +37,4 @@ interface Log4jWebInitializer {
      * begins.
      */
     void deinitialize();
-
-    /**
-     * Sets the logger context so that code executing afterwards can easily and quickly access loggers via
-     * {@link org.apache.logging.log4j.LogManager#getLogger}.
-     */
-    void setLoggerContext();
-
-    /**
-     * Clears the logger context set up in {@link #setLoggerContext()}.
-     */
-    void clearLoggerContext();
 }

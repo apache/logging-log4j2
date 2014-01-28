@@ -54,6 +54,8 @@ public class Log4jServletContainerInitializer implements ServletContainerInitial
             initializer.setLoggerContext(); // the application is just now starting to start up
 
             servletContext.addListener(new Log4jServletContextListener());
+
+            filter.setAsyncSupported(true); // supporting async when the user isn't using async has no downsides
             filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
         }
     }

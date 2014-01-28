@@ -87,6 +87,8 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             } else {
                 this.initializeNonJndi(location);
             }
+
+            this.servletContext.setAttribute(CONTEXT_ATTRIBUTE, this.loggerContext);
         }
     }
 
@@ -154,6 +156,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
 
             if (this.loggerContext != null) {
                 this.servletContext.log("Removing LoggerContext for [" + this.name + "].");
+                this.servletContext.removeAttribute(CONTEXT_ATTRIBUTE);
                 if (this.selector != null) {
                     this.selector.removeContext(this.name);
                 }
@@ -197,10 +200,10 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
      */
     static Log4jWebInitializer getLog4jWebInitializer(final ServletContext servletContext) {
         synchronized (MUTEX) {
-            Log4jWebInitializer initializer = (Log4jWebInitializer) servletContext.getAttribute(INITIALIZER_ATTRIBUTE);
+            Log4jWebInitializer initializer = (Log4jWebInitializer) servletContext.getAttribute(SUPPORT_ATTRIBUTE);
             if (initializer == null) {
                 initializer = new Log4jWebInitializerImpl(servletContext);
-                servletContext.setAttribute(INITIALIZER_ATTRIBUTE, initializer);
+                servletContext.setAttribute(SUPPORT_ATTRIBUTE, initializer);
             }
             return initializer;
         }

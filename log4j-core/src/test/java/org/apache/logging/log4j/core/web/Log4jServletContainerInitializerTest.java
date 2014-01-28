@@ -82,12 +82,14 @@ public class Log4jServletContainerInitializerTest {
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall();
         this.initializer.setLoggerContext();
         expectLastCall();
         this.servletContext.addListener(capture(listenerCapture));
+        expectLastCall();
+        registration.setAsyncSupported(true);
         expectLastCall();
         registration.addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
         expectLastCall();
@@ -142,7 +144,7 @@ public class Log4jServletContainerInitializerTest {
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall().andThrow(exception);
 
