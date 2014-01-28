@@ -25,6 +25,7 @@ import javax.servlet.UnavailableException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
@@ -93,7 +94,7 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
         URI configLocation = null;
         if (location != null) {
             try {
-                configLocation = new URI(location);
+                configLocation = FileUtils.getCorrectedFilePathUri(location);
             } catch (final Exception e) {
                 this.servletContext.log("Unable to convert configuration location [" + location + "] to a URI!", e);
             }

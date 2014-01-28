@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory.ConfigurationSo
 import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Closer;
+import org.apache.logging.log4j.core.helpers.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -121,7 +122,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location "
                 + configLocation);
-        final URI uri = new URI(configLocation);
+        final URI uri = FileUtils.getCorrectedFilePathUri(configLocation);
 
         // validate the location first: invalid location will result in
         // default configuration being configured, try to avoid that...
@@ -157,7 +158,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         }
         try {
             final Charset charset = Charset.forName(charsetName);
-            return readContents(new URI(getConfigLocationURI()), charset);
+            return readContents(FileUtils.getCorrectedFilePathUri(getConfigLocationURI()), charset);
         } catch (final Exception ex) {
             final StringWriter sw = new StringWriter(BUFFER_SIZE);
             ex.printStackTrace(new PrintWriter(sw));

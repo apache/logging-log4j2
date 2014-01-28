@@ -165,7 +165,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                             stream = System.err;
                         } else {
                             try {
-                                final File destFile = FileUtils.fileFromURI(new URI(dest));
+                                final File destFile = FileUtils.fileFromURI(FileUtils.getCorrectedFilePathUri(dest));
                                 final String enc = Charset.defaultCharset().name();
                                 stream = new PrintStream(new FileOutputStream(destFile), true, enc);
                             } catch (final URISyntaxException use) {

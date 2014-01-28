@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -99,5 +100,17 @@ public final class FileUtils {
         if (!dir.isDirectory()) {
             throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
         }
+    }
+
+    /**
+     * Takes a given URI string which may contain backslashes (illegal in URIs) in it due to user input or variable
+     * substitution and returns a URI with the backslashes replaced with forward slashes.
+     *
+     * @param uri The URI string
+     * @return the URI.
+     * @throws URISyntaxException if instantiating the URI threw a {@code URISyntaxException}.
+     */
+    public static URI getCorrectedFilePathUri(String uri) throws URISyntaxException {
+        return new URI(uri.replaceAll("\\\\+", "/"));
     }
 }
