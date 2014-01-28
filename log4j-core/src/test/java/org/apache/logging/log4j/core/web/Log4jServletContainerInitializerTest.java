@@ -61,15 +61,27 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_x() throws Exception {
+    public void testOnStartupWithServletVersion3_xEffectiveVersion2_x() throws Exception {
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(2);
+
+        replay(this.servletContext, this.initializer);
+
+        this.containerInitializer.onStartup(null, this.servletContext);
+    }
+
+    @Test
+    public void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
         final Capture<EventListener> listenerCapture = new Capture<EventListener>();
         final Capture<Filter> filterCapture = new Capture<Filter>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
+        expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall();
@@ -77,7 +89,6 @@ public class Log4jServletContainerInitializerTest {
         expectLastCall();
         this.servletContext.addListener(capture(listenerCapture));
         expectLastCall();
-        expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         registration.addMappingForUrlPatterns(eq(EnumSet.allOf(DispatcherType.class)), eq(false), eq("/*"));
         expectLastCall();
 
@@ -85,51 +96,57 @@ public class Log4jServletContainerInitializerTest {
 
         this.containerInitializer.onStartup(null, this.servletContext);
 
+        assertNotNull("The listener should not be null.", listenerCapture.getValue());
+        assertSame("The listener is not correct.", Log4jServletContextListener.class,
+                listenerCapture.getValue().getClass());
+
+        assertNotNull("The filter should not be null.", filterCapture.getValue());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+
         verify(registration);
     }
 
     @Test
-    public void testOnStartupFailedDueToPreExistingFilter() throws Exception {
-        final Capture<EventListener> listenerCapture = new Capture<EventListener>();
+    public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
         final Capture<Filter> filterCapture = new Capture<Filter>();
+        final Capture<String> logCapture = new Capture<String>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
-        this.initializer.initialize();
-        expectLastCall();
-        this.initializer.setLoggerContext();
-        expectLastCall();
-        this.servletContext.addListener(capture(listenerCapture));
-        expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(null);
+        this.servletContext.log(capture(logCapture));
 
         replay(this.servletContext, this.initializer);
 
-        try {
-            this.containerInitializer.onStartup(null, this.servletContext);
-            fail("Expected an UnavailableException, got no exception.");
-        } catch (final UnavailableException e) {
-            assertEquals("The exception is not correct.",
-                    "In a Servlet 3.0+ application, you must not define a log4jServletFilter in web.xml. Log4j 2 " +
-                            "defines this for you automatically.",
-                    e.getMessage());
-        }
+        this.containerInitializer.onStartup(null, this.servletContext);
+
+        assertNotNull("The filter should not be null.", filterCapture.getValue());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+
+        assertNotNull("The second log message should not be null.", logCapture.getValue());
+        assertTrue("The second log message (" + logCapture.getValue() + ") is not correct.",
+                logCapture.getValue().startsWith("WARNING: "));
     }
 
     @Test
     public void testOnStartupFailedDueToInitializerFailure() throws Exception {
+        final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
+
+        final Capture<Filter> filterCapture = new Capture<Filter>();
         final UnavailableException exception = new UnavailableException("");
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
+        expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
         expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall().andThrow(exception);
 
-        replay(this.servletContext, this.initializer);
+        replay(this.servletContext, this.initializer, registration);
 
         try {
             this.containerInitializer.onStartup(null, this.servletContext);
@@ -137,5 +154,10 @@ public class Log4jServletContainerInitializerTest {
         } catch (final UnavailableException e) {
             assertSame("The exception is not correct.", exception, e);
         }
+
+        assertNotNull("The filter should not be null.", filterCapture.getValue());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+
+        verify(registration);
     }
 }
