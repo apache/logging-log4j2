@@ -54,7 +54,7 @@ public class Log4jServletFilterTest {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();
 
@@ -87,7 +87,7 @@ public class Log4jServletFilterTest {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();
 
@@ -124,7 +124,7 @@ public class Log4jServletFilterTest {
         expect(this.filterConfig.getServletContext()).andReturn(this.servletContext);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.clearLoggerContext();
         expectLastCall();
 

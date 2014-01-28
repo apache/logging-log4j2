@@ -54,7 +54,7 @@ public class Log4jServletContextListenerTest {
         expect(this.event.getServletContext()).andReturn(this.servletContext);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall();
         this.initializer.setLoggerContext();
@@ -84,7 +84,7 @@ public class Log4jServletContextListenerTest {
         expect(this.event.getServletContext()).andReturn(this.servletContext);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
-        expect(this.servletContext.getAttribute(Log4jWebInitializer.INITIALIZER_ATTRIBUTE)).andReturn(this.initializer);
+        expect(this.servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).andReturn(this.initializer);
         this.initializer.initialize();
         expectLastCall().andThrow(new UnavailableException(""));
 

@@ -22,8 +22,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.ServletContext;
