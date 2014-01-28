@@ -71,6 +71,30 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
+    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTrue() throws Exception {
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
+        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
+                .andReturn("true");
+
+        replay(this.servletContext, this.initializer);
+
+        this.containerInitializer.onStartup(null, this.servletContext);
+    }
+
+    @Test
+    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTRUE() throws Exception {
+        expect(this.servletContext.getMajorVersion()).andReturn(3);
+        expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
+        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
+                .andReturn("TRUE");
+
+        replay(this.servletContext, this.initializer);
+
+        this.containerInitializer.onStartup(null, this.servletContext);
+    }
+
+    @Test
     public void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
@@ -79,6 +103,8 @@ public class Log4jServletContainerInitializerTest {
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
+        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
+                .andReturn(null);
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);
@@ -115,6 +141,8 @@ public class Log4jServletContainerInitializerTest {
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
+        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
+                .andReturn("false");
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(null);
@@ -141,6 +169,8 @@ public class Log4jServletContainerInitializerTest {
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
+        expect(this.servletContext.getInitParameter(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED))
+                .andReturn("balderdash");
         this.servletContext.log(anyObject(String.class));
         expectLastCall();
         expect(this.servletContext.addFilter(eq("log4jServletFilter"), capture(filterCapture))).andReturn(registration);

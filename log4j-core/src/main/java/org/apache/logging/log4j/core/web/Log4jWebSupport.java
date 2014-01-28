@@ -15,20 +15,27 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public interface Log4jWebSupport {
     /**
-     * The {@link javax.servlet.ServletContext} context-param name for the name of the
+     * The {@link javax.servlet.ServletContext} parameter name for the name of the
      * {@link org.apache.logging.log4j.core.LoggerContext}.
      */
     String LOG4J_CONTEXT_NAME = "log4jContextName";
 
     /**
-     * The {@link javax.servlet.ServletContext} context-param name for the location of the configuration.
+     * The {@link javax.servlet.ServletContext} parameter name for the location of the configuration.
      */
     String LOG4J_CONFIG_LOCATION = "log4jConfiguration";
 
     /**
-     * The {@link javax.servlet.ServletContext} context-param name for the JNDI flag.
+     * The {@link javax.servlet.ServletContext} parameter name for the JNDI flag.
      */
     String IS_LOG4J_CONTEXT_SELECTOR_NAMED = "isLog4jContextSelectorNamed";
+
+    /**
+     * The {@link javax.servlet.ServletContext} parameter name for the flag that disables Log4j's auto-initialization
+     * in Servlet 3.0+ web applications. Set a context parameter with this name to "true" to disable
+     * auto-initialization.
+     */
+    String IS_LOG4J_AUTO_INITIALIZATION_DISABLED = "isLog4jAutoInitializationDisabled";
 
     /**
      * The attribute key for the {@link javax.servlet.ServletContext} attribute that the singleton support instance
