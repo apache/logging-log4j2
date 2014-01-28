@@ -75,7 +75,7 @@ public class Log4jServletContainerInitializerTest {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
         final Capture<EventListener> listenerCapture = new Capture<EventListener>();
-        final Capture<Filter> filterCapture = new Capture<Filter>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
         expect(this.servletContext.getEffectiveMajorVersion()).andReturn(3);
@@ -101,14 +101,14 @@ public class Log4jServletContainerInitializerTest {
                 listenerCapture.getValue().getClass());
 
         assertNotNull("The filter should not be null.", filterCapture.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue());
 
         verify(registration);
     }
 
     @Test
     public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
-        final Capture<Filter> filterCapture = new Capture<Filter>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
         final Capture<String> logCapture = new Capture<String>();
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
@@ -123,7 +123,7 @@ public class Log4jServletContainerInitializerTest {
         this.containerInitializer.onStartup(null, this.servletContext);
 
         assertNotNull("The filter should not be null.", filterCapture.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue());
 
         assertNotNull("The second log message should not be null.", logCapture.getValue());
         assertTrue("The second log message (" + logCapture.getValue() + ") is not correct.",
@@ -134,7 +134,7 @@ public class Log4jServletContainerInitializerTest {
     public void testOnStartupFailedDueToInitializerFailure() throws Exception {
         final FilterRegistration.Dynamic registration = createStrictMock(FilterRegistration.Dynamic.class);
 
-        final Capture<Filter> filterCapture = new Capture<Filter>();
+        final Capture<Class<? extends Filter>> filterCapture = new Capture<Class<? extends Filter>>();
         final UnavailableException exception = new UnavailableException("");
 
         expect(this.servletContext.getMajorVersion()).andReturn(3);
@@ -156,7 +156,7 @@ public class Log4jServletContainerInitializerTest {
         }
 
         assertNotNull("The filter should not be null.", filterCapture.getValue());
-        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue().getClass());
+        assertSame("The filter is not correct.", Log4jServletFilter.class, filterCapture.getValue());
 
         verify(registration);
     }
