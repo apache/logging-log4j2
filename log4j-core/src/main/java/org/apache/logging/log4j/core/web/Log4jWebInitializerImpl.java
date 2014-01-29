@@ -79,8 +79,10 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
             this.initialized = true;
 
             this.name = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONTEXT_NAME));
-            final String location = this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
-            final boolean isJndi = "true".equals(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
+            final String location =
+                    this.substitutor.replace(this.servletContext.getInitParameter(LOG4J_CONFIG_LOCATION));
+            final boolean isJndi =
+                    "true".equalsIgnoreCase(this.servletContext.getInitParameter(IS_LOG4J_CONTEXT_SELECTOR_NAMED));
 
             if (isJndi) {
                 this.initializeJndi(location);
@@ -177,6 +179,17 @@ final class Log4jWebInitializerImpl implements Log4jWebInitializer {
     @Override
     public void clearLoggerContext() {
         ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Override
+    public void wrapExecution(Runnable runnable) {
+        this.setLoggerContext();
+
+        try {
+            runnable.run();
+        } finally {
+            this.clearLoggerContext();
+        }
     }
 
     private ClassLoader getClassLoader() {
