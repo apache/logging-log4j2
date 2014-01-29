@@ -67,12 +67,30 @@
           and deinitialize the Log4j configuration.
         </p>
         <p>
+          For some users, automatically starting Log4j is problematic or undesirable. You can easily disable this
+          feature using the <code>isLog4jAutoInitializationDisabled</code> context parameter. Simply add it to your
+          deployment descriptor with the value "true" to disable auto-initialization. You <em>must</em> define the
+          context parameter in <code>web.xml</code>. If you set in programmatically, it will be too late for Log4j
+          to detect the setting.
+          <pre class="prettyprint linenums"><![CDATA[    <context-param>
+        <param-name>isLog4jAutoInitializationDisabled</param-name>
+        <param-value>true</param-value>
+    </context-param>]]></pre>
+        </p>
+        <p>
+          Once you disable auto-initialization, you must initialize Log4j as you would a
+          <a href="#Servlet-2.5">Servlet 2.5 web application</a>. You must do so in a way that this initialization
+          happens before any other application code (such as Spring Framework startup code) executes.
+        </p>
+        <p>
           You can customize the behavior of the listener and filter using the <code>log4jContextName</code>,
           <code>log4jConfiguration</code>, and/or <code>isLog4jContextSelectorNamed</code> context parameters. Read more
           about this in the <a href="#ContextParams">Context Parameters</a> section below. You <em>must not</em>
           manually configure the <code>Log4jServletContextListener</code> or <code>Log4jServletFilter</code> in your
           deployment descriptor (<code>web.xml</code>) or in another initializer or listener in a Servlet 3.0 or newer
-          application. Doing so will result in startup errors and unspecified erroneous behavior.
+          application <em>unless you disable auto-initialization</em> with
+          <code>isLog4jAutoInitializationDisabled</code>. Doing so will result in startup errors and unspecified
+          erroneous behavior.
         </p>
       </subsection>
       <a name="Servlet-2.5" />
@@ -85,14 +103,15 @@
           applications.
         </p>
         <p>
-          If you are using Log4j in a Servlet 2.5 web application, you <em>must</em> configure the
+          If you are using Log4j in a Servlet 2.5 web application, or if you have disabled auto-initialization with
+          the <code>isLog4jAutoInitializationDisabled</code> context parameter, you <em>must</em> configure the
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletContextListener.html"
             >Log4jServletContextListener</a> and
           <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jServletFilter.html"
-            >Log4jServletFilter</a> in the deployment descriptor. The filter should match all requests of any type. The
-          listener should be the very first listener defined in the deployment descriptor, and the filter should be the
-          very first filter defined and mapped in the deployment descriptor. This is easily accomplished using the
-          following <code>web.xml</code> code:
+            >Log4jServletFilter</a> in the deployment descriptor or programmatically. The filter should match all
+          requests of any type. The listener should be the very first listener defined in your application, and the
+          filter should be the very first filter defined and mapped in your application. This is easily accomplished
+          using the following <code>web.xml</code> code:
           <pre class="prettyprint linenums"><![CDATA[    <listener>
         <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
     </listener>
@@ -108,6 +127,7 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
     </filter-mapping>]]></pre>
         </p>
         <p>
@@ -178,11 +198,11 @@
         </p>
       </subsection>
       <a name="WebLookup" />
-      <subsection name="Using Web Application information during the configuration">
+      <subsection name="Using Web Application Information During the Configuration">
         <p>
-            You may want to use information about the web application during configuration.  For example, you could
-            embed the web application's context path in the name of a Rolling File Appender.  
-            See WebLookup in <a href="./lookups.html#WebLookup">Lookups</a> for more information.
+          You may want to use information about the web application during configuration. For example, you could embed
+          the web application's context path in the name of a Rolling File Appender. See WebLookup in
+          <a href="./lookups.html#WebLookup">Lookups</a> for more information.
         </p>
       </subsection>        
       <a name="JspLogging" />
@@ -206,6 +226,97 @@
           Tomcat 6.x and has been fixed in Tomcat 7.0.43, Tomcat 8, and later. In Tomcat 7 &lt;7.0.43 you
           will need to change <code>catalina.properties</code> and remove "log4j*.jar" from the <code>jarsToSkip</code>
           property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
+        </p>
+      </subsection>
+      <a name="Async" />
+      <subsection name="Asynchronous Requests and Threads">
+        <p>
+          The handling of asynchronous requests is tricky, and regardless of Servlet container version or configuration
+          Log4j cannot handle everything automatically. When standard requests, forwards, includes, and error resources
+          are processed, the <code>Log4jServletFilter</code> binds the <code>LoggerContext</code> to the thread handling
+          the request. After request processing completes, the filter unbinds the <code>LoggerContext</code> from the
+          thread.
+        </p>
+        <p>
+          Similarly, when an internal request is dispatched using a <code>javax.servlet.AsyncContext</code>, the
+          <code>Log4jServletFilter</code> also binds the <code>LoggerContext</code> to the thread handling the request
+          and unbinds it when request processing completes. However, this only happens for requests <em>dispatched</em>
+          through the <code>AsyncContext</code>. There are other asynchronous activities that can take place other than
+          internal dispatched requests.
+        </p>
+        <p>
+          For example, after starting an <code>AsyncContext</code> you could start up a separate thread to process the
+          request in the background, possibly writing the response with the <code>ServletOutputStream</code>. Filters
+          cannot intercept the execution of this thread. Filters also cannot intercept threads that you start in
+          the background during non-asynchronous requests. This is true whether you use a brand new thread or a thread
+          borrowed from a thread pool. So what can you do for these special threads?
+        </p>
+        <p>
+          You may not need to do anything. If you didn't use the <code>isLog4jContextSelectorNamed</code> context
+          parameter, there is no need to bind the <code>LoggerContext</code> to the thread. Log4j can safely locate the
+          <code>LoggerContext</code> on its own. In these cases, the filter provides only very modest performance
+          gains, and only when creating new <code>Logger</code>s. However, if you <em>did</em> specify the
+          <code>isLog4jContextSelectorNamed</code> context parameter with the value "true", you will need to manually
+          bind the <code>LoggerContext</code> to asynchronous threads. Otherwise, Log4j will not be able to locate it.
+        </p>
+        <p>
+          Thankfully, Log4j provides a simple mechanism for binding the <code>LoggerContext</code> to asynchronous
+          threads in these special circumstances. The key is to obtain a
+          <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/web/Log4jWebSupport.html"
+              >Log4jWebSupport</a> instance from the <code>ServletContext</code> attributes, call its
+          <code>setLoggerContext</code> method as the very first line of code in your asynchronous thread, and call
+          its <code>clearLoggerContext</code> method as the very last line of code in your asynchronous thread. The
+          following code demonstrates this. It uses the container thread pool to execute asynchronous request
+          processing, passing an anonymous inner <code>Runnable</code> to the <code>start</code> method.
+          <pre class="prettyprint linenums"><![CDATA[public class AsyncServlet extends HttpServlet
+{
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final AsyncContext context = request.startAsync(request, response);
+        context.setTimeout(timeout);
+        context.start(new Runnable() {
+            @Override
+            public void run() {
+                Log4jWebSupport support = (Log4jWebSupport)this.getServletContext()
+                        .getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
+                support.setLoggerContext();
+
+                try {
+                    // miscellaneous asynchronous request handling
+                } finally {
+                    support.clearLoggerContext();
+                }
+            }
+        });
+    }
+}]]></pre>
+        </p>
+        <p>
+          Note that you <em>must</em> call <code>clearLoggerContext</code> once your thread is finished
+          processing. Failing to do so will result in memory leaks. If using a thread pool, it can even disrupt the
+          logging of other web applications in your container. For that reason, the example here shows clearing the
+          context in a <code>finally</code> block, which will always execute. As a shortcut, you can use the
+          <code>wrapExecution</code> method, which takes care of setting the context, executing the code you pass in,
+          and clearing the context in a finally black. This is especially convenient when using Java 8 lambdas.
+          <pre class="prettyprint linenums"><![CDATA[public class AsyncServlet extends HttpServlet
+{
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final AsyncContext context = request.startAsync(request, response);
+        context.setTimeout(timeout);
+        context.start(() => {
+            Log4jWebSupport support = (Log4jWebSupport)this.getServletContext()
+                    .getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
+            support.wrapExecution(() => {
+                // miscellaneous asynchronous request handling
+            });
+        });
+    }
+}]]></pre>
         </p>
       </subsection>
     </section>

@@ -56,7 +56,15 @@ public interface Log4jWebSupport {
     void setLoggerContext();
 
     /**
-     * Clears the logger context set up in {@link #setLoggerContext()}.
+     * Clears the logger context set up in {@link #setLoggerContext}.
      */
     void clearLoggerContext();
+
+    /**
+     * Sets the logger context by calling {@link #setLoggerContext}, executes the runnable argument, then clears the
+     * logger context by calling {@link #clearLoggerContext}.
+     *
+     * @param runnable The runnable to execute wrapped with a configured logger context
+     */
+    void wrapExecution(Runnable runnable);
 }
