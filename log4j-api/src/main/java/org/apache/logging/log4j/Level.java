@@ -200,7 +200,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return The Level.
      * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
-    public static Level getOrCreateLevel(String name, int intValue) {
+    public static Level forName(String name, int intValue) {
         Level level = levels.get(name);
         if (level != null) {
             return level;

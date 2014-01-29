@@ -25,6 +25,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 @Plugin(name="ExtendedLevel", category="Level")
 public class ExtendedLevels {
 
-    public static final Level NOTE = Level.getOrCreateLevel("NOTE", 350);
-    public static final Level DETAIL = Level.getOrCreateLevel("DETAIL", 450);
+    public static final Level NOTE = Level.forName("NOTE", 350);
+    public static final Level DETAIL = Level.forName("DETAIL", 450);
 }
