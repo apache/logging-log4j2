@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Convert;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
 import org.apache.logging.log4j.Level;
