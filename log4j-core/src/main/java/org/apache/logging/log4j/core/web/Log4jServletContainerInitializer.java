@@ -23,10 +23,6 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * In a Servlet 3.0 or newer environment, this initializer is responsible for starting up Log4j logging before anything

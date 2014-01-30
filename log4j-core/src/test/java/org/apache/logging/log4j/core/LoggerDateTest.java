@@ -18,20 +18,15 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.helpers.Constants;
-import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;

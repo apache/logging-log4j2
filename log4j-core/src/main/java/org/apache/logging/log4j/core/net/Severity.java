@@ -17,9 +17,6 @@
 package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.spi.StandardLevel;
-
-import java.util.EnumSet;
 
 /**
  *  Severity values used by the Syslog system.

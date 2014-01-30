@@ -18,20 +18,13 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.XMLConfiguration;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
-import java.net.URL;
-import java.util.Map;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
