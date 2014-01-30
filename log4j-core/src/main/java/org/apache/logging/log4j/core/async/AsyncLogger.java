@@ -85,11 +85,13 @@ public class AsyncLogger extends Logger {
 
     static enum ThreadNameStrategy { // LOG4J2-467
         CACHED {
+            @Override
             public String getThreadName(Info info) {
                 return info.cachedThreadName;
             }
         },
         UNCACHED {
+            @Override
             public String getThreadName(Info info) {
                 return Thread.currentThread().getName();
             }
@@ -156,6 +158,7 @@ public class AsyncLogger extends Logger {
      */
     private static void initInfoForExecutorThread() {
         executor.submit(new Runnable(){
+            @Override
             public void run() {
                 final boolean isAppenderThread = true;
                 final Info info = new Info(new RingBufferLogEventTranslator(), //
