@@ -81,6 +81,7 @@ public class AsyncLogger extends Logger {
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final ThreadNameStrategy THREAD_NAME_STRATEGY = ThreadNameStrategy.create();
+    private static final ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static enum ThreadNameStrategy { // LOG4J2-467
         CACHED {
@@ -109,7 +110,6 @@ public class AsyncLogger extends Logger {
 
     private static ExecutorService executor = Executors
             .newSingleThreadExecutor(new DaemonThreadFactory("AsyncLogger-"));
-    private static ThreadLocal<Info> threadlocalInfo = new ThreadLocal<Info>();
 
     static {
         initInfoForExecutorThread();
@@ -308,7 +308,7 @@ public class AsyncLogger extends Logger {
             }
         }
         executor.shutdown(); // finally, kill the processor thread
-        threadlocalInfo = new ThreadLocal<Info>(); // LOG4J2-323
+        threadlocalInfo.remove(); // LOG4J2-323
     }
 
     /**
