@@ -56,8 +56,9 @@ public class SyslogAppenderTestBase {
     }
 
     protected void sendAndCheckLegacyBSDMessages(List<String> messagesToSend) throws InterruptedException {
-        for (String message : messagesToSend)
+        for (String message : messagesToSend) {
             sendLegacyBSDMessage(message);
+        }
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages();
     }
@@ -74,8 +75,9 @@ public class SyslogAppenderTestBase {
     }
 
     protected void sendAndCheckStructuredMessages(int numberOfMessages) throws InterruptedException {
-        for (int i = 0; i < numberOfMessages; i++)
+        for (int i = 0; i < numberOfMessages; i++) {
             sendStructuredMessage();
+        }
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages();
     }

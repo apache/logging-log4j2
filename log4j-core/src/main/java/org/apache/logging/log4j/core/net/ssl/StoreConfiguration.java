@@ -45,10 +45,11 @@ public class StoreConfiguration {
     }
 
     public char[] getPasswordAsCharArray() {
-        if (password == null)
+        if (password == null) {
             return null;
-        else
+        } else {
             return password.toCharArray();
+        }
     }
 
     public void setPassword(String password) {
@@ -56,21 +57,24 @@ public class StoreConfiguration {
     }
 
     public boolean equals(StoreConfiguration config) {
-        if (config == null)
+        if (config == null) {
             return false;
+        }
 
         boolean locationEquals = false;
         boolean passwordEquals = false;
 
-        if (location != null)
+        if (location != null) {
             locationEquals = location.equals(config.location);
-        else
+        } else {
             locationEquals = location == config.location;
+        }
 
-        if (password != null)
+        if (password != null) {
             passwordEquals = password.equals(config.password);
-        else
+        } else {
             passwordEquals = password == config.password;
+        }
 
         return locationEquals && passwordEquals;
     }

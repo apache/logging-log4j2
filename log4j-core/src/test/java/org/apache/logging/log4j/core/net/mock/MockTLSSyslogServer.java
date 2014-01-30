@@ -111,8 +111,9 @@ public class MockTLSSyslogServer extends MockSyslogServer {
                 message = syslogReader.read();
                 messageList.add(message);
                 count++;
-                if (isEndOfMessages(count))
+                if (isEndOfMessages(count)) {
                     break;
+                }
             }
             this.notify();
         }

@@ -100,10 +100,11 @@ public class TLSSocketManager extends TCPSocketManager {
     private static SSLSocketFactory createSSLSocketFactory(SSLConfiguration sslConf) {
         SSLSocketFactory socketFactory;
 
-        if (sslConf != null)
+        if (sslConf != null) {
             socketFactory = sslConf.getSSLSocketFactory();
-        else
+        } else {
             socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        }
 
         return socketFactory;
     }
@@ -152,8 +153,9 @@ public class TLSSocketManager extends TCPSocketManager {
         }
 
         private void checkDelay(int delay, OutputStream os) throws TLSSocketManagerFactoryException {
-            if (delay == 0 && os == null)
+            if (delay == 0 && os == null) {
                 throw new TLSSocketManagerFactoryException();
+            }
         }
 
         private Socket createSocket(TLSFactoryData data) throws IOException {
