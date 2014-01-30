@@ -35,11 +35,13 @@ public class LegacyBSDTLSSyslogInputStreamReader extends TLSSyslogInputStreamRea
         try {
             while (true) {
                 int b = inputStream.read();
-                if (b == -1)
+                if (b == -1) {
                     throw new EOFException("The stream has been closed or the end of stream has been reached");
+                }
                 buffer.write(b);
-                if (b == '\n')
+                if (b == '\n') {
                     break;
+                }
             }
         }
         catch (EOFException e) {

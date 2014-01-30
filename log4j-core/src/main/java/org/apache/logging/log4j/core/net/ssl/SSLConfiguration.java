@@ -163,8 +163,9 @@ public class SSLConfiguration {
         KeyStore trustStore = null;
         TrustManagerFactory tmFactory = null;
 
-        if (trustStoreConfig == null)
+        if (trustStoreConfig == null) {
             throw new TrustStoreConfigurationException(new Exception("The trustStoreConfiguration is null"));
+        }
 
         try {
             trustStore = trustStoreConfig.getTrustStore();
@@ -188,8 +189,9 @@ public class SSLConfiguration {
         KeyStore keyStore = null;
         KeyManagerFactory kmFactory = null;
 
-        if (keyStoreConfig == null)
+        if (keyStoreConfig == null) {
             throw new KeyStoreConfigurationException(new Exception("The keyStoreConfiguration is null"));
+        }
 
         try {
             keyStore = keyStoreConfig.getKeyStore();
@@ -213,21 +215,24 @@ public class SSLConfiguration {
     }
 
     public boolean equals(SSLConfiguration config) {
-        if (config == null)
+        if (config == null) {
             return false;
+        }
 
         boolean keyStoreEquals = false;
         boolean trustStoreEquals = false;
 
-        if (keyStoreConfig != null)
+        if (keyStoreConfig != null) {
             keyStoreEquals = keyStoreConfig.equals(config.keyStoreConfig);
-        else
+        } else {
             keyStoreEquals = keyStoreConfig == config.keyStoreConfig;
+        }
 
-        if (trustStoreConfig != null)
+        if (trustStoreConfig != null) {
             trustStoreEquals = trustStoreConfig.equals(config.trustStoreConfig);
-        else
+        } else {
             trustStoreEquals = trustStoreConfig == config.trustStoreConfig;
+        }
 
         return keyStoreEquals && trustStoreEquals;
     }

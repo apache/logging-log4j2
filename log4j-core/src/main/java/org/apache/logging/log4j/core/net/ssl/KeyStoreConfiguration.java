@@ -74,8 +74,9 @@ public class KeyStoreConfiguration extends StoreConfiguration {
         }
         finally {
             try {
-                if (fin != null)
+                if (fin != null) {
                     fin.close();
+                }
             } catch (IOException e) {
             }
         }

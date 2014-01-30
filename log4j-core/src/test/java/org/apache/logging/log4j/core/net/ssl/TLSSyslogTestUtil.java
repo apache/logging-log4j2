@@ -66,8 +66,9 @@ public class TLSSyslogTestUtil {
     public static int getRandomInt(int max) {
         Random random = new Random();
         int n = random.nextInt(max);
-        if (n < 0)
+        if (n < 0) {
             return -n;
+        }
         return n;
     }
 }

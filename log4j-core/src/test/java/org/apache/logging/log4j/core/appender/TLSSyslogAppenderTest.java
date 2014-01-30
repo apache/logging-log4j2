@@ -83,10 +83,11 @@ public class TLSSyslogAppenderTest extends SyslogAppenderTest{
     private TLSSyslogAppender createAppender() {
         String format;
 
-        if (messageFormat == TLSSyslogMessageFormat.LEGACY_BSD)
+        if (messageFormat == TLSSyslogMessageFormat.LEGACY_BSD) {
             format = "LEGACY_BSD";
-        else
+        } else {
             format = "RFC5424";
+        }
 
         return TLSSyslogAppender.createAppender("localhost", PORT, sslConfig, "-1", null, "Test", "true", "false", "LOCAL0", "Audit",
                 "18060", "true", "RequestContext", null, null, includeNewLine, null, "TestApp", "Test", null, "ipAddress,loginId",

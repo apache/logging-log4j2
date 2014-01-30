@@ -72,8 +72,9 @@ public class TLSSyslogInputStreamReader extends TLSSyslogInputStreamReaderBase {
     private void readBytesUntilNextSpace() throws IOException {
         for (int i = 0; i < lengthBufferSize; i++) {
             int b = inputStream.read();
-            if (b < 0)
+            if (b < 0) {
                 throw new EOFException("The stream has been closed or the end of stream has been reached");
+            }
             byte currentByte = (byte)(b & 0xff);
             if (currentByte == SPACE) {
                 position = i;
