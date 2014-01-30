@@ -308,10 +308,10 @@
     {
         final AsyncContext context = request.startAsync(request, response);
         context.setTimeout(timeout);
-        context.start(() => {
+        context.start(() -> {
             Log4jWebSupport support = (Log4jWebSupport)this.getServletContext()
                     .getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE);
-            support.wrapExecution(() => {
+            support.wrapExecution(() -> {
                 // miscellaneous asynchronous request handling
             });
         });
