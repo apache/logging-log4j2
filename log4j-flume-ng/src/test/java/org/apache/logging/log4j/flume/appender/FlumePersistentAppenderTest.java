@@ -299,6 +299,7 @@ public class FlumePersistentAppenderTest {
             this.stop = stop;
         }
 
+        @Override
         public void run() {
             for (int i = start; i < stop; ++i) {
                 final StructuredDataMessage msg = new StructuredDataMessage(
@@ -319,6 +320,7 @@ public class FlumePersistentAppenderTest {
             this.stop = stop;
             this.fields = fields;
         }
+        @Override
         public void run() {
 
             for (int i = start; i < stop; ++i) {

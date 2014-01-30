@@ -31,6 +31,7 @@ public class MockTCPSyslogServer extends MockSyslogServer {
         sock = new ServerSocket(port);
     }
 
+    @Override
     public void shutdown() {
         this.shutdown = true;
         try {

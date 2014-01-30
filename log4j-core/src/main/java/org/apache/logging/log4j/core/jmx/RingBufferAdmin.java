@@ -53,10 +53,12 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
         }
     }
     
+    @Override
     public long getBufferSize() {
         return ringBuffer.getBufferSize();
     }
     
+    @Override
     public long getRemainingCapacity() {
         return ringBuffer.remainingCapacity();
     }

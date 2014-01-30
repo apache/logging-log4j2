@@ -30,6 +30,7 @@ public class MockUDPSyslogServer extends MockSyslogServer {
         this.socket = new DatagramSocket(port);
     }
 
+    @Override
     public void shutdown() {
         this.shutdown = true;
         thread.interrupt();

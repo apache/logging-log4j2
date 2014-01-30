@@ -289,6 +289,7 @@ class AsyncLoggerConfigHelper {
      */
     private static void initThreadLocalForExecutorThread() {
         executor.submit(new Runnable(){
+            @Override
             public void run() {
                 isAppenderThread.set(Boolean.TRUE);
             }

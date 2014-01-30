@@ -127,6 +127,7 @@ public class MockTLSSyslogServer extends MockSyslogServer {
         return count == loopLen;
     }
 
+    @Override
     public List<String> getMessageList() {
         return messageList;
     }
