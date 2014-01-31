@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-385" dev="rpopma" type="fix" due-to="Ace Funk, Porfirio Partida">
+        Fixed issues with time-based file rollover (monthly, weekly, hourly and every minute).
+      </action>
       <action issue="LOG4J2-452" dev="nickwilliams" type="fix">
         Added a ServletContext attribute that, when set to "true", disables Log4j's auto-initialization in
         Servlet 3.0+ web applications.
