@@ -43,19 +43,19 @@ public class RollingFileManager extends FileManager {
     private long initialTime;
     private final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
-    private final TriggeringPolicy policy;
-    private final RolloverStrategy strategy;
+    private final TriggeringPolicy triggeringPolicy;
+    private final RolloverStrategy rolloverStrategy;
 
     protected RollingFileManager(final String fileName, final String pattern, final OutputStream os,
-                                 final boolean append, final long size, final long time, final TriggeringPolicy policy,
-                                 final RolloverStrategy strategy, final String advertiseURI, final Layout<? extends Serializable> layout) {
+                                 final boolean append, final long size, final long time, final TriggeringPolicy triggeringPolicy,
+                                 final RolloverStrategy rolloverStrategy, final String advertiseURI, final Layout<? extends Serializable> layout) {
         super(fileName, os, append, false, advertiseURI, layout);
         this.size = size;
         this.initialTime = time;
-        this.policy = policy;
-        this.strategy = strategy;
+        this.triggeringPolicy = triggeringPolicy;
+        this.rolloverStrategy = rolloverStrategy;
         this.patternProcessor = new PatternProcessor(pattern);
-        policy.initialize(this);
+        triggeringPolicy.initialize(this);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RollingFileManager extends FileManager {
      * @param event The LogEvent.
      */
     public synchronized void checkRollover(final LogEvent event) {
-        if (policy.isTriggeringEvent(event) && rollover(strategy)) {
+        if (triggeringPolicy.isTriggeringEvent(event) && rollover(rolloverStrategy)) {
             try {
                 size = 0;
                 initialTime = System.currentTimeMillis();
