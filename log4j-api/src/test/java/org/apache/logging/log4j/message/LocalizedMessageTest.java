@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -29,7 +30,7 @@ import org.junit.Test;
  */
 public class LocalizedMessageTest {
 
-    private LocalizedMessage roundtrip(final LocalizedMessage msg) {
+    private <T extends Serializable> T roundtrip(final T msg) {
         return SerializationUtils.deserialize(SerializationUtils.serialize(msg));
     }
 
