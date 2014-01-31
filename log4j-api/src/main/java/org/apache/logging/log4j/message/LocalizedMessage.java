@@ -173,9 +173,9 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         ResourceBundle bundle = this.bundle;
         if (bundle == null) {
             if (bundleId != null) {
-                bundle = getBundle(bundleId, locale, false);
+                bundle = getResourceBundle(bundleId, locale, false);
             } else {
-                bundle = getBundle(loggerName, locale, true);
+                bundle = getResourceBundle(loggerName, locale, true);
             }
         }
         final String messagePattern = getFormat();
@@ -215,7 +215,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getBundle(final String baseName, final Locale locale, final boolean loop) {
+    protected ResourceBundle getResourceBundle(final String baseName, final Locale locale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (baseName == null) {
