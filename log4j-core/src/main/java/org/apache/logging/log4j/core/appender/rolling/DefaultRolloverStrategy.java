@@ -155,6 +155,10 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         this.subst = subst;
     }
 
+    public int getCompressionLevel() {
+        return this.compressionLevel;
+    }
+
     public int getMaxIndex() {
         return this.maxIndex;
     }
