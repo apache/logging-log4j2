@@ -44,6 +44,26 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
 
 
     /**
+     * Gets the resource bundle base name if set.
+     * 
+     * @return the resource bundle base name if set. May be null.
+     */
+    public String getBaseName() {
+        return this.baseName;
+    }
+
+
+    /**
+     * Gets the resource bundle if set.
+     * 
+     * @return the resource bundle if set. May be null.
+     */
+    public ResourceBundle getResourceBundle() {
+        return this.resourceBundle;
+    }
+
+
+    /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
      *
      * @param message The message format String.
