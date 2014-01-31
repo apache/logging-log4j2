@@ -45,8 +45,8 @@ public class CyclicBuffer<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private T[] makeArray(final Class<T> clazz, final int size) {
-        return (T[]) Array.newInstance(clazz, size);
+    private T[] makeArray(final Class<T> cls, final int size) {
+        return (T[]) Array.newInstance(cls, size);
     }
 
     /**
