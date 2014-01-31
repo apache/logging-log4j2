@@ -44,7 +44,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * intervals.
  */
 @Plugin(name = "RollingRandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender {
+public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
 
     private final String fileName;
     private final String filePattern;

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 /**
  *
  */
-public class InMemoryAppender extends AbstractOutputStreamAppender {
+public class InMemoryAppender extends AbstractOutputStreamAppender<InMemoryAppender.InMemoryManager> {
 
     public InMemoryAppender(final String name, final Layout<? extends Serializable> layout, final CompositeFilter filters,
                             final boolean ignoreExceptions) {
@@ -39,7 +39,7 @@ public class InMemoryAppender extends AbstractOutputStreamAppender {
         return getManager().toString();
     }
 
-    private static class InMemoryManager extends OutputStreamManager {
+    static class InMemoryManager extends OutputStreamManager {
 
         public InMemoryManager(final String name, final Layout<? extends Serializable> layout) {
             super(new ByteArrayOutputStream(), name, layout);

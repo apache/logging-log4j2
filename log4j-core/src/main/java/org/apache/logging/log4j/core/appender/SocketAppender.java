@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
 @Plugin(name = "Socket", category = "Core", elementType = "appender", printObject = true)
-public class SocketAppender extends AbstractOutputStreamAppender {
+public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketManager> {
     private Object advertisement;
     private final Advertiser advertiser;
 

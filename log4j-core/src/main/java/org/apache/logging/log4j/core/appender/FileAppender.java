@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * File Appender.
  */
 @Plugin(name = "File", category = "Core", elementType = "appender", printObject = true)
-public final class FileAppender extends AbstractOutputStreamAppender {
+public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
 
     private static final int DEFAULT_BUFFER_SIZE = 8192;
     private final String fileName;

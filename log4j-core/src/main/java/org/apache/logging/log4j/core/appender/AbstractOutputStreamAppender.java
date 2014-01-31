@@ -27,8 +27,10 @@ import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
+ * 
+ * @param <M> The kind of {@link OutputStreamManager} under management
  */
-public abstract class AbstractOutputStreamAppender extends AbstractAppender {
+public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager> extends AbstractAppender {
 
     /**
      * Immediate flush means that the underlying writer or output stream
@@ -41,7 +43,7 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      */
     protected final boolean immediateFlush;
 
-    private volatile OutputStreamManager manager;
+    private volatile M manager;
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
@@ -57,21 +59,26 @@ public abstract class AbstractOutputStreamAppender extends AbstractAppender {
      */
     protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
                                            final boolean ignoreExceptions, final boolean immediateFlush,
-                                           final OutputStreamManager manager) {
+                                           final M manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
         this.immediateFlush = immediateFlush;
     }
 
-    protected OutputStreamManager getManager() {
+    /**
+     * Gets the manager.
+     * 
+     * @return the manager.
+     */
+    public M getManager() {
         return manager;
     }
 
-    protected void replaceManager(final OutputStreamManager newManager) {
+    protected void replaceManager(final M newManager) {
 
         writeLock.lock();
         try {
-            final OutputStreamManager old = manager;
+            final M old = manager;
             manager = newManager;
             old.release();
         } finally {
