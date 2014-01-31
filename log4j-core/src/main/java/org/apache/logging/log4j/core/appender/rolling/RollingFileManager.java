@@ -130,6 +130,22 @@ public class RollingFileManager extends FileManager {
         return patternProcessor;
     }
 
+    /**
+     * Returns the triggering policy
+     * @return The TriggeringPolicy
+     */
+    public TriggeringPolicy getTriggeringPolicy() {
+        return this.triggeringPolicy;
+    }
+
+    /**
+     * Returns the rollover strategy
+     * @return The RolloverStrategy
+     */
+    public RolloverStrategy getRolloverStrategy() {
+        return this.rolloverStrategy;
+    }
+
     private boolean rollover(final RolloverStrategy strategy) {
 
         try {
