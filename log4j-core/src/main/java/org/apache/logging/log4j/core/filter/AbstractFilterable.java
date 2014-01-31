@@ -100,7 +100,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Make the Filter available for use.
      */
     public void startFilter() {
-       if (filter != null && filter instanceof LifeCycle) {
+       if (filter instanceof LifeCycle) {
            ((LifeCycle) filter).start();
        }
     }
@@ -109,7 +109,7 @@ public abstract class AbstractFilterable implements Filterable {
      * Cleanup the Filter.
      */
     public void stopFilter() {
-       if (filter != null && filter instanceof LifeCycle) {
+       if (filter instanceof LifeCycle) {
            ((LifeCycle) filter).stop();
        }
     }
