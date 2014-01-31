@@ -210,20 +210,20 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      * Override this to use a ResourceBundle.Control in Java 6
      * 
      * @param baseName The base name of the resource bundle, a fully qualified class name.
-     * @param locale The locale to use when formatting the message.
+     * @param resourceBundleLocale The locale to use when formatting the message.
      * @param loop If true the key will be treated as a package or class name and a resource bundle will
      * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String baseName, final Locale locale, final boolean loop) {
+    protected ResourceBundle getResourceBundle(final String baseName, final Locale resourceBundleLocale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (baseName == null) {
             return null;
         }
         try {
-            if (locale != null) {
-                rb = ResourceBundle.getBundle(baseName, locale);
+            if (resourceBundleLocale != null) {
+                rb = ResourceBundle.getBundle(baseName, resourceBundleLocale);
             } else {
                 rb = ResourceBundle.getBundle(baseName);
             }
@@ -239,8 +239,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         while (rb == null && (i = substr.lastIndexOf('.')) > 0) {
             substr = substr.substring(0, i);
             try {
-                if (locale != null) {
-                    rb = ResourceBundle.getBundle(substr, locale);
+                if (resourceBundleLocale != null) {
+                    rb = ResourceBundle.getBundle(substr, resourceBundleLocale);
                 } else {
                     rb = ResourceBundle.getBundle(substr);
                 }
