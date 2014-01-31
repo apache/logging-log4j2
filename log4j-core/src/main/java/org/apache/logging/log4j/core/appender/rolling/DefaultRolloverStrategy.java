@@ -155,6 +155,14 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         this.subst = subst;
     }
 
+    public int getMaxIndex() {
+        return this.maxIndex;
+    }
+
+    public int getMinIndex() {
+        return this.minIndex;
+    }
+
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         return useMax ? purgeAscending(lowIndex, highIndex, manager) :
             purgeDescending(lowIndex, highIndex, manager);
