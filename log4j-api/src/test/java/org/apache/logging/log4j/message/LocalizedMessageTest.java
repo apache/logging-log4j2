@@ -20,31 +20,25 @@ import org.junit.Test;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
- *
+ * Tests LocalizedMessage.
  */
 public class LocalizedMessageTest {
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
 
-
     @Test
     public void testMessageFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
-        final String result = msg.getFormattedMessage();
-        final String expected = "This is test number 1 with string argument Test.";
-        assertTrue(expected.equals(result));
+        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
-
 
     @Test
     public void testStringFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
-        final String result = msg.getFormattedMessage();
-        final String expected = "This is test number 1 with string argument Test.";
-        assertTrue(expected.equals(result));
+        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 }
