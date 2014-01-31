@@ -42,7 +42,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * An appender that writes to files and can roll over at intervals.
  */
 @Plugin(name = "RollingFile", category = "Core", elementType = "appender", printObject = true)
-public final class RollingFileAppender extends AbstractOutputStreamAppender {
+public final class RollingFileAppender extends AbstractOutputStreamAppender<RollingFileManager> {
 
     private final String fileName;
     private final String filePattern;

@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
  * File Appender.
  */
 @Plugin(name = "RandomAccessFile", category = "Core", elementType = "appender", printObject = true)
-public final class RandomAccessFileAppender extends AbstractOutputStreamAppender {
+public final class RandomAccessFileAppender extends AbstractOutputStreamAppender<RandomAccessFileManager> {
 
     private final String fileName;
     private Object advertisement;
