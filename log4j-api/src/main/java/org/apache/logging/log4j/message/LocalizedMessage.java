@@ -41,7 +41,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     private transient ResourceBundle bundle;
 
-    private Locale locale;
+    private final Locale locale;
 
     private transient StatusLogger logger = StatusLogger.getLogger();
 
@@ -74,7 +74,9 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.messagePattern = key;
         this.argArray = arguments;
         this.throwable = null;
-        setup(bundleId, null, locale);
+        this.bundleId = bundleId;
+        this.bundle = null;
+        this.locale = locale;
     }
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
@@ -82,7 +84,9 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.messagePattern = key;
         this.argArray = arguments;
         this.throwable = null;
-        setup(null, bundle, locale);
+        this.bundleId = null;
+        this.bundle = bundle;
+        this.locale = locale;
     }
 
     public LocalizedMessage(final Locale locale, final String key, final Object[] arguments) {
@@ -155,12 +159,6 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     @Override
     public String getLoggerName() {
         return this.loggerName;
-    }
-
-    private void setup(final String bundleId, final ResourceBundle bundle, final Locale locale) {
-        this.bundleId = bundleId;
-        this.bundle = bundle;
-        this.locale = locale;
     }
 
     /**
