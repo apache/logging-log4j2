@@ -16,16 +16,22 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.lang3.SerializationUtils;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests LocalizedMessage.
  */
 public class LocalizedMessageTest {
+
+    private LocalizedMessage roundtrip(final LocalizedMessage msg) {
+        return SerializationUtils.deserialize(SerializationUtils.serialize(msg));
+    }
 
     @Test
     public void testMessageFormat() {
@@ -33,9 +39,28 @@ public class LocalizedMessageTest {
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
+    @Ignore("org.apache.commons.lang3.SerializationException: java.io.EOFException")
+    @Test
+    public void testSerializationMessageFormat() {
+        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
+        final LocalizedMessage msg2 = roundtrip(msg);
+        assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
+    }
+
+    @Ignore("org.apache.commons.lang3.SerializationException: java.io.EOFException")
+    @Test
+    public void testSerializationStringFormat() {
+        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
+        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
+        final LocalizedMessage msg2 = roundtrip(msg);
+        assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
+    }
+
     @Test
     public void testStringFormat() {
         final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
+
 }
