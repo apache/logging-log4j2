@@ -30,6 +30,9 @@ import org.junit.Test;
  */
 public class LocalizedMessageTest {
 
+    /**
+     * TODO Reuse this from Commons Lang 3.3 when released.
+     */
     private <T extends Serializable> T roundtrip(final T msg) {
         return SerializationUtils.deserialize(SerializationUtils.serialize(msg));
     }
