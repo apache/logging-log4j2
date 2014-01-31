@@ -28,18 +28,18 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
 
     private static final long serialVersionUID = 1L;
     
-    private final ResourceBundle bundle;
-    private final String bundleId;
+    private final ResourceBundle resourceBundle;
+    private final String baseName;
 
-    public LocalizedMessageFactory(final ResourceBundle bundle) {
-        this.bundle = bundle;
-        this.bundleId = null;
+    public LocalizedMessageFactory(final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
+        this.baseName = null;
     }
 
 
-    public LocalizedMessageFactory(final String bundleId) {
-        this.bundle = null;
-        this.bundleId = bundleId;
+    public LocalizedMessageFactory(final String baseName) {
+        this.resourceBundle = null;
+        this.baseName = baseName;
     }
 
 
@@ -54,9 +54,9 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        if (bundle == null) {
-            return new LocalizedMessage(bundleId,  message, params);
+        if (resourceBundle == null) {
+            return new LocalizedMessage(baseName,  message, params);
         }
-        return new LocalizedMessage(bundle, message, params);
+        return new LocalizedMessage(resourceBundle, message, params);
     }
 }
