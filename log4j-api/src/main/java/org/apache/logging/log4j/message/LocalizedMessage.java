@@ -39,7 +39,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     private String baseName;
 
-    private transient ResourceBundle bundle;
+    private transient ResourceBundle resourceBundle;
 
     private final Locale locale;
 
@@ -75,7 +75,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.argArray = arguments;
         this.throwable = null;
         this.baseName = baseName;
-        this.bundle = null;
+        this.resourceBundle = null;
         this.locale = locale;
     }
 
@@ -85,7 +85,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.argArray = arguments;
         this.throwable = null;
         this.baseName = null;
-        this.bundle = bundle;
+        this.resourceBundle = bundle;
         this.locale = locale;
     }
 
@@ -170,7 +170,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         if (formattedMessage != null) {
             return formattedMessage;
         }
-        ResourceBundle bundle = this.bundle;
+        ResourceBundle bundle = this.resourceBundle;
         if (bundle == null) {
             if (baseName != null) {
                 bundle = getResourceBundle(baseName, locale, false);
@@ -277,7 +277,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
             stringArgs[i] = in.readUTF();
         }
         logger = StatusLogger.getLogger();
-        bundle = null;
+        resourceBundle = null;
         argArray = null;
     }
 }
