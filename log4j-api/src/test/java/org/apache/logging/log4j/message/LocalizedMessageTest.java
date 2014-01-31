@@ -27,9 +27,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class LocalizedMessageTest {
 
-    private static final int LOOP_CNT = 500;
-    String[] array = new String[LOOP_CNT];
-
     @Test
     public void testMessageFormat() {
         final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
