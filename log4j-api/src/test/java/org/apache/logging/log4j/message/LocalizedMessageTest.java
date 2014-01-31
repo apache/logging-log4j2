@@ -43,7 +43,6 @@ public class LocalizedMessageTest {
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
-    @Ignore("org.apache.commons.lang3.SerializationException: java.io.EOFException")
     @Test
     public void testSerializationMessageFormat() {
         final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
@@ -52,7 +51,6 @@ public class LocalizedMessageTest {
         assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
     }
 
-    @Ignore("org.apache.commons.lang3.SerializationException: java.io.EOFException")
     @Test
     public void testSerializationStringFormat() {
         final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });

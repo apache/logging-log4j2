@@ -265,6 +265,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
             stringArgs[i] = obj.toString();
             ++i;
         }
+        out.writeObject(stringArgs);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -273,10 +274,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         messagePattern = in.readUTF();
         baseName = in.readUTF();
         final int length = in.readInt();
-        stringArgs = new String[length];
-        for (int i = 0; i < length; ++i) {
-            stringArgs[i] = in.readUTF();
-        }
+        stringArgs = (String[]) in.readObject();
         logger = StatusLogger.getLogger();
         resourceBundle = null;
         argArray = null;
