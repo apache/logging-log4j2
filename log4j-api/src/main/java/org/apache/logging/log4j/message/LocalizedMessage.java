@@ -39,6 +39,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     private String baseName;
 
+    // ResourceBundle is not Serializable.
     private transient ResourceBundle resourceBundle;
 
     private final Locale locale;
