@@ -102,25 +102,21 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
             @PluginAttribute("compressionLevel") final String compressionLevelStr,
             @PluginConfiguration final Configuration config) {
         final boolean useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
-        int minIndex;
+        int minIndex = MIN_WINDOW_SIZE;
         if (min != null) {
             minIndex = Integer.parseInt(min);
             if (minIndex < 1) {
                 LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
                 minIndex = MIN_WINDOW_SIZE;
             }
-        } else {
-            minIndex = MIN_WINDOW_SIZE;
         }
-        int maxIndex;
+        int maxIndex = DEFAULT_WINDOW_SIZE;
         if (max != null) {
             maxIndex = Integer.parseInt(max);
             if (maxIndex < minIndex) {
                 maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
                 LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
             }
-        } else {
-            maxIndex = DEFAULT_WINDOW_SIZE;
         }
         final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
         return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, config.getStrSubstitutor());
@@ -135,11 +131,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      * Index for most recent log file.
      */
     private final int minIndex;
-
     private final boolean useMax;
-    
     private final StrSubstitutor subst;
-
     private final int compressionLevel;
 
     /**
@@ -382,37 +375,35 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        if (maxIndex >= 0) {
-            int fileIndex;
-
-            if ((fileIndex = purge(minIndex, maxIndex, manager)) < 0) {
-                return null;
-            }
-
-            final StringBuilder buf = new StringBuilder();
-            manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
-            final String currentFileName = manager.getFileName();
-
-            String renameTo = buf.toString();
-            final String compressedName = renameTo;
-            Action compressAction = null;
-
-            if (renameTo.endsWith(".gz")) {
-                renameTo = renameTo.substring(0, renameTo.length() - 3);
-                compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
-            } else if (renameTo.endsWith(".zip")) {
-                renameTo = renameTo.substring(0, renameTo.length() - 4);
-                compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
-                        compressionLevel);
-            }
-
-            final FileRenameAction renameAction =
-                new FileRenameAction(new File(currentFileName), new File(renameTo), false);
-
-            return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
+        if (maxIndex < 0) {
+            return null;
+        }
+        int fileIndex = purge(minIndex, maxIndex, manager);
+        if (fileIndex < 0) {
+            return null;
         }
 
-        return null;
+        final StringBuilder buf = new StringBuilder(255);
+        manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
+        final String currentFileName = manager.getFileName();
+
+        String renameTo = buf.toString();
+        final String compressedName = renameTo;
+        Action compressAction = null;
+
+        if (renameTo.endsWith(".gz")) {
+            renameTo = renameTo.substring(0, renameTo.length() - 3);
+            compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
+        } else if (renameTo.endsWith(".zip")) {
+            renameTo = renameTo.substring(0, renameTo.length() - 4);
+            compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
+                    compressionLevel);
+        }
+
+        final FileRenameAction renameAction =
+            new FileRenameAction(new File(currentFileName), new File(renameTo), false);
+
+        return new RolloverDescriptionImpl(currentFileName, false, renameAction, compressAction);
     }
 
     @Override
