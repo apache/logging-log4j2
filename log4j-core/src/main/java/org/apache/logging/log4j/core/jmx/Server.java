@@ -24,7 +24,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.management.InstanceAlreadyExistsException;
-import javax.management.JMException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
@@ -105,59 +104,6 @@ public final class Server {
         return sb.toString();
     }
 
-    /**
-     * Creates MBeans to instrument classes in the log4j class hierarchy and
-     * registers the MBeans in the platform MBean server so they can be accessed
-     * by remote clients.
-     * 
-     * @throws JMException if a problem occurs during registration
-     */
-    public static void registerMBeans() throws JMException {
-        final ContextSelector selector = getContextSelector();
-        registerMBeans(selector);
-    }
-
-    /**
-     * Creates MBeans to instrument the specified selector and other classes in
-     * the log4j class hierarchy and registers the MBeans in the platform MBean
-     * server so they can be accessed by remote clients.
-     * 
-     * @param selector starting point in the log4j class hierarchy
-     * @throws JMException if a problem occurs during registration
-     */
-    public static void registerMBeans(final ContextSelector selector) throws JMException {
-
-        // avoid creating Platform MBean Server if JMX disabled
-        if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
-            return;
-        }
-        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        registerMBeans(selector, mbs);
-    }
-
-    /**
-     * Creates MBeans to instrument the specified selector and other classes in
-     * the log4j class hierarchy and registers the MBeans in the specified MBean
-     * server so they can be accessed by remote clients.
-     * 
-     * @param selector starting point in the log4j class hierarchy
-     * @param mbs the MBean Server to register the instrumented objects in
-     * @throws JMException if a problem occurs during registration
-     */
-    public static void registerMBeans(final ContextSelector selector, final MBeanServer mbs) throws JMException {
-
-        if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
-            LOGGER.debug("JMX disabled for log4j2. Not registering MBeans.");
-            return;
-        }
-        registerStatusLogger(mbs, executor);
-        registerContextSelector(selector, mbs, executor);
-
-        final List<LoggerContext> contexts = selector.getLoggerContexts();
-        registerContexts(contexts, mbs, executor);
-    }
-
     public static void reregisterMBeansAfterReconfigure() {
         // avoid creating Platform MBean Server if JMX disabled
         if (Boolean.getBoolean(PROPERTY_DISABLE_JMX)) {
@@ -175,23 +121,43 @@ public final class Server {
         }
 
         // first unregister the old MBeans
+        // TODO is this too drastic? This may impact the MBean of other
+        // webapps...
+        // but below we will only re-register the MBeans of OUR context selector
         unregisterMBeans(mbs);
 
         // now provide instrumentation for the newly configured
         // LoggerConfigs and Appenders
         try {
-            registerStatusLogger(mbs, executor);
             final ContextSelector selector = getContextSelector();
             if (selector == null) {
                 LOGGER.debug("Could not register MBeans: no ContextSelector found.");
                 return;
             }
-            registerContextSelector(selector, mbs, executor);
             final List<LoggerContext> contexts = selector.getLoggerContexts();
-            registerContexts(contexts, mbs, executor);
-            for (LoggerContext context : contexts) {
-                registerLoggerConfigs(context, mbs, executor);
-                registerAppenders(context, mbs, executor);
+            for (LoggerContext ctx : contexts) {
+                // first unregister the context and all nested loggers,
+                // appenders, statusLogger, contextSelector, ringbuffers...
+                unregisterAll(ctx.getName(), mbs);
+
+                final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
+                register(mbs, mbean, mbean.getObjectName());
+
+                if (ctx instanceof AsyncLoggerContext) {
+                    RingBufferAdmin rbmbean = AsyncLogger.createRingBufferAdmin(ctx.getName());
+                    register(mbs, rbmbean, rbmbean.getObjectName());
+                }
+
+                // register the status logger and the context selector
+                // repeatedly
+                // for each known context: if one context is unregistered,
+                // these MBeans should still be available for the other
+                // contexts.
+                registerStatusLogger(ctx.getName(), mbs, executor);
+                registerContextSelector(ctx.getName(), selector, mbs, executor);
+
+                registerLoggerConfigs(ctx, mbs, executor);
+                registerAppenders(ctx, mbs, executor);
             }
         } catch (final Exception ex) {
             LOGGER.error("Could not register mbeans", ex);
@@ -212,8 +178,8 @@ public final class Server {
      * @param mbs the MBean server to unregister from.
      */
     public static void unregisterMBeans(MBeanServer mbs) {
-        unregisterStatusLogger(mbs);
-        unregisterContextSelector(mbs);
+        unregisterStatusLogger("*", mbs);
+        unregisterContextSelector("*", mbs);
         unregisterContexts(mbs);
         unregisterLoggerConfigs("*", mbs);
         unregisterAsyncLoggerRingBufferAdmins("*", mbs);
@@ -245,9 +211,9 @@ public final class Server {
      * 
      * @param loggerContextName name of the logger context to unregister
      */
-    public static void unregisterContext(String loggerContextName) {
+    public static void unregisterAll(String loggerContextName) {
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        unregisterContext(loggerContextName, mbs);
+        unregisterAll(loggerContextName, mbs);
     }
 
     /**
@@ -258,67 +224,51 @@ public final class Server {
      * @param loggerContextName name of the logger context to unregister
      * @param mbs the MBean Server to unregister the instrumented objects from
      */
-    public static void unregisterContext(String contextName, MBeanServer mbs) {
+    public static void unregisterAll(String contextName, MBeanServer mbs) {
         final String pattern = LoggerContextAdminMBean.PATTERN;
-        final String safeContextName = escape(contextName);
-        final String search = String.format(pattern, safeContextName, "*");
+        final String search = String.format(pattern, escape(contextName), "*");
         unregisterAllMatching(search, mbs); // unregister context mbean
-        unregisterLoggerConfigs(safeContextName, mbs);
-        unregisterAppenders(safeContextName, mbs);
-        unregisterAsyncAppenders(safeContextName, mbs);
-        unregisterAsyncLoggerRingBufferAdmins(safeContextName, mbs);
-        unregisterAsyncLoggerConfigRingBufferAdmins(safeContextName, mbs);
+
+        // now unregister all MBeans associated with this logger context
+        unregisterStatusLogger(contextName, mbs);
+        unregisterContextSelector(contextName, mbs);
+        unregisterLoggerConfigs(contextName, mbs);
+        unregisterAppenders(contextName, mbs);
+        unregisterAsyncAppenders(contextName, mbs);
+        unregisterAsyncLoggerRingBufferAdmins(contextName, mbs);
+        unregisterAsyncLoggerConfigRingBufferAdmins(contextName, mbs);
     }
 
-    private static void registerStatusLogger(final MBeanServer mbs, final Executor executor)
+    private static void registerStatusLogger(final String contextName, final MBeanServer mbs, final Executor executor)
             throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 
-        final StatusLoggerAdmin mbean = new StatusLoggerAdmin(executor);
+        final StatusLoggerAdmin mbean = new StatusLoggerAdmin(contextName, executor);
         register(mbs, mbean, mbean.getObjectName());
     }
 
-    private static void registerContextSelector(final ContextSelector selector, final MBeanServer mbs,
-            final Executor executor) throws InstanceAlreadyExistsException, MBeanRegistrationException,
-            NotCompliantMBeanException {
+    private static void registerContextSelector(final String contextName, final ContextSelector selector,
+            final MBeanServer mbs, final Executor executor) throws InstanceAlreadyExistsException,
+            MBeanRegistrationException, NotCompliantMBeanException {
 
-        final ContextSelectorAdmin mbean = new ContextSelectorAdmin(selector);
+        final ContextSelectorAdmin mbean = new ContextSelectorAdmin(contextName, selector);
         register(mbs, mbean, mbean.getObjectName());
     }
 
-    /**
-     * Registers MBeans for all contexts in the list. First unregisters each
-     * context (and nested loggers, appender etc) to prevent
-     * InstanceAlreadyExistsExceptions.
-     */
-    private static void registerContexts(final List<LoggerContext> contexts, final MBeanServer mbs,
-            final Executor executor) throws InstanceAlreadyExistsException, MBeanRegistrationException,
-            NotCompliantMBeanException {
-
-        for (final LoggerContext ctx : contexts) {
-            // first unregister the context and all nested loggers & appenders
-            unregisterContext(ctx.getName());
-
-            final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
-            register(mbs, mbean, mbean.getObjectName());
-
-            if (ctx instanceof AsyncLoggerContext) {
-                RingBufferAdmin rbmbean = AsyncLogger.createRingBufferAdmin(ctx.getName());
-                register(mbs, rbmbean, rbmbean.getObjectName());
-            }
-        }
+    private static void unregisterStatusLogger(final String contextName, final MBeanServer mbs) {
+        final String pattern = StatusLoggerAdminMBean.PATTERN;
+        final String search = String.format(pattern, escape(contextName), "*");
+        unregisterAllMatching(search, mbs);
     }
 
-    private static void unregisterStatusLogger(final MBeanServer mbs) {
-        unregisterAllMatching(StatusLoggerAdminMBean.NAME, mbs);
-    }
-
-    private static void unregisterContextSelector(final MBeanServer mbs) {
-        unregisterAllMatching(ContextSelectorAdminMBean.NAME, mbs);
+    private static void unregisterContextSelector(final String contextName, final MBeanServer mbs) {
+        final String pattern = ContextSelectorAdminMBean.PATTERN;
+        final String search = String.format(pattern, escape(contextName), "*");
+        unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterLoggerConfigs(final String contextName, final MBeanServer mbs) {
         final String pattern = LoggerConfigAdminMBean.PATTERN;
-        final String search = String.format(pattern, contextName, "*");
+        final String search = String.format(pattern, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
@@ -330,25 +280,25 @@ public final class Server {
 
     private static void unregisterAppenders(final String contextName, final MBeanServer mbs) {
         final String pattern = AppenderAdminMBean.PATTERN;
-        final String search = String.format(pattern, contextName, "*");
+        final String search = String.format(pattern, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterAsyncAppenders(final String contextName, final MBeanServer mbs) {
         final String pattern = AsyncAppenderAdminMBean.PATTERN;
-        final String search = String.format(pattern, contextName, "*");
+        final String search = String.format(pattern, escape(contextName), "*");
         unregisterAllMatching(search, mbs);
     }
 
     private static void unregisterAsyncLoggerRingBufferAdmins(final String contextName, final MBeanServer mbs) {
         final String pattern1 = RingBufferAdminMBean.PATTERN_ASYNC_LOGGER;
-        final String search1 = String.format(pattern1, contextName);
+        final String search1 = String.format(pattern1, escape(contextName));
         unregisterAllMatching(search1, mbs);
     }
 
     private static void unregisterAsyncLoggerConfigRingBufferAdmins(final String contextName, final MBeanServer mbs) {
         final String pattern2 = RingBufferAdminMBean.PATTERN_ASYNC_LOGGER_CONFIG;
-        final String search2 = String.format(pattern2, contextName, "*");
+        final String search2 = String.format(pattern2, escape(contextName), "*");
         unregisterAllMatching(search2, mbs);
     }
 

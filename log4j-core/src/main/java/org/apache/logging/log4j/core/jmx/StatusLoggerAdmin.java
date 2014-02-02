@@ -32,23 +32,32 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Implementation of the {@code StatusLoggerAdminMBean} interface.
  */
-public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
-        StatusListener, StatusLoggerAdminMBean {
+public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements StatusListener, StatusLoggerAdminMBean {
 
     private final AtomicLong sequenceNo = new AtomicLong();
     private final ObjectName objectName;
+    private final String contextName;
     private Level level = Level.WARN;
 
     /**
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
-     *
+     * 
+     * @param contextName name of the LoggerContext under which to register this
+     *            StatusLoggerAdmin. Note that the StatusLogger may be
+     *            registered multiple times, once for each LoggerContext. In web
+     *            containers, each web application has its own LoggerContext and
+     *            by associating the StatusLogger with the LoggerContext, all
+     *            associated MBeans can be unloaded when the web application is
+     *            undeployed.
      * @param executor used to send notifications asynchronously
      */
-    public StatusLoggerAdmin(final Executor executor) {
+    public StatusLoggerAdmin(final String contextName, final Executor executor) {
         super(executor, createNotificationInfo());
+        this.contextName = contextName;
         try {
-            objectName = new ObjectName(NAME);
+            final String mbeanName = String.format(PATTERN, Server.escape(contextName));
+            objectName = new ObjectName(mbeanName);
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
@@ -93,28 +102,31 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
         this.level = Level.toLevel(level, Level.ERROR);
     }
 
+    public String getContextName() {
+        return contextName;
+    }
+
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.apache.logging.log4j.status.StatusListener#log(org.apache.logging
      * .log4j.status.StatusData)
      */
     @Override
     public void log(final StatusData data) {
-        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE,
-                getObjectName(), nextSeqNo(), now(), data.getFormattedStatus());
+        final Notification notifMsg = new Notification(NOTIF_TYPE_MESSAGE, getObjectName(), nextSeqNo(), now(),
+                data.getFormattedStatus());
         sendNotification(notifMsg);
 
-        final Notification notifData = new Notification(NOTIF_TYPE_DATA,
-                getObjectName(), nextSeqNo(), now());
+        final Notification notifData = new Notification(NOTIF_TYPE_DATA, getObjectName(), nextSeqNo(), now());
         notifData.setUserData(data);
         sendNotification(notifData);
     }
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     *
+     * 
      * @return the {@code ObjectName}
      * @see StatusLoggerAdminMBean#NAME
      */
