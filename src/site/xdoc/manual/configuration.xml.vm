@@ -913,7 +913,7 @@ public class Bar {
             <i>As a footnote, it is worth pointing out that the variables in the RollingFile appender declaration
             will also not be evaluated when the configuration is processed. This is simply because the resolution
             of the whole RollingFile element is deferred until a match occurs.
-            See <a href="../appenders.html#RoutingAppender">RoutingAppender</a> for more information.</i>
+            See <a href="appenders.html#RoutingAppender">RoutingAppender</a> for more information.</i>
           </p>
         </subsection>
         <a name="StatusMessages"/>
