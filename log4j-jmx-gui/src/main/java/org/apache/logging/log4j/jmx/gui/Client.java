@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.management.JMException;
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -30,6 +31,7 @@ import javax.management.remote.JMXConnector;
 import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.jmx.ContextSelectorAdminMBean;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
@@ -39,22 +41,21 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 public class Client {
     private JMXConnector connector;
     private final MBeanServerConnection connection;
-    private StatusLoggerAdminMBean statusLoggerAdmin;
-    private ContextSelectorAdminMBean contextSelectorAdmin;
+    private List<StatusLoggerAdminMBean> statusLoggerAdminList;
+    private List<ContextSelectorAdminMBean> contextSelectorAdminList;
     private List<LoggerContextAdminMBean> contextAdminList;
 
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     *
+     * 
      * @param connector used to create the MBean server connection through which
      *            to communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(final JMXConnector connector) throws MalformedObjectNameException,
-            IOException {
+    public Client(final JMXConnector connector) throws JMException, IOException {
         this.connector = Assert.isNotNull(connector, "JMXConnector");
         this.connector.connect();
         this.connection = connector.getMBeanServerConnection();
@@ -64,33 +65,40 @@ public class Client {
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
-     *
+     * 
      * @param mBeanServerConnection the MBean server connection through which to
      *            communicate with the remote mbeans
      * @throws MalformedObjectNameException if a problem occurred identifying
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(final MBeanServerConnection mBeanServerConnection)
-            throws MalformedObjectNameException, IOException {
+    public Client(final MBeanServerConnection mBeanServerConnection) throws JMException, IOException {
         this.connection = mBeanServerConnection;
         init();
     }
 
-    private void init() throws MalformedObjectNameException, IOException {
-        statusLoggerAdmin = JMX.newMBeanProxy(connection, //
-                new ObjectName(StatusLoggerAdminMBean.NAME), //
-                StatusLoggerAdminMBean.class, true);
+    private void init() throws JMException, IOException {
+        statusLoggerAdminList = new ArrayList<StatusLoggerAdminMBean>();
+        final Set<ObjectName> statusLogNames = find(StatusLoggerAdminMBean.PATTERN);
+        for (final ObjectName statusLogName : statusLogNames) {
+            final StatusLoggerAdminMBean ctx = JMX.newMBeanProxy(connection, //
+                    statusLogName, //
+                    StatusLoggerAdminMBean.class, true); // notificationBroadcaster
+            statusLoggerAdminList.add(ctx);
+        }
 
-        contextSelectorAdmin = JMX.newMBeanProxy(connection, //
-                new ObjectName(ContextSelectorAdminMBean.NAME), //
-                ContextSelectorAdminMBean.class, false);
+        contextSelectorAdminList = new ArrayList<ContextSelectorAdminMBean>();
+        final Set<ObjectName> selectorNames = find(ContextSelectorAdminMBean.PATTERN);
+        for (final ObjectName selectorName : selectorNames) {
+            final ContextSelectorAdminMBean ctx = JMX.newMBeanProxy(connection, //
+                    selectorName, //
+                    ContextSelectorAdminMBean.class, false);
+            contextSelectorAdminList.add(ctx);
+        }
 
         contextAdminList = new ArrayList<LoggerContextAdminMBean>();
-        final String pattern = String.format(LoggerContextAdminMBean.PATTERN, "*");
-        final ObjectName search = new ObjectName(pattern);
-        final Set<ObjectName> found = connection.queryNames(search, null);
-        for (final ObjectName contextName : found) {
+        final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
+        for (final ObjectName contextName : contextNames) {
             final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
                     contextName, //
                     LoggerContextAdminMBean.class, false);
@@ -100,20 +108,27 @@ public class Client {
         }
     }
 
+    private Set<ObjectName> find(String pattern) throws JMException, IOException {
+        final ObjectName search = new ObjectName(String.format(pattern, "*"));
+        final Set<ObjectName> result = connection.queryNames(search, null);
+        return result;
+    }
+
     /**
-     * Returns a proxy that allows operations to be performed on the remote
-     * {@code ContextSelectorAdminMBean}.
-     *
-     * @return a proxy to the remote {@code ContextSelectorAdminMBean}
+     * Returns a list of proxies that allows operations to be performed on the
+     * remote {@code ContextSelectorAdminMBean}s.
+     * 
+     * @return a list of proxies to the remote {@code ContextSelectorAdminMBean}
+     *         s
      */
-    public ContextSelectorAdminMBean getContextSelectorAdmin() {
-        return contextSelectorAdmin;
+    public List<ContextSelectorAdminMBean> getContextSelectorAdminList() {
+        return contextSelectorAdminList;
     }
 
     /**
      * Returns a list of proxies that allow operations to be performed on the
      * remote {@code LoggerContextAdminMBean}s.
-     *
+     * 
      * @return a list of proxies to the remote {@code LoggerContextAdminMBean}s
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() {
@@ -135,7 +150,7 @@ public class Client {
     /**
      * Returns the MBean server connection through which to communicate with the
      * remote mbeans.
-     *
+     * 
      * @return the MBean server connection
      */
     public MBeanServerConnection getConnection() {
@@ -143,12 +158,39 @@ public class Client {
     }
 
     /**
-     * Returns a proxy that allows operations to be performed on the remote
-     * {@code StatusLoggerAdminMBean}.
-     *
-     * @return a proxy to the remote {@code StatusLoggerAdminMBean}
+     * Returns a list of proxies that allows operations to be performed on the
+     * remote {@code StatusLoggerAdminMBean}s.
+     * 
+     * @return a list of proxies to the remote {@code StatusLoggerAdminMBean}s
      */
-    public StatusLoggerAdminMBean getStatusLoggerAdmin() {
-        return statusLoggerAdmin;
+    public List<StatusLoggerAdminMBean> getStatusLoggerAdminList() {
+        return statusLoggerAdminList;
+    }
+
+    /**
+     * Returns the {@code StatusLoggerAdminMBean} associated with the specified
+     * context name, or {@code null}.
+     * 
+     * @param contextName search key
+     * @return StatusLoggerAdminMBean or null
+     * @throws MalformedObjectNameException
+     * @throws IOException
+     */
+    public StatusLoggerAdminMBean getStatusLoggerAdmin(String contextName) throws MalformedObjectNameException,
+            IOException {
+        final String pattern = StatusLoggerAdminMBean.PATTERN;
+        final String mbean = String.format(pattern, Server.escape(contextName));
+        final ObjectName search = new ObjectName(mbean);
+        final Set<ObjectName> result = connection.queryNames(search, null);
+        if (result.size() == 0) {
+            return null;
+        }
+        if (result.size() > 1) {
+            System.err.println("WARN: multiple status loggers found for " + contextName + ": " + result);
+        }
+        final StatusLoggerAdminMBean proxy = JMX.newMBeanProxy(connection, //
+                result.iterator().next(), //
+                StatusLoggerAdminMBean.class, true); // notificationBroadcaster
+        return proxy;
     }
 }

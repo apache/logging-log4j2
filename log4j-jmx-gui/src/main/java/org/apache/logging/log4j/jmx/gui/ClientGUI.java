@@ -53,88 +53,102 @@ import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
- * Swing GUI that connects to a Java process via JMX and allows the user to view and
- * modify the Log4j 2 configuration, as well as monitor status logs.
- *
+ * Swing GUI that connects to a Java process via JMX and allows the user to view
+ * and modify the Log4j 2 configuration, as well as monitor status logs.
+ * 
  * @see <a href=
  *      "http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html"
- *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html</a >
+ *      >http://docs.oracle.com/javase/6/docs/technotes/guides/management/
+ *      jconsole.html</a >
  */
 public class ClientGUI extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
     private final Client client;
-    private JTextArea statusLogTextArea;
-    private JTabbedPane tabbedPane;
-    private JToggleButton wrapLinesToggleButton;
+    private Map<String, JTextArea> statusLogTextAreaMap = new HashMap<String, JTextArea>();
+    private JTabbedPane tabbedPaneContexts;
 
-    private final AbstractAction toggleWrapAction = new AbstractAction() {
-        private static final long serialVersionUID = -4214143754637722322L;
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            final boolean wrap = wrapLinesToggleButton.isSelected();
-            statusLogTextArea.setLineWrap(wrap);
-        }
-    };
-
-    public ClientGUI(final Client client) throws InstanceNotFoundException,
-            MalformedObjectNameException, IOException {
+    public ClientGUI(final Client client) throws InstanceNotFoundException, MalformedObjectNameException, IOException {
         this.client = Assert.isNotNull(client, "client");
         createWidgets();
         populateWidgets();
-        registerListeners();
     }
 
     private void createWidgets() {
-        statusLogTextArea = new JTextArea();
-        statusLogTextArea.setEditable(false);
-        statusLogTextArea.setBackground(this.getBackground());
-        statusLogTextArea.setForeground(Color.black);
-        statusLogTextArea.setFont(new Font("Monospaced", Font.PLAIN,
-                statusLogTextArea.getFont().getSize()));
-        statusLogTextArea.setWrapStyleWord(true);
-
-        wrapLinesToggleButton = new JToggleButton(toggleWrapAction);
-        wrapLinesToggleButton.setToolTipText("Toggle line wrapping");
-        final JScrollPane scrollStatusLog = new JScrollPane(statusLogTextArea, //
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, //
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollStatusLog.setCorner(ScrollPaneConstants.LOWER_RIGHT_CORNER, wrapLinesToggleButton);
-
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("StatusLogger", scrollStatusLog);
-
+        tabbedPaneContexts = new JTabbedPane();
         this.setLayout(new BorderLayout());
-        this.add(tabbedPane, BorderLayout.CENTER);
+        this.add(tabbedPaneContexts, BorderLayout.CENTER);
     }
 
-    private void populateWidgets() {
-
-        final StatusLoggerAdminMBean statusAdmin = client.getStatusLoggerAdmin();
-        final String[] messages = statusAdmin.getStatusDataHistory();
-        for (final String message : messages) {
-            statusLogTextArea.append(message + "\n");
-        }
+    private void populateWidgets() throws MalformedObjectNameException, IOException, InstanceNotFoundException {
 
         for (final LoggerContextAdminMBean ctx : client.getLoggerContextAdmins()) {
+            JTabbedPane contextTabs = new JTabbedPane();
+            tabbedPaneContexts.addTab("LoggerContext: " + ctx.getName(), contextTabs);
+
+            String contextName = ctx.getName();
+            StatusLoggerAdminMBean status = client.getStatusLoggerAdmin(contextName);
+            if (status != null) {
+                JTextArea text = createTextArea();
+                final String[] messages = status.getStatusDataHistory();
+                for (final String message : messages) {
+                    text.append(message + "\n");
+                }
+                statusLogTextAreaMap.put(status.getContextName(), text);
+                registerListeners(status);
+                JScrollPane scroll = scroll(text);
+                contextTabs.addTab("StatusLogger", scroll);
+            }
+
             final ClientEditConfigPanel editor = new ClientEditConfigPanel(ctx);
-            tabbedPane.addTab("LoggerContext: " + ctx.getName(), editor);
+            contextTabs.addTab("Configuration", editor);
         }
     }
 
-    private void registerListeners() throws InstanceNotFoundException,
+    private JTextArea createTextArea() {
+        JTextArea result = new JTextArea();
+        result.setEditable(false);
+        result.setBackground(this.getBackground());
+        result.setForeground(Color.black);
+        result.setFont(new Font("Monospaced", Font.PLAIN, result.getFont().getSize()));
+        result.setWrapStyleWord(true);
+        return result;
+    }
+
+    private JScrollPane scroll(final JTextArea text) {
+        final JToggleButton toggleButton = new JToggleButton();
+        toggleButton.setAction(new AbstractAction() {
+            private static final long serialVersionUID = -4214143754637722322L;
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final boolean wrap = toggleButton.isSelected();
+                text.setLineWrap(wrap);
+            }
+        });
+        toggleButton.setToolTipText("Toggle line wrapping");
+        final JScrollPane scrollStatusLog = new JScrollPane(text, //
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, //
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollStatusLog.setCorner(ScrollPaneConstants.LOWER_RIGHT_CORNER, toggleButton);
+        return scrollStatusLog;
+    }
+
+    private void registerListeners(StatusLoggerAdminMBean status) throws InstanceNotFoundException,
             MalformedObjectNameException, IOException {
         final NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType(StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE);
-        final ObjectName objName = new ObjectName(StatusLoggerAdminMBean.NAME);
+        final ObjectName objName = status.getObjectName();
         client.getConnection().addNotificationListener(objName, this, filter,
-                null);
+                status.getContextName());
     }
 
     @Override
     public void handleNotification(final Notification notif, final Object paramObject) {
         if (StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE.equals(notif.getType())) {
-            statusLogTextArea.append(notif.getMessage() + "\n");
+            JTextArea text = statusLogTextAreaMap.get(paramObject);
+            if (text != null) {
+                text.append(notif.getMessage() + "\n");
+            }
         }
     }
 
@@ -144,7 +158,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
      * Useful links:
      * http://www.componative.com/content/controller/developer/insights
      * /jconsole3/
-     *
+     * 
      * @param args must have at least one parameter, which specifies the
      *            location to connect to. Must be of the form {@code host:port}
      *            or {@code service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi}
@@ -192,8 +206,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
                     // visible
                     final StringWriter sr = new StringWriter();
                     ex.printStackTrace(new PrintWriter(sr));
-                    JOptionPane.showMessageDialog(null, sr.toString(), "Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, sr.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -202,8 +215,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private static void usage() {
         final String me = ClientGUI.class.getName();
         System.err.println("Usage: java " + me + " <host>:<port>");
-        System.err.println("   or: java " + me
-                + " service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi");
+        System.err.println("   or: java " + me + " service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi");
         final String longAdr = " service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi";
         System.err.println("   or: java " + me + longAdr);
     }
