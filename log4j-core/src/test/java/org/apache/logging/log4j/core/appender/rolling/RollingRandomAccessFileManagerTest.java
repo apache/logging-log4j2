@@ -139,7 +139,7 @@ public class RollingRandomAccessFileManagerTest {
         final boolean isAppend = false;
         final long expectedMin = System.currentTimeMillis();
         final long expectedMax = expectedMin + 500;
-        assertTrue(file.lastModified() < expectedMin);
+        assertTrue(file.lastModified() <= expectedMin);
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                 .getRollingRandomAccessFileManager(
@@ -159,7 +159,7 @@ public class RollingRandomAccessFileManagerTest {
         LockSupport.parkNanos(1000000); // 1 millisec
 
         final boolean isAppend = true;
-        assertTrue(file.lastModified() < System.currentTimeMillis());
+        assertTrue(file.lastModified() <= System.currentTimeMillis());
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager
                 .getRollingRandomAccessFileManager(
