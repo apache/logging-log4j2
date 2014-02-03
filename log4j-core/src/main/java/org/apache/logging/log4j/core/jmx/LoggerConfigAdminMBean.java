@@ -45,7 +45,7 @@ public interface LoggerConfigAdminMBean {
      * </pre>
      * @see Server#escape(String)
      */
-    String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=LoggerConfig,name=%s";
+    String PATTERN = Server.DOMAIN + ":type=%s,component=Loggers,name=%s";
 
     /**
      * Returns the name of the instrumented {@code LoggerConfig}.

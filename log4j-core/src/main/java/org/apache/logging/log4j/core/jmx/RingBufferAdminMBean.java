@@ -34,7 +34,7 @@ public interface RingBufferAdminMBean {
      * Set&lt;ObjectName&gt; asyncLoggerNames = mbs.queryNames(new ObjectName(pattern), null);
      * </pre>
      */
-    String PATTERN_ASYNC_LOGGER = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,name=AsyncLoggerRingBuffer";
+    String PATTERN_ASYNC_LOGGER = Server.DOMAIN + ":type=%s,component=AsyncLoggerRingBuffer";
     
     /**
      * ObjectName pattern ({@value}) for RingBufferAdmin MBeans that instrument
@@ -50,7 +50,7 @@ public interface RingBufferAdminMBean {
      * Set&lt;ObjectName&gt; asyncConfigNames = mbs.queryNames(new ObjectName(pattern), null);
      * </pre>
      */
-    String PATTERN_ASYNC_LOGGER_CONFIG = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=LoggerConfig,name=%s,subtype=RingBuffer";
+    String PATTERN_ASYNC_LOGGER_CONFIG = Server.DOMAIN + ":type=%s,component=Loggers,name=%s,subtype=RingBuffer";
 
     /**
      * Returns the number of slots that the ring buffer was configured with.

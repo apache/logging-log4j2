@@ -49,7 +49,7 @@ public interface StatusLoggerAdminMBean {
      * </pre>
      * @see Server#escape(String)
      */
-    String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=StatusLogger";
+    String PATTERN = Server.DOMAIN + ":type=%s,component=StatusLogger";
 
     /**
      * Notifications with this type have a {@code StatusData} userData object

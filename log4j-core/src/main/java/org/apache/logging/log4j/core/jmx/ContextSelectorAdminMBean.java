@@ -43,7 +43,7 @@ public interface ContextSelectorAdminMBean {
      * </pre>
      * @see Server#escape(String)
      */
-    String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=ContextSelector";
+    String PATTERN = Server.DOMAIN + ":type=%s,component=ContextSelector";
 
     /**
      * Returns the name of the class implementing the {@code ContextSelector}

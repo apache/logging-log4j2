@@ -50,6 +50,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public final class Server {
 
+    /**
+     * The domain part, or prefix ({@value} ) of the {@code ObjectName} of all
+     * MBeans that instrument Log4J2 components.
+     */
+    public static final String DOMAIN = "org.apache.logging.log4j2";
     private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     static final Executor executor = Executors.newFixedThreadPool(1);
@@ -120,12 +125,6 @@ public final class Server {
             return;
         }
 
-        // first unregister the old MBeans
-        // TODO is this too drastic? This may impact the MBean of other
-        // webapps...
-        // but below we will only re-register the MBeans of OUR context selector
-        unregisterMBeans(mbs);
-
         // now provide instrumentation for the newly configured
         // LoggerConfigs and Appenders
         try {
@@ -138,7 +137,7 @@ public final class Server {
             for (LoggerContext ctx : contexts) {
                 // first unregister the context and all nested loggers,
                 // appenders, statusLogger, contextSelector, ringbuffers...
-                unregisterAll(ctx.getName(), mbs);
+                unregisterLoggerContext(ctx.getName(), mbs);
 
                 final LoggerContextAdmin mbean = new LoggerContextAdmin(ctx, executor);
                 register(mbs, mbean, mbean.getObjectName());
@@ -211,9 +210,9 @@ public final class Server {
      * 
      * @param loggerContextName name of the logger context to unregister
      */
-    public static void unregisterAll(String loggerContextName) {
+    public static void unregisterLoggerContext(String loggerContextName) {
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        unregisterAll(loggerContextName, mbs);
+        unregisterLoggerContext(loggerContextName, mbs);
     }
 
     /**
@@ -224,7 +223,7 @@ public final class Server {
      * @param loggerContextName name of the logger context to unregister
      * @param mbs the MBean Server to unregister the instrumented objects from
      */
-    public static void unregisterAll(String contextName, MBeanServer mbs) {
+    public static void unregisterLoggerContext(String contextName, MBeanServer mbs) {
         final String pattern = LoggerContextAdminMBean.PATTERN;
         final String search = String.format(pattern, escape(contextName), "*");
         unregisterAllMatching(search, mbs); // unregister context mbean
