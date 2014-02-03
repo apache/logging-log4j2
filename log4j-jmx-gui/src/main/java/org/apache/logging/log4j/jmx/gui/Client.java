@@ -29,7 +29,6 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 
 import org.apache.logging.log4j.core.helpers.Assert;
-import org.apache.logging.log4j.core.jmx.ContextSelectorAdminMBean;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
@@ -41,10 +40,6 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 public class Client {
     private JMXConnector connector;
     private final MBeanServerConnection connection;
-    private List<StatusLoggerAdminMBean> statusLoggerAdminList;
-    private List<ContextSelectorAdminMBean> contextSelectorAdminList;
-    private List<LoggerContextAdminMBean> contextAdminList;
-
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
@@ -78,34 +73,6 @@ public class Client {
     }
 
     private void init() throws JMException, IOException {
-        statusLoggerAdminList = new ArrayList<StatusLoggerAdminMBean>();
-        final Set<ObjectName> statusLogNames = find(StatusLoggerAdminMBean.PATTERN);
-        for (final ObjectName statusLogName : statusLogNames) {
-            final StatusLoggerAdminMBean ctx = JMX.newMBeanProxy(connection, //
-                    statusLogName, //
-                    StatusLoggerAdminMBean.class, true); // notificationBroadcaster
-            statusLoggerAdminList.add(ctx);
-        }
-
-        contextSelectorAdminList = new ArrayList<ContextSelectorAdminMBean>();
-        final Set<ObjectName> selectorNames = find(ContextSelectorAdminMBean.PATTERN);
-        for (final ObjectName selectorName : selectorNames) {
-            final ContextSelectorAdminMBean ctx = JMX.newMBeanProxy(connection, //
-                    selectorName, //
-                    ContextSelectorAdminMBean.class, false);
-            contextSelectorAdminList.add(ctx);
-        }
-
-        contextAdminList = new ArrayList<LoggerContextAdminMBean>();
-        final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
-        for (final ObjectName contextName : contextNames) {
-            final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
-                    contextName, //
-                    LoggerContextAdminMBean.class, false);
-            contextAdminList.add(ctx);
-
-            // TODO Appenders, LoggerConfigs
-        }
     }
 
     private Set<ObjectName> find(String pattern) throws JMException, IOException {
@@ -115,24 +82,23 @@ public class Client {
     }
 
     /**
-     * Returns a list of proxies that allows operations to be performed on the
-     * remote {@code ContextSelectorAdminMBean}s.
-     * 
-     * @return a list of proxies to the remote {@code ContextSelectorAdminMBean}
-     *         s
-     */
-    public List<ContextSelectorAdminMBean> getContextSelectorAdminList() {
-        return contextSelectorAdminList;
-    }
-
-    /**
      * Returns a list of proxies that allow operations to be performed on the
      * remote {@code LoggerContextAdminMBean}s.
      * 
      * @return a list of proxies to the remote {@code LoggerContextAdminMBean}s
+     * @throws IOException
+     * @throws JMException
      */
-    public List<LoggerContextAdminMBean> getLoggerContextAdmins() {
-        return new ArrayList<LoggerContextAdminMBean>(contextAdminList);
+    public List<LoggerContextAdminMBean> getLoggerContextAdmins() throws JMException, IOException {
+        List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
+        final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
+        for (final ObjectName contextName : contextNames) {
+            final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
+                    contextName, //
+                    LoggerContextAdminMBean.class, false);
+            result.add(ctx);
+        }
+        return result;
     }
 
     /**
@@ -155,16 +121,6 @@ public class Client {
      */
     public MBeanServerConnection getConnection() {
         return connection;
-    }
-
-    /**
-     * Returns a list of proxies that allows operations to be performed on the
-     * remote {@code StatusLoggerAdminMBean}s.
-     * 
-     * @return a list of proxies to the remote {@code StatusLoggerAdminMBean}s
-     */
-    public List<StatusLoggerAdminMBean> getStatusLoggerAdminList() {
-        return statusLoggerAdminList;
     }
 
     /**

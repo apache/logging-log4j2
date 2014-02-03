@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.InstanceNotFoundException;
+import javax.management.JMException;
+import javax.management.MBeanServerDelegate;
+import javax.management.MBeanServerNotification;
 import javax.management.MalformedObjectNameException;
 import javax.management.Notification;
 import javax.management.NotificationFilterSupport;
@@ -50,6 +53,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 
 /**
@@ -67,10 +71,16 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private Map<String, JTextArea> statusLogTextAreaMap = new HashMap<String, JTextArea>();
     private JTabbedPane tabbedPaneContexts;
 
-    public ClientGUI(final Client client) throws InstanceNotFoundException, MalformedObjectNameException, IOException {
+    public ClientGUI(final Client client) throws IOException, JMException {
         this.client = Assert.isNotNull(client, "client");
         createWidgets();
         populateWidgets();
+
+        // register for Notifications if LoggerContext MBean was added/removed
+        ObjectName addRemoveNotifs = MBeanServerDelegate.DELEGATE_NAME;
+        NotificationFilterSupport filter = new NotificationFilterSupport();
+        filter.enableType(Server.DOMAIN); // only interested in Log4J2 MBeans
+        client.getConnection().addNotificationListener(addRemoveNotifs, this, filter, null);
     }
 
     private void createWidgets() {
@@ -79,7 +89,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
         this.add(tabbedPaneContexts, BorderLayout.CENTER);
     }
 
-    private void populateWidgets() throws MalformedObjectNameException, IOException, InstanceNotFoundException {
+    private void populateWidgets() throws IOException, JMException {
 
         for (final LoggerContextAdminMBean ctx : client.getLoggerContextAdmins()) {
             JTabbedPane contextTabs = new JTabbedPane();
@@ -138,8 +148,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
         final NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType(StatusLoggerAdminMBean.NOTIF_TYPE_MESSAGE);
         final ObjectName objName = status.getObjectName();
-        client.getConnection().addNotificationListener(objName, this, filter,
-                status.getContextName());
+        client.getConnection().addNotificationListener(objName, this, filter, status.getContextName());
     }
 
     @Override
@@ -149,7 +158,31 @@ public class ClientGUI extends JPanel implements NotificationListener {
             if (text != null) {
                 text.append(notif.getMessage() + "\n");
             }
+            return;
         }
+        if (notif instanceof MBeanServerNotification) {
+            MBeanServerNotification mbsn = (MBeanServerNotification) notif;
+            ObjectName mbeanName = mbsn.getMBeanName();
+            if (MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(notif.getType())) {
+                onMBeanRegistered(mbeanName);
+            } else if (MBeanServerNotification.UNREGISTRATION_NOTIFICATION.equals(notif.getType())) {
+                onMBeanUnregistered(mbeanName);
+            }
+        }
+    }
+
+    /**
+     * @param mbeanName
+     */
+    private void onMBeanRegistered(ObjectName mbeanName) {
+        // TODO update widgets if logger context was added
+    }
+
+    /**
+     * @param mbeanName
+     */
+    private void onMBeanUnregistered(ObjectName mbeanName) {
+        // TODO update widgets if logger context was removed
     }
 
     /**

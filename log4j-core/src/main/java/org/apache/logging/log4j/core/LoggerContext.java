@@ -217,7 +217,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             configLock.unlock();
             
             // in finally: unregister MBeans even if an exception occurred while stopping 
-            Server.unregisterMBeans(); // LOG4J2-406
+            Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
         }
     }
 

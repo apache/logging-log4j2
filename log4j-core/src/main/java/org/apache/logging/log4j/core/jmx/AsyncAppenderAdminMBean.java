@@ -48,7 +48,7 @@ public interface AsyncAppenderAdminMBean {
      * 
      * @see Server#escape(String)
      */
-    String PATTERN = "org.apache.logging.log4j2:type=LoggerContext,ctx=%s,sub=AsyncAppender,name=%s";
+    String PATTERN = Server.DOMAIN + ":type=%s,component=AsyncAppenders,name=%s";
 
     /**
      * Returns the name of the instrumented {@code AsyncAppender}.
