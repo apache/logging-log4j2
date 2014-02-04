@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-345" dev="rpopma" type="fix" due-to="Roland Weiglhofer, Matt Sicker">
+        (OSGi) logging.log4j-1.2-api doesn't export the log4j API 1.2. Dependent bundles can not be resolved.
+      </action>
       <action issue="LOG4J2-523" dev="ggregory" type="fix">
         LocalizedMessage serialization is broken.
       </action>
