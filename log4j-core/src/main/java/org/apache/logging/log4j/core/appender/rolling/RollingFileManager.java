@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.rolling.helper.AbstractAction;
-import org.apache.logging.log4j.core.appender.rolling.helper.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
 
 /**
  * The Rolling File Manager.

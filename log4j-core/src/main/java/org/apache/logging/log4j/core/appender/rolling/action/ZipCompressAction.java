@@ -14,19 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.rolling.helper;
+package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 
 /**
- * Compresses a file using GZ compression.
+ * Compresses a file using Zip compression.
  */
-public final class GZCompressAction extends AbstractAction {
+public final class ZipCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8102;
 
@@ -44,6 +45,11 @@ public final class GZCompressAction extends AbstractAction {
      * If true, attempt to delete file on completion.
      */
     private final boolean deleteSource;
+    
+    /**
+     * Compression level.
+     */
+    private final int level;
 
     /**
      * Create new instance of GZCompressAction.
@@ -52,8 +58,9 @@ public final class GZCompressAction extends AbstractAction {
      * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
      *                     does not cause an exception to be thrown or affect return value.
+     * @param level TODO
      */
-    public GZCompressAction(final File source, final File destination, final boolean deleteSource) {
+    public ZipCompressAction(final File source, final File destination, final boolean deleteSource, int level) {
         if (source == null) {
             throw new NullPointerException("source");
         }
@@ -65,6 +72,7 @@ public final class GZCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
+        this.level = level;
     }
 
     /**
@@ -75,7 +83,7 @@ public final class GZCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource);
+        return execute(source, destination, deleteSource, level);
     }
 
     /**
@@ -85,24 +93,29 @@ public final class GZCompressAction extends AbstractAction {
      * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
      *                     does not cause an exception to be thrown or affect return value.
+     * @param level the compression level
      * @return true if source file compressed.
      * @throws IOException on IO exception.
      */
-    public static boolean execute(final File source, final File destination, final boolean deleteSource)
+    public static boolean execute(final File source, final File destination, final boolean deleteSource, int level)
         throws IOException {
         if (source.exists()) {
             final FileInputStream fis = new FileInputStream(source);
             final FileOutputStream fos = new FileOutputStream(destination);
-            final GZIPOutputStream gzos = new GZIPOutputStream(fos);
-            final BufferedOutputStream os = new BufferedOutputStream(gzos);
+            final ZipOutputStream zos = new ZipOutputStream(fos);
+            zos.setLevel(level);
+
+            final ZipEntry zipEntry = new ZipEntry(source.getName());
+            zos.putNextEntry(zipEntry);
+
             final byte[] inbuf = new byte[BUF_SIZE];
             int n;
 
             while ((n = fis.read(inbuf)) != -1) {
-                os.write(inbuf, 0, n);
+                zos.write(inbuf, 0, n);
             }
 
-            os.close();
+            zos.close();
             fis.close();
 
             if (deleteSource && !source.delete()) {
@@ -115,7 +128,6 @@ public final class GZCompressAction extends AbstractAction {
         return false;
     }
 
-
     /**
      * Capture exception.
      *
@@ -125,5 +137,4 @@ public final class GZCompressAction extends AbstractAction {
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
-
 }

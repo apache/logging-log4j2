@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.zip.Deflater;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.rolling.helper.Action;
-import org.apache.logging.log4j.core.appender.rolling.helper.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.helper.GZCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.helper.ZipCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.GZCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
