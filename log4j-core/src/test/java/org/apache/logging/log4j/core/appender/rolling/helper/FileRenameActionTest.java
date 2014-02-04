@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.helper;
 
+import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
