@@ -295,6 +295,9 @@ public class AsyncLogger extends Logger {
         // Must guarantee that publishing to the RingBuffer has stopped
         // before we call disruptor.shutdown()
         disruptor = null; // client code fails with NPE if log after stop = OK
+        if (temp == null) {
+            return; // stop() has already been called
+        }
         temp.shutdown();
 
         // wait up to 10 seconds for the ringbuffer to drain
