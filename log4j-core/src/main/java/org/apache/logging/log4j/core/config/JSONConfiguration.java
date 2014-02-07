@@ -234,7 +234,6 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
                                 JsonNode array = itemEntry.getValue();
                                 String entryName = itemEntry.getKey();
                                 LOGGER.debug("Processing array for object " + entryName);
-                                final PluginType<?> itemEntryType = pluginManager.getPluginType(entryName);
                                 for (int j = 0; j < array.size(); ++j) {
                                     itemChildren.add(constructNode(entryName, item, array.get(j)));
                                 }
