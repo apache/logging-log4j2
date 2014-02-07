@@ -33,7 +33,7 @@ import org.lightcouch.CouchDbProperties;
 /**
  * The Apache CouchDB implementation of {@link NoSQLProvider}.
  */
-@Plugin(name = "CouchDb", category = "Core", printObject = true)
+@Plugin(name = "CouchDB", category = "Core", printObject = true)
 public final class CouchDBProvider implements NoSQLProvider<CouchDBConnection> {
     private static final int HTTP = 80;
     private static final int HTTPS = 443;
