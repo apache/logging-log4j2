@@ -21,8 +21,13 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action dev="nickwilliams" type="delete">
+        Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
+        safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
+      </action>
       <action issue="LOG4J2-530" dev="rpopma" type="add">
-        (JMX) JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean server.
+        (JMX) JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean
+        server.
       </action>
       <action issue="LOG4J2-500" dev="rpopma" type="fix">
         (JMX) Unloading one webapp unloads JMX MBeans for all webapps.

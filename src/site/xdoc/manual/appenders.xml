@@ -1055,8 +1055,9 @@
         <a name="JDBCAppender"/>
         <subsection name="JDBCAppender">
           <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
-            to obtain JDBC connections using the <code>DriverManager</code>, a JNDI <code>DataSource</code> or a custom
-            factory method.</p>
+            to obtain JDBC connections using a JNDI <code>DataSource</code> or a custom factory method. Whichever
+            approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging
+            performance will suffer greatly.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -1107,32 +1108,8 @@
             <caption align="top">JDBCAppender Parameters</caption>
           </table>
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
-            which the Appender gets JDBC connections. You must use exactly one of the
-            <code>&lt;DriverManager&gt;</code>, <code>&lt;DataSource&gt;</code>, or
-            <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
-          <table>
-            <tr>
-              <th>Parameter Name</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-            <tr>
-              <td>url</td>
-              <td>String</td>
-              <td><em>Required.</em> The JDBC URL, such as <code>jdbc:mysql://example.org:3306/exampleDb</code>.</td>
-            </tr>
-            <tr>
-              <td>username</td>
-              <td>String</td>
-              <td>The user to connect as, if required.</td>
-            </tr>
-            <tr>
-              <td>password</td>
-              <td>String</td>
-              <td>The password to authenticate with, if a username is specified.</td>
-            </tr>
-            <caption align="top">DriverManager Parameters</caption>
-          </table>
+            which the Appender gets JDBC connections. You must use exactly one of the <code>&lt;DataSource&gt;</code>
+            or <code>&lt;ConnectionFactory&gt;</code> nested elements.</p>
           <table>
             <tr>
               <th>Parameter Name</th>
@@ -1142,8 +1119,9 @@
             <tr>
               <td>jndiName</td>
               <td>String</td>
-              <td><em>Required.</em> The full, prefixed JNDI name that the data source is bound to, such as
-                <code>java:/comp/env/jdbc/LoggingDatabase</code>.</td>
+              <td><em>Required.</em> The full, prefixed JNDI name that the <code>javax.sql.DataSource</code> is bound
+                to, such as <code>java:/comp/env/jdbc/LoggingDatabase</code>. The <code>DataSource</code> must be backed
+                by a connection pool; otherwise, logging will be very slow.</td>
             </tr>
             <caption align="top">DataSource Parameters</caption>
           </table>
@@ -1164,8 +1142,10 @@
               <td>Method</td>
               <td><em>Required.</em> The name of a static factory method for obtaining JDBC connections. This method
                 must have no parameters and its return type must be either <code>java.sql.Connection</code> or
-                <code>javax.sql.DataSource</code>. If the method returns <code>Connection</code>s, it must return a new
-                connection every time it is called.</td>
+                <code>DataSource</code>. If the method returns <code>Connection</code>s, it must obtain them from a
+                connection pool (and they will be returned to the pool when Log4j is done with them); otherwise, logging
+                will be very slow. If the method returns a <code>DataSource</code>, the <code>DataSource</code> will
+                only be retrieved once, and it must be backed by a connection pool for the same reasons.</td>
             </tr>
             <caption align="top">ConnectionFactory Parameters</caption>
           </table>
@@ -1229,26 +1209,8 @@
             <caption align="top">Column Parameters</caption>
           </table>
           <p>
-            Here are a few sample configurations for the JDBCAppender:
-
-            <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error">
-  <Appenders>
-    <JDBC name="databaseAppender" tableName="application_log">
-      <DriverManager url="jdbc:mysql://example.org:3306/exampleDb" username="logging" password="abc123" />
-      <Column name="eventDate" isEventTimestamp="true" />
-      <Column name="level" pattern="%level" />
-      <Column name="logger" pattern="%logger" />
-      <Column name="message" pattern="%message" />
-      <Column name="exception" pattern="%ex{full}" />
-    </JDBC>
-  </Appenders>
-  <Loggers>
-    <Root level="warn">
-      <AppenderRef ref="databaseAppender"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
+            Here are a couple sample configurations for the JDBCAppender, as well as a sample factory implementation
+            that uses Commons Pooling and Commons DBCP to pool database connections:
 
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
@@ -1273,7 +1235,7 @@
 <Configuration status="error">
   <Appenders>
     <JDBC name="databaseAppender" tableName="LOGGING.APPLICATION_LOG">
-      <ConnectionFactory class="net.example.db.ConnectionFactory" method="getNewDatabaseConnection" />
+      <ConnectionFactory class="net.example.db.ConnectionFactory" method="getDatabaseConnection" />
       <Column name="EVENT_ID" literal="LOGGING.APPLICATION_LOG_SEQUENCE.NEXTVAL" />
       <Column name="EVENT_DATE" isEventTimestamp="true" />
       <Column name="LEVEL" pattern="%level" />
@@ -1288,6 +1250,47 @@
     </Root>
   </Loggers>
 </Configuration>]]></pre>
+            <pre class="prettyprint linenums lang-java"><![CDATA[package net.example.db;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnection;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
+
+public class ConnectionFactory {
+    private static interface Singleton {
+        final ConnectionFactory INSTANCE = new ConnectionFactory();
+    }
+
+    private final DataSource dataSource;
+
+    private ConnectionFactory() {
+        Properties properties = new Properties();
+        properties.setProperty("user", "logging");
+        properties.setProperty("password", "abc123"); // or get properties from some configuration file
+
+        GenericObjectPool<PoolableConnection> pool = new GenericObjectPool<PoolableConnection>();
+        DriverManagerConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
+                "jdbc:mysql://example.org:3306/exampleDb", properties
+        );
+        new PoolableConnectionFactory(
+                connectionFactory, pool, null, "SELECT 1", 3, false, false, Connection.TRANSACTION_READ_COMMITTED
+        );
+
+        this.dataSource = new PoolingDataSource(pool);
+    }
+
+    public static Connection getDatabaseConnection() throws SQLException {
+        return Singleton.INSTANCE.dataSource.getConnection();
+    }
+}]]></pre>
           </p>
         </subsection>
         <a name="JMSQueueAppender"/>
