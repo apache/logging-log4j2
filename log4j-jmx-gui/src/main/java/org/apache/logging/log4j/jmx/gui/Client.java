@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
 public class Client {
     private JMXConnector connector;
     private final MBeanServerConnection connection;
+
     /**
      * Constructs a new {@code Client} object and creates proxies for all known
      * remote MBeans.
@@ -93,12 +94,16 @@ public class Client {
         List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
         final Set<ObjectName> contextNames = find(LoggerContextAdminMBean.PATTERN);
         for (final ObjectName contextName : contextNames) {
-            final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
-                    contextName, //
-                    LoggerContextAdminMBean.class, false);
-            result.add(ctx);
+            result.add(getLoggerContextAdmin(contextName));
         }
         return result;
+    }
+
+    public LoggerContextAdminMBean getLoggerContextAdmin(ObjectName name) {
+        final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
+                name, //
+                LoggerContextAdminMBean.class, false);
+        return ctx;
     }
 
     /**
@@ -148,5 +153,40 @@ public class Client {
                 result.iterator().next(), //
                 StatusLoggerAdminMBean.class, true); // notificationBroadcaster
         return proxy;
+    }
+
+    /**
+     * Returns {@code true} if the specified {@code ObjectName} is for a
+     * {@code LoggerContextAdminMBean}, {@code false} otherwise.
+     * 
+     * @param mbeanName the {@code ObjectName} to check.
+     * @return {@code true} if the specified {@code ObjectName} is for a
+     *         {@code LoggerContextAdminMBean}, {@code false} otherwise
+     */
+    public boolean isLoggerContext(ObjectName mbeanName) {
+        return Server.DOMAIN.equals(mbeanName.getDomain()) //
+                && mbeanName.getKeyPropertyList().containsKey("type") //
+                && mbeanName.getKeyPropertyList().size() == 1;
+    }
+
+    /**
+     * Returns the {@code ObjectName} of the {@code StatusLoggerAdminMBean}
+     * associated with the specified {@code LoggerContextAdminMBean}.
+     * 
+     * @param loggerContextObjName the {@code ObjectName} of a
+     *            {@code LoggerContextAdminMBean}
+     * @return {@code ObjectName} of the {@code StatusLoggerAdminMBean}
+     */
+    public ObjectName getStatusLoggerObjectName(ObjectName loggerContextObjName) {
+        if (!isLoggerContext(loggerContextObjName)) {
+            throw new IllegalArgumentException("Not a LoggerContext: " + loggerContextObjName);
+        }
+        final String cxtName = loggerContextObjName.getKeyProperty("type");
+        final String name = String.format(StatusLoggerAdminMBean.PATTERN, cxtName);
+        try {
+            return new ObjectName(name);
+        } catch (MalformedObjectNameException ex) {
+            throw new IllegalStateException(name, ex);
+        }
     }
 }
