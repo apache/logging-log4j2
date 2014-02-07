@@ -167,56 +167,6 @@ public abstract class AbstractJdbcAppenderTest {
     }
 
     @Test
-    public void testDriverManagerConfig() throws Exception {
-        this.setUp("dmLogEntry", "log4j2-" + this.databaseType + "-driver-manager.xml");
-
-        final RuntimeException exception = new RuntimeException("Hello, world!");
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final PrintWriter writer = new PrintWriter(outputStream);
-        exception.printStackTrace(writer);
-        writer.close();
-        final String stackTrace = outputStream.toString();
-
-        final long millis = System.currentTimeMillis();
-
-        final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testDriverManagerConfig");
-        logger.info("Test my message 01.");
-        logger.warn("This is another message 02.", exception);
-
-        final Statement statement = this.connection.createStatement();
-        final ResultSet resultSet = statement.executeQuery("SELECT * FROM dmLogEntry ORDER BY id");
-
-        assertTrue("There should be at least one row.", resultSet.next());
-
-        long date = resultSet.getTimestamp("eventDate").getTime();
-        assertTrue("The date should be later than pre-logging (1).", date >= millis);
-        assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-        assertEquals("The literal column is not correct (1).", "Literal Value Test String",
-                resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (1).", "INFO", resultSet.getNString("level"));
-        assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-        assertEquals("The message column is not correct (1).", "Test my message 01.", resultSet.getString("message"));
-        assertEquals("The exception column is not correct (1).", "",
-                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
-
-        assertTrue("There should be two rows.", resultSet.next());
-
-        date = resultSet.getTimestamp("eventDate").getTime();
-        assertTrue("The date should be later than pre-logging (2).", date >= millis);
-        assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
-        assertEquals("The literal column is not correct (2).", "Literal Value Test String",
-                resultSet.getString("literalColumn"));
-        assertEquals("The level column is not correct (2).", "WARN", resultSet.getNString("level"));
-        assertEquals("The logger column is not correct (2).", logger.getName(), resultSet.getNString("logger"));
-        assertEquals("The message column is not correct (2).", "This is another message 02.",
-                resultSet.getString("message"));
-        assertEquals("The exception column is not correct (2).", stackTrace,
-                IOUtils.readStringAndClose(resultSet.getNClob("exception").getCharacterStream(), -1));
-
-        assertFalse("There should not be three rows.", resultSet.next());
-    }
-
-    @Test
     public void testFactoryMethodConfig() throws Exception {
         this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
@@ -269,7 +219,7 @@ public abstract class AbstractJdbcAppenderTest {
 
     @Test
     public void testPerformanceOfAppenderWith10000Events() throws Exception {
-        this.setUp("dmLogEntry", "log4j2-" + this.databaseType + "-driver-manager.xml");
+        this.setUp("fmLogEntry", "log4j2-" + this.databaseType + "-factory-method.xml");
 
         final RuntimeException exception = new RuntimeException("Hello, world!");
 
@@ -294,7 +244,7 @@ public abstract class AbstractJdbcAppenderTest {
 
         final Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY);
-        final ResultSet resultSet = statement.executeQuery("SELECT * FROM dmLogEntry ORDER BY id");
+        final ResultSet resultSet = statement.executeQuery("SELECT * FROM fmLogEntry ORDER BY id");
 
         resultSet.last();
         assertEquals("The number of records is not correct.", 10001, resultSet.getRow());
