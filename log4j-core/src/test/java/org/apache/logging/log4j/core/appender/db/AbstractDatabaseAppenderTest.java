@@ -70,7 +70,7 @@ public class AbstractDatabaseAppenderTest {
     public void testStartAndStop() throws Exception {
         this.setUp("name");
 
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager, this.appender);
 
@@ -102,7 +102,7 @@ public class AbstractDatabaseAppenderTest {
         final LocalAbstractDatabaseManager newManager = createMockBuilder(LocalAbstractDatabaseManager.class)
                 .withConstructor(String.class, int.class).withArgs("name", 0).addMockedMethod("release")
                 .createStrictMock();
-        newManager.connectInternal();
+        newManager.startupInternal();
         expectLastCall();
         replay(this.manager, this.appender, newManager);
 

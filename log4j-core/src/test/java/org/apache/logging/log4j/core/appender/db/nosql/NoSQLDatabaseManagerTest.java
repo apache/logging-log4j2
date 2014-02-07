@@ -69,7 +69,7 @@ public class NoSQLDatabaseManagerTest {
             expect(this.provider.getConnection()).andReturn(this.connection);
             replay(this.provider, this.connection);
 
-            manager.connectInternal();
+            manager.startupInternal();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -78,7 +78,7 @@ public class NoSQLDatabaseManagerTest {
             expectLastCall();
             replay(this.provider, this.connection);
 
-            manager.disconnectInternal();
+            manager.shutdownInternal();
         } finally {
             try {
                 manager.release();
@@ -126,7 +126,7 @@ public class NoSQLDatabaseManagerTest {
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
-            manager.connect();
+            manager.startup();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -165,7 +165,7 @@ public class NoSQLDatabaseManagerTest {
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
-            manager.connect();
+            manager.startup();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -251,7 +251,7 @@ public class NoSQLDatabaseManagerTest {
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
-            manager.connect();
+            manager.startup();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -385,7 +385,7 @@ public class NoSQLDatabaseManagerTest {
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
-            manager.connect();
+            manager.startup();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
