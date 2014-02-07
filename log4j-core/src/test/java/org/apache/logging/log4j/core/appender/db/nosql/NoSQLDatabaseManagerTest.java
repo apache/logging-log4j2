@@ -28,7 +28,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.db.nosql.couch.CouchDBObject;
+import org.apache.logging.log4j.core.appender.db.nosql.couchdb.CouchDBObject;
 import org.apache.logging.log4j.message.Message;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
