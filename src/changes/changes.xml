@@ -21,6 +21,12 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-530" dev="rpopma" type="add">
+        JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean server.
+      </action>
+      <action issue="LOG4J2-500" dev="rpopma" type="fix">
+        Unloading one webapp unloads JMX MBeans for all webapps.
+      </action>
       <action issue="LOG4J2-511" dev="rpopma" type="fix" due-to="James Pretorius">
         Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first
         before stopping other appenders.
