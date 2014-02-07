@@ -58,11 +58,11 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
 
     private JsonNode root;
 
-    private final List<String> messages = new ArrayList<String>();
-
     private final File configFile;
 
     public JSONConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
+        final List<String> messages = new ArrayList<String>();
+
         this.configFile = configSource.getFile();
         byte[] buffer;
 
