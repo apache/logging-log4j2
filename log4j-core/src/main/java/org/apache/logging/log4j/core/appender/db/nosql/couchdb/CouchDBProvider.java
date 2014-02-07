@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.couch;
+package org.apache.logging.log4j.core.appender.db.nosql.couchdb;
 
 import java.lang.reflect.Method;
 
