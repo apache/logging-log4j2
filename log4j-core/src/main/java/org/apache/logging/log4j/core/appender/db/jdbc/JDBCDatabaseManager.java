@@ -53,13 +53,13 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void connectInternal() throws SQLException {
+    protected void startupInternal() throws SQLException {
         this.connection = this.connectionSource.getConnection();
         this.statement = this.connection.prepareStatement(this.sqlStatement);
     }
 
     @Override
-    protected void disconnectInternal() throws SQLException {
+    protected void shutdownInternal() throws SQLException {
         try {
             Closer.close(this.statement);
         } finally {
@@ -71,7 +71,7 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         StringReader reader = null;
         try {
-            if (!this.isConnected() || this.connection == null || this.connection.isClosed()) {
+            if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
                 throw new AppenderLoggingException(
                         "Cannot write logging event; JDBC manager not connected to the database.");
             }

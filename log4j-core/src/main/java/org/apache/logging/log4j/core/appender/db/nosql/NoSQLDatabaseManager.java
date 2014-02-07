@@ -44,12 +44,12 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void connectInternal() {
+    protected void startupInternal() {
         this.connection = this.provider.getConnection();
     }
 
     @Override
-    protected void disconnectInternal() {
+    protected void shutdownInternal() {
         if (this.connection != null && !this.connection.isClosed()) {
             this.connection.close();
         }
@@ -57,7 +57,7 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
 
     @Override
     protected void writeInternal(final LogEvent event) {
-        if (!this.isConnected() || this.connection == null || this.connection.isClosed()) {
+        if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; NoSQL manager not connected to the database.");
         }

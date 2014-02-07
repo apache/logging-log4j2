@@ -29,7 +29,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
 
-    private boolean connected = false;
+    private boolean running = false;
 
     /**
      * Instantiates the base manager.
@@ -45,22 +45,25 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     }
 
     /**
-     * Implementations should implement this method to perform any proprietary connection operations. This method will
-     * never be called twice on the same instance. It is safe to throw any exceptions from this method.
+     * Implementations should implement this method to perform any proprietary startup operations. This method will
+     * never be called twice on the same instance. It is safe to throw any exceptions from this method. This method
+     * does not necessarily connect to the database, as it is generally unreliable to connect once and use the same
+     * connection for hours.
      */
-    protected abstract void connectInternal() throws Exception;
+    protected abstract void startupInternal() throws Exception;
 
     /**
      * This method is called within the appender when the appender is started. If it has not already been called, it
-     * calls {@link #connectInternal()} and catches any exceptions it might throw.
+     * calls {@link #startupInternal()} and catches any exceptions it might throw.
      */
-    public final synchronized void connect() {
-        if (!this.isConnected()) {
+    public final synchronized void startup() {
+        if (!this.isRunning()) {
             try {
-                this.connectInternal();
-                this.connected = true;
+                this.startupInternal();
+                this.running = true;
             } catch (final Exception e) {
-                LOGGER.error("Could not connect to database using logging manager [{}].", this.getName(), e);
+                LOGGER.error("Could not perform database startup operations using logging manager [{}].",
+                        this.getName(), e);
             }
         }
     }
@@ -68,36 +71,38 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     /**
      * Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
      * method will never be called twice on the same instance, and it will only be called <em>after</em>
-     * {@link #connectInternal()}. It is safe to throw any exceptions from this method.
+     * {@link #startupInternal()}. It is safe to throw any exceptions from this method. This method does not
+     * necessarily disconnect from the database for the same reasons outlined in {@link #startupInternal()}.
      */
-    protected abstract void disconnectInternal() throws Exception;
+    protected abstract void shutdownInternal() throws Exception;
 
     /**
      * This method is called from the {@link #release()} method when the appender is stopped or the appender's manager
-     * is replaced. If it has not already been called, it calls {@link #disconnectInternal()} and catches any exceptions
+     * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
      * it might throw.
      */
-    public final synchronized void disconnect() {
+    public final synchronized void shutdown() {
         this.flush();
-        if (this.isConnected()) {
+        if (this.isRunning()) {
             try {
-                this.disconnectInternal();
+                this.shutdownInternal();
             } catch (final Exception e) {
-                LOGGER.warn("Error while disconnecting from database using logging manager [{}].", this.getName(), e);
+                LOGGER.warn("Error while performing database shutdown operations using logging manager [{}].",
+                        this.getName(), e);
             } finally {
-                this.connected = false;
+                this.running = false;
             }
         }
     }
 
     /**
-     * Indicates whether the manager is currently connected {@link #connect()} has been called and {@link #disconnect()}
+     * Indicates whether the manager is currently connected {@link #startup()} has been called and {@link #shutdown()}
      * has not been called).
      *
      * @return {@code true} if the manager is connected.
      */
-    public final boolean isConnected() {
-        return this.connected;
+    public final boolean isRunning() {
+        return this.running;
     }
 
     /**
@@ -110,10 +115,10 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
 
     /**
      * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
-     * {@link #disconnect()}. It can also be called manually to flush events to the database.
+     * {@link #shutdown()}. It can also be called manually to flush events to the database.
      */
     public final synchronized void flush() {
-        if (this.isConnected() && this.buffer.size() > 0) {
+        if (this.isRunning() && this.buffer.size() > 0) {
             for (final LogEvent event : this.buffer) {
                 this.writeInternal(event);
             }
@@ -139,7 +144,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
 
     @Override
     public final void releaseSub() {
-        this.disconnect();
+        this.shutdown();
     }
 
     @Override

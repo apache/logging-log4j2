@@ -40,59 +40,59 @@ public class AbstractDatabaseManagerTest {
     }
 
     @Test
-    public void testConnection01() throws Exception {
+    public void testStartupShutdown01() throws Exception {
         this.setUp("testName01", 0);
 
         replay(this.manager);
 
         assertEquals("The name is not correct.", "testName01", this.manager.getName());
-        assertFalse("The manager should not be connected.", this.manager.isConnected());
+        assertFalse("The manager should not have started.", this.manager.isRunning());
 
         verify(this.manager);
         reset(this.manager);
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
-        assertTrue("The manager should be connected now.", this.manager.isConnected());
+        this.manager.startup();
+        assertTrue("The manager should be running now.", this.manager.isRunning());
 
         verify(this.manager);
         reset(this.manager);
-        this.manager.disconnectInternal();
+        this.manager.shutdownInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.disconnect();
-        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
+        this.manager.shutdown();
+        assertFalse("The manager should not be running anymore.", this.manager.isRunning());
     }
 
     @Test
-    public void testConnection02() throws Exception {
+    public void testStartupShutdown02() throws Exception {
         this.setUp("anotherName02", 0);
 
         replay(this.manager);
 
         assertEquals("The name is not correct.", "anotherName02", this.manager.getName());
-        assertFalse("The manager should not be connected.", this.manager.isConnected());
+        assertFalse("The manager should not have started.", this.manager.isRunning());
 
         verify(this.manager);
         reset(this.manager);
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
-        assertTrue("The manager should be connected now.", this.manager.isConnected());
+        this.manager.startup();
+        assertTrue("The manager should be running now.", this.manager.isRunning());
 
         verify(this.manager);
         reset(this.manager);
-        this.manager.disconnectInternal();
+        this.manager.shutdownInternal();
         expectLastCall();
         replay(this.manager);
 
         this.manager.releaseSub();
-        assertFalse("The manager should not be connected anymore.", this.manager.isConnected());
+        assertFalse("The manager should not be running anymore.", this.manager.isRunning());
     }
 
     @Test
@@ -121,13 +121,13 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event2 = createStrictMock(LogEvent.class);
         final LogEvent event3 = createStrictMock(LogEvent.class);
 
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         this.manager.writeInternal(same(event1));
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
+        this.manager.startup();
 
         this.manager.write(event1);
 
@@ -157,11 +157,11 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event3 = createStrictMock(LogEvent.class);
         final LogEvent event4 = createStrictMock(LogEvent.class);
 
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
+        this.manager.startup();
 
         this.manager.write(event1);
         this.manager.write(event2);
@@ -190,11 +190,11 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event2 = createStrictMock(LogEvent.class);
         final LogEvent event3 = createStrictMock(LogEvent.class);
 
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
+        this.manager.startup();
 
         this.manager.write(event1);
         this.manager.write(event2);
@@ -221,11 +221,11 @@ public class AbstractDatabaseManagerTest {
         final LogEvent event2 = createStrictMock(LogEvent.class);
         final LogEvent event3 = createStrictMock(LogEvent.class);
 
-        this.manager.connectInternal();
+        this.manager.startupInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.connect();
+        this.manager.startup();
 
         this.manager.write(event1);
         this.manager.write(event2);
@@ -239,10 +239,10 @@ public class AbstractDatabaseManagerTest {
         expectLastCall();
         this.manager.writeInternal(same(event3));
         expectLastCall();
-        this.manager.disconnectInternal();
+        this.manager.shutdownInternal();
         expectLastCall();
         replay(this.manager);
 
-        this.manager.disconnect();
+        this.manager.shutdown();
     }
 }

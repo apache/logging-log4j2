@@ -50,12 +50,12 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void connectInternal() {
+    protected void startupInternal() {
         this.entityManagerFactory = Persistence.createEntityManagerFactory(this.persistenceUnitName);
     }
 
     @Override
-    protected void disconnectInternal() {
+    protected void shutdownInternal() {
         if (this.entityManagerFactory != null && this.entityManagerFactory.isOpen()) {
             this.entityManagerFactory.close();
         }
@@ -63,7 +63,7 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected void writeInternal(final LogEvent event) {
-        if (!this.isConnected() || this.entityManagerFactory == null) {
+        if (!this.isRunning() || this.entityManagerFactory == null) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; JPA manager not connected to the database.");
         }
