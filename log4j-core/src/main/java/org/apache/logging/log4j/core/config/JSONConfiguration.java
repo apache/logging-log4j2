@@ -181,7 +181,6 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             for (final Status s : status) {
                 LOGGER.error("Error processing element " + s.name + ": " + s.errorType);
             }
-            return;
         }
     }
 
