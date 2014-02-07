@@ -38,8 +38,6 @@ public class JSONConfigurationFactory extends ConfigurationFactory {
             "com.fasterxml.jackson.core.JsonParser"
     };
 
-    private final File configFile = null;
-
     private boolean isActive;
 
     public JSONConfigurationFactory() {
