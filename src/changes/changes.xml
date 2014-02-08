@@ -21,6 +21,25 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-489" dev="nickwilliams" type="fix">
+        Fixed the JPAAppender's overuse of transactions by connecting (borrowing from pool) on new write internal or on
+        flush.
+      </action>
+      <action issue="LOG4J2-457" dev="nickwilliams" type="fix">
+        Fixed failure of JDBC and JPA appender to properly release database connections by connecting (borrowing from
+        pool) on new write internal or on flush.
+      </action>
+      <action issue="LOG4J2-442" dev="nickwilliams" type="fix">
+        Fixed problem with JDBC and JPA appender connectivity in WebSphere by connecting (borrowing from pool) on new
+        write internal or on flush.
+      </action>
+      <action issue="LOG4J2-438" dev="nickwilliams" type="fix">
+        Ensured the JDBCAppender commits transactions after a single write or a flush of multiple writes.
+      </action>
+      <action issue="LOG4J2-407" dev="nickwilliams" type="fix">
+        Fixed inability to recover from lost database connection in database appenders by connecting (borrowing from
+        pool) on new write internal or on flush.
+      </action>
       <action dev="nickwilliams" type="delete">
         Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
         safe to use. Please use the DataSource or factory connection sources backed by a connection pool.

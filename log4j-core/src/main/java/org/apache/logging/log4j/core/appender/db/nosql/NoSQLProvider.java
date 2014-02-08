@@ -26,7 +26,10 @@ public interface NoSQLProvider<C extends NoSQLConnection<?, ? extends NoSQLObjec
     /**
      * Obtains a connection from this provider. The concept of a connection in this case is not strictly an active
      * duplex UDP or TCP connection to the underlying database. It can be thought of more as a gateway, a path for
-     * inserting objects that may use a persistent connection or may use HTTP web service calls, etc.
+     * inserting objects that may use a persistent connection or may use HTTP web service calls, etc.<br />
+     * <br />
+     * Where applicable, this method should return a connection from the connection pool as opposed to opening a
+     * brand new connection every time.
      *
      * @return a connection that can be used to create and persist objects to this database.
      * @see NoSQLConnection

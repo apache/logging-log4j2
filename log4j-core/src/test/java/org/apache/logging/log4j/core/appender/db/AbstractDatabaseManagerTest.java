@@ -123,17 +123,29 @@ public class AbstractDatabaseManagerTest {
 
         this.manager.startupInternal();
         expectLastCall();
-        this.manager.writeInternal(same(event1));
-        expectLastCall();
         replay(this.manager);
 
         this.manager.startup();
+
+        verify(this.manager);
+        reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
+        this.manager.writeInternal(same(event1));
+        expectLastCall();
+        this.manager.commitAndClose();
+        expectLastCall();
+        replay(this.manager);
 
         this.manager.write(event1);
 
         verify(this.manager);
         reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event2));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager);
 
@@ -141,7 +153,11 @@ public class AbstractDatabaseManagerTest {
 
         verify(this.manager);
         reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event3));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager);
 
@@ -169,6 +185,8 @@ public class AbstractDatabaseManagerTest {
 
         verify(this.manager);
         reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event1));
         expectLastCall();
         this.manager.writeInternal(same(event2));
@@ -176,6 +194,8 @@ public class AbstractDatabaseManagerTest {
         this.manager.writeInternal(same(event3));
         expectLastCall();
         this.manager.writeInternal(same(event4));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager);
 
@@ -202,11 +222,15 @@ public class AbstractDatabaseManagerTest {
 
         verify(this.manager);
         reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event1));
         expectLastCall();
         this.manager.writeInternal(same(event2));
         expectLastCall();
         this.manager.writeInternal(same(event3));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager);
 
@@ -233,11 +257,15 @@ public class AbstractDatabaseManagerTest {
 
         verify(this.manager);
         reset(this.manager);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event1));
         expectLastCall();
         this.manager.writeInternal(same(event2));
         expectLastCall();
         this.manager.writeInternal(same(event3));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         this.manager.shutdownInternal();
         expectLastCall();

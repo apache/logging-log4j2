@@ -39,6 +39,9 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
 
     private EntityManagerFactory entityManagerFactory;
 
+    private EntityManager entityManager;
+    private EntityTransaction transaction;
+
     private JPADatabaseManager(final String name, final int bufferSize,
                                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
                                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
@@ -56,14 +59,31 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected void shutdownInternal() {
+        if (this.entityManager != null || this.transaction != null) {
+            this.commitAndClose();
+        }
         if (this.entityManagerFactory != null && this.entityManagerFactory.isOpen()) {
             this.entityManagerFactory.close();
         }
     }
 
     @Override
+    protected void connectAndStart() {
+        try {
+            this.entityManager = this.entityManagerFactory.createEntityManager();
+            this.transaction = this.entityManager.getTransaction();
+            this.transaction.begin();
+        } catch (Exception e) {
+            throw new AppenderLoggingException(
+                    "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.", e
+            );
+        }
+    }
+
+    @Override
     protected void writeInternal(final LogEvent event) {
-        if (!this.isRunning() || this.entityManagerFactory == null) {
+        if (!this.isRunning() || this.entityManagerFactory == null || this.entityManager == null
+                || this.transaction == null) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; JPA manager not connected to the database.");
         }
@@ -75,23 +95,38 @@ public final class JPADatabaseManager extends AbstractDatabaseManager {
             throw new AppenderLoggingException("Failed to instantiate entity class [" + this.entityClassName + "].", e);
         }
 
-        EntityManager entityManager = null;
-        EntityTransaction transaction = null;
         try {
-            entityManager = this.entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.persist(entity);
-            transaction.commit();
+            this.entityManager.persist(entity);
         } catch (final Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
+            if (this.transaction != null && this.transaction.isActive()) {
+                this.transaction.rollback();
+                this.transaction = null;
             }
-            throw new AppenderLoggingException("Failed to insert record for log event in JDBC manager: " +
+            throw new AppenderLoggingException("Failed to insert record for log event in JPA manager: " +
                     e.getMessage(), e);
+        }
+    }
+
+    @Override
+    protected void commitAndClose() {
+        try {
+            if (this.transaction != null && this.transaction.isActive()) {
+                this.transaction.commit();
+            }
+        } catch (Exception e) {
+            if (this.transaction != null && this.transaction.isActive()) {
+                this.transaction.rollback();
+            }
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
+            this.transaction = null;
+            try {
+                if (this.entityManager != null && this.entityManager.isOpen()) {
+                    this.entityManager.close();
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Failed to close entity manager while logging event or flushing buffer.", e);
+            } finally {
+                this.entityManager = null;
             }
         }
     }

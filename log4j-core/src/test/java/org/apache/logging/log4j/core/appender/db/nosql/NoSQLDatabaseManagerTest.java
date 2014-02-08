@@ -69,7 +69,7 @@ public class NoSQLDatabaseManagerTest {
             expect(this.provider.getConnection()).andReturn(this.connection);
             replay(this.provider, this.connection);
 
-            manager.startupInternal();
+            manager.connectAndStart();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -78,7 +78,7 @@ public class NoSQLDatabaseManagerTest {
             expectLastCall();
             replay(this.provider, this.connection);
 
-            manager.shutdownInternal();
+            manager.commitAndClose();
         } finally {
             try {
                 manager.release();
@@ -120,13 +120,19 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternalNotConnected02() {
-        expect(this.provider.getConnection()).andReturn(this.connection);
-        replay(this.provider, this.connection);
-
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
+            replay(this.provider, this.connection);
+
             manager.startup();
+
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+            expect(this.provider.getConnection()).andReturn(this.connection);
+            replay(this.provider, this.connection);
+
+            manager.connectAndStart();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -159,13 +165,19 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal01() {
-        expect(this.provider.getConnection()).andReturn(this.connection);
-        replay(this.provider, this.connection);
-
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
+            replay(this.provider, this.connection);
+
             manager.startup();
+
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+            expect(this.provider.getConnection()).andReturn(this.connection);
+            replay(this.provider, this.connection);
+
+            manager.connectAndStart();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -245,13 +257,19 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal02() {
-        expect(this.provider.getConnection()).andReturn(this.connection);
-        replay(this.provider, this.connection);
-
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
+            replay(this.provider, this.connection);
+
             manager.startup();
+
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+            expect(this.provider.getConnection()).andReturn(this.connection);
+            replay(this.provider, this.connection);
+
+            manager.connectAndStart();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
@@ -379,13 +397,19 @@ public class NoSQLDatabaseManagerTest {
 
     @Test
     public void testWriteInternal03() {
-        expect(this.provider.getConnection()).andReturn(this.connection);
-        replay(this.provider, this.connection);
-
         final NoSQLDatabaseManager<?> manager = NoSQLDatabaseManager.getNoSQLDatabaseManager("name", 0, this.provider);
 
         try {
+            replay(this.provider, this.connection);
+
             manager.startup();
+
+            verify(this.provider, this.connection);
+            reset(this.provider, this.connection);
+            expect(this.provider.getConnection()).andReturn(this.connection);
+            replay(this.provider, this.connection);
+
+            manager.connectAndStart();
 
             verify(this.provider, this.connection);
             reset(this.provider, this.connection);
