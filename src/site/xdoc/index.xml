@@ -27,15 +27,14 @@
     <body>
         <table style="width:70%">
         <tr>
-        <th style="background-color: #55EECC">Help! Log4j 2 needs a new logo!</th>
+        <th style="background-color: #55EECC">Help! Log4j 2 Needs a New logo!</th>
         </tr><tr>
         <th style="background-color: #CCFFFF">
-        <p>Log4j 2 will come out of beta soon.
-        With this new major release we need a new logo.</p>
-        Can you help, or do you know someone who can?
-        Please 
-        <a href="https://issues.apache.org/jira/browse/LOG4J2-316">submit your logo ideas</a>.
-        
+        <p>Log4j 2 will soon move from release candidate to general availability. With this new major release we need a
+          new logo.</p>
+        The logo contest has now closed. Voting will commence soon. Please
+          <a href="http://logging.apache.org/log4j/2.x/mail-lists.html">subscribe to the user mailing list</a> for more
+          information.
         </th>
         </tr>
         </table>
