@@ -20,7 +20,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-RC1" date="2014-02-08" description="Bug fixes and enhancements">
+    <release version="2.0-rc1" date="2014-MM-DD" description="Bug fixes and enhancements">
       <action type="update">
         This release contains several changes that break binary and backwards compatibility with previous versions.
         Please read the release notes correctly so that you can adjust your usage of Log4j 2, if necessary.
@@ -122,7 +122,7 @@
       </action>
       <action issue="LOG4J2-479" dev="rpopma" type="add" due-to="MK">
         ThreadContext now uses plain ThreadLocal by default, unless system property
-        <tt>isThreadContextMapInheritable</tt> has value <tt>"true"</tt>.
+        isThreadContextMapInheritable has value "true".
       </action>
       <action issue="LOG4J2-398" dev="rgoers" type="fix">
         Configure properties and setup Interpolator before processing rest of configuration.
