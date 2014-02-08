@@ -17,4 +17,4 @@
 /**
  * The classes in this package contain the MongoDB provider for the NoSQL Appender.
  */
-package org.apache.logging.log4j.core.appender.db.nosql.mongo;
+package org.apache.logging.log4j.core.appender.db.nosql.mongodb;

@@ -21,6 +21,14 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action dev="nickwilliams" type="update">
+        Renamed the org.apache.logging.log4j.core.appender.db.nosql.mongo package to
+        org.apache.logging.log4j.core.appender.db.nosql.mongodb.
+      </action>
+      <action dev="grobmeier" type="update">
+        Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to
+        org.apache.logging.log4j.core.appender.db.nosql.couchdb.
+      </action>
       <action issue="LOG4J2-475" dev="nickwilliams" type="fix" due-to="Matt Sicker">
         Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook.
       </action>
