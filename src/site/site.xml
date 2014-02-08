@@ -73,7 +73,9 @@
       <item name="Plugins" href="/manual/plugins.html" collapse="true">
         <item name="Core" href="/manual/plugins.html#Core"/>
         <item name="Converters" href="/manual/plugins.html#Converters"/>
+        <item name="Key Providers" href="/manual/plugins.html#KeyProviders"/>
         <item name="Lookups" href="/manual/plugins.html#Lookups"/>
+        <item name="Preloading" href="/manual/plugins.html#Plugin_Preloading"/>
       </item>
 
       <item name="Lookups" href="/manual/lookups.html" collapse="true">
