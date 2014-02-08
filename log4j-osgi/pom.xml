@@ -44,8 +44,8 @@
     <module>core-osgi-jpa</module>
     <module>core-osgi-legacy-api</module>
     <module>core-osgi-net</module>
-    <module>core-osgi-nosql-couch</module>
-    <module>core-osgi-nosql-mongo</module>
+    <module>core-osgi-nosql-couchdb</module>
+    <module>core-osgi-nosql-mongodb</module>
     <module>core-osgi-reduced</module>
   </modules>
 </project>
