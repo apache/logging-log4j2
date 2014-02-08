@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLConnection;
 import org.apache.logging.log4j.core.appender.db.nosql.NoSQLObject;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.BSON;
 import org.bson.Transformer;
@@ -41,7 +42,7 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     static {
-        BSON.addDecodingHook(Level.class, new Transformer() {
+        BSON.addEncodingHook(Level.class, new Transformer() {
             @Override
             public Object transform(Object o) {
                 if (o instanceof Level) {
@@ -76,7 +77,7 @@ public final class MongoDBConnection implements NoSQLConnection<BasicDBObject, M
     public void insertObject(final NoSQLObject<BasicDBObject> object) {
         try {
             final WriteResult result = this.collection.insert(object.unwrap(), this.writeConcern);
-            if (result.getError() != null && result.getError().length() > 0) {
+            if (Strings.isNotEmpty(result.getError())) {
                 throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " +
                         result.getError() + ".");
             }
