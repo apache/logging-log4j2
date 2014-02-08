@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-RC1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-475" dev="nickwilliams" type="fix" due-to="Matt Sicker">
+        Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook.
+      </action>
       <action issue="LOG4J2-489" dev="nickwilliams" type="fix">
         Fixed the JPAAppender's overuse of transactions by connecting (borrowing from pool) on new write internal or on
         flush.
