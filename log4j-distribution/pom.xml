@@ -204,12 +204,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-nosql-couch</artifactId>
+      <artifactId>log4j-core-osgi-nosql-couchdb</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j.osgi</groupId>
-      <artifactId>log4j-core-osgi-nosql-mongo</artifactId>
+      <artifactId>log4j-core-osgi-nosql-mongodb</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
