@@ -45,13 +45,22 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
 
     @Override
     protected void startupInternal() {
-        this.connection = this.provider.getConnection();
+        // nothing to see here
     }
 
     @Override
     protected void shutdownInternal() {
-        if (this.connection != null && !this.connection.isClosed()) {
-            this.connection.close();
+        if (this.connection != null) {
+            this.commitAndClose();
+        }
+    }
+
+    @Override
+    protected void connectAndStart() {
+        try {
+            this.connection = this.provider.getConnection();
+        } catch (Exception e) {
+            throw new AppenderLoggingException("Failed to get connection from NoSQL connection provider.", e);
         }
     }
 
@@ -137,6 +146,17 @@ public final class NoSQLDatabaseManager<W> extends AbstractDatabaseManager {
         }
 
         this.connection.insertObject(entity);
+    }
+
+    @Override
+    protected void commitAndClose() {
+        try {
+            if (this.connection != null && !this.connection.isClosed()) {
+                this.connection.close();
+            }
+        } catch (Exception e) {
+            throw new AppenderLoggingException("Failed to commit and close NoSQL connection in manager.", e);
+        }
     }
 
     private NoSQLObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {

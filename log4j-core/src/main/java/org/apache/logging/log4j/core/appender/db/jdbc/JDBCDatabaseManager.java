@@ -53,17 +53,27 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void startupInternal() throws SQLException {
-        this.connection = this.connectionSource.getConnection();
-        this.statement = this.connection.prepareStatement(this.sqlStatement);
+    protected void startupInternal() {
+        // nothing to see here
     }
 
     @Override
-    protected void shutdownInternal() throws SQLException {
+    protected void shutdownInternal() {
+        if (this.connection != null || this.statement != null) {
+            this.commitAndClose();
+        }
+    }
+
+    @Override
+    protected void connectAndStart() {
         try {
-            Closer.close(this.statement);
-        } finally {
-            Closer.close(this.connection);
+            this.connection = this.connectionSource.getConnection();
+            this.connection.setAutoCommit(false);
+            this.statement = this.connection.prepareStatement(this.sqlStatement);
+        } catch (SQLException e) {
+            throw new AppenderLoggingException(
+                    "Cannot write logging event or flush buffer; JDBC manager cannot connect to the database.", e
+            );
         }
     }
 
@@ -71,7 +81,8 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
     protected void writeInternal(final LogEvent event) {
         StringReader reader = null;
         try {
-            if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
+            if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null
+                    || this.statement.isClosed()) {
                 throw new AppenderLoggingException(
                         "Cannot write logging event; JDBC manager not connected to the database.");
             }
@@ -107,6 +118,37 @@ public final class JDBCDatabaseManager extends AbstractDatabaseManager {
                     e.getMessage(), e);
         } finally {
             Closer.closeSilent(reader);
+        }
+    }
+
+    @Override
+    protected void commitAndClose() {
+        try {
+            if (this.connection != null && !this.connection.isClosed()) {
+                this.connection.commit();
+            }
+        } catch (SQLException e) {
+            throw new AppenderLoggingException("Failed to commit transaction logging event or flushing buffer.", e);
+        } finally {
+            try {
+                if (this.statement != null) {
+                    this.statement.close();
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Failed to close SQL statement logging event or flushing buffer.", e);
+            } finally {
+                this.statement = null;
+            }
+
+            try {
+                if (this.connection != null) {
+                    this.connection.close();
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Failed to close database connection logging event or flushing buffer.", e);
+            } finally {
+                this.connection = null;
+            }
         }
     }
 

@@ -106,6 +106,13 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     }
 
     /**
+     * Connects to the database and starts a transaction (if applicable). With buffering enabled, this is called when
+     * flushing the buffer begins, before the first call to {@link #writeInternal}. With buffering disabled, this is
+     * called immediately before every invocation of {@link #writeInternal}.
+     */
+    protected abstract void connectAndStart();
+
+    /**
      * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
      * from {@link #write(LogEvent)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
      *
@@ -114,14 +121,24 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
     protected abstract void writeInternal(LogEvent event);
 
     /**
+     * Commits any active transaction (if applicable) and disconnects from the database (returns the connection to the
+     * connection pool). With buffering enabled, this is called when flushing the buffer completes, after the last call
+     * to {@link #writeInternal}. With buffering disabled, this is called immediately after every invocation of
+     * {@link #writeInternal}.
+     */
+    protected abstract void commitAndClose();
+
+    /**
      * This method is called automatically when the buffer size reaches its maximum or at the beginning of a call to
      * {@link #shutdown()}. It can also be called manually to flush events to the database.
      */
     public final synchronized void flush() {
         if (this.isRunning() && this.buffer.size() > 0) {
+            this.connectAndStart();
             for (final LogEvent event : this.buffer) {
                 this.writeInternal(event);
             }
+            this.commitAndClose();
             this.buffer.clear();
         }
     }
@@ -138,7 +155,9 @@ public abstract class AbstractDatabaseManager extends AbstractManager {
                 this.flush();
             }
         } else {
+            this.connectAndStart();
             this.writeInternal(event);
+            this.commitAndClose();
         }
     }
 

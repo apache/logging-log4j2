@@ -126,7 +126,11 @@ public class AbstractDatabaseAppenderTest {
         final LogEvent event1 = createStrictMock(LogEvent.class);
         final LogEvent event2 = createStrictMock(LogEvent.class);
 
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event1));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager, this.appender);
 
@@ -134,7 +138,11 @@ public class AbstractDatabaseAppenderTest {
 
         verify(this.manager, this.appender);
         reset(this.manager, this.appender);
+        this.manager.connectAndStart();
+        expectLastCall();
         this.manager.writeInternal(same(event2));
+        expectLastCall();
+        this.manager.commitAndClose();
         expectLastCall();
         replay(this.manager, this.appender);
 
