@@ -24,9 +24,9 @@
     <relativePath>../../</relativePath>
   </parent>
   <groupId>org.apache.logging.log4j.osgi</groupId>
-  <artifactId>log4j-core-osgi-nosql-mongo</artifactId>
+  <artifactId>log4j-core-osgi-nosql-mongodb</artifactId>
   <packaging>bundle</packaging>
-  <name>Apache Log4J Core OSGi Mongo</name>
+  <name>Apache Log4J Core OSGi MongoDB</name>
   <description>Apache Log4J Implementation.</description>
   <properties>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
@@ -79,7 +79,7 @@
             <_removeheaders>JAVA_1_3_HOME,JAVA_1_4_HOME,JAVA_1_5_HOME,JAVA_1_6_HOME,JAVA_1_7_HOME</_removeheaders>
             <Bundle-SymbolicName>${osgi.symbolicName}</Bundle-SymbolicName>
             <Export-Package>
-              ${project.parent.groupId}.core.appender.db.nosql.mongo.*
+              ${project.parent.groupId}.core.appender.db.nosql.mongodb.*
             </Export-Package>
             <Private-Package>${osgi.private}</Private-Package>
             <Import-Package>${osgi.import}</Import-Package>
