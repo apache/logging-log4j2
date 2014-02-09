@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
