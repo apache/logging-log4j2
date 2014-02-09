@@ -76,6 +76,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "DefaultRolloverStrategy", category = "Core", printObject = true)
 public class DefaultRolloverStrategy implements RolloverStrategy {
+    
+    private static final String EXT_ZIP = ".zip";
+    private static final String EXT_GZIP = ".gz";
+
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
@@ -185,9 +189,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         String highFilename = subst.replace(buf);
 
-        if (highFilename.endsWith(".gz")) {
+        if (highFilename.endsWith(EXT_GZIP)) {
             suffixLength = 3;
-        } else if (highFilename.endsWith(".zip")) {
+        } else if (highFilename.endsWith(EXT_ZIP)) {
             suffixLength = 4;
         }
 
@@ -302,9 +306,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         String lowFilename = subst.replace(buf);
 
-        if (lowFilename.endsWith(".gz")) {
+        if (lowFilename.endsWith(EXT_GZIP)) {
             suffixLength = 3;
-        } else if (lowFilename.endsWith(".zip")) {
+        } else if (lowFilename.endsWith(EXT_ZIP)) {
             suffixLength = 4;
         }
 
@@ -412,10 +416,10 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         final String compressedName = renameTo;
         Action compressAction = null;
 
-        if (renameTo.endsWith(".gz")) {
+        if (renameTo.endsWith(EXT_GZIP)) {
             renameTo = renameTo.substring(0, renameTo.length() - 3);
             compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
-        } else if (renameTo.endsWith(".zip")) {
+        } else if (renameTo.endsWith(EXT_ZIP)) {
             renameTo = renameTo.substring(0, renameTo.length() - 4);
             compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
                     compressionLevel);
