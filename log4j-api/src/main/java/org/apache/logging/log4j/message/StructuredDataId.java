@@ -28,11 +28,13 @@ public class StructuredDataId implements Serializable {
      */
     public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null,
         new String[]{"tzKnown", "isSynced", "syncAccuracy"});
+    
     /**
      * RFC 5424 Origin.
      */
     public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null,
         new String[]{"ip", "enterpriseId", "software", "swVersion"});
+    
     /**
      * RFC 5424 Meta.
      */
