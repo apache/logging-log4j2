@@ -137,4 +137,10 @@ public final class ZipCompressAction extends AbstractAction {
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
+    
+    @Override
+    public String toString() {
+        return ZipCompressAction.class.getSimpleName() + "[" + source + " to " + destination //
+                + ", level=" + level + ", deleteSource=" + deleteSource + "]";
+    }
 }
