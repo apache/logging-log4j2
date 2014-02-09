@@ -52,7 +52,7 @@ public class DefaultThreadContextMap implements ThreadContextMap {
             return new InheritableThreadLocal<Map<String, String>>() {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                    return (parentValue != null && isMapEnabled) //
+                    return parentValue != null && isMapEnabled //
                             ? Collections.unmodifiableMap(new HashMap<String, String>(parentValue)) //
                             : null;
                 }
