@@ -35,7 +35,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
-import com.sleepycat.je.LockConflictException;
 import org.apache.flume.Event;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
@@ -54,6 +53,7 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.LockConflictException;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.StatsConfig;
@@ -141,6 +141,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param connectionTimeout The amount of time to wait to establish a connection.
      * @param requestTimeout The amount of time to wait for a response to a request.
      * @param delay Amount of time to delay before delivering a batch.
+     * @param lockTimeoutRetryCount The number of times to retry after a lock timeout.
      * @param dataDir The location of the Berkeley database.
      * @return A FlumeAvroManager.
      */
@@ -221,7 +222,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         worker.shutdown();
         try {
             worker.join(SHUTDOWN_WAIT * MILLIS_PER_SECOND);
-        } catch(InterruptedException ie) {
+        } catch (InterruptedException ie) {
             // Ignore the exception and shutdown.
         }
         threadPool.shutdown();
@@ -320,7 +321,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             txn.abort();
                             txn = null;
                         } catch (Exception ex) {
-                            // Ignore exception
+                            LOGGER.trace("Ignoring exception while aborting transaction during lock conflict.");
                         }
                     }
 
@@ -519,7 +520,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 long now = System.currentTimeMillis();
                 long dbCount = database.count();
                 dbCounter.set(dbCount);
-                if (dbCount >= batchSize || (dbCount > 0 && nextBatch <= now)) {
+                if (dbCount >= batchSize || dbCount > 0 && nextBatch <= now) {
                     nextBatch = now + manager.delay;
                     try {
                         boolean errors = false;
@@ -596,7 +597,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                             cursor.close();
                                             cursor = null;
                                         } catch (Exception ex) {
-                                            // Ignore exception
+                                            LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                         }
                                     }
                                     if (txn != null) {
@@ -604,7 +605,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                             txn.abort();
                                             txn = null;
                                         } catch (Exception ex) {
-                                            // Ignore exception
+                                            LOGGER.trace("Ignored exception aborting tx during lock conflict.");
                                         }
                                     }
                                 }
@@ -706,7 +707,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                         cursor.close();
                                         cursor = null;
                                     } catch (Exception ex) {
-                                        // Ignore exception
+                                        LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                     }
                                 }
                                 if (txn != null) {
@@ -714,7 +715,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                         txn.abort();
                                         txn = null;
                                     } catch (Exception ex) {
-                                        // Ignore exception
+                                        LOGGER.trace("Ignored exception aborting transaction during lock conflict.");
                                     }
                                 }
                             } catch (final Exception ex) {
@@ -730,7 +731,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     cursor.close();
                                     cursor = null;
                                 } catch (Exception ex) {
-                                    // Ignore exception
+                                    LOGGER.trace("Ignored exception closing cursor during lock conflict.");
                                 }
                             }
                             if (txn != null) {
@@ -738,7 +739,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                     txn.abort();
                                     txn = null;
                                 } catch (Exception ex) {
-                                    // Ignore exception
+                                    LOGGER.trace("Ignored exception aborting transaction during lock conflict.");
                                 }
                             }
                         } finally {
@@ -823,7 +824,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
 
         @Override
-	    public Thread newThread(final Runnable r) {
+        public Thread newThread(final Runnable r) {
             final Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             thread.setDaemon(true);
             if (thread.getPriority() != Thread.NORM_PRIORITY) {
@@ -833,6 +834,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
         }
     }
 
+    /**
+     * An internal class.
+     */
     private static class Gate {
 
         private boolean isOpen = false;

@@ -187,7 +187,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 throw new ConfigurationException("No Flume configuration provided");
             }
 
-            if ((agents != null && agents.length > 0 && properties != null && properties.length > 0)) {
+            if (agents != null && agents.length > 0 && properties != null && properties.length > 0) {
                 LOGGER.error("Agents and Flume configuration cannot both be specified");
                 throw new ConfigurationException("Agents and Flume configuration cannot both be specified");
             }
@@ -215,7 +215,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 final StringBuilder sb = new StringBuilder();
                 String leading = "";
                 int priority = agents.length;
-                for (int i = 0; i < agents.length; ++i) {
+                for (int i = 0; i < priority; ++i) {
                     sb.append(leading).append("agent").append(i);
                     leading = " ";
                     final String prefix = "agent" + i;

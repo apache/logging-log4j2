@@ -20,11 +20,13 @@ import java.net.URI;
 
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
  */
 public class SLF4JLoggerContextFactory implements LoggerContextFactory {
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static LoggerContext context = new SLF4JLoggerContext();
 
     public SLF4JLoggerContextFactory() {
@@ -34,7 +36,7 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
             Class.forName("org.slf4j.helpers.Log4jLoggerFactory");
             misconfigured = true;
         } catch (final ClassNotFoundException classNotFoundIsGood) {
-            // org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!
+            LOGGER.debug("org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!");
         }
         if (misconfigured) {
             throw new IllegalStateException("slf4j-impl jar is mutually exclusive with log4j-to-slf4j jar "

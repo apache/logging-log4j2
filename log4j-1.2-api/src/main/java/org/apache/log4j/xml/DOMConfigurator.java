@@ -72,7 +72,8 @@ public class DOMConfigurator {
 
     }
 
-    public static Object parseElement(final Element element, final Properties props, @SuppressWarnings("rawtypes") final Class expectedClass)
+    public static Object parseElement(final Element element, final Properties props,
+                                      @SuppressWarnings("rawtypes") final Class expectedClass)
         throws Exception {
         return null;
     }
