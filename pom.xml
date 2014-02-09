@@ -138,6 +138,7 @@
     <Log4jReleaseCount>eleventh</Log4jReleaseCount>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson2.version>2.2.2</jackson2.version>
+    <spring.version>3.2.7.RELEASE</spring.version>
     <flumeVersion>1.4.0</flumeVersion>
     <disruptor.version>3.2.0</disruptor.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
@@ -459,6 +460,51 @@
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-oxm</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
