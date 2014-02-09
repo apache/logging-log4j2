@@ -102,6 +102,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
         this.level = Level.toLevel(level, Level.ERROR);
     }
 
+    @Override
     public String getContextName() {
         return contextName;
     }
@@ -130,6 +131,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
      * @return the {@code ObjectName}
      * @see StatusLoggerAdminMBean#NAME
      */
+    @Override
     public ObjectName getObjectName() {
         return objectName;
     }
