@@ -39,6 +39,10 @@
       <action issue="LOG4J2-507" dev="ggregory" type="update">
         Space Level numbers by 100 instead of 1.
       </action>
+      <action issue="LOG4J2-531" dev="rpopma" type="fix" due-to="Geoff Ballinger">
+        Fixed bugs where rolled log files were overwritten by RollingFile appender with 
+        composite time and size based policies.
+      </action>
       <action issue="LOG4J2-475" dev="nickwilliams" type="fix" due-to="Matt Sicker">
         Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook.
       </action>

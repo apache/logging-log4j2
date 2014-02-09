@@ -300,7 +300,6 @@ public class RollingFileManager extends FileManager {
                 return null;
             }
             final long size = data.append ? file.length() : 0;
-            final long time = file.lastModified();
 
             OutputStream os;
             try {
@@ -308,6 +307,7 @@ public class RollingFileManager extends FileManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
+                final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
                     data.strategy, data.advertiseURI, data.layout);
             } catch (final FileNotFoundException ex) {

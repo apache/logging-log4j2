@@ -179,7 +179,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
         final StringBuilder buf = new StringBuilder();
-        manager.getPatternProcessor().formatFileName(buf, highIndex);
+        
+        // LOG4J2-531: directory scan & rollover must use same format
+        manager.getPatternProcessor().formatFileName(subst, buf, highIndex);
 
         String highFilename = subst.replace(buf);
 
@@ -208,6 +210,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
                 if (toRename.exists()) {
                     if (toRenameBase.exists()) {
+                        LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} base of {}.", //
+                                toRenameBase, toRename);
                         toRenameBase.delete();
                     }
                 } else {
@@ -222,6 +226,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //        attempt to delete last file
                 //        if that fails then abandon purge
                 if (i == lowIndex) {
+                    LOGGER.debug("DefaultRolloverStrategy.purgeAscending deleting {} at low index {}: all slots full.", //
+                            toRename, i);
                     if (!toRename.delete()) {
                         return -1;
                     }
@@ -233,7 +239,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //   if intermediate index
                 //     add a rename action to the list
                 buf.setLength(0);
-                manager.getPatternProcessor().formatFileName(buf, i - 1);
+                // LOG4J2-531: directory scan & rollover must use same format
+                manager.getPatternProcessor().formatFileName(subst, buf, i - 1);
 
                 final String lowFilename = subst.replace(buf);
                 String renameTo = lowFilename;
@@ -246,7 +253,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 highFilename = lowFilename;
             } else {
                 buf.setLength(0);
-                manager.getPatternProcessor().formatFileName(buf, i - 1);
+                // LOG4J2-531: directory scan & rollover must use same format
+                manager.getPatternProcessor().formatFileName(subst, buf, i - 1);
 
                 highFilename = subst.replace(buf);
             }
@@ -260,8 +268,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
             final Action action = renames.get(i);
-
             try {
+                LOGGER.debug("DefaultRolloverStrategy.purgeAscending executing {} of {}: {}", //
+                        i, renames.size(), action);
                 if (!action.execute()) {
                     return -1;
                 }
@@ -287,7 +296,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
         final List<FileRenameAction> renames = new ArrayList<FileRenameAction>();
         final StringBuilder buf = new StringBuilder();
-        manager.getPatternProcessor().formatFileName(buf, lowIndex);
+
+        // LOG4J2-531: directory scan & rollover must use same format
+        manager.getPatternProcessor().formatFileName(subst, buf, lowIndex);
 
         String lowFilename = subst.replace(buf);
 
@@ -307,6 +318,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
 
                 if (toRename.exists()) {
                     if (toRenameBase.exists()) {
+                        LOGGER.debug("DefaultRolloverStrategy.purgeDescending deleting {} base of {}.", //
+                                toRenameBase, toRename);
                         toRenameBase.delete();
                     }
                 } else {
@@ -321,6 +334,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //        attempt to delete last file
                 //        if that fails then abandon purge
                 if (i == highIndex) {
+                    LOGGER.debug("DefaultRolloverStrategy.purgeDescending deleting {} at high index {}: all slots full.", //
+                            toRename, i);
                     if (!toRename.delete()) {
                         return -1;
                     }
@@ -332,7 +347,8 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
                 //   if intermediate index
                 //     add a rename action to the list
                 buf.setLength(0);
-                manager.getPatternProcessor().formatFileName(buf, i + 1);
+                // LOG4J2-531: directory scan & rollover must use same format
+                manager.getPatternProcessor().formatFileName(subst, buf, i + 1);
 
                 final String highFilename = subst.replace(buf);
                 String renameTo = highFilename;
@@ -353,8 +369,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         //
         for (int i = renames.size() - 1; i >= 0; i--) {
             final Action action = renames.get(i);
-
             try {
+                LOGGER.debug("DefaultRolloverStrategy.purgeDescending executing {} of {}: {}", //
+                        i, renames.size(), action);
                 if (!action.execute()) {
                     return -1;
                 }
