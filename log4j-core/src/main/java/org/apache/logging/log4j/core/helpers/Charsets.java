@@ -54,10 +54,8 @@ public final class Charsets {
      */
     public static Charset getSupportedCharset(final String charsetName, final Charset defaultCharset) {
         Charset charset = null;
-        if (charsetName != null) {
-            if (Charset.isSupported(charsetName)) {
-                charset = Charset.forName(charsetName);
-            }
+        if (charsetName != null && Charset.isSupported(charsetName)) {
+            charset = Charset.forName(charsetName);
         }
         if (charset == null) {
             charset = defaultCharset;
