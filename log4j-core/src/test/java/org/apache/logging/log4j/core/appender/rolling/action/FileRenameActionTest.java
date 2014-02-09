@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.rolling.helper;
+package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.junit.After;
