@@ -16,6 +16,8 @@
 */
 package org.apache.logging.log4j.core.appender;
 
+import java.nio.charset.Charset;
+
 /**
  * Wrapper for messages that are formatted according to RFC 5425.
  */
@@ -44,7 +46,7 @@ public class TLSSyslogFrame {
 
     public byte[] getBytes() {
         String frame = toString();
-        return frame.getBytes();
+        return frame.getBytes(Charset.defaultCharset());
     }
 
     @Override
