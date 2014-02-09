@@ -175,7 +175,7 @@ public class SMTPAppenderTest {
         assertTrue(body.contains("Exception message"));
         assertFalse(body.contains("Error message #2"));
 
-        final SmtpMessage email2 = (SmtpMessage) messages.next();
+        final SmtpMessage email2 = messages.next();
         final String body2 = email2.getBody();
         assertFalse(body2.contains("Debug message #4"));
         assertFalse(body2.contains("Error with exception"));
