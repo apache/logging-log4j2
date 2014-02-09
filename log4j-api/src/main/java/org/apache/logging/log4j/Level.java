@@ -50,42 +50,42 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * No events will be logged.
      */
-    public static Level OFF;
+    public static final Level OFF;
     
     /**
      * A severe error that will prevent the application from continuing.
      */
-    public static Level FATAL;
+    public static final Level FATAL;
     
     /**
      * An error in the application, possibly recoverable.
      */
-    public static Level ERROR;
+    public static final Level ERROR;
     
     /**
      * An event that might possible lead to an error.
      */
-    public static Level WARN;
+    public static final Level WARN;
     
     /**
      * An event for informational purposes.
      */
-    public static Level INFO;
+    public static final Level INFO;
     
     /**
      * A general debugging event.
      */
-    public static Level DEBUG;
+    public static final Level DEBUG;
     
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    public static Level TRACE;
+    public static final Level TRACE;
     
     /**
      * All events should be logged.
      */
-    public static Level ALL;
+    public static final Level ALL;
 
     static {
         OFF = new Level("OFF", StandardLevel.OFF.intLevel());
