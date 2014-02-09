@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.spi.StandardLevel;
-
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.logging.log4j.spi.StandardLevel;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -288,7 +287,7 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     // for deserialization
-    protected Object readResolve() throws ObjectStreamException {
+    protected Object readResolve() {
         return Level.valueOf(this.name);
     }
 }
