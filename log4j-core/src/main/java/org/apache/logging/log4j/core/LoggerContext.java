@@ -144,7 +144,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start() {
         if (configLock.tryLock()) {
             try {
-                if ((status == Status.INITIALIZED || status == Status.STOPPED)) {
+                if (status == Status.INITIALIZED || status == Status.STOPPED) {
                     status = Status.STARTING;
                     reconfigure();
                     if (config.isShutdownHookEnabled()) {
