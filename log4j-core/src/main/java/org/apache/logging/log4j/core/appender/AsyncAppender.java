@@ -157,7 +157,7 @@ public final class AsyncAppender extends AbstractAppender {
                 error("Appender " + getName() + " is unable to write primary appenders. queue is full");
             }
         }
-        if ((!appendSuccessful) && (errorAppender != null)) {
+        if (!appendSuccessful && errorAppender != null) {
             errorAppender.callAppender(event);
         }
     }
