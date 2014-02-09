@@ -34,7 +34,7 @@
         org.apache.logging.log4j.core.appender.db.nosql.couchdb.
       </action>
       <action issue="LOG4J2-500" dev="rpopma" type="fix">
-        (JMX - ObjectNames changed!) Unloading one webapp unloads JMX MBeans for all webapps.
+        (JMX - ObjectNames changed!) Unloading one web application unloads JMX MBeans for all web applications.
       </action>
       <action issue="LOG4J2-507" dev="ggregory" type="update">
         Space Level numbers by 100 instead of 1.
