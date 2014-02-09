@@ -81,7 +81,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
      */
     @Override
     public void append(final LogEvent event) {
-        ((RollingFileManager) getManager()).checkRollover(event);
+        getManager().checkRollover(event);
         super.append(event);
     }
 
