@@ -125,5 +125,10 @@ public final class GZCompressAction extends AbstractAction {
     protected void reportException(final Exception ex) {
         LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
     }
-
+    
+    @Override
+    public String toString() {
+        return GZCompressAction.class.getSimpleName() + "[" + source + " to " + destination //
+                + ", deleteSource=" + deleteSource + "]";
+    }
 }

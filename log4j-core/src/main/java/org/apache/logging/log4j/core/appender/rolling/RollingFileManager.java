@@ -161,13 +161,10 @@ public class RollingFileManager extends FileManager {
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
-
             if (descriptor != null) {
-
                 close();
-
                 if (descriptor.getSynchronous() != null) {
-
+                    LOGGER.debug("RollingFileManager executing synchronous {}", descriptor.getSynchronous());
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
@@ -176,6 +173,7 @@ public class RollingFileManager extends FileManager {
                 }
 
                 if (success && descriptor.getAsynchronous() != null) {
+                    LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
                     thread = new Thread(new AsyncAction(descriptor.getAsynchronous(), this));
                     thread.start();
                 }

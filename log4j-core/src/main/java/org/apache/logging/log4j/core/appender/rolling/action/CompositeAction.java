@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -96,5 +97,10 @@ public class CompositeAction extends AbstractAction {
         }
 
         return status;
+    }
+    
+    @Override
+    public String toString() {
+        return CompositeAction.class.getSimpleName() + Arrays.toString(actions);
     }
 }
