@@ -1,7 +1,3 @@
-package org.apache.logging.log4j.core.web;
-
-import org.apache.logging.log4j.spi.LoggerContext;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -18,6 +14,10 @@ import org.apache.logging.log4j.spi.LoggerContext;
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.web;
+
+import org.apache.logging.log4j.spi.LoggerContext;
+
 /**
  * Specifies an interface for setting and clearing a thread-bound {@link LoggerContext} in a Java EE web application.
  * Also defines constants for context parameter and attribute names. In most cases you will never need to use this
