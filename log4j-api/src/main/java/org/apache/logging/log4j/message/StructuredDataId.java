@@ -23,16 +23,20 @@ import java.io.Serializable;
  */
 public class StructuredDataId implements Serializable {
 
+    private static final String AT = "@";
+
     /**
      * RFC 5424 Time Quality.
      */
     public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null,
         new String[]{"tzKnown", "isSynced", "syncAccuracy"});
+    
     /**
      * RFC 5424 Origin.
      */
     public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null,
         new String[]{"ip", "enterpriseId", "software", "swVersion"});
+    
     /**
      * RFC 5424 Meta.
      */
@@ -60,7 +64,7 @@ public class StructuredDataId implements Serializable {
                 throw new IllegalArgumentException(String.format("Length of id %s exceeds maximum of %d characters",
                         name, MAX_LENGTH));
             }
-            index = name.indexOf("@");
+            index = name.indexOf(AT);
         }
 
         if (index > 0) {
@@ -87,15 +91,15 @@ public class StructuredDataId implements Serializable {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
-        if (name.contains("@")) {
-            throw new IllegalArgumentException("Structured id name cannot contain an '@");
+        if (name.contains(AT)) {
+            throw new IllegalArgumentException("Structured id name cannot contain an '" + AT + "'");
         }
         if (enterpriseNumber <= 0) {
             throw new IllegalArgumentException("No enterprise number was supplied");
         }
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
-        final String id = enterpriseNumber < 0 ? name : name + "@" + enterpriseNumber;
+        final String id = enterpriseNumber < 0 ? name : name + AT + enterpriseNumber;
         if (id.length() > MAX_LENGTH) {
             throw new IllegalArgumentException("Length of id exceeds maximum of 32 characters: " + id);
         }
@@ -183,6 +187,6 @@ public class StructuredDataId implements Serializable {
 
     @Override
     public String toString() {
-        return isReserved() ? name : name + "@" + enterpriseNumber;
+        return isReserved() ? name : name + AT + enterpriseNumber;
     }
 }

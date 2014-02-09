@@ -31,7 +31,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Tag Library Documentation</docLabel>
     <projectDir>/taglib</projectDir>
-    <spring.version>3.1.2.RELEASE</spring.version>
   </properties>
   <dependencies>
     <dependency>
@@ -69,13 +68,11 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

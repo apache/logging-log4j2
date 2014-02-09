@@ -41,12 +41,12 @@ public class MarkerWrapper extends BasicMarker implements Marker {
     }
 
     @Override
-    public org.apache.logging.log4j.Marker getParent() {
+    public Marker getParent() {
         return this.parent;
     }
 
     @Override
-    public boolean isInstanceOf(final org.apache.logging.log4j.Marker marker) {
+    public boolean isInstanceOf(final Marker marker) {
         if (marker == null) {
             throw new IllegalArgumentException("A marker parameter is required");
         }

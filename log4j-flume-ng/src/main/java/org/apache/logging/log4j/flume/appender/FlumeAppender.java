@@ -216,7 +216,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int reqTimeout = Integers.parseInt(requestTimeout, 0);
         final int retries = Integers.parseInt(agentRetries, 0);
         final int lockTimeoutRetryCount = Integers.parseInt(lockTimeoutRetries, DEFAULT_LOCK_TIMEOUT_RETRY_COUNT);
-        final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY );
+        final int delay = Integers.parseInt(maxDelay, DEFAULT_MAX_DELAY);
 
         if (layout == null) {
             layout = RFC5424Layout.createLayout(null, null, null, "True", null, mdcPrefix, eventPrefix,

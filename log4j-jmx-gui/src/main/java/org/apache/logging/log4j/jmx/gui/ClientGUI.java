@@ -69,6 +69,7 @@ import org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean;
  */
 public class ClientGUI extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
+    private static final int INITIAL_STRING_WRITER_SIZE = 1024;
     private final Client client;
     private Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<ObjectName, Component>();
     private Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
@@ -229,7 +230,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
         System.err.println(msg);
         ex.printStackTrace();
 
-        StringWriter sw = new StringWriter(1024);
+        StringWriter sw = new StringWriter(INITIAL_STRING_WRITER_SIZE);
         ex.printStackTrace(new PrintWriter(sw));
         JOptionPane.showMessageDialog(this, sw.toString(), msg, JOptionPane.ERROR_MESSAGE);
     }

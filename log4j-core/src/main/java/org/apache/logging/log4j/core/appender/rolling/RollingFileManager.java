@@ -161,13 +161,10 @@ public class RollingFileManager extends FileManager {
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
-
             if (descriptor != null) {
-
                 close();
-
                 if (descriptor.getSynchronous() != null) {
-
+                    LOGGER.debug("RollingFileManager executing synchronous {}", descriptor.getSynchronous());
                     try {
                         success = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
@@ -176,6 +173,7 @@ public class RollingFileManager extends FileManager {
                 }
 
                 if (success && descriptor.getAsynchronous() != null) {
+                    LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
                     thread = new Thread(new AsyncAction(descriptor.getAsynchronous(), this));
                     thread.start();
                 }
@@ -302,7 +300,6 @@ public class RollingFileManager extends FileManager {
                 return null;
             }
             final long size = data.append ? file.length() : 0;
-            final long time = file.lastModified();
 
             OutputStream os;
             try {
@@ -310,6 +307,7 @@ public class RollingFileManager extends FileManager {
                 if (data.bufferedIO) {
                     os = new BufferedOutputStream(os);
                 }
+                final long time = file.lastModified(); // LOG4J2-531 create file first so time has valid value
                 return new RollingFileManager(name, data.pattern, os, data.append, size, time, data.policy,
                     data.strategy, data.advertiseURI, data.layout);
             } catch (final FileNotFoundException ex) {

@@ -20,7 +20,11 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.0-rc1" date="2014-02-08" description="Bug fixes and enhancements">
+    <release version="2.0-rc1" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action dev="nickwilliams" type="delete">
+        Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
+        safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
+      </action>
       <action dev="nickwilliams" type="update">
         Renamed the org.apache.logging.log4j.core.appender.db.nosql.mongo package to
         org.apache.logging.log4j.core.appender.db.nosql.mongodb.
@@ -28,6 +32,16 @@
       <action dev="grobmeier" type="update">
         Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to
         org.apache.logging.log4j.core.appender.db.nosql.couchdb.
+      </action>
+      <action issue="LOG4J2-500" dev="rpopma" type="fix">
+        (JMX - ObjectNames changed!) Unloading one web application unloads JMX MBeans for all web applications.
+      </action>
+      <action issue="LOG4J2-507" dev="ggregory" type="update">
+        Space Level numbers by 100 instead of 1.
+      </action>
+      <action issue="LOG4J2-531" dev="rpopma" type="fix" due-to="Geoff Ballinger">
+        Fixed bugs where rolled log files were overwritten by RollingFile appender with 
+        composite time and size based policies.
       </action>
       <action issue="LOG4J2-475" dev="nickwilliams" type="fix" due-to="Matt Sicker">
         Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook.
@@ -51,16 +65,9 @@
         Fixed inability to recover from lost database connection in database appenders by connecting (borrowing from
         pool) on new write internal or on flush.
       </action>
-      <action dev="nickwilliams" type="delete">
-        Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
-        safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
-      </action>
       <action issue="LOG4J2-530" dev="rpopma" type="add">
         (JMX) JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean
         server.
-      </action>
-      <action issue="LOG4J2-500" dev="rpopma" type="fix">
-        (JMX) Unloading one webapp unloads JMX MBeans for all webapps.
       </action>
       <action issue="LOG4J2-511" dev="rpopma" type="fix" due-to="James Pretorius">
         Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first
@@ -105,9 +112,6 @@
       </action>
       <action issue="LOG4J2-41" dev="rgoers" type="update" due-to="Nick Williams">
         Add support for custom logging levels.
-      </action>
-      <action issue="LOG4J2-507" dev="ggregory" type="update">
-        Space Level numbers by 100 instead of 1.
       </action>
       <action issue="LOG4J2-406" dev="rpopma" type="fix" due-to="Kerrigan Joseph">
         (JMX) Unregister all log4j JMX MBeans when the LoggerContext is stopped
