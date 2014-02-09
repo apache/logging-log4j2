@@ -69,8 +69,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private static final String SHUTDOWN = "Shutdown";
-
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
     private static final int SHUTDOWN_WAIT = 60;
