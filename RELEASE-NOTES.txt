@@ -107,6 +107,7 @@ o LOG4J2-507:  Space Level numbers by 100 instead of 1.
 o LOG4J2-490:  Update EasyMock to version 3.2. Thanks to Matt Sicker. 
 o LOG4J2-453:  Update Flume Appender to use Flume 1.4.0. 
 o LOG4J2-528:  Rename package org.apache.logging.log4j.core.appender.rolling.helper to org.apache.logging.log4j.core.appender.rolling.action. 
+o LOG4J2-532:  Resource leak in Flume appender when it cannot create a BerkeleyDB db. 
 
 
 Apache Log4j 2.0-rc1 requires a minimum of Java 6 to build and run. Basic compatibility with
