@@ -50,35 +50,42 @@ public final class Level implements Comparable<Level>, Serializable {
     /**
      * No events will be logged.
      */
-    public static Level OFF;
+    public static final Level OFF;
+    
     /**
      * A severe error that will prevent the application from continuing.
      */
-    public static Level FATAL;
+    public static final Level FATAL;
+    
     /**
      * An error in the application, possibly recoverable.
      */
-    public static Level ERROR;
+    public static final Level ERROR;
+    
     /**
      * An event that might possible lead to an error.
      */
-    public static Level WARN;
+    public static final Level WARN;
+    
     /**
      * An event for informational purposes.
      */
-    public static Level INFO;
+    public static final Level INFO;
+    
     /**
      * A general debugging event.
      */
-    public static Level DEBUG;
+    public static final Level DEBUG;
+    
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    public static Level TRACE;
+    public static final Level TRACE;
+    
     /**
      * All events should be logged.
      */
-    public static Level ALL;
+    public static final Level ALL;
 
     static {
         OFF = new Level("OFF", StandardLevel.OFF.intLevel());
@@ -110,11 +117,11 @@ public final class Level implements Comparable<Level>, Serializable {
         }
     }
 
-    public final int intLevel() {
+    public int intLevel() {
         return this.intLevel;
     }
 
-    public final StandardLevel getStandardLevel() {
+    public StandardLevel getStandardLevel() {
         return standardLevel;
     }
 
@@ -125,7 +132,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean isAtLeastAsSpecificAs(final Level level) {
+    public boolean isAtLeastAsSpecificAs(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -136,7 +143,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean isAtLeastAsSpecificAs(final int level) {
+    public boolean isAtLeastAsSpecificAs(final int level) {
         return this.intLevel <= level;
     }
 
@@ -145,7 +152,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean lessOrEqual(final Level level) {
+    public boolean lessOrEqual(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -154,42 +161,42 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean lessOrEqual(final int level) {
+    public boolean lessOrEqual(final int level) {
         return this.intLevel <= level;
     }
 
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public final Level clone() throws CloneNotSupportedException {
+    public Level clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
 
     @Override
-    public final int compareTo(Level other) {
+    public int compareTo(Level other) {
         return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
     }
 
     @Override
-    public final boolean equals(Object other) {
+    public boolean equals(Object other) {
         return other instanceof Level && other == this;
     }
 
-    public final Class<Level> getDeclaringClass() {
+    public Class<Level> getDeclaringClass() {
         return Level.class;
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this.name.hashCode();
     }
 
 
-    public final String name() {
+    public String name() {
         return this.name;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return this.name;
     }
 
@@ -281,7 +288,7 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     // for deserialization
-    protected final Object readResolve() throws ObjectStreamException {
+    protected Object readResolve() throws ObjectStreamException {
         return Level.valueOf(this.name);
     }
 }

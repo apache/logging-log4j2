@@ -70,10 +70,8 @@ public class AppenderControl extends AbstractFilterable {
                 return;
             }
         }
-        if (level != null) {
-            if (intLevel < event.getLevel().intLevel()) {
-                return;
-            }
+        if (level != null && intLevel < event.getLevel().intLevel()) {
+            return;
         }
         if (recursive.get() != null) {
             appender.getHandler().error("Recursive call to appender " + appender.getName());

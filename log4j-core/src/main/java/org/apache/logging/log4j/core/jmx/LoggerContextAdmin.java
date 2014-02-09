@@ -246,6 +246,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
      * @return the {@code ObjectName}
      * @see LoggerContextAdminMBean#PATTERN
      */
+    @Override
     public ObjectName getObjectName() {
         return objectName;
     }

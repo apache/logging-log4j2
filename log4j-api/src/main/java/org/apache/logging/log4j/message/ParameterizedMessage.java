@@ -142,11 +142,9 @@ public class ParameterizedMessage implements Message {
         }
         final int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;
-        if (argsCount < arguments.length) {
-            if (throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
-                throwable = (Throwable) arguments[arguments.length - 1];
-                resultArgCount--;
-            }
+        if (argsCount < arguments.length && throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
+            throwable = (Throwable) arguments[arguments.length - 1];
+            resultArgCount--;
         }
         argArray = new Object[resultArgCount];
         for (int i = 0; i < resultArgCount; ++i) {
@@ -267,34 +265,31 @@ public class ParameterizedMessage implements Message {
             if (curChar == ESCAPE_CHAR) {
                 escapeCounter++;
             } else {
-                if (curChar == DELIM_START) {
-                    if (i < messagePattern.length() - 1) {
-                        if (messagePattern.charAt(i + 1) == DELIM_STOP) {
-                            // write escaped escape chars
-                            final int escapedEscapes = escapeCounter / 2;
-                            for (int j = 0; j < escapedEscapes; j++) {
-                                result.append(ESCAPE_CHAR);
-                            }
-
-                            if (escapeCounter % 2 == 1) {
-                                // i.e. escaped
-                                // write escaped escape chars
-                                result.append(DELIM_START);
-                                result.append(DELIM_STOP);
-                            } else {
-                                // unescaped
-                                if (currentArgument < arguments.length) {
-                                    result.append(arguments[currentArgument]);
-                                } else {
-                                    result.append(DELIM_START).append(DELIM_STOP);
-                                }
-                                currentArgument++;
-                            }
-                            i++;
-                            escapeCounter = 0;
-                            continue;
-                        }
+                if (curChar == DELIM_START && i < messagePattern.length() - 1
+                        && messagePattern.charAt(i + 1) == DELIM_STOP) {
+                    // write escaped escape chars
+                    final int escapedEscapes = escapeCounter / 2;
+                    for (int j = 0; j < escapedEscapes; j++) {
+                        result.append(ESCAPE_CHAR);
                     }
+
+                    if (escapeCounter % 2 == 1) {
+                        // i.e. escaped
+                        // write escaped escape chars
+                        result.append(DELIM_START);
+                        result.append(DELIM_STOP);
+                    } else {
+                        // unescaped
+                        if (currentArgument < arguments.length) {
+                            result.append(arguments[currentArgument]);
+                        } else {
+                            result.append(DELIM_START).append(DELIM_STOP);
+                        }
+                        currentArgument++;
+                    }
+                    i++;
+                    escapeCounter = 0;
+                    continue;
                 }
                 // any other char beside ESCAPE or DELIM_START/STOP-combo
                 // write unescaped escape chars
@@ -334,13 +329,9 @@ public class ParameterizedMessage implements Message {
             if (curChar == ESCAPE_CHAR) {
                 isEscaped = !isEscaped;
             } else if (curChar == DELIM_START) {
-                if (!isEscaped) {
-                    if (i < messagePattern.length() - 1) {
-                        if (messagePattern.charAt(i + 1) == DELIM_STOP) {
-                            result++;
-                            i++;
-                        }
-                    }
+                if (!isEscaped && i < messagePattern.length() - 1 && messagePattern.charAt(i + 1) == DELIM_STOP) {
+                    result++;
+                    i++;
                 }
                 isEscaped = false;
             } else {

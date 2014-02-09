@@ -378,11 +378,15 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         if (maxIndex < 0) {
             return null;
         }
+        long start = System.nanoTime();
         int fileIndex = purge(minIndex, maxIndex, manager);
         if (fileIndex < 0) {
             return null;
         }
-
+        if (LOGGER.isTraceEnabled()) {
+            double duration = (System.nanoTime() - start) / (1000.0 * 1000.0 * 1000.0);
+            LOGGER.trace("DefaultRolloverStrategy.purge() took {} seconds", duration);
+        }
         final StringBuilder buf = new StringBuilder(255);
         manager.getPatternProcessor().formatFileName(subst, buf, fileIndex);
         final String currentFileName = manager.getFileName();

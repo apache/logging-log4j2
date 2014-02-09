@@ -240,6 +240,9 @@
       <action issue="LOG4J2-528" dev="ggregory" type="update">
         Rename package org.apache.logging.log4j.core.appender.rolling.helper to org.apache.logging.log4j.core.appender.rolling.action.
       </action>
+      <action issue="LOG4J2-532" dev="ggregory" type="update">
+        Resource leak in Flume appender when it cannot create a BerkeleyDB db.
+      </action>
     </release>
     <release version="2.0-beta9" date="2013-09-14" description="Bug fixes and enhancements">
       <action issue="LOG4J2-317" dev="ggregory" type="update">

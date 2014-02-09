@@ -75,27 +75,26 @@ public class CompositeAction extends AbstractAction {
             }
 
             return true;
-        } else {
-            boolean status = true;
-            IOException exception = null;
+        }
+        boolean status = true;
+        IOException exception = null;
 
-            for (final Action action : actions) {
-                try {
-                    status &= action.execute();
-                } catch (final IOException ex) {
-                    status = false;
+        for (final Action action : actions) {
+            try {
+                status &= action.execute();
+            } catch (final IOException ex) {
+                status = false;
 
-                    if (exception == null) {
-                        exception = ex;
-                    }
+                if (exception == null) {
+                    exception = ex;
                 }
             }
-
-            if (exception != null) {
-                throw exception;
-            }
-
-            return status;
         }
+
+        if (exception != null) {
+            throw exception;
+        }
+
+        return status;
     }
 }

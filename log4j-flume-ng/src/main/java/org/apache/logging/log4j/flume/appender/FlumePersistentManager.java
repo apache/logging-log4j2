@@ -69,8 +69,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private static final String SHUTDOWN = "Shutdown";
-
     private static final String DEFAULT_DATA_DIR = ".log4j/flumeData";
 
     private static final int SHUTDOWN_WAIT = 60;
@@ -392,9 +390,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
         @Override
         public FlumePersistentManager createManager(final String name, final FactoryData data) {
             SecretKey secretKey = null;
-
-            Database database;
-            Environment environment;
+            Database database = null;
+            Environment environment = null;
 
             final Map<String, String> properties = new HashMap<String, String>();
             if (data.properties != null) {
@@ -404,7 +401,6 @@ public class FlumePersistentManager extends FlumeAvroManager {
             }
 
             try {
-
                 final File dir = new File(data.dataDir);
                 FileUtils.mkdir(dir, true);
                 final EnvironmentConfig dbEnvConfig = new EnvironmentConfig();
@@ -418,6 +414,17 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 database = environment.openDatabase(null, name, dbConfig);
             } catch (final Exception ex) {
                 LOGGER.error("Could not create FlumePersistentManager", ex);
+                // For consistency, close database as well as environment even though it should never happen since the
+                // database is that last thing in the block above, but this does guard against a future line being
+                // inserted at the end that would bomb (like some debug logging).
+                if (database != null) {
+                    database.close();
+                    database = null;
+                }
+                if (environment != null) {
+                    environment.close();
+                    environment = null;
+                }
                 return null;
             }
 
@@ -810,7 +817,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         public DaemonThreadFactory() {
             final SecurityManager securityManager = System.getSecurityManager();
-            group = (securityManager != null) ? securityManager.getThreadGroup() :
+            group = securityManager != null ? securityManager.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
             namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
         }

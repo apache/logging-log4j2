@@ -313,7 +313,7 @@ public abstract class ConfigurationFactory {
 
         if (FileUtils.isFile(url)) {
             try {
-                return new ConfigurationSource(is, FileUtils.fileFromURI((url.toURI())));
+                return new ConfigurationSource(is, FileUtils.fileFromURI(url.toURI()));
             } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
             }
@@ -463,7 +463,7 @@ public abstract class ConfigurationFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || (config != null && config.endsWith(type))) {
+                            if (type.equals("*") || config != null && config.endsWith(type)) {
                                 final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
                                     return c;

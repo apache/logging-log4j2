@@ -82,7 +82,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         // From a user's point of view, this means that all log events are
         // _always_ available in the log file, without incurring the overhead
         // of immediateFlush=true.
-        ((RandomAccessFileManager) getManager()).setEndOfBatch(event.isEndOfBatch());
+        getManager().setEndOfBatch(event.isEndOfBatch());
         super.append(event);
     }
 
