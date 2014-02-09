@@ -329,13 +329,9 @@ public class ParameterizedMessage implements Message {
             if (curChar == ESCAPE_CHAR) {
                 isEscaped = !isEscaped;
             } else if (curChar == DELIM_START) {
-                if (!isEscaped) {
-                    if (i < messagePattern.length() - 1) {
-                        if (messagePattern.charAt(i + 1) == DELIM_STOP) {
-                            result++;
-                            i++;
-                        }
-                    }
+                if (!isEscaped && i < messagePattern.length() - 1 && messagePattern.charAt(i + 1) == DELIM_STOP) {
+                    result++;
+                    i++;
                 }
                 isEscaped = false;
             } else {
