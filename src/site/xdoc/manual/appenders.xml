@@ -2145,7 +2145,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             A RollingFileAppender requires a <a href="#TriggeringPolicies">TriggeringPolicy</a> and a
             <a href="#RolloverStrategies">RolloverStrategy</a>. The triggering policy determines if a rollover should
             be performed while the RolloverStrategy defines how the rollover should be done. If no RolloverStrategy
-            is configured, RollingFileAppender will use the <a href="DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+            is configured, RollingFileAppender will use the <a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
           </p>
           <p>
             File locking is not supported by the RollingFileAppender.
