@@ -117,11 +117,11 @@ public final class Level implements Comparable<Level>, Serializable {
         }
     }
 
-    public final int intLevel() {
+    public int intLevel() {
         return this.intLevel;
     }
 
-    public final StandardLevel getStandardLevel() {
+    public StandardLevel getStandardLevel() {
         return standardLevel;
     }
 
@@ -132,7 +132,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean isAtLeastAsSpecificAs(final Level level) {
+    public boolean isAtLeastAsSpecificAs(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -143,7 +143,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean isAtLeastAsSpecificAs(final int level) {
+    public boolean isAtLeastAsSpecificAs(final int level) {
         return this.intLevel <= level;
     }
 
@@ -152,7 +152,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean lessOrEqual(final Level level) {
+    public boolean lessOrEqual(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
@@ -161,42 +161,42 @@ public final class Level implements Comparable<Level>, Serializable {
      * @param level The level to check.
      * @return True if the passed Level is more specific or the same as this Level.
      */
-    public final boolean lessOrEqual(final int level) {
+    public boolean lessOrEqual(final int level) {
         return this.intLevel <= level;
     }
 
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public final Level clone() throws CloneNotSupportedException {
+    public Level clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
 
     @Override
-    public final int compareTo(Level other) {
+    public int compareTo(Level other) {
         return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
     }
 
     @Override
-    public final boolean equals(Object other) {
+    public boolean equals(Object other) {
         return other instanceof Level && other == this;
     }
 
-    public final Class<Level> getDeclaringClass() {
+    public Class<Level> getDeclaringClass() {
         return Level.class;
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this.name.hashCode();
     }
 
 
-    public final String name() {
+    public String name() {
         return this.name;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return this.name;
     }
 
@@ -288,7 +288,7 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     // for deserialization
-    protected final Object readResolve() throws ObjectStreamException {
+    protected Object readResolve() throws ObjectStreamException {
         return Level.valueOf(this.name);
     }
 }
