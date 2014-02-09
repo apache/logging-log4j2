@@ -808,7 +808,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         public DaemonThreadFactory() {
             final SecurityManager securityManager = System.getSecurityManager();
-            group = (securityManager != null) ? securityManager.getThreadGroup() :
+            group = securityManager != null ? securityManager.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
             namePrefix = "DaemonPool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
         }
