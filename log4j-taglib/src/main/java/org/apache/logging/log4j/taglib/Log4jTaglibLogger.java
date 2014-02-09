@@ -30,7 +30,7 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 class Log4jTaglibLogger extends AbstractLoggerWrapper {
     private static final long serialVersionUID = 1L;
 
-	public Log4jTaglibLogger(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
+    public Log4jTaglibLogger(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
         super(logger, name, messageFactory);
     }
 

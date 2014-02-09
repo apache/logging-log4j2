@@ -51,7 +51,7 @@ public class Client {
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(final JMXConnector connector) throws JMException, IOException {
+    public Client(final JMXConnector connector) throws MalformedObjectNameException, IOException {
         this.connector = Assert.isNotNull(connector, "JMXConnector");
         this.connector.connect();
         this.connection = connector.getMBeanServerConnection();
@@ -68,12 +68,12 @@ public class Client {
      *             one of the remote mbeans
      * @throws IOException if the connection failed
      */
-    public Client(final MBeanServerConnection mBeanServerConnection) throws JMException, IOException {
+    public Client(final MBeanServerConnection mBeanServerConnection) throws MalformedObjectNameException, IOException {
         this.connection = mBeanServerConnection;
         init();
     }
 
-    private void init() throws JMException, IOException {
+    private void init() throws MalformedObjectNameException, IOException {
     }
 
     private Set<ObjectName> find(String pattern) throws JMException, IOException {
@@ -87,8 +87,8 @@ public class Client {
      * remote {@code LoggerContextAdminMBean}s.
      * 
      * @return a list of proxies to the remote {@code LoggerContextAdminMBean}s
-     * @throws IOException
-     * @throws JMException
+     * @throws IOException If an I/O error occurred
+     * @throws JMException If a management error occurred
      */
     public List<LoggerContextAdminMBean> getLoggerContextAdmins() throws JMException, IOException {
         List<LoggerContextAdminMBean> result = new ArrayList<LoggerContextAdminMBean>();
@@ -134,11 +134,11 @@ public class Client {
      * 
      * @param contextName search key
      * @return StatusLoggerAdminMBean or null
-     * @throws MalformedObjectNameException
-     * @throws IOException
+     * @throws MalformedObjectNameException If an object name is malformed
+     * @throws IOException If an I/O error occurred
      */
-    public StatusLoggerAdminMBean getStatusLoggerAdmin(String contextName) throws MalformedObjectNameException,
-            IOException {
+    public StatusLoggerAdminMBean getStatusLoggerAdmin(String contextName)
+            throws MalformedObjectNameException, IOException {
         final String pattern = StatusLoggerAdminMBean.PATTERN;
         final String mbean = String.format(pattern, Server.escape(contextName));
         final ObjectName search = new ObjectName(mbean);
