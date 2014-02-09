@@ -33,6 +33,9 @@ o LOG4J2-401:  Configure FileAppender buffer size.
 o LOG4J2-402:  Configure RandomAccessFileAppender buffer size. 
 
 Fixed Bugs:
+o LOG4J2-500:  (JMX - ObjectNames changed!) Unloading one web application unloads JMX MBeans for all web applications. 
+o LOG4J2-531:  Fixed bugs where rolled log files were overwritten by RollingFile appender with 
+        composite time and size based policies. Thanks to Geoff Ballinger. 
 o LOG4J2-475:  Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook. Thanks to Matt Sicker. 
 o LOG4J2-489:  Fixed the JPAAppender's overuse of transactions by connecting (borrowing from pool) on new write internal or on
         flush. 
@@ -43,7 +46,6 @@ o LOG4J2-442:  Fixed problem with JDBC and JPA appender connectivity in WebSpher
 o LOG4J2-438:  Ensured the JDBCAppender commits transactions after a single write or a flush of multiple writes. 
 o LOG4J2-407:  Fixed inability to recover from lost database connection in database appenders by connecting (borrowing from
         pool) on new write internal or on flush. 
-o LOG4J2-500:  (JMX) Unloading one webapp unloads JMX MBeans for all webapps. 
 o LOG4J2-511:  Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first
         before stopping other appenders. Thanks to James Pretorius. 
 o LOG4J2-392:  Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first
@@ -102,8 +104,8 @@ o Renamed the org.apache.logging.log4j.core.appender.db.nosql.mongo package to
         org.apache.logging.log4j.core.appender.db.nosql.mongodb. 
 o Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to
         org.apache.logging.log4j.core.appender.db.nosql.couchdb. 
-o LOG4J2-41:  Add support for custom logging levels. Thanks to Nick Williams. 
 o LOG4J2-507:  Space Level numbers by 100 instead of 1. 
+o LOG4J2-41:  Add support for custom logging levels. Thanks to Nick Williams. 
 o LOG4J2-490:  Update EasyMock to version 3.2. Thanks to Matt Sicker. 
 o LOG4J2-453:  Update Flume Appender to use Flume 1.4.0. 
 o LOG4J2-528:  Rename package org.apache.logging.log4j.core.appender.rolling.helper to org.apache.logging.log4j.core.appender.rolling.action. 
