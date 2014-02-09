@@ -142,11 +142,9 @@ public class ParameterizedMessage implements Message {
         }
         final int argsCount = countArgumentPlaceholders(messagePattern);
         int resultArgCount = arguments.length;
-        if (argsCount < arguments.length) {
-            if (throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
-                throwable = (Throwable) arguments[arguments.length - 1];
-                resultArgCount--;
-            }
+        if (argsCount < arguments.length && throwable == null && arguments[arguments.length - 1] instanceof Throwable) {
+            throwable = (Throwable) arguments[arguments.length - 1];
+            resultArgCount--;
         }
         argArray = new Object[resultArgCount];
         for (int i = 0; i < resultArgCount; ++i) {
