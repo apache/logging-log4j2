@@ -463,7 +463,7 @@ public abstract class ConfigurationFactory {
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
-                            if (type.equals("*") || (config != null && config.endsWith(type))) {
+                            if (type.equals("*") || config != null && config.endsWith(type)) {
                                 final Configuration c = factory.getConfiguration(source);
                                 if (c != null) {
                                     return c;
