@@ -313,7 +313,7 @@ public abstract class ConfigurationFactory {
 
         if (FileUtils.isFile(url)) {
             try {
-                return new ConfigurationSource(is, FileUtils.fileFromURI((url.toURI())));
+                return new ConfigurationSource(is, FileUtils.fileFromURI(url.toURI()));
             } catch (final URISyntaxException ex) {
                 // Just ignore the exception.
             }
