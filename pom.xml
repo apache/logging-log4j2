@@ -669,8 +669,8 @@
           </dependency>
         </dependencies>
         <configuration>
-         <!-- only build English site even on other language OS -->
-         <locales>en</locales>
+          <!-- only build English site even on other language OS -->
+          <locales>en</locales>
           <!-- Exclude the navigation file for Maven 1 sites
                and the changes file used by the changes-plugin,
                as they interfere with the site generation. -->
