@@ -417,10 +417,10 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         Action compressAction = null;
 
         if (renameTo.endsWith(EXT_GZIP)) {
-            renameTo = renameTo.substring(0, renameTo.length() - 3);
+            renameTo = renameTo.substring(0, renameTo.length() - EXT_GZIP.length());
             compressAction = new GZCompressAction(new File(renameTo), new File(compressedName), true);
         } else if (renameTo.endsWith(EXT_ZIP)) {
-            renameTo = renameTo.substring(0, renameTo.length() - 4);
+            renameTo = renameTo.substring(0, renameTo.length() - EXT_ZIP.length());
             compressAction = new ZipCompressAction(new File(renameTo), new File(compressedName), true, 
                     compressionLevel);
         }
