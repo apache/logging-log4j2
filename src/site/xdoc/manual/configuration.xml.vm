@@ -294,7 +294,7 @@ public class Bar {
           <p>
             Chainsaw automatically discovers log4j's multicastdns-generated advertisements and displays those discovered
             advertisements in Chainsaw's Zeroconf tab (if the jmdns library is in Chainsaw's classpath).  To begin parsing and tailing
-            a log file provided in an advertisement, just double-click the advertisement entry in Chainsaw's the Zeroconf tab.
+            a log file provided in an advertisement, just double-click the advertised entry in Chainsaw's Zeroconf tab.
             Currently, Chainsaw only supports FileAppender advertisements.
           </p>
           <p>
