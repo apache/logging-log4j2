@@ -190,9 +190,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         String highFilename = subst.replace(buf);
 
         if (highFilename.endsWith(EXT_GZIP)) {
-            suffixLength = 3;
+            suffixLength = EXT_GZIP.length();
         } else if (highFilename.endsWith(EXT_ZIP)) {
-            suffixLength = 4;
+            suffixLength = EXT_ZIP.length();
         }
 
         int maxIndex = 0;
