@@ -307,9 +307,9 @@ public class DefaultRolloverStrategy implements RolloverStrategy {
         String lowFilename = subst.replace(buf);
 
         if (lowFilename.endsWith(EXT_GZIP)) {
-            suffixLength = 3;
+            suffixLength = EXT_GZIP.length();
         } else if (lowFilename.endsWith(EXT_ZIP)) {
-            suffixLength = 4;
+            suffixLength = EXT_ZIP.length();
         }
 
         for (int i = lowIndex; i <= highIndex; i++) {
