@@ -284,392 +284,6 @@
 </Configuration>]]></pre>
           </p>
         </subsection>
-			<a name="RandomAccessFileAppender" />
-			<subsection name="RandomAccessFileAppender (was FastFileAppender)">
-			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
-			  RandomAccessFile. <b>Configurations using the <code>FastFile</code> element
-			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</b></i></p>
-			<p><i>Experimental, may replace FileAppender in a future release.</i></p>
-				<p>
-					The RandomAccessFileAppender is similar to the standard
-					<a href="#FileAppender">FileAppender</a>
-					except it is always buffered (this cannot be switched off)
-					and internally it uses a
-					<tt>ByteBuffer + RandomAccessFile</tt>
-					instead of a
-					<tt>BufferedOutputStream</tt>.
-					We saw a 20-200% performance improvement compared to
-					FileAppender with "bufferedIO=true" in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
-					Similar to the FileAppender,
-					RandomAccessFileAppender uses a RandomAccessFileManager to actually perform the
-					file I/O. While RandomAccessFileAppender
-					from different Configurations
-					cannot be shared, the RandomAccessFileManagers can be if the Manager is
-					accessible. For example, two web applications in a
-					servlet container can have
-					their own configuration and safely
-					write to the same file if Log4j
-					is in a ClassLoader that is common to
-					both of them.
-				</p>
-				<table>
-					<tr>
-						<th>Parameter Name</th>
-						<th>Type</th>
-						<th>Description</th>
-					</tr>
-					<tr>
-						<td>append</td>
-						<td>boolean</td>
-						<td>When true - the default, records will be appended to the end
-							of the file. When set to false,
-							the file will be cleared before
-							new records are written.
-						</td>
-					</tr>
-					<tr>
-						<td>fileName</td>
-						<td>String</td>
-						<td>The name of the file to write to. If the file, or any of its
-							parent directories, do not exist,
-							they will be created.
-						</td>
-					</tr>
-					<tr>
-						<td>filters</td>
-						<td>Filter</td>
-						<td>A Filter to determine if the event should be handled by this
-							Appender. More than one Filter
-							may be used by using a CompositeFilter.
-						</td>
-					</tr>
-					<tr>
-						<td>immediateFlush</td>
-						<td>boolean</td>
-		                <td>
-                          <p>
-                            When set to true - the default, each write will be followed by a flush.
-		                    This will guarantee the data is written
-		                    to disk but could impact performance.
-                          </p>
-		                  <p>
-                            Flushing after every write is only useful when using this
-						    appender with synchronous loggers. Asynchronous loggers and
-						    appenders will automatically flush at the end of a batch of events,
-						    even if immediateFlush is set to false. This also guarantees
-						    the data is written to disk but is more efficient.
-                          </p>
-		                </td>
-					</tr>
-                    <tr>
-                      <td>bufferSize</td>
-                      <td>int</td>
-                      <td>The buffer size, defaults to 262,144 bytes (256 * 1024).</td>
-                    </tr>
-					<tr>
-						<td>layout</td>
-						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
-					</tr>
-					<tr>
-						<td>name</td>
-						<td>String</td>
-						<td>The name of the Appender.</td>
-					</tr>
-                    <tr>
-                      <td>ignoreExceptions</td>
-                      <td>boolean</td>
-                      <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-                        internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-                        caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-                        <a href="#FailoverAppender">FailoverAppender</a>.</td>
-                    </tr>
-					<caption align="top">RandomAccessFileAppender Parameters</caption>
-				</table>
-				<p>
-					Here is a sample RandomAccessFile configuration:
-
-					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
-  <Appenders>
-    <RandomAccessFile name="MyFile" fileName="logs/app.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="MyFile"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-				</p>
-			</subsection>
-			<a name="RollingRandomAccessFileAppender" />
-			<subsection name="RollingRandomAccessFileAppender (was FastRollingFileAppender)">
-			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
-			  RollingRandomAccessFile. <b>Configurations using the <code>FastRollingFile</code> element
-			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</b></i></p>
-			<p><i>Experimental, may replace RollingFileAppender in a future release.</i></p>
-				<p>
-					The RollingRandomAccessFileAppender is similar to the standard
-					<a href="#RollingFileAppender">RollingFileAppender</a>
-					except it is always buffered (this cannot be switched off)
-					and
-					internally it uses a
-					<tt>ByteBuffer + RandomAccessFile</tt>
-					instead of a
-					<tt>BufferedOutputStream</tt>.
-					We saw a 20-200% performance improvement compared to
-					RollingFileAppender with "bufferedIO=true"
-					in our
-					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
-
-					The RollingRandomAccessFileAppender writes
-					to the File named in the
-					fileName parameter
-					and rolls the file over according the
-					TriggeringPolicy
-					and the RolloverPolicy.
-
-					Similar to the RollingFileAppender,
-					RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
-					to actually perform the
-					file I/O and perform the rollover. While RollingRandomAccessFileAppender
-					from different Configurations cannot be
-					shared, the RollingRandomAccessFileManagers can be
-					if the Manager is accessible.
-					For example, two web applications in a servlet
-					container can have their own configuration and safely write to the
-					same file if Log4j is in a ClassLoader that is common to both of them.
-				</p>
-				<p>
-					A RollingRandomAccessFileAppender requires a
-					<a href="#TriggeringPolicies">TriggeringPolicy</a>
-					and a
-					<a href="#RolloverStrategies">RolloverStrategy</a>.
-					The triggering policy determines if a rollover should
-					be performed
-					while the RolloverStrategy defines how the rollover
-					should be done.
-					If no RolloverStrategy
-					is configured, RollingRandomAccessFileAppender will
-					use the
-					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
-				</p>
-				<p>
-					File locking is not supported by the RollingRandomAccessFileAppender.
-				</p>
-				<table>
-					<tr>
-						<th>Parameter Name</th>
-						<th>Type</th>
-						<th>Description</th>
-					</tr>
-					<tr>
-						<td>append</td>
-						<td>boolean</td>
-						<td>When true - the default, records will be appended to the end
-							of the file. When set to false,
-							the file will be cleared before
-							new records are written.
-						</td>
-					</tr>
-					<tr>
-						<td>filter</td>
-						<td>Filter</td>
-						<td>A Filter to determine if the event should be handled by this
-							Appender. More than one Filter
-							may be used by using a
-							CompositeFilter.
-						</td>
-					</tr>
-					<tr>
-						<td>fileName</td>
-						<td>String</td>
-						<td>The name of the file to write to. If the file, or any of its
-							parent directories, do not exist,
-							they will be created.
-						</td>
-					</tr>
-					<tr>
-						<td>filePattern</td>
-						<td>String</td>
-						<td>
-							The pattern of the file name of the archived log file. The format
-							of the pattern should is
-							dependent on the RolloverPolicy that is
-							used. The DefaultRolloverPolicy
-							will accept both
-							a date/time
-							pattern compatible with
-							<a
-								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
-								SimpleDateFormat</a>
-
-							and/or a %i which represents an integer counter. The pattern
-							also supports interpolation at
-							runtime so any of the Lookups (such
-							as the
-							<a href="./lookups.html#DateLookup">DateLookup</a>
-							can
-							be included in the pattern.
-						</td>
-					</tr>
-					<tr>
-						<td>immediateFlush</td>
-						<td>boolean</td>
-		              <td><p>When set to true - the default, each write will be followed by a flush.
-		                This will guarantee the data is written
-		                to disk but could impact performance.</p>
-		                <p>Flushing after every write is only useful when using this
-						appender with synchronous loggers. Asynchronous loggers and
-						appenders will automatically flush at the end of a batch of events,
-						even if immediateFlush is set to false. This also guarantees
-						the data is written to disk but is more efficient.</p>
-		              </td>
-					</tr>
-					<tr>
-						<td>layout</td>
-						<td>Layout</td>
-						<td>The Layout to use to format the LogEvent</td>
-					</tr>
-
-					<tr>
-						<td>name</td>
-						<td>String</td>
-						<td>The name of the Appender.</td>
-					</tr>
-					<tr>
-						<td>policy</td>
-						<td>TriggeringPolicy</td>
-						<td>The policy to use to determine if a rollover should occur.
-						</td>
-					</tr>
-					<tr>
-						<td>strategy</td>
-						<td>RolloverStrategy</td>
-						<td>The strategy to use to determine the name and location of the
-							archive file.
-						</td>
-					</tr>
-          <tr>
-            <td>ignoreExceptions</td>
-            <td>boolean</td>
-            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
-              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
-              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
-              <a href="#FailoverAppender">FailoverAppender</a>.</td>
-          </tr>
-					<caption align="top">RollingRandomAccessFileAppender Parameters</caption>
-				</table>
-				<a name="FRFA_TriggeringPolicies" />
-				<h4>Triggering Policies</h4>
-				<p>
-					See
-					<a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.
-				</p>
-				<a name="FRFA_RolloverStrategies" />
-				<h4>Rollover Strategies</h4>
-				<p>
-					See
-					<a href="#RolloverStrategies">RollingFileAppender Rollover Strategies</a>.
-				</p>
-
-				<p>
-					Below is a sample configuration that uses a RollingRandomAccessFileAppender
-					with both the time and size based
-					triggering policies, will create
-					up to 7 archives on the same day (1-7) that
-					are stored in a
-					directory
-					based on the current year and month, and will compress
-					each
-					archive using gzip:
-
-					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-				</p>
-				<p>
-					This second example shows a rollover strategy that will keep up to
-					20 files before removing them.
-					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy />
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-      <DefaultRolloverStrategy max="20"/>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-				</p>
-				<p>
-					Below is a sample configuration that uses a RollingRandomAccessFileAppender
-					with both the time and size based
-					triggering policies, will create
-					up to 7 archives on the same day (1-7) that
-					are stored in a
-					directory
-					based on the current year and month, and will compress
-					each
-					archive using gzip and will roll every 6 hours when the hour is
-					divisible
-					by 6:
-
-					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
-  <Appenders>
-    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
-                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
-        <SizeBasedTriggeringPolicy size="250 MB"/>
-      </Policies>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="error">
-      <AppenderRef ref="RollingRandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>]]></pre>
-				</p>
-			</subsection>
         <a name="FileAppender"/>
         <subsection name="FileAppender">
           <p>The FileAppender is an OutputStreamAppender that writes to the File named in the fileName parameter. The
@@ -1989,6 +1603,129 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           OutputStreamManager to handle the actual I/O, allowing the stream to be shared by Appenders in multiple
           configurations.
         </subsection>
+			<a name="RandomAccessFileAppender" />
+			<subsection name="RandomAccessFileAppender">
+			<p><i>(Experimental, may replace FileAppender in a future release.)</i></p>
+			<p><i>As of beta-9, the name of this appender has been changed from FastFile to
+			  RandomAccessFile. Configurations using the <code>FastFile</code> element
+			  no longer work and should be modified to use the <code>RandomAccessFile</code> element.</i></p>
+				<p>
+					The RandomAccessFileAppender is similar to the standard
+					<a href="#FileAppender">FileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					FileAppender with "bufferedIO=true" in our
+					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+					Similar to the FileAppender,
+					RandomAccessFileAppender uses a RandomAccessFileManager to actually perform the
+					file I/O. While RandomAccessFileAppender
+					from different Configurations
+					cannot be shared, the RandomAccessFileManagers can be if the Manager is
+					accessible. For example, two web applications in a
+					servlet container can have
+					their own configuration and safely
+					write to the same file if Log4j
+					is in a ClassLoader that is common to
+					both of them.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filters</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+		                <td>
+                          <p>
+                            When set to true - the default, each write will be followed by a flush.
+		                    This will guarantee the data is written
+		                    to disk but could impact performance.
+                          </p>
+		                  <p>
+                            Flushing after every write is only useful when using this
+						    appender with synchronous loggers. Asynchronous loggers and
+						    appenders will automatically flush at the end of a batch of events,
+						    even if immediateFlush is set to false. This also guarantees
+						    the data is written to disk but is more efficient.
+                          </p>
+		                </td>
+					</tr>
+                    <tr>
+                      <td>bufferSize</td>
+                      <td>int</td>
+                      <td>The buffer size, defaults to 262,144 bytes (256 * 1024).</td>
+                    </tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+                    <tr>
+                      <td>ignoreExceptions</td>
+                      <td>boolean</td>
+                      <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+                        internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+                        caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+                        <a href="#FailoverAppender">FailoverAppender</a>.</td>
+                    </tr>
+					<caption align="top">RandomAccessFileAppender Parameters</caption>
+				</table>
+				<p>
+					Here is a sample RandomAccessFile configuration:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <RandomAccessFile name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+    </RandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="MyFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+				</p>
+			</subsection>
         <a name="RewriteAppender"/>
         <subsection name="RewriteAppender">
           <p>
@@ -2526,6 +2263,269 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 </Configuration>]]></pre>
           </p>
         </subsection>
+			<a name="RollingRandomAccessFileAppender" />
+			<subsection name="RollingRandomAccessFileAppender">
+			<p><i>(Experimental, may replace RollingFileAppender in a future release.)</i></p>
+			<p><i>As of beta-9, the name of this appender has been changed from FastRollingFile to
+			  RollingRandomAccessFile. Configurations using the <code>FastRollingFile</code> element
+			  no longer work and should be modified to use the <code>RollingRandomAccessFile</code> element.</i></p>
+				<p>
+					The RollingRandomAccessFileAppender is similar to the standard
+					<a href="#RollingFileAppender">RollingFileAppender</a>
+					except it is always buffered (this cannot be switched off)
+					and
+					internally it uses a
+					<tt>ByteBuffer + RandomAccessFile</tt>
+					instead of a
+					<tt>BufferedOutputStream</tt>.
+					We saw a 20-200% performance improvement compared to
+					RollingFileAppender with "bufferedIO=true"
+					in our
+					<a href="async.html#RandomAccessFileAppenderPerformance">measurements</a>.
+
+					The RollingRandomAccessFileAppender writes
+					to the File named in the
+					fileName parameter
+					and rolls the file over according the
+					TriggeringPolicy
+					and the RolloverPolicy.
+
+					Similar to the RollingFileAppender,
+					RollingRandomAccessFileAppender uses a RollingRandomAccessFileManager
+					to actually perform the
+					file I/O and perform the rollover. While RollingRandomAccessFileAppender
+					from different Configurations cannot be
+					shared, the RollingRandomAccessFileManagers can be
+					if the Manager is accessible.
+					For example, two web applications in a servlet
+					container can have their own configuration and safely write to the
+					same file if Log4j is in a ClassLoader that is common to both of them.
+				</p>
+				<p>
+					A RollingRandomAccessFileAppender requires a
+					<a href="#TriggeringPolicies">TriggeringPolicy</a>
+					and a
+					<a href="#RolloverStrategies">RolloverStrategy</a>.
+					The triggering policy determines if a rollover should
+					be performed
+					while the RolloverStrategy defines how the rollover
+					should be done.
+					If no RolloverStrategy
+					is configured, RollingRandomAccessFileAppender will
+					use the
+					<a href="#DefaultRolloverStrategy">DefaultRolloverStrategy</a>.
+				</p>
+				<p>
+					File locking is not supported by the RollingRandomAccessFileAppender.
+				</p>
+				<table>
+					<tr>
+						<th>Parameter Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>append</td>
+						<td>boolean</td>
+						<td>When true - the default, records will be appended to the end
+							of the file. When set to false,
+							the file will be cleared before
+							new records are written.
+						</td>
+					</tr>
+					<tr>
+						<td>filter</td>
+						<td>Filter</td>
+						<td>A Filter to determine if the event should be handled by this
+							Appender. More than one Filter
+							may be used by using a
+							CompositeFilter.
+						</td>
+					</tr>
+					<tr>
+						<td>fileName</td>
+						<td>String</td>
+						<td>The name of the file to write to. If the file, or any of its
+							parent directories, do not exist,
+							they will be created.
+						</td>
+					</tr>
+					<tr>
+						<td>filePattern</td>
+						<td>String</td>
+						<td>
+							The pattern of the file name of the archived log file. The format
+							of the pattern should is
+							dependent on the RolloverPolicy that is
+							used. The DefaultRolloverPolicy
+							will accept both
+							a date/time
+							pattern compatible with
+							<a
+								href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+								SimpleDateFormat</a>
+
+							and/or a %i which represents an integer counter. The pattern
+							also supports interpolation at
+							runtime so any of the Lookups (such
+							as the
+							<a href="./lookups.html#DateLookup">DateLookup</a>
+							can
+							be included in the pattern.
+						</td>
+					</tr>
+					<tr>
+						<td>immediateFlush</td>
+						<td>boolean</td>
+		              <td><p>When set to true - the default, each write will be followed by a flush.
+		                This will guarantee the data is written
+		                to disk but could impact performance.</p>
+		                <p>Flushing after every write is only useful when using this
+						appender with synchronous loggers. Asynchronous loggers and
+						appenders will automatically flush at the end of a batch of events,
+						even if immediateFlush is set to false. This also guarantees
+						the data is written to disk but is more efficient.</p>
+		              </td>
+					</tr>
+					<tr>
+						<td>layout</td>
+						<td>Layout</td>
+						<td>The Layout to use to format the LogEvent</td>
+					</tr>
+
+					<tr>
+						<td>name</td>
+						<td>String</td>
+						<td>The name of the Appender.</td>
+					</tr>
+					<tr>
+						<td>policy</td>
+						<td>TriggeringPolicy</td>
+						<td>The policy to use to determine if a rollover should occur.
+						</td>
+					</tr>
+					<tr>
+						<td>strategy</td>
+						<td>RolloverStrategy</td>
+						<td>The strategy to use to determine the name and location of the
+							archive file.
+						</td>
+					</tr>
+          <tr>
+            <td>ignoreExceptions</td>
+            <td>boolean</td>
+            <td>The default is <code>true</code>, causing exceptions encountered while appending events to be
+              internally logged and then ignored. When set to <code>false</code> exceptions will be propagated to the
+              caller, instead. You must set this to <code>false</code> when wrapping this Appender in a
+              <a href="#FailoverAppender">FailoverAppender</a>.</td>
+          </tr>
+					<caption align="top">RollingRandomAccessFileAppender Parameters</caption>
+				</table>
+				<a name="FRFA_TriggeringPolicies" />
+				<h4>Triggering Policies</h4>
+				<p>
+					See
+					<a href="#TriggeringPolicies">RollingFileAppender Triggering Policies</a>.
+				</p>
+				<a name="FRFA_RolloverStrategies" />
+				<h4>Rollover Strategies</h4>
+				<p>
+					See
+					<a href="#RolloverStrategies">RollingFileAppender Rollover Strategies</a>.
+				</p>
+
+				<p>
+					Below is a sample configuration that uses a RollingRandomAccessFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+				</p>
+				<p>
+					This second example shows a rollover strategy that will keep up to
+					20 files before removing them.
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+				</p>
+				<p>
+					Below is a sample configuration that uses a RollingRandomAccessFileAppender
+					with both the time and size based
+					triggering policies, will create
+					up to 7 archives on the same day (1-7) that
+					are stored in a
+					directory
+					based on the current year and month, and will compress
+					each
+					archive using gzip and will roll every 6 hours when the hour is
+					divisible
+					by 6:
+
+					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <Appenders>
+    <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
+                 filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingRandomAccessFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+				</p>
+			</subsection>
         <a name="RoutingAppender"/>
         <subsection name="RoutingAppender">
            <p>
