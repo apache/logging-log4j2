@@ -354,16 +354,14 @@ public class LoggerConfig extends AbstractFilterable {
         if (properties != null) {
             props = new ArrayList<Property>(properties.size());
 
-            for (final Map.Entry<Property, Boolean> entry : properties
-                    .entrySet()) {
+            for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
                 final Property prop = entry.getKey();
                 final String value = entry.getValue() ? config.getStrSubstitutor()
                         .replace(prop.getValue()) : prop.getValue();
                 props.add(Property.createProperty(prop.getName(), value));
             }
         }
-        final LogEvent event = logEventFactory.createEvent(loggerName, marker,
-                fqcn, level, data, props, t);
+        final LogEvent event = logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
         log(event);
     }
 

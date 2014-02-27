@@ -179,7 +179,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      */
     @Override
     public void stop() {
-        
+
         // LOG4J2-392 first stop AsyncLogger Disruptor thread
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
@@ -206,10 +206,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             root.stopFilter();
             alreadyStopped.add(root);
         }
-        
+
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
-        
+
         // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i] instanceof AsyncAppender) {
@@ -449,7 +449,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param appender The Appender to add.
      */
     public void addAppender(final Appender appender) {
-        appenders.put(appender.getName(), appender);
+        appenders.putIfAbsent(appender.getName(), appender);
     }
 
     @Override
@@ -617,34 +617,23 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     /**
-     * Adding a logger cannot be done atomically so is not allowed in an active configuration. Adding
-     * or removing a Logger requires creating a new configuration and then switching.
+     * Add a loggerConfig. The LoggerConfig must already be configured with Appenders, Filters, etc.
+     * After addLogger is called LoggerContext.updateLoggers must be called.
      *
      * @param name The name of the Logger.
      * @param loggerConfig The LoggerConfig.
      */
-    public void addLogger(final String name, final LoggerConfig loggerConfig) {
-        if (started) {
-            final String msg = "Cannot add logger " + name + " to an active configuration";
-            LOGGER.warn(msg);
-            throw new IllegalStateException(msg);
-        }
-        loggers.put(name, loggerConfig);
+    public synchronized void addLogger(final String name, final LoggerConfig loggerConfig) {
+        loggers.putIfAbsent(name, loggerConfig);
         setParents();
     }
 
     /**
-     * Removing a logger cannot be done atomically so is not allowed in an active configuration. Adding
-     * or removing a Logger requires creating a new configuration and then switching.
+     * Remove a LoggerConfig.
      *
      * @param name The name of the Logger.
      */
-    public void removeLogger(final String name) {
-        if (started) {
-            final String msg = "Cannot remove logger " + name + " in an active configuration";
-            LOGGER.warn(msg);
-            throw new IllegalStateException(msg);
-        }
+    public synchronized void removeLogger(final String name) {
         loggers.remove(name);
         setParents();
     }
