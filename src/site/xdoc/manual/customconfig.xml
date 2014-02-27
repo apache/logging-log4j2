@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Extending Log4j 2 Configuration</title>
+        <author email="rgoers@apache.org">Ralph Goers</author>
+    </properties>
+
+    <body>
+      <section name="Custom Configurations">
+        <p>
+          Log4j 2 provides a few ways for applications to create their own custom configurations.
+        </p>
+          <a name="ConfigurationFactory"/>
+          <subsection name="Add a New Configuration via ConfigurationFactory">
+            <p>
+              The easiest way to create a custom Configuration is to extend one of the standard Configuration classes
+              (XMLConfiguration, JSONConfiguration) and then create a new ConfigurationFactory for the extended class.
+              After the standard configuration completes the custom configuration can be added to it.
+            </p>
+            <p>
+              The example below shows how to extend XMLConfiguration to manually add an Appender and a LoggerConfig
+              to the configuration.
+            </p>
+            <pre class="prettyprint linenums">
+@Plugin(name = "MyXMLConfigurationFactory", category = "ConfigurationFactory")
+@Order(10)
+public class MyXMLConfigurationFactory extends ConfigurationFactory {
+
+    /**
+     * Valid file extensions for XML files.
+     */
+    public static final String[] SUFFIXES = new String[] {".xml", "*"};
+
+    /**
+     * Return the Configuration.
+     * @param source The InputSource.
+     * @return The Configuration.
+     */
+    public Configuration getConfiguration(InputSource source) {
+        return new MyXMLConfiguration(source, configFile);
+    }
+
+    /**
+     * Returns the file suffixes for XML files.
+     * @return An array of File extensions.
+     */
+    public String[] getSupportedTypes() {
+        return SUFFIXES;
+    }
+}
+
+public class MyXMLConfiguration extends XMLConfiguration {
+    public MyXMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
+      super(configSource);
+    }
+
+    @Override
+    protected void doConfigure() {
+        super.doConfigure();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
+              null,null, null);
+        final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+              "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        addAppender(appender);
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+              "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        addLogger("org.apache.logging.log4j", loggerConfig);
+    }
+}</pre>
+          </subsection>
+        <a name="AddingToCurrent"/>
+          <subsection name="Programattically Adding to the Current Configuration">
+            <p>
+              Applications sometimes have the need to customize logging separate from the actual configuration.
+              Log4j allows this although it suffers from a few limitations:
+              <ol>
+                <li>If the configuration file is changed the configuration will be reloaded and the manual changes
+                will be lost.</li>
+                <li>Modification to the running configuration requires that all the methods being called (addAppender
+                  and addLogger) be synchronized.</li>
+              </ol>
+              As such, the recommended approach for customizing a configuration is to extend one of the standard
+              Configuration classes, override the setup method to first do super.setup() and then add the custom
+              Appenders, Filters and LoggerConfigs to the configuration before it is registered for use.
+            </p>
+            <p>
+              The following example adds an Appender and a new LoggerConfig using that Appender to the current
+              configuration.
+            </p>
+            <pre class="prettyprint linenums"><![CDATA[
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
+            null,null, null);
+        Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
+            "false", "false", "4000", layout, null, "false", null, config);
+        appender.start();
+        config.addAppender(appender);
+        AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
+        AppenderRef[] refs = new AppenderRef[] {ref};
+        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
+            "true", refs, null, config, null );
+        loggerConfig.addAppender(appender, null, null);
+        config.addLogger("org.apache.logging.log4j", loggerConfig);
+        ctx.updateLoggers();
+}]]></pre>
+          </subsection>
+
+      </section>
+
+    </body>
+</document>

@@ -159,6 +159,11 @@
         <item name="PatternConverters" href="/manual/extending.html#PatternConverters"/>
         <item name="Custom Plugins" href="/manual/extending.html#Custom_Plugins"/>
       </item>
+
+      <item name="Extending Log4j Configuration" href="/manual/customconfig.html" collapse="true">
+        <item name="ConfigurationFactory" href="/manual/custom.config#ConfigurationFactory"/>
+        <item name="Manual" href="/manual/custom.config#AddingToCurrent"/>
+      </item>
     </menu>
 
     <menu name="Components" inherit="top" img="icon-cog">
