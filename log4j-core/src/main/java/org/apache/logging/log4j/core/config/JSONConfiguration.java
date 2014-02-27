@@ -71,7 +71,7 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             buffer = toByteArray(configStream);
             configStream.close();
             final InputStream is = new ByteArrayInputStream(buffer);
-            final ObjectMapper mapper = new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+            final ObjectMapper mapper = getObjectMapper();
             root = mapper.readTree(is);
             if (root.size() == 1) {
                 final Iterator<JsonNode> i = root.elements();
@@ -155,6 +155,10 @@ public class JSONConfiguration extends BaseConfiguration implements Reconfigurab
             LOGGER.error("Error parsing " + configSource.getLocation(), ex);
             ex.printStackTrace();
         }
+    }
+
+    protected ObjectMapper getObjectMapper() {
+        return new ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true);
     }
 
     @Override
