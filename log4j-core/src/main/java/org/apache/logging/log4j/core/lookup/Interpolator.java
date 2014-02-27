@@ -71,6 +71,8 @@ public class Interpolator implements StrLookup {
         lookups.put("sys", new SystemPropertiesLookup());
         lookups.put("env", new EnvironmentLookup());
         lookups.put("jndi", new JndiLookup());
+        lookups.put("date", new DateLookup());
+        lookups.put("ctx", new ContextMapLookup());
         try {
             if (Class.forName("javax.servlet.ServletContext") != null) {
                 lookups.put("web", new WebLookup());

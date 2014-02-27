@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,5 +92,11 @@ public class InterpolatorTest {
         assertNotNull(value);
         value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
         assertEquals(TEST_CONTEXT_NAME, value);
+        value = lookup.lookup("date:yyyy-MM-dd");
+        assertNotNull("No Date", value);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String today = format.format(new Date());
+        assertEquals(value, today);
+
     }
 }
