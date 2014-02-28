@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2?" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-410" dev="rgoers" type="update" due-to="Ivlin Zeng">
+        SLf4JLogger is now Serializable.
+      </action>
       <action issue="LOG4J2-427" dev="rgoers" type="add" due-to="Alexander Reelsen">
         Add support for configuration via YAML.
       </action>

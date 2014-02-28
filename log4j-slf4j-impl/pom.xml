@@ -99,6 +99,7 @@
               <excludes>
                 <exclude>**/LoggerTest.java</exclude>
                 <exclude>**/MarkerTest.java</exclude>
+                <exclude>**/SerializeTest.java</exclude>
               </excludes>
               <includes>
                 <include>**/OptionalTest.java</include>
