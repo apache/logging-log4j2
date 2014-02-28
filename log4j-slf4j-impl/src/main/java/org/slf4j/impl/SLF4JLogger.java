@@ -17,6 +17,7 @@
 package org.slf4j.impl;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -27,17 +28,23 @@ import org.slf4j.MarkerFactory;
 import org.slf4j.helpers.EventDataConverter;
 import org.slf4j.spi.LocationAwareLogger;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  *
  */
-public class SLF4JLogger implements LocationAwareLogger {
+public class SLF4JLogger implements LocationAwareLogger, Serializable {
 
+    private static final long serialVersionUID = 7869000638091304316L;
     private static final String FQCN = SLF4JLogger.class.getName();
     private static final Marker EVENT_MARKER = MarkerFactory.getMarker("EVENT");
     private final boolean eventLogger;
-    private final AbstractLoggerWrapper logger;
+    private transient AbstractLoggerWrapper logger;
     private final String name;
-    private final EventDataConverter converter;
+    private transient EventDataConverter converter;
 
     public SLF4JLogger(final AbstractLogger logger, final String name) {
         this.logger = new AbstractLoggerWrapper(logger, name, null);
@@ -500,6 +507,27 @@ public class SLF4JLogger implements LocationAwareLogger {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * Always treat de-serialization as a full-blown constructor, by
+     * validating the final state of the de-serialized object.
+     */
+    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+        //always perform the default de-serialization first
+        aInputStream.defaultReadObject();
+        logger = new AbstractLoggerWrapper((AbstractLogger) LogManager.getLogger(name), name, null);
+        converter = createConverter();
+    }
+
+    /**
+     * This is the default implementation of writeObject.
+     * Customise if necessary.
+     */
+    private void writeObject(ObjectOutputStream aOutputStream
+    ) throws IOException {
+        //perform the default serialization for all non-transient, non-static fields
+        aOutputStream.defaultWriteObject();
     }
 
     private EventDataConverter createConverter() {
