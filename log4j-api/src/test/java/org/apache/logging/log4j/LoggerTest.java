@@ -19,6 +19,7 @@ package org.apache.logging.log4j;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +27,6 @@ import java.util.Locale;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.LoggerStream;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -273,31 +273,38 @@ public class LoggerTest {
 
     @Test
     public void getStream() {
-        final LoggerStream stream = logger.getStream(Level.DEBUG);
-        stream.println("Debug message 1");
-        stream.print("Debug message 2");
+        final PrintWriter stream = logger.printWriter(Level.DEBUG);
+        stream.println("println");
+        stream.print("print followed by println");
         stream.println();
+        stream.println("multiple\nlines");
         stream.println(); // verify blank log message
-        stream.print("Debug message 3\n");
+        stream.print("print embedded newline\n");
         stream.print("\r\n"); // verify windows EOL works
-        assertEquals(5, results.size());
-        assertThat("Incorrect message", results.get(0), startsWith(" DEBUG Debug message 1"));
-        assertThat("Incorrect message", results.get(1), startsWith(" DEBUG Debug message 2"));
-        assertEquals("Message should be blank-ish", " DEBUG ", results.get(2));
-        assertThat("Incorrect message", results.get(3), startsWith(" DEBUG Debug message 3"));
-        assertEquals("Message should be blank-ish", " DEBUG ", results.get(4));
+        stream.print("Last Line without newline");
+        stream.close();
+        assertEquals(8, results.size());
+        assertEquals("msg 1", " DEBUG println", results.get(0));
+        assertEquals("msg 2", " DEBUG print followed by println", results.get(1));
+        assertEquals("msg 3", " DEBUG multiple", results.get(2));
+        assertEquals("msg 4", " DEBUG lines", results.get(3));
+        assertEquals("msg 5 should be blank-ish", " DEBUG ", results.get(4));
+        assertEquals("msg 6", " DEBUG print embedded newline", results.get(5));
+        assertEquals("msg 7 should be blank-ish", " DEBUG ", results.get(6));
+        assertEquals("msg 8 Last line", " DEBUG Last Line without newline", results.get(7));
     }
 
     @Test
     public void getStream_Marker() {
-        final LoggerStream stream = logger.getStream(MarkerManager.getMarker("HI"), Level.INFO);
-        stream.println("Hello, world!");
-        stream.print("How about this?\n");
-        stream.println("Is this thing on?");
+        final PrintWriter stream = logger.printWriter(MarkerManager.getMarker("HI"), Level.INFO);
+        stream.println("println");
+        stream.print("print with embedded newline\n");
+        stream.println("last line");
+        stream.close();
         assertEquals(3, results.size());
-        assertThat("Incorrect message.", results.get(0), startsWith("HI INFO Hello"));
-        assertThat("Incorrect message.", results.get(1), startsWith("HI INFO How about"));
-        assertThat("Incorrect message.", results.get(2), startsWith("HI INFO Is this"));
+        assertEquals("println 1", "HI INFO println", results.get(0));
+        assertEquals("print with embedded newline", "HI INFO print with embedded newline", results.get(1));
+        assertEquals("println 2", "HI INFO last line", results.get(2));
     }
 
     @Test

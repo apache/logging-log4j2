@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2?" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-547" dev="rgoers" type="update" due-to="Bruce Brouwer">
+        Have Logger API expose a PrintWriter instead of custom LoggerStream.
+      </action>
       <action issue="LOG4J2-439" dev="rgoers" type="add" due-to="Bruce Brouwer">
         Add EncodingPatternConverter to escape newlines and HTML special characters.
       </action>
