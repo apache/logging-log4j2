@@ -101,7 +101,7 @@ public class JMSQueueTest {
         final CompositeFilter serverFilters = CompositeFilter.createFilters(new Filter[]{serverFilter});
         final ListAppender listApp = new ListAppender("Events", serverFilters, null, false, false);
         listApp.start();
-        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null, null, null);
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         console.start();
         final Logger serverLogger = ctx.getLogger(JMSTopicReceiver.class.getName());

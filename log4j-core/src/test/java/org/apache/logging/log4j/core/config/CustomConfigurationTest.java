@@ -63,7 +63,7 @@ public class CustomConfigurationTest {
         final Configuration config = ctx.getConfiguration();
         assertTrue("Configuration is not an XMLConfiguration", config instanceof XMLConfiguration);
         Layout layout = PatternLayout.createLayout(PatternLayout.SIMPLE_CONVERSION_PATTERN, config, null,
-            null,null, null);
+            null,null, null, null, null);
         Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
             "false", "false", "4000", layout, null, "false", null, config);
         appender.start();

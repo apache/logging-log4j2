@@ -111,7 +111,7 @@ public abstract class AbstractSocketServerTest {
         appender.start();
         final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         listApp.start();
-        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout("%m %ex%n", null, null, null, null, null, null, null);
         final ConsoleAppender console = ConsoleAppender.createAppender(layout, null, "SYSTEM_OUT", "Console", "false", "true");
         final Logger serverLogger = ctx.getLogger(this.getClass().getName());
         serverLogger.addAppender(console);
