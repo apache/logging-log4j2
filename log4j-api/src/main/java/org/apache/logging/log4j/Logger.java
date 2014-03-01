@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j;
 
+import java.io.PrintWriter;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggerStream;
 
 /**
  * This is the central interface in the log4j package. Most logging operations, except configuration, are done through
@@ -469,7 +470,7 @@ public interface Logger {
      * @param level the logging level
      * @return print stream that logs printed lines to this logger.
      */
-    LoggerStream getStream(Level level);
+    PrintWriter printWriter(Level level);
 
     /**
      * Gets a marked print stream that logs lines to this logger.
@@ -478,7 +479,7 @@ public interface Logger {
      * @param level the logging level
      * @return print stream that logs printed lines to this logger.
      */
-    LoggerStream getStream(Marker marker, Level level);
+    PrintWriter printWriter(Marker marker, Level level);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#INFO INFO} level.
