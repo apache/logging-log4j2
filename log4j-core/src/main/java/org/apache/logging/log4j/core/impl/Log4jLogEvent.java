@@ -396,6 +396,78 @@ public class Log4jLogEvent implements LogEvent {
         return sb.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Log4jLogEvent that = (Log4jLogEvent) o;
+
+        if (endOfBatch != that.endOfBatch) {
+            return false;
+        }
+        if (includeLocation != that.includeLocation) {
+            return false;
+        }
+        if (timestamp != that.timestamp) {
+            return false;
+        }
+        if (fqcnOfLogger != null ? !fqcnOfLogger.equals(that.fqcnOfLogger) : that.fqcnOfLogger != null) {
+            return false;
+        }
+        if (level != null ? !level.equals(that.level) : that.level != null) {
+            return false;
+        }
+        if (location != null ? !location.equals(that.location) : that.location != null) {
+            return false;
+        }
+        if (marker != null ? !marker.equals(that.marker) : that.marker != null) {
+            return false;
+        }
+        if (mdc != null ? !mdc.equals(that.mdc) : that.mdc != null) {
+            return false;
+        }
+        if (!message.equals(that.message)) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (ndc != null ? !ndc.equals(that.ndc) : that.ndc != null) {
+            return false;
+        }
+        if (threadName != null ? !threadName.equals(that.threadName) : that.threadName != null) {
+            return false;
+        }
+        if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fqcnOfLogger != null ? fqcnOfLogger.hashCode() : 0;
+        result = 31 * result + (marker != null ? marker.hashCode() : 0);
+        result = 31 * result + (level != null ? level.hashCode() : 0);
+        result = 31 * result + name.hashCode();
+        result = 31 * result + message.hashCode();
+        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        result = 31 * result + (throwable != null ? throwable.hashCode() : 0);
+        result = 31 * result + (mdc != null ? mdc.hashCode() : 0);
+        result = 31 * result + (ndc != null ? ndc.hashCode() : 0);
+        result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (includeLocation ? 1 : 0);
+        result = 31 * result + (endOfBatch ? 1 : 0);
+        return result;
+    }
+
     /**
      * Proxy pattern used to serialize the LogEvent.
      */
