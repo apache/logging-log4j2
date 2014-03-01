@@ -47,8 +47,8 @@
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>
           <p>
-          If you configure <code>complete="true"</code>, the appender outputs a well-formed JSON document. By default, 
-          with <code>complete="false"</code>, you should include the output as an <em>external file</em> in a 
+          If you configure <code>complete="true"</code>, the appender outputs a well-formed JSON document. By default,
+          with <code>complete="false"</code>, you should include the output as an <em>external file</em> in a
           separate file to form a well-formed JSON document.
           </p>
           <p>
@@ -73,7 +73,7 @@
 ]
 </pre>
           <p>
-          If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start 
+          If <code>complete="false"</code>, the appender does not write the JSON open array character "[" at the start
           of the document. and "]" and the end.
           </p>
           <p>
@@ -81,14 +81,14 @@
           </p>
           <h4>Encoding</h4>
           <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or 
+          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
-          By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which 
-          means the appender uses end-of-line characters and indents lines to format the text. If 
-          <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain, 
+          By default, the JSON layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
+          means the appender uses end-of-line characters and indents lines to format the text. If
+          <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, escaped end-of-lines.
           </p>
         </subsection>
@@ -370,14 +370,25 @@ WARN  [main]: Message 2</pre>
                   </table>
                 </p>
                 <p>
-                  %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the UNIX time in milliseconds. 
+                  %d{UNIX} outputs the UNIX time in seconds. %d{UNIX_MILLIS} outputs the UNIX time in milliseconds.
                   The UNIX time is the difference, in seconds for UNIX and in milliseconds for UNIX_MILLIS, between
-                  the current time and midnight, January 1, 1970 UTC. While the time unit is milliseconds, the 
-                  granularity depends on the operating system 
-                  (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>). 
-                  This is an efficient way to output the event time because only a conversion from long to String 
+                  the current time and midnight, January 1, 1970 UTC. While the time unit is milliseconds, the
+                  granularity depends on the operating system
+                  (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
+                  This is an efficient way to output the event time because only a conversion from long to String
                   takes place, there is no Date formatting involved.
                 </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center">
+                <b>enc</b>{pattern}<br />
+                <b>encode</b>{pattern>
+              </td>
+              <td>
+                <p>Escape newlines and HTML special characters in the specified pattern.
+                </p>
+                <p>Allows HTML to be safely logged.</p>
               </td>
             </tr>
             <tr>
@@ -396,37 +407,37 @@ WARN  [main]: Message 2</pre>
               </td>
               <td>
                 <p>
-                  Outputs the Throwable trace bound to the LoggingEvent, by default this will output the full trace 
+                  Outputs the Throwable trace bound to the LoggingEvent, by default this will output the full trace
                   as one would normally find with a call to Throwable.printStackTrace().
                 </p>
                 <p>
                   You can follow the throwable conversion word with an option in the form <b>%throwable{option}</b>.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short}</b> outputs the first line of the Throwable.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.className}</b> outputs the name of the class where the exception occurred.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.methodName}</b> outputs the method name where the exception occurred.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.fileName}</b> outputs the name of the class where the exception occurred.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.lineNumber}</b> outputs the line number where the exception occurred.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.message}</b> outputs the message.
                 </p>
-                <p> 
+                <p>
                   <b>%throwable{short.localizedMessage}</b> outputs the localized message.
                 </p>
-                <p> 
-                  <b>%throwable{n}</b> outputs the first n lines of the stack trace. 
-                </p> 
-                <p> 
+                <p>
+                  <b>%throwable{n}</b> outputs the first n lines of the stack trace.
+                </p>
+                <p>
                   Specifying <b>%throwable{none}</b> or <b>%throwable{0}</b> suppresses output of the exception.
                 </p>
               </td>
@@ -1313,10 +1324,10 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </p>
           <h4>Complete well-formed XML vs. fragment XML</h4>
           <p>
-          If you configure <code>complete="true"</code>, the appender outputs a well-formed XML document where the 
-          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/events"</code>.  By default, 
-          with <code>complete="false"</code>, you should include the output as an <em>external entity</em> in a 
-          separate file to form a well-formed XML document, in which case the appender uses 
+          If you configure <code>complete="true"</code>, the appender outputs a well-formed XML document where the
+          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/events"</code>.  By default,
+          with <code>complete="false"</code>, you should include the output as an <em>external entity</em> in a
+          separate file to form a well-formed XML document, in which case the appender uses
           <code>namespacePrefix</code> with a default of <code>"log4j"</code>.
           </p>
           <p>
@@ -1334,7 +1345,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
   &lt;/Event&gt;
 &lt;/Events&gt;</pre>
           <p>
-          If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root 
+          If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root
           element.
           </p>
           <p>
@@ -1348,14 +1359,14 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           </p>
           <h4>Encoding</h4>
           <p>
-          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or 
+          Appenders using this layout should have their <code>charset</code> set to <code>UTF-8</code> or
           <code>UTF-16</code>, otherwise events containing non ASCII characters could result in corrupted log files.
           </p>
           <h4>Pretty vs. compact XML</h4>
           <p>
-          By default, the XML layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which 
-          means the appender uses end-of-line characters and indents lines to format the XML. If 
-          <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain, 
+          By default, the XML layout is not compact (a.k.a. not "pretty") with <code>compact="false"</code>, which
+          means the appender uses end-of-line characters and indents lines to format the XML. If
+          <code>compact="true"</code>,  then no end-of-line or indentation is used. Message content may contain,
           of course, end-of-lines.
           </p>
         </subsection>
