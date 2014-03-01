@@ -267,6 +267,9 @@
       <action issue="LOG4J2-532" dev="ggregory" type="update">
         Resource leak in Flume appender when it cannot create a BerkeleyDB db.
       </action>
+      <action issue="LOG4J2-413" dev="ggregory" type="update">
+        PatternLayout option to not output ANSI escape codes if no Console is available.
+      </action>
     </release>
     <release version="2.0-beta9" date="2013-09-14" description="Bug fixes and enhancements">
       <action issue="LOG4J2-317" dev="ggregory" type="update">
