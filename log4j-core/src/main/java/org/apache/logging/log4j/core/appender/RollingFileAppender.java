@@ -169,7 +169,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null, null, null);
+            layout = PatternLayout.createLayout(null, null, null, null, null, null, null, null);
         }
 
         final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, isAppend,

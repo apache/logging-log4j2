@@ -29,25 +29,21 @@ public class OutputStreamManager extends AbstractManager {
 
     private volatile OutputStream os;
 
-    private final byte[] footer;
-    private final byte[] header;
+    private final Layout<?> layout;
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout) {
         super(streamName);
         this.os = os;
+        this.layout = layout;
         if (layout != null) {
-            this.footer = layout.getFooter();
-            this.header = layout.getHeader();
-            if (this.header != null) {
+            byte[] header = layout.getHeader();
+            if (header != null) {
                 try {
                     this.os.write(header, 0, header.length);
                 } catch (final IOException ioe) {
                     LOGGER.error("Unable to write header", ioe);
                 }
             }
-        } else {
-            this.footer = null;
-            this.header = null;
         }
     }
 
@@ -70,6 +66,7 @@ public class OutputStreamManager extends AbstractManager {
      */
     @Override
     public void releaseSub() {
+        byte[] footer = layout.getFooter();
         if (footer != null) {
             write(footer);
         }
@@ -89,6 +86,7 @@ public class OutputStreamManager extends AbstractManager {
     }
 
     protected void setOutputStream(final OutputStream os) {
+        byte[] header = layout.getHeader();
         if (header != null) {
             try {
                 os.write(header, 0, header.length);

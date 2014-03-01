@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Compare;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -55,6 +57,11 @@ public class PatternLayoutTest {
         ctx.reconfigure();
     }
 
+    @After
+    public void after() {
+        ThreadContext.clear();
+    }
+
     LoggerContext ctx = (LoggerContext) LogManager.getContext();
 
     Logger root = ctx.getLogger("");
@@ -72,7 +79,8 @@ public class PatternLayoutTest {
         final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout(msgPattern, ctx.getConfiguration(), null, null, null,
+            null, null, null);
         // FileOutputStream fos = new FileOutputStream(OUTPUT_FILE + "_mdc");
         final FileAppender appender = FileAppender.createAppender(OUTPUT_FILE + "_mdc", "false", "false", "File",
                 "false", "true", "false", null, layout, null, "false", null, null);
@@ -134,7 +142,8 @@ public class PatternLayoutTest {
     @Test
     public void testRegex() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(), null, null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout(regexPattern, ctx.getConfiguration(), null, null, null,
+            null, null, null);
         final LogEvent event = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world!"), null);
         final byte[] result = layout.toByteArray(event);
@@ -144,7 +153,7 @@ public class PatternLayoutTest {
     private void testUnixTime(String pattern) throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.createLayout(pattern + " %m", ctx.getConfiguration(), null, null,
-                null, null);
+                null, null, null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -161,7 +170,7 @@ public class PatternLayoutTest {
     public void testUnixTime() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout
-                .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, null, null);
+                .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, null, null, null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -178,7 +187,7 @@ public class PatternLayoutTest {
     public void testUnixTimeMillis() throws Exception {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final PatternLayout layout = PatternLayout.createLayout("%d{UNIX_MILLIS} %m", ctx.getConfiguration(), null,
-                null, null, null);
+                null, null, null, null, null);
         final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
                 "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
         final byte[] result1 = layout.toByteArray(event1);
@@ -190,5 +199,20 @@ public class PatternLayoutTest {
         assertEquals(event2.getMillis() + " Hello, world 2!", new String(result2));
         System.out.println("event2=" + event2.getMillis());
     }
+
+    @Test
+    public void testHeaderFooter() throws Exception {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+        final PatternLayout layout = PatternLayout
+            .createLayout("%d{UNIX} %m", ctx.getConfiguration(), null, null, null, null, "${ctx:header}", "${ctx:footer}");
+        ThreadContext.put("header", "Hello world Header");
+        ThreadContext.put("footer", "Hello world Footer");
+        final LogEvent event1 = new Log4jLogEvent(this.getClass().getName(), null,
+            "org.apache.logging.log4j.core.Logger", Level.INFO, new SimpleMessage("Hello, world 1!"), null);
+        byte[] header = layout.getHeader();
+        assertNotNull("No header", header);
+        assertTrue("expected \"Hello world Header\", actual \"" + new String(header) + "\"", new String(header).equals(new String("Hello world Header")));
+    }
+
 
 }

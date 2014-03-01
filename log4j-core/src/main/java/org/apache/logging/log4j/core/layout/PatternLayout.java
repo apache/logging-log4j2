@@ -106,11 +106,13 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param charset The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
-     * @param noConsoleNoAnsiStr
+     * @param noConsoleNoAnsi
      *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
+     * @param header
      */
     private PatternLayout(final Configuration config, final RegexReplacement replace, final String pattern,
-                          final Charset charset, final boolean alwaysWriteExceptions, boolean noConsoleNoAnsi) {
+                          final Charset charset, final boolean alwaysWriteExceptions, boolean noConsoleNoAnsi,
+                          String header, String footer) {
         super(charset);
         this.replace = replace;
         this.conversionPattern = pattern;
@@ -119,6 +121,41 @@ public final class PatternLayout extends AbstractStringLayout {
         this.noConsoleNoAnsi = noConsoleNoAnsi;
         final PatternParser parser = createPatternParser(config);
         this.formatters = parser.parse(pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, this.alwaysWriteExceptions, this.noConsoleNoAnsi);
+        if (charset != null) {
+            if (header != null) {
+                setHeader(header.getBytes(charset));
+            }
+            if (footer != null) {
+                setFooter(footer.getBytes(charset));
+            }
+        } else {
+            if (header != null) {
+                setHeader(header.getBytes());
+            }
+            if (footer != null) {
+                setFooter(footer.getBytes());
+            }
+        }
+    }
+
+    @Override
+    public byte[] getHeader() {
+        byte [] header = super.getHeader();
+        if (header != null) {
+            return config.getStrSubstitutor().replace(new String(header, getCharset())).getBytes(getCharset());
+        } else {
+            return header;
+        }
+    }
+
+    @Override
+    public byte[] getFooter() {
+        byte [] footer = super.getFooter();
+        if (footer != null) {
+            return config.getStrSubstitutor().replace(new String(footer, getCharset())).getBytes(getCharset());
+        } else {
+            return footer;
+        }
     }
 
     /**
@@ -203,7 +240,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Create a pattern layout.
-     * 
+     *
      * @param pattern
      *            The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
      * @param config
@@ -225,12 +262,14 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginConfiguration final Configuration config,
             @PluginElement("Replace") final RegexReplacement replace,
             @PluginAttribute("charset") final String charsetName,
-            @PluginAttribute("alwaysWriteExceptions") final String always, 
-            @PluginAttribute("noConsoleNoAnsi") final String noConsoleNoAnsiStr) {
+            @PluginAttribute("alwaysWriteExceptions") final String always,
+            @PluginAttribute("noConsoleNoAnsi") final String noConsoleNoAnsiStr,
+            @PluginAttribute("header") final String header,
+            @PluginAttribute("footer") final String footer) {
         final Charset charset = Charsets.getSupportedCharset(charsetName);
         final boolean alwaysWriteExceptions = Booleans.parseBoolean(always, true);
         final boolean noConsoleNoAnsi = Booleans.parseBoolean(noConsoleNoAnsiStr, false);
         return new PatternLayout(config, replace, pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern, charset,
-                alwaysWriteExceptions, noConsoleNoAnsi);
+                alwaysWriteExceptions, noConsoleNoAnsi, header, footer);
     }
 }

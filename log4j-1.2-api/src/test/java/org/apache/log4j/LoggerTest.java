@@ -456,7 +456,7 @@ public class LoggerTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testLog() {
-        final PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null, null, null);
+        final PatternLayout layout = PatternLayout.createLayout("%d %C %L %m", null, null, null, null, null, null, null);
         final ListAppender appender = new ListAppender("List", null, layout, false, false);
         appender.start();
         final Logger root = Logger.getRootLogger();
