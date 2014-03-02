@@ -278,9 +278,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the DEBUG level.
+     * Logs the specified Message at the DEBUG level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void debug(final Message msg) {
@@ -290,9 +290,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the DEBUG level.
+     * Logs the specified Message at the DEBUG level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -517,9 +517,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
+     * Logs the specified Message at the {@link Level#ERROR ERROR} level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void error(final Message msg) {
@@ -529,9 +529,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
+     * Logs the specified Message at the {@link Level#ERROR ERROR} level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -740,9 +740,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the FATAL level.
+     * Logs the specified Message at the FATAL level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void fatal(final Message msg) {
@@ -752,9 +752,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the FATAL level.
+     * Logs the specified Message at the FATAL level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -972,9 +972,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the TRACE level.
+     * Logs the specified Message at the INFO level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void info(final Message msg) {
@@ -984,9 +984,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the INFO level.
+     * Logs the specified Message at the INFO level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -1369,10 +1369,10 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the given level.
+     * Logs the specified Message at the given level.
      * 
      * @param level the logging level
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void log(final Level level, final Message msg) {
@@ -1382,10 +1382,10 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the given level.
+     * Logs the specified Message at the given level.
      * 
      * @param level the logging level
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -1673,9 +1673,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the TRACE level.
+     * Logs the specified Message at the TRACE level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void trace(final Message msg) {
@@ -1685,9 +1685,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the TRACE level.
+     * Logs the specified Message at the TRACE level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
@@ -1875,9 +1875,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the WARN level.
+     * Logs the specified Message at the WARN level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      */
     @Override
     public void warn(final Message msg) {
@@ -1887,9 +1887,9 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a message with the specific Marker at the WARN level.
+     * Logs the specified Message at the WARN level.
      * 
-     * @param msg the message string to be logged
+     * @param msg the message to be logged
      * @param t A Throwable or null.
      */
     @Override
