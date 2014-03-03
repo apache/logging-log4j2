@@ -19,11 +19,11 @@
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Maven and Ivy Artifacts</title>
+    <title>Maven, Ivy, and Gradle Artifacts</title>
   </properties>
 
   <body>
-    <section name="Maven and Ivy Artifacts">
+    <section name="Maven, Ivy, and Gradle Artifacts">
 
       <subsection name="Using Log4j in your Apache Maven build">
         <p>
@@ -59,6 +59,19 @@
 </dependencies>
 ]]></pre>
       </subsection>
+      <subsection name="Using Log4j in your Gradle build">
+        <p>
+          To build with <a href="http://www.gradle.org/">Gradle</a>, add the dependencies listed below to your
+          <code>build.gradle</code> file.
+        </p>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '${Log4jReleaseVersion}'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
+      </subsection>
       <subsection name="Optional Components">
         <p>
           Log4j 2.x contains several optional components that can be included in an application.
@@ -83,6 +96,12 @@
   <dependency org="org.apache.logging.log4j" name="log4j-1.2-api" rev="${Log4jReleaseVersion}" />
 </dependencies>
 ]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
         <h4>Apache Commons Logging Bridge</h4>
         <p>If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2, 
           then add the following but do not remove any Commons Logging 1.x dependencies.
@@ -103,6 +122,12 @@
   <dependency org="org.apache.logging.log4j" name="log4j-jcl" rev="${Log4jReleaseVersion}" />
 </dependencies>
 ]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
         <h4>SLF4J Bridge</h4>
         <p>If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the 
           following but do not remove any SLF4J dependencies.
@@ -122,6 +147,12 @@
 <dependencies>
   <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="${Log4jReleaseVersion}" />
 </dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '${Log4jReleaseVersion}'
+}
 ]]></pre>
         <h4>Tag Library</h4>
         <p>The Log4j Log Tag Library creates the capability of inserting log statements in JSPs without
@@ -144,6 +175,12 @@
   <dependency org="org.apache.logging.log4j" name="log4j-taglib" rev="${Log4jReleaseVersion}" />
 </dependencies>
 ]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-taglib', version: '${Log4jReleaseVersion}'
+}
+]]></pre>
         <h4>Apache Flume NG Appender</h4>
         <p>The Flume NG Appender allows applications to send events to Flume NG Agents.</p>
         <code>pom.xml</code>
@@ -161,6 +198,12 @@
 <dependencies>
   <dependency org="org.apache.logging.log4j" name="log4j-flume-ng" rev="${Log4jReleaseVersion}" />
 </dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-flume-ng', version: '${Log4jReleaseVersion}'
+}
 ]]></pre>
         <h4>Log4j to SLF4J Adapter</h4>
         <p>The Log4j 2 to SLF4J Adapter allows applications coded to the Log4j 2 API to be routed to SLF4J. Use of this
@@ -181,6 +224,12 @@
 <dependencies>
   <dependency org="org.apache.logging.log4j" name="log4j-to-slf4j" rev="${Log4jReleaseVersion}" />
 </dependencies>
+]]></pre>
+        <code>build.gradle</code>
+        <pre class="prettyprint linenums"><![CDATA[
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '${Log4jReleaseVersion}'
+}
 ]]></pre>
       </subsection>
     </section>
