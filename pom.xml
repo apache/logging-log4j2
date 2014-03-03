@@ -89,6 +89,16 @@
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
+    <developer>
+      <id>mattsicker</id>
+      <name>Matt Sicker</name>
+      <email>mattsicker@apache.org</email>
+      <organization>Peapod</organization>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>America/Chicago</timezone>
+    </developer>
   </developers>
   <mailingLists>
     <mailingList>
