@@ -35,8 +35,8 @@
                   as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s 
                   <code>callAppenders</code> method.</li>
                 <li>They must not programmatically configure Log4j.</li>
-                <li>They must not configure by calling the classes <code>DomConfigurator</code> or 
-                  <code>PropertiesConfigurator</code>.</li>
+                <li>They must not configure by calling the classes <code>DOMConfigurator</code> or 
+                  <code>PropertyConfigurator</code>.</li>
               </ol>
             </p>
           </subsection>
