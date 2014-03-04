@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.core.helpers.Constants;
+import org.apache.logging.log4j.core.helpers.Patterns;
 
 /**
  * Contains options which control how a {@link Throwable} pattern is formatted.
@@ -189,7 +190,7 @@ public final class ThrowableFormatOptions {
         // However, the convention for multiple options should be:
         //     %xEx{["none"|"short"|"full"|depth]}[{filters(packages)}]
         if (options.length == 1 && options[0] != null && options[0].length() > 0) {
-            final String[] opts = options[0].split(",", 2);
+            final String[] opts = options[0].split(Patterns.COMMA_SEPARATOR, 2);
             final String first = opts[0].trim();
             final Scanner scanner = new Scanner(first);
             if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT) || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
@@ -211,7 +212,7 @@ public final class ThrowableFormatOptions {
                 } else if (option.startsWith("filters(") && option.endsWith(")")) {
                     final String filterStr = option.substring("filters(".length(), option.length() - 1);
                     if (filterStr.length() > 0) {
-                        final String[] array = filterStr.split(",");
+                        final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
                         if (array.length > 0) {
                             packages = new ArrayList<String>(array.length);
                             for (String token : array) {

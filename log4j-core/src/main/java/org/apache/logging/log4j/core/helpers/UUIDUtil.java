@@ -122,7 +122,7 @@ public final class UUIDUtil {
             if (assigned == null) {
                 sequences = new long[0];
             } else {
-                final String[] array = assigned.split(",");
+                final String[] array = assigned.split(Patterns.COMMA_SEPARATOR);
                 sequences = new long[array.length];
                 int i = 0;
                 for (final String value : array) {

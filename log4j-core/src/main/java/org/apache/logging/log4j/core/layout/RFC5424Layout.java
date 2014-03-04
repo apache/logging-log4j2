@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.helpers.Charsets;
 import org.apache.logging.log4j.core.helpers.Integers;
 import org.apache.logging.log4j.core.helpers.NetUtils;
+import org.apache.logging.log4j.core.helpers.Patterns;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
@@ -142,7 +143,7 @@ public class RFC5424Layout extends AbstractStringLayout {
         this.localHostName = NetUtils.getLocalHostname();
         ListChecker c = null;
         if (excludes != null) {
-            final String[] array = excludes.split(",");
+            final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 c = new ExcludeChecker();
                 mdcExcludes = new ArrayList<String>(array.length);
@@ -156,7 +157,7 @@ public class RFC5424Layout extends AbstractStringLayout {
             mdcExcludes = null;
         }
         if (includes != null) {
-            final String[] array = includes.split(",");
+            final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 c = new IncludeChecker();
                 mdcIncludes = new ArrayList<String>(array.length);
@@ -170,7 +171,7 @@ public class RFC5424Layout extends AbstractStringLayout {
             mdcIncludes = null;
         }
         if (required != null) {
-            final String[] array = required.split(",");
+            final String[] array = required.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 mdcRequired = new ArrayList<String>(array.length);
                 for (final String str : array) {

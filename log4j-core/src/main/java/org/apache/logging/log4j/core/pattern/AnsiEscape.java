@@ -256,7 +256,7 @@ public enum AnsiEscape {
      * @return a new map
      */
     public static Map<String, String> createMap(final String values, final String[] dontEscapeKeys) {
-        return createMap(values.split(Patterns.toWhitespaceSeparator(",")), dontEscapeKeys);
+        return createMap(values.split(Patterns.COMMA_SEPARATOR), dontEscapeKeys);
     }
 
     /**
