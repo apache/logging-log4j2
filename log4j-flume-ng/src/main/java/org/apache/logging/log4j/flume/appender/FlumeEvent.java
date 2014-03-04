@@ -87,7 +87,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
         final Map<String, String> mdc = event.getContextMap();
         if (includes != null) {
-            final String[] array = includes.split(",");
+            final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
@@ -97,7 +97,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
                 }
             }
         } else if (excludes != null) {
-            final String[] array = excludes.split(",");
+            final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 final List<String> list = new ArrayList<String>(array.length);
                 for (final String value : array) {
@@ -114,7 +114,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         }
 
         if (required != null) {
-            final String[] array = required.split(",");
+            final String[] array = required.split(Patterns.COMMA_SEPARATOR);
             if (array.length > 0) {
                 for (String str : array) {
                     str = str.trim();
