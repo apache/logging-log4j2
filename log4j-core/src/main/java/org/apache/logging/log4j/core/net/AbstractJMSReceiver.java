@@ -24,13 +24,13 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractServer;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LogEventListener;
 
 /**
  * Abstract base class for receiving LogEvents over JMS. This class expects all messages to be serialized log events.
  */
-public abstract class AbstractJMSReceiver extends AbstractServer implements javax.jms.MessageListener {
+public abstract class AbstractJMSReceiver extends LogEventListener implements javax.jms.MessageListener {
 
     /**
      * Logger to capture diagnostics.

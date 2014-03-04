@@ -19,13 +19,13 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.LogManager;
 
 /**
- *
+ * Base class for server classes that listen to {@link org.apache.logging.log4j.core.LogEvent LogEvents}.
  */
-public class AbstractServer {
+public class LogEventListener {
 
     private final LoggerContext context;
 
-    protected AbstractServer() {
+    protected LogEventListener() {
         context = (LoggerContext) LogManager.getContext(false);
     }
 
