@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractServer;
+import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -47,7 +47,7 @@ import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
 /**
  * Listens for events over a socket connection.
  */
-public class SocketServer extends AbstractServer implements Runnable {
+public class SocketServer extends LogEventListener implements Runnable {
 
     private final Logger logger;
 
