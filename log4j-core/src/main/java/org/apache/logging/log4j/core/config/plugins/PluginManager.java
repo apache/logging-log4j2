@@ -36,6 +36,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Closer;
 import org.apache.logging.log4j.core.helpers.Loader;
+import org.apache.logging.log4j.core.helpers.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -163,7 +164,7 @@ public class PluginManager {
                     PACKAGES.add(LOG4J_PACKAGES);
                 }
             } else {
-                final String[] names = pkgs.split(",");
+                final String[] names = pkgs.split(Patterns.COMMA_SEPARATOR);
                 for (final String name : names) {
                     PACKAGES.add(name);
                 }

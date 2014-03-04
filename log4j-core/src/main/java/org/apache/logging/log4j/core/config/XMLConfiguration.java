@@ -47,6 +47,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
 import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.helpers.Patterns;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -178,7 +179,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
                 } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
                     verbose = Boolean.parseBoolean(getStrSubstitutor().replace(entry.getValue()));
                 } else if ("packages".equalsIgnoreCase(getStrSubstitutor().replace(entry.getKey()))) {
-                    final String[] packages = entry.getValue().split(",");
+                    final String[] packages = entry.getValue().split(Patterns.COMMA_SEPARATOR);
                     for (final String p : packages) {
                         PluginManager.addPackage(p);
                     }

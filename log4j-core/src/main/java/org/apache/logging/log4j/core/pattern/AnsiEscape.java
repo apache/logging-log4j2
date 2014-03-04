@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.helpers.Patterns;
+
 /**
  * Converts text into ANSI escape sequences.
  * <p>
@@ -209,8 +211,6 @@ public enum AnsiEscape {
      */
     BG_WHITE("47");
 
-    private static final String WHITESPACE_REGEX = "\\s*";
-
     private final String code;
 
     private AnsiEscape(final String code) {
@@ -224,10 +224,6 @@ public enum AnsiEscape {
      */
     public static String getDefaultStyle() {
         return PREFIX.getCode() + SUFFIX.getCode();
-    }
-
-    private static String toRegexSeparator(final String separator) {
-        return WHITESPACE_REGEX + separator + WHITESPACE_REGEX;
     }
 
     /**
@@ -260,7 +256,7 @@ public enum AnsiEscape {
      * @return a new map
      */
     public static Map<String, String> createMap(final String values, final String[] dontEscapeKeys) {
-        return createMap(values.split(toRegexSeparator(",")), dontEscapeKeys);
+        return createMap(values.split(Patterns.toWhitespaceSeparator(",")), dontEscapeKeys);
     }
 
     /**
@@ -290,7 +286,7 @@ public enum AnsiEscape {
         Arrays.sort(sortedIgnoreKeys);
         final Map<String, String> map = new HashMap<String, String>();
         for (final String string : values) {
-            final String[] keyValue = string.split(toRegexSeparator("="));
+            final String[] keyValue = string.split(Patterns.toWhitespaceSeparator("="));
             if (keyValue.length > 1) {
                 final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
                 final String value = keyValue[1];
