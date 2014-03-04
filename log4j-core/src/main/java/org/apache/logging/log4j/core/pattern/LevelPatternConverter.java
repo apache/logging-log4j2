@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.helpers.Patterns;
 
 /**
  * Returns the event's level in a StringBuilder.
@@ -63,7 +64,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         final Map<Level, String> levelMap = new HashMap<Level, String>();
         int length = Integer.MAX_VALUE; // More than the longest level name.
         boolean lowerCase = false;
-        final String[] definitions = options[0].split(",");
+        final String[] definitions = options[0].split(Patterns.COMMA_SEPARATOR);
         for (final String def : definitions) {
             final String[] pair = def.split("=");
             if (pair == null || pair.length != 2) {
