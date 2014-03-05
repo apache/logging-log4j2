@@ -97,7 +97,8 @@ public class SyslogAppenderTestBase {
         msg.put("FromAccount", "123457");
         msg.put("Amount", "200.00");
         // the msg.toString() doesn't contain the parameters of the ThreadContext, so we must use the line1 string
-        sentMessages.add(line1);
+        String str = msg.asString(null, null);
+        sentMessages.add(str);
         root.info(MarkerManager.getMarker("EVENT"), msg);
     }
 
@@ -114,7 +115,8 @@ public class SyslogAppenderTestBase {
             String receivedMessage = receivedMessages.get(i);
             String sentMessage = sentMessages.get(i);
             String suffix =  "true".equalsIgnoreCase(includeNewLine) ? "\n" : "";
-            assertTrue("Incorrect message received: " + receivedMessage, receivedMessage.endsWith(sentMessage + suffix));
+            assertTrue("Incorrect message received: " + receivedMessage,
+                    receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
         }
     }
 
