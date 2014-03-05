@@ -296,11 +296,12 @@ public class RFC5424LayoutTest {
 
     @Test
     public void testLoggerFields() {
-        List<String> expectedToContain = Arrays.asList(
-                "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"  +
-                "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]" +
+        String[] fields = new String[] {
+                "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]",
+                "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]",
                 "[SD-ID@32473 source=\"org.apache.logging.log4j.core.layout.RFC5424LayoutTest.testLoggerFields\"]"
-        );
+        };
+        List<String> expectedToContain = Arrays.asList(fields);
 
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
@@ -331,7 +332,7 @@ public class RFC5424LayoutTest {
             String message =  list.get(0);
             assertTrue("No class/method", message.contains("RFC5424LayoutTest.testLoggerFields"));
             for (String value : expectedToContain) {
-                Assert.assertTrue("Not expected message received", message.contains(value));
+                Assert.assertTrue("Message expected to contain " + value + " but did not", message.contains(value));
             }
             appender.clear();
         } finally {

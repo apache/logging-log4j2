@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2?" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-560" dev="rgoers" type="fix">
+          SyslogAppenderTest and RFC5424LayoutTest were failing in Java 8.
+      </action>
       <action issue="LOG4J2-561" dev="ggregory" type="update" due-to="vibin">
         Allow spaces around commas in Configuration's package attribute.
       </action>
