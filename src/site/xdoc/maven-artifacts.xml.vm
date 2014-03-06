@@ -72,12 +72,38 @@ dependencies {
 }
 ]]></pre>
       </subsection>
+      <subsection name="Bill of Material">
+        <p>
+          To keep your Log4j module versions in sync with each other, a
+          <abbr id="Bill of Material">BOM</abbr>
+          pom.xml file is provided for your convenience. To use this with
+          <a href="http://maven.apache.org/">Maven</a>, add the dependency listed below to your
+          <code>pom.xml</code>
+          file. When you specify the version identifier in this section, you don't have to specify the version in your
+          <code><![CDATA[<dependencies/>]]></code>
+          section.
+        </p>
+        <code>pom.xml</code>
+        <pre class="prettyprint linenums"><![CDATA[
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-bom</artifactId>
+      <version>${Log4jReleaseVersion}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+]]></pre>
+      </subsection>
       <subsection name="Optional Components">
         <p>
           Log4j 2.x contains several optional components that can be included in an application.
         </p>
         <h4>Log4j 1.x API Bridge</h4>
-        <p>If existing components use Log4j 1.x and you want to have this logging routed to Log4j 2, 
+        <p>If existing components use Log4j 1.x and you want to have this logging routed to Log4j 2,
           then remove any log4j 1.x dependencies and add the following.
         </p>
         <code>pom.xml</code>
@@ -103,7 +129,7 @@ dependencies {
 }
 ]]></pre>
         <h4>Apache Commons Logging Bridge</h4>
-        <p>If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2, 
+        <p>If existing components use Apache Commons Logging 1.x and you want to have this logging routed to Log4j 2,
           then add the following but do not remove any Commons Logging 1.x dependencies.
         </p>
         <code>pom.xml</code>
@@ -129,7 +155,7 @@ dependencies {
 }
 ]]></pre>
         <h4>SLF4J Bridge</h4>
-        <p>If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the 
+        <p>If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the
           following but do not remove any SLF4J dependencies.
         </p>
         <code>pom.xml</code>
