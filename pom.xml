@@ -886,6 +886,7 @@
     <module>log4j-taglib</module>
     <module>log4j-jmx-gui</module>
     <module>log4j-samples</module>
+    <module>log4j-bom</module>
   </modules>
   <profiles>
     <profile>
