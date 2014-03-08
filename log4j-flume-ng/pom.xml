@@ -277,35 +277,5 @@
       </plugin>
     </plugins>
   </reporting>
-  <profiles>
-    <profile>
-      <!-- http://www.yourkit.com/docs/80/help/agent.jsp -->
-      <id>yourkit</id>
-
-      <properties>
-        <yourkit.home>/Applications/YourKit_Java_Profiler_11.0.5.app</yourkit.home>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>com.yourkit</groupId>
-          <artifactId>yjp-controller-api-redist</artifactId>
-          <version>11.0.5</version>
-          <scope>system</scope>
-          <systemPath>${yourkit.home}/lib/yjp-controller-api-redist.jar</systemPath>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>-agentpath:"${yourkit.home}/bin/mac/libyjpagent.jnilib"</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
 
