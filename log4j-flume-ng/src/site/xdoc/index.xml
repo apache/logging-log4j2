@@ -15,7 +15,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-
+<!-- TODO: turn this into a velocity template for all the version numbers -->
 <document>
     <properties>
         <title>Flume Next Gen Appender</title>
@@ -45,7 +45,7 @@
         <groupId>com.sleepycat</groupId>
         <artifactId>je</artifactId>
         <version>5.0.73</version>
-        </dependency>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -79,9 +79,9 @@
   <description>App to test log4j appender</description>
 
   <properties>
-    <log4j.version>2.0-beta6</log4j.version>
-    <slf4j.version>1.6.6</slf4j.version>
-    <jackson.version>1.9.3</jackson.version>
+    <log4j.version>2.0-rc2</log4j.version>
+    <slf4j.version>1.7.6</slf4j.version>
+    <jackson.version>1.9.13</jackson.version>
   </properties>
 
   <dependencyManagement>
