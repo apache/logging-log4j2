@@ -12,7 +12,7 @@
   <name>Apache Log4j 2 BOM</name>
   <description>Apache Log4j 2 Bill of Material</description>
   <artifactId>log4j-bom</artifactId>
-  <version>${parent.version}</version>
+  <version>${project.parent.version}</version>
   <packaging>pom</packaging>
   <dependencyManagement>
     <dependencies>
