@@ -31,7 +31,7 @@ public class PropertiesUtil {
     private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil("log4j2.component.properties");
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    
+
     private final Properties props;
 
     public PropertiesUtil(final Properties props) {
@@ -41,7 +41,7 @@ public class PropertiesUtil {
     /**
      * Loads and closes the given property input stream.
      * If an error occurs, log to the status logger.
-     * 
+     *
      * @param in
      *            a property input stream.
      * @param source
@@ -55,20 +55,21 @@ public class PropertiesUtil {
             try {
                 props.load(in);
             } catch (final IOException e) {
-                LOGGER.error("Unable to read " + source, e);
+                LOGGER.error("Unable to read {}", source, e);
             } finally {
                 try {
                     in.close();
                 } catch (final IOException e) {
-                    LOGGER.error("Unable to close " + source, e);
+                    LOGGER.error("Unable to close {}", source, e);
                 }
             }
         }
         return props;
     }
-    
+
     public PropertiesUtil(final String propsLocn) {
         final ClassLoader loader = ProviderUtil.findClassLoader();
+        @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
         final InputStream in = loader.getResourceAsStream(propsLocn);
         this.props = loadClose(in, propsLocn);
     }
@@ -81,7 +82,7 @@ public class PropertiesUtil {
         String prop = null;
         try {
             prop = System.getProperty(name);
-        } catch (final SecurityException e) {
+        } catch (final SecurityException ignored) {
             // Ignore
         }
         return prop == null ? props.getProperty(name) : prop;
@@ -92,7 +93,7 @@ public class PropertiesUtil {
         String prop = null;
         try {
             prop = System.getProperty(name);
-        } catch (final SecurityException e) {
+        } catch (final SecurityException ignored) {
             // Ignore
         }
         if (prop == null) {
@@ -113,7 +114,7 @@ public class PropertiesUtil {
         String prop = null;
         try {
             prop = System.getProperty(name);
-        } catch (final SecurityException e) {
+        } catch (final SecurityException ignored) {
             // Ignore
         }
         if (prop == null) {
@@ -151,7 +152,7 @@ public class PropertiesUtil {
         try {
             return new Properties(System.getProperties());
         } catch (final SecurityException ex) {
-            StatusLogger.getLogger().error("Unable to access system properties.");
+            LOGGER.error("Unable to access system properties.", ex);
             // Sandboxed - can't read System Properties
             return new Properties();
         }
