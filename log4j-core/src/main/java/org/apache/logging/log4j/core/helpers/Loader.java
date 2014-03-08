@@ -68,19 +68,19 @@ public final class Loader {
     }
 
     /**
-     * This method will search for <code>resource</code> in different
+     * This method will search for {@code resource} in different
      * places. The search order is as follows:
      * <p/>
      * <ol>
      * <p/>
-     * <p><li>Search for <code>resource</code> using the thread context
+     * <p><li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
-     * <code>resource</code> using the class loader that loaded this
-     * class (<code>Loader</code>). Under JDK 1.1, only the the class
-     * loader that loaded this class (<code>Loader</code>) is used.
+     * {@code resource} using the class loader that loaded this
+     * class ({@code Loader}). Under JDK 1.1, only the the class
+     * loader that loaded this class ({@code Loader}) is used.
      * <p/>
      * <p><li>Try one last time with
-     * <code>ClassLoader.getSystemResource(resource)</code>, that is is
+     * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
      * built-in class loader in JDK 1.1.
      * <p/>
@@ -93,8 +93,7 @@ public final class Loader {
         try {
             ClassLoader classLoader = getTCL();
             if (classLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using context classloader "
-                        + classLoader + '.');
+                LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
                 final URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
@@ -104,7 +103,7 @@ public final class Loader {
             // We could not find resource. Let us now try with the classloader that loaded this class.
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
+                LOGGER.trace("Trying to find [{}] using {} class loader.", resource, classLoader);
                 final URL url = classLoader.getResource(resource);
                 if (url != null) {
                     return url;
@@ -112,7 +111,7 @@ public final class Loader {
             }
             // We could not find resource. Finally try with the default ClassLoader.
             if (defaultLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
+                LOGGER.trace("Trying to find [{}] using {} class loader.", resource, defaultLoader);
                 final URL url = defaultLoader.getResource(resource);
                 if (url != null) {
                     return url;
@@ -129,24 +128,24 @@ public final class Loader {
         // may be the case that clazz was loaded by the Extension class
         // loader which the parent of the system class loader. Hence the
         // code below.
-        LOGGER.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
+        LOGGER.trace("Trying to find [{}] using ClassLoader.getSystemResource().", resource);
         return ClassLoader.getSystemResource(resource);
     }
 
     /**
-     * This method will search for <code>resource</code> in different
+     * This method will search for {@code resource} in different
      * places. The search order is as follows:
      * <p/>
      * <ol>
      * <p/>
-     * <p><li>Search for <code>resource</code> using the thread context
+     * <p><li>Search for {@code resource} using the thread context
      * class loader under Java2. If that fails, search for
-     * <code>resource</code> using the class loader that loaded this
-     * class (<code>Loader</code>). Under JDK 1.1, only the the class
-     * loader that loaded this class (<code>Loader</code>) is used.
+     * {@code resource} using the class loader that loaded this
+     * class ({@code Loader}). Under JDK 1.1, only the the class
+     * loader that loaded this class ({@code Loader}) is used.
      * <p/>
      * <p><li>Try one last time with
-     * <code>ClassLoader.getSystemResource(resource)</code>, that is is
+     * {@code ClassLoader.getSystemResource(resource)}, that is is
      * using the system class loader in JDK 1.2 and virtual machine's
      * built-in class loader in JDK 1.1.
      * <p/>
@@ -156,13 +155,11 @@ public final class Loader {
      * @return An InputStream to read the resouce.
      */
     public static InputStream getResourceAsStream(final String resource, final ClassLoader defaultLoader) {
-        ClassLoader classLoader;
-        InputStream is;
-
         try {
-            classLoader = getTCL();
+            ClassLoader classLoader = getTCL();
+            InputStream is;
             if (classLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using context classloader " + classLoader + '.');
+                LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
@@ -172,7 +169,7 @@ public final class Loader {
             // We could not find resource. Let us now try with the classloader that loaded this class.
             classLoader = Loader.class.getClassLoader();
             if (classLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using " + classLoader + " class loader.");
+                LOGGER.trace("Trying to find [{}] using {} class loader.", resource, classLoader);
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
@@ -181,7 +178,7 @@ public final class Loader {
 
             // We could not find resource. Finally try with the default ClassLoader.
             if (defaultLoader != null) {
-                LOGGER.trace("Trying to find [" + resource + "] using " + defaultLoader + " class loader.");
+                LOGGER.trace("Trying to find [{}] using {} class loader.", resource, defaultLoader);
                 is = defaultLoader.getResourceAsStream(resource);
                 if (is != null) {
                     return is;
@@ -198,7 +195,7 @@ public final class Loader {
         // may be the case that clazz was loaded by the Extension class
         // loader which the parent of the system class loader. Hence the
         // code below.
-        LOGGER.trace("Trying to find [" + resource + "] using ClassLoader.getSystemResource().");
+        LOGGER.trace("Trying to find [{}] using ClassLoader.getSystemResource().", resource);
         return ClassLoader.getSystemResourceAsStream(resource);
     }
 
@@ -240,11 +237,15 @@ public final class Loader {
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
         // Just call Class.forName(className) if we are instructed to ignore the TCL.
         if (ignoreTCL) {
+            LOGGER.trace("Ignoring TCCL. Trying Class.forName({}).", className);
             return Class.forName(className);
         }
         try {
+            LOGGER.trace("Trying TCCL for class {}.", className);
             return getTCL().loadClass(className);
         } catch (final Throwable e) {
+            LOGGER.catching(e);
+            LOGGER.trace("TCCL didn't work. Trying Class.forName({}).", className);
             return Class.forName(className);
         }
     }
