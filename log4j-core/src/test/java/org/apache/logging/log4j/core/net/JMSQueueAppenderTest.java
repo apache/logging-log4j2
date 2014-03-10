@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Map;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -30,6 +27,8 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.net.jms.AbstractJMSReceiver;
+import org.apache.logging.log4j.core.net.jms.JMSQueueReceiver;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
@@ -38,6 +37,8 @@ import org.junit.Test;
 import org.mockejb.jms.MockQueue;
 import org.mockejb.jms.QueueConnectionFactoryImpl;
 import org.mockejb.jndi.MockContextFactory;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *

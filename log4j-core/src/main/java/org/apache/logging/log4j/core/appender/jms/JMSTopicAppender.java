@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.core.net.JMSTopicManager;
+import org.apache.logging.log4j.core.net.jms.JMSTopicManager;
 
 /**
  * Appender to write to a JMS Topic.

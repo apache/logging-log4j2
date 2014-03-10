@@ -34,6 +34,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.net.jms.AbstractJMSReceiver;
+import org.apache.logging.log4j.core.net.jms.JMSTopicReceiver;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -115,7 +117,8 @@ public class JMSTopicFailoverTest {
     @Test
     public void testReconnect() throws Exception {
         context.rebind(TOPIC_NAME, new MockTopic(TOPIC_NAME));
-        final AbstractJMSReceiver receiver = new JMSTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
+        final AbstractJMSReceiver
+				receiver = new JMSTopicReceiver(FACTORY_NAME, TOPIC_NAME, null, null);
         ThreadContext.put("appender", "Failover");
         final Logger logger = LogManager.getLogger(JMSTopicFailoverTest.class);
         logger.debug("Test Message");

@@ -37,6 +37,8 @@ import org.apache.logging.log4j.core.appender.JMSTopicAppender;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.jms.AbstractJMSReceiver;
+import org.apache.logging.log4j.core.net.jms.JMSTopicReceiver;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
