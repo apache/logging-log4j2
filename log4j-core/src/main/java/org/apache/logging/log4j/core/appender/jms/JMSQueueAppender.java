@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.core.appender.jms;
 
 import java.io.Serializable;
 
@@ -27,25 +27,25 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.helpers.Booleans;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.apache.logging.log4j.core.net.JMSTopicManager;
+import org.apache.logging.log4j.core.net.JMSQueueManager;
 
 /**
- * Appender to write to a JMS Topic.
+ * Appender to write to a JMS Queue.
  */
-@Plugin(name = "JMSTopic", category = "Core", elementType = "appender", printObject = true)
-public final class JMSTopicAppender extends AbstractAppender {
+@Plugin(name = "JMSQueue", category = "Core", elementType = "appender", printObject = true)
+public final class JMSQueueAppender extends AbstractAppender {
 
-    private final JMSTopicManager manager;
+    private final JMSQueueManager manager;
 
-    private JMSTopicAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-                             final JMSTopicManager manager, final boolean ignoreExceptions) {
+    private JMSQueueAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+                             final JMSQueueManager manager, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = manager;
     }
 
     /**
      * Actual writing occurs here.
-     * <p/>
+     *
      * @param event The LogEvent.
      */
     @Override
@@ -58,7 +58,7 @@ public final class JMSTopicAppender extends AbstractAppender {
     }
 
     /**
-     * Create a JMSTopicAppender.
+     * Create a JMSQueueAppender.
      * @param name The name of the Appender.
      * @param factoryName The fully qualified class name of the InitialContextFactory.
      * @param providerURL The URL of the provider to use.
@@ -66,18 +66,18 @@ public final class JMSTopicAppender extends AbstractAppender {
      * will create a URL context factory
      * @param securityPrincipalName The name of the identity of the Principal.
      * @param securityCredentials The security credentials of the Principal.
-     * @param factoryBindingName The name to locate in the Context that provides the TopicConnectionFactory.
-     * @param topicBindingName The name to use to locate the Topic.
-     * @param userName The userid to use to create the Topic Connection.
-     * @param password The password to use to create the Topic Connection.
+     * @param factoryBindingName The name to locate in the Context that provides the QueueConnectionFactory.
+     * @param queueBindingName The name to use to locate the Queue.
+     * @param userName The user ID to use to create the Queue Connection.
+     * @param password The password to use to create the Queue Connection.
      * @param layout The layout to use (defaults to SerializedLayout).
      * @param filter The Filter or null.
      * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
-     * @return The JMSTopicAppender.
+     * @return The JMSQueueAppender.
      */
     @PluginFactory
-    public static JMSTopicAppender createAppender(
+    public static JMSQueueAppender createAppender(
             @PluginAttribute("name") final String name,
             @PluginAttribute("factoryName") final String factoryName,
             @PluginAttribute("providerURL") final String providerURL,
@@ -85,26 +85,25 @@ public final class JMSTopicAppender extends AbstractAppender {
             @PluginAttribute("securityPrincipalName") final String securityPrincipalName,
             @PluginAttribute("securityCredentials") final String securityCredentials,
             @PluginAttribute("factoryBindingName") final String factoryBindingName,
-            @PluginAttribute("topicBindingName") final String topicBindingName,
+            @PluginAttribute("queueBindingName") final String queueBindingName,
             @PluginAttribute("userName") final String userName,
             @PluginAttribute("password") final String password,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filters") final Filter filter,
+            @PluginElement("Filter") final Filter filter,
             @PluginAttribute("ignoreExceptions") final String ignore) {
-
         if (name == null) {
             LOGGER.error("No name provided for JMSQueueAppender");
             return null;
         }
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final JMSTopicManager manager = JMSTopicManager.getJMSTopicManager(factoryName, providerURL, urlPkgPrefixes,
-            securityPrincipalName, securityCredentials, factoryBindingName, topicBindingName, userName, password);
+        final JMSQueueManager manager = JMSQueueManager.getJMSQueueManager(factoryName, providerURL, urlPkgPrefixes,
+            securityPrincipalName, securityCredentials, factoryBindingName, queueBindingName, userName, password);
         if (manager == null) {
             return null;
         }
         if (layout == null) {
             layout = SerializedLayout.createLayout();
         }
-        return new JMSTopicAppender(name, filter, layout, manager, ignoreExceptions);
+        return new JMSQueueAppender(name, filter, layout, manager, ignoreExceptions);
     }
 }
