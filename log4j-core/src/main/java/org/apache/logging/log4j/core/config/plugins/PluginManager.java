@@ -195,8 +195,7 @@ public class PluginManager {
         }
         long elapsed = System.nanoTime() - start;
         plugins = pluginTypeMap.get(type);
-        final StringBuilder sb = new StringBuilder("Generated plugins");
-        sb.append(" in ");
+        final StringBuilder sb = new StringBuilder("Generated plugins in ");
         DecimalFormat numFormat = new DecimalFormat("#0");
         final long seconds = elapsed / NANOS_PER_SECOND;
         elapsed %= NANOS_PER_SECOND;
