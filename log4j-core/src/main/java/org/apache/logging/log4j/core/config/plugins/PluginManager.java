@@ -201,7 +201,11 @@ public class PluginManager {
         elapsed %= NANOS_PER_SECOND;
         sb.append(numFormat.format(seconds)).append('.');
         numFormat = new DecimalFormat("000000000");
-        sb.append(numFormat.format(elapsed)).append(" seconds");
+        sb.append(numFormat.format(elapsed)).append(" seconds, packages: ");
+        sb.append(pkgs);
+        sb.append(", preload: ");
+        sb.append(preLoad);
+        sb.append(".");
         LOGGER.debug(sb.toString());
     }
 
