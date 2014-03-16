@@ -92,17 +92,17 @@
                 </li>
                 <li>
                   Follow the <a href="webapp.html">instructions to initialize Log4j 2 in a web application</a> and set
-                  the system property "Log4jContextSelector" to
-                  "org.apache.logging.log4j.core.selector.JNDIContextSelector." This will cause the container to
-                  use JNDI to locate each web application's <code>LoggerContext</code>. Be sure to set the
-                  <code>isLog4jContextSelectorNamed</code> context parameter to <code>true</code> and also set the
+                  the system property or servlet context parameter <code>Log4jContextSelector</code> to
+                  <kbd>org.apache.logging.log4j.core.selector.JNDIContextSelector</kbd>. This will cause the container
+                  to use JNDI to locate each web application's <code>LoggerContext</code>. Be sure to set the
+                  <code>isLog4jContextSelectorNamed</code> context parameter to <kbd>true</kbd> and also set the
                   <code>log4jContextName</code> and <code>log4jConfiguration</code> context parameters.
                 </li>
               </ol>
             </p>
             <p>
               The exact method for setting system properties depends on the container. For Tomcat, edit
-              $CATALINA_HOME/conf/catalina.properties. Consult the documentation for other web containers.
+              <code>$CATALINA_HOME/conf/catalina.properties</code>. Consult the documentation for other web containers.
             </p>
         </subsection>
       </section>
