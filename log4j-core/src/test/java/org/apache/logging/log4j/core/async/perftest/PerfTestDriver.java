@@ -214,12 +214,15 @@ public class PerfTestDriver {
         final String LOG12 = RunLog4j1.class.getName();
         final String LOG20 = RunLog4j2.class.getName();
         final String LOGBK = RunLogback.class.getName();
+        
+        final String THREADNAME = "-DAsyncLogger.ThreadNameStrategy=" //
+                + System.getProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
 
         final long start = System.nanoTime();
         final List<Setup> tests = new ArrayList<PerfTestDriver.Setup>();
         // includeLocation=false
         tests.add(s("perf3PlainNoLoc.xml", LOG20, "Loggers all async",
-                ALL_ASYNC, SYSCLOCK));
+                ALL_ASYNC, SYSCLOCK, THREADNAME));
         tests.add(s("perf7MixedNoLoc.xml", LOG20, "Loggers mixed sync/async"));
         tests.add(s("perf-logback.xml", LOGBK, "Sync"));
         tests.add(s("perf-log4j12.xml", LOG12, "Sync"));
@@ -248,7 +251,7 @@ public class PerfTestDriver {
         // tests.add(s("perf2syncRollRandomAccessFile.xml", LOG20,
         // "RollRandomAccessFileAppender"));
 
-        final int MAX_THREADS = 16; // 64 takes a LONG time
+        final int MAX_THREADS = 4; // 64 takes a LONG time
         for (int i = 2; i <= MAX_THREADS; i *= 2) {
             // includeLocation = false
             tests.add(m("perf-logback.xml", LOGBK, "Sync", i));
@@ -258,7 +261,7 @@ public class PerfTestDriver {
             tests.add(m("perf-log4j12-async.xml", LOG12, "Async Appender", i));
             tests.add(m("perf5AsyncApndNoLoc.xml", LOG20, "Async Appender", i));
             tests.add(m("perf3PlainNoLoc.xml", LOG20, "Loggers all async", i,
-                    ALL_ASYNC, SYSCLOCK));
+                    ALL_ASYNC, SYSCLOCK, THREADNAME));
             tests.add(m("perf7MixedNoLoc.xml", LOG20,
                     "Loggers mixed sync/async", i));
 
@@ -293,8 +296,8 @@ public class PerfTestDriver {
             final ProcessBuilder pb = config.throughputTest(java);
             pb.redirectErrorStream(true); // merge System.out and System.err
             final long t1 = System.nanoTime();
-            // int count = config._threadCount >= 16 ? 2 : repeat;
-            runPerfTest(repeat, x++, config, pb);
+            int count = config._threadCount >= 4 ? 3 : repeat;
+            runPerfTest(count, x++, config, pb);
             System.out.printf(" took %.1f seconds%n", (System.nanoTime() - t1)
                     / (1000.0 * 1000.0 * 1000.0));
 
