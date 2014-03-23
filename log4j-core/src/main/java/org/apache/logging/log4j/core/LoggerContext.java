@@ -19,6 +19,9 @@ package org.apache.logging.log4j.core;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,6 +30,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -51,6 +56,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
     public static final String PROPERTY_CONFIG = "config";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final Marker SHUTDOWN_HOOK = MarkerManager.getMarker("SHUTDOWN HOOK");
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
@@ -65,7 +71,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     private final String name;
     private URI configLocation;
 
-    private ShutdownThread shutdownThread = null;
+    /**
+     * Once a shutdown hook thread executes, we can't remove it from the runtime (throws an exception). Therefore,
+     * it's really pointless to keep a strongly accessible reference to said thread. Thus, please use a
+     * PhantomReference here to prevent possible cyclic memory references.
+     */
+    private Reference<Thread> shutdownThread;
 
     /**
      * Status of the LoggerContext.
@@ -147,18 +158,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                 if (status == Status.INITIALIZED || status == Status.STOPPED) {
                     status = Status.STARTING;
                     reconfigure();
-                    if (config.isShutdownHookEnabled()) {
-                        shutdownThread = new ShutdownThread(this);
-                        try {
-                            Runtime.getRuntime().addShutdownHook(shutdownThread);
-                        } catch (final IllegalStateException ise) {
-                            LOGGER.warn("Unable to register shutdown hook due to JVM state");
-                            shutdownThread = null;
-                        } catch (final SecurityException se) {
-                            LOGGER.warn("Unable to register shutdown hook due to security restrictions");
-                            shutdownThread = null;
-                        }
-                    }
+                    registerShutdownHookIfEnabled();
                     status = Status.STARTED;
                 }
             } finally {
@@ -174,17 +174,8 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public void start(final Configuration config) {
         if (configLock.tryLock()) {
             try {
-                if ((status == Status.INITIALIZED || status == Status.STOPPED) && config.isShutdownHookEnabled() ) {
-                    shutdownThread = new ShutdownThread(this);
-                    try {
-                        Runtime.getRuntime().addShutdownHook(shutdownThread);
-                    } catch (final IllegalStateException ise) {
-                        LOGGER.warn("Unable to register shutdown hook due to JVM state");
-                        shutdownThread = null;
-                    } catch (final SecurityException se) {
-                        LOGGER.warn("Unable to register shutdown hook due to security restrictions");
-                        shutdownThread = null;
-                    }
+                if (status == Status.INITIALIZED || status == Status.STOPPED) {
+                    registerShutdownHookIfEnabled();
                     status = Status.STARTED;
                 }
             } finally {
@@ -192,6 +183,21 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             }
         }
         setConfiguration(config);
+    }
+
+    private void registerShutdownHookIfEnabled() {
+        if (config.isShutdownHookEnabled()) {
+            LOGGER.debug(SHUTDOWN_HOOK, "Shutdown hook enabled. Registering a new one.");
+            final Thread thread = new Thread(new ShutdownThread(this), "log4j-shutdown");
+            shutdownThread = new PhantomReference<Thread>(thread, new ReferenceQueue<Thread>());
+            try {
+                Runtime.getRuntime().addShutdownHook(thread);
+            } catch (final IllegalStateException ise) {
+                LOGGER.warn(SHUTDOWN_HOOK, "Unable to register shutdown hook due to JVM state");
+            } catch (final SecurityException se) {
+                LOGGER.warn(SHUTDOWN_HOOK, "Unable to register shutdown hook due to security restrictions");
+            }
+        }
     }
 
     @Override
@@ -202,10 +208,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
                 return;
             }
             status = Status.STOPPING;
-            if (shutdownThread != null) {
-                Runtime.getRuntime().removeShutdownHook(shutdownThread);
-                shutdownThread = null;
-            }
+            unregisterShutdownHook();
             final Configuration prev = config;
             config = NULL_CONFIGURATION;
             updateLoggers();
@@ -215,9 +218,16 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             status = Status.STOPPED;
         } finally {
             configLock.unlock();
-            
-            // in finally: unregister MBeans even if an exception occurred while stopping 
+
+            // in finally: unregister MBeans even if an exception occurred while stopping
             Server.unregisterLoggerContext(getName()); // LOG4J2-406, LOG4J2-500
+        }
+    }
+
+    private void unregisterShutdownHook() {
+        if (shutdownThread != null) {
+            LOGGER.debug(SHUTDOWN_HOOK, "Enqueue shutdown hook for garbage collection.");
+            shutdownThread.enqueue();
         }
     }
 
@@ -346,11 +356,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             prev.stop();
         }
 
-        // notify listeners
-        final PropertyChangeEvent evt = new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config);
-        for (final PropertyChangeListener listener : propertyChangeListeners) {
-            listener.propertyChange(evt);
-        }
+        firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
 
         try {
             Server.reregisterMBeansAfterReconfigure();
@@ -358,6 +364,12 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
             LOGGER.error("Could not reconfigure JMX", ex);
         }
         return prev;
+    }
+
+    private void firePropertyChangeEvent(final PropertyChangeEvent event) {
+        for (final PropertyChangeListener listener : propertyChangeListeners) {
+            listener.propertyChange(event);
+        }
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -381,7 +393,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      * Reconfigure the context.
      */
     public synchronized void reconfigure() {
-        LOGGER.debug("Reconfiguration started for context " + name);
+        LOGGER.debug("Reconfiguration started for context {}", name);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(name, configLocation);
         setConfiguration(instance);
         /*
@@ -417,7 +429,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
      */
     @Override
     public synchronized void onChange(final Reconfigurable reconfigurable) {
-        LOGGER.debug("Reconfiguration started for context " + name);
+        LOGGER.debug("Reconfiguration started for context {}", name);
         final Configuration config = reconfigurable.reconfigure();
         if (config != null) {
             setConfiguration(config);
@@ -432,7 +444,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
         return new Logger(ctx, name, messageFactory);
     }
 
-    private class ShutdownThread extends Thread {
+    private static class ShutdownThread implements Runnable {
 
         private final LoggerContext context;
 
@@ -442,8 +454,9 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
 
         @Override
         public void run() {
-            context.shutdownThread = null;
+            LOGGER.debug("Stopping LoggerContext [{}]", context);
             context.stop();
+            LOGGER.debug("LoggerContext [{}] stopped.", context);
         }
     }
 
