@@ -70,7 +70,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * The Base Configuration. Many configuration implementations will extend this class.
  */
 public class BaseConfiguration extends AbstractFilterable implements Configuration {
-    
+
     static final String PACKAGE_SEPARATOR = "\\s*,\\s*";
 
     /**
@@ -160,7 +160,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     // Cause the class to be initialized if it isn't already.
                     Class.forName(type.getPluginClass().getName(), true, type.getPluginClass().getClassLoader());
                 } catch (Exception ex) {
-                    LOGGER.error("Unable to initialize " + type.getPluginClass().getName() + " due to " +                        ex.getClass().getSimpleName() + ":" + ex.getMessage());
+                    LOGGER.error("Unable to initialize {} due to {}: {}", type.getPluginClass().getName(),
+                            ex.getClass().getSimpleName(), ex.getMessage());
                 }
             }
         }
@@ -286,9 +287,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     advertiser = clazz.newInstance();
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
                 } catch (final InstantiationException e) {
-                    System.err.println("InstantiationException attempting to instantiate advertiser: " + name);
+                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", name, e);
                 } catch (final IllegalAccessException e) {
-                    System.err.println("IllegalAccessException attempting to instantiate advertiser: " + name);
+                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", name, e);
                 }
             }
         }
@@ -345,8 +346,8 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     setRoot = true;
                 }
             } else {
-                LOGGER.error("Unknown object \"" + child.getName() + "\" of type " +
-                    child.getObject().getClass().getName() + " is ignored");
+                LOGGER.error("Unknown object \"{}\" of type {} is ignored.", child.getName(),
+                        child.getObject().getClass().getName());
             }
         }
 
@@ -367,7 +368,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 if (app != null) {
                     l.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender " + ref.getRef() + " for logger " + l.getName());
+                    LOGGER.error("Unable to locate appender {} for logger {}", ref.getRef(), l.getName());
                 }
             }
 
@@ -656,7 +657,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
 
             if (type == null) {
                 if (node.getParent() != null) {
-                    LOGGER.error("Unable to locate plugin for " + node.getName());
+                    LOGGER.error("Unable to locate plugin for {}", node.getName());
                 }
             } else {
                 node.setObject(createPluginObject(type, node, event));
@@ -692,8 +693,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 }
                 return map;
             } catch (final Exception ex) {
-                LOGGER.warn("Unable to create Map for " + type.getElementName() + " of class " +
-                    clazz);
+                LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz);
             }
         }
 
@@ -706,8 +706,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 }
                 return list;
             } catch (final Exception ex) {
-                LOGGER.warn("Unable to create List for " + type.getElementName() + " of class " +
-                    clazz);
+                LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz);
             }
         }
 
@@ -726,7 +725,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
         final Annotation[][] parmArray = factoryMethod.getParameterAnnotations();
         final Class<?>[] parmClasses = factoryMethod.getParameterTypes();
         if (parmArray.length != parmClasses.length) {
-            LOGGER.error("Number of parameter annotations does not equal the number of paramters");
+            LOGGER.error("Number of parameter annotations ({}) does not equal the number of parameters ({})",
+                    parmArray.length, parmClasses.length
+            );
         }
         final Object[] parms = new Object[parmClasses.length];
 
@@ -768,7 +769,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 } else if (a instanceof PluginConfiguration) {
                     parms[index] = this;
                     if (this.name != null) {
-                        sb.append("Configuration(").append(name).append(")");
+                        sb.append("Configuration(").append(name).append(')');
                     } else {
                         sb.append("Configuration");
                     }
@@ -779,13 +780,13 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                         v = getAttrValue("value", null, attrs);
                     }
                     final String value = subst.replace(event, v);
-                    sb.append(name).append("=\"").append(value).append("\"");
+                    sb.append(name).append("=\"").append(value).append('"');
                     parms[index] = value;
                 } else if (a instanceof PluginAttribute) {
                     PluginAttribute attr = (PluginAttribute) a;
                     final String name = attr.value();
                     final String value = subst.replace(event, getAttrValue(name, aliases, attrs));
-                    sb.append(name).append("=\"").append(value).append("\"");
+                    sb.append(name).append("=\"").append(value).append('"');
                     parms[index] = value;
                 } else if (a instanceof PluginElement) {
                     final PluginElement elem = (PluginElement) a;
@@ -819,14 +820,15 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                                 list.add(obj);
                             }
                         }
-                        sb.append("}");
+                        sb.append('}');
                         if (parms[index] != null) {
                             break;
                         }
-                        if (list.size() > 0 && !parmClass.isAssignableFrom(list.get(0).getClass())) {
-                            LOGGER.error("Attempted to assign List containing class " +
-                                list.get(0).getClass().getName() + " to array of type " + parmClass +
-                                " for attribute " + name);
+                        if (!(list.isEmpty() || parmClass.isAssignableFrom(list.get(0).getClass()))) {
+                            LOGGER.error(
+                                    "Attempted to assign List containing class {} to array of type {} for attribute {}",
+                                    list.get(0).getClass().getName(), parmClass, name
+                            );
                             break;
                         }
                         final Object[] array = (Object[]) Array.newInstance(parmClass, list.size());
@@ -843,7 +845,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                             final PluginType<?> childType = child.getType();
                             if (elem.value().equals(childType.getElementName()) ||
                                 parmClass.isAssignableFrom(childType.getPluginClass())) {
-                                sb.append(child.getName()).append("(").append(child.toString()).append(")");
+                                sb.append(child.getName()).append('(').append(child.toString()).append(')');
                                 present = true;
                                 used.add(child);
                                 parms[index] = child.getObject();
@@ -859,10 +861,10 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
             ++index;
         }
         if (sb.length() > 0) {
-            sb.append(")");
+            sb.append(')');
         }
 
-        if (attrs.size() > 0) {
+        if (!attrs.isEmpty()) {
             final StringBuilder eb = new StringBuilder();
             for (final String key : attrs.keySet()) {
                 if (eb.length() == 0) {
@@ -876,9 +878,9 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                 } else {
                     eb.append(", ");
                 }
-                eb.append("\"");
+                eb.append('"');
                 eb.append(key);
-                eb.append("\"");
+                eb.append('"');
 
             }
             LOGGER.error(eb.toString());
@@ -890,7 +892,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
                     continue;
                 }
                 final String nodeType = node.getType().getElementName();
-                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + " " + node.getName();
+                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error(start + " has no parameter that matches element " + child.getName());
             }
         }
@@ -927,16 +929,17 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
     }
 
     private String getAttrValue(final String name, final String[] aliases, final Map<String, String> attrs) {
-        for (final String key : attrs.keySet()) {
+        for (final Map.Entry<String, String> entry : attrs.entrySet()) {
+            final String key = entry.getKey();
             if (key.equalsIgnoreCase(name)) {
-                final String attr = attrs.get(key);
+                final String attr = entry.getValue();
                 attrs.remove(key);
                 return attr;
             }
             if (aliases != null) {
                 for (String alias : aliases) {
                     if (key.equalsIgnoreCase(alias)) {
-                        final String attr = attrs.get(key);
+                        final String attr = entry.getValue();
                         attrs.remove(key);
                         return attr;
                     }
@@ -950,7 +953,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
          for (final Map.Entry<String, LoggerConfig> entry : loggers.entrySet()) {
             final LoggerConfig logger = entry.getValue();
             String name = entry.getKey();
-            if (!name.equals("")) {
+            if (!name.isEmpty()) {
                 final int i = name.lastIndexOf('.');
                 if (i > 0) {
                     name = name.substring(0, i);
