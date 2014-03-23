@@ -451,6 +451,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * Adds an Appender to the configuration.
      * @param appender The Appender to add.
      */
+    @Override
     public void addAppender(final Appender appender) {
         appenders.putIfAbsent(appender.getName(), appender);
     }
@@ -626,6 +627,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      * @param name The name of the Logger.
      * @param loggerConfig The LoggerConfig.
      */
+    @Override
     public synchronized void addLogger(final String name, final LoggerConfig loggerConfig) {
         loggers.putIfAbsent(name, loggerConfig);
         setParents();
@@ -636,6 +638,7 @@ public class BaseConfiguration extends AbstractFilterable implements Configurati
      *
      * @param name The name of the Logger.
      */
+    @Override
     public synchronized void removeLogger(final String name) {
         loggers.remove(name);
         setParents();

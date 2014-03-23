@@ -999,6 +999,7 @@ public abstract class AbstractLogger implements LoggerProvider, Serializable {
      * @param marker A Marker or null.
      * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
      */
+    @Override
     public boolean isEnabled(final Level level, final Marker marker) {
         return isEnabled(level, marker, (Object) null, null);
     }
