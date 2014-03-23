@@ -24,7 +24,7 @@
       <action issue="LOG4J2-574" dev="rpopma" type="update">
           Make Blocking the default WaitStrategy for Async Loggers.
       </action>
-      <action issue="LOG4J2-555" dev="rpopma" type="update">
+      <action issue="LOG4J2-555" dev="rpopma" type="update" due-to="Bruce Brouwer">
           Introduce LoggerProvider interface to facilitate implementing and extending Loggers.
       </action>
       <action issue="LOG4J2-560" dev="rgoers" type="fix">
