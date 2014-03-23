@@ -172,17 +172,14 @@ public class AsyncLogger extends Logger {
         final String strategy = System.getProperty("AsyncLogger.WaitStrategy");
         LOGGER.debug("property AsyncLogger.WaitStrategy={}", strategy);
         if ("Sleep".equals(strategy)) {
-            LOGGER.debug("disruptor event handler uses SleepingWaitStrategy");
             return new SleepingWaitStrategy();
         } else if ("Yield".equals(strategy)) {
-            LOGGER.debug("disruptor event handler uses YieldingWaitStrategy");
             return new YieldingWaitStrategy();
         } else if ("Block".equals(strategy)) {
-            LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
             return new BlockingWaitStrategy();
         }
-        LOGGER.debug("disruptor event handler uses SleepingWaitStrategy");
-        return new SleepingWaitStrategy();
+        LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
+        return new BlockingWaitStrategy();
     }
 
     private static ExceptionHandler getExceptionHandler() {
