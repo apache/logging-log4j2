@@ -34,11 +34,11 @@
   <Loggers>
     <Logger name="org.apache.logging.log4j.test1" level="detail" additivity="false">
       <AppenderRef ref="List1"/>
-    </Logger>>
+    </Logger>
 
     <Logger name="org.apache.logging.log4j.test2" level="info" additivity="false">
       <AppenderRef ref="List2"/>
-    </Logger>>
+    </Logger>
 
     <Root level="error">
       <AppenderRef ref="STDOUT"/>
