@@ -69,9 +69,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * The Base Configuration. Many configuration implementations will extend this class.
  */
-public class BaseConfiguration extends AbstractFilterable implements Configuration {
-
-    static final String PACKAGE_SEPARATOR = "\\s*,\\s*";
+public abstract class BaseConfiguration extends AbstractFilterable implements Configuration {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
