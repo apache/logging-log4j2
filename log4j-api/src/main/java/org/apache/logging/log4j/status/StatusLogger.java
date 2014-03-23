@@ -53,8 +53,6 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty("log4j2.StatusLogger.level");
 
-    // private static final String FQCN = AbstractLogger.class.getName();
-
     private static final StatusLogger STATUS_LOGGER = new StatusLogger();
 
     private final SimpleLogger logger;
@@ -178,7 +176,7 @@ public final class StatusLogger extends AbstractLogger {
      * @param t      A Throwable or null.
      */
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message msg, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, final Throwable t) {
         StackTraceElement element = null;
         if (fqcn != null) {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
@@ -197,7 +195,7 @@ public final class StatusLogger extends AbstractLogger {
                 }
             }
         } else {
-            logger.log(marker, fqcn, level, msg, t);
+            logger.logMessage(fqcn, level, marker, msg, t);
         }
     }
 
@@ -221,27 +219,27 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String message) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
         return isEnabled(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
         return isEnabled(level, marker);
     }
 
@@ -250,23 +248,7 @@ public final class StatusLogger extends AbstractLogger {
         if (listeners.size() > 0) {
             return listenersLevel >= level.intLevel();
         }
-
-        switch (level.getStandardLevel()) {
-            case FATAL:
-                return logger.isFatalEnabled(marker);
-            case TRACE:
-                return logger.isTraceEnabled(marker);
-            case DEBUG:
-                return logger.isDebugEnabled(marker);
-            case INFO:
-                return logger.isInfoEnabled(marker);
-            case WARN:
-                return logger.isWarnEnabled(marker);
-            case ERROR:
-                return logger.isErrorEnabled(marker);
-            default:
-                return false;
-        }
+        return logger.isEnabled(level, marker);
     }
 
     /**

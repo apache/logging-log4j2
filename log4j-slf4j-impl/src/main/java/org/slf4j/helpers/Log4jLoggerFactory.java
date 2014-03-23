@@ -22,9 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.slf4j.SLF4JLoggingException;
+import org.apache.logging.log4j.spi.LoggerProvider;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +49,8 @@ public class Log4jLoggerFactory implements ILoggerFactory {
             return loggers.get(name);
         }
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        final org.apache.logging.log4j.Logger logger = context.getLogger(key);
-        if (logger instanceof AbstractLogger) {
-            loggers.putIfAbsent(name, new SLF4JLogger((AbstractLogger) logger, name));
-            return loggers.get(name);
-        }
-        throw new SLF4JLoggingException("SLF4J Adapter requires base logging system to extend Log4j AbstractLogger");
+        loggers.putIfAbsent(name, new SLF4JLogger(context.getLogger(key), name));
+        return loggers.get(name);
     }
 
     private ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
@@ -104,9 +99,8 @@ public class Log4jLoggerFactory implements ILoggerFactory {
             return getContext(fqcn, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
+        public static LoggerProvider getLogger(final String name) {
+            return getContext(FQCN).getLogger(name);
         }
     }
-
 }

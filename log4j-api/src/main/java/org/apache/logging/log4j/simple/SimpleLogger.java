@@ -107,8 +107,8 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message msg,
-                    final Throwable throwable) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message msg, 
+            final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
         if (showDateTime) {
@@ -153,28 +153,27 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String msg) {
-        return this.level.intLevel() >= level.intLevel();
-    }
-
-
-    @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
         return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
+        return this.level.intLevel() >= level.intLevel();
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
         return this.level.intLevel() >= level.intLevel();
     }
 

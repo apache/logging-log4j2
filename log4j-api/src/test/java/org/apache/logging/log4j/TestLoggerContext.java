@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,20 +27,20 @@ import java.util.Map;
  *
  */
 public class TestLoggerContext implements LoggerContext {
-    private final Map<String, Logger> map = new HashMap<String, Logger>();
+    private final Map<String, LoggerProvider> map = new HashMap<String, LoggerProvider>();
 
     @Override
-    public Logger getLogger(final String name) {
+    public LoggerProvider getLogger(final String name) {
         if (map.containsKey(name)) {
             return map.get(name);
         }
-        final Logger logger = new TestLogger(name);
+        final LoggerProvider logger = new TestLogger(name);
         map.put(name, logger);
         return logger;
     }
 
     @Override
-    public Logger getLogger(final String name, final MessageFactory messageFactory) {
+    public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
         return new TestLogger(name, messageFactory);
     }
 

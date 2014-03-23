@@ -73,6 +73,6 @@ public class LoggerWriter extends Writer {
     private void log() {
         final Message message = logger.getMessageFactory().newMessage(buf.toString());
         buf.setLength(0);
-        logger.log(marker, FQCN, level, message, null);
+        logger.logIfEnabled(FQCN, level, marker, message, null);
     }
 }

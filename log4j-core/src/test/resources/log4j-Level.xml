@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<Configuration status="warn" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+
+  <Appenders>
+    <Console name="STDOUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <List name="ListAll" />
+    <List name="ListTrace" />
+    <List name="ListDebug" />
+    <List name="ListInfo" />
+    <List name="ListWarn" />
+    <List name="ListError" />
+    <List name="ListFatal" />
+  </Appenders>
+
+  <Loggers>
+    <Logger name="levelTest" level="all" additivity="false">
+      <AppenderRef ref="ListAll"/>
+    </Logger>
+    <Logger name="levelTest.Trace" level="trace" additivity="false">
+      <AppenderRef ref="ListTrace"/>
+    </Logger>
+    <Logger name="levelTest.Debug" level="debug" additivity="false">
+      <AppenderRef ref="ListDebug"/>
+    </Logger>
+    <Logger name="levelTest.Info" level="info" additivity="false">
+      <AppenderRef ref="ListInfo"/>
+    </Logger>
+    <Logger name="levelTest.Warn" level="warn" additivity="false">
+      <AppenderRef ref="ListWarn"/>
+    </Logger>
+    <Logger name="levelTest.Error" level="error" additivity="false">
+      <AppenderRef ref="ListError"/>
+    </Logger>
+    <Logger name="levelTest.Fatal" level="fatal" additivity="false">
+      <AppenderRef ref="ListFatal"/>
+    </Logger>
+
+    <Root level="off">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>

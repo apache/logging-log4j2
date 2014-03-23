@@ -45,35 +45,34 @@ public class SLF4JLogger extends AbstractLogger {
         this.logger = logger;
         this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
     }
-
+    
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data,
-                       final Throwable t) {
+    public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
         if (locationAwareLogger != null) {
-            if (data instanceof LoggerNameAwareMessage) {
-                ((LoggerNameAwareMessage) data).setLoggerName(getName());
+            if (message instanceof LoggerNameAwareMessage) {
+                ((LoggerNameAwareMessage) message).setLoggerName(getName());
             }
-            locationAwareLogger.log(getMarker(marker), fqcn, convertLevel(level), data.getFormattedMessage(),
-                data.getParameters(), t);
+            locationAwareLogger.log(getMarker(marker), fqcn, convertLevel(level), message.getFormattedMessage(),
+                    message.getParameters(), t);
         } else {
             switch (level.getStandardLevel()) {
                 case DEBUG :
-                    logger.debug(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.debug(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case TRACE :
-                    logger.trace(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.trace(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case INFO :
-                    logger.info(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.info(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case WARN :
-                    logger.warn(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.warn(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 case ERROR :
-                    logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.error(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
                 default :
-                    logger.error(getMarker(marker), data.getFormattedMessage(), data.getParameters(), t);
+                    logger.error(fqcn, getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
                     break;
             }
         }
@@ -110,27 +109,27 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
 

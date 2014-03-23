@@ -17,8 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
+import org.apache.logging.log4j.spi.LoggerProvider;
 
 /**
  *  Logs "Events" that are represented as StructuredDataMessages.
@@ -34,16 +33,7 @@ public final class EventLogger {
 
     private static final String FQCN = EventLogger.class.getName();
 
-    private static AbstractLoggerWrapper loggerWrapper;
-
-    static {
-        final Logger eventLogger = LogManager.getLogger(NAME);
-        if (!(eventLogger instanceof AbstractLogger)) {
-            throw new LoggingException("Logger returned must be based on AbstractLogger");
-        }
-        loggerWrapper = new AbstractLoggerWrapper((AbstractLogger) eventLogger, NAME, null);
-    }
-
+    private static final LoggerProvider LOGGER = LogManager.getContext(false).getLogger(NAME);
 
     private EventLogger() {
     }
@@ -53,7 +43,7 @@ public final class EventLogger {
      * @param msg The event StructuredDataMessage.
      */
     public static void logEvent(final StructuredDataMessage msg) {
-        loggerWrapper.log(EVENT_MARKER, FQCN, Level.OFF, msg, null);
+        LOGGER.logIfEnabled(FQCN, Level.OFF, EVENT_MARKER, msg, null);
     }
 
     /**
@@ -62,6 +52,6 @@ public final class EventLogger {
      * @param level The logging Level.
      */
     public static void logEvent(final StructuredDataMessage msg, final Level level) {
-        loggerWrapper.log(EVENT_MARKER, FQCN, level, msg, null);
+        LOGGER.logIfEnabled(FQCN, level, EVENT_MARKER, msg, null);
     }
 }

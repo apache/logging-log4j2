@@ -24,10 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -64,7 +64,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final PrintStream stream;
 
-    private final ConcurrentMap<String, Logger> loggers = new ConcurrentHashMap<String, Logger>();
+    private final ConcurrentMap<String, LoggerProvider> loggers = new ConcurrentHashMap<String, LoggerProvider>();
 
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
@@ -97,14 +97,14 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public Logger getLogger(final String name) {
+    public LoggerProvider getLogger(final String name) {
         return getLogger(name, null);
     }
 
     @Override
-    public Logger getLogger(final String name, final MessageFactory messageFactory) {
+    public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
-            final Logger logger = loggers.get(name);
+            final LoggerProvider logger = loggers.get(name);
             AbstractLogger.checkMessageFactory(logger, messageFactory);
             return logger;
         }

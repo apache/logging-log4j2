@@ -99,7 +99,7 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
             final Object message = this.getMessage();
             final Throwable exception = this.getException();
             if (message instanceof Message) {
-                logger.log(marker, FQCN, level, (Message) message, exception);
+                logger.logIfEnabled(FQCN, level, marker, (Message) message, exception);
             } else if (message instanceof String) {
                 Message data;
                 if (this.attributes.size() > 0) {
@@ -107,9 +107,9 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
                 } else {
                     data = logger.getMessageFactory().newMessage((String) message);
                 }
-                logger.log(marker, FQCN, level, data, exception);
+                logger.logIfEnabled(FQCN, level, marker, data, exception);
             } else {
-                logger.log(marker, FQCN, level, logger.getMessageFactory().newMessage(message), exception);
+                logger.logIfEnabled(FQCN, level, marker, logger.getMessageFactory().newMessage(message), exception);
             }
         }
 

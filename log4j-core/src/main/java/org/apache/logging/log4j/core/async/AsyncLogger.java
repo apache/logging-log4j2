@@ -230,7 +230,7 @@ public class AsyncLogger extends Logger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         Info info = threadlocalInfo.get();
         if (info == null) {
             info = new Info(new RingBufferLogEventTranslator(), Thread.currentThread().getName(), false);
@@ -241,11 +241,11 @@ public class AsyncLogger extends Logger {
         // being logged calls Logger.log() from its toString() method
         if (info.isAppenderThread && disruptor.getRingBuffer().remainingCapacity() == 0) {
             // bypass RingBuffer and invoke Appender directly
-            config.loggerConfig.log(getName(), marker, fqcn, level, data, t);
+            config.loggerConfig.log(getName(), fqcn, marker, level, message, t);
             return;
         }
         final boolean includeLocation = config.loggerConfig.isIncludeLocation();
-        info.translator.setValues(this, getName(), marker, fqcn, level, data, t, //
+        info.translator.setValues(this, getName(), marker, fqcn, level, message, t, //
 
                 // config properties are taken care of in the EventHandler
                 // thread in the #actualAsyncLog method
