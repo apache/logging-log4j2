@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2?" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-555" dev="rpopma" type="update">
+          Introduce LoggerProvider interface to facilitate implementing and extending Loggers.
+      </action>
       <action issue="LOG4J2-560" dev="rgoers" type="fix">
           SyslogAppenderTest and RFC5424LayoutTest were failing in Java 8.
       </action>
