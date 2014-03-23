@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.lang.reflect.Constructor;
+
 import org.apache.logging.log4j.core.Timer;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.junit.Test;
-
 import sun.reflect.Reflection;
 
-import java.lang.reflect.Constructor;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * Tests the cost of invoking Reflection.getCallerClass via reflection vs calling it directly.
@@ -45,6 +44,7 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
+    @SuppressWarnings("deprecation") // yeah, yeah, we know that they're trying to remove this API
     @Test
     public void testDirectly() {
         final Timer timer = new Timer("Directly", COUNT);
@@ -57,24 +57,25 @@ public class ReflectionComparison {
         System.out.println(timer.toString());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testBothMethodsReturnTheSame() {
-        assertEquals("1 is not the same.",
+        assertSame("1 is not the same.",
                 Reflection.getCallerClass(1 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(1));
-        assertEquals("2 is not the same.",
+        assertSame("2 is not the same.",
                 Reflection.getCallerClass(2 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(2));
-        assertEquals("3 is not the same.",
+        assertSame("3 is not the same.",
                 Reflection.getCallerClass(3 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(3));
-        assertEquals("4 is not the same.",
+        assertSame("4 is not the same.",
                 Reflection.getCallerClass(4 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(4));
-        assertEquals("5 is not the same.",
+        assertSame("5 is not the same.",
                 Reflection.getCallerClass(5 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(5));
-        assertEquals("6 is not the same.",
+        assertSame("6 is not the same.",
                 Reflection.getCallerClass(6 + ReflectiveCallerClassUtility.JAVA_7U25_COMPENSATION_OFFSET),
                 ReflectiveCallerClassUtility.getCaller(6));
     }
