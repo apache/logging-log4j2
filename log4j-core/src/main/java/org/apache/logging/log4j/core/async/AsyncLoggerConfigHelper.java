@@ -139,7 +139,8 @@ class AsyncLoggerConfigHelper {
         } else if ("Block".equals(strategy)) {
             return new BlockingWaitStrategy();
         }
-        return new SleepingWaitStrategy();
+        LOGGER.debug("disruptor event handler uses BlockingWaitStrategy");
+        return new BlockingWaitStrategy();
     }
 
     private static int calculateRingBufferSize() {
