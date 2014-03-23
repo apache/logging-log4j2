@@ -1029,7 +1029,7 @@
       <id>yourkit</id>
 
       <properties>
-        <yourkit.home>/Applications/YourKit Java Profiler.app</yourkit.home>
+        <yourkit.home>/Applications/YJP.app</yourkit.home>
       </properties>
       <dependencies>
         <dependency>
