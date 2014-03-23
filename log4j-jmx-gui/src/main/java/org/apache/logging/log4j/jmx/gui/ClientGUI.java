@@ -178,6 +178,7 @@ public class ClientGUI extends JPanel implements NotificationListener {
     @Override
     public void handleNotification(final Notification notif, final Object paramObject) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() { // LOG4J2-538
                 handleNotificationInAWTEventThread(notif, paramObject);
             }
