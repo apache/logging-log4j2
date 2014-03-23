@@ -341,14 +341,14 @@ public class LoggerConfig extends AbstractFilterable {
      * Logs an event.
      *
      * @param loggerName The name of the Logger.
-     * @param marker A Marker or null if none is present.
      * @param fqcn The fully qualified class name of the caller.
+     * @param marker A Marker or null if none is present.
      * @param level The event Level.
      * @param data The Message.
      * @param t A Throwable or null.
      */
-    public void log(final String loggerName, final Marker marker,
-            final String fqcn, final Level level, final Message data,
+    public void log(final String loggerName, final String fqcn,
+            final Marker marker, final Level level, final Message data,
             final Throwable t) {
         List<Property> props = null;
         if (properties != null) {

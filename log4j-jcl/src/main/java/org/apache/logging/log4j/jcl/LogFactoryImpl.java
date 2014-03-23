@@ -25,8 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggerProvider;
 
 /**
  *
@@ -44,13 +44,8 @@ public class LogFactoryImpl extends LogFactory {
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         }
-        final org.apache.logging.log4j.Logger logger = PrivateManager.getLogger(name);
-        if (logger instanceof AbstractLogger) {
-            loggers.putIfAbsent(name, new Log4jLog((AbstractLogger) logger, name));
-            return loggers.get(name);
-        }
-        throw new LogConfigurationException(
-            "Commons Logging Adapter requires base logging system to extend Log4j AbstractLogger");
+        loggers.putIfAbsent(name, new Log4jLog(PrivateManager.getLogger(name)));
+        return loggers.get(name);
     }
 
     private ConcurrentMap<String, Log> getLoggersMap() {
@@ -113,8 +108,8 @@ public class LogFactoryImpl extends LogFactory {
             return getContext(FQCN, false);
         }
 
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
+        public static LoggerProvider getLogger(final String name) {
+            return getContext().getLogger(name);
         }
     }
 

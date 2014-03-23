@@ -250,7 +250,7 @@ public class LoggerStream extends PrintStream {
                 throw new IndexOutOfBoundsException();
             }
             final Message message = logger.getMessageFactory().newMessage(extractLine(upTo));
-            logger.log(marker, FQCN, level, message, null);
+            logger.logIfEnabled(FQCN, level, marker, message, null);
         }
 
         private String extractLine(int upTo) {

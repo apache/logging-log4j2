@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.Message;
@@ -32,7 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLogger implements Logger, Serializable {
+public abstract class AbstractLogger implements LoggerProvider, Serializable {
 
     private static final long serialVersionUID = 2L;
 
@@ -85,7 +84,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
      */
-    public static void checkMessageFactory(final Logger logger, final MessageFactory messageFactory) {
+    public static void checkMessageFactory(final LoggerProvider logger, final MessageFactory messageFactory) {
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();
         if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
@@ -155,7 +154,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     protected void catching(final String fqcn, final Level level, final Throwable t) {
         if (isEnabled(level, CATCHING_MARKER, (Object) null, null)) {
-            log(CATCHING_MARKER, fqcn, level, messageFactory.newMessage(CATCHING), t);
+            logMessage(fqcn, level, CATCHING_MARKER, catchingMsg(t), t);
         }
     }
 
@@ -166,7 +165,13 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void catching(final Throwable t) {
-        catching(FQCN, Level.ERROR, t);
+        if (isEnabled(Level.ERROR, CATCHING_MARKER, (Object) null, null)) {
+            logMessage(FQCN, Level.ERROR, CATCHING_MARKER, catchingMsg(t), t);
+        }
+    }
+
+    protected Message catchingMsg(final Throwable t) {
+        return messageFactory.newMessage(CATCHING);
     }
 
     private MessageFactory createDefaultMessageFactory() {
@@ -187,9 +192,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final Message msg) {
-        if (isEnabled(Level.DEBUG, marker, msg, null)) {
-            log(marker, FQCN, Level.DEBUG, msg, null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, msg, null);
     }
 
     /**
@@ -201,9 +204,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.DEBUG, marker, msg, t)) {
-            log(marker, FQCN, Level.DEBUG, msg, t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, msg, t);
     }
 
     /**
@@ -214,9 +215,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final Object message) {
-        if (isEnabled(Level.DEBUG, marker, message, null)) {
-            log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, null);
     }
 
     /**
@@ -229,9 +228,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.DEBUG, marker, message, t)) {
-            log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, t);
     }
 
     /**
@@ -242,9 +239,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final String message) {
-        if (isEnabled(Level.DEBUG, marker, message)) {
-            log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, (Throwable) null);
     }
 
     /**
@@ -256,10 +251,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.DEBUG, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.DEBUG, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, params);
     }
 
     /**
@@ -272,9 +264,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.DEBUG, marker, message, t)) {
-            log(marker, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, marker, message, t);
     }
 
     /**
@@ -284,9 +274,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Message msg) {
-        if (isEnabled(Level.DEBUG, null, msg, null)) {
-            log(null, FQCN, Level.DEBUG, msg, null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, msg, null);
     }
 
     /**
@@ -297,9 +285,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Message msg, final Throwable t) {
-        if (isEnabled(Level.DEBUG, null, msg, t)) {
-            log(null, FQCN, Level.DEBUG, msg, t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, msg, t);
     }
 
     /**
@@ -309,9 +295,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Object message) {
-        if (isEnabled(Level.DEBUG, null, message, null)) {
-            log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, message, null);
     }
 
     /**
@@ -323,9 +307,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final Object message, final Throwable t) {
-        if (isEnabled(Level.DEBUG, null, message, t)) {
-            log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, message, t);
     }
 
     /**
@@ -335,9 +317,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final String message) {
-        if (isEnabled(Level.DEBUG, null, message)) {
-            log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, message, (Throwable) null);
     }
 
     /**
@@ -348,10 +328,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final String message, final Object... params) {
-        if (isEnabled(Level.DEBUG, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.DEBUG, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, message, params);
     }
 
     /**
@@ -363,9 +340,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void debug(final String message, final Throwable t) {
-        if (isEnabled(Level.DEBUG, null, message, t)) {
-            log(null, FQCN, Level.DEBUG, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.DEBUG, null, message, t);
     }
 
     /**
@@ -394,11 +369,11 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            log(ENTRY_MARKER, fqcn, Level.TRACE, entryMsg(params.length, params), null);
+            logIfEnabled(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg(params.length, params), null);
         }
     }
 
-    private Message entryMsg(final int count, final Object... params) {
+    protected Message entryMsg(final int count, final Object... params) {
         if (count == 0) {
             return messageFactory.newMessage("entry");
         }
@@ -426,9 +401,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final Message msg) {
-        if (isEnabled(Level.ERROR, marker, msg, null)) {
-            log(marker, FQCN, Level.ERROR, msg, null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, msg, null);
     }
 
     /**
@@ -440,9 +413,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.ERROR, marker, msg, t)) {
-            log(marker, FQCN, Level.ERROR, msg, t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, msg, t);
     }
 
     /**
@@ -453,9 +424,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final Object message) {
-        if (isEnabled(Level.ERROR, marker, message, null)) {
-            log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, message, null);
     }
 
     /**
@@ -468,9 +437,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.ERROR, marker, message, t)) {
-            log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, message, t);
     }
 
     /**
@@ -481,9 +448,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final String message) {
-        if (isEnabled(Level.ERROR, marker, message)) {
-            log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, message, (Throwable) null);
     }
 
     /**
@@ -495,10 +460,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.ERROR, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.ERROR, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, message, params);
     }
 
     /**
@@ -511,9 +473,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.ERROR, marker, message, t)) {
-            log(marker, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, marker, message, t);
     }
 
     /**
@@ -523,9 +483,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Message msg) {
-        if (isEnabled(Level.ERROR, null, msg, null)) {
-            log(null, FQCN, Level.ERROR, msg, null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, msg, null);
     }
 
     /**
@@ -536,9 +494,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Message msg, final Throwable t) {
-        if (isEnabled(Level.ERROR, null, msg, t)) {
-            log(null, FQCN, Level.ERROR, msg, t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, msg, t);
     }
 
     /**
@@ -548,9 +504,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Object message) {
-        if (isEnabled(Level.ERROR, null, message, null)) {
-            log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, message, null);
     }
 
     /**
@@ -562,9 +516,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final Object message, final Throwable t) {
-        if (isEnabled(Level.ERROR, null, message, t)) {
-            log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, message, t);
     }
 
     /**
@@ -574,9 +526,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final String message) {
-        if (isEnabled(Level.ERROR, null, message)) {
-            log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, message, (Throwable) null);
     }
 
     /**
@@ -587,10 +537,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final String message, final Object... params) {
-        if (isEnabled(Level.ERROR, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.ERROR, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, message, params);
     }
 
     /**
@@ -602,9 +549,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void error(final String message, final Throwable t) {
-        if (isEnabled(Level.ERROR, null, message, t)) {
-            log(null, FQCN, Level.ERROR, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.ERROR, null, message, t);
     }
 
     /**
@@ -636,11 +581,18 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     protected <R> R exit(final String fqcn, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (Object) null, null)) {
-            log(EXIT_MARKER, fqcn, Level.TRACE, toExitMsg(result), null);
+            logIfEnabled(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(result), null);
         }
         return result;
     }
 
+    protected Message exitMsg(final Object result) {
+        if (result == null) {
+            return messageFactory.newMessage("exit");
+        }
+        return messageFactory.newMessage("exit with(" + result + ")");
+    }
+    
     /**
      * Logs a message with the specific Marker at the FATAL level.
      * 
@@ -649,9 +601,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final Message msg) {
-        if (isEnabled(Level.FATAL, marker, msg, null)) {
-            log(marker, FQCN, Level.FATAL, msg, null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, msg, null);
     }
 
     /**
@@ -663,9 +613,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.FATAL, marker, msg, t)) {
-            log(marker, FQCN, Level.FATAL, msg, t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, msg, t);
     }
 
     /**
@@ -676,9 +624,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final Object message) {
-        if (isEnabled(Level.FATAL, marker, message, null)) {
-            log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, message, null);
     }
 
     /**
@@ -691,9 +637,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.FATAL, marker, message, t)) {
-            log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, message, t);
     }
 
     /**
@@ -704,9 +648,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final String message) {
-        if (isEnabled(Level.FATAL, marker, message)) {
-            log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, message, (Throwable) null);
     }
 
     /**
@@ -718,10 +660,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.FATAL, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.FATAL, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, message, params);
     }
 
     /**
@@ -734,9 +673,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.FATAL, marker, message, t)) {
-            log(marker, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, marker, message, t);
     }
 
     /**
@@ -746,9 +683,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Message msg) {
-        if (isEnabled(Level.FATAL, null, msg, null)) {
-            log(null, FQCN, Level.FATAL, msg, null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, msg, null);
     }
 
     /**
@@ -759,9 +694,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Message msg, final Throwable t) {
-        if (isEnabled(Level.FATAL, null, msg, t)) {
-            log(null, FQCN, Level.FATAL, msg, t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, msg, t);
     }
 
     /**
@@ -771,9 +704,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Object message) {
-        if (isEnabled(Level.FATAL, null, message, null)) {
-            log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, message, null);
     }
 
     /**
@@ -785,9 +716,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final Object message, final Throwable t) {
-        if (isEnabled(Level.FATAL, null, message, t)) {
-            log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, message, t);
     }
 
     /**
@@ -797,9 +726,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final String message) {
-        if (isEnabled(Level.FATAL, null, message)) {
-            log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, message, (Throwable) null);
     }
 
     /**
@@ -810,10 +737,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final String message, final Object... params) {
-        if (isEnabled(Level.FATAL, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.FATAL, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, message, params);
     }
 
     /**
@@ -825,9 +749,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void fatal(final String message, final Throwable t) {
-        if (isEnabled(Level.FATAL, null, message, t)) {
-            log(null, FQCN, Level.FATAL, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.FATAL, null, message, t);
     }
 
     /**
@@ -881,9 +803,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final Message msg) {
-        if (isEnabled(Level.INFO, marker, msg, null)) {
-            log(marker, FQCN, Level.INFO, msg, null);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, msg, null);
     }
 
     /**
@@ -895,9 +815,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.INFO, marker, msg, t)) {
-            log(marker, FQCN, Level.INFO, msg, t);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, msg, t);
     }
 
     /**
@@ -908,9 +826,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final Object message) {
-        if (isEnabled(Level.INFO, marker, message, null)) {
-            log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, message, null);
     }
 
     /**
@@ -923,9 +839,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.INFO, marker, message, t)) {
-            log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, message, t);
     }
 
     /**
@@ -936,9 +850,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final String message) {
-        if (isEnabled(Level.INFO, marker, message)) {
-            log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, message, (Throwable) null);
     }
 
     /**
@@ -950,10 +862,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.INFO, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.INFO, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, message, params);
     }
 
     /**
@@ -966,9 +875,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.INFO, marker, message, t)) {
-            log(marker, FQCN, Level.INFO, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.INFO, marker, message, t);
     }
 
     /**
@@ -978,9 +885,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Message msg) {
-        if (isEnabled(Level.INFO, null, msg, null)) {
-            log(null, FQCN, Level.INFO, msg, null);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, msg, null);
     }
 
     /**
@@ -991,9 +896,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Message msg, final Throwable t) {
-        if (isEnabled(Level.INFO, null, msg, t)) {
-            log(null, FQCN, Level.INFO, msg, t);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, msg, t);
     }
 
     /**
@@ -1003,9 +906,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Object message) {
-        if (isEnabled(Level.INFO, null, message, null)) {
-            log(null, FQCN, Level.INFO, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, message, null);
     }
 
     /**
@@ -1017,9 +918,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final Object message, final Throwable t) {
-        if (isEnabled(Level.INFO, null, message, t)) {
-            log(null, FQCN, Level.INFO, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, message, t);
     }
 
     /**
@@ -1029,9 +928,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final String message) {
-        if (isEnabled(Level.INFO, null, message)) {
-            log(null, FQCN, Level.INFO, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, message, (Throwable) null);
     }
 
     /**
@@ -1042,10 +939,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final String message, final Object... params) {
-        if (isEnabled(Level.INFO, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.INFO, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.INFO, null, message, params);
     }
 
     /**
@@ -1057,9 +951,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void info(final String message, final Throwable t) {
-        if (isEnabled(Level.INFO, null, message, t)) {
-            log(null, FQCN, Level.INFO, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.INFO, null, message, t);
     }
 
     /**
@@ -1097,64 +989,19 @@ public abstract class AbstractLogger implements Logger, Serializable {
         return isEnabled(level, null, (Object) null, null);
     }
 
-    @Override
+    /**
+     * Checks whether this Logger is enabled for the the given Level.
+     * <p>
+     * Note that passing in {@link Level#OFF OFF} always returns {@code true}.
+     * </p>
+     * 
+     * @param level the level to check
+     * @param marker A Marker or null.
+     * @return boolean - {@code true} if this Logger is enabled for level, {@code false} otherwise.
+     */
     public boolean isEnabled(final Level level, final Marker marker) {
         return isEnabled(level, marker, (Object) null, null);
     }
-
-    /**
-     * Determine if logging is enabled.
-     * 
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The Message.
-     * @param t A Throwable.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, Message data, Throwable t);
-
-    /**
-     * Determine if logging is enabled.
-     * 
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param t A Throwable.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, Object data, Throwable t);
-
-    /**
-     * Determine if logging is enabled.
-     * 
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data);
-
-    /**
-     * Determine if logging is enabled.
-     * 
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The parameters.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Object... p1);
-
-    /**
-     * Determine if logging is enabled.
-     * 
-     * @param level The logging Level to check.
-     * @param marker A Marker or null.
-     * @param data The message.
-     * @param t A Throwable.
-     * @return True if logging is enabled, false otherwise.
-     */
-    protected abstract boolean isEnabled(Level level, Marker marker, String data, Throwable t);
 
     /**
      * Checks whether this Logger is enabled for the {@link Level#ERROR ERROR} Level.
@@ -1272,9 +1119,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final Message msg) {
-        if (isEnabled(level, marker, msg, null)) {
-            log(marker, FQCN, level, msg, null);
-        }
+        logIfEnabled(FQCN, level, marker, msg, (Throwable) null);
     }
 
     /**
@@ -1287,9 +1132,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(level, marker, msg, t)) {
-            log(marker, FQCN, level, msg, t);
-        }
+        logIfEnabled(FQCN, level, marker, msg, t);
     }
 
     /**
@@ -1301,9 +1144,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final Object message) {
-        if (isEnabled(level, marker, message, null)) {
-            log(marker, FQCN, level, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, level, marker, message, (Throwable) null);
     }
 
     /**
@@ -1318,7 +1159,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
     @Override
     public void log(final Level level, final Marker marker, final Object message, final Throwable t) {
         if (isEnabled(level, marker, message, t)) {
-            log(marker, FQCN, level, messageFactory.newMessage(message), t);
+            logMessage(FQCN, level, marker, message, t);
         }
     }
 
@@ -1331,9 +1172,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final String message) {
-        if (isEnabled(level, marker, message)) {
-            log(marker, FQCN, level, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, level, marker, message, (Throwable) null);
     }
 
     /**
@@ -1346,10 +1185,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final String message, final Object... params) {
-        if (isEnabled(level, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, level, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, level, marker, message, params);
     }
 
     /**
@@ -1363,9 +1199,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(level, marker, message, t)) {
-            log(marker, FQCN, level, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, level, marker, message, t);
     }
 
     /**
@@ -1376,9 +1210,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Message msg) {
-        if (isEnabled(level, null, msg, null)) {
-            log(null, FQCN, level, msg, null);
-        }
+        logIfEnabled(FQCN, level, null, msg, null);
     }
 
     /**
@@ -1390,9 +1222,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Message msg, final Throwable t) {
-        if (isEnabled(level, null, msg, t)) {
-            log(null, FQCN, level, msg, t);
-        }
+        logIfEnabled(FQCN, level, null, msg, t);
     }
 
     /**
@@ -1403,9 +1233,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Object message) {
-        if (isEnabled(level, null, message, null)) {
-            log(null, FQCN, level, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, level, null, message, null);
     }
 
     /**
@@ -1418,9 +1246,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final Object message, final Throwable t) {
-        if (isEnabled(level, null, message, t)) {
-            log(null, FQCN, level, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, level, null, message, t);
     }
 
     /**
@@ -1431,9 +1257,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final String message) {
-        if (isEnabled(level, null, message)) {
-            log(null, FQCN, level, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, level, null, message, (Throwable) null);
     }
 
     /**
@@ -1445,15 +1269,12 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final String message, final Object... params) {
-        if (isEnabled(level, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, level, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, level, null, message, params);
     }
 
     /**
-     * Logs a message at the given level including the stack trace of the {@link Throwable} <code>t</code> passed as
-     * parameter.
+     * Logs a message at the given level including the stack trace of the {@link Throwable}
+     * <code>t</code> passed as parameter.
      * 
      * @param level the logging level
      * @param message the message to log.
@@ -1461,21 +1282,93 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void log(final Level level, final String message, final Throwable t) {
-        if (isEnabled(level, null, message, t)) {
-            log(null, FQCN, level, messageFactory.newMessage(message), t);
+        logIfEnabled(FQCN, level, null, message, t);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * org.apache.logging.log4j.Marker, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+     */
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Message msg,
+            final Throwable t) {
+        if (isEnabled(level, marker, msg, t)) {
+            logMessage(fqcn, level, marker, msg, t);
         }
     }
 
-    /**
-     * Logs a message with location information.
-     * 
-     * @param marker The Marker
-     * @param fqcn The fully qualified class name of the <b>caller</b>
-     * @param level The logging level
-     * @param data The Message.
-     * @param t A Throwable or null.
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * org.apache.logging.log4j.Marker, java.lang.Object, java.lang.Throwable)
      */
-    public abstract void log(Marker marker, String fqcn, Level level, Message data, Throwable t);
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Object message,
+            final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            logMessage(fqcn, level, marker, message, t);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * org.apache.logging.log4j.Marker, java.lang.String)
+     */
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message) {
+        if (isEnabled(level, marker, message)) {
+            logMessage(fqcn, level, marker, message);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * org.apache.logging.log4j.Marker, java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
+            final Object... params) {
+        if (isEnabled(level, marker, message, params)) {
+            logMessage(fqcn, level, marker, message, params);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.logging.log4j.spi.LoggerProvider#logIfEnabled(java.lang.String, org.apache.logging.log4j.Level,
+     * org.apache.logging.log4j.Marker, java.lang.String, java.lang.Throwable)
+     */
+    @Override
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
+            final Throwable t) {
+        if (isEnabled(level, marker, message, t)) {
+            logMessage(fqcn, level, marker, message, t);
+        }
+    }
+    
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Object message,
+            final Throwable t) {
+        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+    }
+
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
+            final Throwable t) {
+        logMessage(fqcn, level, marker, messageFactory.newMessage(message), t);
+    }
+
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message) {
+        final Message msg = messageFactory.newMessage(message);
+        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+    }
+
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
+            final Object... params) {
+        final Message msg = messageFactory.newMessage(message, params);
+        logMessage(fqcn, level, marker, msg, msg.getThrowable());
+    }
 
     /**
      * Logs a formatted message using the specified format string and arguments.
@@ -1489,7 +1382,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
     public void printf(Level level, Marker marker, String format, Object... params) {
         if (isEnabled(level, marker, format, params)) {
             Message msg = new StringFormattedMessage(format, params);
-            log(marker, FQCN, level, msg, msg.getThrowable());
+            logMessage(FQCN, level, marker, msg, msg.getThrowable());
         }
     }
 
@@ -1504,8 +1397,20 @@ public abstract class AbstractLogger implements Logger, Serializable {
     public void printf(Level level, String format, Object... params) {
         if (isEnabled(level, null, format, params)) {
             Message msg = new StringFormattedMessage(format, params);
-            log(null, FQCN, level, msg, msg.getThrowable());
+            logMessage(FQCN, level, null, msg, msg.getThrowable());
         }
+    }
+
+    /**
+     * Logs a Throwable to be thrown.
+     * 
+     * @param <T> the type of the Throwable.
+     * @param t The Throwable.
+     * @return the Throwable.
+     */
+    @Override
+    public <T extends Throwable> T throwing(final T t) {
+        return throwing(FQCN, Level.ERROR, t);
     }
 
     /**
@@ -1522,9 +1427,8 @@ public abstract class AbstractLogger implements Logger, Serializable {
     }
 
     /**
-     * Logs a Throwable to be thrown with location information.
+     * Logs a Throwable to be thrown.
      * 
-     * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param <T> the type of the Throwable.
      * @param level The logging Level.
      * @param t The Throwable.
@@ -1532,38 +1436,13 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     protected <T extends Throwable> T throwing(final String fqcn, final Level level, final T t) {
         if (isEnabled(level, THROWING_MARKER, (Object) null, null)) {
-            log(THROWING_MARKER, fqcn, level, messageFactory.newMessage(THROWING), t);
+            logMessage(fqcn, level, THROWING_MARKER, throwingMsg(t), t);
         }
         return t;
     }
 
-    /**
-     * Logs a Throwable to be thrown.
-     * 
-     * @param <T> the type of the Throwable.
-     * @param t The Throwable.
-     * @return the Throwable.
-     */
-    @Override
-    public <T extends Throwable> T throwing(final T t) {
-        return throwing(FQCN, Level.ERROR, t);
-    }
-
-    private Message toExitMsg(final Object result) {
-        if (result == null) {
-            return messageFactory.newMessage("exit");
-        }
-        return messageFactory.newMessage("exit with(" + result + ")");
-    }
-
-    /**
-     * Returns a String representation of this instance in the form {@code "name"}.
-     * 
-     * @return A String describing this Logger instance.
-     */
-    @Override
-    public String toString() {
-        return name;
+    protected Message throwingMsg(final Throwable t) {
+        return messageFactory.newMessage(THROWING);
     }
 
     /**
@@ -1574,9 +1453,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final Message msg) {
-        if (isEnabled(Level.TRACE, marker, msg, null)) {
-            log(marker, FQCN, Level.TRACE, msg, null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, msg, null);
     }
 
     /**
@@ -1588,9 +1465,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.TRACE, marker, msg, t)) {
-            log(marker, FQCN, Level.TRACE, msg, t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, msg, t);
     }
 
     /**
@@ -1601,9 +1476,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final Object message) {
-        if (isEnabled(Level.TRACE, marker, message, null)) {
-            log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, message, null);
     }
 
     /**
@@ -1620,9 +1493,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.TRACE, marker, message, t)) {
-            log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, message, t);
     }
 
     /**
@@ -1633,9 +1504,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final String message) {
-        if (isEnabled(Level.TRACE, marker, message)) {
-            log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, message, (Throwable) null);
     }
 
     /**
@@ -1647,10 +1516,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.TRACE, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.TRACE, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, message, params);
     }
 
     /**
@@ -1667,9 +1533,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.TRACE, marker, message, t)) {
-            log(marker, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, marker, message, t);
     }
 
     /**
@@ -1679,9 +1543,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Message msg) {
-        if (isEnabled(Level.TRACE, null, msg, null)) {
-            log(null, FQCN, Level.TRACE, msg, null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, msg, null);
     }
 
     /**
@@ -1692,9 +1554,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Message msg, final Throwable t) {
-        if (isEnabled(Level.TRACE, null, msg, t)) {
-            log(null, FQCN, Level.TRACE, msg, t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, msg, t);
     }
 
     /**
@@ -1704,9 +1564,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Object message) {
-        if (isEnabled(Level.TRACE, null, message, null)) {
-            log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, message, null);
     }
 
     /**
@@ -1722,9 +1580,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final Object message, final Throwable t) {
-        if (isEnabled(Level.TRACE, null, message, t)) {
-            log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, message, t);
     }
 
     /**
@@ -1734,9 +1590,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final String message) {
-        if (isEnabled(Level.TRACE, null, message)) {
-            log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, message, (Throwable) null);
     }
 
     /**
@@ -1747,10 +1601,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final String message, final Object... params) {
-        if (isEnabled(Level.TRACE, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.TRACE, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, message, params);
     }
 
     /**
@@ -1766,9 +1617,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void trace(final String message, final Throwable t) {
-        if (isEnabled(Level.TRACE, null, message, t)) {
-            log(null, FQCN, Level.TRACE, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.TRACE, null, message, t);
     }
 
     /**
@@ -1779,9 +1628,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final Message msg) {
-        if (isEnabled(Level.WARN, marker, msg, null)) {
-            log(marker, FQCN, Level.WARN, msg, null);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, msg, null);
     }
 
     /**
@@ -1793,9 +1640,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final Message msg, final Throwable t) {
-        if (isEnabled(Level.WARN, marker, msg, t)) {
-            log(marker, FQCN, Level.WARN, msg, t);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, msg, t);
     }
 
     /**
@@ -1806,9 +1651,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final Object message) {
-        if (isEnabled(Level.WARN, marker, message, null)) {
-            log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, message, null);
     }
 
     /*
@@ -1826,9 +1669,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final Object message, final Throwable t) {
-        if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, message, t);
     }
 
     /**
@@ -1839,9 +1680,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final String message) {
-        if (isEnabled(Level.WARN, marker, message)) {
-            log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, message, (Throwable) null);
     }
 
     /**
@@ -1853,10 +1692,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final String message, final Object... params) {
-        if (isEnabled(Level.WARN, marker, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(marker, FQCN, Level.WARN, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, message, params);
     }
 
     /**
@@ -1869,9 +1705,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Marker marker, final String message, final Throwable t) {
-        if (isEnabled(Level.WARN, marker, message, t)) {
-            log(marker, FQCN, Level.WARN, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.WARN, marker, message, t);
     }
 
     /**
@@ -1881,9 +1715,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Message msg) {
-        if (isEnabled(Level.WARN, null, msg, null)) {
-            log(null, FQCN, Level.WARN, msg, null);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, msg, null);
     }
 
     /**
@@ -1894,9 +1726,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Message msg, final Throwable t) {
-        if (isEnabled(Level.WARN, null, msg, t)) {
-            log(null, FQCN, Level.WARN, msg, t);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, msg, t);
     }
 
     /**
@@ -1906,9 +1736,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Object message) {
-        if (isEnabled(Level.WARN, null, message, null)) {
-            log(null, FQCN, Level.WARN, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, message, null);
     }
 
     /**
@@ -1920,9 +1748,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final Object message, final Throwable t) {
-        if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, FQCN, Level.WARN, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, message, t);
     }
 
     /**
@@ -1932,9 +1758,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final String message) {
-        if (isEnabled(Level.WARN, null, message)) {
-            log(null, FQCN, Level.WARN, messageFactory.newMessage(message), null);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, message, (Throwable) null);
     }
 
     /**
@@ -1945,10 +1769,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final String message, final Object... params) {
-        if (isEnabled(Level.WARN, null, message, params)) {
-            final Message msg = messageFactory.newMessage(message, params);
-            log(null, FQCN, Level.WARN, msg, msg.getThrowable());
-        }
+        logIfEnabled(FQCN, Level.WARN, null, message, params);
     }
 
     /**
@@ -1960,9 +1781,7 @@ public abstract class AbstractLogger implements Logger, Serializable {
      */
     @Override
     public void warn(final String message, final Throwable t) {
-        if (isEnabled(Level.WARN, null, message, t)) {
-            log(null, FQCN, Level.WARN, messageFactory.newMessage(message), t);
-        }
+        logIfEnabled(FQCN, Level.WARN, null, message, t);
     }
 
 }

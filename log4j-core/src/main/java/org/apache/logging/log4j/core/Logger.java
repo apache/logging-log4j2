@@ -104,37 +104,35 @@ public class Logger extends AbstractLogger {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, Message data, final Throwable t) {
-        if (data == null) {
-            data = new SimpleMessage("");
-        }
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+        final Message msg = message == null ? new SimpleMessage("") : message;
         config.config.getConfigurationMonitor().checkConfiguration();
-        config.loggerConfig.log(getName(), marker, fqcn, level, data, t);
+        config.loggerConfig.log(getName(), fqcn, marker, level, msg, t);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
-        return config.filter(level, marker, msg);
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
+        return config.filter(level, marker, message, t);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
-        return config.filter(level, marker, msg, t);
+    public boolean isEnabled(final Level level, final Marker marker, final String message) {
+        return config.filter(level, marker, message);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
-        return config.filter(level, marker, msg, p1);
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
+        return config.filter(level, marker, message, params);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
-        return config.filter(level, marker, msg, t);
+    public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
+        return config.filter(level, marker, message, t);
     }
 
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
-        return config.filter(level, marker, msg, t);
+    public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
+        return config.filter(level, marker, message, t);
     }
 
     /**

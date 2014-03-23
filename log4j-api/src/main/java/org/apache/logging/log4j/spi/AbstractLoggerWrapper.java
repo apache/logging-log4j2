@@ -31,7 +31,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     /**
      * The wrapped Logger.
      */
-    protected final AbstractLogger logger;
+    protected final LoggerProvider logger;
 
     /**
      * Constructor that wraps and existing Logger.
@@ -39,7 +39,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * @param name The name of the Logger.
      * @param messageFactory TODO
      */
-    public AbstractLoggerWrapper(final AbstractLogger logger, final String name, final MessageFactory messageFactory) {
+    public AbstractLoggerWrapper(final LoggerProvider logger, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
         this.logger = logger;
     }
@@ -48,76 +48,77 @@ public class AbstractLoggerWrapper extends AbstractLogger {
      * Detect if the event would be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param data The Message.
+     * @param message The Message.
      * @param t A Throwable.
      * @return true if the event would be logged for the Level, Marker, Message and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
-        return logger.isEnabled(level, marker, data, t);
+    public boolean isEnabled(final Level level, final Marker marker, final Message message, final Throwable t) {
+        return logger.isEnabled(level, marker, message, t);
     }
 
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param data The message.
+     * @param message The message.
      * @param t A Throwable.
      * @return true if the event would be logged for the Level, Marker, Object and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
-        return logger.isEnabled(level, marker, data, t);
+    public boolean isEnabled(final Level level, final Marker marker, final Object message, final Throwable t) {
+        return logger.isEnabled(level, marker, message, t);
     }
 
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param data The message.
-     * @return true if the event would be logged for the Level, Marker and data, false otherwise.
+     * @param message The message.
+     * @return true if the event would be logged for the Level, Marker, message and parameter.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data) {
-        return logger.isEnabled(level, marker, data);
+    public boolean isEnabled(final Level level, final Marker marker, final String message) {
+        return logger.isEnabled(level, marker, message);
     }
 
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param data The message.
-     * @param p1 The parameters.
-     * @return true if the event would be logged for the Level, Marker, data and parameter.
+     * @param message The message.
+     * @param params The parameters.
+     * @return true if the event would be logged for the Level, Marker, message and parameter.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
-        return logger.isEnabled(level, marker, data, p1);
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
+        return logger.isEnabled(level, marker, message, params);
     }
 
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
      * @param marker A Marker or null.
-     * @param data The message.
+     * @param message The message.
      * @param t A Throwable.
-     * @return true if the event would be logged for the Level, Marker, data and Throwable, false otherwise.
+     * @return true if the event would be logged for the Level, Marker, message and Throwable, false otherwise.
      */
     @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
-        return logger.isEnabled(level, marker, data, t);
+    public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
+        return logger.isEnabled(level, marker, message, t);
     }
-
+    
     /**
-     * Log an event.
-     * @param marker The Marker
-     * @param fqcn   The fully qualified class name of the <b>caller</b>
-     * @param level  The logging level
-     * @param data   The Message.
-     * @param t      A Throwable or null.
+     * Always log an event. This tends to be already guarded by an enabled check, so this method 
+     * should not check for the logger level again
+     * @param fqcn    The fully qualified class name of the <b>caller</b>
+     * @param level   The logging level
+     * @param marker  The Marker
+     * @param message The Message.
+     * @param t       A Throwable or null.
      */
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
-        logger.log(marker, fqcn, level, data, t);
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+        logger.logMessage(fqcn, level, marker, message, t);
     }
 }

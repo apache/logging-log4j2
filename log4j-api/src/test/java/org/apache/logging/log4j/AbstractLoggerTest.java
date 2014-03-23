@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -86,7 +87,7 @@ public class AbstractLoggerTest extends AbstractLogger {
     };
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
             if (currentEvent.markerName != null) {
@@ -131,27 +132,27 @@ public class AbstractLoggerTest extends AbstractLogger {
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
         return isEnabled(level, marker, new ObjectMessage(data), t);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data) {
         return isEnabled(level, marker, new SimpleMessage(data), null);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
         return isEnabled(level, marker, new ParameterizedMessage(data, p1), null);
     }
 
     @Override
-    protected boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabled(level, marker, new SimpleMessage(data), t);
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final Level level, final Message data, final Throwable t) {
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
             if (currentEvent.markerName != null) {

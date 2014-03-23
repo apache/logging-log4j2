@@ -272,42 +272,6 @@ public class LoggerTest {
     }
 
     @Test
-    public void getStream() {
-        final PrintWriter stream = logger.printWriter(Level.DEBUG);
-        stream.println("println");
-        stream.print("print followed by println");
-        stream.println();
-        stream.println("multiple\nlines");
-        stream.println(); // verify blank log message
-        stream.print("print embedded newline\n");
-        stream.print("\r\n"); // verify windows EOL works
-        stream.print("Last Line without newline");
-        stream.close();
-        assertEquals(8, results.size());
-        assertEquals("msg 1", " DEBUG println", results.get(0));
-        assertEquals("msg 2", " DEBUG print followed by println", results.get(1));
-        assertEquals("msg 3", " DEBUG multiple", results.get(2));
-        assertEquals("msg 4", " DEBUG lines", results.get(3));
-        assertEquals("msg 5 should be blank-ish", " DEBUG ", results.get(4));
-        assertEquals("msg 6", " DEBUG print embedded newline", results.get(5));
-        assertEquals("msg 7 should be blank-ish", " DEBUG ", results.get(6));
-        assertEquals("msg 8 Last line", " DEBUG Last Line without newline", results.get(7));
-    }
-
-    @Test
-    public void getStream_Marker() {
-        final PrintWriter stream = logger.printWriter(MarkerManager.getMarker("HI"), Level.INFO);
-        stream.println("println");
-        stream.print("print with embedded newline\n");
-        stream.println("last line");
-        stream.close();
-        assertEquals(3, results.size());
-        assertEquals("println 1", "HI INFO println", results.get(0));
-        assertEquals("print with embedded newline", "HI INFO print with embedded newline", results.get(1));
-        assertEquals("println 2", "HI INFO last line", results.get(2));
-    }
-
-    @Test
     public void isAllEnabled() {
         assertTrue("Incorrect level", logger.isEnabled(Level.ALL));
     }

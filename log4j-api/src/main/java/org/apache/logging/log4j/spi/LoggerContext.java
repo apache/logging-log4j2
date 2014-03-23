@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -35,7 +34,7 @@ public interface LoggerContext {
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.
      */
-    Logger getLogger(String name);
+    LoggerProvider getLogger(String name);
 
     /**
      * Returns a Logger.
@@ -44,7 +43,7 @@ public interface LoggerContext {
      *                       the logger but will log a warning if mismatched.
      * @return The logger with the specified name.
      */
-    Logger getLogger(String name, MessageFactory messageFactory);
+    LoggerProvider getLogger(String name, MessageFactory messageFactory);
 
     /**
      * Detects if a Logger with the specified name exists.
@@ -52,5 +51,4 @@ public interface LoggerContext {
      * @return true if the Logger exists, false otherwise.
      */
     boolean hasLogger(String name);
-
 }
