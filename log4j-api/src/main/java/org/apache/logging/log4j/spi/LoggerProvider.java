@@ -56,6 +56,7 @@ public interface LoggerProvider extends Logger {
      * @param marker A Marker or null.
      * @param message The message.
      * @return True if logging is enabled, false otherwise.
+     * @param t the exception to log, including its stack trace.
      */
     boolean isEnabled(Level level, Marker marker, String message, Throwable t);
 
