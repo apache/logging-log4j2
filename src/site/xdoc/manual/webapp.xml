@@ -33,6 +33,15 @@
         on whether your application is a <a href="#Servlet-3.0">Servlet 3.0 or newer</a> or
         <a href="#Servlet-2.5">Servlet 2.5</a> web application.
       </p>
+      <p class="big-red">
+        It is important to note that you should add <code>shutdownHook=&quot;disable&quot;</code> to your root
+        configuration element to avoid memory leaks. For example:
+      </p>
+      <pre class="prettyprint"><![CDATA[
+<Configuration shutdownHook="disable">
+    <!-- ... -->
+</Configuration>
+      ]]></pre>
       <a name="Servlet-3.0" />
       <subsection name="Servlet 3.0 and Newer Web Applications">
         <p>
@@ -204,7 +213,7 @@
           the web application's context path in the name of a Rolling File Appender. See WebLookup in
           <a href="./lookups.html#WebLookup">Lookups</a> for more information.
         </p>
-      </subsection>        
+      </subsection>
       <a name="JspLogging" />
       <subsection name="JavaServer Pages Logging">
         <p>
