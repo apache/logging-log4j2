@@ -34,18 +34,96 @@ public class SLF4JLogger extends AbstractLogger {
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
 
-    public SLF4JLogger(final String name, final org.slf4j.Logger logger) {
-        super(name);
-        this.logger = logger;
-        this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
-    }
-
     public SLF4JLogger(final String name, final MessageFactory messageFactory, final org.slf4j.Logger logger) {
         super(name, messageFactory);
         this.logger = logger;
         this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
     }
+
+    public SLF4JLogger(final String name, final org.slf4j.Logger logger) {
+        super(name);
+        this.logger = logger;
+        this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
+    }
     
+    private int convertLevel(final Level level) {
+        switch (level.getStandardLevel()) {
+            case DEBUG :
+                return LocationAwareLogger.DEBUG_INT;
+            case TRACE :
+                return LocationAwareLogger.TRACE_INT;
+            case INFO :
+                return LocationAwareLogger.INFO_INT;
+            case WARN :
+                return LocationAwareLogger.WARN_INT;
+            case ERROR :
+                return LocationAwareLogger.ERROR_INT;
+            default :
+                return LocationAwareLogger.ERROR_INT;
+        }
+    }
+
+    public org.slf4j.Logger getLogger() {
+        return locationAwareLogger != null ? locationAwareLogger : logger;
+    }
+
+    private org.slf4j.Marker getMarker(final Marker marker) {
+        if (marker == null) {
+            return null;
+        }
+        final Marker parent = marker.getParent();
+        final org.slf4j.Marker parentMarker = parent == null ? null : getMarker(parent);
+        final org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
+        if (parentMarker != null && !slf4jMarker.contains(parentMarker)) {
+            slf4jMarker.add(parentMarker);
+        }
+        return slf4jMarker;
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String data) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
+        return isEnabledFor(level, marker);
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
+        return isEnabledFor(level, marker);
+    }
+
+    private boolean isEnabledFor(final Level level, final Marker marker) {
+        final org.slf4j.Marker slf4jMarker = getMarker(marker);
+        switch (level.getStandardLevel()) {
+            case DEBUG :
+                return logger.isDebugEnabled(slf4jMarker);
+            case TRACE :
+                return logger.isTraceEnabled(slf4jMarker);
+            case INFO :
+                return logger.isInfoEnabled(slf4jMarker);
+            case WARN :
+                return logger.isWarnEnabled(slf4jMarker);
+            case ERROR :
+                return logger.isErrorEnabled(slf4jMarker);
+            default :
+                return logger.isErrorEnabled(slf4jMarker);
+
+        }
+    }
+
     @Override
     public void logMessage(String fqcn, Level level, Marker marker, Message message, Throwable t) {
         if (locationAwareLogger != null) {
@@ -76,84 +154,6 @@ public class SLF4JLogger extends AbstractLogger {
                     break;
             }
         }
-    }
-
-    private org.slf4j.Marker getMarker(final Marker marker) {
-        if (marker == null) {
-            return null;
-        }
-        final Marker parent = marker.getParent();
-        final org.slf4j.Marker parentMarker = parent == null ? null : getMarker(parent);
-        final org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
-        if (parentMarker != null && !slf4jMarker.contains(parentMarker)) {
-            slf4jMarker.add(parentMarker);
-        }
-        return slf4jMarker;
-    }
-
-    private int convertLevel(final Level level) {
-        switch (level.getStandardLevel()) {
-            case DEBUG :
-                return LocationAwareLogger.DEBUG_INT;
-            case TRACE :
-                return LocationAwareLogger.TRACE_INT;
-            case INFO :
-                return LocationAwareLogger.INFO_INT;
-            case WARN :
-                return LocationAwareLogger.WARN_INT;
-            case ERROR :
-                return LocationAwareLogger.ERROR_INT;
-            default :
-                return LocationAwareLogger.ERROR_INT;
-        }
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data) {
-        return isEnabledFor(level, marker);
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
-        return isEnabledFor(level, marker);
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String data, final Object... p1) {
-        return isEnabledFor(level, marker);
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object data, final Throwable t) {
-        return isEnabledFor(level, marker);
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
-        return isEnabledFor(level, marker);
-    }
-
-    private boolean isEnabledFor(final Level level, final Marker marker) {
-        final org.slf4j.Marker slf4jMarker = getMarker(marker);
-        switch (level.getStandardLevel()) {
-            case DEBUG :
-                return logger.isDebugEnabled(slf4jMarker);
-            case TRACE :
-                return logger.isTraceEnabled(slf4jMarker);
-            case INFO :
-                return logger.isInfoEnabled(slf4jMarker);
-            case WARN :
-                return logger.isWarnEnabled(slf4jMarker);
-            case ERROR :
-                return logger.isErrorEnabled(slf4jMarker);
-            default :
-                return logger.isErrorEnabled(slf4jMarker);
-
-        }
-    }
-
-    public org.slf4j.Logger getLogger() {
-        return locationAwareLogger != null ? locationAwareLogger : logger;
     }
 
 }
