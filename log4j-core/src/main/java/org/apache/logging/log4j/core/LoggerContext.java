@@ -22,6 +22,7 @@ import java.io.File;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.net.URI;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -285,6 +286,19 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     @Override
     public Logger getLogger(final String name) {
         return getLogger(name, null);
+    }
+
+    /**
+     * Gets a collection of the current loggers.
+     * <p>
+     * Whether this collection is a copy of the underlying collection or not is undefined. Therefore, modify this collection at your own
+     * risk.
+     * </p>
+     * 
+     * @return a collection of the current loggers.
+     */
+    public Collection<Logger> getLoggers() {
+        return loggers.values();
     }
 
     /**
