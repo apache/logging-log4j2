@@ -19,7 +19,6 @@ package org.apache.logging.log4j;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
