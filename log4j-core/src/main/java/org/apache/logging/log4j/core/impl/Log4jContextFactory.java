@@ -39,7 +39,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
     private ContextSelector selector;
 
     /**
-     * Constructor that initializes the ContextSelector.
+     * Initializes the ContextSelector.
      */
     public Log4jContextFactory() {
         final String sel = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
@@ -67,7 +67,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Load the LoggerContext using the ContextSelector.
+     * Loads the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
      * @param currentContext If true returns the current Context, if false returns the Context appropriate
@@ -87,7 +87,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Load the LoggerContext using the ContextSelector.
+     * Loads the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
@@ -117,7 +117,7 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Load the LoggerContext using the ContextSelector.
+     * Loads the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
@@ -144,8 +144,6 @@ public class Log4jContextFactory implements LoggerContextFactory {
         }
         return ctx;
     }
-
-
 
     /**
      * Removes knowledge of a LoggerContext.
