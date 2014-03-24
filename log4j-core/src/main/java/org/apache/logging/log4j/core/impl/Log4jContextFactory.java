@@ -59,14 +59,6 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Returns the ContextSelector.
-     * @return The ContextSelector.
-     */
-    public ContextSelector getSelector() {
-        return selector;
-    }
-
-    /**
      * Loads the LoggerContext using the ContextSelector.
      * @param fqcn The fully qualified class name of the caller.
      * @param loader The ClassLoader to use or null.
@@ -82,6 +74,35 @@ public class Log4jContextFactory implements LoggerContextFactory {
         ctx.setExternalContext(externalContext);
         if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
             ctx.start();
+        }
+        return ctx;
+    }
+
+    /**
+     * Loads the LoggerContext using the ContextSelector.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param source The configuration source.
+     * @return The LoggerContext.
+     */
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
+                                    final boolean currentContext, final ConfigurationFactory.ConfigurationSource source) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
+        }
+        if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
+            if (source != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
+                ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
         }
         return ctx;
     }
@@ -117,32 +138,11 @@ public class Log4jContextFactory implements LoggerContextFactory {
     }
 
     /**
-     * Loads the LoggerContext using the ContextSelector.
-     * @param fqcn The fully qualified class name of the caller.
-     * @param loader The ClassLoader to use or null.
-     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
-     * @param currentContext If true returns the current Context, if false returns the Context appropriate
-     * for the caller if a more appropriate Context can be determined.
-     * @param source The configuration source.
-     * @return The LoggerContext.
+     * Returns the ContextSelector.
+     * @return The ContextSelector.
      */
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext, final ConfigurationFactory.ConfigurationSource source) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
-        if (externalContext != null && ctx.getExternalContext() == null) {
-            ctx.setExternalContext(externalContext);
-        }
-        if (ctx.getStatus() == LoggerContext.Status.INITIALIZED) {
-            if (source != null) {
-                ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(source);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
-            } else {
-                ctx.start();
-            }
-        }
-        return ctx;
+    public ContextSelector getSelector() {
+        return selector;
     }
 
     /**
