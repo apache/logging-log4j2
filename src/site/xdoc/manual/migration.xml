@@ -45,17 +45,37 @@
               of the log statements will require no modification. However, where necessary the following changes must be
               made.
               <ol>
-                <li>Calls to <code>Logger.getLogger()</code> must be modified to <code>LogManager.getLogger()</code>.
+                <li>
+                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2.0 it is 
+                  <code>org.apache.logging.log4j</code>
                 </li>
-                <li>Calls to <code>Logger.getRootLogger()</code> or <code>LogManager.getRootLogger()</code> must be 
-                  replaced with <code>LogManager.getRootLogger()</code>.</li>
-                <li>Calls to <code>LogManager.getLogger</code> that accept a <code>LoggerFactory</code> must remove the
-                  <code>LoggerFactory</code> and use one of Log4j 2's other extension mechanisms.</li>
-                <li>Calls to <code>logger.setLevel()</code> or similar methods are not supported in the API. 
+                <li>
+                  Calls to <code>org.apache.log4j.Logger.getLogger()</code> must be modified to 
+                  <code>org.apache.logging.log4j.LogManager.getLogger()</code>.
+                </li>
+                <li>
+                  Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or 
+                  <code>org.apache.log4j.LogManager.getRootLogger()</code> must be replaced with 
+                  <code>org.apache.logging.log4j.LogManager.getRootLogger()</code>.</li>
+                <li>
+                  Calls to <code>org.apache.log4j.Logger.getLogger</code> that accept a <code>LoggerFactory</code> must
+                  remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2's other extension 
+                  mechanisms.
+                </li>
+                <li>
+                  Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2 
+                  because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core 
+                  clean ups. 
+                </li>
+                <li>
+                  Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API. 
                   Applications should remove these. Equivalent functionality is provided in the Log4j 2 implementation
-                  classes but may leave the application susceptible to changes in Log4j 2 internals.</li>
-                <li>Where appropriate, applications should convert to use parameterized messages instead of
-                  String concatenation.</li>
+                  classes but may leave the application susceptible to changes in Log4j 2 internals.
+                </li>
+                <li>
+                  Where appropriate, applications should convert to use parameterized messages instead of String 
+                  concatenation.
+                </li>
               </ol>
             </p>
           </subsection>
