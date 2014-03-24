@@ -18,7 +18,7 @@ package org.apache.logging.log4j.taglib;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLoggerProviderWrapper;
+import org.apache.logging.log4j.spi.LoggerProviderWrapper;
 import org.apache.logging.log4j.spi.LoggerProvider;
 
 /**
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.spi.LoggerProvider;
  *
  * @since 2.0
  */
-class Log4jTaglibLogger extends AbstractLoggerProviderWrapper {
+class Log4jTaglibLogger extends LoggerProviderWrapper {
     private static final long serialVersionUID = 1L;
 
     public Log4jTaglibLogger(final LoggerProvider logger, final String name, final MessageFactory messageFactory) {
