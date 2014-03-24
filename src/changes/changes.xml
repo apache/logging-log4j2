@@ -21,6 +21,9 @@
   </properties>
   <body>
     <release version="2.0-rc2?" date="2014-MM-DD" description="Bug fixes and enhancements">
+      <action issue="LOG4J2-579" dev="ggregory" type="fix">
+          Rename Level.lessOrEqual() to isLessOrEqual().
+      </action>
       <action issue="LOG4J2-576" dev="ggregory" type="add">
           Add org.apache.logging.log4j.Logger.getLevel().
       </action>
