@@ -95,7 +95,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private final ExecutorService threadPool;
 
-    private AtomicLong dbCount = new AtomicLong();
+    private final AtomicLong dbCount = new AtomicLong();
 
     /**
      * Constructor

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LegacyBSDTLSSyslogInputStreamReader extends TLSSyslogInputStreamReaderBase {
-    private ByteArrayOutputStream buffer;
+    private final ByteArrayOutputStream buffer;
 
     public LegacyBSDTLSSyslogInputStreamReader(InputStream inputStream) {
         super(inputStream, TLSSyslogMessageFormat.LEGACY_BSD);

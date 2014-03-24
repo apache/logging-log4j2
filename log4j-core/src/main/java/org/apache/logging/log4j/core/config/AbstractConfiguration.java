@@ -117,7 +117,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private ConcurrentMap<String, LoggerConfig> loggers = new ConcurrentHashMap<String, LoggerConfig>();
 
-    private ConcurrentMap<String, String> properties = new ConcurrentHashMap<String, String>();
+    private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<String, String>();
 
     private final StrLookup tempLookup = new Interpolator(properties);
 

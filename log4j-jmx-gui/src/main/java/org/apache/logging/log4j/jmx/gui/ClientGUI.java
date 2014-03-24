@@ -71,8 +71,8 @@ public class ClientGUI extends JPanel implements NotificationListener {
     private static final long serialVersionUID = -253621277232291174L;
     private static final int INITIAL_STRING_WRITER_SIZE = 1024;
     private final Client client;
-    private Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<ObjectName, Component>();
-    private Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
+    private final Map<ObjectName, Component> contextObjNameToTabbedPaneMap = new HashMap<ObjectName, Component>();
+    private final Map<ObjectName, JTextArea> statusLogTextAreaMap = new HashMap<ObjectName, JTextArea>();
     private JTabbedPane tabbedPaneContexts;
 
     public ClientGUI(final Client client) throws IOException, JMException {

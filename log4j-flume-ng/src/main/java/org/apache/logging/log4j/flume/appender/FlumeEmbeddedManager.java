@@ -42,7 +42,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static FlumeManagerFactory factory = new FlumeManagerFactory();
 
-    private EmbeddedAgent agent;
+    private final EmbeddedAgent agent;
 
     private final String shortName;
 

@@ -36,8 +36,8 @@ import static org.junit.Assert.*;
 public class LoggerStreamTest {
     private List<String> results;
     private LoggerStream stream;
-    private Level level;
-    private String logMessage;
+    private final Level level;
+    private final String logMessage;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {

@@ -29,13 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockTLSSyslogServer extends MockSyslogServer {
-    private SSLServerSocket serverSocket;
+    private final SSLServerSocket serverSocket;
     private SSLSocket clientSocket;
-    private List<String> messageList = new ArrayList<String>();
+    private final List<String> messageList = new ArrayList<String>();
     private TLSSyslogInputStreamReaderBase syslogReader;
 
     private TLSSyslogMessageFormat messageFormat = TLSSyslogMessageFormat.SYSLOG;
-    private int loopLen;
+    private final int loopLen;
 
     public MockTLSSyslogServer(int loopLen, TLSSyslogMessageFormat format, SSLServerSocket serverSocket) {
         super(loopLen, serverSocket.getLocalPort());

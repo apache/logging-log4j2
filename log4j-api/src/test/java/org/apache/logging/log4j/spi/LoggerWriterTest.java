@@ -37,8 +37,8 @@ import static org.junit.Assert.*;
 public class LoggerWriterTest {
     private List<String> results;
     private LoggerWriter writer;
-    private Level level;
-    private String logMessage;
+    private final Level level;
+    private final String logMessage;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
