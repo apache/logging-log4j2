@@ -98,13 +98,13 @@ public final class MarkerManager {
         }
 
         @Override
-        public boolean isInstanceOf(final Marker m) {
-            if (m == null) {
+        public boolean isInstanceOf(final Marker marker) {
+            if (marker == null) {
                 throw new IllegalArgumentException("A marker parameter is required");
             }
             Marker test = this;
             do {
-                if (test == m) {
+                if (test == marker) {
                     return true;
                 }
                 test = test.getParent();
