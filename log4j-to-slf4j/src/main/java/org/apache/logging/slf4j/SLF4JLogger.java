@@ -22,6 +22,7 @@ import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.slf4j.Logger;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -63,6 +64,28 @@ public class SLF4JLogger extends AbstractLogger {
         }
     }
 
+    @Override
+    public Level getLevel() {
+        if (logger.isTraceEnabled()) {
+            return Level.TRACE;
+        }
+        if (logger.isDebugEnabled()) {
+            return Level.DEBUG;
+        }
+        if (logger.isInfoEnabled()) {
+            return Level.INFO;
+        }
+        if (logger.isWarnEnabled()) {
+            return Level.WARN;
+        }
+        if (logger.isErrorEnabled()) {
+            return Level.ERROR;
+        }
+        // Option: throw new IllegalStateException("Unknown SLF4JLevel");
+        // Option: return Level.ALL;
+        return Level.OFF;
+    }
+    
     public org.slf4j.Logger getLogger() {
         return locationAwareLogger != null ? locationAwareLogger : logger;
     }

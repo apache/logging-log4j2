@@ -109,4 +109,9 @@ public class TestLogger extends AbstractLogger {
     public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
         return true;
     }
+
+    @Override
+    public Level getLevel() {
+        return Level.ALL;
+    }
 }

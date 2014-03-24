@@ -81,10 +81,6 @@ public final class StatusLogger extends AbstractLogger {
         return STATUS_LOGGER;
     }
 
-    public Level getLevel() {
-        return logger.getLevel();
-    }
-
     public void setLevel(final Level level) {
         logger.setLevel(level);
     }
@@ -168,6 +164,10 @@ public final class StatusLogger extends AbstractLogger {
         }
     }
 
+    @Override
+    public Level getLevel() {
+        return logger.getLevel();
+    }
 
     /**
      * Add an event.

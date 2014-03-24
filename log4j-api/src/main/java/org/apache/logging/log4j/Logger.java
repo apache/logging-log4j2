@@ -451,6 +451,13 @@ public interface Logger {
     void fatal(String message, Throwable t);
 
     /**
+     * Gets the Level associated with the Logger.
+     * 
+     * @return the Level associate with the Logger.
+     */
+    Level getLevel();
+    
+    /**
      * Gets the message factory used to convert message Objects and Strings into actual log Messages.
      * 
      * @return the message factory.

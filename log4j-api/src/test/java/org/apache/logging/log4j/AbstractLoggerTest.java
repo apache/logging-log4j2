@@ -87,6 +87,11 @@ public class AbstractLoggerTest extends AbstractLogger {
     };
 
     @Override
+    public Level getLevel() {
+        return currentLevel;
+    }
+
+    @Override
     public boolean isEnabled(final Level level, final Marker marker, final Message data, final Throwable t) {
         assertTrue("Incorrect Level. Expected " + currentLevel + ", actual " + level, level.equals(currentLevel));
         if (marker == null) {
@@ -698,4 +703,5 @@ public class AbstractLoggerTest extends AbstractLogger {
         currentEvent = events[14];
         warn(MarkerManager.getMarker("TEST"), simple);
     }
+
 }

@@ -44,6 +44,11 @@ public class AbstractLoggerWrapper extends AbstractLogger {
         this.logger = logger;
     }
 
+    @Override
+    public Level getLevel() {
+        return logger.getLevel();
+    }
+
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
@@ -94,7 +99,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Object... params) {
         return logger.isEnabled(level, marker, message, params);
     }
-
+    
     /**
      * Detect if the event would be logged.
      * @param level The logging Level to check.
@@ -107,7 +112,7 @@ public class AbstractLoggerWrapper extends AbstractLogger {
     public boolean isEnabled(final Level level, final Marker marker, final String message, final Throwable t) {
         return logger.isEnabled(level, marker, message, t);
     }
-    
+
     /**
      * Always log an event. This tends to be already guarded by an enabled check, so this method 
      * should not check for the logger level again
