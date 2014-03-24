@@ -92,18 +92,29 @@ public class SimpleLogger extends AbstractLogger {
         }
     }
 
-    public void setStream(final PrintStream stream) {
-        this.stream = stream;
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
+        return this.level.intLevel() >= level.intLevel();
     }
 
-    public Level getLevel() {
-        return level;
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
+        return this.level.intLevel() >= level.intLevel();
     }
 
-    public void setLevel(final Level level) {
-        if (level != null) {
-            this.level = level;
-        }
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
+        return this.level.intLevel() >= level.intLevel();
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
+        return this.level.intLevel() >= level.intLevel();
+    }
+
+    @Override
+    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
+        return this.level.intLevel() >= level.intLevel();
     }
 
     @Override
@@ -152,29 +163,14 @@ public class SimpleLogger extends AbstractLogger {
         stream.println(sb.toString());
     }
 
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
+    public void setLevel(final Level level) {
+        if (level != null) {
+            this.level = level;
+        }
     }
 
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg) {
-        return this.level.intLevel() >= level.intLevel();
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final String msg, final Object... p1) {
-        return this.level.intLevel() >= level.intLevel();
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Object msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
-    }
-
-    @Override
-    public boolean isEnabled(final Level level, final Marker marker, final Message msg, final Throwable t) {
-        return this.level.intLevel() >= level.intLevel();
+    public void setStream(final PrintStream stream) {
+        this.stream = stream;
     }
 
 }
