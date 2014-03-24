@@ -56,7 +56,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * A ConfigurationFactory implementation can be added to the classpath and
  * configured as a plugin. The Order annotation should be used to configure the
  * factory to be the first one inspected. See
- * {@linkplain XMLConfigurationFactory} for an example.</li>
+ * {@linkplain org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory} for an example.</li>
  * </ol>
  *
  * If the ConfigurationFactory that was added returns null on a call to

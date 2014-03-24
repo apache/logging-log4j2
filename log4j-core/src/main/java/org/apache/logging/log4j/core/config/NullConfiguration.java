@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Level;
 /**
  * This configuration defaults to no logging.
  */
-public class NullConfiguration extends BaseConfiguration {
+public class NullConfiguration extends AbstractConfiguration {
 
     public static final String NULL_NAME = "Null";
 
@@ -31,4 +31,5 @@ public class NullConfiguration extends BaseConfiguration {
         final LoggerConfig root = getRootLogger();
         root.setLevel(Level.OFF);
     }
+
 }

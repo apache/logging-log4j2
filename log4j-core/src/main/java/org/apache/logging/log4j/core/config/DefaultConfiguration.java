@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * specify the property, Log4j uses the ERROR Level. Log Events will be printed using the basic formatting provided
  * by each Message.
  */
-public class DefaultConfiguration extends BaseConfiguration {
+public class DefaultConfiguration extends AbstractConfiguration {
 
     /**
      * The name of the default configuration.

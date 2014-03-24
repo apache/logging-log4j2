@@ -17,11 +17,13 @@
 package org.apache.logging.log4j.status;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -37,7 +39,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class StatusLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     /**
      * System property that can be configured with the number of entries in the queue. Once the limit
@@ -57,11 +59,11 @@ public final class StatusLogger extends AbstractLogger {
 
     private final SimpleLogger logger;
 
-    private final CopyOnWriteArrayList<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
-    private final ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
+    private final Collection<StatusListener> listeners = new CopyOnWriteArrayList<StatusListener>();
+    private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
     private final Queue<StatusData> messages = new BoundedQueue<StatusData>(MAX_ENTRIES);
-    private final ReentrantLock msgLock = new ReentrantLock();
+    private final Lock msgLock = new ReentrantLock();
 
     private int listenersLevel;
 
@@ -126,11 +128,11 @@ public final class StatusLogger extends AbstractLogger {
     }
 
     /**
-     * Returns a thread safe Iterator for the StatusListener.
-     * @return An Iterator for the list of StatusListeners.
+     * Returns a thread safe Iterable for the StatusListener.
+     * @return An Iterable for the list of StatusListeners.
      */
-    public Iterator<StatusListener> getListeners() {
-        return listeners.iterator();
+    public Iterable<StatusListener> getListeners() {
+        return listeners;
     }
 
     /**
