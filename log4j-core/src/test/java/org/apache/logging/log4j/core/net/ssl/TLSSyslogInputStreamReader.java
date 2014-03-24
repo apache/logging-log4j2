@@ -25,11 +25,11 @@ import java.util.Arrays;
 public class TLSSyslogInputStreamReader extends TLSSyslogInputStreamReaderBase {
     private static final char SPACE = ' ';
 
-    private ByteArrayOutputStream messageBuffer;
-    private byte[] messagePartBuffer;
-    private byte[] lengthBuffer;
-    private int messagePartBufferSize = 8192;
-    private int lengthBufferSize = 8192;
+    private final ByteArrayOutputStream messageBuffer;
+    private final byte[] messagePartBuffer;
+    private final byte[] lengthBuffer;
+    private final int messagePartBufferSize = 8192;
+    private final int lengthBufferSize = 8192;
     private int position = 0;
     private int nextMessageLength = 0;
 

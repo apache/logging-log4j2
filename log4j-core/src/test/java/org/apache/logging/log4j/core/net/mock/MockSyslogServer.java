@@ -22,7 +22,7 @@ import java.util.List;
 public class MockSyslogServer extends Thread {
     protected List<String> messageList;
     protected int port;
-    private int numberOfMessagesToReceive;
+    private final int numberOfMessagesToReceive;
 
     public MockSyslogServer(int numberOfMessagesToReceive, int port) {
         this.numberOfMessagesToReceive = numberOfMessagesToReceive;

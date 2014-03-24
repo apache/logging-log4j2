@@ -31,7 +31,7 @@ import java.security.cert.CertificateException;
 @Plugin(name = "trustStore", category = "Core", printObject = true)
 public class TrustStoreConfiguration extends StoreConfiguration {
     private KeyStore trustStore;
-    private String trustStoreType;
+    private final String trustStoreType;
 
     public TrustStoreConfiguration(String location, String password) {
         super(location, password);

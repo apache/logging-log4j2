@@ -30,8 +30,8 @@ import java.security.*;
 @Plugin(name = "ssl", category = "Core", printObject = true)
 public class SSLConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private KeyStoreConfiguration keyStoreConfig;
-    private TrustStoreConfiguration trustStoreConfig;
+    private final KeyStoreConfiguration keyStoreConfig;
+    private final TrustStoreConfiguration trustStoreConfig;
     private SSLContext sslContext;
 
     private SSLConfiguration(KeyStoreConfiguration keyStoreConfig, TrustStoreConfiguration trustStoreConfig) {

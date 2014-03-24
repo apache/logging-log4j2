@@ -33,7 +33,7 @@ import java.security.cert.CertificateException;
 @Plugin(name = "keyStore", category = "Core", printObject = true)
 public class KeyStoreConfiguration extends StoreConfiguration {
     private KeyStore keyStore;
-    private String keyStoreType;
+    private final String keyStoreType;
 
 
     public KeyStoreConfiguration(String location, String password) {

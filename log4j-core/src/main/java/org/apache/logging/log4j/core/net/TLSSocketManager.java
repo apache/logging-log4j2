@@ -36,7 +36,7 @@ import java.net.UnknownHostException;
 public class TLSSocketManager extends TCPSocketManager {
     public static final int DEFAULT_PORT = 6514;
     private static final TLSSocketManagerFactory FACTORY = new TLSSocketManagerFactory();
-    private SSLConfiguration sslConfig;
+    private final SSLConfiguration sslConfig;
 
     /**
      *
