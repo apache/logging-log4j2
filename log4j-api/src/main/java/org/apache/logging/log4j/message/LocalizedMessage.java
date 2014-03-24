@@ -47,7 +47,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private transient StatusLogger logger = StatusLogger.getLogger();
 
     private String loggerName;
-    private String messagePattern;
+    private String key;
     private String[] stringArgs;
     private transient Object[] argArray;
     private String formattedMessage;
@@ -72,7 +72,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object[] arguments) {
-        this.messagePattern = key;
+        this.key = key;
         this.argArray = arguments;
         this.throwable = null;
         this.baseName = baseName;
@@ -82,7 +82,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
                             final Object[] arguments) {
-        this.messagePattern = key;
+        this.key = key;
         this.argArray = arguments;
         this.throwable = null;
         this.baseName = null;
@@ -179,9 +179,9 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
                 bundle = getResourceBundle(loggerName, locale, true);
             }
         }
-        final String messagePattern = getFormat();
-        final String msgPattern = (bundle == null || !bundle.containsKey(messagePattern)) ?
-            messagePattern : bundle.getString(messagePattern);
+        final String myKey = getFormat();
+        final String msgPattern = (bundle == null || !bundle.containsKey(myKey)) ?
+            myKey : bundle.getString(myKey);
         final Object[] array = argArray == null ? stringArgs : argArray;
         final FormattedMessage msg = new FormattedMessage(msgPattern, array);
         formattedMessage = msg.getFormattedMessage();
@@ -191,7 +191,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     @Override
     public String getFormat() {
-        return messagePattern;
+        return key;
     }
 
     @Override
@@ -256,7 +256,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         out.defaultWriteObject();
         getFormattedMessage();
         out.writeUTF(formattedMessage);
-        out.writeUTF(messagePattern);
+        out.writeUTF(key);
         out.writeUTF(baseName);
         out.writeInt(argArray.length);
         stringArgs = new String[argArray.length];
@@ -271,7 +271,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         formattedMessage = in.readUTF();
-        messagePattern = in.readUTF();
+        key = in.readUTF();
         baseName = in.readUTF();
         final int length = in.readInt();
         stringArgs = (String[]) in.readObject();
