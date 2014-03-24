@@ -26,13 +26,13 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * This class is not the recommended way to Localize messages. It is provided to provide some level
- * of compatibility with Log4j 1.x.
- *
- * The recommended way to localize messages is to simply log a message id. Log events should
- * then be recorded without formatting into some kind of data store. The application that is
- * used to read the events and display them to the user should also localize and format the
- * messages for the end user.
+ * Provides some level of compatibility with Log4j 1.x and convenience but is not the recommended way to Localize
+ * messages.
+ * <p>
+ * The recommended way to localize messages is to log a message id. Log events should then be recorded without
+ * formatting into a data store. The application that is used to read the events and display them to the user can then
+ * localize and format the messages for the end user.
+ * </p>
  */
 public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private static final long serialVersionUID = 3893703791567290742L;
