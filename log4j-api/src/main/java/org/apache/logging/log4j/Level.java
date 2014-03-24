@@ -128,8 +128,8 @@ public final class Level implements Comparable<Level>, Serializable {
      * Compares this level against the level passed as an argument and returns true if this
      * level is the same or more specific.
      *
-     * @param level The level to check.
-     * @return True if the passed Level is more specific or the same as this Level.
+     * @param level The level to test.
+     * @return True if the given Level is more specific or the same as this Level.
      */
     public boolean isAtLeastAsSpecificAs(final Level level) {
         return this.intLevel <= level.intLevel;
@@ -139,8 +139,8 @@ public final class Level implements Comparable<Level>, Serializable {
      * Compares this level against the level passed as an argument and returns true if this
      * level is the same or more specific.
      *
-     * @param level The level to check.
-     * @return True if the passed Level is more specific or the same as this Level.
+     * @param level The level to test.
+     * @return True if the given Level is more specific or the same as this Level.
      */
     public boolean isAtLeastAsSpecificAs(final int level) {
         return this.intLevel <= level;
@@ -167,18 +167,18 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Compares the specified Level against this one.
-     * @param level The level to check.
-     * @return True if the passed Level is more specific or the same as this Level.
+     * Compares the given Level against this one.
+     * @param level The level to test.
+     * @return True if the given Level is more specific or the same as this Level.
      */
     public boolean isLessOrEqual(final Level level) {
         return this.intLevel <= level.intLevel;
     }
 
     /**
-     * Compares the specified Level against this one.
-     * @param level The level to check.
-     * @return True if the passed Level is more specific or the same as this Level.
+     * Compares the given Level against this one.
+     * @param level The level to test.
+     * @return True if the given Level is more specific or the same as this Level.
      */
     public boolean isLessOrEqual(final int level) {
         return this.intLevel <= level;
