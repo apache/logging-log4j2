@@ -113,13 +113,13 @@ public final class MarkerManager {
         }
 
         @Override
-        public boolean isInstanceOf(final String name) {
-            if (name == null) {
+        public boolean isInstanceOf(final String markerName) {
+            if (markerName == null) {
                 throw new IllegalArgumentException("A marker name is required");
             }
             Marker toTest = this;
             do {
-                if (name.equals(toTest.getName())) {
+                if (markerName.equals(toTest.getName())) {
                     return true;
                 }
                 toTest = toTest.getParent();
