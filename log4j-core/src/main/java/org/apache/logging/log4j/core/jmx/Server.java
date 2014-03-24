@@ -66,7 +66,7 @@ public final class Server {
      * Either returns the specified name as is, or returns a quoted value
      * containing the specified name with the special characters (comma, equals,
      * colon, quote, asterisk, or question mark) preceded with a backslash.
-     * 
+     *
      * @param name the name to escape so it can be used as a value in an
      *            {@link ObjectName}.
      * @return the escaped name
@@ -173,7 +173,7 @@ public final class Server {
 
     /**
      * Unregister all log4j MBeans from the specified MBean server.
-     * 
+     *
      * @param mbs the MBean server to unregister from.
      */
     public static void unregisterMBeans(MBeanServer mbs) {
@@ -190,7 +190,7 @@ public final class Server {
     /**
      * Returns the {@code ContextSelector} of the current
      * {@code Log4jContextFactory}.
-     * 
+     *
      * @return the {@code ContextSelector} of the current
      *         {@code Log4jContextFactory}
      */
@@ -207,7 +207,7 @@ public final class Server {
      * Unregisters all MBeans associated with the specified logger context
      * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
      * the platform MBean server.
-     * 
+     *
      * @param loggerContextName name of the logger context to unregister
      */
     public static void unregisterLoggerContext(String loggerContextName) {
@@ -219,8 +219,8 @@ public final class Server {
      * Unregisters all MBeans associated with the specified logger context
      * (including MBeans for {@code LoggerConfig}s and {@code Appender}s from
      * the platform MBean server.
-     * 
-     * @param loggerContextName name of the logger context to unregister
+     *
+     * @param contextName name of the logger context to unregister
      * @param mbs the MBean Server to unregister the instrumented objects from
      */
     public static void unregisterLoggerContext(String contextName, MBeanServer mbs) {
