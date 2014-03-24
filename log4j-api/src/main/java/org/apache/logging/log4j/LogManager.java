@@ -122,6 +122,18 @@ public class LogManager {
     }
 
     /**
+     * Detects if a Logger with the specified name exists. This is a convenience method for porting from version 1.
+     * 
+     * @param name
+     *            The Logger name to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @see LoggerContext#hasLogger(String)
+     */
+    public static boolean exists(String name) {
+        return getContext().hasLogger(name);
+    }
+
+    /**
      * Gets the class name of the caller in the current stack at the given {@code depth}.
      *
      * @param depth a 0-based index in the current stack.
