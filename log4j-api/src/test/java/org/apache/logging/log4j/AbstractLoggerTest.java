@@ -23,13 +23,13 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.junit.Test;
 
 /**
  *
  */
-public class AbstractLoggerTest extends AbstractLogger {
+public class AbstractLoggerTest extends AbstractLoggerProvider {
 
     private static class LogEvent {
 
@@ -52,7 +52,7 @@ public class AbstractLoggerTest extends AbstractLogger {
 
     private static Throwable t = new UnsupportedOperationException("Test");
 
-    private static Class<AbstractLogger> obj = AbstractLogger.class;
+    private static Class<AbstractLoggerProvider> obj = AbstractLoggerProvider.class;
     private static String pattern = "{}, {}";
     private static String p1 = "Long Beach";
 

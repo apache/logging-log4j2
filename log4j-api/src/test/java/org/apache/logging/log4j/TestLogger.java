@@ -18,7 +18,7 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  *
  */
-public class TestLogger extends AbstractLogger {
+public class TestLogger extends AbstractLoggerProvider {
 
     private static final long serialVersionUID = 1L;
 

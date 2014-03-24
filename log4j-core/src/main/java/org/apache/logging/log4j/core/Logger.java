@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 
 /**
  * @doubt All the isEnabled methods could be pushed into a filter interface.  Not sure of the utility of having
@@ -37,7 +37,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  * Logger noticeably impacts performance. The message pattern and parameters are required so that they can be
  * used in global filters.
  */
-public class Logger extends AbstractLogger {
+public class Logger extends AbstractLoggerProvider {
 
     private static final long serialVersionUID = 1L;
 

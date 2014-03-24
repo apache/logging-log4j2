@@ -31,7 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLogger implements LoggerProvider, Serializable {
+public abstract class AbstractLoggerProvider implements LoggerProvider, Serializable {
 
     private static final long serialVersionUID = 2L;
 
@@ -70,7 +70,7 @@ public abstract class AbstractLogger implements LoggerProvider, Serializable {
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = ParameterizedMessageFactory.class;
 
-    private static final String FQCN = AbstractLogger.class.getName();
+    private static final String FQCN = AbstractLoggerProvider.class.getName();
 
     private static final String THROWING = "throwing";
 
@@ -108,7 +108,7 @@ public abstract class AbstractLogger implements LoggerProvider, Serializable {
     /**
      * Creates a new logger named after the class (or subclass).
      */
-    public AbstractLogger() {
+    public AbstractLoggerProvider() {
         this.name = getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
     }
@@ -118,7 +118,7 @@ public abstract class AbstractLogger implements LoggerProvider, Serializable {
      * 
      * @param name the logger name
      */
-    public AbstractLogger(final String name) {
+    public AbstractLoggerProvider(final String name) {
         this.name = name;
         this.messageFactory = createDefaultMessageFactory();
     }
@@ -129,7 +129,7 @@ public abstract class AbstractLogger implements LoggerProvider, Serializable {
      * @param name the logger name
      * @param messageFactory the message factory, if null then use the default message factory.
      */
-    public AbstractLogger(final String name, final MessageFactory messageFactory) {
+    public AbstractLoggerProvider(final String name, final MessageFactory messageFactory) {
         this.name = name;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
     }

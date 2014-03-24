@@ -37,12 +37,12 @@ public class LoggerStream extends PrintStream {
 
     final PrintStream stream;
 
-    public LoggerStream(final AbstractLogger logger, final Level level) {
+    public LoggerStream(final AbstractLoggerProvider logger, final Level level) {
         super(System.out);
         stream = new PrintStream(new HelperStream(logger, null, level), true);
     }
 
-    public LoggerStream(final AbstractLogger logger, final Marker marker, final Level level) {
+    public LoggerStream(final AbstractLoggerProvider logger, final Marker marker, final Level level) {
         super(System.out);
         stream = new PrintStream(new HelperStream(logger, marker, level), true);
     }
@@ -235,11 +235,11 @@ public class LoggerStream extends PrintStream {
 
     private static class HelperStream extends ByteArrayOutputStream {
         private static final String FQCN = LoggerStream.class.getName();
-        private final AbstractLogger logger;
+        private final AbstractLoggerProvider logger;
         private final Level level;
         private final Marker marker;
 
-        private HelperStream(AbstractLogger logger, Marker marker, Level level) {
+        private HelperStream(AbstractLoggerProvider logger, Marker marker, Level level) {
             this.logger = logger;
             this.marker = marker;
             this.level = level;
