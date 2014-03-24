@@ -95,14 +95,6 @@ public class Logger extends AbstractLogger {
         }
     }
 
-    /**
-     * Returns the Level associated with the Logger.
-     * @return the Level associate with the Logger.
-     */
-    public Level getLevel() {
-        return config.level;
-    }
-
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
         final Message msg = message == null ? new SimpleMessage("") : message;
@@ -174,6 +166,16 @@ public class Logger extends AbstractLogger {
             filters.add(filter);
             return filters.iterator();
         }
+    }
+
+    /**
+     * Gets the Level associated with the Logger.
+     * 
+     * @return the Level associate with the Logger.
+     */
+    @Override
+    public Level getLevel() {
+        return config.level;
     }
 
     /**
