@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.File;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -44,7 +45,7 @@ public class AdvertiserTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
-            final String name = ((XMLConfiguration) config).getName();
+            final String name = config.getName();
             if (name == null || !name.equals("XMLConfigTest")) {
                 ctx.reconfigure();
             }

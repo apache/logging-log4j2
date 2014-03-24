@@ -14,24 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
+package org.apache.logging.log4j.core.config.xml;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,15 +35,18 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.FileConfigurationMonitor;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.PluginType;
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil;
-import org.apache.logging.log4j.core.helpers.FileUtils;
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.helpers.Loader;
 import org.apache.logging.log4j.core.helpers.Patterns;
-import org.apache.logging.log4j.status.StatusConsoleListener;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,7 +59,7 @@ import org.xml.sax.SAXException;
 /**
  * Creates a Node hierarchy from an XML file.
  */
-public class XMLConfiguration extends BaseConfiguration implements Reconfigurable {
+public class XMLConfiguration extends AbstractConfiguration implements Reconfigurable {
 
     private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
 
@@ -72,8 +68,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
     private static final String LOG4J_XSD = "Log4j-config.xsd";
-
-    private static final int BUF_SIZE = 16384;
 
     private final List<Status> status = new ArrayList<Status>();
 
@@ -108,28 +102,28 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             // Alternative: We set if a system property on the command line is set, for example:
             // -DLog4j.XInclude=true
             factory.setXIncludeAware(true);
-        } catch (UnsupportedOperationException e) {
-            LOGGER.warn("The DocumentBuilderFactory does not support XInclude: " + factory, e);
-        } catch (AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support XInclude: " + factory);
+        } catch (final UnsupportedOperationException e) {
+            LOGGER.warn("The DocumentBuilderFactory does not support XInclude: {}", factory, e);
+        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support XInclude: {}", factory, err);
         }
         try {
             // Alternative: We could specify all features and values with system properties like:
             // -DLog4j.DocumentBuilderFactory.Feature="http://apache.org/xml/features/xinclude/fixup-base-uris true"
             factory.setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
         } catch (ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
-                    + XINCLUDE_FIXUP_BASE_URIS + "]", e);
-        } catch (AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: " + factory);
+            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
+                    XINCLUDE_FIXUP_BASE_URIS, e);
+        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
         } catch (ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [" + factory + "] does not support the feature ["
-                    + XINCLUDE_FIXUP_LANGUAGE + "]", e);
-        } catch (AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: " + factory);
+            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}].", factory,
+                    XINCLUDE_FIXUP_LANGUAGE, e);
+        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory is out of date and does not support setFeature: {}", factory);
         }
     }
 
@@ -138,7 +132,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         byte[] buffer = null;
 
         try {
-            final List<String> messages = new ArrayList<String>();
             final InputStream configStream = configSource.getInputStream();
             buffer = toByteArray(configStream);
             configStream.close();
@@ -146,81 +139,41 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            Level status = getDefaultStatus();
-            boolean verbose = false;
-            PrintStream stream = System.out;
-
+            final StatusConfiguration statusConfig = new StatusConfiguration()
+                    .withVerboseClasses(VERBOSE_CLASSES)
+                    .withStatus(getDefaultStatus());
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
-                if ("status".equalsIgnoreCase(entry.getKey())) {
-                    final Level stat = Level.toLevel(getStrSubstitutor().replace(entry.getValue()), null);
-                    if (stat != null) {
-                        status = stat;
-                    } else {
-                        messages.add("Invalid status specified: " + entry.getValue() + ". Defaulting to " + status);
-                    }
-                } else if ("dest".equalsIgnoreCase(entry.getKey())) {
-                    final String dest = getStrSubstitutor().replace(entry.getValue());
-                    if (dest != null) {
-                        if (dest.equalsIgnoreCase("err")) {
-                            stream = System.err;
-                        } else {
-                            try {
-                                final File destFile = FileUtils.fileFromURI(FileUtils.getCorrectedFilePathUri(dest));
-                                final String enc = Charset.defaultCharset().name();
-                                stream = new PrintStream(new FileOutputStream(destFile), true, enc);
-                            } catch (final URISyntaxException use) {
-                                System.err.println("Unable to write to " + dest + ". Writing to stdout");
-                            }
-                        }
-                    }
-                } else if ("shutdownHook".equalsIgnoreCase(entry.getKey())) {
-                    String hook = getStrSubstitutor().replace(entry.getValue());
-                    isShutdownHookEnabled = !hook.equalsIgnoreCase("disable");
-                } else if ("verbose".equalsIgnoreCase(entry.getKey())) {
-                    verbose = Boolean.parseBoolean(getStrSubstitutor().replace(entry.getValue()));
-                } else if ("packages".equalsIgnoreCase(getStrSubstitutor().replace(entry.getKey()))) {
-                    final String[] packages = entry.getValue().split(Patterns.COMMA_SEPARATOR);
+                final String key = entry.getKey();
+                final String value = getStrSubstitutor().replace(entry.getValue());
+                if ("status".equalsIgnoreCase(key)) {
+                    statusConfig.withStatus(value);
+                } else if ("dest".equalsIgnoreCase(key)) {
+                    statusConfig.withDestination(value);
+                } else if ("shutdownHook".equalsIgnoreCase(key)) {
+                    isShutdownHookEnabled = !"disable".equalsIgnoreCase(value);
+                } else if ("verbose".equalsIgnoreCase(key)) {
+                    statusConfig.withVerbosity(value);
+                } else if ("packages".equalsIgnoreCase(key)) {
+                    final String[] packages = value.split(Patterns.COMMA_SEPARATOR);
                     for (final String p : packages) {
                         PluginManager.addPackage(p);
                     }
-                } else if ("name".equalsIgnoreCase(entry.getKey())) {
-                    setName(getStrSubstitutor().replace(entry.getValue()));
-                } else if ("strict".equalsIgnoreCase(entry.getKey())) {
-                    strict = Boolean.parseBoolean(getStrSubstitutor().replace(entry.getValue()));
-                } else if ("schema".equalsIgnoreCase(entry.getKey())) {
-                    schema = getStrSubstitutor().replace(entry.getValue());
-                } else if ("monitorInterval".equalsIgnoreCase(entry.getKey())) {
-                    final int interval = Integer.parseInt(getStrSubstitutor().replace(entry.getValue()));
+                } else if ("name".equalsIgnoreCase(key)) {
+                    setName(value);
+                } else if ("strict".equalsIgnoreCase(key)) {
+                    strict = Boolean.parseBoolean(value);
+                } else if ("schema".equalsIgnoreCase(key)) {
+                    schema = value;
+                } else if ("monitorInterval".equalsIgnoreCase(key)) {
+                    final int interval = Integer.parseInt(value);
                     if (interval > 0 && configFile != null) {
                         monitor = new FileConfigurationMonitor(this, configFile, listeners, interval);
                     }
-                } else if ("advertiser".equalsIgnoreCase(entry.getKey())) {
-                    createAdvertiser(getStrSubstitutor().replace(entry.getValue()), configSource, buffer, "text/xml");
+                } else if ("advertiser".equalsIgnoreCase(key)) {
+                    createAdvertiser(value, configSource, buffer, "text/xml");
                 }
             }
-            final Iterator<StatusListener> iter = ((StatusLogger) LOGGER).getListeners();
-            boolean found = false;
-            while (iter.hasNext()) {
-                final StatusListener listener = iter.next();
-                if (listener instanceof StatusConsoleListener) {
-                    found = true;
-                    ((StatusConsoleListener) listener).setLevel(status);
-                    if (!verbose) {
-                        ((StatusConsoleListener) listener).setFilters(VERBOSE_CLASSES);
-                    }
-                }
-            }
-            if (!found && status != Level.OFF) {
-                final StatusConsoleListener listener = new StatusConsoleListener(status, stream);
-                if (!verbose) {
-                    listener.setFilters(VERBOSE_CLASSES);
-                }
-                ((StatusLogger) LOGGER).registerListener(listener);
-                for (final String msg : messages) {
-                    LOGGER.error(msg);
-                }
-            }
-
+            statusConfig.initialize();
         } catch (final SAXException domEx) {
             LOGGER.error("Error parsing " + configSource.getLocation(), domEx);
         } catch (final IOException ioe) {
@@ -231,9 +184,9 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         if (strict && schema != null && buffer != null) {
             InputStream is = null;
             try {
-                is = getClass().getClassLoader().getResourceAsStream(schema);
+                is = Loader.getResourceAsStream(schema, XMLConfiguration.class.getClassLoader());
             } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema " + schema);
+                LOGGER.error("Unable to access schema {}", this.schema);
             }
             if (is != null) {
                 final Source src = new StreamSource(is, LOG4J_XSD);
@@ -345,19 +298,6 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
         return element.getTagName();
     }
 
-    private byte[] toByteArray(final InputStream is) throws IOException {
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        final byte[] data = new byte[BUF_SIZE];
-
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-
-        return buffer.toByteArray();
-    }
-
     private Map<String, String> processAttributes(final Node node, final Element element) {
         final NamedNodeMap attrs = element.getAttributes();
         final Map<String, String> attributes = node.getAttributes();
@@ -385,7 +325,7 @@ public class XMLConfiguration extends BaseConfiguration implements Reconfigurabl
     /**
      * Status for recording errors.
      */
-    private class Status {
+    private static class Status {
         private final Element element;
         private final String name;
         private final ErrorType errorType;

@@ -41,8 +41,8 @@ import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.XMLConfiguration;
-import org.apache.logging.log4j.core.config.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
+import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
 
 /**
  * Listens for events over a socket connection.

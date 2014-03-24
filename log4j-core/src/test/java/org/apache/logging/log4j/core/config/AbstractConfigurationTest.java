@@ -16,94 +16,61 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.logging.log4j.core.config.plugins.PluginManager;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractConfigurationTest {
+public class AbstractConfigurationTest {
 
-    public abstract String getConfigFile();
-
-    @Before
-    public void setUp() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, getConfigFile());
-    }
-
-    @After
-    public void tearDown() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
 
     @Test
-    public void testConfiguredAppenders() {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        final Configuration c = ctx.getConfiguration();
-        final Map<String, Appender> apps = c.getAppenders();
-        assertNotNull(apps);
-        assertEquals(3, apps.size());
-    }
+    public void testMissingRootLogger() throws Exception {
+        PluginManager.addPackage("org.apache.logging.log4j.test.appender");
+        final LoggerContext ctx = Configurator.initialize("Test1", "missingRootLogger.xml");
+        final Logger logger = LogManager.getLogger("sample.Logger1");
+        final Configuration config = ctx.getConfiguration();
+        assertNotNull("Config not null", config);
+//        final String MISSINGROOT = "MissingRootTest";
+//        assertTrue("Incorrect Configuration. Expected " + MISSINGROOT + " but found " + config.getName(),
+//                MISSINGROOT.equals(config.getName()));
+        final Map<String, Appender> map = config.getAppenders();
+        assertNotNull("Appenders not null", map);
+        assertEquals("Appenders Size", 2, map.size());
+        assertTrue("Contains List", map.containsKey("List"));
+        assertTrue("Contains Console", map.containsKey("Console"));
 
-    @Test
-    public void testLogger() {
-        final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test1.Test");
-        assertTrue(logger instanceof org.apache.logging.log4j.core.Logger);
-        final org.apache.logging.log4j.core.Logger l = (org.apache.logging.log4j.core.Logger) logger;
-        assertEquals(Level.DEBUG, l.getLevel());
-        final int filterCount = l.filterCount();
-        assertTrue("number of filters - " + filterCount, filterCount == 1);
-        final Iterator<Filter> iter = l.getFilters();
-        final Filter filter = iter.next();
-        assertTrue(filter instanceof ThreadContextMapFilter);
-        final Map<String, Appender> appenders = l.getAppenders();
-        assertNotNull(appenders);
-        assertTrue("number of appenders = " + appenders.size(), appenders.size() == 1);
-        final Appender a = appenders.get("STDOUT");
-        assertNotNull(a);
-        assertEquals(a.getName(), "STDOUT");
-    }
+        final Map<String, LoggerConfig> loggerMap = config.getLoggers();
+        assertNotNull("loggerMap not null", loggerMap);
+        assertEquals("loggerMap Size", 1, loggerMap.size());
+        // only the sample logger, no root logger in loggerMap!
+        assertTrue("contains key=sample", loggerMap.containsKey("sample"));
 
-    @Test
-    public void logToFile() throws Exception {
-        final FileOutputStream fos = new FileOutputStream("target/test.log", false);
-        fos.flush();
-        fos.close();
-        final Logger logger = LogManager.getLogger("org.apache.logging.log4j.test2.Test");
-        logger.debug("This is a test");
-        final BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream("target/test.log")));
-        try {
-            int count = 0;
-            String str = "";
-            while (is.ready()) {
-                str = is.readLine();
-                ++count;
-            }
-            assertTrue("Incorrect count " + count, count == 1);
-            assertTrue("Bad data", str.endsWith("This is a test"));
-        } finally {
-            is.close();
-        }
+        final LoggerConfig sample = loggerMap.get("sample");
+        final Map<String, Appender> sampleAppenders = sample.getAppenders();
+        assertEquals("sampleAppenders Size", 1, sampleAppenders.size());
+        // sample only has List appender, not Console!
+        assertTrue("sample has appender List", sampleAppenders.containsKey("List"));
+
+        final AbstractConfiguration baseConfig = (AbstractConfiguration) config;
+        final LoggerConfig root = baseConfig.getRootLogger();
+        final Map<String, Appender> rootAppenders = root.getAppenders();
+        assertEquals("rootAppenders Size", 1, rootAppenders.size());
+        // root only has Console appender!
+        assertTrue("root has appender Console", rootAppenders.containsKey("Console"));
+        assertEquals(Level.ERROR, root.getLevel());
+
+        logger.isDebugEnabled();
+        Configurator.shutdown(ctx);
     }
 
 }

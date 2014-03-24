@@ -16,13 +16,13 @@
  */
 package org.apache.log4j;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.BaseConfiguration;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-
-import java.net.URI;
 
 /**
  *
@@ -44,7 +44,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         return new BasicConfiguration();
     }
 
-    public class BasicConfiguration extends BaseConfiguration {
+    public class BasicConfiguration extends AbstractConfiguration {
 
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 

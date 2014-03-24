@@ -14,11 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config;
-
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+package org.apache.logging.log4j.core.config.yaml;
 
 import java.io.File;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
 
 @Plugin(name = "YAMLConfigurationFactory", category = "ConfigurationFactory")
 @Order(7)

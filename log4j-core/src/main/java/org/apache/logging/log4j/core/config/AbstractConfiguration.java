@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -67,14 +70,15 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * The Base Configuration. Many configuration implementations will extend this class.
+ * The base Configuration. Many configuration implementations will extend this class.
  */
-public abstract class BaseConfiguration extends AbstractFilterable implements Configuration {
+public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
+    private static final int BUF_SIZE = 16384;
 
     /**
      * The root node of the configuration.
@@ -84,8 +88,7 @@ public abstract class BaseConfiguration extends AbstractFilterable implements Co
     /**
      * Listeners for configuration changes.
      */
-    protected final List<ConfigurationListener> listeners =
-        new CopyOnWriteArrayList<ConfigurationListener>();
+    protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<ConfigurationListener>();
 
     /**
      * The ConfigurationMonitor that checks for configuration changes.
@@ -131,14 +134,13 @@ public abstract class BaseConfiguration extends AbstractFilterable implements Co
     /**
      * Constructor.
      */
-    protected BaseConfiguration() {
+    protected AbstractConfiguration() {
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager("Core");
         rootNode = new Node();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -965,5 +967,18 @@ public abstract class BaseConfiguration extends AbstractFilterable implements Co
                 }
             }
         }
+    }
+
+    protected byte[] toByteArray(final InputStream is) throws IOException {
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        final byte[] data = new byte[BUF_SIZE];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        return buffer.toByteArray();
     }
 }
