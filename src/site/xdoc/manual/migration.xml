@@ -63,6 +63,10 @@
                   mechanisms.
                 </li>
                 <li>
+                  Replace calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code> with 
+                  <code>org.apache.logging.log4j.Logger.getLevel()</code>.
+                </li>
+                <li>
                   Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2 
                   because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core 
                   clean ups. 
