@@ -66,17 +66,17 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     /**
      * Creates {@link org.apache.logging.log4j.message.StringFormattedMessage} instances.
      *
-     * @param message The message format String.
-     * @param params The parameters for the message.
+     * @param key The key String, used as a message if the key is absent.
+     * @param params The parameters for the message at the given key.
      * @return The Message.
      *
      * @see org.apache.logging.log4j.message.MessageFactory#newMessage(String, Object...)
      */
     @Override
-    public Message newMessage(final String message, final Object... params) {
+    public Message newMessage(final String key, final Object... params) {
         if (resourceBundle == null) {
-            return new LocalizedMessage(baseName,  message, params);
+            return new LocalizedMessage(baseName,  key, params);
         }
-        return new LocalizedMessage(resourceBundle, message, params);
+        return new LocalizedMessage(resourceBundle, key, params);
     }
 }
