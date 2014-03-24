@@ -210,32 +210,32 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     /**
      * Override this to use a ResourceBundle.Control in Java 6
      * 
-     * @param baseName The base name of the resource bundle, a fully qualified class name.
+     * @param rbBaseName The base name of the resource bundle, a fully qualified class name.
      * @param resourceBundleLocale The locale to use when formatting the message.
      * @param loop If true the key will be treated as a package or class name and a resource bundle will
      * be located based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String baseName, final Locale resourceBundleLocale, final boolean loop) {
+    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale, final boolean loop) {
         ResourceBundle rb = null;
 
-        if (baseName == null) {
+        if (rbBaseName == null) {
             return null;
         }
         try {
             if (resourceBundleLocale != null) {
-                rb = ResourceBundle.getBundle(baseName, resourceBundleLocale);
+                rb = ResourceBundle.getBundle(rbBaseName, resourceBundleLocale);
             } else {
-                rb = ResourceBundle.getBundle(baseName);
+                rb = ResourceBundle.getBundle(rbBaseName);
             }
         } catch (final MissingResourceException ex) {
             if (!loop) {
-                logger.debug("Unable to locate ResourceBundle " + baseName);
+                logger.debug("Unable to locate ResourceBundle " + rbBaseName);
                 return null;
             }
         }
 
-        String substr = baseName;
+        String substr = rbBaseName;
         int i;
         while (rb == null && (i = substr.lastIndexOf('.')) > 0) {
             substr = substr.substring(0, i);
