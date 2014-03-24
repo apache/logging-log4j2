@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -105,7 +105,7 @@ public class SimpleLoggerContext implements LoggerContext {
     public LoggerProvider getLogger(final String name, final MessageFactory messageFactory) {
         if (loggers.containsKey(name)) {
             final LoggerProvider logger = loggers.get(name);
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
+            AbstractLoggerProvider.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 

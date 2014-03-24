@@ -25,12 +25,12 @@ import org.apache.logging.log4j.message.Message;
 
 public class LoggerWriter extends Writer {
     private static final String FQCN = LoggerWriter.class.getName();
-    private final AbstractLogger logger;
+    private final AbstractLoggerProvider logger;
     private final Level level;
     private final Marker marker;
     private final StringBuilder buf = new StringBuilder();
 
-    public LoggerWriter(AbstractLogger logger, Marker marker, Level level) {
+    public LoggerWriter(AbstractLoggerProvider logger, Marker marker, Level level) {
         this.logger = logger;
         this.marker = marker;
         this.level = level;

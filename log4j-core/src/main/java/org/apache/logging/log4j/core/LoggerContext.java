@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.helpers.Assert;
 import org.apache.logging.log4j.core.helpers.NetUtils;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -299,7 +299,7 @@ public class LoggerContext implements org.apache.logging.log4j.spi.LoggerContext
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         Logger logger = loggers.get(name);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, messageFactory);
+            AbstractLoggerProvider.checkMessageFactory(logger, messageFactory);
             return logger;
         }
 

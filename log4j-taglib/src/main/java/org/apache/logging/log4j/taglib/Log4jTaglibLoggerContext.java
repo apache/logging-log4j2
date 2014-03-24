@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerProvider;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerProvider;
 
@@ -60,7 +60,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     public Log4jTaglibLogger getLogger(final String name, final MessageFactory factory) {
         Log4jTaglibLogger logger = this.loggers.get(name);
         if (logger != null) {
-            AbstractLogger.checkMessageFactory(logger, factory);
+            AbstractLoggerProvider.checkMessageFactory(logger, factory);
             return logger;
         }
 
