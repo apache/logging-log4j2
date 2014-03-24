@@ -153,7 +153,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return True if the given Level is less specific or the same than this Level.
      */
     public boolean isGreaterOrEqual(final int level) {
-        return this.intLevel >= level;
+        return this.intLevel <= level;
     }
 
     /**
@@ -163,7 +163,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return True if the given Level is less specific or the same than this Level.
      */
     public boolean isGreaterOrEqual(final Level level) {
-        return this.intLevel >= level.intLevel;
+        return this.intLevel <= level.intLevel;
     }
 
     /**
