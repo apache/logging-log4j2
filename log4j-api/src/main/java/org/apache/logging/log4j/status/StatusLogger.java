@@ -192,7 +192,7 @@ public final class StatusLogger extends AbstractLoggerProvider {
         }
         if (listeners.size() > 0) {
             for (final StatusListener listener : listeners) {
-                if (data.getLevel().isAtLeastAsSpecificAs(listener.getStatusLevel())) {
+                if (data.getLevel().isMoreSpecificThan(listener.getStatusLevel())) {
                     listener.log(data);
                 }
             }

@@ -67,7 +67,7 @@ public final class ThresholdFilter extends AbstractFilter {
     }
 
     private Result filter(final Level level) {
-        return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
+        return level.isMoreSpecificThan(this.level) ? onMatch : onMismatch;
     }
 
     @Override

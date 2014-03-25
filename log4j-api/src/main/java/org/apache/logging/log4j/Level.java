@@ -27,14 +27,14 @@ import org.apache.logging.log4j.spi.StandardLevel;
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
  * <ul>
- * <li>{@link #OFF} (most specific)</li>
- * <li>{@link #FATAL}</li>
+ * <li>{@link #OFF} (most specific, no logging)</li>
+ * <li>{@link #FATAL} (most specific, little data)</li>
  * <li>{@link #ERROR}</li>
  * <li>{@link #WARN}</li>
  * <li>{@link #INFO}</li>
  * <li>{@link #DEBUG}</li>
- * <li>{@link #TRACE}</li>
- * <li>{@link #ALL} (least specific)</li>
+ * <li>{@link #TRACE} (least specific, a lot of data)</li>
+ * <li>{@link #ALL} (least specific, all data)</li>
  * </ul>
  *
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those
@@ -85,7 +85,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * All events should be logged.
      */
     public static final Level ALL;
-
+    
     static {
         OFF = new Level("OFF", StandardLevel.OFF.intLevel());
         FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
@@ -96,6 +96,11 @@ public final class Level implements Comparable<Level>, Serializable {
         TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel());
         ALL = new Level("ALL", StandardLevel.ALL.intLevel());
     }
+
+    /**
+     * All levels, from most specific to least specific.
+     */
+    public static final Level[] ALL_LEVELS = {OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL};
 
     private final String name;
     private final int intLevel;
@@ -125,63 +130,27 @@ public final class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * Compares this level against the level passed as an argument and returns true if this
-     * level is the same or more specific.
-     *
-     * @param level The level to test.
-     * @return True if the given Level is more specific or the same as this Level.
-     */
-    public boolean isAtLeastAsSpecificAs(final Level level) {
-        return this.intLevel <= level.intLevel;
-    }
-
-    /**
-     * Compares this level against the level passed as an argument and returns true if this
-     * level is the same or more specific.
-     *
-     * @param level The level to test.
-     * @return True if the given Level is more specific or the same as this Level.
-     */
-    public boolean isAtLeastAsSpecificAs(final int level) {
-        return this.intLevel <= level;
-    }
-
-    /**
-     * Compares the given Level against this one.
+     * Compares this level against the level passed as an argument and returns true if this level is the same or is less
+     * specific.T
      * 
-     * @param level The level to test.
-     * @return True if the given Level is less specific or the same than this Level.
+     * @param level
+     *            The level to test.
+     * @return True if this level Level is less specific or the same as the given Level.
      */
-    public boolean isGreaterOrEqual(final int level) {
-        return this.intLevel <= level;
+    public boolean isLessSpecificThan(final Level level) {
+        return this.intLevel >= level.intLevel;
     }
 
     /**
-     * Compares the given Level against this one.
+     * Compares this level against the level passed as an argument and returns true if this level is the same or is more
+     * specific.
      * 
-     * @param level The level to test.
-     * @return True if the given Level is less specific or the same than this Level.
+     * @param level
+     *            The level to test.
+     * @return True if this level Level is more specific or the same as the given Level.
      */
-    public boolean isGreaterOrEqual(final Level level) {
+    public boolean isMoreSpecificThan(final Level level) {
         return this.intLevel <= level.intLevel;
-    }
-
-    /**
-     * Compares the given Level against this one.
-     * @param level The level to test.
-     * @return True if the given Level is more specific or the same as this Level.
-     */
-    public boolean isLessOrEqual(final Level level) {
-        return this.intLevel <= level.intLevel;
-    }
-
-    /**
-     * Compares the given Level against this one.
-     * @param level The level to test.
-     * @return True if the given Level is more specific or the same as this Level.
-     */
-    public boolean isLessOrEqual(final int level) {
-        return this.intLevel <= level;
     }
 
     @Override

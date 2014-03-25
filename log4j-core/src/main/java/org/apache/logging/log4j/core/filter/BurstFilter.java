@@ -118,7 +118,7 @@ public final class BurstFilter extends AbstractFilter {
      * @return The onMatch value if the filter passes, onMismatch otherwise.
      */
     private Result filter(final Level level) {
-        if (this.level.isAtLeastAsSpecificAs(level)) {
+        if (this.level.isMoreSpecificThan(level)) {
             LogDelay delay = history.poll();
             while (delay != null) {
                 available.add(delay);

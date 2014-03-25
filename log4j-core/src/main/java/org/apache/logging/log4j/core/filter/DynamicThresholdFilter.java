@@ -85,7 +85,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             if (ctxLevel == null) {
                 ctxLevel = defaultThreshold;
             }
-            return level.isAtLeastAsSpecificAs(ctxLevel) ? onMatch : onMismatch;
+            return level.isMoreSpecificThan(ctxLevel) ? onMatch : onMismatch;
         }
         return Result.NEUTRAL;
 
