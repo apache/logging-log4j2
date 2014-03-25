@@ -135,7 +135,7 @@ public final class HTMLLayout extends AbstractStringLayout {
             sbuf.append("<font color=\"#339933\">");
             sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
             sbuf.append("</font>");
-        } else if (event.getLevel().isAtLeastAsSpecificAs(Level.WARN)) {
+        } else if (event.getLevel().isMoreSpecificThan(Level.WARN)) {
             sbuf.append("<font color=\"#993300\"><strong>");
             sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
             sbuf.append("</strong></font>");
