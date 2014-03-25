@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Base class for server classes that listen to {@link org.apache.logging.log4j.core.LogEvent LogEvents}.
+ * Base class for server classes that listen to {@link LogEvent}s.
  */
 public class LogEventListener {
 
