@@ -88,16 +88,16 @@ public class SocketServer extends LogEventListener implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final SocketServer sserver = new SocketServer(port);
-        final Thread server = new Thread(sserver);
-        server.start();
+        final SocketServer socketServer = new SocketServer(port);
+        final Thread serverThread = new Thread(socketServer);
+        serverThread.start();
         final Charset enc = Charset.defaultCharset();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, enc));
         while (true) {
             final String line = reader.readLine();
             if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
-                sserver.shutdown();
-                server.join();
+                socketServer.shutdown();
+                serverThread.join();
                 break;
             }
         }
