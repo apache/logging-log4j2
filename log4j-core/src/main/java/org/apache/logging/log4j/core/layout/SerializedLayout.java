@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Format a LogEvent in its serialized form.
+ * Formats a {@link LogEvent} in its Java serialized form.
  */
 @Plugin(name = "SerializedLayout", category = "Core", elementType = "layout", printObject = true)
 public final class SerializedLayout extends AbstractLayout<LogEvent> {
@@ -84,7 +84,7 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
     }
 
     /**
-     * Create a SerializedLayout.
+     * Creates a SerializedLayout.
      * @return A SerializedLayout.
      */
     @PluginFactory
