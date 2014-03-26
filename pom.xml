@@ -85,7 +85,7 @@
       <name>Nick Williams</name>
       <email>nickwilliams@apache.org</email>
       <roles>
-        <role>Committer</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
@@ -98,6 +98,15 @@
         <role>Committer</role>
       </roles>
       <timezone>America/Chicago</timezone>
+    </developer>
+    <developer>
+      <id></id>
+      <name>Bruce Brouwer</name>
+      <email>bruce.brouwer@gmail.com</email>
+      <roles>
+        <role>Contributor</role>
+      </roles>
+      <timezone>America/Detroit</timezone>
     </developer>
   </developers>
   <mailingLists>
