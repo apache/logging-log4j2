@@ -63,6 +63,9 @@
       <action issue="LOG4J2-468" dev="rgoers" type="update">
         Add support to add a LoggerConfig. Document two ways to modify the configuration.
       </action>
+      <action issue="LOG4J2-582" dev="ggregory" type="update">
+        Rename org.apache.logging.log4j.core.net.SocketServer to TCPSocketServer and refactor with UDP.
+      </action>
     </release>
     <release version="2.0-rc1" date="2014-02-16" description="Bug fixes and enhancements">
       <action dev="nickwilliams" type="delete">

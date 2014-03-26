@@ -47,13 +47,7 @@ import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
 /**
  * Listens for events over a socket connection.
  */
-public class SocketServer extends LogEventListener implements Runnable {
-
-    private final Logger logger;
-
-    private static final int MAX_PORT = 65534;
-
-    private volatile boolean isActive = true;
+public class TCPSocketServer extends AbstractSocketServer implements Runnable {
 
     private final ServerSocket server;
 
@@ -64,9 +58,9 @@ public class SocketServer extends LogEventListener implements Runnable {
      * @param port to listen on.
      * @throws IOException If an error occurs.
      */
-    public SocketServer(final int port) throws IOException {
+    public TCPSocketServer(final int port) throws IOException {
+        super(port);
         this.server = new ServerSocket(port);
-        this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
     }
      /**
      * Main startup for the server.
@@ -88,7 +82,7 @@ public class SocketServer extends LogEventListener implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final SocketServer socketServer = new SocketServer(port);
+        final TCPSocketServer socketServer = new TCPSocketServer(port);
         final Thread serverThread = new Thread(socketServer);
         serverThread.start();
         final Charset enc = Charset.defaultCharset();
@@ -111,7 +105,7 @@ public class SocketServer extends LogEventListener implements Runnable {
      * Shutdown the server.
      */
     public void shutdown() {
-        this.isActive = false;
+        setActive(false);
         Thread.currentThread().interrupt();
     }
 
@@ -120,7 +114,7 @@ public class SocketServer extends LogEventListener implements Runnable {
      */
     @Override
     public void run() {
-        while (isActive) {
+        while (isActive()) {
             try {
                 // Accept incoming connections.
                 final Socket clientSocket = server.accept();
@@ -197,53 +191,6 @@ public class SocketServer extends LogEventListener implements Runnable {
             } finally {
                 handlers.remove(Long.valueOf(getId()));
             }
-        }
-    }
-
-    /**
-     * Factory that creates a Configuration for the server.
-     */
-    private static class ServerConfigurationFactory extends XMLConfigurationFactory {
-
-        private final String path;
-
-        public ServerConfigurationFactory(final String path) {
-            this.path = path;
-        }
-
-        @Override
-        public Configuration getConfiguration(final String name, final URI configLocation) {
-            if (path != null && path.length() > 0) {
-                File file = null;
-                ConfigurationSource source = null;
-                try {
-                    file = new File(path);
-                    final FileInputStream is = new FileInputStream(file);
-                    source = new ConfigurationSource(is, file);
-                } catch (final FileNotFoundException ex) {
-                    // Ignore this error
-                }
-                if (source == null) {
-                    try {
-                        final URL url = new URL(path);
-                        source = new ConfigurationSource(url.openStream(), path);
-                    } catch (final MalformedURLException mue) {
-                        // Ignore this error
-                    } catch (final IOException ioe) {
-                        // Ignore this error
-                    }
-                }
-
-                try {
-                    if (source != null) {
-                        return new XMLConfiguration(source);
-                    }
-                } catch (final Exception ex) {
-                    // Ignore this error.
-                }
-                System.err.println("Unable to process configuration at " + path + ", using default.");
-            }
-            return super.getConfiguration(name, configLocation);
         }
     }
 }

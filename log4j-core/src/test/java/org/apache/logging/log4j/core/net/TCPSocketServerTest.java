@@ -24,14 +24,14 @@ import org.junit.BeforeClass;
 public class TCPSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8198";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static SocketServer tcpSocketServer;
+    private static TCPSocketServer tcpSocketServer;
 
     private static Thread thread;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        tcpSocketServer = new SocketServer(PORT_NUM);
+        tcpSocketServer = new TCPSocketServer(PORT_NUM);
         thread = new Thread(tcpSocketServer);
         thread.start();
     }
