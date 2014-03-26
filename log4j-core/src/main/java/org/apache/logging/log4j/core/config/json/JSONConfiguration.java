@@ -56,10 +56,14 @@ public class JSONConfiguration extends AbstractConfiguration implements Reconfig
 
     public JSONConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
         this.configFile = configSource.getFile();
+        byte[] buffer;
         try {
             final InputStream configStream = configSource.getInputStream();
-            byte[] buffer = toByteArray(configStream);
-            configStream.close();
+            try {
+                buffer = toByteArray(configStream);
+            } finally {
+                configStream.close();
+            }
             final InputStream is = new ByteArrayInputStream(buffer);
             root = getObjectMapper().readTree(is);
             if (root.size() == 1) {
