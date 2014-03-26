@@ -133,8 +133,11 @@ public class XMLConfiguration extends AbstractConfiguration implements Reconfigu
 
         try {
             final InputStream configStream = configSource.getInputStream();
-            buffer = toByteArray(configStream);
-            configStream.close();
+            try {
+                buffer = toByteArray(configStream);
+            } finally {
+                configStream.close();
+            }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             final Document document = newDocumentBuilder().parse(source);
             rootElement = document.getDocumentElement();
