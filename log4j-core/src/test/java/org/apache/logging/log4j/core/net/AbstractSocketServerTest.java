@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -106,8 +108,9 @@ public abstract class AbstractSocketServerTest {
     protected void testServer(final String message1, final String message2) throws Exception {
         final Filter socketFilter = new ThreadFilter(Filter.Result.NEUTRAL, Filter.Result.DENY);
         final Filter serverFilter = new ThreadFilter(Filter.Result.DENY, Filter.Result.NEUTRAL);
+        final Layout<? extends Serializable> socketLayout = createLayout();
         final SocketAppender appender = SocketAppender.createAppender("localhost", this.port, this.protocol, "-1", null, "Test", null,
-                "false", null, socketFilter, null, null);
+                "false", socketLayout, socketFilter, null, null);
         appender.start();
         final ListAppender listApp = new ListAppender("Events", serverFilter, null, false, false);
         listApp.start();
@@ -131,6 +134,10 @@ public abstract class AbstractSocketServerTest {
         assertTrue("Incorrect event", events.get(0).getMessage().getFormattedMessage().equals(message1));
         assertTrue("Incorrect number of events received: " + events.size(), events.size() == 2);
         assertTrue("Incorrect event", events.get(1).getMessage().getFormattedMessage().equals(message2));
+    }
+
+    protected Layout<? extends Serializable> createLayout() {
+        return null;
     }
 
     @Test

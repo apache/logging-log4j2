@@ -32,10 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
@@ -44,13 +41,7 @@ import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
 /**
  * Listens for events over a socket connection.
  */
-public class UDPSocketServer extends LogEventListener implements Runnable {
-
-    private final Logger logger;
-
-    private static final int MAX_PORT = 65534;
-
-    private volatile boolean isActive = true;
+public class UDPSocketServer extends AbstractSocketServer implements Runnable {
 
     private final DatagramSocket server;
 
@@ -66,8 +57,8 @@ public class UDPSocketServer extends LogEventListener implements Runnable {
      *             If an error occurs.
      */
     public UDPSocketServer(final int port) throws IOException {
+        super(port);
         this.server = new DatagramSocket(port);
-        this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
     }
 
     /**
@@ -115,7 +106,7 @@ public class UDPSocketServer extends LogEventListener implements Runnable {
      * Shutdown the server.
      */
     public void shutdown() {
-        this.isActive = false;
+        this.setActive(false);
         Thread.currentThread().interrupt();
     }
 
@@ -124,7 +115,7 @@ public class UDPSocketServer extends LogEventListener implements Runnable {
      */
     @Override
     public void run() {
-        while (isActive) {
+        while (isActive()) {
             try {
                 final byte[] buf = new byte[maxBufferSize];
                 final DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -143,53 +134,6 @@ public class UDPSocketServer extends LogEventListener implements Runnable {
             } catch (final IOException ioe) {
                 logger.error("Exception encountered on accept. Ignoring. Stack Trace :", ioe);
             }
-        }
-    }
-
-    /**
-     * Factory that creates a Configuration for the server.
-     */
-    private static class ServerConfigurationFactory extends XMLConfigurationFactory {
-
-        private final String path;
-
-        public ServerConfigurationFactory(final String path) {
-            this.path = path;
-        }
-
-        @Override
-        public Configuration getConfiguration(final String name, final URI configLocation) {
-            if (path != null && path.length() > 0) {
-                File file = null;
-                ConfigurationSource source = null;
-                try {
-                    file = new File(path);
-                    final FileInputStream is = new FileInputStream(file);
-                    source = new ConfigurationSource(is, file);
-                } catch (final FileNotFoundException ex) {
-                    // Ignore this error
-                }
-                if (source == null) {
-                    try {
-                        final URL url = new URL(path);
-                        source = new ConfigurationSource(url.openStream(), path);
-                    } catch (final MalformedURLException mue) {
-                        // Ignore this error
-                    } catch (final IOException ioe) {
-                        // Ignore this error
-                    }
-                }
-
-                try {
-                    if (source != null) {
-                        return new XMLConfiguration(source);
-                    }
-                } catch (final Exception ex) {
-                    // Ignore this error.
-                }
-                System.err.println("Unable to process configuration at " + path + ", using default.");
-            }
-            return super.getConfiguration(name, configLocation);
         }
     }
 }
