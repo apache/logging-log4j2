@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.Serializable;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.naming.Context;
@@ -43,11 +45,15 @@ public abstract class AbstractJMSReceiver extends LogEventListener implements ja
      */
     @Override
     public void onMessage(final javax.jms.Message message) {
-
         try {
             if (message instanceof ObjectMessage) {
                 final ObjectMessage objectMessage = (ObjectMessage) message;
-                log((LogEvent) objectMessage.getObject());
+                final Serializable object = objectMessage.getObject();
+                if (object instanceof LogEvent) {
+                    log((LogEvent) object);
+                } else {
+                    logger.warn("Received message is of type " + object.getClass().getName() + ", was expecting LogEvent.");
+                }
             } else {
                 logger.warn("Received message is of type " + message.getJMSType()
                     + ", was expecting ObjectMessage.");
