@@ -24,21 +24,21 @@ import org.junit.BeforeClass;
 public class TCPSocketServerTest extends AbstractSocketServerTest {
     private static final String PORT = "8198";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static SocketServer udpSocketServer;
+    private static SocketServer tcpSocketServer;
 
     private static Thread thread;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        udpSocketServer = new SocketServer(PORT_NUM);
-        thread = new Thread(udpSocketServer);
+        tcpSocketServer = new SocketServer(PORT_NUM);
+        thread = new Thread(tcpSocketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        udpSocketServer.shutdown();
+        tcpSocketServer.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException e) {
