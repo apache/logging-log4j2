@@ -21,12 +21,10 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
@@ -34,31 +32,61 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  */
 public class UDPSocketServer extends AbstractSocketServer implements Runnable {
 
-    private final DatagramSocket server;
+    /**
+     * Creates a socket server that reads JSON log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     */
+    public static UDPSocketServer createJsonSocketServer(int port) throws IOException {
+        return new UDPSocketServer(port, new JSONLogEventInput());
+    }
+
+    /**
+     * Creates a socket server that reads serialized log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     */
+    public static UDPSocketServer createSerializedSocketServer(int port) throws IOException {
+        return new UDPSocketServer(port, new SerializedLogEventInput());
+    }
+
+    /**
+     * Creates a socket server that reads XML log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     */
+    public static UDPSocketServer createXmlSocketServer(int port) throws IOException {
+        return new UDPSocketServer(port, new XMLLogEventInput());
+    }
+
+    private final DatagramSocket datagramSocket;
 
     // max size so we only have to deal with one packet
     private final int maxBufferSize = 1024 * 65 + 1024;
 
     /**
      * Constructor.
-     *
-     * @param port
-     *            to listen on.
-     * @throws IOException
-     *             If an error occurs.
+     * 
+     * @param port to listen on.
+     * @param logEventInput
+     * @throws IOException If an error occurs.
      */
-    public UDPSocketServer(final int port) throws IOException {
-        super(port);
-        this.server = new DatagramSocket(port);
+    public UDPSocketServer(final int port, LogEventInput logEventInput) throws IOException {
+        super(port, logEventInput);
+        this.datagramSocket = new DatagramSocket(port);
     }
 
     /**
      * Main startup for the server.
-     *
-     * @param args
-     *            The command line arguments.
-     * @throws Exception
-     *             if an error occurs.
+     * 
+     * @param args The command line arguments.
+     * @throws Exception if an error occurs.
      */
     public static void main(final String[] args) throws Exception {
         if (args.length < 1 || args.length > 2) {
@@ -75,14 +103,14 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final UDPSocketServer sserver = new UDPSocketServer(port);
-        final Thread server = new Thread(sserver);
+        final UDPSocketServer socketServer = UDPSocketServer.createSerializedSocketServer(port);
+        final Thread server = new Thread(socketServer);
         server.start();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             final String line = reader.readLine();
             if (line == null || line.equalsIgnoreCase("Quit") || line.equalsIgnoreCase("Stop") || line.equalsIgnoreCase("Exit")) {
-                sserver.shutdown();
+                socketServer.shutdown();
                 server.join();
                 break;
             }
@@ -110,20 +138,15 @@ public class UDPSocketServer extends AbstractSocketServer implements Runnable {
             try {
                 final byte[] buf = new byte[maxBufferSize];
                 final DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                server.receive(packet);
-                final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()));
-                final LogEvent event = (LogEvent) ois.readObject();
-                if (event != null) {
-                    log(event);
-                }
-            } catch (final OptionalDataException opt) {
-                logger.error("OptionalDataException eof=" + opt.eof + " length=" + opt.length, opt);
-            } catch (final ClassNotFoundException cnfe) {
-                logger.error("Unable to locate LogEvent class", cnfe);
-            } catch (final EOFException eofe) {
+                datagramSocket.receive(packet);
+                final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength());
+                log(logEventInput.readLogEvent(bais));
+            } catch (final OptionalDataException e) {
+                logger.error("OptionalDataException eof=" + e.eof + " length=" + e.length, e);
+            } catch (final EOFException e) {
                 logger.info("EOF encountered");
-            } catch (final IOException ioe) {
-                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", ioe);
+            } catch (final IOException e) {
+                logger.error("Exception encountered on accept. Ignoring. Stack Trace :", e);
             }
         }
     }

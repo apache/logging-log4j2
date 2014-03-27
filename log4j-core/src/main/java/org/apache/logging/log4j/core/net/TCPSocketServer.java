@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
@@ -29,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 
 /**
@@ -37,21 +37,90 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
  */
 public class TCPSocketServer extends AbstractSocketServer implements Runnable {
 
-    private final ServerSocket server;
+    /**
+     * Thread that processes the events.
+     */
+    private class SocketHandler extends Thread {
+        private final LogEventInput logEventInput;
 
-    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
+        private final InputStream inputStream;
+
+        private boolean shutdown = false;
+
+        public SocketHandler(final Socket socket, LogEventInput logEventInput) throws IOException {
+            this.inputStream = new ObjectInputStream(socket.getInputStream());
+            this.logEventInput = logEventInput;
+        }
+
+        @Override
+        public void run() {
+            boolean closed = false;
+            try {
+                try {
+                    while (!shutdown) {
+                        log(logEventInput.readLogEvent(inputStream));
+                    }
+                } catch (final EOFException e) {
+                    closed = true;
+                } catch (final OptionalDataException e) {
+                    logger.error("OptionalDataException eof=" + e.eof + " length=" + e.length, e);
+                } catch (final IOException e) {
+                    logger.error("IOException encountered while reading from socket", e);
+                }
+                if (!closed) {
+                    try {
+                        inputStream.close();
+                    } catch (final Exception ex) {
+                        // Ignore the exception;
+                    }
+                }
+            } finally {
+                handlers.remove(Long.valueOf(getId()));
+            }
+        }
+
+        public void shutdown() {
+            this.shutdown = true;
+            interrupt();
+        }
+    }
 
     /**
-     * Constructor.
-     * @param port to listen on.
-     * @throws IOException If an error occurs.
+     * Creates a socket server that reads JSON log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public TCPSocketServer(final int port) throws IOException {
-        super(port);
-        this.server = new ServerSocket(port);
+    public static TCPSocketServer createJsonSocketServer(int port) throws IOException {
+        return new TCPSocketServer(port, new JSONLogEventInput());
     }
-     /**
+
+    /**
+     * Creates a socket server that reads serialized log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     */
+    public static TCPSocketServer createSerializedSocketServer(int port) throws IOException {
+        return new TCPSocketServer(port, new SerializedLogEventInput());
+    }
+
+    /**
+     * Creates a socket server that reads XML log events.
+     * 
+     * @param port the port to listen
+     * @return a new a socket server
+     * @throws IOException if an I/O error occurs when opening the socket.
+     */
+    public static TCPSocketServer createXmlSocketServer(int port) throws IOException {
+        return new TCPSocketServer(port, new XMLLogEventInput());
+    }
+
+    /**
      * Main startup for the server.
+     * 
      * @param args The command line arguments.
      * @throws Exception if an error occurs.
      */
@@ -70,7 +139,8 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
         if (args.length == 2 && args[1].length() > 0) {
             ConfigurationFactory.setConfigurationFactory(new ServerConfigurationFactory(args[1]));
         }
-        final TCPSocketServer socketServer = new TCPSocketServer(port);
+        final TCPSocketServer socketServer = TCPSocketServer.createSerializedSocketServer(port);
+        ;
         final Thread serverThread = new Thread(socketServer);
         serverThread.start();
         final Charset enc = Charset.defaultCharset();
@@ -89,12 +159,20 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
         System.out.println("Usage: ServerSocket port configFilePath");
     }
 
+    private final ConcurrentMap<Long, SocketHandler> handlers = new ConcurrentHashMap<Long, SocketHandler>();
+
+    private final ServerSocket server;
+
     /**
-     * Shutdown the server.
+     * Constructor.
+     * 
+     * @param port to listen.
+     * @param logEventInput the log even input
+     * @throws IOException if an I/O error occurs when opening the socket.
      */
-    public void shutdown() {
-        setActive(false);
-        Thread.currentThread().interrupt();
+    public TCPSocketServer(final int port, LogEventInput logEventInput) throws IOException {
+        super(port, logEventInput);
+        this.server = new ServerSocket(port);
     }
 
     /**
@@ -112,7 +190,7 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
                 // If execution reaches this point, then it means that a client
                 // socket has been accepted.
 
-                final SocketHandler handler = new SocketHandler(clientSocket);
+                final SocketHandler handler = new SocketHandler(clientSocket, this.logEventInput);
                 handlers.put(Long.valueOf(handler.getId()), handler);
                 handler.start();
             } catch (final IOException ioe) {
@@ -132,53 +210,10 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
     }
 
     /**
-     * Thread that processes the events.
+     * Shutdown the server.
      */
-    private class SocketHandler extends Thread {
-        private final ObjectInputStream ois;
-
-        private boolean shutdown = false;
-
-        public SocketHandler(final Socket socket) throws IOException {
-
-            ois = new ObjectInputStream(socket.getInputStream());
-        }
-
-        public void shutdown() {
-            this.shutdown = true;
-            interrupt();
-        }
-
-        @Override
-        public void run() {
-            boolean closed = false;
-            try {
-                try {
-                    while (!shutdown) {
-                        final LogEvent event = (LogEvent) ois.readObject();
-                        if (event != null) {
-                            log(event);
-                        }
-                    }
-                } catch (final EOFException eof) {
-                    closed = true;
-                } catch (final OptionalDataException opt) {
-                    logger.error("OptionalDataException eof=" + opt.eof + " length=" + opt.length, opt);
-                } catch (final ClassNotFoundException cnfe) {
-                    logger.error("Unable to locate LogEvent class", cnfe);
-                } catch (final IOException ioe) {
-                    logger.error("IOException encountered while reading from socket", ioe);
-                }
-                if (!closed) {
-                    try {
-                        ois.close();
-                    } catch (final Exception ex) {
-                        // Ignore the exception;
-                    }
-                }
-            } finally {
-                handlers.remove(Long.valueOf(getId()));
-            }
-        }
+    public void shutdown() {
+        setActive(false);
+        Thread.currentThread().interrupt();
     }
 }

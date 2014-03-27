@@ -17,28 +17,31 @@
 package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
-public class UDPSocketServerTest extends AbstractSocketServerTest {
-    private static final String PORT = "8199";
+@Ignore("Not implemented yet")
+public class TcpJsonSocketServerTest extends AbstractSocketServerTest {
+    private static final String PORT = "8198";
     private static final int PORT_NUM = Integer.parseInt(PORT);
-    private static UDPSocketServer udpSocketServer;
+    private static TCPSocketServer tcpSocketServer;
 
     private static Thread thread;
 
     @BeforeClass
     public static void setupClass() throws Exception {
         ((LoggerContext) LogManager.getContext(false)).reconfigure();
-        udpSocketServer = new UDPSocketServer(PORT_NUM);
-        thread = new Thread(udpSocketServer);
+        tcpSocketServer = TCPSocketServer.createJsonSocketServer(PORT_NUM);
+        thread = new Thread(tcpSocketServer);
         thread.start();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        udpSocketServer.shutdown();
+        tcpSocketServer.shutdown();
         try {
             thread.join();
         } catch (final InterruptedException e) {
@@ -46,8 +49,13 @@ public class UDPSocketServerTest extends AbstractSocketServerTest {
         }
     }
 
-    public UDPSocketServerTest() {
-        super("udp", PORT, true);
+    public TcpJsonSocketServerTest() {
+        super("tcp", PORT, false);
+    }
+
+    @Override
+    protected Layout<String> createLayout() {
+        return super.createJsonLayout();
     }
 
 }

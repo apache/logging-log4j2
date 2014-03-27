@@ -14,28 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.LogManager;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
- * Base class for server classes that listen to {@link LogEvent}s.
+ * Reads JSON {@link LogEvent}s.
  */
-public class LogEventListener {
+public class JSONLogEventInput implements LogEventInput {
 
-    private final LoggerContext context;
-
-    protected LogEventListener() {
-        context = (LoggerContext) LogManager.getContext(false);
+    @Override
+    public LogEvent readLogEvent(InputStream inputStream) throws IOException {
+        throw new UnsupportedOperationException("Not  implemented yet");
     }
 
-    protected void log(final LogEvent event) {
-        if (event == null) {
-            return;
-        }
-        final Logger logger = context.getLogger(event.getLoggerName());
-        if (logger.config.filter(event.getLevel(), event.getMarker(), event.getMessage(), event.getThrown())) {
-            logger.config.logEvent(event);
-        }
-    }
 }

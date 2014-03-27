@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.LogEventListener;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
 import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
+import org.apache.logging.log4j.core.helpers.Assert;
 
 /**
  * Abstract socket server for TCP and UDP implementations.
@@ -82,15 +83,18 @@ public abstract class AbstractSocketServer extends LogEventListener {
             return super.getConfiguration(name, configLocation);
         }
     }
-    
+
     protected final Logger logger;
 
     protected static final int MAX_PORT = 65534;
 
     private volatile boolean active = true;
 
-    public AbstractSocketServer(int port) {
+    protected LogEventInput logEventInput;
+
+    public AbstractSocketServer(int port, LogEventInput logEventInput) {
         this.logger = LogManager.getLogger(this.getClass().getName() + '.' + port);
+        this.logEventInput = Assert.isNotNull(logEventInput, "LogEventInput");
     }
 
     protected boolean isActive() {
