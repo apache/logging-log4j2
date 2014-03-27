@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.*;
@@ -39,8 +38,7 @@ public class AsyncAppenderNoLocationTest {
 
     @Before
     public void setUp() throws Exception {
-        final LoggerContext ctx = this.init.getContext();
-        this.app = (ListAppender) ctx.getConfiguration().getAppenders().get("List");
+        this.app = (ListAppender) this.init.getAppender("List");
     }
 
     @After
