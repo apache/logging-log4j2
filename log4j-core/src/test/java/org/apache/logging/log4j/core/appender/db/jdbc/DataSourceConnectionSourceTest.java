@@ -71,14 +71,14 @@ public class DataSourceConnectionSourceTest {
     }
 
     @Test
-    public void testNoJndiName01() {
+    public void testNullJndiName() {
         final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(null);
 
         assertNull("The connection source should be null.", source);
     }
 
     @Test
-    public void testNoJndiName02() {
+    public void testEmptyJndiName() {
         final DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource("");
 
         assertNull("The connection source should be null.", source);
