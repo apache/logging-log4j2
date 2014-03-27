@@ -27,6 +27,8 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +41,7 @@ import static org.junit.Assert.*;
 /**
  *
  */
+@RunWith(JUnit4.class)
 public class TestConfigurator {
 
     private static final String CONFIG_NAME = "ConfigTest";
