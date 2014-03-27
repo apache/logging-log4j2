@@ -19,24 +19,15 @@ package org.apache.logging.log4j.core.net;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
-import org.apache.logging.log4j.core.config.xml.XMLConfigurationFactory;
 
 /**
  * Listens for events over a socket connection.
