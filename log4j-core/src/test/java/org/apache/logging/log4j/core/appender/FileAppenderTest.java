@@ -21,11 +21,9 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.junit.CleanFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,20 +47,12 @@ public class FileAppenderTest {
     private static final String FILENAME = "target/fileAppenderTest.log";
     private static final int THREADS = 2;
 
-    @BeforeClass
-    public static void setupClass() {
-        deleteFile();
-    }
+    @Rule
+    public CleanFiles files = new CleanFiles(FILENAME);
 
     @AfterClass
     public static void cleanupClass() {
-        deleteFile();
         assertTrue("Manager for " + FILENAME + " not removed", !OutputStreamManager.hasManager(FILENAME));
-    }
-
-    @After
-    public void teardown() {
-        deleteFile();
     }
 
     @Test
@@ -135,7 +125,8 @@ public class FileAppenderTest {
         verifyFile(THREADS * count);
     }
 
-    // @Test
+    @Test
+    @Ignore
     public void testMultipleVMs() throws Exception {
 
         final String classPath = System.getProperty("java.class.path");
@@ -207,13 +198,6 @@ public class FileAppenderTest {
         assertTrue("Incorrect count: was " + counter + " should be " + count, count == counter);
         fis.close();
 
-    }
-
-    private static void deleteFile() {
-        final File file = new File(FILENAME);
-        if (file.exists()) {
-            assertTrue(file.delete());
-        }
     }
 
     public class FileWriterRunnable implements Runnable {
