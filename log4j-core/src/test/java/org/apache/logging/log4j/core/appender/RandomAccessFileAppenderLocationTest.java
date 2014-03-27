@@ -23,35 +23,37 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class RandomAccessFileAppenderLocationTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "RandomAccessFileAppenderLocationTest.xml");
-    }
+    private final File logFile = new File("target", "RandomAccessFileAppenderLocationTest.log");
+
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("RandomAccessFileAppenderLocationTest.xml");
+
+    @Rule
+    public CleanFiles files = new CleanFiles(logFile);
 
     @Test
     public void testLocationIncluded() throws Exception {
-        final File f = new File("target", "RandomAccessFileAppenderLocationTest.log");
-        // System.out.println(f.getAbsolutePath());
-        f.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final Logger log = init.getLogger("com.foo.Bar");
         final String msg = "Message with location, flushed with immediate flush=false";
         log.info(msg);
-        ((LifeCycle) LogManager.getContext()).stop(); // stop async thread
+        init.getContext().stop(); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(f));
-        final String line1 = reader.readLine();
-        reader.close();
-        f.delete();
+        String line1;
+        final BufferedReader reader = new BufferedReader(new FileReader(logFile));
+        try {
+            line1 = reader.readLine();
+        } finally {
+            reader.close();
+        }
+
         assertNotNull("line1", line1);
         assertTrue("line1 correct", line1.contains(msg));
 
