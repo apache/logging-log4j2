@@ -33,13 +33,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class ExtendedThrowablePatternConverterTest {
 
-
-
-    @Before
-    public void setup() {
-
-    }
-
     @Test
     public void testFull() {
         final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null);
