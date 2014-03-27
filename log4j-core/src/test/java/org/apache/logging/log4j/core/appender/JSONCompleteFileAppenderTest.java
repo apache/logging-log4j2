@@ -23,14 +23,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -38,71 +34,57 @@ import org.junit.Test;
  */
 public class JSONCompleteFileAppenderTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "JSONCompleteFileAppenderTest.xml");
-    }
+    private final File logFile = new File("target", "JSONCompleteFileAppenderTest.log");
+
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("JSONCompleteFileAppenderTest.xml");
+
+    @Rule
+    public CleanFiles files = new CleanFiles(logFile);
 
     @Test
     public void testFlushAtEndOfBatch() throws Exception {
-        final File file = new File("target", "JSONCompleteFileAppenderTest.log");
-        // System.out.println(f.getAbsolutePath());
-        file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final Logger log = this.init.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=true";
         log.info(logMsg);
         log.error(logMsg, new IllegalArgumentException("badarg"));
-        ((LifeCycle) LogManager.getContext()).stop(); // stops async thread
+        this.init.getContext().stop(); // stops async thread
+        String line1;
+        String line2;
+        String line3;
+        String line4;
+        String line5;
+        final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
         try {
-            final BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line1;
-            String line2;
-            String line3;
-            String line4;
-            String line5;
-            try {
-                line1 = reader.readLine();
-                line2 = reader.readLine();
-                line3 = reader.readLine();
-                line4 = reader.readLine();
-                line5 = reader.readLine();
-            } finally {
-                reader.close();
-            }
-            assertNotNull("line1", line1);
-            final String msg1 = "[";
-            assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
-
-            assertNotNull("line2", line2);
-            final String msg2 = "  {";
-            assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
-
-            assertNotNull("line3", line3);
-            final String msg3 = "    \"logger\":\"com.foo.Bar\",";
-            assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
-
-            assertNotNull("line4", line4);
-            final String msg4 = "\"timestamp\":";
-            assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + "]", line4.contains(msg4));
-
-            assertNotNull("line5", line5);
-            final String msg5 = "    \"level\":\"INFO\",";
-            assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + "]", line5.contains(msg5));
-
-            final String location = "testFlushAtEndOfBatch";
-            assertTrue("no location", !line1.contains(location));
-
-            if (false) {
-                // now check that we can parse the array
-                ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("JavaScript");
-                assertNotNull(engine);
-                // stopping the logger context does not seem to flush the file...
-                Object eval = engine.eval(new FileReader(file));
-                assertNotNull(eval);
-            }
+            line1 = reader.readLine();
+            line2 = reader.readLine();
+            line3 = reader.readLine();
+            line4 = reader.readLine();
+            line5 = reader.readLine();
         } finally {
-            file.delete();
+            reader.close();
         }
+        assertNotNull("line1", line1);
+        final String msg1 = "[";
+        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + "]", line1.equals(msg1));
+
+        assertNotNull("line2", line2);
+        final String msg2 = "  {";
+        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + "]", line2.equals(msg2));
+
+        assertNotNull("line3", line3);
+        final String msg3 = "    \"logger\":\"com.foo.Bar\",";
+        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + "]", line3.contains(msg3));
+
+        assertNotNull("line4", line4);
+        final String msg4 = "\"timestamp\":";
+        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + "]", line4.contains(msg4));
+
+        assertNotNull("line5", line5);
+        final String msg5 = "    \"level\":\"INFO\",";
+        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + "]", line5.contains(msg5));
+
+        final String location = "testFlushAtEndOfBatch";
+        assertTrue("no location", !line1.contains(location));
     }
 }
