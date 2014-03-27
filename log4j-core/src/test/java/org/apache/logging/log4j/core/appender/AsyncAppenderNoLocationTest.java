@@ -16,52 +16,31 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
  */
 public class AsyncAppenderNoLocationTest {
-    private static final String CONFIG = "log4j-asynch-no-location.xml";
-    private static Configuration config;
-    private static ListAppender app;
-    private static LoggerContext ctx;
+    private ListAppender app;
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        ctx = (LoggerContext) LogManager.getContext(false);
-        config = ctx.getConfiguration();
-        for (final Map.Entry<String, Appender> entry : config.getAppenders().entrySet()) {
-            if (entry.getKey().equals("List")) {
-                app = (ListAppender) entry.getValue();
-                break;
-            }
-        }
-    }
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext("log4j-asynch-no-location.xml");
 
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    @Before
+    public void setUp() throws Exception {
+        final LoggerContext ctx = this.init.getContext();
+        this.app = (ListAppender) ctx.getConfiguration().getAppenders().get("List");
     }
 
     @After
@@ -77,12 +56,12 @@ public class AsyncAppenderNoLocationTest {
         Thread.sleep(100);
         final List<String> list = app.getMessages();
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 2, got " + list.size(), list.size() == 2);
+        assertEquals("Incorrect number of events. Expected 2, got " + list.size(), list.size(), 2);
         String msg = list.get(0);
         String expected = "?  This is a test";
-        assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
+        assertEquals("Expected " + expected + ", Actual " + msg, expected, msg);
         msg = list.get(1);
         expected = "?  Hello world!";
-        assertTrue("Expected " + expected + ", Actual " + msg, expected.equals(msg));
+        assertEquals("Expected " + expected + ", Actual " + msg, expected, msg);
     }
 }
