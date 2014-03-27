@@ -71,8 +71,8 @@ public class RandomAccessFileAppenderTests {
         assertNotNull(line);
         assertThat(line, containsString(message));
         final Matcher<String> containsLocationInformation = containsString("testRandomAccessConfiguration");
-        final Matcher<String> usesLocationInformationAsConfigured = this.locationEnabled ?
+        final Matcher<String> containsLocationInformationIfEnabled = this.locationEnabled ?
                 containsLocationInformation : not(containsLocationInformation);
-        assertThat(line, usesLocationInformationAsConfigured);
+        assertThat(line, containsLocationInformationIfEnabled);
     }
 }
