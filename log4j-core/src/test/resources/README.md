@@ -34,14 +34,14 @@ suppose your test class uses the file named `MyTestConfig.xml` in this directory
 in your test class:
 
     @Rule
-    public InitialLoggerContext context = new InitialLoggerContext("MyTestConfig.xml");
+    public InitialLoggerContext init = new InitialLoggerContext("MyTestConfig.xml");
 
     @Test
     public void testSomeAwesomeFeature() {
-        final LoggerContext ctx = context.getContext();
-        final Logger logger = ctx.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
-        final Configuration cfg = ctx.getConfiguration();
-        final ListAppender app = (ListAppender) cfg.getAppenders().get("List");
+        final LoggerContext ctx = init.getContext();
+        final Logger logger = init.getLogger("org.apache.logging.log4j.my.awesome.test.logger");
+        final Configuration cfg = init.getConfiguration();
+        final ListAppender app = (ListAppender) init.getAppender("List");
         logger.warn("Test message");
         final List<LogEvent> events = app.getEvents();
         // etc.
@@ -51,6 +51,16 @@ Using this rule will automatically create a new LoggerContext using the specifie
 retrieve via the `getContext()` method shown above. After the method finishes (or if you use `@ClassRule` and make
 the field `static`), the `LoggerContext` is automatically stopped. No longer do you need to set any system properties,
 reset the `StatusLogger` configuration, and all that other fun boilerplate code.
+
+Cleaning Up Test Log Files
+--------------------------
+
+The `CleanFiles` rule is also available to automatically delete a list of files before and after every test.
+
+    @Rule
+    public CleanFiles files = new CleanFiles("target/file1.log", "target/file2.log", "more files");
+
+You can specify either a list of strings or a list of `File`s.
 
 If you have any questions about writing unit tests, feel free to send an email to the dev mailing list, or check out
 the JUnit documentation over at junit.org.
