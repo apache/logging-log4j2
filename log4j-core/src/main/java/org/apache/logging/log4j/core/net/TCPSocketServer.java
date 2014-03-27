@@ -48,8 +48,8 @@ public class TCPSocketServer extends AbstractSocketServer implements Runnable {
         private volatile boolean shutdown = false;
 
         public SocketHandler(final Socket socket, LogEventInput logEventInput) throws IOException {
-            this.inputStream = new ObjectInputStream(socket.getInputStream());
             this.logEventInput = logEventInput;
+            this.inputStream = logEventInput.wrapStream(socket.getInputStream());
         }
 
         @Override

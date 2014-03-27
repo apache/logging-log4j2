@@ -19,30 +19,16 @@ package org.apache.logging.log4j.core.net;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 /**
- * Reads {@link LogEvent}s from an input stream.
+ * Abstract class for implementations of {@link LogEventInput}.
  * 
- * @param <T> The kind of {@link InputStream} to wrap and read.
+ * @param <T>
  */
-public interface LogEventInput<T extends InputStream> {
+public abstract class AbstractLogEventInput<T extends InputStream> implements LogEventInput<T> {
 
-    /**
-     * Reads a {@link LogEvent} from the given input stream.
-     * 
-     * @param inputStream the input stream to read
-     * @return a LogEvent
-     * @throws IOException
-     */
-    LogEvent readLogEvent(T inputStream) throws IOException;
+    @Override
+    public T wrapStream(InputStream inputStream) throws IOException {
+        return (T) inputStream;
+    }
 
-    /**
-     * Wraps the given stream if needed.
-     * 
-     * @param inputStream the stream to wrap
-     * @return the wrapped stream or the given stream.
-     * @throws IOException
-     */
-    T wrapStream(InputStream inputStream) throws IOException;
 }

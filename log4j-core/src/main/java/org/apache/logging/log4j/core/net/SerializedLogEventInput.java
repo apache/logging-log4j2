@@ -25,17 +25,19 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Reads serialized {@link LogEvent}s.
  */
-public class SerializedLogEventInput implements LogEventInput {
+public class SerializedLogEventInput extends AbstractLogEventInput<ObjectInputStream> {
 
     @Override
-    public LogEvent readLogEvent(InputStream inputStream) throws IOException {
-        final ObjectInputStream ois = inputStream instanceof ObjectInputStream ? (ObjectInputStream) inputStream : new ObjectInputStream(
-                inputStream);
+    public LogEvent readLogEvent(ObjectInputStream inputStream) throws IOException {
         try {
-            return (LogEvent) ois.readObject();
+            return (LogEvent) inputStream.readObject();
         } catch (ClassNotFoundException e) {
             throw new IOException(e);
         }
     }
 
+    @Override
+    public ObjectInputStream wrapStream(InputStream inputStream) throws IOException {
+        return new ObjectInputStream(inputStream);
+    }
 }
