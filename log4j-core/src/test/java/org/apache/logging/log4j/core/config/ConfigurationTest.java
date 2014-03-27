@@ -28,21 +28,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.After;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import static org.apache.logging.log4j.core.config.ConfigurationFactory.CONFIGURATION_FILE_PROPERTY;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -64,6 +62,9 @@ public class ConfigurationTest {
     private final String configFileName;
     private final String logFileName;
 
+    @Rule
+    public InitialLoggerContext init;
+
     private LoggerContext ctx;
 
     private SecureRandom random = new SecureRandom();
@@ -71,6 +72,7 @@ public class ConfigurationTest {
     public ConfigurationTest(final String configFileName, final String logFileName) {
         this.configFileName = configFileName;
         this.logFileName = logFileName;
+        this.init = new InitialLoggerContext(configFileName);
     }
 
     @Parameters
@@ -86,17 +88,8 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty(CONFIGURATION_FILE_PROPERTY, this.configFileName);
-        clearLogFile(this.logFileName);
-        this.ctx = (LoggerContext) LogManager.getContext(false);
-        this.ctx.reconfigure();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty(CONFIGURATION_FILE_PROPERTY);
-        this.ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+        clearLogFile(this.configFileName);
+        this.ctx = this.init.getContext();
     }
 
     @Test
