@@ -18,13 +18,11 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XMLConfiguration;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.junit.CleanFiles;
+import org.apache.logging.log4j.junit.InitialLoggerContext;
+import org.junit.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,12 +34,15 @@ public class FileOutputTest {
     private static final String CONFIG = "log4j-filetest.xml";
     private static final String STATUS_LOG = "target/status.log";
 
-    @BeforeClass
-    public static void setupClass() {
-        final File file = new File(STATUS_LOG);
-        file.delete();
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
+    @Rule
+    public CleanFiles cleanFiles = new CleanFiles(STATUS_LOG);
+
+    @Rule
+    public InitialLoggerContext init = new InitialLoggerContext(CONFIG);
+
+    @Before
+    public void setupClass() {
+        final LoggerContext ctx = this.init.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XMLConfiguration) {
             final String name = config.getName();
@@ -51,16 +52,6 @@ public class FileOutputTest {
         } else {
             ctx.reconfigure();
         }
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-        final File file = new File(STATUS_LOG);
-        file.delete();
     }
 
     @Test
